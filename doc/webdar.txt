@@ -1,0 +1,247 @@
+WEBDAR PROJECT
+
+Introduction:
+       The following is a description of software project from the
+       services it should provide to the possible way it could be
+       implemented. This is a proposal, subject to dscussion in all
+       its aspects.
+
+AIM:
+        The main targets for the initial release are:
+        - provide a web-base interface to libdar
+        - it should be usable with simple browser like lynx or w3m
+        - allow remote operation through web interface
+        - let libdar store slices to remote storage through FTP as an
+	  alternative to local filesystem.
+        - propose a basic authentication mecanism (for now) like
+          dynamically generated password displayed on stdout for use
+          throught the web session.
+	- for the initial release, only few Unixes systems will be
+	  supported but at least Linux and MacOS X.
+
+
+Form and Constraints:
+        - webdar must be available as a single executable
+          suitable for use in bootable Live-CD systems.
+          It may be available as shared or statically linked
+          binary.
+	- It must not rely on any existing directory tree to provide
+ 	  a web service,
+	- It shall be able to work even on a read-only filesystem,
+	  and should not need to pass through filesystem to provide
+	  a gateway between libdar and http protocol (this would cause
+	  performance pernalty during backup as most of the disk bandwidth
+	  would be used by the backup/restoration process).
+	- it shall not rely on any non GPL or proprietary software, both
+	  for building and for working.
+
+
+
+LICENSING:
+	Webdar will be released under GPLv3. Version 3 is important
+	for Webdar as it could be easily emmbedded in many proprietary
+	devices.
+
+ARCHITECTURE:
+
++----------+         +--------------------------+
+| browser  |<======> | WEBDAR                   |                    +---------+
++----------+         +--------+-----------------+                    | FTP     |
+                     | libdar | FTP module      |<==================>| Server  |
+                     |        +-----------------+   slice drop/read  |         |
+                     |        | local FS module |                    +---------+
+                     +--------+-----------------+                         ^
+                        ^            ^                                    |
+     backup/restoration |            | slice drop/read                    |
+                        v            v                                    v
+--------   network   --------------------------------    network    ------------
+                               local                                   remote
+                             filesystem                              filesystem
+
+
+
+POSSIBLE EVOLUTIONS:
+        Room should be done for future evolutions:
+         - SSL support between browser and webdar
+         - support for other network protocols than FTP (to be defined)
+         - support for daemon mode and user priviledge management
+         - support for concurrent sessions (may not be available in version 1.0)
+
+
+IMPLEMENTATION DISCUSSION:
+- Threads support:
+	It should be good to have a multi-threaded application from the
+	beginning, this will ease further support of concurrent sessions and
+	daemon monde. Moreover, this will let webdar be able to report operation
+	progression during backup/restoration (libdar provides such a mecanism
+	that was requested by kdar some years ago).
+
+- Network awareness:
+	FTP modules (FTP for initial release) must not be part of libdar to not
+	bring unnecessary dependencies and security risks to existing tools
+	relying on libdar. It might be possible in a future release to split
+	the network part from webdar in a autonomous library independant
+	of libdar (named libwebdar for example) if some other GPL software
+	need to use it.
+
+- language:
+	libdar's API is provided in C++. While C++ is probably the most simple
+	way to implement webdar, nothing obliges the use of a particular
+	language to implement Webdar. However, need will be to provide binding
+	to libdar if C++ is not retained for the implementation. Note also that
+	libdar strongly uses classes an objects, choosing an object oriented
+	language would cause less work for the binding and no work at all if C++
+	would be chosen.
+
+PHASING:
+	DESIGN:
+	a first phase is to describe the classes their interaction and from this
+	to formalize the classes definitions. This must be done first before any
+	implementation starts not to loose time developping one way and restarting
+	from scratch another way, becauses class specs changed in the meanwhile.
+
+	IMPLEMENTATION
+	Once all classes role is well defined, and once the classes definition
+	(their public part) is documented in the way the are expected to be
+	used, implementation shall start. Each class should be under the
+	responsibility of a developper, which has all freedom to define the
+	 implementation.
+
+	It is probable (but not wanted) that some aspects related to the
+	design phase shows during the implementation phase. Either this could
+ 	be minor change, that shall be done and communicate to all other
+	developpers for agreement, or this is could be a major change, that
+	reveals a major	problem in the design. In that case all development
+	should stop as soon as possible and a review of the design shall become
+	the major focus for all team members.
+
+        TESTING PHASE
+	For non trivial classes, or set of classes, it should be a good point to
+	implement some sample programs using them these classes testing. Such
+	tools should be provided beside webdar source code for testing in future
+	releases and maybe adapted as non-regression tools
+
+	Then a global testing could take place. Testing against different
+	browsers, different FTP servers, different OS.
+
+	RELEASE PHASE
+	Probably a pre-release phase should be interesting to get progressive
+	audience and feedback on webdar, fix bugs in order to start with an
+	initial official release enough stable to not have webdar become ruined
+	by a bad reputation of buggy software.
+
+
+DESIGN CONSIDERATION:
+
+THREADS
+        main thread:
+	    An alarm or SIGINT signal may be set to allow clean stop of the
+	    daemon (no more listening, waiting for all threads to end before
+	    exiting the program).
+	- holds a list of current running operation
+	- listen on TCP port
+	- upon connexion
+	   - does the authentication
+	   - if the current thread list is not empty
+	     - show the list of running thread (future: for the authenticated user)
+	     - let the user select the thread and pass the hand to the given thread
+	   - if the current threa list is empty
+	     - creates a new thread
+	     - and pass the session control to the thread
+
+        The list of current thread is a list of objects of class job
+	    the job class holds the thread id, status (connected, notconnected),
+	    job running / not running
+	    it must use mutex to be updated by the thread when it is disconnected
+	    when it is finished before the thread ends,
+
+
+	Each job thread may be either in configuration mode, or in running-mode.
+	In running mode, a child thread is running the libdar call for the requested
+	operation. The job thread only displays the report on periodic manner. It also
+	allows the user to ask for interruption which can be transmitted to child thread
+	thanks to libdar mechanism.
+
+URL
+	the site specific URL, I mean the part after http://hostname/ must
+	be related to the job thread. It let the main thread decide whether to provide
+	a current job summary or to pass the new TCP session directly to the existing thread
+
+	Normally this only information could be enough to display the current status of
+	the thread as this one is persistent between connexions. The pages provided by
+	the thread will contain differents orders (modify an option, etc), theses are placed
+	after the thread ID.
+
+	the thread is statefull and does modifies orders from page to page with an increment
+	number to avoid browser'back and forth to apply twice the same action. Former orders
+	are ignored and are responded by the current contents status.
+
+	the structure of URL should be:
+
+	    	{protocol}://<hostname>/<thread ID>/<orders>/<increment>
+
+	at startup, the URL
+
+		{protocol}://<hostname>/
+
+	will result in returning the output of a new or existing thread, in which page all
+	links are of full form (with <thread ID>)
+
+	same point the URL
+
+		{protocol}://<hostname>/<thread ID>/...what so ever follows
+
+	will be passed to the appropriated thread if it exists with all links of the returned
+	page having the full URL format.
+
+	It must be avoided caching of generated pages, thus the no-cache directive must be
+	set in replies.
+
+	Some static contents like pictures may be refered in pages as
+
+		{protocol}://<hostname>/static/<object>
+
+        for this contents, the caching by browsers is allowed and is thread independent. A
+	request for such contents may be received in an existing session already bounded to
+	thread, or in a new session. Job threads must be able to handle such requests. For
+	new sessions, the main thread fires a new thread that ends with the TCP session end.
+
+	if a request addressed to a thread is sent to the wrong TCP session, the receiving
+	thread should asks the main thread to pass over the session to the correct thread.
+	The main session will verify that the target thread is not connected, if so it changes
+	the stats of the involved threads (former gets unconnected, target get connected) and
+	gives the filedescriptor to the target thread.
+
+	if the receiving thread is a static thread (one providing static contents only), the
+	process is the same except that upon success the former thread ends.
+
+	If the target thread is already connected, all thread shall send an error message
+	(thread already connected), and provide a force reconnection method. The return message
+	should contain thread unrelated URL and lead the session to be closed.
+
+	upon forced reconnection, the process is the same, except that the main thread reclaim
+	the used filedescriptor, closes it and assigns the new one to the target thread.
+
+
+AUTHENTICATION
+
+	when the authentication should be performed :
+	at each new TCP session? (HTTP 1/0 => beurk)
+	have the use of session cookies to avoid asking new credentials?
+
+	this task is managed by the main thread.
+
+
+ACTION HISTORY
+
+	an history of configuration actions must be hold by the thread to be able to provide
+	a "back" and "forth" from the HTML page, as this implementation breaks the one of
+	the browser.
+
+
+
+
+
+
+
+
