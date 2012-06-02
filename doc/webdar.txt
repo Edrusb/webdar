@@ -239,9 +239,54 @@ ACTION HISTORY
 	the browser.
 
 
+CLASSES
+
+	req_ans : pure virtual class that defines the interface of answers and requests (implemented by sessions and chooser objects)
+
+	connexion : this class is a wrapper around socket filedescriptor to provide generic_file interface
+
+	session : this class provides object that store the status of a particular session, like options selected
+	    by the user current configuration status. When comes the time to call libdar, the object owns a thread
+	    that updates object's structure to be able to have progession information as well as being able to abort
+	    the operation in progress. session class is an implementation of req_ans.
+
+	    Session object management is done by the class itslef. The class provides a table of existing sessions,
+	    with their associated properties.
+
+	    A mutex is used for each object to avoid a session to be solicited for several requests at the same time.
+	    Prior to answer a request, the client must provide the appropriated cookie, the one used at session creation
+	    or obtained by a chooser object.
+
+	parser : this class provides threaded objects that parse requests from given connexion. The class holds a counter
+	       on the number of running parser (=connexions), if a maximum has been defined the constructor fails if the counter
+	       has reached this threshold.
+	       The parser object owns the connexion that it has been given by the listener object that it has been createed by,
+	       and when the connexion ends the parser thread also ends, the parser object is also destroyed.
+	       The parser, lookup the session object based on the requested URL
+	       and if found transmit the request to the found object. The answer provided by the session object is returned
+	       to the client. An parser may send request to different sessions, depending
+	       on the nature of the requests received from the connexion.
+
+	       Some static content (like images, logo, or documentation) may be provided directly by the parser from a
+	       catalog of contents.
+
+	       A parser object may receive a request that does not target a particular session. In that case the parser	authenticates
+	       the client and upon success, calls a chooser object instead of a session object.
 
 
+	listener : a listener object is bound to a port and eventually to an IP address, this is a threaded object
+		Its role is to wait for	incoming connexions and to create connexions objects and a parser object, giving it the connexion
+		the parser object being a threaded object managed all further actions independly of his listener parent
+		or from other listener. it may in future release use a derivated "connexion" class that provide
+		SSL encryption/decryption and authentification.
 
+	chooser : chooser is an implementation of req_ans
+		a chooser object does a lookup of the session table. If no session object owned by the authenticated user exist,
+		it manages for a new one to be created
+		and transmit the request to this newly object and send back the answer to it its caller (a parser). Then it dies, further
+		exchanges are done directly between the parser and the session object.
 
+		if several session owned by the authenticated user exists, the chooser provides a list of them as answer to the request
+		and dies.
 
 
