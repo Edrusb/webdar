@@ -1,3 +1,7 @@
+<=== creuser formulaires HTML
+<=== mettre la documentation pthread_t
+<=== ajouter un repository dar (trunk, 2.3.x et 2.4.x)
+
 WEBDAR PROJECT
 
 Introduction:
@@ -23,17 +27,17 @@ AIM:
 Form and Constraints:
         - webdar must be available as a single executable
           suitable for use in bootable Live-CD systems.
-          It may be available as shared or statically linked
+          It may be available as shared and statically linked
           binary.
 	- It must not rely on any existing directory tree to provide
- 	  a web service,
+ 	  a web service (a single static binary should work alone)
 	- It shall be able to work even on a read-only filesystem,
 	  and should not need to pass through filesystem to provide
 	  a gateway between libdar and http protocol (this would cause
 	  performance pernalty during backup as most of the disk bandwidth
 	  would be used by the backup/restoration process).
 	- it shall not rely on any non GPL or proprietary software, both
-	  for building and for working.
+	  for building the software and for working.
 
 
 
@@ -62,13 +66,14 @@ ARCHITECTURE:
 
 POSSIBLE EVOLUTIONS:
         Room should be done for future evolutions:
-         - SSL support between browser and webdar
+         - support for SSL support between browser and webdar
          - support for other network protocols than FTP (to be defined)
          - support for daemon mode and user priviledge management
          - support for concurrent sessions (may not be available in version 1.0)
 
 
 IMPLEMENTATION DISCUSSION:
+
 - Threads support:
 	It should be good to have a multi-threaded application from the
 	beginning, this will ease further support of concurrent sessions and
@@ -80,11 +85,11 @@ IMPLEMENTATION DISCUSSION:
 	FTP modules (FTP for initial release) must not be part of libdar to not
 	bring unnecessary dependencies and security risks to existing tools
 	relying on libdar. It might be possible in a future release to split
-	the network part from webdar in a autonomous library independant
+	the network part from webdar into an autonomous library independant
 	of libdar (named libwebdar for example) if some other GPL software
 	need to use it.
 
-- language:
+- Language:
 	libdar's API is provided in C++. While C++ is probably the most simple
 	way to implement webdar, nothing obliges the use of a particular
 	language to implement Webdar. However, need will be to provide binding
@@ -102,7 +107,7 @@ PHASING:
 
 	IMPLEMENTATION
 	Once all classes role is well defined, and once the classes definition
-	(their public part) is documented in the way the are expected to be
+	(their public part) is documented in the way they are expected to be
 	used, implementation shall start. Each class should be under the
 	responsibility of a developper, which has all freedom to define the
 	 implementation.
@@ -135,6 +140,9 @@ DESIGN CONSIDERATION:
 
 THREADS
         main thread:
+	 when starting webdar, the process, set signal handlers, and fires new
+	 thread if more than one port is to be listen to, or launches a listener
+	 object in each thread. All listener's end leads to the program end.
 	    An alarm or SIGINT signal may be set to allow clean stop of the
 	    daemon (no more listening, waiting for all threads to end before
 	    exiting the program).
@@ -144,12 +152,12 @@ THREADS
 	   - does the authentication
 	   - if the current thread list is not empty
 	     - show the list of running thread (future: for the authenticated user)
-	     - let the user select the thread and pass the hand to the given thread
-	   - if the current threa list is empty
+	     - let the user select the thread and pass the hand to the selected session
+	   - if the current thread-list is empty
 	     - creates a new thread
 	     - and pass the session control to the thread
 
-        The list of current thread is a list of objects of class job
+        The list of current threads is a list of objects of class job
 	    the job class holds the thread id, status (connected, notconnected),
 	    job running / not running
 	    it must use mutex to be updated by the thread when it is disconnected
@@ -163,14 +171,11 @@ THREADS
 	thanks to libdar mechanism.
 
 URL
-	the site specific URL, I mean the part after http://hostname/ must
-	be related to the job thread. It let the main thread decide whether to provide
-	a current job summary or to pass the new TCP session directly to the existing thread
+	The site specific URL, (the part after http://hostname/) must first
+	be related to the session.
 
-	Normally this only information could be enough to display the current status of
-	the thread as this one is persistent between connexions. The pages provided by
-	the thread will contain differents orders (modify an option, etc), theses are placed
-	after the thread ID.
+	as described later, the generation of an html page is done by a hierarchy of objects.
+	The rest of the URL follows this structure.
 
 	the thread is statefull and does modifies orders from page to page with an increment
 	number to avoid browser'back and forth to apply twice the same action. Former orders
@@ -178,75 +183,65 @@ URL
 
 	the structure of URL should be:
 
-	    	{protocol}://<hostname>/<thread ID>/<orders>/<increment>
+	    	{protocol}://<hostname>/<thread ID>/<tag>/<tag>/.../<tag>/
 
 	at startup, the URL
 
 		{protocol}://<hostname>/
 
-	will result in returning the output of a new or existing thread, in which page all
-	links are of full form (with <thread ID>)
-
-	same point the URL
-
-		{protocol}://<hostname>/<thread ID>/...what so ever follows
-
-	will be passed to the appropriated thread if it exists with all links of the returned
-	page having the full URL format.
+	will result
+	 - in authentication request,
+	 - cookie assignment,
+	 - for the authenticated user, either the list of existing session it owns or
+	   directly a new session the output of a new or existing thread
 
 	It must be avoided caching of generated pages, thus the no-cache directive must be
-	set in replies.
+	set in replies, except for static contents:
 
 	Some static contents like pictures may be refered in pages as
 
 		{protocol}://<hostname>/static/<object>
 
-        for this contents, the caching by browsers is allowed and is thread independent. A
-	request for such contents may be received in an existing session already bounded to
-	thread, or in a new session. Job threads must be able to handle such requests. For
-	new sessions, the main thread fires a new thread that ends with the TCP session end.
+        for this contents, the caching by browsers is allowed, there is not required cookie for
+	that contents.
 
-	if a request addressed to a thread is sent to the wrong TCP session, the receiving
-	thread should asks the main thread to pass over the session to the correct thread.
-	The main session will verify that the target thread is not connected, if so it changes
-	the stats of the involved threads (former gets unconnected, target get connected) and
-	gives the filedescriptor to the target thread.
+	There is no obligation that a TCP session receive requests for the same session.
 
 	if the receiving thread is a static thread (one providing static contents only), the
 	process is the same except that upon success the former thread ends.
 
-	If the target thread is already connected, all thread shall send an error message
-	(thread already connected), and provide a force reconnection method. The return message
-	should contain thread unrelated URL and lead the session to be closed.
-
-	upon forced reconnection, the process is the same, except that the main thread reclaim
-	the used filedescriptor, closes it and assigns the new one to the target thread.
+	If request for a target session does not have the correct cookie, an error message
+	is reported (missing cookie) and lead to the main page (authentication, etc.).
 
 
 AUTHENTICATION
 
 	when the authentication should be performed :
-	at each new TCP session? (HTTP 1/0 => beurk)
-	have the use of session cookies to avoid asking new credentials?
-
-	this task is managed by the main thread.
+	- in absence of cookie
+	- if the requested session does not exist
+	- if the cookie is incorrect for the requested session
 
 
 ACTION HISTORY
 
-	an history of configuration actions must be hold by the thread to be able to provide
+        The browser
 	a "back" and "forth" from the HTML page, as this implementation breaks the one of
 	the browser.
 
 
 CLASSES
 
-	req_ans : pure virtual class that defines the interface of answers and requests (implemented by sessions and chooser objects)
+	thread : pure virtual class which objects may run in a particular thread. class listener and class
+	    session depends on this class
+
+	req_ans : pure virtual class that defines the interface of answers and requests
+	(implemented by sessions and chooser objects)
 
 	connexion : this class is a wrapper around socket filedescriptor to provide generic_file interface
 
-	session : this class provides object that store the status of a particular session, like options selected
-	    by the user current configuration status. When comes the time to call libdar, the object owns a thread
+	session : this class provides objects that store the status of a particular session, like options selected
+	    by the user current configuration status. This information is stored as tree or objects generating HTML code
+	    for which the session object is the root. When comes the time to call libdar, the object owns a thread
 	    that updates object's structure to be able to have progession information as well as being able to abort
 	    the operation in progress. session class is an implementation of req_ans.
 
@@ -257,36 +252,79 @@ CLASSES
 	    Prior to answer a request, the client must provide the appropriated cookie, the one used at session creation
 	    or obtained by a chooser object.
 
-	parser : this class provides threaded objects that parse requests from given connexion. The class holds a counter
-	       on the number of running parser (=connexions), if a maximum has been defined the constructor fails if the counter
-	       has reached this threshold.
-	       The parser object owns the connexion that it has been given by the listener object that it has been createed by,
-	       and when the connexion ends the parser thread also ends, the parser object is also destroyed.
-	       The parser, lookup the session object based on the requested URL
-	       and if found transmit the request to the found object. The answer provided by the session object is returned
-	       to the client. An parser may send request to different sessions, depending
-	       on the nature of the requests received from the connexion.
+	parser : (inherit from thread) this class provides threaded objects that parse requests from given connexion, only
+	    the HTTP protocol aspect is managed here, no HTML genereation is done heer. The class holds a counter
+	    on the number of running parser (=connexions), if a maximum has been defined the constructor fails if the
+	    counter has reached this threshold.
+	    The parser object owns the connexion that it has been given by the listener object that it has been createed by,
+	    and when the connexion ends the parser thread also ends, the parser object is also destroyed.
+	    The parser, lookup the session object based on the requested URL
+	    and if found transmit the request to the found object. The answer provided by the session object is returned
+	    to the client. An parser may send request to different sessions, depending
+	    on the nature of the requests received from the connexion.
 
-	       Some static content (like images, logo, or documentation) may be provided directly by the parser from a
-	       catalog of contents.
+	    Some static content (like images, logo, or documentation) may be provided directly by the parser from a
+	    catalog of contents.
 
-	       A parser object may receive a request that does not target a particular session. In that case the parser	authenticates
-	       the client and upon success, calls a chooser object instead of a session object.
+	    A parser object may receive a request that does not target a particular session. In that case the parser	authenticates
+	    the client and upon success, calls a chooser object instead of a session object.
 
 
-	listener : a listener object is bound to a port and eventually to an IP address, this is a threaded object
-		Its role is to wait for	incoming connexions and to create connexions objects and a parser object, giving it the connexion
-		the parser object being a threaded object managed all further actions independly of his listener parent
-		or from other listener. it may in future release use a derivated "connexion" class that provide
-		SSL encryption/decryption and authentification.
+	listener : (inherit from thread) a listener object is bound to a port and eventually to an IP address,
+            this is a threaded object
+	    Its role is to wait for incoming connexions and to create connexions objects and a parser object,
+	    giving it the connexion
+	    the parser object being a threaded object manages all further actions independly of his listener parent
+	    or from other listener. it may in future release use a derivated "connexion" class that provide
+	    SSL encryption/decryption and authentification. The listener class provide a mean to signal the end
+	    request to all its members (used by signal handler).
 
 	chooser : chooser is an implementation of req_ans
-		a chooser object does a lookup of the session table. If no session object owned by the authenticated user exist,
-		it manages for a new one to be created
-		and transmit the request to this newly object and send back the answer to it its caller (a parser). Then it dies, further
-		exchanges are done directly between the parser and the session object.
+	    a chooser object does a lookup of the session table. If no session object owned by the authenticated user exist,
+	    it manages for a new one to be created
+	    and transmit the request to this newly object and send back the answer to it its caller (a parser). Then it dies, further
+	    exchanges are done directly between the parser and the session object.
+	    if several session owned by the authenticated user exists, the chooser provides a list of them as answer to the request
+	    and dies.
 
-		if several session owned by the authenticated user exists, the chooser provides a list of them as answer to the request
-		and dies.
+
+	 entrepot <- ajouter des fonctionnalités de listing et parcours de répertoire
+
+HTML generating classes:
+	   the following classes provide the req_ans interface. The answer is always HTML formated.  The objects of
+	   these classes may user other objects and build their answer as a consolidation of used objects answers.
+
+	 class action: pure virtual class that inherit from class thread that implements communication with spawn a
+           thread running libdar and requests for statistics update and thread cancellation
+
+	   action_backup: inherit from class action: manages all options and arguments and answers requests to present and
+	   update them.
+
+	   action_restore
+
+	   action_isolate
+
+	   action_test
+
+	   action_diff
+
+	   action_merge
+
+OUTILS EVOLUES
+
+	   show_mask_dir(mask);
+
+
+
+HTML PRIMITIVES
+
+	   based on HTML forms they provide a mean to feed informations fiels from the user
+
+	   std::string set_string(const std::string & label, const std::string & preset);
+
+	   bool set_check(const std::string & label, bool preset);
+
+	   U_I set_radio(list<std::string> field, U_I preset);
+
 
 
