@@ -327,4 +327,24 @@ HTML PRIMITIVES
 	   U_I set_radio(list<std::string> field, U_I preset);
 
 
+LIBDAR CLASSES
+
+	web_interaction : inherits from libdar's user_interaction
+ 		the role is to implement the user interaction requested by libdar either for asking questions
+		to the user or to provide reporting on the operation under progress
+
+	due to the nature of HTTP, where no mean are available to initiate a transaction by the
+	server, this class has the role to buffer output pending for to built the next HTTP answer
+	and buffer pending requests to provide a mean to the user to answer it after the next request he will do.
+
+	Second point is the nature of the threads used. One tread is running libdar, while a second is
+	managing user interaction by mean of HTTP protocol (parser object/thread solliciating a session object)
+	First, no HTTP session may be active for a particular libdar job, leading the job to be suspended
+	if libdar need user's decision. Second even if a parser thread is actively associated with this libdar
+	job, the libdar thread must be suspended up the next HTTP request, the answer with libdar question in it
+	and the new request with the user's answer, (then the aswer with pre-libdar interaction output).
+
+	This is tiplically a mutex used as semaphore is necessary (a mutex not protecting a critical session,
+	but "up" by default, on which the libdar thread will be pending, and set to down by the HTTP thread, to
+	release the libdar thread when the answer will be provided).
 
