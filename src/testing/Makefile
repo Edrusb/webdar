@@ -5,7 +5,7 @@ CXXFLAGS=-ggdb  -I../webdar
 
 all: pthread_test
 clean:
-	rm -f *.o pthread_test
+	rm -f *.o pthread_test test_thread
 
 pthread_test: pthread_test.o
 
