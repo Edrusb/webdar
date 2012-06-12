@@ -23,7 +23,7 @@ thread::~thread()
 {
     kill();
     join();
-    (void)pthread_mutex_destroy(&field_control)
+    (void)pthread_mutex_destroy(&field_control);
 }
 
 void thread::run()
