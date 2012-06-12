@@ -16,41 +16,50 @@ thread::thread()
 	throw exception_thread(string("Error creating mutex: ") + strerror(errno));
     running = false;
     joignable = false;
+    cancellable = 0; // is cancellable at startup
 }
 
 thread::~thread()
 {
-    if(running)
-	kill();
-    if(joignable)
-	join();
-    if(pthread_mutex_destroy(&field_control) != 0)
-	throw WEBDAR_BUG;
+    kill();
+    join();
+    (void)pthread_mutex_destroy(&field_control)
 }
 
 void thread::run()
 {
-    if(pthread_mutex_lock(&field_control) != 0)
-	throw WEBDAR_BUG;
+    thread::primitive_suspend_cancellation_requests();
     try
     {
-	if(running)
-	    throw exception_thread("Cannot run thread, object already running in a sperated thread");
-	if(joignable)
-	    throw exception_thread("Previous thread has not been joined and possible returned exception deleted");
-	if(pthread_create(&tid, NULL, run_obj, this) != 0)
-	    throw exception_thread(string("Failed creating a new thread: ") + strerror(errno));
-	running = true;
-	joignable = true;
+	if(pthread_mutex_lock(&field_control) != 0)
+	    throw WEBDAR_BUG;
+	try
+	{
+	    if(running)
+		throw exception_thread("Cannot run thread, object already running in a sperated thread");
+	    if(joignable)
+		throw exception_thread("Previous thread has not been joined and possible returned exception deleted");
+	    cancellable = 0; // should not be needed, but does not hurt
+	    if(pthread_create(&tid, NULL, run_obj, this) != 0)
+		throw exception_thread(string("Failed creating a new thread: ") + strerror(errno));
+	    running = true;
+	    joignable = true;
+	}
+	catch(...)
+	{
+	    if(pthread_mutex_unlock(&field_control) != 0)
+		throw WEBDAR_BUG;
+	    throw;
+	}
+	if(pthread_mutex_unlock(&field_control) != 0)
+	    throw WEBDAR_BUG;
     }
     catch(...)
     {
-	if(pthread_mutex_unlock(&field_control) != 0)
-	    throw WEBDAR_BUG;
+	thread::primitive_resume_cancellation_requests();
 	throw;
     }
-    if(pthread_mutex_unlock(&field_control) != 0)
-	throw WEBDAR_BUG;
+    thread::primitive_resume_cancellation_requests();
 }
 
 bool thread::is_running(pthread_t & id) const
@@ -58,15 +67,25 @@ bool thread::is_running(pthread_t & id) const
     bool ret;
     pthread_mutex_t *mutex = const_cast<pthread_mutex_t *>(&field_control);
 
-    if(pthread_mutex_lock(mutex) != 0)
-	throw WEBDAR_BUG;
+    thread::primitive_suspend_cancellation_requests();
+    try
+    {
+	if(pthread_mutex_lock(mutex) != 0)
+	    throw WEBDAR_BUG;
 
-    ret = running;
-    if(running)
-	id = tid;
+	ret = running;
+	if(running)
+	    id = tid;
 
-    if(pthread_mutex_unlock(mutex) != 0)
-	throw WEBDAR_BUG;
+	if(pthread_mutex_unlock(mutex) != 0)
+	    throw WEBDAR_BUG;
+    }
+    catch(...)
+    {
+	thread::primitive_resume_cancellation_requests();
+	throw;
+    }
+    thread::primitive_resume_cancellation_requests();
 
     return ret;
 }
@@ -112,9 +131,26 @@ void thread::kill() const
 	if(ret != ESRCH && ret != 0)
 	    throw exception_thread(string("Failed killing thread: ") + strerror(errno));
 	*(const_cast<bool *>(&running)) = false;
-	join(); // necessary to manage pending exception if any
+	*(const_cast<bool *>(&joignable)) = false;
     }
 }
+
+void thread::suspend_cancellation_requests() const
+{
+    if(cancellable == 0)
+	thread::primitive_suspend_cancellation_requests();
+    ++(*(const_cast<unsigned int *>(&cancellable)));
+}
+
+void thread::resume_cancellation_requests() const
+{
+    if(cancellable == 0)
+	throw WEBDAR_BUG;
+    --(*(const_cast<unsigned int *>(&cancellable)));
+    if(cancellable == 0)
+	thread::primitive_resume_cancellation_requests();
+}
+
 
 void *thread::run_obj(void *obj)
 {
@@ -128,10 +164,12 @@ void *thread::run_obj(void *obj)
 
 	    // locking and unlocking object's mutex is a simple form of barrier
 	    // this way we start working only when the caller has exited run()
+	thread::primitive_suspend_cancellation_requests();
 	if(pthread_mutex_lock(&(tobj->field_control)) != 0)
 	    throw WEBDAR_BUG;
 	if(pthread_mutex_unlock(&(tobj->field_control)) != 0)
 	    throw WEBDAR_BUG;
+	thread::primitive_resume_cancellation_requests();
 
 	try
 	{
@@ -155,14 +193,28 @@ void *thread::run_obj(void *obj)
     {
 	ret = e.clone();
     }
-    catch(...)
-    {
-	ret = new WEBDAR_BUG;
-	if(ret == NULL)
-	    ret = new exception_memory();
-	    // if ret is still set to NULL because of a lack of memory
-	    // we cannot go further and must ignore the error
+    catch(...) // this statement is useless but explicitely states
+    {          // that some implementations of pthread use exception
+	throw; // for the thread cancellation mechanism, so we must
+	       // not interfeer with this and let unknown exception
+	       // to pass through transparently
     }
 
     return ret;
+}
+
+void thread::primitive_suspend_cancellation_requests()
+{
+    int previous_state;
+
+    if(pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &previous_state) != 0)
+	throw exception_thread("unable to set cancellation state to disable");
+}
+
+void thread::primitive_resume_cancellation_requests()
+{
+    int previous_state;
+
+    if(pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &previous_state) != 0)
+	throw exception_thread("unable to set cancellation state to disable");
 }
