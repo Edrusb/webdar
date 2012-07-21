@@ -52,4 +52,24 @@ protected:
     virtual exception_base *clone() const { return cloner<exception_thread>((void *)this); };
 };
 
+
+class exception_system : public exception_base
+{
+public:
+    exception_system(const std::string & context, int error_code) : exception_base(context + ": " + strerror(error_code)) {};
+
+protected:
+    virtual exception_base *clone() const { return cloner<exception_system>((void *)this); };
+};
+
+class exception_range : public exception_base
+{
+public:
+    exception_range(const std::string & msg): exception_base(msg) {};
+
+protected:
+    virtual exception_base *clone() const { return cloner<exception_range>((void *)this); };
+};
+
+
 extern void throw_as_most_derivated_class(exception_base *ebase);

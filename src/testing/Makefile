@@ -1,9 +1,9 @@
 CC=g++
-LDFLAGS=-lpthread -ggdb -ldar64
-CFLAGS=-ggdb -I../webdar
-CXXFLAGS=-ggdb  -I../webdar
+LDFLAGS=-lpthread -ggdb -ldar64 -L$(HOME)/usr/lib
+CFLAGS=-ggdb -I../webdar -I$(HOME)/usr/include
+CXXFLAGS=-ggdb  -I../webdar -I$(HOME)/usr/include
 
-all: pthread_test test_thread
+All: pthread_test test_thread
 clean:
 	rm -f *.o pthread_test test_thread
 

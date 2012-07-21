@@ -240,7 +240,7 @@ CLASSES
 	connexion : this class is a wrapper around socket filedescriptor to provide generic_file interface
 
 	session : this class provides objects that store the status of a particular session, like options selected
-	    by the user current configuration status. This information is stored as tree or objects generating HTML code
+	    by the user current configuration status. This information is stored as tree of objects generating HTML code
 	    for which the session object is the root. When comes the time to call libdar, the object owns a thread
 	    that updates object's structure to be able to have progession information as well as being able to abort
 	    the operation in progress. session class is an implementation of req_ans.

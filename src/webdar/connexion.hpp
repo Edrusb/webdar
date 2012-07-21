@@ -17,7 +17,10 @@ public:
     };
 
 	/// create a new object based on a existing socket filedescriptor
-    connexion(int fd);
+    connexion(int fd, const  std::string & peerip, const std::string & peerport);
+
+	/// forbidding copy constuctor
+    connexion(const connexion & ref): generic_file(fg_read_only) { throw WEBDAR_BUG; };
 
 	/// destructor is virtual to permit further evolution by mean of inherited classes
     virtual ~connexion();
@@ -33,6 +36,7 @@ protected:
 
 
 private:
-    int filedesc; // socket file descriptor
-
+    int filedesc;     //< socket file descriptor
+    std::string ip;   //< IP of the peer host
+    std::string port; //< port of the peer port
 };
