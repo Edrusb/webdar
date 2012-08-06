@@ -18,7 +18,6 @@ static struct in_addr string_to_network_IPv4(const std::string & ip);
 static struct in6_addr string_to_network_IPv6(const std::string & ip);
 static string network_IPv4_to_string(const struct in_addr & ip);
 static string network_IPv6_to_string(const struct in6_addr & ip);
-static string port_to_string(const ...); // < a FINIR
 
 listener::listener(U_I port)
 {
@@ -110,7 +109,8 @@ virtual void listener::inherited_run()
     socklen_t addrlen_ref = 0;
     struct sockadd_in sin;
     struct sockadd_in6 sin6;
-    string ip, port;
+    string ip;
+    U_I port;
     connexion *con = NULL;
 
     switch(famille)
@@ -181,11 +181,12 @@ virtual void listener::inherited_run()
 	{
 	case AF_INET6:
 	    ip = network_IPv6_to_string(sin6.sin6_addr);
-	    port << ntoh(sin6.sin6_port);
+	    port = ntohs(sin6.sin6_port);
 	    break;
 	case AF_INET:
 	    ip = network_IPv4_to_string(sin.sin_addr);
-	    port = << ntoh(sin.sin_port);
+	    port = ntohs(sin.sin_port);
+	    break;
 	default:
 	    throw WEBDAR_BUG:
 	}
@@ -246,4 +247,35 @@ static struct in6_addr string_to_network_IPv6(const std::string & ip)
 
     return ret;
 }
+
+static string network_IPv4_to_string(const struct in_addr & ip)
+{
+    string ret;
+    const int BUFSZ = 20;
+    char buffer[BUFSZ];
+    char *ptr = inet_ntop(AF_INET, &ip, buffer, BUFSZ);
+
+    if(ptr == NULL)
+	throw exception_system("error converting IPv4 address to its textual representation", errno);
+    else
+	ret = *ptr;
+
+    return ret;
+}
+
+static string network_IPv6_to_string(const struct in6_addr & ip)
+{
+    string ret;
+    const int BUFSZ = 50;
+    char buffer[BUFSZ];
+    char * inet_ntop(AF_INET6, &ip, buffer, BUFSZ);
+
+    if(ptr == NULL)
+	throw exception_system("error converting IPv4 address to its textual representation", errno);
+    else
+	ret = *ptr;
+
+    return ret;
+}
+
 

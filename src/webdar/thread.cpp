@@ -13,7 +13,7 @@ thread::thread()
 {
     int ret = pthread_mutex_init(&field_control, NULL);
     if(ret != 0)
-	throw exception_thread(string("Error creating mutex: ") + strerror(errno));
+	throw exception_system("Error creating mutex: ", errno);
     running = false;
     joignable = false;
     cancellable = 0; // is cancellable at startup
@@ -38,10 +38,10 @@ void thread::run()
 	    if(running)
 		throw exception_thread("Cannot run thread, object already running in a sperated thread");
 	    if(joignable)
-		throw exception_thread("Previous thread has not been joined and possible returned exception deleted");
+		throw exception_thread("Previous thread has not been joined and possibly returned exception is deleted");
 	    cancellable = 0; // should not be needed, but does not hurt
 	    if(pthread_create(&tid, NULL, run_obj, this) != 0)
-		throw exception_thread(string("Failed creating a new thread: ") + strerror(errno));
+		throw exception_system("Failed creating a new thread: ",errno);
 	    running = true;
 	    joignable = true;
 	}
@@ -101,7 +101,7 @@ void thread::join() const
 
 	*(const_cast<bool *>(&joignable)) = false;
 	if(ret != ESRCH && ret != 0)
-	    throw exception_thread(string("Failed joining thread: ") + strerror(errno));
+	    throw exception_system("Failed joining thread: ", errno);
 	if(returned_exception != NULL)
 	{
 	    exception_base *ebase = reinterpret_cast<exception_base *>(returned_exception);
@@ -129,7 +129,7 @@ void thread::kill() const
     {
 	int ret = pthread_cancel(dyn_tid);
 	if(ret != ESRCH && ret != 0)
-	    throw exception_thread(string("Failed killing thread: ") + strerror(errno));
+	    throw exception_system("Failed killing thread: ", errno);
 	*(const_cast<bool *>(&running)) = false;
 	*(const_cast<bool *>(&joignable)) = false;
     }

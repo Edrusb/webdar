@@ -1,5 +1,9 @@
 #include <string>
 #include <libdar/tools.hpp>
+#include <string.h>
+
+
+    /// pure virtual class parent of all webdar exceptions
 
 class exception_base
 {
@@ -20,6 +24,8 @@ class exception_memory;
 
 template<class T> exception_base *cloner(void * const ptr) { exception_base *ret = new T(*(reinterpret_cast<T const *>(ptr))); if(ret == NULL) throw exception_memory(); return ret; };
 
+    ///  exception used to report memory allocation failures
+
 class exception_memory : public exception_base
 {
 public:
@@ -29,6 +35,7 @@ protected:
     virtual exception_base *clone() const { return cloner<exception_memory>((void *)this); };
 };
 
+    /// exception used to report webdar internal bugs
 
 #define WEBDAR_BUG exception_bug(__FILE__, __LINE__)
 
@@ -42,6 +49,7 @@ protected:
 };
 
 
+    /// exception used to report error met when manipulating threads
 
 class exception_thread : public exception_base
 {
@@ -52,15 +60,18 @@ protected:
     virtual exception_base *clone() const { return cloner<exception_thread>((void *)this); };
 };
 
+    /// exception used to report operating system errors
 
 class exception_system : public exception_base
 {
 public:
-    exception_system(const std::string & context, int error_code) : exception_base(context + ": " + strerror(error_code)) {};
+     exception_system(const std::string & context, int error_code) : exception_base(context + ": " + strerror(error_code)) {};
 
 protected:
     virtual exception_base *clone() const { return cloner<exception_system>((void *)this); };
 };
+
+    /// exception used to report out or range value or argument
 
 class exception_range : public exception_base
 {
@@ -69,6 +80,18 @@ public:
 
 protected:
     virtual exception_base *clone() const { return cloner<exception_range>((void *)this); };
+};
+
+
+    /// exception used to report an non-implemented feature
+
+class exception_feature : public exception_base
+{
+public:
+    exception_feature(const std::string & feature_name): exception_feature(string("Unimplemented feature: ") + feature_name) {};
+
+protected:
+    viretual exception_feature *clone() const { return cloner<exception_feature>((void *)this); };
 };
 
 
