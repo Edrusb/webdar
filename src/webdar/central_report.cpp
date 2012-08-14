@@ -94,7 +94,7 @@ central_report_syslog::~central_report_syslog()
 
 void central_report_syslog::inherited_report(priority_t priority, const std::string & message)
 {
-    std::string tmp = string("[") + label + "][" + tools_convert_to_string(pthread_self()) +"]  " + message;
+    std::string tmp = string("[") + label + "][" + webdar_tools_convert_to_string(pthread_self()) +"]  " + message;
     syslog(priority2syslogprio(priority), tmp.c_str());
 }
 
