@@ -1,8 +1,9 @@
 #include "connexion.hpp"
 
 using namespace std;
+using namespace libdar;
 
-connexion::connexion(int fd, const string & peerip, U_I peerport) : generic_file(gf_read_write)
+connexion::connexion(int fd, const string & peerip, U_I peerport)
 {
     etat = connected;
     filedesc = fd;
@@ -10,22 +11,22 @@ connexion::connexion(int fd, const string & peerip, U_I peerport) : generic_file
     port = peerport;
 }
 
-virtual connexion::~connexion()
+connexion::~connexion()
 {
     if(etat == connected)
 	close(filedesc);
 }
 
-U_I inherited_read(char *a, U_I size)
+U_I connexion::read(char *a, U_I size)
 {
-// need to know when to stop reading. or change the paradigm of read (EOF) or do not inherit from generic_file
+	// a implementer
 
 
 }
 
-void inherited_write(const char *a, U_I size)
+void connexion::write(const char *a, U_I size)
 {
-
+	// a implementer
 
 }
 

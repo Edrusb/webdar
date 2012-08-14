@@ -1,9 +1,17 @@
-#include <iostream>
+extern "C"
+{
 #include <signal.h>
+}
+
+#include <iostream>
+#include <vector>
+
 #include <libdar/libdar.hpp>
 
 #include "exceptions.hpp"
 #include "central_report.hpp"
+#include "listener.hpp"
+
 
 #define WEBDAR_EXIT_OK 0
 #define WEBDAR_EXIT_SYNTAX 1
@@ -12,6 +20,9 @@
 #define WEBDAR_EXIT_SIGT1 4
 #define WEBDAR_EXIT_SIGT2 5
 #define WEBDAR_EXIT_RESOURCE 6
+
+using namespace libdar;
+using namespace std;
 
 struct interface_port
 {
@@ -82,9 +93,9 @@ int main(int argc, char *argv[], char **env)
 		while(it != ecoute.end())
 		{
 		    if(it->interface == "")
-			tmp = new listener(it->port);
+			tmp = new listener(report, it->port);
 		    else
-			tmp = new listener(it->interface, it->port);
+			tmp = new listener(report, it->interface, it->port);
 		    if(tmp == NULL)
 			throw exception_memory();
 		    else
@@ -99,7 +110,7 @@ int main(int argc, char *argv[], char **env)
 		    /////////////////////////////////////////////////
 		    // looping while not all thread have ended
 
-		while(!taches.is_empty())
+		while(!taches.empty())
 		{
 		    if(taches.back() == NULL)
 			taches.pop_back();
@@ -120,7 +131,7 @@ int main(int argc, char *argv[], char **env)
 
 		while(ta != taches.end())
 		{
-		    if(ta != NULL)
+		    if(*ta != NULL)
 		    {
 			delete *ta;
 			*ta = NULL;
@@ -168,14 +179,14 @@ int main(int argc, char *argv[], char **env)
 	cerr << "Out of range value or parameter: " << e.get_message() << endl;
 	ret = WEBDAR_EXIT_WEBDAR_BUG; // if this exception is not caught at this level, this is a bug
     }
-    catch(execption_feautr & e)
+    catch(exception_feature & e)
     {
 	cerr << e.get_message() << endl;
 	    // ret is unchanged
     }
     catch(exception_base & e)
     {
-	cerr << "Unknown and unhandled webdar exception: " << endl << e.get_message(); << endl;
+	cerr << "Unknown and unhandled webdar exception: " << endl << e.get_message() << endl;
 	ret = WEBDAR_EXIT_WEBDAR_BUG;
     }
     catch(libdar::Ebug & e)
@@ -186,10 +197,16 @@ int main(int argc, char *argv[], char **env)
     }
     catch(...)
     {
-	cerr << "Unknown non webdar exception met: " << typeid(e) << endl;
+	cerr << "Unknown non webdar exception met" << endl;
 	ret = WEBDAR_EXIT_WEBDAR_BUG;
     }
 
     return ret;
 }
 
+static void parse_cmd(int argc, char *argv[],
+		      vector<interface_port> & ecoute, bool & verbose, bool & background, int & facility)
+{
+    throw exception_feature("command line parsing");
+
+}

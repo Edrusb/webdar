@@ -1,3 +1,11 @@
+#ifndef CONNEXION_HPP
+#define CONNEXION_HPP
+
+#include <string>
+
+#include <libdar/libdar.hpp>
+
+#include "exceptions.hpp"
 
     /// class connexion - holds TCP sessions from clients
 
@@ -14,7 +22,7 @@ public:
     };
 
 	/// create a new object based on a existing socket filedescriptor
-    connexion(int fd, const std::string & peerip, U_I peerport);
+    connexion(int fd, const std::string & peerip, libdar::U_I peerport);
 
 	/// forbidding copy constuctor and assignment operator
     connexion(const connexion & ref) { throw WEBDAR_BUG; };
@@ -24,8 +32,8 @@ public:
     virtual ~connexion();
 
     status get_status() const { return etat; };
-    const string & get_ip() const { return ip; };
-    U_I get_port() const { return port; };
+    const std::string & get_ip() const { return ip; };
+    libdar::U_I get_port() const { return port; };
 
 	/// read data from the socket
 
@@ -36,17 +44,19 @@ public:
 	/// \note this call may block if no data is available for reading
 	/// \note this call must not block if some data is available for reading even
 	/// if its amount is less than 'size'
-    virtual U_I read(char *a, U_I size);
+    virtual libdar::U_I read(char *a, libdar::U_I size);
 
 	/// write data to the socket
 
 	/// param[in] a data to write
 	/// param[in] size amount of byte to write
-    virtual void write(const char *a, U_I size);
+    virtual void write(const char *a, libdar::U_I size);
 
 private:
     status etat;      //< connexion status
     int filedesc;     //< socket file descriptor
     std::string ip;   //< IP of the peer host
-    U_I port;         //< port of the peer port
+    libdar::U_I port; //< port of the peer port
 };
+
+#endif

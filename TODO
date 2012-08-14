@@ -1,8 +1,12 @@
-- faire que les listener objects utilisent un pointeur sur central object pour logger les infos
-- faire des parser bouchon pour pouvoir compiler et tester cette partie (webdar + central_report + listener)
++ faire que les listener objects utilisent un pointeur sur central object pour logger les infos
++ faire des parser bouchon pour pouvoir compiler et tester cette partie (webdar + central_report + listener)
+- revoir les entetes HPP avec #ifndef
+- revoir l'ordre des include
+- ne plus se baser sur libdar::U_I virer autant que possible les reference et ne pas inclure de using namespace libdar
 - ajouter la gestion des signaux au sein des threads
-- prendre en compte les signaux qui peuvent etre retournes par une socket
 
+- prendre en compte les signaux qui peuvent etre retournes par une socket
+- revoir toutes les allocations dynamiques en "new (nothrow)"
 
 
 - ajouter des #ifdef dans les includes

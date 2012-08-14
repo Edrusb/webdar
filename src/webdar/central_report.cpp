@@ -1,14 +1,17 @@
-
+#include "webdar_tools.hpp"
 #include "central_report.hpp"
+#include "exceptions.hpp"
 
 static const char *priority2string(priority_t prio);
 static int priority2syslogprio(priority_t prio);
+
+using namespace std;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 pthread_mutex_t central_report::access = PTHREAD_MUTEX_INITIALIZER;
 
-void central_report::report(pthread_t tid, priority_t priority, const std::string & message)
+void central_report::report(priority_t priority, const std::string & message)
 {
     if(priority > min)
 	return; // not logging "below" priority min
@@ -18,7 +21,7 @@ void central_report::report(pthread_t tid, priority_t priority, const std::strin
 
     try
     {
-	inherited_report(tid, priority, message);
+	inherited_report(priority, message);
     }
     catch(...)
     {
@@ -32,14 +35,14 @@ void central_report::report(pthread_t tid, priority_t priority, const std::strin
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void central_report_stdout::inherited_report(pthread_t tid, priority_t priority, const std::string & message)
+void central_report_stdout::inherited_report(priority_t priority, const std::string & message)
 {
-    cout << "[thead " << tid << "][" << priority2string(priority) << "]   " << message << endl;
+    cout << "[thead " << pthread_self() << "][" << priority2string(priority) << "]   " << message << endl;
 }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int central_report_syslog::num_obj = 0;
+unsigned int central_report_syslog::num_obj = 0;
 pthread_mutex_t central_report_syslog::num_obj_mod = PTHREAD_MUTEX_INITIALIZER;
 
 central_report_syslog::central_report_syslog(priority_t min_logged, const std::string & fixed_label, int facility): central_report(min_logged)
@@ -89,9 +92,9 @@ central_report_syslog::~central_report_syslog()
 	throw WEBDAR_BUG;
 }
 
-void central_report_syslog::inherited_report(pthread_t tid, priority_t priority, const std::string & message)
+void central_report_syslog::inherited_report(priority_t priority, const std::string & message)
 {
-    std::string tmp = string("[") + label + "] " + message;
+    std::string tmp = string("[") + label + "][" + tools_convert_to_string(pthread_self()) +"]  " + message;
     syslog(priority2syslogprio(priority), tmp.c_str());
 }
 

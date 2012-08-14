@@ -1,6 +1,16 @@
-#include <string>
-#include <libdar/tools.hpp>
+#ifndef EXCEPTIONS_HPP
+#define EXCEPTIONS_HPP
+
+
+extern "C"
+{
 #include <string.h>
+}
+
+#include <string>
+
+#include <libdar/libdar.hpp>
+
 
 
     /// pure virtual class parent of all webdar exceptions
@@ -42,7 +52,7 @@ protected:
 class exception_bug : public exception_base
 {
 public:
-    exception_bug(const std::string & file, int line) : exception_base(libdar::tools_printf(gettext("WEBDAR: BUG MET IN File %S line %d"), &file, line)) {};
+    exception_bug(const std::string & file, int line) : exception_base(libdar::tools_printf("WEBDAR: BUG MET IN File %S line %d", &file, line)) {};
 
 protected:
     virtual exception_base *clone() const { return cloner<exception_bug>((void *)this); };
@@ -88,11 +98,14 @@ protected:
 class exception_feature : public exception_base
 {
 public:
-    exception_feature(const std::string & feature_name): exception_feature(string("Unimplemented feature: ") + feature_name) {};
+    exception_feature(const std::string & feature_name): exception_base(std::string("Unimplemented feature: ") + feature_name) {};
 
 protected:
-    viretual exception_feature *clone() const { return cloner<exception_feature>((void *)this); };
+    virtual exception_base *clone() const { return cloner<exception_feature>((void *)this); };
 };
 
 
 extern void throw_as_most_derivated_class(exception_base *ebase);
+
+#endif
+
