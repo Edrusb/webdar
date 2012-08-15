@@ -8,6 +8,7 @@ extern "C"
     // C++ system header files
 #include <iostream>
 #include <vector>
+#include <new>
 
 
     // libraries header files
@@ -18,7 +19,7 @@ extern "C"
 #include "exceptions.hpp"
 #include "central_report.hpp"
 #include "listener.hpp"
-
+#include "parser.hpp"
 
 #define WEBDAR_EXIT_OK 0
 #define WEBDAR_EXIT_SYNTAX 1
@@ -73,11 +74,11 @@ int main(int argc, char *argv[], char **env)
 
 	if(background)
 	{
-	    report = new central_report_syslog(min, "webdar", facility);
+	    report = new (nothrow) central_report_syslog(min, "webdar", facility);
 	    throw exception_feature("background as a daemon");
 	}
 	else
-	    report = new central_report_stdout(min);
+	    report = new (nothrow) central_report_stdout(min);
 
 	if(report == NULL)
 	    throw exception_memory();
@@ -91,6 +92,8 @@ int main(int argc, char *argv[], char **env)
 	    listener *tmp = NULL;
 	    pthread_t unused_arg;
 
+	    parser::set_max_parser(10);
+
 	    try
 	    {
 
@@ -100,9 +103,9 @@ int main(int argc, char *argv[], char **env)
 		while(it != ecoute.end())
 		{
 		    if(it->interface == "")
-			tmp = new listener(report, it->port);
+			tmp = new (nothrow) listener(report, it->port);
 		    else
-			tmp = new listener(report, it->interface, it->port);
+			tmp = new (nothrow) listener(report, it->interface, it->port);
 		    if(tmp == NULL)
 			throw exception_memory();
 		    else
@@ -130,6 +133,11 @@ int main(int argc, char *argv[], char **env)
 			else
 			    taches.back()->join();
 		}
+
+		    /////////////////////////////////////////////////
+		    // killing remaining parser threads
+
+		parser::kill_all_parsers();
 
 	    }
 	    catch(...)

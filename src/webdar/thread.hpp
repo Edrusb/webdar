@@ -31,6 +31,7 @@ public:
 	/// \return true if the object is running under a separated thread
 	/// if false is returned, the argument is not set
     bool is_running(pthread_t & id) const;
+    bool is_running() const { pthread_t id; return is_running(id); };
 
 	/// the caller will be suspended until the current object's thread ends
     void join() const;

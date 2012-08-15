@@ -11,6 +11,9 @@ extern "C"
 #include <errno.h>
 }
 
+    // C++ system header files
+#include <new>
+
     // webdar headers
 #include "listener.hpp"
 #include "connexion.hpp"
@@ -207,7 +210,7 @@ void listener::inherited_run()
 	}
 
 	rep->report(debug, "listener object: creating a new \"connexion\" object");
-	con = new connexion(ret, ip, port);
+	con = new (nothrow) connexion(ret, ip, port);
 	if(con == NULL)
 	    throw exception_memory();
 	else
@@ -215,8 +218,10 @@ void listener::inherited_run()
 	    try
 	    {
 		rep->report(debug, "listener object: spawning in a separated thread the newly created \"connexion\" object");
-		parser::run_new_parser(con);
-		con = NULL;
+		if(!parser::run_new_parser(rep, con))
+		    delete con;
+		else // object now managed by the new parser object
+		    con = NULL;
 	    }
 	    catch(...)
 	    {

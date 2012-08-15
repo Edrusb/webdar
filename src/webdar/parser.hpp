@@ -3,29 +3,36 @@
 
     // webdar headers
 #include "connexion.hpp"
+#include "thread.hpp"
+#include "central_report.hpp"
 
-class parser
+#include <list>
+
+class parser: public thread
 {
 public:
+	// constructor & Destructor are intentionally set as private methods
 
-	/// constructor and destructor are made private intentionnaly
-
-    static void run_new_parser(connexion *source);
+    static bool run_new_parser(central_report *log, connexion *source);
     static void set_max_parser(unsigned int val) { max_parser = val; };
+    static void kill_all_parsers();
+
+protected:
+    void inherited_run();
 
 private:
-    parser(connexion *source);
-    ~parser(); //< destroy the connexion object
-    void run(); //< parsing loop
+    parser(central_report *log, connexion *source);
+    parser(const parser & ref) { throw WEBDAR_BUG; };
+    const parser & operator = (const parser & ref) { throw WEBDAR_BUG; };
+    ~parser();
 
-    connexion *src;
+    connexion *src;      //< object owned by the parser
+    central_report *rep; //< just a pointer to an existing object, must not be deleted by "this"
 
 	/// static fields
-
-    static bool initialized; //< if not initialized, run_new_parser or set_max_parser set counter to zero (and max_parser to zero (no limit) or "val"), also initialize the mutex and lock it. Once locked, if initialized has became true, this means a race condition occured, esle set it to true (the order of fields initialization is to be review in more details)
-    static pthread_mutex_t lock_counter;
-    static libdar::U_I counter;
-    static libdar::U_I max_parser;
+    static pthread_mutex_t lock_counter;  //< manages access to all static fields
+    static unsigned int max_parser;       //< max allowed number of concurrent thread
+    static std::list<parser *> instances; //< list of existing parser objects
 };
 
 #endif

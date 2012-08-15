@@ -3,12 +3,14 @@
 + revoir les entetes HPP avec #ifndef
 + revoir l'ordre des include
 + ne plus se baser sur libdar::U_I virer autant que possible les reference et ne pas inclure de using namespace libdar
+- implementer connexion::read & write
+- tester l'implementation actuelle de parser (hello word)
+
+- finir l'implementation de la class parser pour la gestion du protocole HTTP (requetes / cookies & Co).
 - ajouter la gestion des signaux au sein des threads
-
 - prendre en compte les signaux qui peuvent etre retournes par une socket
+
 - revoir toutes les allocations dynamiques en "new (nothrow)"
-
-
 - ajouter des #ifdef dans les includes
 - ajouter la licence en CLI -L, entetes des fichiers avec GPLv3
 - portabilite avec automake / autoconf

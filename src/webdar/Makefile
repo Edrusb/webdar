@@ -1,6 +1,6 @@
-CFLAGS=-ggdb
-CXXFLAGS=-ggdb
-LDFLAGS=-ggdb -lstdc++ -ldar64
+CFLAGS=-ggdb -pthread
+CXXFLAGS=-ggdb -pthread
+LDFLAGS=-ggdb -lstdc++ -ldar64 -pthread
 
 all: webdar
 

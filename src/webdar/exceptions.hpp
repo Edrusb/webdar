@@ -9,6 +9,7 @@ extern "C"
 
     // C++ system header files
 #include <string>
+#include <new>
 
     // libraries header files
 #include <libdar/libdar.hpp>
@@ -33,7 +34,7 @@ private:
 
 class exception_memory;
 
-template<class T> exception_base *cloner(void * const ptr) { exception_base *ret = new T(*(reinterpret_cast<T const *>(ptr))); if(ret == NULL) throw exception_memory(); return ret; };
+template<class T> exception_base *cloner(void * const ptr) { exception_base *ret = new (std::nothrow) T(*(reinterpret_cast<T const *>(ptr))); if(ret == NULL) throw exception_memory(); return ret; };
 
     ///  exception used to report memory allocation failures
 
