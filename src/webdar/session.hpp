@@ -1,12 +1,16 @@
 #ifndef SESSION_HPP
 #define SESSION_HPP
 
+    // C system header files
 extern "C"
 {
 #include <pthread.h>
 }
 
+    // C++ system header files
 #include <list>
+
+    // webdar headers
 #include "connexion.hpp"
 
     /// class session - holds information about a current user session

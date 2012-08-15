@@ -1,9 +1,12 @@
+
+    // C system header files
 extern "C"
 {
 #include <errno.h>
 #include <string.h>
 }
 
+    // webdar headers
 #include "exceptions.hpp"
 #include "thread.hpp"
 

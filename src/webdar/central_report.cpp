@@ -1,6 +1,10 @@
+
+    // webdar headers
+
 #include "webdar_tools.hpp"
-#include "central_report.hpp"
 #include "exceptions.hpp"
+    //
+#include "central_report.hpp"
 
 static const char *priority2string(priority_t prio);
 static int priority2syslogprio(priority_t prio);

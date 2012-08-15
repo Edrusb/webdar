@@ -1,14 +1,15 @@
 #ifndef CENTRAL_REPORT_HPP
 #define CENTRAL_REPORT_HPP
 
+    //  C system header files
 extern "C"
 {
 #include <syslog.h>
 #include <pthread.h>
 }
 
+    // C++ system header files
 #include <string>
-
 
 
     /// means by which webdar event get reported either to stdout or to syslog

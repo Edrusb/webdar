@@ -1,9 +1,11 @@
+
+    // webdar headers
+
 #include "connexion.hpp"
 
 using namespace std;
-using namespace libdar;
 
-connexion::connexion(int fd, const string & peerip, U_I peerport)
+connexion::connexion(int fd, const string & peerip, unsigned int peerport)
 {
     etat = connected;
     filedesc = fd;
@@ -17,14 +19,14 @@ connexion::~connexion()
 	close(filedesc);
 }
 
-U_I connexion::read(char *a, U_I size)
+unsigned int connexion::read(char *a, unsigned int size)
 {
 	// a implementer
 
 
 }
 
-void connexion::write(const char *a, U_I size)
+void connexion::write(const char *a, unsigned int size)
 {
 	// a implementer
 

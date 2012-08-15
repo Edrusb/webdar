@@ -1,8 +1,7 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
-#include <libdar/libdar.hpp>
-
+    // webdar headers
 #include "connexion.hpp"
 
 class parser
@@ -12,7 +11,7 @@ public:
 	/// constructor and destructor are made private intentionnaly
 
     static void run_new_parser(connexion *source);
-    static void set_max_parser(libdar::U_I val) { max_parser = val; };
+    static void set_max_parser(unsigned int val) { max_parser = val; };
 
 private:
     parser(connexion *source);

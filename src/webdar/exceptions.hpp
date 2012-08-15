@@ -1,16 +1,17 @@
 #ifndef EXCEPTIONS_HPP
 #define EXCEPTIONS_HPP
 
-
+    // C system header files
 extern "C"
 {
 #include <string.h>
 }
 
+    // C++ system header files
 #include <string>
 
+    // libraries header files
 #include <libdar/libdar.hpp>
-
 
 
     /// pure virtual class parent of all webdar exceptions

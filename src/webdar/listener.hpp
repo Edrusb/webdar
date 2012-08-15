@@ -1,8 +1,7 @@
 #ifndef LISTENER_HPP
 #define LISTENER_HPP
 
-#include <libdar/libdar.hpp>
-
+    // webdar headers
 #include "central_report.hpp"
 #include "thread.hpp"
 #include "exceptions.hpp"
@@ -18,8 +17,11 @@
 class listener : public thread
 {
 public:
-    listener(central_report *log, libdar::U_I port);   //< listen on localhost IPv4 or IPv6
-    listener(central_report *log, const std::string & ip, libdar::U_I port); //< listen on the specified IPv4/v6 interface
+    listener(central_report *log,  //< where to send reports
+	     unsigned int port);   //< listen on localhost IPv4 or IPv6
+    listener(central_report *log,    //< where to send reports
+	     const std::string & ip, //< interface to listen on
+	     unsigned int port);     //< port to listen on
     listener(const listener & ref) { throw WEBDAR_BUG; }; //< forbidding copy construction
     const listener & operator = (const listener & ref) { throw WEBDAR_BUG; }; //< forbidding assignment
 
@@ -35,8 +37,9 @@ private:
     int famille;         //< domain familly of the socket
 
     void set_sockfd(int domain);
-    void init(central_report *log, const std::string & ip,
-	      libdar::U_I port);
+    void init(central_report *log,
+	      const std::string & ip,
+	      unsigned int port);
 };
 
 

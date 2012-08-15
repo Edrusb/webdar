@@ -1,12 +1,17 @@
 #ifndef THREAD_HPP
 #define THREAD_HPP
 
+    // C system header files
+extern "C"
+{
+#include <pthread.h>
+}
+
 // this is inspired from http://blog.emptycrate.com/node/270 But with the difference
 // that thread managment is done in its own pure virtual class and arbitrary
 // threaded work is done in inherited threads. Also has been added exception transmission
 // support from sub threaded back to parent thread.
 
-#include <pthread.h>
 
 class thread
 {

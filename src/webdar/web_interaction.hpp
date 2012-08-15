@@ -1,12 +1,10 @@
 #ifndef WEB_INTERACTION_HPP
 #define WEB_INTERACTION_HPP
 
-#include <libdar/user_interaction.hpp>
-
 class web_interaction : public user_interaction, public req_ans
 {
 public:
-    web_interaction(U_I num_line_buffer); //< max number of line of output to buffer
+    web_interaction(unsigned int num_line_buffer); //< max number of line of output to buffer
     ~web_interaction();
 
 	// inherited from user_interaction
@@ -37,7 +35,7 @@ private:
     pthread_mutex_t pending_libdar; //< used to suspend libdar thread, waiting for user answer
     pthread_mutex_t output_buffer_lock; //< exclusive access to the output buffer
     std::deque<std::string> output_buffer; //< list of line to display
-    U_I index_of_last_input; //< gives in output_buffer the number of new lines of output (or the offset of output already returned to the user)
+    unsigned int index_of_last_input; //< gives in output_buffer the number of new lines of output (or the offset of output already returned to the user)
 
 };
 

@@ -1,13 +1,20 @@
+    // C system header files
 extern "C"
 {
 #include <signal.h>
 }
 
+
+    // C++ system header files
 #include <iostream>
 #include <vector>
 
+
+    // libraries header files
 #include <libdar/libdar.hpp>
 
+
+    // webdar headers
 #include "exceptions.hpp"
 #include "central_report.hpp"
 #include "listener.hpp"

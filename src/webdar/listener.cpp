@@ -1,4 +1,4 @@
-
+    // C system header files
 extern "C"
 {
 #include <sys/types.h>
@@ -11,6 +11,7 @@ extern "C"
 #include <errno.h>
 }
 
+    // webdar headers
 #include "listener.hpp"
 #include "connexion.hpp"
 #include "parser.hpp"
@@ -23,7 +24,7 @@ static struct in6_addr string_to_network_IPv6(const std::string & ip);
 static string network_IPv4_to_string(const struct in_addr & ip);
 static string network_IPv6_to_string(const struct in6_addr & ip);
 
-listener::listener(central_report *log, libdar::U_I port)
+listener::listener(central_report *log, unsigned int port)
 {
     try
     {
@@ -36,12 +37,12 @@ listener::listener(central_report *log, libdar::U_I port)
     }
 }
 
-listener::listener(central_report *log, const std::string & ip, libdar::U_I port)
+listener::listener(central_report *log, const std::string & ip, unsigned int port)
 {
     init(log, ip, port);
 }
 
-void listener::init(central_report *log, const std::string & ip, libdar::U_I port)
+void listener::init(central_report *log, const std::string & ip, unsigned int port)
 {
     int tmp = 0;
 
@@ -122,7 +123,7 @@ void listener::inherited_run()
     struct sockaddr_in sin;
     struct sockaddr_in6 sin6;
     string ip;
-    libdar::U_I port;
+    unsigned int port;
     connexion *con = NULL;
 
     rep->report(debug, "listener object: started in its own thread");

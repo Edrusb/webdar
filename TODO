@@ -1,8 +1,8 @@
 + faire que les listener objects utilisent un pointeur sur central object pour logger les infos
 + faire des parser bouchon pour pouvoir compiler et tester cette partie (webdar + central_report + listener)
-- revoir les entetes HPP avec #ifndef
-- revoir l'ordre des include
-- ne plus se baser sur libdar::U_I virer autant que possible les reference et ne pas inclure de using namespace libdar
++ revoir les entetes HPP avec #ifndef
++ revoir l'ordre des include
++ ne plus se baser sur libdar::U_I virer autant que possible les reference et ne pas inclure de using namespace libdar
 - ajouter la gestion des signaux au sein des threads
 
 - prendre en compte les signaux qui peuvent etre retournes par une socket
@@ -10,5 +10,6 @@
 
 
 - ajouter des #ifdef dans les includes
-- ajouter autoconf, automake, gettext
 - ajouter la licence en CLI -L, entetes des fichiers avec GPLv3
+- portabilite avec automake / autoconf
+- internationalisation avec gettext
