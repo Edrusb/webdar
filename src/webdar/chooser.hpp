@@ -1,3 +1,6 @@
+#ifndef CHOOSER_HPP
+#define CHOOSER_HPP
+
     /// class chooser propose choice to the user
     /// to bind to an existing session or create a new one
     /// each object runs in a separated thread to interact with the user.
@@ -18,3 +21,5 @@ private:
 
     running_as_thread();
 };
+
+#endif

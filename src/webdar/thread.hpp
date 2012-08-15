@@ -1,4 +1,5 @@
-
+#ifndef THREAD_HPP
+#define THREAD_HPP
 
 // this is inspired from http://blog.emptycrate.com/node/270 But with the difference
 // that thread managment is done in its own pure virtual class and arbitrary
@@ -53,3 +54,5 @@ private:
     static void primitive_suspend_cancellation_requests();
     static void primitive_resume_cancellation_requests();
 };
+
+#endif

@@ -1,3 +1,5 @@
+#ifndef WEB_INTERACTION_HPP
+#define WEB_INTERACTION_HPP
 
 #include <libdar/user_interaction.hpp>
 
@@ -38,3 +40,5 @@ private:
     U_I index_of_last_input; //< gives in output_buffer the number of new lines of output (or the offset of output already returned to the user)
 
 };
+
+#endif

@@ -1,4 +1,5 @@
-
+#ifndef SESSION_HPP
+#define SESSION_HPP
 
 extern "C"
 {
@@ -52,3 +53,5 @@ private:
     static void add_me_in_the_list(session *obj);
     static void remove_me_from_the_list(session *obj);
 };
+
+#endif
