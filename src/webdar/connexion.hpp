@@ -17,8 +17,8 @@ class connexion
 public:
     enum status
     {
-	connected,   //< both read and write are allowed
-	no_connected //< session is closed both directions
+	connected,    //< both read and write are allowed
+	not_connected //< session is closed both directions
     };
 
 	/// create a new object based on a existing socket filedescriptor
@@ -50,13 +50,16 @@ public:
 
 	/// param[in] a data to write
 	/// param[in] size amount of byte to write
-    virtual void write(const char *a, unsigned int size);
+	/// \return true upon success of false if connexion is broken
+    virtual bool write(const char *a, unsigned int size);
 
 private:
     status etat;       //< connexion status
     int filedesc;      //< socket file descriptor
     std::string ip;    //< IP of the peer host
     unsigned int port; //< port of the peer port
+
+    void fermeture();  //< close connection
 };
 
 #endif

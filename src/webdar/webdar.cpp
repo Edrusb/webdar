@@ -2,6 +2,7 @@
 extern "C"
 {
 #include <signal.h>
+#include <unistd.h>
 }
 
 
@@ -19,6 +20,7 @@ extern "C"
 #include "exceptions.hpp"
 #include "central_report.hpp"
 #include "listener.hpp"
+#include "webdar_tools.hpp"
 #include "parser.hpp"
 
 #define WEBDAR_EXIT_OK 0
@@ -29,17 +31,17 @@ extern "C"
 #define WEBDAR_EXIT_SIGT2 5
 #define WEBDAR_EXIT_RESOURCE 6
 
-using namespace libdar;
 using namespace std;
 
 struct interface_port
 {
     std::string interface; //< if empty means any interface
-    U_I port;
+    unsigned int port;
 };
 
 static void parse_cmd(int argc, char *argv[],
 		      vector<interface_port> & ecoute, bool & verbose, bool & background, int & facility);
+static void add_item_to_list(const char *optarg, vector<interface_port> & ecoute);
 
 int main(int argc, char *argv[], char **env)
 {
@@ -68,7 +70,7 @@ int main(int argc, char *argv[], char **env)
 	    /////////////////////////////////////////////////
 	    // creating central report object
 	if(verbose)
-	    min = notice;
+	    min = debug;
 	else
 	    min = info;
 
@@ -222,6 +224,106 @@ int main(int argc, char *argv[], char **env)
 static void parse_cmd(int argc, char *argv[],
 		      vector<interface_port> & ecoute, bool & verbose, bool & background, int & facility)
 {
-    throw exception_feature("command line parsing");
+    int lu;
+	// prevents getopt to show a message when unknown option is met
+	// we will report that ourselfves:
+    opterr = 0;
+    verbose = false;
+    background = false;
+    facility = LOG_USER;
+    ecoute.clear();
 
+    while((lu = getopt(argc, argv, "vl:b:" )) != -1)
+    {
+	switch(lu)
+	{
+	case 'v':
+	    verbose = true;
+	    break;
+	case 'l':
+	    if(optarg == NULL)
+		throw exception_range("-l option needs an argument");
+	    add_item_to_list(optarg, ecoute);
+	    break;
+	case 'b':
+	    background = true;
+	    break;
+	case '?':
+	    cerr << "Ignoring Unknown argument given on command line: " << lu << endl;
+	    break;
+	default:
+	    throw WEBDAR_BUG; // "known option by getopt but not known by webdar!
+	}
+    }
+
+    if(optind < argc)
+    {
+	cerr << "Unknown options passed to " << argv[0] << ": ";
+	for(unsigned int i = optind; i < argc; ++i)
+	    cerr << argv[i];
+	cerr << endl;
+    }
+
+    if(ecoute.size() < 1)
+    {
+	if(argc < 1 || argv[0] == NULL)
+	    throw WEBDAR_BUG;
+	else
+	    throw exception_range(libdar::tools_printf("Usage: %s -l <IP:port> [-v] [-b]\n", argv[0]));
+    }
+
+    if(background)
+	throw exception_feature("webdar in background as a daemon");
+}
+
+// webdar -l <network interface>[:port][,<network interface>[:port][, ... ]] [-v] [-b <facility>]
+
+static void add_item_to_list(const char *optarg, vector<interface_port> & ecoute)
+{
+    const char *next = optarg;
+    const char *start = optarg;
+    bool seen_IP = false;
+    interface_port tmp;
+
+
+    while(*start != '\0')
+    {
+	while(*next != ':' && *next != ',' && *next != '\0')
+	    ++next;
+
+	switch(*next)
+	{
+	case ':':
+	    if(!seen_IP)
+	    {
+		tmp.interface = string(start, next);
+		seen_IP = true;
+		++next;
+		start = next;
+	    }
+	    else
+		throw exception_range("missing IP address to listen on before ':'");
+	    break;
+	case ',':
+	case '\0':
+	    if(!seen_IP)
+	    {
+		ecoute.clear();
+		tmp.interface = "";
+	    }
+	    tmp.port = webdar_tools_convert_to_int(string(start, next));
+	    if(seen_IP)
+	    {
+		if(*next != '\0')
+		    ++next;
+		start = next;
+	    }
+	    else
+		start = ""; // which will end the while loop
+	    ecoute.push_back(tmp);
+	    break;
+	default:
+	    throw WEBDAR_BUG;
+	}
+    }
 }
