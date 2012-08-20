@@ -56,7 +56,7 @@ unsigned int connexion::read(char *a, unsigned int size)
 bool connexion::write(const char *a, unsigned int size)
 {
     bool ret = true;
-    bool loop = false;
+    bool loop = true;
 
     if(etat != connected)
 	throw WEBDAR_BUG;
@@ -89,10 +89,17 @@ void connexion::fermeture()
 {
     if(etat == connected)
     {
+	int shuted;
+	int errnono;
 	if(filedesc < 0)
 	    throw WEBDAR_BUG;
+	shuted = shutdown(filedesc, SHUT_RDWR);
+	if(shuted != 0)
+	    errnono = errno;
 	close(filedesc);
 	filedesc = -1;
 	etat = not_connected;
+	if(shuted != 0)
+	    throw exception_system("failed shutting down the socket", errnono);
     }
 }

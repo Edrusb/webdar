@@ -1,3 +1,9 @@
+    // C system header files
+extern "C"
+{
+#include <errno.h>
+}
+
     // C++ system header files
 #include <new>
 
@@ -50,10 +56,19 @@ bool parser::run_new_parser(central_report *log, connexion *source)
 	    ret = false;
 	else
 	{
+	    sigset_t sigs;
 	    parser *tmp = new (nothrow) parser(log, source);
+
 	    if(tmp == NULL)
 		throw exception_memory();
 	    instances.push_back(tmp);
+
+	    if(sigfillset(&sigs) != 0)
+		throw exception_system("failed creating a full signal set", errno);
+
+	    tmp->set_signal_mask(sigs);
+	    tmp->run();
+
 	    ret = true;
 	}
     }
@@ -119,11 +134,20 @@ parser::~parser()
 
 void parser::inherited_run()
 {
-    string tmp = "HELLO WORD!";
+    string tmp1 = "Tape quelque chose\n";
+    string tmp2 = "HELLO WORD!";
+    char buffer[100];
+    unsigned int lu;
 
     if(src == NULL)
 	throw WEBDAR_BUG;
-    src->write(tmp.c_str(), tmp.size());
+    src->write(tmp1.c_str(), tmp1.size());
+    lu = src->read(buffer, 100);
+    src->write(tmp2.c_str(), tmp2.size());
+    if(lu > 0)
+	src->write(buffer, lu);
+    else
+	rep->report(warning, "could not read data from the socket");
     delete src;
     src = NULL;
 }

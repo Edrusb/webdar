@@ -48,6 +48,11 @@ listener::listener(central_report *log, const std::string & ip, unsigned int por
 void listener::init(central_report *log, const std::string & ip, unsigned int port)
 {
     int tmp = 0;
+    sigset_t sigs;
+
+    if(sigfillset(&sigs) != 0)
+	throw exception_system("failed creating a full signal set", errno);
+    set_signal_mask(sigs);
 
     sockfd = -1;
     if(log == NULL)

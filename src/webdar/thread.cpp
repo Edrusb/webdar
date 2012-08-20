@@ -10,6 +10,9 @@ extern "C"
 #include "exceptions.hpp"
 #include "thread.hpp"
 
+// #define THREADED
+
+
 using namespace std;
 
 thread::thread()
@@ -20,6 +23,7 @@ thread::thread()
     running = false;
     joignable = false;
     cancellable = 0; // is cancellable at startup
+    sigemptyset(&sigmask);
 }
 
 thread::~thread()
@@ -34,8 +38,10 @@ void thread::run()
     thread::primitive_suspend_cancellation_requests();
     try
     {
+#ifdef THREADED
 	if(pthread_mutex_lock(&field_control) != 0)
 	    throw WEBDAR_BUG;
+#endif
 	try
 	{
 	    if(running)
@@ -43,19 +49,27 @@ void thread::run()
 	    if(joignable)
 		throw exception_thread("Previous thread has not been joined and possibly returned exception is deleted");
 	    cancellable = 0; // should not be needed, but does not hurt
-	    if(pthread_create(&tid, NULL, run_obj, this) != 0)
-		throw exception_system("Failed creating a new thread: ",errno);
+#ifdef THREADED
+5A	    if(pthread_create(&tid, NULL, run_obj, this) != 0)
+		throw exception_system("Failed creating a new thread: ", errno);
+#else
+	    run_obj(this);
+#endif
 	    running = true;
 	    joignable = true;
 	}
 	catch(...)
 	{
+#ifdef THREADED
 	    if(pthread_mutex_unlock(&field_control) != 0)
 		throw WEBDAR_BUG;
+#endif
 	    throw;
 	}
+#ifdef THREADED
 	if(pthread_mutex_unlock(&field_control) != 0)
 	    throw WEBDAR_BUG;
+#endif
     }
     catch(...)
     {
@@ -172,6 +186,10 @@ void *thread::run_obj(void *obj)
 	    throw WEBDAR_BUG;
 	if(pthread_mutex_unlock(&(tobj->field_control)) != 0)
 	    throw WEBDAR_BUG;
+	    // setting signal mask
+	if(pthread_sigmask(SIG_SETMASK , &(tobj->sigmask), NULL) != 0)
+	    throw exception_system("Failing setting signal mask for thread", errno);
+	    //
 	thread::primitive_resume_cancellation_requests();
 
 	try
@@ -200,7 +218,7 @@ void *thread::run_obj(void *obj)
     {          // that some implementations of pthread use exception
 	throw; // for the thread cancellation mechanism, so we must
 	       // not interfeer with this and let unknown exception
-	       // to pass through transparently
+	       // to pass through, transparently
     }
 
     return ret;

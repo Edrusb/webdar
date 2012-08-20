@@ -3,8 +3,13 @@
 + revoir les entetes HPP avec #ifndef
 + revoir l'ordre des include
 + ne plus se baser sur libdar::U_I virer autant que possible les reference et ne pas inclure de using namespace libdar
-- implementer connexion::read & write
-- tester l'implementation actuelle de parser (hello word)
++ implementer connexion::read & write
++ tester l'implementation actuelle de parser (hello word)
+- keepalive dans session TCP
+- pouvoir saisir des nom et convertir les IP en nom si possible (peer IP)
+- revoir sterrror_r dans exception_system (strerror n'est pas thread safe)
+- finir la gestion des signals et masks (avec les informations se sessions ouvertes etc.)
+
 
 - finir l'implementation de la class parser pour la gestion du protocole HTTP (requetes / cookies & Co).
 - ajouter la gestion des signaux au sein des threads

@@ -5,6 +5,7 @@
 extern "C"
 {
 #include <pthread.h>
+#include <signal.h>
 }
 
 // this is inspired from http://blog.emptycrate.com/node/270 But with the difference
@@ -21,6 +22,9 @@ public:
 
 	/// destructor
     virtual ~thread();
+
+	/// set signal mask for this object's next thread to be run
+    void set_signal_mask(const sigset_t & mask) { sigmask = mask; };
 
 	/// launch the current object routing in a separated thread
     void run();
@@ -55,6 +59,9 @@ private:
     pthread_t tid;                 //< the thread ID of the running thread if any
     bool joignable;                //< whether exist status of thread has to be retrieved
     unsigned int cancellable;      //< this field is not protected by mutex as it ougth to be modified only by the spawn thread. It allows suspend/resume cancellation requests to be re-entrant (0 = cancellation accepted)
+    sigset_t sigmask;              //< signal mask to use for the thread
+
+	// static members
 
     static void *run_obj(void *obj);  //< called by pthread_create to spawn a new thread
     static void primitive_suspend_cancellation_requests();

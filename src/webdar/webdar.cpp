@@ -3,8 +3,9 @@ extern "C"
 {
 #include <signal.h>
 #include <unistd.h>
+#include <string.h>
+#include <errno.h>
 }
-
 
     // C++ system header files
 #include <iostream>
@@ -42,6 +43,12 @@ struct interface_port
 static void parse_cmd(int argc, char *argv[],
 		      vector<interface_port> & ecoute, bool & verbose, bool & background, int & facility);
 static void add_item_to_list(const char *optarg, vector<interface_port> & ecoute);
+static void close_all_listeners(int sig);
+
+    // yes, this will point to a global object, this class handle concurrent access,
+    // no problem in this multi-threaded program.
+    // it is necessary to have this global for signal handler able to report what they do
+central_report *creport = NULL;
 
 int main(int argc, char *argv[], char **env)
 {
@@ -49,7 +56,6 @@ int main(int argc, char *argv[], char **env)
     bool verbose;
     bool background;
     int facility;
-    central_report *report = NULL;
     int ret = WEBDAR_EXIT_OK;
     bool quit = false;
     vector<listener *> taches;
@@ -60,6 +66,37 @@ int main(int argc, char *argv[], char **env)
 	    /////////////////////////////////////////////////
 	    // set signal handlers for type 1 and type 2
 
+	set<int> signals_list;
+	set<int>::iterator sl_it;
+	struct sigaction sg;
+
+	sg.sa_handler = close_all_listeners;
+	if(sigemptyset(&sg.sa_mask) < 0)
+	    throw exception_system("Cannot define the set of blocked signals", errno);
+	sg.sa_flags = SA_RESETHAND;
+
+	signals_list.insert(SIGHUP);
+	signals_list.insert(SIGINT);
+	signals_list.insert(SIGALRM);
+	signals_list.insert(SIGTERM);
+	signals_list.insert(SIGUSR1);
+	signals_list.insert(SIGUSR2);
+	sl_it = signals_list.begin();
+
+	while(sl_it != signals_list.end())
+	{
+	    const char *signal_name = strsignal(*sl_it);
+	    if(signal_name != NULL)
+		cout << "Adding hanlder for signal " << strsignal(*sl_it) << endl;
+	    else
+		cout << "Adding hanlder for signal " << *sl_it << endl;
+	    if(sigaction(*sl_it, &sg, NULL) < 0)
+		if(signal_name != NULL)
+		    throw exception_system(libdar::tools_printf("Cannot set signal handle for %s", strsignal(*sl_it)), errno);
+		else
+		    throw exception_system(libdar::tools_printf("Cannot set signal handle for %d", *sl_it), errno);
+	    ++sl_it;
+	}
 
 
 	    /////////////////////////////////////////////////
@@ -76,14 +113,15 @@ int main(int argc, char *argv[], char **env)
 
 	if(background)
 	{
-	    report = new (nothrow) central_report_syslog(min, "webdar", facility);
+	    creport = new (nothrow) central_report_syslog(min, "webdar", facility);
 	    throw exception_feature("background as a daemon");
 	}
 	else
-	    report = new (nothrow) central_report_stdout(min);
+	    creport = new (nothrow) central_report_stdout(min);
 
-	if(report == NULL)
+	if(creport == NULL)
 	    throw exception_memory();
+	creport->report(debug, "central report object has been created");
 
 
 	    /////////////////////////////////////////////////
@@ -105,9 +143,9 @@ int main(int argc, char *argv[], char **env)
 		while(it != ecoute.end())
 		{
 		    if(it->interface == "")
-			tmp = new (nothrow) listener(report, it->port);
+			tmp = new (nothrow) listener(creport, it->port);
 		    else
-			tmp = new (nothrow) listener(report, it->interface, it->port);
+			tmp = new (nothrow) listener(creport, it->interface, it->port);
 		    if(tmp == NULL)
 			throw exception_memory();
 		    else
@@ -117,7 +155,7 @@ int main(int argc, char *argv[], char **env)
 		    }
 		    ++it;
 		}
-
+		creport->report(debug, "all listener threads have been launched, main thread waiting for all of them to complete");
 
 		    /////////////////////////////////////////////////
 		    // looping while not all thread have ended
@@ -136,11 +174,14 @@ int main(int argc, char *argv[], char **env)
 			    taches.back()->join();
 		}
 
+		creport->report(info, "all listener threads have ended, waiting for existing sessions to end");
+
 		    /////////////////////////////////////////////////
 		    // killing remaining parser threads
 
 		parser::kill_all_parsers();
 
+		creport->report(info, "all listener threads have ended");
 	    }
 	    catch(...)
 	    {
@@ -162,10 +203,10 @@ int main(int argc, char *argv[], char **env)
 	}
 	catch(...)
 	{
-	    if(report == NULL)
+	    if(creport == NULL)
 		throw WEBDAR_BUG;
-	    delete report;
-	    report = NULL;
+	    delete creport;
+	    creport = NULL;
 	    throw;
 	}
 
@@ -233,7 +274,7 @@ static void parse_cmd(int argc, char *argv[],
     facility = LOG_USER;
     ecoute.clear();
 
-    while((lu = getopt(argc, argv, "vl:b:" )) != -1)
+    while((lu = getopt(argc, argv, "vl:b" )) != -1)
     {
 	switch(lu)
 	{
@@ -275,8 +316,6 @@ static void parse_cmd(int argc, char *argv[],
     if(background)
 	throw exception_feature("webdar in background as a daemon");
 }
-
-// webdar -l <network interface>[:port][,<network interface>[:port][, ... ]] [-v] [-b <facility>]
 
 static void add_item_to_list(const char *optarg, vector<interface_port> & ecoute)
 {
@@ -326,4 +365,23 @@ static void add_item_to_list(const char *optarg, vector<interface_port> & ecoute
 	    throw WEBDAR_BUG;
 	}
     }
+}
+
+
+static void close_all_listeners(int sig)
+{
+    creport->report(crit, "Signal received, action not yet implemented");
+
+	/// check if current job is running
+
+	/// if so report to central_report that we cannot interrupt the process
+	/// either connect with appropriate rights and abort the running task
+
+	/// else, end all listeners
+	/// report to central_report that all listeners have ended, waiting for all connexion to terminate
+	/// but a second signal will end directly
+	/// report to all connexion about the request to shutdown
+	/// prevent any libdar task to be run
+
+	/// if no connexion nor job end immediately
 }
