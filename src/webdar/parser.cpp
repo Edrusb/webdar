@@ -1,153 +1,77 @@
-    // C system header files
-extern "C"
+parser::parser(connexion *input)
 {
-#include <errno.h>
-}
-
-    // C++ system header files
-#include <new>
-
-    // webdar headers
-#include "exceptions.hpp"
-#include "central_report.hpp"
-#include "parser.hpp"
-
-using namespace std;
-
-pthread_mutex_t parser::lock_counter = PTHREAD_MUTEX_INITIALIZER;
-unsigned int parser::max_parser = 0;
-list<parser *> parser::instances;
-
-bool parser::run_new_parser(central_report *log, connexion *source)
-{
-    bool ret = false;
-
-    if(pthread_mutex_lock(&lock_counter) != 0)
+    if(input == NULL)
 	throw WEBDAR_BUG;
 
-    try
-    {
-	    ///////////
-	    // cleaning up the instances list
+    if(input->get_status() != connexion::connected)
+	throw exception_range("connection is already closed cannot read from it");
 
-	list<parser *>::iterator it = instances.begin();
-	while(it != instances.end())
-	{
-	    if(*it == NULL)
-		it = instances.erase(it);
-	    else
-	    {
-		if(!((*it)->is_running()))
-		{
-		    delete (*it);
-		    (*it) = NULL;
-		    it = instances.erase(it);
-		}
-		else
-		    ++it;
-	    }
-	}
-
-	    //////////
-	    // creating a new parser object if allowed
-	    // and adding it to the list
-
-	if(instances.size() >= max_parser && max_parser > 0)
-	    ret = false;
-	else
-	{
-	    sigset_t sigs;
-	    parser *tmp = new (nothrow) parser(log, source);
-
-	    if(tmp == NULL)
-		throw exception_memory();
-	    instances.push_back(tmp);
-
-	    if(sigfillset(&sigs) != 0)
-		throw exception_system("failed creating a full signal set", errno);
-
-	    tmp->set_signal_mask(sigs);
-	    tmp->run();
-
-	    ret = true;
-	}
-    }
-    catch(...)
-    {
-	if(pthread_mutex_unlock(&lock_counter) != 0)
-	    throw WEBDAR_BUG;
-	throw;
-    }
-
-    if(pthread_mutex_unlock(&lock_counter) != 0)
-	throw WEBDAR_BUG;
-
-    return ret;
-}
-
-void parser::kill_all_parsers()
-{
-    if(pthread_mutex_lock(&lock_counter) != 0)
-	throw WEBDAR_BUG;
-
-    try
-    {
-	list<parser *>::iterator it = instances.begin();
-	while(it != instances.end())
-	{
-	    if(*it != NULL)
-	    {
-		delete (*it);
-		(*it) = NULL;
-	    }
-	    it = instances.erase(it);
-	}
-
-	if(!instances.empty())
-	    throw WEBDAR_BUG;
-    }
-    catch(...)
-    {
-	if(pthread_mutex_unlock(&lock_counter) != 0)
-	    throw WEBDAR_BUG;
-	throw;
-    }
-
-    if(pthread_mutex_unlock(&lock_counter) != 0)
-	throw WEBDAR_BUG;
-}
-
-parser::parser(central_report *log, connexion *source)
-{
-    rep = log;
-    src = source;
+    source = input;
 }
 
 parser::~parser()
 {
-    if(src != NULL)
-    {
-	delete src;
-	src = NULL;
-    }
+    if(source != NULL)
+	delete source;
 }
 
-void parser::inherited_run()
+request parser::get_next_request()
 {
-    string tmp1 = "Tape quelque chose\n";
-    string tmp2 = "HELLO WORD!";
-    char buffer[100];
-    unsigned int lu;
+    unsigned int body_lengh = 0;
 
-    if(src == NULL)
-	throw WEBDAR_BUG;
-    src->write(tmp1.c_str(), tmp1.size());
-    lu = src->read(buffer, 100);
-    src->write(tmp2.c_str(), tmp2.size());
-    if(lu > 0)
-	src->write(buffer, lu);
+
+	// first level analysis tokens
+    string meth;
+    string resource;
+    string version;
+	// splitted token
+    uri res;
+    unsigned int maj_vers;
+    unsigned int min_vers;
+
+    if(!valid())
+	throw exception_range("connection closed, cannot read request from it");
+
+	// reading the first line of the request
+
+    meth = get_token();
+    resource = get_token();
+    version = get_token();
+
+    res = uri_split(resource);
+    split_version(version, maj_vers, min_vers);
+
+    request ret = request(meth, res, maj_vers, min_vers);
+    string key;
+    string val;
+
+    skip_line();
+
+	// reading the rest of the header
+
+    while(!is_empty_line())
+    {
+        key = get_token();
+	skip_over(":");
+	skip_over(" ");
+	val = up_to_eol();
+	skip_line();
+	ret.add_attribute(key, val);
+	if(key == "Content-length")
+	    body_length = webdar_tools_convert_to_int(val);
+    }
+
+    skip_line();
+
+	// reading the body
+    string body;
+
+    if(maj_vers == 1 && maj_vers == 0) // HTTP/1.0
+	body = read_to_eof();
     else
-	rep->report(warning, "could not read data from the socket");
-    delete src;
-    src = NULL;
+	body = read_length(body_length);
+
+    ret.add_body(body);
+
+    return ret;
 }

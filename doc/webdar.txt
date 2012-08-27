@@ -234,8 +234,9 @@ CLASSES
 	thread : pure virtual class which objects may run in a particular thread. class listener and class
 	    session depends on this class
 
-	req_ans : pure virtual class that defines the interface of answers and requests
-	(implemented by sessions and chooser objects)
+	request : struct/class that holds all attributes of a request
+	answer : struct/class that holds all attributes of an answer, it is able to generate corresponding
+	      http data
 
 	connexion : this class is a wrapper around socket filedescriptor to provide generic_file interface
 
@@ -252,8 +253,18 @@ CLASSES
 	    Prior to answer a request, the client must provide the appropriated cookie, the one used at session creation
 	    or obtained by a chooser object.
 
-	parser : (inherit from thread) this class provides threaded objects that parse requests from given connexion, only
-	    the HTTP protocol aspect is managed here, no HTML genereation is done heer. The class holds a counter
+
+	parser : class that take a connexion as argument and creates from it a single request. (the parser can be
+	    used several times over the same connexion to extract the following requests.
+
+
+	server : (inherit from thread) this class provides threaded objects retrieve each request from a parser object
+
+	   find the proper object to answer the request (session object, static object, error message (for too
+	   request format or corrupted format, etc.), and modify the answer provided to conform to the HTTP RFC
+	   (adding a close attribut for HTTP/1.1 etc). and send it back to the client.
+
+	    the HTTP protocol aspect is managed here, no HTML genereration is done heer. The class holds a counter
 	    on the number of running parser (=connexions), if a maximum has been defined the constructor fails if the
 	    counter has reached this threshold.
 	    The parser object owns the connexion that it has been given by the listener object that it has been createed by,
@@ -269,6 +280,12 @@ CLASSES
 	    A parser object may receive a request that does not target a particular session. In that case the parser	authenticates
 	    the client and upon success, calls a chooser object instead of a session object.
 
+	 generator: pure virtual class (interface) that defines the ability to receive an request  an provide a answer
+	        even a partial answer (just HTML code for example).
+	 html_body : (inherites from generator) pure virtual class that defines an interface that bases on a request provides html partial output
+
+	 html_header : (inherites from generator) class that given a request provide header and body delimiter of an html page, it subsequently calls
+	       html inherited class objects to defines the html body. The format of the output is an "answer" object
 
 	listener : (inherit from thread) a listener object is bound to a port and eventually to an IP address,
             this is a threaded object

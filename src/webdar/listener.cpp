@@ -17,7 +17,7 @@ extern "C"
     // webdar headers
 #include "listener.hpp"
 #include "connexion.hpp"
-#include "parser.hpp"
+#include "server.hpp"
 #include "webdar_tools.hpp"
 
 using namespace std;
@@ -223,9 +223,9 @@ void listener::inherited_run()
 	    try
 	    {
 		rep->report(debug, "listener object: spawning in a separated thread the newly created \"connexion\" object");
-		if(!parser::run_new_parser(rep, con))
+		if(!server::run_new_server(rep, con))
 		    delete con;
-		else // object now managed by the new parser object
+		else // object now managed by the new server object
 		    con = NULL;
 	    }
 	    catch(...)
