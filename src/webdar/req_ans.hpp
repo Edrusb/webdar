@@ -1,11 +1,14 @@
 #ifndef REQ_ANS_HPP
 #define REQ_ANS_HPP
 
+#include <string>
+#include <vector>
+
     /// class req_ans is a pure virtual class that defines interface for requests and answers
 
     /// classes that implement this interface shall provide a HTML code (part of HTML body)
 
-typedef vector<std::string> uri;
+typedef std::vector<std::string> uri;
 
 class request
 {
@@ -32,7 +35,7 @@ public:
     void add_attribute(const std::string & key, const std::string & value);
     void add_body(const std::string & key);
 
-    void send(connexion & out);
+    const char *dump() const;
 };
 
 #endif

@@ -5,18 +5,21 @@
 + ne plus se baser sur libdar::U_I virer autant que possible les reference et ne pas inclure de using namespace libdar
 + implementer connexion::read & write
 + tester l'implementation actuelle de parser (hello word)
-- keepalive dans session TCP
-- pouvoir saisir des nom et convertir les IP en nom si possible (peer IP)
-- revoir sterrror_r dans exception_system (strerror n'est pas thread safe)
-- finir la gestion des signals et masks (avec les informations se sessions ouvertes etc.)
-
-
++ keepalive dans session TCP
+- finir l'implementation de la classe parser (implementer une class server qui retourne les infos sur la requete recue)
 - finir l'implementation de la class parser pour la gestion du protocole HTTP (requetes / cookies & Co).
+- definir la structure de donnee session
+- faire l'implementation de la classe server / en fonction de la requete sollicite un object html ou cree une nouvelle session
+- finir la gestion des signals et masks (avec les informations de sessions ouvertes etc.)
 - ajouter la gestion des signaux au sein des threads
 - prendre en compte les signaux qui peuvent etre retournes par une socket
 
+
+- pouvoir saisir des nom et convertir les IP en nom si possible (peer IP)
+- revoir sterrror_r dans exception_system (strerror n'est pas thread safe)
 - revoir toutes les allocations dynamiques en "new (nothrow)"
 - ajouter des #ifdef dans les includes
-- ajouter la licence en CLI -L, entetes des fichiers avec GPLv3
+- ajouter la licence en CLI -L et http, entetes des fichiers avec GPLv3
 - portabilite avec automake / autoconf
 - internationalisation avec gettext
+

@@ -22,7 +22,7 @@ extern "C"
 #include "central_report.hpp"
 #include "listener.hpp"
 #include "webdar_tools.hpp"
-#include "parser.hpp"
+#include "server.hpp"
 
 #define WEBDAR_EXIT_OK 0
 #define WEBDAR_EXIT_SYNTAX 1
@@ -132,7 +132,7 @@ int main(int argc, char *argv[], char **env)
 	    listener *tmp = NULL;
 	    pthread_t unused_arg;
 
-	    parser::set_max_parser(10);
+	    server::set_max_server(10);
 
 	    try
 	    {
@@ -177,9 +177,9 @@ int main(int argc, char *argv[], char **env)
 		creport->report(info, "all listener threads have ended, waiting for existing sessions to end");
 
 		    /////////////////////////////////////////////////
-		    // killing remaining parser threads
+		    // killing remaining server threads
 
-		parser::kill_all_parsers();
+		server::kill_all_servers();
 
 		creport->report(info, "all listener threads have ended");
 	    }

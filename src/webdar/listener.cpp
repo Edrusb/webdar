@@ -119,6 +119,9 @@ void listener::set_sockfd(int domain)
     sockfd = socket(domain, SOCK_STREAM, IPPROTO_TCP);
     if(sockfd < 0)
 	throw exception_system("Error creating socket", errno);
+    int val = 1;
+    if(setsockopt(sockfd, SOL_SOCKET, SO_KEEPALIVE, &val, sizeof(val)) != 0)
+	throw exception_system("Error activating TCP keepalive on socket", errno);
     famille = domain;
 }
 

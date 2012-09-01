@@ -7,4 +7,4 @@ all: webdar
 clean:
 	rm -f *.o webdar
 
-webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o
+webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o req_ans.o
