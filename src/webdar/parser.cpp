@@ -3,14 +3,18 @@
 
 using namespace std;
 
-parser::parser(connexion *input)
+parser::parser(connexion *input, central_report *log)
 {
     if(input == NULL)
+	throw WEBDAR_BUG;
+
+    if(log == NULL)
 	throw WEBDAR_BUG;
 
     if(input->get_status() != connexion::connected)
 	throw exception_range("connection is already closed cannot read from it");
 
+    clog = log;
     source = input;
 }
 
@@ -24,61 +28,114 @@ request parser::get_next_request()
 {
     unsigned int body_length = 0;
 
-
 	// first level analysis / tokens
     string meth;
     string resource;
     string version;
+
 	// splitted token
     uri res;
     unsigned int maj_vers;
     unsigned int min_vers;
 
-    if(!valid())
+    if(!valid_source())
 	throw exception_range("connection closed, cannot read request from it");
 
-	// reading the first line of the request
+    if(!answered)
+	throw WEBDAR_BUG; // last request has not been answred
+    answered = false;
 
-    meth = get_token();
-    resource = get_token();
-    version = get_token();
-
-    res = uri_split(resource);
-    split_version(version, maj_vers, min_vers);
-
-    request ret = request(meth, res, maj_vers, min_vers);
-    string key;
-    string val;
-
-    skip_line();
-
-	// reading the rest of the header
-
-    while(!is_empty_line())
+    try
     {
-        key = get_token();
-	skip_over(':');
-	skip_over(' ');
-	val = up_to_eol();
+
+	    // reading the first line of the request
+
+	meth = get_token();
+	resource = get_token();
+	version = get_token();
+
+	if(version == "")
+	    version = "HTTP/0.9";
+
+	res = uri_split(resource);
+	if(res.size() < 2)
+	    throw WEBDAR_BUG; // uri_split should return: (scheme) + (hostname or empty string)
+	if(res[0] != "http")
+	    throw exception_range("unsupported scheme in URI");
+
+	set_version(version);
+	if(maj_vers != 1)
+	{
+	    answer ans = answer(STATUS_CODE_HTTP_VERSION_NOT_SUPPORTED, "HTTP version not supported");
+		// add the close token to answ
+	    send_answer(ans);
+	    throw exception_range("unsupported HTTP version");
+	}
+	if(min_vers > 1)
+	    clog->report(err, "HTTP minor version is higher than what this software is aware of, trying to cope with it anyway: " + version);
+
+	request ret = request(meth, res);
+	string key;
+	string val;
+
 	skip_line();
-	ret.add_attribute(key, val);
-	if(key == "Content-length")
-	    body_length = webdar_tools_convert_to_int(val);
+
+	    // reading the rest of the header
+
+	while(!is_empty_line())
+	{
+	    key = get_token();
+	    skip_over(':');
+	    skip_over(' ');
+	    val = up_to_eol();
+	    skip_line();
+	    ret.add_attribute(key, val);
+	    if(key == "Content-length")
+		body_length = webdar_tools_convert_to_int(val);
+	}
+
+	skip_line();
+
+	    // reading the body
+	string body;
+
+	if(maj_vers == 1 && maj_vers == 0) // HTTP/1.0
+	    body = up_to_eof();
+	else
+	    body = up_to_length(body_length);
+
+	ret.add_body(body);
+
+	return ret;
     }
+    catch(exception_base & e)
+    {
+	if(source != NULL)
+	{
+	    delete source;
+	    source = NULL;
+	}
+	answered = true;
+	throw;
+    }
+}
 
-    skip_line();
 
-	// reading the body
-    string body;
+void parser::send_answer(const answer & ans)
+{
+    if(answered)
+	throw WEBDAR_BUG;
 
-    if(maj_vers == 1 && maj_vers == 0) // HTTP/1.0
-	body = up_to_eof();
-    else
-	body = up_to_length(body_length);
+    try
+    {
 
-    ret.add_body(body);
 
-    return ret;
+    }
+    catch(exception_base & e)
+    {
+	answered = true;
+	throw;
+    }
 }
 
 void parser::fill_buffer()
@@ -90,7 +147,7 @@ void parser::fill_buffer()
 	if(source->get_status() == connexion::connected)
 	{
 	    if(already_read == data_size)   // no more data to read, so we restart at the beginning
-		alread_read = data_size = 0;
+		already_read = data_size = 0;
 	    else
 	    {
 		if(already_read > data_size)
@@ -109,7 +166,7 @@ char parser::read_one()
 {
     if(already_read == data_size)
 	fill_buffer();
-    if(alread_read == data_size)
+    if(already_read == data_size)
 	throw exception_range("no more data available from connection");
 
     return buffer[already_read++];
@@ -119,13 +176,13 @@ char parser::read_test_first()
 {
     if(already_read == data_size)
 	fill_buffer();
-    if(alread_read == data_size)
+    if(already_read == data_size)
 	throw exception_range("no more data available from connection");
 
     return buffer[already_read];
 }
 
-char parser::read_test_first()
+char parser::read_test_second()
 {
     if(data_size - already_read < 2)
 	fill_buffer();
@@ -188,15 +245,15 @@ string parser::get_token()
 uri parser::uri_split(const string & res)
 {
     uri ret;
-    enum { method, hostname, path } lookup;
-    string::iterator it = res.begin();
-    string::iterator bk = it;
+    enum { scheme, hostname, path } lookup;
+    string::const_iterator it = res.begin();
+    string::const_iterator bk = it;
 
     while(it != res.end())
     {
 	switch(lookup)
 	{
-	case method:
+	case scheme:
 	    if(*it != ':')
 		++it;
 	    else
@@ -249,26 +306,35 @@ uri parser::uri_split(const string & res)
     return ret;
 }
 
-void parser::split_version(const string & version, unsigned int maj_vers, unsigned int min_vers)
+void parser::set_version(const string & version)
 {
-    const char expected[] = { 'H', 'T', 'T', 'P', '/', '\0' };
-    unsigned int len = strlen(expected);
-    unsigned int i = 0;
-    string tmp;
-    string
+    static const char expected[] = { 'H', 'T', 'T', 'P', '/', '\0' };
+    const char *ptr = expected;
+    string::const_iterator it = version.begin();
+    string::const_iterator bk = it;
 
-    if(version.size() < len)
+    while(it != version.end() && *ptr != '\0' && *it == *ptr)
+    {
+	++ptr;
+	++it;
+    }
+
+    if(*ptr != '\0' || it == version.end())
+	throw exception_range("badly formated HTTP version field");
+    ++it;
+    bk = it;
+
+    while(it != version.end() && *it != '.')
+	++it;
+
+    if(it == version.end())
 	throw exception_range("badly formated HTTP version field");
 
-    while(i < len && expected[i] == version[i])
-	++i;
-
-    if(i < len)
+    maj_vers = webdar_tools_convert_to_int(string(bk, it));
+    ++it;
+    if(it == version.end())
 	throw exception_range("badly formated HTTP version field");
-
-
-
-
+    min_vers = webdar_tools_convert_to_int(string(it, version.end()));
 }
 
 void parser::skip_line()
@@ -348,7 +414,7 @@ string parser::up_to_eof()
     return ret;
 }
 
-string up_to_length(unsigned int length)
+string parser::up_to_length(unsigned int length)
 {
     string ret;
 

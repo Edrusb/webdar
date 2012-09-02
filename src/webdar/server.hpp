@@ -2,7 +2,7 @@
 #define SERVER_HPP
 
     // webdar headers
-#include "connexion.hpp"
+#include "parser.hpp"
 #include "thread.hpp"
 #include "central_report.hpp"
 
@@ -22,11 +22,10 @@ protected:
 
 private:
     server(central_report *log, connexion *source);
-    server(const server & ref) { throw WEBDAR_BUG; };
+    server(const server & ref): src(ref.src) { throw WEBDAR_BUG; };
     const server & operator = (const server & ref) { throw WEBDAR_BUG; };
-    ~server();
 
-    connexion *src;      //< object owned by the server
+    parser src;          //< this object manages the given connexion in constructor
     central_report *rep; //< just a pointer to an existing object, must not be deleted by "this"
 
 	/// static fields

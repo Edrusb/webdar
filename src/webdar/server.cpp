@@ -10,6 +10,7 @@ extern "C"
     // webdar headers
 #include "exceptions.hpp"
 #include "central_report.hpp"
+#include "req_ans.hpp"
 #include "server.hpp"
 
 using namespace std;
@@ -117,37 +118,19 @@ void server::kill_all_servers()
 	throw WEBDAR_BUG;
 }
 
-server::server(central_report *log, connexion *source)
+server::server(central_report *log, connexion *source) : src(source, log)
 {
     rep = log;
-    src = source;
-}
-
-server::~server()
-{
-    if(src != NULL)
-    {
-	delete src;
-	src = NULL;
-    }
 }
 
 void server::inherited_run()
 {
-    string tmp1 = "Tape quelque chose\n";
-    string tmp2 = "HELLO WORD!";
-    char buffer[100];
-    unsigned int lu;
-
-    if(src == NULL)
-	throw WEBDAR_BUG;
-    src->write(tmp1.c_str(), tmp1.size());
-    lu = src->read(buffer, 100);
-    src->write(tmp2.c_str(), tmp2.size());
-    if(lu > 0)
-	src->write(buffer, lu);
-    else
-	rep->report(warning, "could not read data from the socket");
-    delete src;
-    src = NULL;
+    while(src.get_status() == connexion::connected)
+    {
+	request req = src.get_next_request();
+	answer ans = answer(201, "test");
+	    // pass the request to object from the session table
+	    // and update "ans"
+	src.send_answer(ans);
+    }
 }
