@@ -6,15 +6,28 @@
 + implementer connexion::read & write
 + tester l'implementation actuelle de parser (hello word)
 + keepalive dans session TCP
-- finir l'implementation de la classe parser (implementer une class server qui retourne les infos sur la requete recue)
-- finir l'implementation de la class parser pour la gestion du protocole HTTP (requetes / cookies & Co).
-- definir la structure de donnee session
++ finir l'implementation de la classe parser (implementer une class server qui retourne les infos sur la requete recue)
++ finir l'implementation de la class parser pour la gestion du protocole HTTP (requetes / cookies & Co).
+> definir la structure de donnee session
+>>> remplacer de session par un semaphore; faire une class C++ pour enrober les semaphores
+>>>> une class serveur qui veut utiliser une session utilise le semaphore, et le conserve en verifiant si un autre server ne l'a pas demande, auquel cas
+>>>> elle remonte le semaphore (ce qui libere une thread) et attends a son tour sur le semaphore
+>>>>> ne faut-il pas mieux associer un cookie dans une table utilisateur (authentification), liste de cookie valides (+ duree de peremption )
+> definir la hierarchie de class pour l'authentification : travail a initier depuis la class server faute de cookie dans la requete
+- pour les sessions non authentifiees, il faut limiter la duree de la connexion a un temps court
+- implementer une classe authentification par login (a trouver pour le differencier des utilisateur unix)/mot de passe en CLI
 - faire l'implementation de la classe server / en fonction de la requete sollicite un object html ou cree une nouvelle session
 - finir la gestion des signals et masks (avec les informations de sessions ouvertes etc.)
 - ajouter la gestion des signaux au sein des threads
 - prendre en compte les signaux qui peuvent etre retournes par une socket
+- revoir la conformite de la classe parser aux vue des RFC HTTP:
+  - en 0.9 savoir quelle erreur reporter systematiquement
+  - en 1.0 et 1.1 appliquer les RFC
 
-
+- revoir -v pour lui fournir le niveau exact (debug/info/etc.) a prendre en compte pour les logs
+- implementer HTTPS comme une classe derivee de connexion
+- implementer class authentification par user du systeme
+- implementer le mode daemon / syslog (qui interdit l'authentification par CLI)
 - pouvoir saisir des nom et convertir les IP en nom si possible (peer IP)
 - revoir sterrror_r dans exception_system (strerror n'est pas thread safe)
 - revoir toutes les allocations dynamiques en "new (nothrow)"
@@ -22,4 +35,8 @@
 - ajouter la licence en CLI -L et http, entetes des fichiers avec GPLv3
 - portabilite avec automake / autoconf
 - internationalisation avec gettext
+- ajouter des images dans l'interface WEB
+
+- implementer class entreport / FTP
+
 

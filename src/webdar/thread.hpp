@@ -8,6 +8,9 @@ extern "C"
 #include <signal.h>
 }
 
+    // webdar headers
+#include "mutex.hpp"
+
 // this is inspired from http://blog.emptycrate.com/node/270 But with the difference
 // that thread managment is done in its own pure virtual class and arbitrary
 // threaded work is done in inherited threads. Also has been added exception transmission
@@ -54,7 +57,7 @@ protected:
     void resume_cancellation_requests() const;
 
 private:
-    pthread_mutex_t field_control; //< mutex protecting access to object's data
+    mutex field_control;           //< mutex protecting access to object's data
     bool running;                  //< whether a thread is running
     pthread_t tid;                 //< the thread ID of the running thread if any
     bool joignable;                //< whether exist status of thread has to be retrieved

@@ -9,5 +9,5 @@ clean:
 
 pthread_test: pthread_test.o
 
-test_thread: test_thread.o ../webdar/thread.o ../webdar/exceptions.o
+test_thread: test_thread.o ../webdar/thread.o ../webdar/exceptions.o ../webdar/mutex.o
 

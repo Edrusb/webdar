@@ -231,31 +231,53 @@ ACTION HISTORY
 
 CLASSES
 
-	thread : pure virtual class which objects may run in a particular thread. class listener and class
-	    session depends on this class
+	thread : pure virtual class which objects may run in a particular thread, provides an pure virtual
+	method to inherited classes to be run as a separated thread.
+	       class listener and class server inherit from thread
 
 	request : struct/class that holds all attributes of a request
 	answer : struct/class that holds all attributes of an answer, it is able to generate corresponding
 	      http data
 
-	connexion : this class is a wrapper around socket filedescriptor to provide generic_file interface
-
-	session : this class provides objects that store the status of a particular session, like options selected
-	    by the user current configuration status. This information is stored as tree of objects generating HTML code
-	    for which the session object is the root. When comes the time to call libdar, the object owns a thread
-	    that updates object's structure to be able to have progession information as well as being able to abort
-	    the operation in progress. session class is an implementation of req_ans.
-
-	    Session object management is done by the class itslef. The class provides a table of existing sessions,
-	    with their associated properties.
-
-	    A mutex is used for each object to avoid a session to be solicited for several requests at the same time.
-	    Prior to answer a request, the client must provide the appropriated cookie, the one used at session creation
-	    or obtained by a chooser object.
-
+	connexion : this class is a wrapper around socket filedescriptor to provide easy read/write interface
+	    connexion objects are created by listerner object/class and given to brand-new generated parser object
+	    which in turn is give to the brand-new server class/thread.
 
 	parser : class that take a connexion as argument and creates from it a single request. (the parser can be
-	    used several times over the same connexion to extract the following requests.
+	    used several times over the same connexion to extract the following requests). it also receives the answer
+	    which it modifies in accordance to the HTTP protocol requirements.
+
+	session : this class manages a global list of objects (mutex for concurrent access) that store the status
+	     of a particular session, like user owner, current status, options selected in the different mode, etc.
+             This status information is stored as dynamic tree of objects generating HTML code, which root is owned
+	     by the corresponding the session object is the root. When comes the time to call libdar, the session object
+	     owns a thread that updates object's structure to be able to have progession information as well as being
+	     able to abort the operation in progress.
+
+	    A mutex is used for each object to avoid a session to be solicited for several requests at the same time from
+	    different servers. The class itslef owns a mutex to provide coherent status about existing sessions.
+
+---------------
+	    This is the main design problem here, as we have a strong dependency of the server threads by the
+	    use of this unique session table. Having a session associated of temporarily given to a server class
+	    is not possible in regard to the HTTP protocol 1.1 and the use that proxy may have by the way that they
+	    can use a single TCP session to send requests to different webdar sessions. However, a optimization could be
+	    to "give" a session to a server object and thus to record that server object adress in the session for
+	    that in case another server object needs to send a request to that session it can ask the first server object
+	    to release the session and associated mutex.
+
+	    This way, a server need not release and acquire a session mutex for each request, but only if it has been
+	    asked to by another server object or if it need to send a request to another session.
+---------------
+
+        server : this class implements the thread that read request from its given parser object, lookup for
+	   the corresponding session in the session table, authenticates the requests to the session (correct cookie
+	   must be set in the request) else (no session in the request or wrong cookie) pass the request to the
+	   authentication class, which provides the response (error message or list of existing sessions for the
+	   authenticated user, the list provides for each session the associated URL and cookie).
+
+	authentication : the authentication class is a html
+
 
 
 	server : (inherit from thread) this class provides threaded objects retrieve each request from a parser object

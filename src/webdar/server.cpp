@@ -15,7 +15,7 @@ extern "C"
 
 using namespace std;
 
-pthread_mutex_t server::lock_counter = PTHREAD_MUTEX_INITIALIZER;
+mutex server::lock_counter;
 unsigned int server::max_server = 0;
 list<server *> server::instances;
 
@@ -23,8 +23,7 @@ bool server::run_new_server(central_report *log, connexion *source)
 {
     bool ret = false;
 
-    if(pthread_mutex_lock(&lock_counter) != 0)
-	throw WEBDAR_BUG;
+    lock_counter.lock();
 
     try
     {
@@ -75,21 +74,18 @@ bool server::run_new_server(central_report *log, connexion *source)
     }
     catch(...)
     {
-	if(pthread_mutex_unlock(&lock_counter) != 0)
-	    throw WEBDAR_BUG;
+	lock_counter.unlock();
 	throw;
     }
 
-    if(pthread_mutex_unlock(&lock_counter) != 0)
-	throw WEBDAR_BUG;
+    lock_counter.unlock();
 
     return ret;
 }
 
 void server::kill_all_servers()
 {
-    if(pthread_mutex_lock(&lock_counter) != 0)
-	throw WEBDAR_BUG;
+    lock_counter.lock();
 
     try
     {
@@ -109,18 +105,17 @@ void server::kill_all_servers()
     }
     catch(...)
     {
-	if(pthread_mutex_unlock(&lock_counter) != 0)
-	    throw WEBDAR_BUG;
+	lock_counter.unlock();
 	throw;
     }
 
-    if(pthread_mutex_unlock(&lock_counter) != 0)
-	throw WEBDAR_BUG;
+    lock_counter.unlock();
 }
 
 server::server(central_report *log, connexion *source) : src(source, log)
 {
     rep = log;
+    can_keep_session = true;
 }
 
 void server::inherited_run()

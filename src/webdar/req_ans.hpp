@@ -41,7 +41,7 @@ const unsigned int STATUS_CODE_SERVICE_UNAVAILABLE = 503;
 const unsigned int STATUS_CODE_GATEWAY_TIME_OUT = 504;
 const unsigned int STATUS_CODE_HTTP_VERSION_NOT_SUPPORTED = 505;
 
-    /// uri type holds the splitted list of the method / hostname / path
+    /// uri type holds the splitted list of the scheme / hostname / path
     ///
     /// the first member is always the method
     /// the second member is always the host part of the URL (or an empty string for local and relative URL)
@@ -109,5 +109,16 @@ private:
     std::map<std::string, std::string>::const_iterator next_read;
 
 };
+
+    /// pure virtual class base of all class that can generate an anwser to a request
+
+class responder
+{
+public:
+    virtual ~responder();
+
+    virtual answer give_answer(const request & req) = 0;
+};
+
 
 #endif

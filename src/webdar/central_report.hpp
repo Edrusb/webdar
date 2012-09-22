@@ -11,6 +11,8 @@ extern "C"
     // C++ system header files
 #include <string>
 
+    // webdar headers
+#include "mutex.hpp"
 
     /// means by which webdar event get reported either to stdout or to syslog
 
@@ -29,7 +31,7 @@ protected:
 
 private:
     priority_t min;
-    static pthread_mutex_t access; //< caller must acquire mutex before reporting
+    static mutex access; //< caller must acquire mutex before reporting
 };
 
 
@@ -55,8 +57,8 @@ private:
     std::string label; //< need to exist during the whole life of the object for syslog(3) to work as expected
 
 	// static fields
-    static unsigned int num_obj; //< number of oject created (only one is allowed as syslog routine is not re-entrant
-    static pthread_mutex_t num_obj_mod; //< controls the write access to num_obj
+    static unsigned int num_obj; //< number of object created (only one is allowed as syslog routine is not re-entrant)
+    static mutex num_obj_mod;    //< controls the write access to num_obj
 
 };
 

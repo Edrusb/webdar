@@ -53,7 +53,7 @@ int main()
 {
     try
     {
-	    // f1();
+	f1();
 	f2();
     }
     catch(exception_base & e)
@@ -90,6 +90,8 @@ void f2()
 {
     failing_thread t1;
 
+    cout << "is running: " << t1.is_running() << endl;
     t1.run();
+    cout << "is running: " << t1.is_running() << endl;
     t1.join();
 }

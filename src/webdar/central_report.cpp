@@ -13,15 +13,14 @@ using namespace std;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-pthread_mutex_t central_report::access = PTHREAD_MUTEX_INITIALIZER;
+mutex central_report::access;
 
 void central_report::report(priority_t priority, const std::string & message)
 {
     if(priority > min)
 	return; // not logging "below" priority min
 
-    if(pthread_mutex_lock(&access) != 0)
-	throw WEBDAR_BUG;
+    access.lock();
 
     try
     {
@@ -29,12 +28,10 @@ void central_report::report(priority_t priority, const std::string & message)
     }
     catch(...)
     {
-	if(pthread_mutex_unlock(&access) != 0)
-	    throw WEBDAR_BUG;
+	access.unlock();
 	throw;
     }
-    if(pthread_mutex_unlock(&access) != 0)
-	throw WEBDAR_BUG;
+    access.unlock();
 }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,12 +44,11 @@ void central_report_stdout::inherited_report(priority_t priority, const std::str
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 unsigned int central_report_syslog::num_obj = 0;
-pthread_mutex_t central_report_syslog::num_obj_mod = PTHREAD_MUTEX_INITIALIZER;
+mutex central_report_syslog::num_obj_mod;
 
 central_report_syslog::central_report_syslog(priority_t min_logged, const std::string & fixed_label, int facility): central_report(min_logged)
 {
-    if(pthread_mutex_lock(&num_obj_mod) != 0)
-	throw WEBDAR_BUG;
+    num_obj_mod.lock();
     try
     {
 	if(num_obj > 0)
@@ -66,18 +62,15 @@ central_report_syslog::central_report_syslog(priority_t min_logged, const std::s
     }
     catch(...)
     {
-	if(pthread_mutex_unlock(&num_obj_mod) != 0)
-	    throw WEBDAR_BUG;
+	num_obj_mod.unlock();
 	throw;
     }
-    if(pthread_mutex_unlock(&num_obj_mod) != 0)
-	throw WEBDAR_BUG;
+    num_obj_mod.unlock();
 }
 
 central_report_syslog::~central_report_syslog()
 {
-   if(pthread_mutex_lock(&num_obj_mod) != 0)
-	throw WEBDAR_BUG;
+    num_obj_mod.lock();
     try
     {
 	closelog();
@@ -88,12 +81,10 @@ central_report_syslog::~central_report_syslog()
     }
     catch(...)
     {
-	if(pthread_mutex_unlock(&num_obj_mod) != 0)
-	    throw WEBDAR_BUG;
+	num_obj_mod.unlock();
 	throw;
     }
-    if(pthread_mutex_unlock(&num_obj_mod) != 0)
-	throw WEBDAR_BUG;
+    num_obj_mod.unlock();
 }
 
 void central_report_syslog::inherited_report(priority_t priority, const std::string & message)

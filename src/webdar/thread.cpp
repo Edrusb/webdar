@@ -10,16 +10,13 @@ extern "C"
 #include "exceptions.hpp"
 #include "thread.hpp"
 
-// #define THREADED
+#define THREADED
 
 
 using namespace std;
 
 thread::thread()
 {
-    int ret = pthread_mutex_init(&field_control, NULL);
-    if(ret != 0)
-	throw exception_system("Error creating mutex: ", errno);
     running = false;
     joignable = false;
     cancellable = 0; // is cancellable at startup
@@ -30,7 +27,6 @@ thread::~thread()
 {
     kill();
     join();
-    (void)pthread_mutex_destroy(&field_control);
 }
 
 void thread::run()
@@ -39,8 +35,7 @@ void thread::run()
     try
     {
 #ifdef THREADED
-	if(pthread_mutex_lock(&field_control) != 0)
-	    throw WEBDAR_BUG;
+	field_control.lock();
 #endif
 	try
 	{
@@ -50,7 +45,7 @@ void thread::run()
 		throw exception_thread("Previous thread has not been joined and possibly returned exception is deleted");
 	    cancellable = 0; // should not be needed, but does not hurt
 #ifdef THREADED
-5A	    if(pthread_create(&tid, NULL, run_obj, this) != 0)
+	    if(pthread_create(&tid, NULL, run_obj, this) != 0)
 		throw exception_system("Failed creating a new thread: ", errno);
 #else
 	    run_obj(this);
@@ -61,14 +56,12 @@ void thread::run()
 	catch(...)
 	{
 #ifdef THREADED
-	    if(pthread_mutex_unlock(&field_control) != 0)
-		throw WEBDAR_BUG;
+	    field_control.unlock();
 #endif
 	    throw;
 	}
 #ifdef THREADED
-	if(pthread_mutex_unlock(&field_control) != 0)
-	    throw WEBDAR_BUG;
+	field_control.unlock();
 #endif
     }
     catch(...)
@@ -82,20 +75,18 @@ void thread::run()
 bool thread::is_running(pthread_t & id) const
 {
     bool ret;
-    pthread_mutex_t *mutex = const_cast<pthread_mutex_t *>(&field_control);
+    mutex *mut = const_cast<mutex *>(&field_control);
 
     thread::primitive_suspend_cancellation_requests();
     try
     {
-	if(pthread_mutex_lock(mutex) != 0)
-	    throw WEBDAR_BUG;
+	mut->lock();
 
 	ret = running;
 	if(running)
 	    id = tid;
 
-	if(pthread_mutex_unlock(mutex) != 0)
-	    throw WEBDAR_BUG;
+	mut->unlock();
     }
     catch(...)
     {
@@ -111,10 +102,10 @@ void thread::join() const
 {
     pthread_t dyn_tid;
 
-    if(is_running(dyn_tid) || joignable)
+    if(is_running() || joignable)
     {
 	void *returned_exception;
-	int ret = pthread_join(dyn_tid, &returned_exception);
+	int ret = pthread_join(tid, &returned_exception);
 
 	*(const_cast<bool *>(&joignable)) = false;
 	if(ret != ESRCH && ret != 0)
@@ -182,11 +173,8 @@ void *thread::run_obj(void *obj)
 	    // locking and unlocking object's mutex is a simple form of barrier
 	    // this way we start working only when the caller has exited run()
 	thread::primitive_suspend_cancellation_requests();
-	if(pthread_mutex_lock(&(tobj->field_control)) != 0)
-	    throw WEBDAR_BUG;
-	if(pthread_mutex_unlock(&(tobj->field_control)) != 0)
-	    throw WEBDAR_BUG;
-	    // setting signal mask
+	tobj->field_control.lock();
+	tobj->field_control.unlock();
 	if(pthread_sigmask(SIG_SETMASK , &(tobj->sigmask), NULL) != 0)
 	    throw exception_system("Failing setting signal mask for thread", errno);
 	    //
