@@ -9,6 +9,7 @@
 #include "thread.hpp"
 #include "central_report.hpp"
 #include "mutex.hpp"
+#include "session.hpp"
 
 
 class server: public thread

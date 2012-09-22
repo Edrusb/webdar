@@ -1,3 +1,6 @@
+#ifndef MUTEX_HPP
+#define MUTEX_HPP
+
     // C system header files
 extern "C"
 {
@@ -26,6 +29,14 @@ public:
 	/// \note a single thread suspended on this mutex is then awaken
     void unlock();
 
+	/// Tells whether calling lock() would currently suspend the caller or not
+	///
+	/// \return true if lock is acquired false if mutex is already locked
+    bool try_lock();
+
 private:
     pthread_mutex_t mut; //< the mutex
 };
+
+#endif
+

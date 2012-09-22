@@ -1,6 +1,12 @@
 #ifndef WEB_INTERACTION_HPP
 #define WEB_INTERACTION_HPP
 
+    // C++ system header files
+
+
+    // webdar headers
+#include "mutex.hpp"
+
 class web_interaction : public user_interaction, public req_ans
 {
 public:
@@ -32,7 +38,7 @@ protected:
     virtual void inherited_warning(const std::string & message);
 
 private:
-    pthread_mutex_t pending_libdar; //< used to suspend libdar thread, waiting for user answer
+    mutex pending_libdar; //< used to suspend libdar thread, waiting for user answer
     pthread_mutex_t output_buffer_lock; //< exclusive access to the output buffer
     std::deque<std::string> output_buffer; //< list of line to display
     unsigned int index_of_last_input; //< gives in output_buffer the number of new lines of output (or the offset of output already returned to the user)

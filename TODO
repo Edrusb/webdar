@@ -38,5 +38,5 @@
 - ajouter des images dans l'interface WEB
 
 - implementer class entreport / FTP
-
+- modifier les #ifndef/#define des includes de libdar pour ajouter LIBDAR_ a la macro
 
