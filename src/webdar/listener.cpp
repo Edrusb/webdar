@@ -27,25 +27,25 @@ static struct in6_addr string_to_network_IPv6(const std::string & ip);
 static string network_IPv4_to_string(const struct in_addr & ip);
 static string network_IPv6_to_string(const struct in6_addr & ip);
 
-listener::listener(central_report *log, unsigned int port)
+listener::listener(central_report *log, authentication *auth, unsigned int port)
 {
     try
     {
-	init(log, "::1", port);
+	init(log, auth, "::1", port);
     }
     catch(...)
     {
-	init(log, "127.0.0.1", port);
+	init(log, auth, "127.0.0.1", port);
 	    // no throw;
     }
 }
 
-listener::listener(central_report *log, const std::string & ip, unsigned int port)
+listener::listener(central_report *log, authentication *auth, const std::string & ip, unsigned int port)
 {
-    init(log, ip, port);
+    init(log, auth, ip, port);
 }
 
-void listener::init(central_report *log, const std::string & ip, unsigned int port)
+void listener::init(central_report *log, authentication *auth, const std::string & ip, unsigned int port)
 {
     int tmp = 0;
     sigset_t sigs;
@@ -58,6 +58,7 @@ void listener::init(central_report *log, const std::string & ip, unsigned int po
     if(log == NULL)
 	throw WEBDAR_BUG;
     rep = log;
+    src = auth;
 
     try
     {
@@ -226,7 +227,7 @@ void listener::inherited_run()
 	    try
 	    {
 		rep->report(debug, "listener object: spawning in a separated thread the newly created \"connexion\" object");
-		if(!server::run_new_server(rep, con))
+		if(!server::run_new_server(rep, src, con))
 		    delete con;
 		else // object now managed by the new server object
 		    con = NULL;

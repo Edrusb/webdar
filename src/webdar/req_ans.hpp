@@ -133,6 +133,9 @@ public:
 	/// clear all information from the object
     void clear() { status = 0; reason = ""; attributes.clear(); body = ""; next_read = attributes.begin(); };
 
+	/// whether the minimal parameters have been set
+    bool is_empty() const { return status == 0; };
+
 private:
     unsigned int status;
     std::string reason;

@@ -23,6 +23,7 @@ extern "C"
 #include "listener.hpp"
 #include "webdar_tools.hpp"
 #include "server.hpp"
+#include "authentication.hpp"
 
 #define WEBDAR_EXIT_OK 0
 #define WEBDAR_EXIT_SYNTAX 1
@@ -60,6 +61,9 @@ int main(int argc, char *argv[], char **env)
     bool quit = false;
     vector<listener *> taches;
     priority_t min;
+    string fixed_user = "admin";
+    string fixed_pass = webdar_tools_generate_random_string(10);
+    authentication_cli auth = authentication_cli(fixed_user, fixed_pass);
 
     try
     {
@@ -122,6 +126,7 @@ int main(int argc, char *argv[], char **env)
 	if(creport == NULL)
 	    throw exception_memory();
 	creport->report(debug, "central report object has been created");
+	creport->report(warning, string("HTTP access using the following username/password: ") + fixed_user + " / " + fixed_pass);
 
 
 	    /////////////////////////////////////////////////
@@ -143,9 +148,9 @@ int main(int argc, char *argv[], char **env)
 		while(it != ecoute.end())
 		{
 		    if(it->interface == "")
-			tmp = new (nothrow) listener(creport, it->port);
+			tmp = new (nothrow) listener(creport, &auth,  it->port);
 		    else
-			tmp = new (nothrow) listener(creport, it->interface, it->port);
+			tmp = new (nothrow) listener(creport, &auth, it->interface, it->port);
 		    if(tmp == NULL)
 			throw exception_memory();
 		    else

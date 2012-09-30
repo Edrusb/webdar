@@ -23,7 +23,7 @@ mutex server::lock_counter;
 unsigned int server::max_server = 0;
 list<server *> server::instances;
 
-bool server::run_new_server(central_report *log, connexion *source)
+bool server::run_new_server(central_report *log, authentication *auth, connexion *source)
 {
     bool ret = false;
 
@@ -61,7 +61,7 @@ bool server::run_new_server(central_report *log, connexion *source)
 	else
 	{
 	    sigset_t sigs;
-	    server *tmp = new (nothrow) server(log, source);
+	    server *tmp = new (nothrow) server(log, auth, source);
 
 	    if(tmp == NULL)
 		throw exception_memory();
@@ -116,9 +116,14 @@ void server::kill_all_servers()
     lock_counter.unlock();
 }
 
-server::server(central_report *log, connexion *source) : src(source, log)
+server::server(central_report *log, authentication *auth, connexion *source) : src(source, log)
 {
+    if(log == NULL)
+	throw WEBDAR_BUG;
     rep = log;
+    if(auth == NULL)
+	throw WEBDAR_BUG;
+    authsrc = auth;
     can_keep_session = true;
 }
 
@@ -130,7 +135,9 @@ void server::inherited_run()
     string input_cookie = "";
     string expected_cookie = "";
     session *sess = NULL;
+    bool set_cookie_to_expected_one;
     bool authenticated;
+
 
     while(src.get_status() == connexion::connected)
     {
@@ -141,6 +148,9 @@ void server::inherited_run()
 
 		ans.clear();
 		req.clear();
+		set_cookie_to_expected_one = false;
+		authenticated = false;
+
 
 		    ///////////////////////////////////////////////////////
 		    // obtain request info from the parser
@@ -151,31 +161,40 @@ void server::inherited_run()
 		    // extract session info if any
 		session_ID = get_session_ID_from(req);
 
-			// extract cookie from request
-		if(!req.extract_cookies().find(COOKIE_NAME, input_cookie))
+		    // extract authentication cookie from request
+		if(!req.extract_cookies().find(COOKIE_NAME_AUTH, input_cookie))
 		    input_cookie = "";
 
+		    // obtain the expected session cookie from the session table
 		if(session_ID == "" || !session::get_session_cookie(session_ID, expected_cookie))
 		{
+			// no existing session to associate that request to
+			// triggering authentication request as response to this request
+			// except if this is the answer to an authentication request
 		    if(input_cookie != COOKIE_VAL_AUTH_ANS)
-			input_cookie = COOKIE_AUTH_REQ;
+			input_cookie = COOKIE_VAL_AUTH_REQ;
+		    expected_cookie = COOKIE_VAL_AUTH_ANS;
 		}
 
+
 		    ///////////////////////////////////////////////////////
-		    // authentication verification
+		    // authentication was requested in the previous answer
 		    //
 
-		if(input_cookie == COOKIE_AUTH_ANSW)
+
+		if(input_cookie == COOKIE_VAL_AUTH_ANS)
 			// this is the answer to an authentication request
 		{
 		    string user = "";
+		    string pass = "";
 
-			// check whether user authentication is correct
-		    if(!authentication_is_correct)   //<<<< A DEFINIR
+			// <<<< extract user/pass from the received answer
+			// <<<< A IMPLEMENTER
+			//
+		    if(!authsrc->valid_credentials(user, pass))
 		    {
-			ans = error_page("wrong login or password"); //<<<< A DEFINIR
-			expected_cookie = "";
-			    // input_cookie stays equal to COOKIE_AUTH_ANSW
+			error_page tmp = error_page(STATUS_CODE_UNAUTHORIZED, "wrong login or password");
+			ans = tmp.get_answer(req);
 		    }
 		    else // authentication is correct
 		    {
@@ -183,88 +202,116 @@ void server::inherited_run()
 			{
 			    if(!session::get_session_cookie(session_ID, expected_cookie))
 			    {
-				ans = error_page("unknown session"); // <<< A DEFINIR
-				exptected_cookie = "";
-				    // input_cookie stays equal to COOKIE_AUTH_ANSW
+				error_page tmp = error_page(STATUS_CODE_NOT_FOUND, "unknown session");
+				ans = tmp.get_answer(req);
 			    }
 			    else
-				input_cookie = "";
+			    {
+				set_cookie_to_expected_one = true;
+				authenticated = true;
+			    }
 			}
 			else // new session requested
 			{
 			    if(session::get_num_session(user) > 0)
 			    {
-				ans = session_list_page(); // <<< A DEFINIR
-				expected_cookie = COOKIE_CHOOSE_SESSION;
-				    // cookie stays equal to COOKIE_AUTH_ANSW
+				    // before creating a new session we must check whether a chooser session does not
+				    // already exist!!!!!!! <<<<<<<<<<<<<<<<<<<<<< A FAIRE
+				responder *resp = new (nothrow) error_page(STATUS_CODE_OK, "Faked session chooser page");
+				if(resp == NULL)
+				    throw exception_memory();
+				try
+				{
+				    session_ID = session::create_new(user, resp);
+				}
+				catch(...)
+				{
+				    if(resp != NULL)
+					delete resp;
+				    throw;
+				}
+
+				if(!session::get_session_cookie(session_ID, expected_cookie))
+				    throw WEBDAR_BUG;
+				else
+				{
+				    set_cookie_to_expected_one = true;
+				    authenticated = true;
+				}
 			    }
 			    else // create a new session directly
 			    {
-				session_ID = session::create_new(user, error_page("Faked session initial page")); //<<< A DEFINIR
+				responder *resp = new (nothrow) error_page(STATUS_CODE_OK, "Faked session initial page");
+				if(resp == NULL)
+				    throw exception_memory();
+				try
+				{
+				    session_ID = session::create_new(user, resp);
+				}
+				catch(...)
+				{
+				    if(resp != NULL)
+					delete resp;
+				    throw;
+				}
+
 				if(!session::get_session_cookie(session_ID, expected_cookie))
 				    throw WEBDAR_BUG;
-				cookie = "";
+				else
+				{
+				    set_cookie_to_expected_one = true;
+				    authenticated = true;
+				}
 			    }
 			}
 		    }
 		}
-
-
-		    ///////////////////////////////////////////////////////
-		    // authentication request
-		    //
-
-		if(input_cookie == COOKIE_AUTH_REQ)
+		else // input cookie != COOKIE_VAL_AUTH_ANS
 		{
-		    ans = ; /// A DEFINIR
-		    expected_cookie = COOKIE_AUTH_ANSW;
+		    if(input_cookie == expected_cookie)
+			authenticated = true;
+		    else
+		    {
+			ans = ; << request a login / password
+			expected_cookie = COOKIE_VAL_AUTH_ANS;
+			set_cookie_to_expected_one = true;
+		    }
 		}
 
 		    ///////////////////////////////////////////////////////
-		    // getting answer for authenticated requests
-		    // authenticated requests are those having a cookie different than COOKIE_AUTH
+		    // getting answer for authenticated requests only (non authenticated got their answer already)
+		    // authenticated requests are those having a cookie different than COOKIE_VAL_AUTH_REQ
 		    //
 
-		if(input_cookie != COOKIE_AUTH_ANSW && input_cookie != COOKIE_AUTH_ANSW)
+		if(authenticated)
 		{
 		    if(session_ID == "")
+			throw WEBDAR_BUG; // cannot authenticate a user without session_ID
+		    else
 		    {
-			    // request user authentication
-			ans = ; // <<<<<<<<<<<<<<< A DEFINIR
-			    //
-			cookie = ""; // this will set the COOKIE_AUTH in the answer later on
-			expected_cookie = COOKIE_AUTH_ANSW;
-		    }
-		    else // asked for a particular session
-		    {
-			if(cookie != expected_cookie)
+			if(sess != NULL && sess->get_session_ID() != session_ID)
 			{
-			    ans = error_page("unauthorized access");
-			    expected_cookie = "";
+			    session::release_session(sess);
+			    sess = NULL;
 			}
-			else // we are deemed authenticated for that session
+			if(sess == NULL)
 			{
-			    if(sess != NULL && sess->get_session_ID() != session_ID)
-			    {
-				session::release_session(sess);
-				sess = NULL;
-			    }
+			    sess = session::acquire_session(session_ID);
 			    if(sess == NULL)
-			    {
-				sess = session::acquire_session(session_ID);
-				if(sess == NULL)
-				    throw WEBDAR_BUG;
-			    }
-
-				// obtaining the answer from the session
-			    ans = sess->give_answer(req);
+				throw WEBDAR_BUG;
 			}
+
+			    // obtaining the answer from the session
+			ans = sess->give_answer(req);
 		    }
 		}
 
 		    // add the session cookie (expected_cookie, si cookie != expected_cookie)
-		if(cookie != expected_cookie)
-		    ans.add_cookie(WEDAR_COOKIE, expected_cookie);
+		if(set_cookie_to_expected_one)
+		    ans.add_cookie(COOKIE_NAME_AUTH, expected_cookie);
+
+		if(ans.is_empty())
+		    throw WEBDAR_BUG;
 
 		    // send back the anwser
 		src.send_answer(ans);

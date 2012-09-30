@@ -5,6 +5,7 @@
 #include "central_report.hpp"
 #include "thread.hpp"
 #include "exceptions.hpp"
+#include "authentication.hpp"
 
 
     /// class listener
@@ -18,8 +19,10 @@ class listener : public thread
 {
 public:
     listener(central_report *log,  //< where to send reports
+	     authentication *auth, //< where to request for authentications
 	     unsigned int port);   //< listen on localhost IPv4 or IPv6
     listener(central_report *log,    //< where to send reports
+	     authentication *auth,   //< where to request for authentications
 	     const std::string & ip, //< interface to listen on
 	     unsigned int port);     //< port to listen on
     listener(const listener & ref) { throw WEBDAR_BUG; }; //< forbidding copy construction
@@ -33,11 +36,13 @@ protected:
 
 private:
     central_report *rep; //< where to report events
+    authentication *src; //< where to validate authentications
     int sockfd;          //< socket descriptor
     int famille;         //< domain familly of the socket
 
     void set_sockfd(int domain);
     void init(central_report *log,
+	      authentication *auth,
 	      const std::string & ip,
 	      unsigned int port);
 };
