@@ -15,6 +15,10 @@ extern "C"
 
 using namespace std;
 
+static const string WEBDAR_COOKIE="webdar-session-id";
+
+static string get_session_ID_from(const request & req);
+
 mutex server::lock_counter;
 unsigned int server::max_server = 0;
 list<server *> server::instances;
@@ -120,12 +124,182 @@ server::server(central_report *log, connexion *source) : src(source, log)
 
 void server::inherited_run()
 {
+    request req;
+    answer ans;
+    string session_ID = "";
+    string input_cookie = "";
+    string expected_cookie = "";
+    session *sess = NULL;
+    bool authenticated;
+
     while(src.get_status() == connexion::connected)
     {
-	request req = src.get_next_request();
-	answer ans = answer(201, "test");
-	    // pass the request to object from the session table
-	    // and update "ans"
-	src.send_answer(ans);
+	try
+	{
+	    while(sess == NULL || src.has_pending_request())
+	    {
+
+		ans.clear();
+		req.clear();
+
+		    ///////////////////////////////////////////////////////
+		    // obtain request info from the parser
+		    //
+
+		req = src.get_next_request();
+
+		    // extract session info if any
+		session_ID = get_session_ID_from(req);
+
+			// extract cookie from request
+		if(!req.extract_cookies().find(COOKIE_NAME, input_cookie))
+		    input_cookie = "";
+
+		if(session_ID == "" || !session::get_session_cookie(session_ID, expected_cookie))
+		{
+		    if(input_cookie != COOKIE_VAL_AUTH_ANS)
+			input_cookie = COOKIE_AUTH_REQ;
+		}
+
+		    ///////////////////////////////////////////////////////
+		    // authentication verification
+		    //
+
+		if(input_cookie == COOKIE_AUTH_ANSW)
+			// this is the answer to an authentication request
+		{
+		    string user = "";
+
+			// check whether user authentication is correct
+		    if(!authentication_is_correct)   //<<<< A DEFINIR
+		    {
+			ans = error_page("wrong login or password"); //<<<< A DEFINIR
+			expected_cookie = "";
+			    // input_cookie stays equal to COOKIE_AUTH_ANSW
+		    }
+		    else // authentication is correct
+		    {
+			if(session_ID != "")
+			{
+			    if(!session::get_session_cookie(session_ID, expected_cookie))
+			    {
+				ans = error_page("unknown session"); // <<< A DEFINIR
+				exptected_cookie = "";
+				    // input_cookie stays equal to COOKIE_AUTH_ANSW
+			    }
+			    else
+				input_cookie = "";
+			}
+			else // new session requested
+			{
+			    if(session::get_num_session(user) > 0)
+			    {
+				ans = session_list_page(); // <<< A DEFINIR
+				expected_cookie = COOKIE_CHOOSE_SESSION;
+				    // cookie stays equal to COOKIE_AUTH_ANSW
+			    }
+			    else // create a new session directly
+			    {
+				session_ID = session::create_new(user, error_page("Faked session initial page")); //<<< A DEFINIR
+				if(!session::get_session_cookie(session_ID, expected_cookie))
+				    throw WEBDAR_BUG;
+				cookie = "";
+			    }
+			}
+		    }
+		}
+
+
+		    ///////////////////////////////////////////////////////
+		    // authentication request
+		    //
+
+		if(input_cookie == COOKIE_AUTH_REQ)
+		{
+		    ans = ; /// A DEFINIR
+		    expected_cookie = COOKIE_AUTH_ANSW;
+		}
+
+		    ///////////////////////////////////////////////////////
+		    // getting answer for authenticated requests
+		    // authenticated requests are those having a cookie different than COOKIE_AUTH
+		    //
+
+		if(input_cookie != COOKIE_AUTH_ANSW && input_cookie != COOKIE_AUTH_ANSW)
+		{
+		    if(session_ID == "")
+		    {
+			    // request user authentication
+			ans = ; // <<<<<<<<<<<<<<< A DEFINIR
+			    //
+			cookie = ""; // this will set the COOKIE_AUTH in the answer later on
+			expected_cookie = COOKIE_AUTH_ANSW;
+		    }
+		    else // asked for a particular session
+		    {
+			if(cookie != expected_cookie)
+			{
+			    ans = error_page("unauthorized access");
+			    expected_cookie = "";
+			}
+			else // we are deemed authenticated for that session
+			{
+			    if(sess != NULL && sess->get_session_ID() != session_ID)
+			    {
+				session::release_session(sess);
+				sess = NULL;
+			    }
+			    if(sess == NULL)
+			    {
+				sess = session::acquire_session(session_ID);
+				if(sess == NULL)
+				    throw WEBDAR_BUG;
+			    }
+
+				// obtaining the answer from the session
+			    ans = sess->give_answer(req);
+			}
+		    }
+		}
+
+		    // add the session cookie (expected_cookie, si cookie != expected_cookie)
+		if(cookie != expected_cookie)
+		    ans.add_cookie(WEDAR_COOKIE, expected_cookie);
+
+		    // send back the anwser
+		src.send_answer(ans);
+	    }
+
+		// release the lock for the current session
+	    if(sess != NULL)
+	    {
+		session::release_session(sess);
+		sess = NULL;
+	    }
+
+
+	}
+	catch(...)
+	{
+		// release the lock for the current session
+	    if(sess != NULL)
+	    {
+		session::release_session(sess);
+		sess = NULL;
+	    }
+	    throw;
+	}
     }
+}
+
+
+static string get_session_ID_from(const request & req)
+{
+    string ret = "";
+
+    const uri chem = req.get_uri();
+    if(chem.size() > 2)
+	ret = chem[3];
+
+    return ret;
 }

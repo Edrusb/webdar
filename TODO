@@ -8,16 +8,19 @@
 + keepalive dans session TCP
 + finir l'implementation de la classe parser (implementer une class server qui retourne les infos sur la requete recue)
 + finir l'implementation de la class parser pour la gestion du protocole HTTP (requetes / cookies & Co).
-> definir la structure de donnee session
->>> remplacer de session par un semaphore; faire une class C++ pour enrober les semaphores
->>>> une class serveur qui veut utiliser une session utilise le semaphore, et le conserve en verifiant si un autre server ne l'a pas demande, auquel cas
->>>> elle remonte le semaphore (ce qui libere une thread) et attends a son tour sur le semaphore
->>>>> ne faut-il pas mieux associer un cookie dans une table utilisateur (authentification), liste de cookie valides (+ duree de peremption )
-> definir la hierarchie de class pour l'authentification : travail a initier depuis la class server faute de cookie dans la requete
-- pour les sessions non authentifiees, il faut limiter la duree de la connexion a un temps court
++ definir la structure de donnee session
++ remplacer de session par un semaphore; faire une class C++ pour enrober les semaphores
++ gerer les cookies dans les class requests et answer
+>> implementation de server inherited_run()
+- terminer l'implementation de parser, si possible mettre des outils dans webdar_tools pour la manipulation de chaines de caractere
 - implementer une classe authentification par login (a trouver pour le differencier des utilisateur unix)/mot de passe en CLI
 - faire l'implementation de la classe server / en fonction de la requete sollicite un object html ou cree une nouvelle session
-- finir la gestion des signals et masks (avec les informations de sessions ouvertes etc.)
+- ne faut-il pas mieux associer un cookie dans une table utilisateur (authentification), liste de cookie valides (+ duree de peremption )
+- definir la hierarchie de class pour l'authentification : travail a initier depuis la class server faute de cookie dans la requete
+- pour les sessions non authentifiees, il faut limiter la duree de la connexion a un temps court
+
+
+- finir la gestion des signaux et masks (avec les informations de sessions ouvertes etc.)
 - ajouter la gestion des signaux au sein des threads
 - prendre en compte les signaux qui peuvent etre retournes par une socket
 - revoir la conformite de la classe parser aux vue des RFC HTTP:
@@ -29,7 +32,7 @@
 - implementer class authentification par user du systeme
 - implementer le mode daemon / syslog (qui interdit l'authentification par CLI)
 - pouvoir saisir des nom et convertir les IP en nom si possible (peer IP)
-- revoir sterrror_r dans exception_system (strerror n'est pas thread safe)
+- revoir sterrror_r dans exception_system (strerror n'est pas thread safe, mais errno l'est !!!)
 - revoir toutes les allocations dynamiques en "new (nothrow)"
 - ajouter des #ifdef dans les includes
 - ajouter la licence en CLI -L et http, entetes des fichiers avec GPLv3

@@ -1,8 +1,8 @@
 #include "semaphore.hpp"
 
-semaphore::semaphore(unsigned int val)
+semaphore::semaphore()
 {
-    value = (int)val;
+    value = 1;
 }
 
 semaphore::~semaphore()
@@ -11,9 +11,14 @@ semaphore::~semaphore()
 	throw WEBDAR_BUG;
 }
 
-bool semaphore::waiting_threads() const
+bool semaphore::waiting_thread() const
 {
-    return value < 0;
+    return value < 0; // reading of integer is atomic CPU single operation, no need to lock val_mutex
+}
+
+bool semaphore::working_thread() const
+{
+    return value < 1; // reading of integer is atomic CPU single operation, no need to lock val_mutex
 }
 
 void semaphore::lock()

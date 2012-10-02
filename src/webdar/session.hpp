@@ -10,9 +10,8 @@ extern "C"
 #include <list>
 
     // webdar headers
-
 #include "req_ans.hpp"
-
+#include "semaphore.hpp"
 
     /// class session - holds information about a current user session
 
@@ -24,66 +23,80 @@ extern "C"
 class session
 {
 public:
-    struct session_summary
-    {
-	std::string user;
-	std::string session_ID;
-	bool attached;
-    };
+
+	//////////////////////////
+	// Object methods
+	//
 
 	// constructor of the class are left private intentionnaly
 	// this class provides a global table of session one can create, lookup or destroy objects in/from this table
 
+    answer give_answer(const request & req);
+    const std::string get_owner() const { return owner; };
+    void set_cookie(const std::string & cook) { cookie = cook; };
+    const std::string get_cookie() const { return cookie; };
+    bool has_waiting_threads() const { return lock_gui.waiting_thread(); };
+    bool has_working_server() const { return lock_gui.working_thread(); };
+    std::string get_session_ID() const { return session_ID; };
+
 	//////////////////////////
-	// Class methods
+	// Class types and methods
 	//
 
+    struct session_summary
+    {
+	std::string user;
+	std::string session_ID;
+	bool locked;
+	bool libdar_running;
+	void clear() { user = session_ID = ""; locked = libdar_running = false; };
+    };
+
     static unsigned int get_num_session();
-    static void create_new(const std::string & session_ID,
-			   const std::string & owner,
-			   responder *resp);
+    static unsigned int get_num_session(const std::string & user);
     static std::vector<session_summary> get_summary();
-    static answer get_answer_for(const std::string & session_ID,     //< the session to interact with
-				 const request & req,                //< the request to be answered
-				 const std::string new_cookie = ""); //< if set, modifies the session cookie to this new value (session holdover)
+    static std::string create_new(const std::string & owner,
+				  responder *resp); /// returns the session_ID of the newly created session
+    static session *acquire_session(const std::string & session_ID);
+    static void release_session(session *sess);
+    static bool get_session_cookie(const std::string & session_ID, string & sesscook);
 
 private:
 	/// constructor
-    session(const std::string & x_user,
+    session(const std::string & sess_ID,
+	    const std::string & x_user,
+	    const std::string & cookie,
 	    responder *x_resp);
 
 	/// destructor
     ~session(); //< free dynamically allocated fields
 
 
-    mutex lock_this;          //< control the access to objects fields
     std::string owner;        //< the official owner of the thread: the authenticated user that lead to this thread creation
-    std::string cookie;       //< the session cookie that is mandatory to sollicitate this session (used to avoid new authentication)
+    std::string cookie;       //< the session cookie if any
+    semaphore lock_gui;       //< required locking before accessing gui field
     responder *gui;           //< object containing the current GUI status; this object is managed by the session object; should never be NULL
-    bool closing;             //< when closing the object must not be given for new request, only pending requests can be honored
-    unsigned int pending_requests; //< how much requests are waiting in the pipe(s), a session object must not be destroyed if this number is greater than zero
+    pthread_t tid;            //< holds the tid of the thread that acquired the object
+    bool libdar_running;      //< unused for now
+    std::string session_ID;   //< session_ID info (duplicated info to avoid table lookup and mutex lock)
 
-    void lock_obj() const;
-    void unlock_obj() const;
-    answer give_answer(const request & req);
-    bool is_closing() const { return closing; };
-    void add_pending_request() { lock_obj(); ++pending_requests; unlock_obj(); };
-    const std::string get_owner() const { return owner; };
-    void change_cookie(const std::string & new_cookie) { lock_obj(); cookie = new_cookie; unlock_obj(); };
+    void check_caller() const;//< test whether the caller has properly acquired the lock on this object
 
 
 	////////////////
 	// static types, variables and methods
 	//
 
-    static pthread_mutex_t lock_running;                     //< control access to runnng_session static table
-    static std::map<std::string, session *> running_session; //< list of existing sessions
+    struct table
+    {
+	session *reference;     //< object reference
+	unsigned int ref_given; //< number of time the reference to that object has been given
+	bool closing;           //< if true the reference must not be given any longer
+	clear(){ reference = NULL; ref_given = 0; closing = false; };
+    };
 
-    static void add_in_the_list(session *obj);
-    static void remove_from_the_list(session *obj);
-
-    static void lock_class();
-    static void unlock_class();
+    static mutex lock_running;                               //< control access to runnng_session static table
+    static std::map<std::string, table> running_session;     //< list of existing sessions
 };
 
 #endif

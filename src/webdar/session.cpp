@@ -2,116 +2,211 @@
 
 using namespace std;
 
+const unsigned int SESSION_ID_WIDTH = 20;
+
+
     //////////////////////////
     //  class method implementation
     //
 
-static unsigned int session::get_num_session()
+mutex session::lock_running;
+map<string, session *> session::running_session;
+
+unsigned int session::get_num_session()
 {
     unsigned int ret = 0;
 
-    lock_class();
-
+    lock_running.lock();
     try
     {
 	ret = running_session.size();
     }
     catch(...)
     {
-	unlock_class();
+        lock_running.unlock();
 	throw;
     }
-    unlock_class();
+    lock_running.unlock();
 
     return ret;
 }
 
-static void session::create_new(const string & session_ID,
-				const string & owner,
-				responder *resp)
+string session::create_new(const string & owner,
+			   responder *resp)
 {
-    lock_class();
+    table entry;
+    string sessID;
+    string cookie = webdar_tools_generate_random_string(COOKIE_WIDTH);
 
+    entry.clear();
     try
     {
-	session *obj = NULL;
-
+	lock_running.lock();
 	try
 	{
-	    string session_ID = webdar_tools_generate_random_strong();
-	    obj = new session(owner, resp);
-	    running_session[session_ID] = obj;
+		// looking whether the new session_ID is not already used
+	    do
+	    {
+		sessID = webdar_tools_generate_random_string(SESSION_ID_WIDTH);
+	    }
+	    while(running_session.find(sessID) != running_session.end());
+
+	    entry.reference = new (nothrow) session(sessID, owner, cookie, resp);
+	    if(entry.reference == NULL)
+		throw exception_memory();
+
+	    running_session[sessID] = entry;
 	}
 	catch(...)
 	{
-	    if(obj != NULL)
-		delete obj;
+	    lock_running.unlock();
 	    throw;
+	}
+	lock_running.unlock();
+    }
+    catch(...)
+    {
+	if(entry.reference != NULL)
+	    delete entry.reference;
+	throw;
+    }
+
+    return sessID;
+}
+
+vector<session_summary> session::get_summary()
+{
+    vector<session_summary> ret;
+    map<string, table>::iterator it;
+    session_summary tmp;
+
+    lock_running.lock();
+    try
+    {
+	it = running_session.begin();
+	while(it != running_session.end())
+	{
+	    if(it->second.reference == NULL)
+		throw WEBDAR_BUG;
+	    tmp.clear();
+	    tmp.user = it->second.reference->get_owner();
+	    tmp.session_ID = it->first;
+	    tmp.locked = it->second.reference->has_working_server();
+	    tmp.libdar_running = it->second.reference->libdar_running;
+	    ret.push_back(tmp);
+	    ++it;
 	}
     }
     catch(...)
     {
-	unlock_class();
+	lock_running.unlock();
 	throw;
     }
-    unlock_class();
+    lock_running.unlock();
 }
 
-
-static vector<session_summary> get_summary()
+session *acquire_session(const std::string & session_ID)
 {
-	// A IMPLEMENTER
-}
+    session *ret = NULL;
+    map<string,table>::iterator it;
 
-static answer get_answer_for(const string & session_ID,        //< the session to interact with
-				 const request & req,          //< the request to be answered
-				 const string new_cookie = "") //< if set, modifies the session cookie to this new value (session holdover)
-{
-    answer ret;
-    session *obj = NULL;
-
-    lock_class();
+    lock_running.lock();
 
     try
     {
-	map<string, session *>::iterator it = running_session.find(session_ID);
-
-	if(it != running_session.end())
+	it = running_session.find(session_ID);
+	if(it != running_session.end() && !(it.second->closing))
 	{
-	    obj = it->second;
-	    if(obj == NULL)
+	    if(it.second->reference == NULL)
 		throw WEBDAR_BUG;
-	}
-	    // else obj stays equal to NULL
-
-	if(obj != NULL)
-	{
-	    obj->add_pending_request();
-	    if(new_cookie != "")
-	    {
-		obj->change_cookie(new_cookie);
-		    // ! MUST ALSO ADD NEW COOKIE IN THE REQUEST
-	    }
+	    ret = it.second->reference;
+	    ++(it.second->ref_given);
 	}
     }
     catch(...)
     {
-	unlock_class();
+	lock_running.unlock();
 	throw;
     }
-    unlock_class();
+    lock_running.unlock();
 
-    if(obj != NULL)
-	ret = obj->give_answer(req);
-    else // no such session found
+    if(ret != NULL)
     {
-	error_responder tmp = error_responder("unknown session", STATUS_CODE_NOT_FOUND);
-	ret = tmp.give_answer(req);
+	ret->lock_gui.lock();
+	tid = pthread_self();
     }
 
-   return ret;
+    return ret;
 }
 
+
+void release_session(session *sess)
+{
+    map<string,table>::iterator it;
+
+    if(sess == NULL)
+	throw WEBDAR_BUG;
+
+    lock_running.lock();
+    try
+    {
+	it = running_session.begin();
+
+	while(it != running_session.end() && it->second.reference != sess)
+	    ++it;
+
+	    // checks
+	if(it == running_session.end())
+	    throw WEBDAR_BUG;
+	sess->check_caller();
+
+	    // all check passed, we can proceed
+	--(it.second->ref_given);
+	sess->lock_gui.unlock();
+	if(it.second->ref_given == 0 && it.second->closing)
+	{
+	    if(it.second->reference->has_working_server())
+		throw WEBDAR_BUG;
+	    delete it.second->reference;
+	    running_session.erase(it);
+	}
+    }
+    catch(...)
+    {
+	lock_running.unlock();
+	throw;
+    }
+    lock_running.unlock();
+}
+
+
+bool session::get_session_cookie(const std::string & session_ID, string & sesscook) const
+{
+    bool ret = false;
+    map<string, table>::const_iterator it;
+
+    lock_running.lock();
+    try
+    {
+	it = running_table.find(session_ID);
+
+	if(it != running_table.end())
+	{
+	    if(it->second.reference == NULL)
+		throw WEBDAR_BUG;
+	    sesscook = it->second.reference->cookie;
+	    ret = true;
+	}
+    }
+    catch(...)
+    {
+	lock_running.unlock();
+	throw;
+    }
+    lock_running.unlock();
+
+    return ret;
+}
 
 
     //////////////////////////
@@ -120,18 +215,19 @@ static answer get_answer_for(const string & session_ID,        //< the session t
 
 
 
-session::session(const string & x_user,
-		 responder *x_resp): lock_this(PTHREAD_MUTEX_INITIALIZE)
+session::session(const string & sess_ID,
+		 const string & x_user,
+		 const string & x_cookie,
+		 responder *x_resp)
 {
-    running_job = false;
-
     owner = user;
-    cookie = ""; // the cookie will be defined at the time of the first answer
+    cookie = x_cookie;
     gui = x_resp;
     if(gui == NULL)
 	throw WEBDAR_BUG;
     closing = false;
-    pending_requests = 0;
+    libdar_running = false;
+    session_ID = sess_ID;
 }
 
 session::~session()
@@ -140,53 +236,9 @@ session::~session()
 	delete gui;
 }
 
-
-void lock_obj() const
-{
-    if(pthread_mutex_lock(&lock_this) != 0)
-	throw WEBDAR_BUG;
-}
-
-void unlock_obj() const
-{
-    if(pthread_mutex_unlock(&lock_this) != 0)
-	throw WEBDAR_BUG;
-}
-
-
 answer session::give_answer(const request & req)
 {
-    answer ret;
-
-    lock_obj();
-
-    try
-    {
-	if(pending_requests > 0)
-	    --pending_requests;
-	else
-	    throw SRC_BUG;
-	if(gui == NULL)
-	    throw WEBDAR_BUG;
-
-	if(cookie != "")
-	{
-		// we must check that the cookie is present in the request
-	}
-
-	ret = gui->give_answer(req);
-
-	if(cookie == "")
-	{
-		// we must define a cookie, record in "this" and add it to the response
-	}
-    }
-    catch(...)
-    {
-	unlock_obj();
-	throw;
-    }
-    unlock_obj();
-
-    return ret;
+    check_caller();
+    return gui->give_answer(req);
 }
+

@@ -6,16 +6,23 @@
 #include "exceptions.hpp"
 #include "mutex.hpp"
 
+    /// class semaphore is used as replacement of sem_t type in order to detect whether other
+    /// thread than the one currently having the lock are waiting for the semaphore to be released
+
 class semaphore
 {
 public:
-    semaphore(unsigned int val = 1);
+    semaphore();
     semaphore(const semaphore & ref) { throw WEBDAR_BUG; };
     const semaphore & operator = (const semaphore & ref) { throw WEBDAR_BUG; };
     ~semaphore();
 
-	/// return whether the semaphore has pending threads waiting for another thread to unlock it
-    bool waiting_threads() const;
+	/// return whether the semaphore has at least a pending thread waiting for another thread to unlock it
+    bool waiting_thread() const;
+
+
+	/// return whether the semaphore is locked (may it has pending thread or not)
+    bool working_thread() const;
 
 	/// request lock
 	///
