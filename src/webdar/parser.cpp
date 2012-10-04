@@ -128,14 +128,38 @@ void parser::send_answer(const answer & ans)
 
     try
     {
+	if(ans.is_empty())
+	    throw WEBDAR_BUG;
 
+	    // check conformance with RFC
 
+	    /// <<<<<< A IMPLEMENTER
+
+	    // sending the answer
+
+	string code = webdar_tools_convert_string(ans.get_status_code());
+	string key, val;
+	source->write(code.c_str(), code.size());
+	source->write(ans.get_reason().c_str(), ans.get_reason().size());
+	source->write("\r\n", 2);
+
+	ans.reset_read_next_attribute();
+	while(ans.read_next_attribute(key, val))
+	{
+	    source->write(key.c_str(), key.size());
+	    source->write(": ", 2);
+	    source->write(val.c_str(), val.size());
+	    source->write("\r\n", 2);
+	}
+	source->write("\r\n\r\n", 4);
+	source->write(ans.get_body().c_str(), ans.get_body().size());
     }
     catch(exception_base & e)
     {
 	answered = true;
 	throw;
     }
+    answered = true;
 }
 
 void parser::fill_buffer()

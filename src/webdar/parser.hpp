@@ -47,7 +47,7 @@ public:
     unsigned int get_last_request_min_version() const { return min_vers; };
 
 private:
-    connexion *source;         //< where to read data from
+    connexion *source;         //< where to read/write data from/to
     unsigned buffer_size;      //< size of the buffer
     char *buffer;              //< temporary area used for parsing
     unsigned int already_read; //< amount of data already read

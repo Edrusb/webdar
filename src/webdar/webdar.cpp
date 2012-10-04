@@ -375,12 +375,20 @@ static void add_item_to_list(const char *optarg, vector<interface_port> & ecoute
 
 static void close_all_listeners(int sig)
 {
-    creport->report(crit, "Signal received, action not yet implemented");
-
-	/// check if current job is running
+	/// check if a current job is running
+    bool job_running = false;
+    vector<session_summary> current = session::get_summary();
+    vector<session_summary>::iterator it = current.begin();
+    while(it != current.end() && !it->libdar_running)
+	++it;
+    job_running = (it != current.end());
 
 	/// if so report to central_report that we cannot interrupt the process
 	/// either connect with appropriate rights and abort the running task
+    if(job_running)
+	creport->report(crit, "A libdar job is currently running, cannot stop the operation
+
+
 
 	/// else, end all listeners
 	/// report to central_report that all listeners have ended, waiting for all connexion to terminate

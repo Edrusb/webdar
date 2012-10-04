@@ -101,13 +101,13 @@ class answer
 public:
     answer() { clear(); };
 
+	/// set/get answer status code and reason
     void set_status_reason(unsigned int status_code, const std::string & reason_phrase);
+    unsigned int get_status_code() const { return status; };
+    const std::string get_reason() const { return reason; };
 
-	/// adds or remplace a given attribute if the HTTP answer
+	/// adds or remplace a given attribute  the HTTP answer
     void add_attribute(const std::string & key, const std::string & value) { attributes[key] = value; };
-
-	/// adds the  body to the answer
-    void add_body(const std::string & key) { body = key; };
 
 	/// retrieve the value of an attribute of the HTTP answer
 	///
@@ -126,9 +126,12 @@ public:
 	/// \return true if a next attribute has been else, key and value are not set
     bool read_next_attribute(std::string & key, std::string & value) const;
 
-
-	/// add cookie to the answer
+	/// add cookie to the answer, that is a special attribute
     void add_cookie(const std::string & key, std::string & value);
+
+	/// adds the  body to the answer
+    void add_body(const std::string & key) { body = key; };
+    const std::string get_body() const { return body; };
 
 	/// clear all information from the object
     void clear() { status = 0; reason = ""; attributes.clear(); body = ""; next_read = attributes.begin(); };
