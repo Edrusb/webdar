@@ -1,4 +1,6 @@
 #include "session.hpp"
+#include "cookies.hpp"
+#include "webdar_tools.hpp"
 
 using namespace std;
 
@@ -10,7 +12,7 @@ const unsigned int SESSION_ID_WIDTH = 20;
     //
 
 mutex session::lock_running;
-map<string, session *> session::running_session;
+map<string, session::table> session::running_session;
 
 unsigned int session::get_num_session()
 {
@@ -74,7 +76,7 @@ string session::create_new(const string & owner,
     return sessID;
 }
 
-vector<session_summary> session::get_summary()
+vector<session::session_summary> session::get_summary()
 {
     vector<session_summary> ret;
     map<string, table>::iterator it;
@@ -105,7 +107,7 @@ vector<session_summary> session::get_summary()
     lock_running.unlock();
 }
 
-session *acquire_session(const std::string & session_ID)
+session *session::acquire_session(const std::string & session_ID)
 {
     session *ret = NULL;
     map<string,table>::iterator it;
@@ -115,12 +117,12 @@ session *acquire_session(const std::string & session_ID)
     try
     {
 	it = running_session.find(session_ID);
-	if(it != running_session.end() && !(it.second->closing))
+	if(it != running_session.end() && !(it->second.closing))
 	{
-	    if(it.second->reference == NULL)
+	    if(it->second.reference == NULL)
 		throw WEBDAR_BUG;
-	    ret = it.second->reference;
-	    ++(it.second->ref_given);
+	    ret = it->second.reference;
+	    ++(it->second.ref_given);
 	}
     }
     catch(...)
@@ -133,14 +135,14 @@ session *acquire_session(const std::string & session_ID)
     if(ret != NULL)
     {
 	ret->lock_gui.lock();
-	tid = pthread_self();
+	ret->tid = pthread_self();
     }
 
     return ret;
 }
 
 
-void release_session(session *sess)
+void session::release_session(session *sess)
 {
     map<string,table>::iterator it;
 
@@ -161,13 +163,15 @@ void release_session(session *sess)
 	sess->check_caller();
 
 	    // all check passed, we can proceed
-	--(it.second->ref_given);
+	--(it->second.ref_given);
 	sess->lock_gui.unlock();
-	if(it.second->ref_given == 0 && it.second->closing)
+	if(it->second.ref_given == 0 && it->second.closing)
 	{
-	    if(it.second->reference->has_working_server())
+	    if(it->second.reference == NULL)
 		throw WEBDAR_BUG;
-	    delete it.second->reference;
+	    if(it->second.reference->has_working_server())
+		throw WEBDAR_BUG;
+	    delete it->second.reference;
 	    running_session.erase(it);
 	}
     }
@@ -180,7 +184,7 @@ void release_session(session *sess)
 }
 
 
-bool session::get_session_cookie(const std::string & session_ID, string & sesscook) const
+bool session::get_session_cookie(const std::string & session_ID, string & sesscook)
 {
     bool ret = false;
     map<string, table>::const_iterator it;
@@ -188,9 +192,9 @@ bool session::get_session_cookie(const std::string & session_ID, string & sessco
     lock_running.lock();
     try
     {
-	it = running_table.find(session_ID);
+	it = running_session.find(session_ID);
 
-	if(it != running_table.end())
+	if(it != running_session.end())
 	{
 	    if(it->second.reference == NULL)
 		throw WEBDAR_BUG;
@@ -220,12 +224,11 @@ session::session(const string & sess_ID,
 		 const string & x_cookie,
 		 responder *x_resp)
 {
-    owner = user;
+    owner = x_user;
     cookie = x_cookie;
     gui = x_resp;
     if(gui == NULL)
 	throw WEBDAR_BUG;
-    closing = false;
     libdar_running = false;
     session_ID = sess_ID;
 }

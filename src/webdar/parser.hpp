@@ -28,6 +28,9 @@ public:
 	/// provides visibility on the connection status
     connexion::status get_status() const { if(source == NULL) throw WEBDAR_BUG; return source->get_status(); };
 
+	/// test whether a request is available for reading
+    bool has_pending_request(const uri & url);  //<< A IMPLEMENTER
+
 	/// extract the next request from the connexion
 	///
 	/// \return the request found

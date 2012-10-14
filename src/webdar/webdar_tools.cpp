@@ -10,10 +10,10 @@
 
 using namespace std;
 
-int webdar_tools_convert_to_int(const std::string & ref)
+int webdar_tools_convert_to_int(const string & ref)
 {
     int ret;
-    std::stringstream buf;
+    stringstream buf;
 
     buf.str(ref);
     buf >> ret;
@@ -23,7 +23,7 @@ int webdar_tools_convert_to_int(const std::string & ref)
     return ret;
 }
 
-void webdar_tools_split_by(char sep, const string & aggregate, vector<string> splitted)
+void webdar_tools_split_by(char sep, const string & aggregate, vector<string> & splitted)
 {
     splitted.clear();
 
@@ -60,7 +60,7 @@ void webdar_tools_split_in_two(char sep, const string &aggregate, string & first
     second = string(it, aggregate.end());
 }
 
-extern void webdar_tools_remove_leading_spaces(const std::string & input)
+string webdar_tools_remove_leading_spaces(const string & input)
 {
     string::const_iterator it = input.begin();
 
@@ -68,4 +68,45 @@ extern void webdar_tools_remove_leading_spaces(const std::string & input)
 	++it;
 
     return string(it, input.end());
+}
+
+std::string webdar_tools_init_randomization()
+{
+    int pas = getpid() % getppid();
+    srand(time(NULL));
+
+    if(pas < 0)
+	pas = -pas;
+    if(pas == 0)
+	pas = 10;
+    for(unsigned int i = getpid() ; i > 0 ; i -= pas)
+	(void)rand();
+}
+
+string webdar_tools_generate_random_string(unsigned int size)
+{
+    string ret = "";
+    unsigned int x;
+
+    for(unsigned int i = 0; i < size; ++i)
+    {
+	x = rand() % 62;
+	if(x < 10)
+	    ret += char(x + 48); // digits 0 - 9
+	else
+	    if(x < 36) // 10 <= x < 36
+		ret += char(55 + x); // uppercase letters A - Z
+	    else  // 36 <= x < 61
+		ret += char(61 + x); // lowercase letters a - z
+    }
+
+    return ret;
+}
+
+string webdar_tools_get_session_ID_from_URI(const uri & url)
+{
+    if(url.size() > 2)
+	return url[3];
+    else
+	return "";
 }

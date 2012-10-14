@@ -27,11 +27,13 @@ parser::~parser()
 request parser::get_next_request()
 {
     unsigned int body_length = 0;
+    request ret;
 
 	// first level analysis / tokens
     string meth;
     string resource;
     string version;
+
 
 	// splitted token
     uri res;
@@ -47,6 +49,9 @@ request parser::get_next_request()
 
     try
     {
+	string key;
+	string val;
+	string body;
 
 	    // reading the first line of the request
 
@@ -66,7 +71,9 @@ request parser::get_next_request()
 	set_version(version);
 	if(maj_vers != 1)
 	{
-	    answer ans = answer(STATUS_CODE_HTTP_VERSION_NOT_SUPPORTED, "HTTP version not supported");
+	    answer ans;
+
+	    ans.set_status_reason(STATUS_CODE_HTTP_VERSION_NOT_SUPPORTED, "HTTP version not supported");
 		// add the close token to answ
 	    send_answer(ans);
 	    throw exception_range("unsupported HTTP version");
@@ -74,10 +81,8 @@ request parser::get_next_request()
 	if(min_vers > 1)
 	    clog->report(err, "HTTP minor version is higher than what this software is aware of, trying to cope with it anyway: " + version);
 
-	request ret = request(meth, res);
-	string key;
-	string val;
 
+	ret.set_method_url(meth, res);
 	skip_line();
 
 	    // reading the rest of the header
@@ -97,7 +102,6 @@ request parser::get_next_request()
 	skip_line();
 
 	    // reading the body
-	string body;
 
 	if(maj_vers == 1 && maj_vers == 0) // HTTP/1.0
 	    body = up_to_eof();
@@ -105,8 +109,6 @@ request parser::get_next_request()
 	    body = up_to_length(body_length);
 
 	ret.add_body(body);
-
-	return ret;
     }
     catch(exception_base & e)
     {
@@ -118,6 +120,8 @@ request parser::get_next_request()
 	answered = true;
 	throw;
     }
+
+    return ret;
 }
 
 
@@ -137,7 +141,7 @@ void parser::send_answer(const answer & ans)
 
 	    // sending the answer
 
-	string code = webdar_tools_convert_string(ans.get_status_code());
+	string code = webdar_tools_convert_to_string(ans.get_status_code());
 	string key, val;
 	source->write(code.c_str(), code.size());
 	source->write(ans.get_reason().c_str(), ans.get_reason().size());

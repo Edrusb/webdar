@@ -1,10 +1,14 @@
 #ifndef REQ_ANS_HPP
 #define REQ_ANS_HPP
 
+    // C++ system header files
 #include <string>
 #include <vector>
-#include <multimap>
 #include <map>
+
+    // webdar headers
+#include "uri.hpp"
+
 
 const unsigned int STATUS_CODE_CONTINUE = 101;
 const unsigned int STATUS_CODE_SWITCHING_PROTOCOLS = 101;
@@ -42,13 +46,6 @@ const unsigned int STATUS_CODE_SERVICE_UNAVAILABLE = 503;
 const unsigned int STATUS_CODE_GATEWAY_TIME_OUT = 504;
 const unsigned int STATUS_CODE_HTTP_VERSION_NOT_SUPPORTED = 505;
 
-    /////////////////////////////////////////////////////////////////////////////////////
-    /// uri type holds the splitted list of the scheme / hostname / path
-    ///
-    /// the first member is always the scheme
-    /// the second member is always the host part of the URL (or an empty string for local and relative URL)
-    /// the further members is the path of the URL
-typedef std::vector<std::string> uri;
 
     /////////////////////////////////////////////////////////////////////////////////////
     /// cookies list
@@ -74,7 +71,7 @@ public:
     request() { clear(); };
 
     void set_method_url(const std::string & method, const uri & url);
-    void add_attribute(const std::string & key, const std::string & value) { attributes[key] = value; };
+    void add_attribute(const std::string & key, const std::string & value) { attributes.insert(std::pair<std::string, std::string>(key, value)); };
     void add_body(const std::string & key) { body = key; };
 
     const std::string & get_method() const { return meth; };
@@ -107,7 +104,7 @@ public:
     const std::string get_reason() const { return reason; };
 
 	/// adds or remplace a given attribute  the HTTP answer
-    void add_attribute(const std::string & key, const std::string & value) { attributes[key] = value; };
+    void add_attribute(const std::string & key, const std::string & value) { attributes.insert(std::pair<std::string, std::string>(key, value)); };
 
 	/// retrieve the value of an attribute of the HTTP answer
 	///

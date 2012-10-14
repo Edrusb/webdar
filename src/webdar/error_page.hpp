@@ -19,7 +19,13 @@ public:
     error_page(unsigned int status_code,
 	       const std::string & reason) { status = status_code; msg = reason; };
 
-    answer give_answer(const request & req) { answer ret; ret.set_status_reason(status, msg); ret.add_body(std::string("ERROR WHILE REQUESTING THIS URL: ") + req.get_uri()); return ret; };
+    answer give_answer(const request & req)
+    {
+	answer ret;
+	ret.set_status_reason(status, msg);
+	ret.add_body(std::string("ERROR WHILE REQUESTING THIS URL: ") + req.get_uri().get_string());
+	return ret;
+    };
 
 private:
     unsigned int status;

@@ -67,6 +67,8 @@ int main(int argc, char *argv[], char **env)
 
     try
     {
+	webdar_tools_init_randomization();
+
 	    /////////////////////////////////////////////////
 	    // set signal handlers for type 1 and type 2
 
@@ -377,8 +379,8 @@ static void close_all_listeners(int sig)
 {
 	/// check if a current job is running
     bool job_running = false;
-    vector<session_summary> current = session::get_summary();
-    vector<session_summary>::iterator it = current.begin();
+    vector<session::session_summary> current = session::get_summary();
+    vector<session::session_summary>::iterator it = current.begin();
     while(it != current.end() && !it->libdar_running)
 	++it;
     job_running = (it != current.end());
@@ -386,15 +388,11 @@ static void close_all_listeners(int sig)
 	/// if so report to central_report that we cannot interrupt the process
 	/// either connect with appropriate rights and abort the running task
     if(job_running)
-	creport->report(crit, "A libdar job is currently running, cannot stop the operation
-
-
-
-	/// else, end all listeners
-	/// report to central_report that all listeners have ended, waiting for all connexion to terminate
-	/// but a second signal will end directly
-	/// report to all connexion about the request to shutdown
-	/// prevent any libdar task to be run
-
-	/// if no connexion nor job end immediately
+	creport->report(crit, "SIGNAL RECEIVED: A libdar job is currently running, cannot stop the operation, stop the running job(s) before from web interface");
+    else
+    {
+	creport->report(crit, "SIGNAL RECEIVED: no libdar job is currently running, aborting all currently running sessions...");
+	server::kill_all_servers();
+	creport->report(crit, "SIGNAL RECEIVED: no more sessions is running");
+    }
 }

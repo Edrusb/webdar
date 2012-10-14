@@ -1,5 +1,6 @@
 #include "req_ans.hpp"
 #include "exceptions.hpp"
+#include "webdar_tools.hpp"
 
 using namespace std;
 
@@ -14,7 +15,7 @@ bool cookie_list::find(const std::string & key, std::string & value) const
 
     if(it != contents.end())
     {
-	value = it.second;
+	value = it->second;
 	return true;
     }
     else
@@ -27,7 +28,7 @@ bool cookie_list::find(const std::string & key, std::string & value) const
     //
 
 
-void request::set_method_url(const std::string & method, const uri & url)
+void request::set_method_url(const string & method, const uri & url)
 {
     meth = method;
     coordinates = url;
@@ -46,9 +47,10 @@ bool request::find_attribute(const std::string & key, std::string & value) const
 	return false;
 }
 
-void request::extract_cookies(cookie_list & gateaux) const
+cookie_list request::extract_cookies() const
 {
-    pair< multimap<string,string>::const_iterator, multimap<string,string>::const_iterator > range = equal_range("Cookie");
+    cookie_list ret;
+    pair< multimap<string,string>::const_iterator, multimap<string,string>::const_iterator > range = attributes.equal_range("Cookie");
     multimap<string,string>::const_iterator it = range.first;
 
     while(it != range.second)
@@ -56,7 +58,7 @@ void request::extract_cookies(cookie_list & gateaux) const
 	vector<string> splitted;
 	vector<string>::iterator ut;
 
-	webdar_tools_split_by(';', it.second, splitted);
+	webdar_tools_split_by(';', it->second, splitted);
 	ut = splitted.begin();
 	while(ut != splitted.end())
 	{
@@ -64,11 +66,13 @@ void request::extract_cookies(cookie_list & gateaux) const
 
 	    webdar_tools_split_in_two('=', *ut, key, val);
 	    key = webdar_tools_remove_leading_spaces(key);
-	    gateaux.add(key, val);
+	    ret.add(key, val);
 	    ++ut;
 	}
 	++it;
     }
+
+    return ret;
 }
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -124,7 +128,7 @@ bool answer::read_next_attribute(std::string & key, std::string & value) const
 
 void answer::add_cookie(const std::string & key, std::string & value)
 {
-    static const string key = "Set-Cookie";
-    string value = key+"="+value;
-    add_attribute(key, value);
+    static const string xkey = "Set-Cookie";
+    string xval = key+"="+value;
+    add_attribute(xkey, xval);
 }

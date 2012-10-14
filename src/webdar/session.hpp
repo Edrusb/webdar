@@ -59,7 +59,7 @@ public:
 				  responder *resp); /// returns the session_ID of the newly created session
     static session *acquire_session(const std::string & session_ID);
     static void release_session(session *sess);
-    static bool get_session_cookie(const std::string & session_ID, string & sesscook);
+    static bool get_session_cookie(const std::string & session_ID, std::string & sesscook);
 
 private:
 	/// constructor
@@ -92,7 +92,7 @@ private:
 	session *reference;     //< object reference
 	unsigned int ref_given; //< number of time the reference to that object has been given
 	bool closing;           //< if true the reference must not be given any longer
-	clear(){ reference = NULL; ref_given = 0; closing = false; };
+	void clear(){ reference = NULL; ref_given = 0; closing = false; };
     };
 
     static mutex lock_running;                               //< control access to runnng_session static table

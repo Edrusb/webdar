@@ -12,6 +12,9 @@ extern "C"
 #include "central_report.hpp"
 #include "req_ans.hpp"
 #include "server.hpp"
+#include "webdar_tools.hpp"
+#include "cookies.hpp"
+#include "error_page.hpp"
 
 using namespace std;
 
@@ -134,6 +137,7 @@ void server::inherited_run()
     string session_ID = "";
     string input_cookie = "";
     string expected_cookie = "";
+    uri url;
     session *sess = NULL;
     bool set_cookie_to_expected_one;
     bool authenticated;
@@ -143,7 +147,7 @@ void server::inherited_run()
     {
 	try
 	{
-	    while(sess == NULL || src.has_pending_request())
+	    while(sess == NULL || (src.has_pending_request(url) && webdar_tools_get_session_ID_from_URI(url) == sess->get_session_ID()))
 	    {
 
 		ans.clear();
@@ -194,7 +198,7 @@ void server::inherited_run()
 		    if(!authsrc->valid_credentials(user, pass))
 		    {
 			error_page tmp = error_page(STATUS_CODE_UNAUTHORIZED, "wrong login or password");
-			ans = tmp.get_answer(req);
+			ans = tmp.give_answer(req);
 		    }
 		    else // authentication is correct
 		    {
@@ -203,7 +207,7 @@ void server::inherited_run()
 			    if(!session::get_session_cookie(session_ID, expected_cookie))
 			    {
 				error_page tmp = error_page(STATUS_CODE_NOT_FOUND, "unknown session");
-				ans = tmp.get_answer(req);
+				ans = tmp.give_answer(req);
 			    }
 			    else
 			    {
@@ -272,7 +276,8 @@ void server::inherited_run()
 			authenticated = true;
 		    else
 		    {
-			ans = ; << request a login / password
+			    // << request a login / password
+			ans = error_page(STATUS_CODE_NON_AUTHORITATIVE_INFORMATION, "implement login/password request").give_answer(req);
 			expected_cookie = COOKIE_VAL_AUTH_ANS;
 			set_cookie_to_expected_one = true;
 		    }
@@ -290,10 +295,7 @@ void server::inherited_run()
 		    else
 		    {
 			if(sess != NULL && sess->get_session_ID() != session_ID)
-			{
-			    session::release_session(sess);
-			    sess = NULL;
-			}
+			    throw WEBDAR_BUG;
 			if(sess == NULL)
 			{
 			    sess = session::acquire_session(session_ID);
@@ -306,7 +308,7 @@ void server::inherited_run()
 		    }
 		}
 
-		    // add the session cookie (expected_cookie, si cookie != expected_cookie)
+		    // add the session cookie
 		if(set_cookie_to_expected_one)
 		    ans.add_cookie(COOKIE_NAME_AUTH, expected_cookie);
 
@@ -315,7 +317,8 @@ void server::inherited_run()
 
 		    // send back the anwser
 		src.send_answer(ans);
-	    }
+
+	    } // end of the while loop
 
 		// release the lock for the current session
 	    if(sess != NULL)
@@ -323,8 +326,6 @@ void server::inherited_run()
 		session::release_session(sess);
 		sess = NULL;
 	    }
-
-
 	}
 	catch(...)
 	{
@@ -342,11 +343,6 @@ void server::inherited_run()
 
 static string get_session_ID_from(const request & req)
 {
-    string ret = "";
-
     const uri chem = req.get_uri();
-    if(chem.size() > 2)
-	ret = chem[3];
-
-    return ret;
+    return webdar_tools_get_session_ID_from_URI(req.get_uri());
 }
