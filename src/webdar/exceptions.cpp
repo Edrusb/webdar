@@ -9,6 +9,8 @@ void throw_as_most_derivated_class(exception_base *ebase)
     exception_thread *ethread = dynamic_cast<exception_thread *>(ebase);
     exception_system *esys = dynamic_cast<exception_system *>(ebase);
     exception_range *erange = dynamic_cast<exception_range *>(ebase);
+    exception_input *input = dynamic_cast<exception_input *>(ebase);
+    exception_feature *feature = dynamic_cast<exception_feature *>(ebase);
 
     if(emem != NULL)
 	throw *emem;
@@ -20,6 +22,10 @@ void throw_as_most_derivated_class(exception_base *ebase)
 	throw *esys;
     if(erange != NULL)
 	throw *erange;
+    if(input != NULL)
+	throw *input;
+    if(feature != NULL)
+	throw *feature;
 
     throw WEBDAR_BUG; // unknown exception
 }

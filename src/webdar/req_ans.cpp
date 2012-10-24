@@ -36,7 +36,8 @@ void request::set_method_url(const string & method, const uri & url)
 
 bool request::find_attribute(const std::string & key, std::string & value) const
 {
-    multimap<string, string>::const_iterator it = attributes.find(key);
+    string lkey = webdar_tools_to_lowercase(key);
+    multimap<string, string>::const_iterator it = attributes.find(lkey);
 
     if(it != attributes.end())
     {
@@ -89,7 +90,8 @@ void answer::set_status_reason(unsigned int status_code, const string & reason_p
 
 bool answer::find_attribute(const string & key, string & value) const
 {
-    multimap<string,string>::const_iterator it = attributes.find(key);
+    string lkey = webdar_tools_to_lowercase(key);
+    multimap<string,string>::const_iterator it = attributes.find(lkey);
 
     if(it != attributes.end())
     {

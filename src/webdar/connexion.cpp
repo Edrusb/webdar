@@ -23,10 +23,11 @@ connexion::~connexion()
     fermeture();
 }
 
-unsigned int connexion::read(char *a, unsigned int size)
+unsigned int connexion::common_read(char *a, unsigned int size, bool blocking)
 {
     bool loop = true;
     ssize_t lu = 0;
+    int flag = blocking ? 0 : MSG_DONTWAIT;
 
     if(etat != connected)
 	throw WEBDAR_BUG;
@@ -34,7 +35,7 @@ unsigned int connexion::read(char *a, unsigned int size)
     while(loop)
     {
 	loop = false;
-	lu = recv(filedesc, a, size, 0);
+	lu = recv(filedesc, a, size, flag);
 	if(lu == 0)
 	    fermeture();
 	if(lu < 0)
@@ -44,8 +45,14 @@ unsigned int connexion::read(char *a, unsigned int size)
 	    case EINTR:
 		loop = true;
 		break;
+	    case EAGAIN:
+		if(blocking)
+		    throw WEBDAR_BUG;
+		else
+		    lu = 0;
+		break;
 	    default:
-		throw exception_system("Error met while sending data: ", errno);
+		throw exception_system("Error met while receiving data: ", errno);
 	    }
 	}
     }

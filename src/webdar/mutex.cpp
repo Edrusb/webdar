@@ -5,7 +5,6 @@ extern "C"
 }
 
     // webdar headers
-#include "exceptions.hpp"
 #include "mutex.hpp"
 
 mutex::mutex()
@@ -22,8 +21,19 @@ mutex::~mutex()
 
 void mutex::lock()
 {
-    if(pthread_mutex_lock(&mut) != 0)
+    switch(pthread_mutex_lock(&mut))
+    {
+    case 0:
+	break;
+    case EINVAL:
 	throw WEBDAR_BUG;
+    case EDEADLK:
+	throw WEBDAR_BUG;
+    case EPERM:
+	throw WEBDAR_BUG;
+    default:
+	throw WEBDAR_BUG;
+    }
 }
 
 void mutex::unlock()

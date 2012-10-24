@@ -10,9 +10,6 @@ extern "C"
 #include "exceptions.hpp"
 #include "thread.hpp"
 
-#define THREADED
-
-
 using namespace std;
 
 thread::thread()
@@ -21,12 +18,24 @@ thread::thread()
     joignable = false;
     cancellable = 0; // is cancellable at startup
     sigemptyset(&sigmask);
+#ifndef THREADED
+    returned = NULL;
+#endif
 }
 
 thread::~thread()
 {
-    kill();
-    join();
+    try
+    {
+	kill();
+	join();
+    }
+    catch(...)
+    {
+	    // a destructor should not generate execptions
+	    // such exceptions should have been generated earlier using join() if
+	    // it had any importance to be taken care of
+    }
 }
 
 void thread::run()
@@ -47,10 +56,11 @@ void thread::run()
 #ifdef THREADED
 	    if(pthread_create(&tid, NULL, run_obj, this) != 0)
 		throw exception_system("Failed creating a new thread: ", errno);
-#else
-	    run_obj(this);
-#endif
 	    running = true;
+#else
+	    returned = run_obj(this);
+	    running = false;
+#endif
 	    joignable = true;
 	}
 	catch(...)
@@ -77,25 +87,30 @@ bool thread::is_running(pthread_t & id) const
     bool ret;
     mutex *mut = const_cast<mutex *>(&field_control);
 
-    thread::primitive_suspend_cancellation_requests();
-    try
+    if(is_running())
     {
-	mut->lock();
+	thread::primitive_suspend_cancellation_requests();
+	try
+	{
+	    mut->lock();
 
-	ret = running;
-	if(running)
-	    id = tid;
+	    ret = running;
+	    if(running)
+		id = tid;
 
-	mut->unlock();
-    }
-    catch(...)
-    {
+	    mut->unlock();
+	}
+	catch(...)
+	{
+	    thread::primitive_resume_cancellation_requests();
+	    throw;
+	}
 	thread::primitive_resume_cancellation_requests();
-	throw;
-    }
-    thread::primitive_resume_cancellation_requests();
 
-    return ret;
+	return ret;
+    }
+    else
+	return false;
 }
 
 void thread::join() const
@@ -105,8 +120,13 @@ void thread::join() const
     if(is_running() || joignable)
     {
 	void *returned_exception;
+#ifdef THREADED
 	int ret = pthread_join(tid, &returned_exception);
-
+#else
+	int ret = 0;
+	returned_exception = returned;
+	const_cast<thread *>(this)->returned = NULL;
+#endif
 	*(const_cast<bool *>(&joignable)) = false;
 	if(ret != ESRCH && ret != 0)
 	    throw exception_system("Failed joining thread: ", errno);

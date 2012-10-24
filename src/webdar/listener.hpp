@@ -39,6 +39,8 @@ private:
     authentication *src; //< where to validate authentications
     int sockfd;          //< socket descriptor
     int famille;         //< domain familly of the socket
+    std::string l_ip;    //< listening IP address
+    std::string l_port;  //< listening port
 
     void set_sockfd(int domain);
     void init(central_report *log,

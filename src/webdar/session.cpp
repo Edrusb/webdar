@@ -33,6 +33,30 @@ unsigned int session::get_num_session()
     return ret;
 }
 
+unsigned int session::get_num_session(const string & user)
+{
+    unsigned int ret = 0;
+    map<string, table>::iterator it;
+
+    lock_running.lock();
+    try
+    {
+	for(it = running_session.begin(); it != running_session.end(); ++it)
+	{
+	    if(it->second.owner == user)
+		++ret;
+	}
+    }
+    catch(...)
+    {
+        lock_running.unlock();
+	throw;
+    }
+    lock_running.unlock();
+
+    return ret;
+}
+
 string session::create_new(const string & owner,
 			   responder *resp)
 {
@@ -53,7 +77,8 @@ string session::create_new(const string & owner,
 	    }
 	    while(running_session.find(sessID) != running_session.end());
 
-	    entry.reference = new (nothrow) session(sessID, owner, cookie, resp);
+	    entry.owner = owner;
+	    entry.reference = new (nothrow) session(sessID, cookie, resp);
 	    if(entry.reference == NULL)
 		throw exception_memory();
 
@@ -90,11 +115,7 @@ vector<session::session_summary> session::get_summary()
 	{
 	    if(it->second.reference == NULL)
 		throw WEBDAR_BUG;
-	    tmp.clear();
-	    tmp.user = it->second.reference->get_owner();
-	    tmp.session_ID = it->first;
-	    tmp.locked = it->second.reference->has_working_server();
-	    tmp.libdar_running = it->second.reference->libdar_running;
+	    tmp = publish(it);
 	    ret.push_back(tmp);
 	    ++it;
 	}
@@ -105,6 +126,33 @@ vector<session::session_summary> session::get_summary()
 	throw;
     }
     lock_running.unlock();
+}
+
+bool session::get_session_info(const std::string & session_ID, session_summary & val)
+{
+    bool ret = false;
+    map<string, table>::iterator it;
+
+    lock_running.lock();
+    try
+    {
+	it = running_session.find(session_ID);
+	if(it != running_session.end())
+	{
+	    val = publish(it);
+	    ret = true;
+	}
+	if(val.session_ID != session_ID)
+	    throw WEBDAR_BUG;
+    }
+    catch(...)
+    {
+	lock_running.unlock();
+	throw;
+    }
+    lock_running.unlock();
+
+    return ret;
 }
 
 session *session::acquire_session(const std::string & session_ID)
@@ -220,11 +268,9 @@ bool session::get_session_cookie(const std::string & session_ID, string & sessco
 
 
 session::session(const string & sess_ID,
-		 const string & x_user,
 		 const string & x_cookie,
 		 responder *x_resp)
 {
-    owner = x_user;
     cookie = x_cookie;
     gui = x_resp;
     if(gui == NULL)
@@ -239,9 +285,31 @@ session::~session()
 	delete gui;
 }
 
+void session::check_caller() const
+{
+    if(pthread_self() != tid)
+	throw WEBDAR_BUG;
+}
+
 answer session::give_answer(const request & req)
 {
     check_caller();
     return gui->give_answer(req);
 }
 
+
+session::session_summary session::publish(std::map<std::string, table>::iterator it)
+{
+    session_summary ret;
+
+    if(it->second.reference == NULL)
+	throw WEBDAR_BUG;
+    ret.clear();
+    ret.owner = it->second.owner;
+    ret.session_ID = it->first;
+    ret.locked = it->second.reference->has_working_server();
+    ret.libdar_running = it->second.reference->libdar_running;
+    ret.closing = it->second.closing;
+
+    return ret;
+}

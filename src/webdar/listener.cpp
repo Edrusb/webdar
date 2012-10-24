@@ -50,6 +50,8 @@ void listener::init(central_report *log, authentication *auth, const std::string
     int tmp = 0;
     sigset_t sigs;
 
+    l_ip = ip;
+    l_port = webdar_tools_convert_to_string(port);
     if(sigfillset(&sigs) != 0)
 	throw exception_system("failed creating a full signal set", errno);
     set_signal_mask(sigs);
@@ -158,10 +160,10 @@ void listener::inherited_run()
 
     while(true)
     {
-	rep->report(info, "listener object: waiting for incoming connections");
+	rep->report(info, "listener object: waiting for incoming connections on " + l_ip + " port " + l_port);
 	(void)memset(addr, 0, addrlen);
 	ret = accept(sockfd, addr, &addrlen);
-	rep->report(debug, "listener object: exiting from accept(), a new connection has come?");
+	rep->report(debug, "listener object: exiting from accept(), a new connection has come on " + l_ip + " port " + l_port + "?");
 
 	if(ret < 0)
 	{

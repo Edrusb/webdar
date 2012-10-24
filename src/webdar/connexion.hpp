@@ -44,7 +44,11 @@ public:
 	/// \note this call may block if no data is available for reading
 	/// \note this call must not block if some data is available for reading even
 	/// if its amount is less than 'size'
-    virtual unsigned int read(char *a, unsigned int size);
+    virtual unsigned int read(char *a, unsigned int size)
+    { return common_read(a, size, true); };
+
+    virtual unsigned int non_blocking_read(char *a, unsigned int size)
+    { return common_read(a, size, false); };
 
 	/// write data to the socket
 
@@ -60,6 +64,7 @@ private:
     unsigned int port; //< port of the peer port
 
     void fermeture();  //< close connection
+    unsigned int common_read(char *a, unsigned int size, bool blocking);
 };
 
 #endif

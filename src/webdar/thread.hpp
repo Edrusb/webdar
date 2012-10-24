@@ -1,6 +1,14 @@
 #ifndef THREAD_HPP
 #define THREAD_HPP
 
+    /// \file thread.hpp
+    /// \brief holds the definition of the thread class
+    ///
+    /// this is inspired from http://blog.emptycrate.com/node/270 But with the difference
+    /// that thread managment is done in its own pure virtual class and arbitrary
+    /// threaded work is done in inherited classes. Also has been added exception transmission
+    /// support from sub threaded back to parent thread using the join() method
+
     // C system header files
 extern "C"
 {
@@ -11,11 +19,10 @@ extern "C"
     // webdar headers
 #include "mutex.hpp"
 
-// this is inspired from http://blog.emptycrate.com/node/270 But with the difference
-// that thread managment is done in its own pure virtual class and arbitrary
-// threaded work is done in inherited threads. Also has been added exception transmission
-// support from sub threaded back to parent thread.
 
+    // if the following #define is commented out, the class thread implementation does
+    // not use threads, this may be useful for debugging purposes
+#define THREADED
 
 class thread
 {
@@ -38,8 +45,7 @@ public:
 	/// \return true if the object is running under a separated thread
 	/// if false is returned, the argument is not set
     bool is_running(pthread_t & id) const;
-    bool is_running() const { pthread_t id; return is_running(id); };
-
+    bool is_running() const { return running; };
 	/// the caller will be suspended until the current object's thread ends
     void join() const;
 
@@ -63,7 +69,9 @@ private:
     bool joignable;                //< whether exist status of thread has to be retrieved
     unsigned int cancellable;      //< this field is not protected by mutex as it ougth to be modified only by the spawn thread. It allows suspend/resume cancellation requests to be re-entrant (0 = cancellation accepted)
     sigset_t sigmask;              //< signal mask to use for the thread
-
+#ifndef THREADED
+    void *returned;                //< to workaround the non use of join() when threading is disabled for debugging
+#endif
 	// static members
 
     static void *run_obj(void *obj);  //< called by pthread_create to spawn a new thread

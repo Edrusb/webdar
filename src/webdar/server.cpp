@@ -46,6 +46,7 @@ bool server::run_new_server(central_report *log, authentication *auth, connexion
 	    {
 		if(!((*it)->is_running()))
 		{
+		    (*it)->join(); // necessary to throw exception generated from within the thread
 		    delete (*it);
 		    (*it) = NULL;
 		    it = instances.erase(it);
@@ -277,7 +278,7 @@ void server::inherited_run()
 		    else
 		    {
 			    // << request a login / password
-			ans = error_page(STATUS_CODE_NON_AUTHORITATIVE_INFORMATION, "implement login/password request").give_answer(req);
+			ans = error_page(STATUS_CODE_NOT_IMPLEMENTED, "implement login/password request").give_answer(req);
 			expected_cookie = COOKIE_VAL_AUTH_ANS;
 			set_cookie_to_expected_one = true;
 		    }
@@ -326,6 +327,11 @@ void server::inherited_run()
 		session::release_session(sess);
 		sess = NULL;
 	    }
+	}
+	catch(exception_input & e)
+	{
+		// nothing to do;
+		// we just end normally the server thread
 	}
 	catch(...)
 	{

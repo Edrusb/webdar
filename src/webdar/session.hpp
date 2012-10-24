@@ -32,7 +32,6 @@ public:
 	// this class provides a global table of session one can create, lookup or destroy objects in/from this table
 
     answer give_answer(const request & req);
-    const std::string get_owner() const { return owner; };
     void set_cookie(const std::string & cook) { cookie = cook; };
     const std::string get_cookie() const { return cookie; };
     bool has_waiting_threads() const { return lock_gui.waiting_thread(); };
@@ -45,18 +44,19 @@ public:
 
     struct session_summary
     {
-	std::string user;
-	std::string session_ID;
-	bool locked;
-	bool libdar_running;
-	void clear() { user = session_ID = ""; locked = libdar_running = false; };
+	std::string owner;        //< owner of the session
+	std::string session_ID;   //< session ID
+	bool locked;              //< whether the session is locked by a thread
+	bool libdar_running;      //< whether a libdar job is running
+	bool closing;             //< whether the session is pending for closure
+	void clear() { owner = session_ID = ""; locked = libdar_running = closing = false; };
     };
 
     static unsigned int get_num_session();
     static unsigned int get_num_session(const std::string & user);
     static std::vector<session_summary> get_summary();
-    static std::string create_new(const std::string & owner,
-				  responder *resp); /// returns the session_ID of the newly created session
+    static bool get_session_info(const std::string & session_ID, session_summary & val);
+    static std::string create_new(const std::string & owner, responder *resp); /// returns the session_ID of the newly created session
     static session *acquire_session(const std::string & session_ID);
     static void release_session(session *sess);
     static bool get_session_cookie(const std::string & session_ID, std::string & sesscook);
@@ -64,23 +64,20 @@ public:
 private:
 	/// constructor
     session(const std::string & sess_ID,
-	    const std::string & x_user,
 	    const std::string & cookie,
 	    responder *x_resp);
 
 	/// destructor
     ~session(); //< free dynamically allocated fields
 
-
-    std::string owner;        //< the official owner of the thread: the authenticated user that lead to this thread creation
     std::string cookie;       //< the session cookie if any
     semaphore lock_gui;       //< required locking before accessing gui field
     responder *gui;           //< object containing the current GUI status; this object is managed by the session object; should never be NULL
     pthread_t tid;            //< holds the tid of the thread that acquired the object
-    bool libdar_running;      //< unused for now
+    bool libdar_running;      //< whether a libdar child thread is running
     std::string session_ID;   //< session_ID info (duplicated info to avoid table lookup and mutex lock)
 
-    void check_caller() const;//< test whether the caller has properly acquired the lock on this object
+    void check_caller() const; //< test whether the caller has properly acquired the lock on this object
 
 
 	////////////////
@@ -89,14 +86,16 @@ private:
 
     struct table
     {
+	std::string owner;      //< to whom the session is
 	session *reference;     //< object reference
 	unsigned int ref_given; //< number of time the reference to that object has been given
 	bool closing;           //< if true the reference must not be given any longer
-	void clear(){ reference = NULL; ref_given = 0; closing = false; };
+	void clear() { owner = ""; reference = NULL; ref_given = 0; closing = false; };
     };
 
     static mutex lock_running;                               //< control access to runnng_session static table
     static std::map<std::string, table> running_session;     //< list of existing sessions
+    static session_summary publish(std::map<std::string, table>::iterator it);
 };
 
 #endif

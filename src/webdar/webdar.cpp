@@ -62,12 +62,13 @@ int main(int argc, char *argv[], char **env)
     vector<listener *> taches;
     priority_t min;
     string fixed_user = "admin";
-    string fixed_pass = webdar_tools_generate_random_string(10);
-    authentication_cli auth = authentication_cli(fixed_user, fixed_pass);
+    string fixed_pass;
 
     try
     {
 	webdar_tools_init_randomization();
+	fixed_pass = webdar_tools_generate_random_string(10);
+	authentication_cli auth = authentication_cli(fixed_user, fixed_pass);
 
 	    /////////////////////////////////////////////////
 	    // set signal handlers for type 1 and type 2
@@ -174,6 +175,7 @@ int main(int argc, char *argv[], char **env)
 		    else
 			if(!taches.back()->is_running(unused_arg))
 			{
+			    taches.back()->join();
 			    delete taches.back();
 			    taches.back() = NULL;
 			}

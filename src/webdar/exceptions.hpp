@@ -94,6 +94,16 @@ protected:
     virtual exception_base *clone() const { return cloner<exception_range>((void *)this); };
 };
 
+    /// exception used to report an request error from the http client
+
+class exception_input : public exception_base
+{
+public:
+    exception_input(const std::string & msg): exception_base(msg) {};
+protected:
+    virtual exception_base *clone() const { return cloner<exception_input>((void *)this); };
+};
+
 
     /// exception used to report an non-implemented feature
 

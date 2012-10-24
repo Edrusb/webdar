@@ -36,6 +36,7 @@ public:
     const std::string & operator[] (unsigned int item) const { return url[item]; };
     std::string & operator[] (unsigned int item) { return url[item]; };
     const std::string get_string() const;
+    void push_back(const std::string & arg) { url.push_back(arg); };
 
 
 private:

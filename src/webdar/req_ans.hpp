@@ -8,6 +8,8 @@
 
     // webdar headers
 #include "uri.hpp"
+#include "webdar_tools.hpp"
+#include "exceptions.hpp"
 
 
 const unsigned int STATUS_CODE_CONTINUE = 101;
@@ -71,11 +73,11 @@ public:
     request() { clear(); };
 
     void set_method_url(const std::string & method, const uri & url);
-    void add_attribute(const std::string & key, const std::string & value) { attributes.insert(std::pair<std::string, std::string>(key, value)); };
+    void add_attribute(const std::string & key, const std::string & value) { attributes.insert(std::pair<std::string, std::string>(webdar_tools_to_lowercase(key), value)); };
     void add_body(const std::string & key) { body = key; };
 
-    const std::string & get_method() const { return meth; };
-    const uri & get_uri() const { return coordinates; };
+    const std::string & get_method() const { if(meth == "") throw WEBDAR_BUG; return meth; };
+    const uri & get_uri() const { if(coordinates.size() == 0) throw WEBDAR_BUG; return coordinates; };
     bool find_attribute(const std::string & key, std::string & value) const;
     const std::string & get_body() const { return body; };
     cookie_list extract_cookies() const;
@@ -104,7 +106,7 @@ public:
     const std::string get_reason() const { return reason; };
 
 	/// adds or remplace a given attribute  the HTTP answer
-    void add_attribute(const std::string & key, const std::string & value) { attributes.insert(std::pair<std::string, std::string>(key, value)); };
+    void add_attribute(const std::string & key, const std::string & value) { attributes.insert(std::pair<std::string, std::string>(webdar_tools_to_lowercase(key), value)); };
 
 	/// retrieve the value of an attribute of the HTTP answer
 	///
@@ -151,7 +153,7 @@ private:
 class responder
 {
 public:
-    virtual ~responder();
+    virtual ~responder() {};
 
     virtual answer give_answer(const request & req) = 0;
 };
