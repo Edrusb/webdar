@@ -99,9 +99,14 @@ protected:
 class exception_input : public exception_base
 {
 public:
-    exception_input(const std::string & msg): exception_base(msg) {};
+    exception_input(const std::string & msg, unsigned int error_code): exception_base(msg) {err = error_code; };
+    unsigned int get_error_code() const { return err; };
+
 protected:
     virtual exception_base *clone() const { return cloner<exception_input>((void *)this); };
+
+private:
+    unsigned int err;
 };
 
 

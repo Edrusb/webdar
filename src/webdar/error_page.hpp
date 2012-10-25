@@ -11,7 +11,7 @@ extern "C"
 
 
     // webdar headers
-#include "req_ans.hpp"
+#include "responder.hpp"
 
 class error_page : public responder
 {
@@ -22,7 +22,8 @@ public:
     answer give_answer(const request & req)
     {
 	answer ret;
-	ret.set_status_reason(status, msg);
+	ret.set_status(status);
+	ret.set_reason(msg);
 	ret.add_body(std::string("ERROR WHILE REQUESTING THIS URL: ") + req.get_uri().get_string());
 	return ret;
     };

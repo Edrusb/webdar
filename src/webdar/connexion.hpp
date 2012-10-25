@@ -35,20 +35,16 @@ public:
     const std::string & get_ip() const { return ip; };
     unsigned int get_port() const { return port; };
 
-	/// read data from the socket
+	/// extracts one byte form the buffer / exception thrown if not available
+    char read_one(bool blocking);
 
-	/// \param[in] a pointers where to put read bytes
-	/// \param[in] size maximum number of byte to read
-	/// \return the number of read bytes.
-	/// \note if the connexion object is 'disconnected' read returns zero
-	/// \note this call may block if no data is available for reading
-	/// \note this call must not block if some data is available for reading even
-	/// if its amount is less than 'size'
-    virtual unsigned int read(char *a, unsigned int size)
-    { return common_read(a, size, true); };
+	/// gives the next char to be read, but do not remove it from the
+	/// reading buffer / throw exception if not available
+    char read_test_first(bool blocking);
 
-    virtual unsigned int non_blocking_read(char *a, unsigned int size)
-    { return common_read(a, size, false); };
+	/// gives the second next char to be read, but do not remove it
+	/// from the reading buffer / throw exception if not available (EOF)
+    char read_test_second(bool blocking);
 
 	/// write data to the socket
 
@@ -63,8 +59,26 @@ private:
     std::string ip;    //< IP of the peer host
     unsigned int port; //< port of the peer port
 
-    void fermeture();  //< close connection
-    unsigned int common_read(char *a, unsigned int size, bool blocking);
+	// buffer management
+    unsigned buffer_size;      //< size of the buffer
+    char *buffer;              //< temporary area used for parsing, reading data FROM network
+    unsigned int already_read; //< amount of data already read
+    unsigned int data_size;    //< total of data in buffer, already read or not
+
+	/// close the connexion
+    void fermeture();
+
+	/// read data from the socket
+
+	/// \param[in] a where to store read data
+	/// \param[in] size width of the buffer pointed to by a
+	/// \param[in] blocking whether reading is blocking or not
+    unsigned int read(char *a, unsigned int size, bool blocking);
+
+
+	/// manages to get (read) data in buffer and set relative variables acordingly
+    void fill_buffer(bool blocking);
+
 };
 
 #endif

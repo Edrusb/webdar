@@ -25,22 +25,35 @@ extern "C"
 class uri
 {
 public:
-    uri() { url.clear(); };
+	/// constructors
+    uri() { clear(); };
+    uri(const std::string & res) { read(res); };
+
 	// default copy constructor is fine
 	// default assignment operator is fine too
 	// no need of destructor here
 
-    unsigned int size() const { return url.size(); };
+	/// convert an uri from a string
+    void read(const std::string & res);
+
+	/// clear the uri (empty uri)
     void clear() { url.clear(); };
 
-    const std::string & operator[] (unsigned int item) const { return url[item]; };
-    std::string & operator[] (unsigned int item) { return url[item]; };
-    const std::string get_string() const;
-    void push_back(const std::string & arg) { url.push_back(arg); };
+	/// number of part that compose the uri
+    unsigned int size() const { return url.size(); };
 
+	/// retrieve a part from the uri
+    const std::string & operator[] (unsigned int item) const { return url[item]; };
+
+	/// retrieve a part from the uri
+    std::string & operator[] (unsigned int item) { return url[item]; };
+
+	/// rebuid the uri as a single string
+    const std::string get_string() const;
 
 private:
     std::vector<std::string> url;
+
 };
 
 #endif

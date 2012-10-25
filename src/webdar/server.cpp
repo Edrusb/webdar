@@ -10,7 +10,7 @@ extern "C"
     // webdar headers
 #include "exceptions.hpp"
 #include "central_report.hpp"
-#include "req_ans.hpp"
+#include "responder.hpp"
 #include "server.hpp"
 #include "webdar_tools.hpp"
 #include "cookies.hpp"
@@ -133,7 +133,6 @@ server::server(central_report *log, authentication *auth, connexion *source) : s
 
 void server::inherited_run()
 {
-    request req;
     answer ans;
     string session_ID = "";
     string input_cookie = "";
@@ -148,26 +147,26 @@ void server::inherited_run()
     {
 	try
 	{
-	    while(sess == NULL || (src.has_pending_request(url) && webdar_tools_get_session_ID_from_URI(url) == sess->get_session_ID()))
+	    while(sess == NULL || (src.get_next_request_uri(url) && webdar_tools_get_session_ID_from_URI(url) == sess->get_session_ID()))
 	    {
-
-		ans.clear();
-		req.clear();
-		set_cookie_to_expected_one = false;
-		authenticated = false;
-
-
 		    ///////////////////////////////////////////////////////
 		    // obtain request info from the parser
 		    //
 
-		req = src.get_next_request();
+		const request & req = src.get_request();
+		ans.clear();
+		set_cookie_to_expected_one = false;
+		authenticated = false;
+
+
+
+
 
 		    // extract session info if any
 		session_ID = get_session_ID_from(req);
 
 		    // extract authentication cookie from request
-		if(!req.extract_cookies().find(COOKIE_NAME_AUTH, input_cookie))
+		if(req.extract_cookies().find(COOKIE_NAME_AUTH, input_cookie))
 		    input_cookie = "";
 
 		    // obtain the expected session cookie from the session table
