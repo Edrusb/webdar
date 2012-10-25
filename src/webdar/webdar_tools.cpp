@@ -16,8 +16,6 @@ extern "C"
 
 using namespace std;
 
-static string convert_to_string_two_digits(int val);
-
 int webdar_tools_convert_to_int(const string & ref)
 {
     int ret;
@@ -129,119 +127,6 @@ string webdar_tools_to_lowercase(const string & ch)
 	else
 	    ret += *it;
     }
-
-    return ret;
-}
-
-string webdar_tools_get_current_date()
-{
-    string ret;
-    struct tm bd;
-    time_t brut;
-
-    (void)time(&brut);
-    (void)gmtime_r(&brut, &bd);
-
-    switch(bd.tm_wday)
-    {
-    case 0:
-	ret += "Sun";
-	break;
-    case 1:
-	ret += "Mon";
-	break;
-    case 2:
-	ret += "Tue";
-	break;
-    case 3:
-	ret += "Wed";
-	break;
-    case 4:
-	ret += "Thu";
-	break;
-    case 5:
-	ret += "Fri";
-	break;
-    case 6:
-	ret += "Sat";
-	break;
-    default:
-	throw WEBDAR_BUG;
-    }
-
-    ret += ", ";
-    ret += convert_to_string_two_digits(bd.tm_mday);
-    ret += " ";
-
-    switch(bd.tm_mon)
-    {
-    case 0:
-	ret += "Jan";
-	break;
-    case 1:
-	ret += "Feb";
-	break;
-    case 2:
-	ret += "Jan";
-	break;
-    case 3:
-	ret += "Mar";
-	break;
-    case 4:
-	ret += "Apr";
-	break;
-    case 5:
-	ret += "May";
-	break;
-    case 6:
-	ret += "Jun";
-	break;
-    case 7:
-	ret += "Jul";
-	break;
-    case 8:
-	ret += "Aug";
-	break;
-    case 9:
-	ret += "Sep";
-	break;
-    case 10:
-	ret += "Oct";
-	break;
-    case 11:
-	ret += "Nov";
-	break;
-    case 12:
-	ret += "Dec";
-	break;
-    default:
-	throw WEBDAR_BUG;
-    }
-
-    ret += " ";
-    ret += webdar_tools_convert_to_string(bd.tm_year + 1900);
-    ret += " ";
-    ret += convert_to_string_two_digits(bd.tm_hour);
-    ret += ":";
-    ret += convert_to_string_two_digits(bd.tm_min);
-    ret += ":";
-    ret += convert_to_string_two_digits(bd.tm_sec);
-    ret += " GMT";
-
-    return ret;
-}
-
-
-static string convert_to_string_two_digits(int val)
-{
-    string ret;
-
-    if(val > 99 || val < 0)
-	throw WEBDAR_BUG;
-
-    if(val < 10)
-	ret += "0";
-    ret += webdar_tools_convert_to_string(val);
 
     return ret;
 }

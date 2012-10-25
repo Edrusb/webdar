@@ -1,4 +1,5 @@
 #include "webdar_tools.hpp"
+#include "date.hpp"
 #include "parser.hpp"
 
 using namespace std;
@@ -269,10 +270,44 @@ void parser::send_answer(answer & ans)
 	if(code.size() < 3)
 	    throw WEBDAR_BUG;
 
+	    // HEAD requests must not be answered with a body
 	if(req.get_method() == "HEAD")
 	    if(ans.get_body().size() != 0)
 		ans.add_body(""); // drop the body from the answer
 
+	    // Conditional GET
+	if(req.get_method() == "GET" && req.find_attribute("If-modified-Since", val))
+	{
+	    try
+	    {
+		date when = val;
+		string lastmod;
+
+		if(ans.find_attribute("Last-Modified", lastmod))
+		{
+		    date last = lastmod;
+		    if(last <= when)
+			ans.add_body("");
+			// we can drop the body from the answer
+			// as it has not been modifed since last
+			// seen by this client
+		}
+	    }
+	    catch(exception_range & e)
+	    {
+		    // ignore If-modified-Since request header in case of error
+		    // that's it: inconditionnaly send the answer's body
+	    }
+	}
+
+	if(!ans.find_attribute("Content-Type", val))
+	    ans.add_attribute("Content-Type", "text/html");
+	if(!ans.find_attribute("Date", val))
+	    ans.add_attribute("Date", date().get_canonical_format());
+	if(!ans.find_attribute("Expires", val))
+	    ans.add_attribute("Expires", date().get_canonical_format());
+
+	    // RFC 1945 defines that several status code must not own a body in the answer
 	if(code == "204"
 	   || code  == "304"
 	   || code[0] == '1')
@@ -283,43 +318,34 @@ void parser::send_answer(answer & ans)
 	}
 	else
 	    ans.add_attribute("Content-Length", webdar_tools_convert_to_string(ans.get_body().size()));
-
-    if(!ans.find_attribute("Content-Type", val))
-	ans.add_attribute("Content-Type", "text/html");
-
-    if(!ans.find_attribute("Date", val))
-	ans.add_attribute("Date", webdar_tools_get_current_date());
-    if(!ans.find_attribute("Expires", val))
-	ans.add_attribute("Expires", webdar_tools_get_current_date());
-
-    ans.add_attribute("Server", "webdar");
+	ans.add_attribute("Server", "webdar/0.0");
 
 	    ////////////////////////////////////////
 	    // sending the answer
 	    //
 
-    string version = "HTTP/"
-	+ webdar_tools_convert_to_string(maj_vers)
-	+"."
-	+ webdar_tools_convert_to_string(min_vers);
-    source->write(version.c_str(), version.size());
-    source->write(" ", 1);
-    source->write(code.c_str(), code.size());
-    source->write(" ", 1);
-    source->write(ans.get_reason().c_str(), ans.get_reason().size());
-    source->write("\r\n", 2);
-
-    ans.reset_read_next_attribute();
-    while(ans.read_next_attribute(key, val))
-    {
-	source->write(key.c_str(), key.size());
-	source->write(": ", 2);
-	source->write(val.c_str(), val.size());
+	string version = "HTTP/"
+	    + webdar_tools_convert_to_string(maj_vers)
+	    +"."
+	    + webdar_tools_convert_to_string(min_vers);
+	source->write(version.c_str(), version.size());
+	source->write(" ", 1);
+	source->write(code.c_str(), code.size());
+	source->write(" ", 1);
+	source->write(ans.get_reason().c_str(), ans.get_reason().size());
 	source->write("\r\n", 2);
-    }
-    source->write("\r\n", 2);
-    if(ans.get_body().size() > 0)
-	source->write(ans.get_body().c_str(), ans.get_body().size());
+
+	ans.reset_read_next_attribute();
+	while(ans.read_next_attribute(key, val))
+	{
+	    source->write(key.c_str(), key.size());
+	    source->write(": ", 2);
+	    source->write(val.c_str(), val.size());
+	    source->write("\r\n", 2);
+	}
+	source->write("\r\n", 2);
+	if(ans.get_body().size() > 0)
+	    source->write(ans.get_body().c_str(), ans.get_body().size());
     }
     catch(exception_base & e)
     {
