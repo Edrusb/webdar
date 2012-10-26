@@ -49,33 +49,31 @@ const request & parser::get_request()
     valid_source();
 
     answered = false;
+
     try
     {
-	try
-	{
-	    req.clear();
-	    req.read(*source);
-	}
-	catch(exception_input & e)
-	{
-	    answer err;
-	    string tmp;
-
-	    err.set_status(e.get_error_code());
-	    err.set_reason(e.get_message());
-	    send_answer(err);
-	    throw;
-	}
+	req.clear();
+	req.read(*source);
     }
-    catch(...)
+    catch(exception_input & e)
+    {
+	answer err;
+	string tmp;
+
+	err.set_status(e.get_error_code());
+	err.set_reason(e.get_message());
+	send_answer(err);
+	throw;
+    }
+    catch(exception_base & e)
     {
 	if(source != NULL)
 	{
 	    delete source;
 	    source = NULL;
 	}
-	answered = true;
-	throw;
+	    // no throw
+	    // answered stays false
     }
 
     return req;
@@ -103,7 +101,7 @@ void parser::send_answer(answer & ans)
 	    source = NULL;
 	}
 	answered = true;
-	throw;
+	    // no throw
     }
 }
 

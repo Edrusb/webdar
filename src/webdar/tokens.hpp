@@ -55,5 +55,6 @@ extern const char *HDR_CONTENT_TYPE;
 extern const char *HDR_DATE;
 extern const char *HDR_EXPIRES;
 extern const char *HDR_SERVER;
+extern const char *HDR_WWW_AUTHENTICATE;
 
 #endif

@@ -83,4 +83,7 @@ void answer::write(connexion & output)
     output.write("\r\n", 2);
     if(get_body().size() > 0)
 	output.write(body.c_str(), body.size());
+
+	// flushing output writings
+    output.flush_write();
 }

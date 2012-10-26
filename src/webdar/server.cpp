@@ -158,10 +158,6 @@ void server::inherited_run()
 		set_cookie_to_expected_one = false;
 		authenticated = false;
 
-
-
-
-
 		    // extract session info if any
 		session_ID = get_session_ID_from(req);
 
@@ -185,9 +181,8 @@ void server::inherited_run()
 		    // authentication was requested in the previous answer
 		    //
 
-
+			// if this is the answer to an authentication request
 		if(input_cookie == COOKIE_VAL_AUTH_ANS)
-			// this is the answer to an authentication request
 		{
 		    string user = "";
 		    string pass = "";
@@ -219,7 +214,8 @@ void server::inherited_run()
 			{
 			    if(session::get_num_session(user) > 0)
 			    {
-				    // before creating a new session we must check whether a chooser session does not
+				    // before creating a new session we must check whether
+				    // a chooser session does not
 				    // already exist!!!!!!! <<<<<<<<<<<<<<<<<<<<<< A FAIRE
 				responder *resp = new (nothrow) error_page(STATUS_CODE_OK, "Faked session chooser page");
 				if(resp == NULL)
@@ -277,15 +273,19 @@ void server::inherited_run()
 		    else
 		    {
 			    // << request a login / password
-			ans = error_page(STATUS_CODE_NOT_IMPLEMENTED, "implement login/password request").give_answer(req);
+			ans.set_status(STATUS_CODE_UNAUTHORIZED);
+			ans.set_reason("login/password requested");
+			ans.add_attribute(HDR_WWW_AUTHENTICATE, "Basic realm=\"/\"");
 			expected_cookie = COOKIE_VAL_AUTH_ANS;
 			set_cookie_to_expected_one = true;
 		    }
 		}
 
 		    ///////////////////////////////////////////////////////
-		    // getting answer for authenticated requests only (non authenticated got their answer already)
-		    // authenticated requests are those having a cookie different than COOKIE_VAL_AUTH_REQ
+		    // getting answer for authenticated requests only
+		    // (non authenticated got their answer already)
+		    // authenticated requests are those having
+		    // a cookie different than COOKIE_VAL_AUTH_REQ
 		    //
 
 		if(authenticated)

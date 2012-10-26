@@ -53,17 +53,26 @@ public:
 	/// \return true upon success of false if connexion is broken
     virtual bool write(const char *a, unsigned int size);
 
+	/// flush pending writings
+    virtual void flush_write();
+
 private:
     status etat;       //< connexion status
     int filedesc;      //< socket file descriptor
     std::string ip;    //< IP of the peer host
     unsigned int port; //< port of the peer port
 
-	// buffer management
+	// buffer management for reading
     unsigned buffer_size;      //< size of the buffer
     char *buffer;              //< temporary area used for parsing, reading data FROM network
     unsigned int already_read; //< amount of data already read
     unsigned int data_size;    //< total of data in buffer, already read or not
+
+	// output buffer
+    unsigned out_buf_size;     //< allocated space for the output buffer (out_buf)
+    char *out_buf;             //< temporary areas used to gather bytes for writing
+    unsigned int last_unwrote; //< amount of byte pending for writing
+
 
 	/// close the connexion
     void fermeture();
@@ -78,6 +87,8 @@ private:
 
 	/// manages to get (read) data in buffer and set relative variables acordingly
     void fill_buffer(bool blocking);
+
+    bool atomic_write(const char *a, unsigned int size);
 
 };
 

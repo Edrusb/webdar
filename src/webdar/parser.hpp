@@ -50,7 +50,7 @@ private:
     connexion *source;         //< the connexion to the client
     request req;               //< value of the last request
 
-    void valid_source() const { if(source == NULL || source->get_status() != connexion::connected); throw exception_range("socket disconnected"); };
+    void valid_source() const { if(source == NULL || source->get_status() != connexion::connected) throw exception_range("socket disconnected"); };
     void checks_main(const request & req, answer & ans);
     void checks_webdar(const request & req, answer & ans);
     void checks_rfc1945(const request & req, answer & ans);

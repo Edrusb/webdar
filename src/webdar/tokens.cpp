@@ -7,3 +7,4 @@ const char *HDR_CONTENT_TYPE = "Content-Type";
 const char *HDR_DATE = "Date";
 const char *HDR_EXPIRES = "Expires";
 const char *HDR_SERVER = "Server";
+const char *HDR_WWW_AUTHENTICATE = "WWW-Authenticate";

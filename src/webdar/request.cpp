@@ -71,6 +71,7 @@ bool request::read_method_uri(connexion & input, bool blocking)
     case method_read:
     case uri_read:
 	break;
+    case reading_all:
     case completed:
 	throw WEBDAR_BUG;
     default:
@@ -94,6 +95,8 @@ void request::read(connexion & input)
 
     if(!read_method_uri(input, true))
 	throw WEBDAR_BUG;
+
+    status = reading_all;
 
 	// VERSION field
 
@@ -194,7 +197,7 @@ bool request::find_attribute(const std::string & key, std::string & value) const
     string lkey = webdar_tools_to_lowercase(key);
     multimap<string, string>::const_iterator it = attributes.find(lkey);
 
-    if(status != completed)
+    if(status < reading_all)
 	throw WEBDAR_BUG;
 
     if(it != attributes.end())
@@ -466,11 +469,10 @@ bool request::get_word(connexion & input, bool initial, bool blocking, string & 
 	    }
 	    catch(...)
 	    {
-		    // get_token() could define that the token is completed
-		    // this it can read at least one byte further
-		    // so read_test_first() has no reason to throw an exception
-		throw WEBDAR_BUG;
+		    // EOF met
+		break; // exiting the while loop
 	    }
+
 	    switch(ctmp)
 	    {
 	    case '/':
