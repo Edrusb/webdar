@@ -56,5 +56,9 @@ extern const char *HDR_DATE;
 extern const char *HDR_EXPIRES;
 extern const char *HDR_SERVER;
 extern const char *HDR_WWW_AUTHENTICATE;
+extern const char *HDR_AUTHORIZATION;
+extern const char *HDR_SET_COOKIE;
+extern const char *HDR_COOKIE;
+extern const char *HDR_LOCATION;
 
 #endif

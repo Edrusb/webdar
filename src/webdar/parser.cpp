@@ -1,6 +1,7 @@
 #include "webdar_tools.hpp"
 #include "date.hpp"
 #include "parser.hpp"
+#include "tokens.hpp"
 
 using namespace std;
 
@@ -87,7 +88,7 @@ void parser::send_answer(answer & ans)
 
     try
     {
-	if(ans.is_empty())
+	if(!ans.is_valid())
 	    throw WEBDAR_BUG;
 	checks_main(req, ans);
 	ans.write(*source);
@@ -115,25 +116,22 @@ void parser::checks_webdar(const request & req, answer & ans)
 {
     string val;
 
-	// adding a server header
-    ans.add_attribute(HDR_SERVER, "webdar/0.0");
-
 	// responding with the same version as the one used in the request
     ans.set_version(req.get_maj_version(), req.get_min_version());
 
 	// adding a Date header if missing
-    if(!ans.find_attribute("Date", val))
-	ans.add_attribute("Date", date().get_canonical_format());
+    if(!ans.find_attribute(HDR_DATE, val))
+	ans.set_attribute(HDR_DATE, date().get_canonical_format());
 
 	// adding an Expires header if missing
-    if(!ans.find_attribute("Expires", val))
-	ans.add_attribute("Expires", date().get_canonical_format());
+    if(!ans.find_attribute(HDR_EXPIRES, val))
+	ans.set_attribute(HDR_EXPIRES, date().get_canonical_format());
 
 	// adding a default text/html content type if not specified
     if(ans.get_body().size() > 0)
     {
 	if(!ans.find_attribute(HDR_CONTENT_TYPE, val))
-	    ans.add_attribute(HDR_CONTENT_TYPE, "text/html");
+	    ans.set_attribute(HDR_CONTENT_TYPE, "text/html");
     }
 }
 
@@ -146,27 +144,28 @@ void parser::checks_rfc1945(const request & req, answer & ans)
 	// HEAD requests must not be answered with a body
 
     if(req.get_method() == "HEAD")
-	if(ans.get_body().size() != 0)
-	    ans.add_body(""); // drop the body from the answer
-
+	ans.drop_body_keep_header();
 
 	// Conditional GET
 
-    if(req.get_method() == "GET" && req.find_attribute("If-modified-Since", val))
+    if(req.get_method() == "GET" && req.find_attribute(HDR_IF_MODIFIED_SINCE, val))
     {
 	try
 	{
 	    date when = val;
 	    string lastmod;
 
-	    if(ans.find_attribute("Last-Modified", lastmod))
+	    if(ans.find_attribute(HDR_LAST_MODIFIED, lastmod))
 	    {
 		date last = lastmod;
-		if(last <= when)
+		if(last <= when && ans.get_status_code() == STATUS_CODE_OK)
+		{
+		    ans.set_status(STATUS_CODE_NOT_MODIFIED);
 		    ans.add_body("");
 		    // we can drop the body from the answer
 		    // as it has not been modifed since last
 		    // seen by this client
+		}
 	    }
 	}
 	catch(exception_range & e)
@@ -179,20 +178,12 @@ void parser::checks_rfc1945(const request & req, answer & ans)
 
 	// RFC 1945 defines that several status code must not own a body in the answer
 
-    if(code == 204
-       || code  == 304
-       || (code > 100 && code < 200))
+    if(code == STATUS_CODE_NO_CONTENT
+       || code  == STATUS_CODE_NOT_MODIFIED
+       || (code > 99 && code < 200))
     {
 	if(ans.get_body().size() > 0)
 	    throw WEBDAR_BUG;
 	    // these responses must not include a body
     }
-    else
-    {
-	if(!ans.find_attribute(HDR_CONTENT_LENGTH, val))
-	    ans.add_attribute(HDR_CONTENT_LENGTH, webdar_tools_convert_to_string(ans.get_body().size()));
-    }
 }
-
-
-

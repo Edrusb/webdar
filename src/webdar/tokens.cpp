@@ -8,3 +8,7 @@ const char *HDR_DATE = "Date";
 const char *HDR_EXPIRES = "Expires";
 const char *HDR_SERVER = "Server";
 const char *HDR_WWW_AUTHENTICATE = "WWW-Authenticate";
+const char *HDR_SET_COOKIE = "Set-Cookie";
+const char *HDR_COOKIE = "Cookie";
+const char *HDR_AUTHORIZATION = "Authorization";
+const char *HDR_LOCATION = "Location";

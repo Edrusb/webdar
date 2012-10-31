@@ -11,7 +11,6 @@ extern "C"
 #include <string>
 #include <vector>
 
-
     // webdar headers
 
 
@@ -50,6 +49,13 @@ public:
 
 	/// rebuid the uri as a single string
     const std::string get_string() const;
+
+	/// add members to the uri
+    void add(const std::string & chemin) { *this += uri(chemin); };
+
+	/// concatenate an uri
+    void operator += (const uri & ref);
+    uri operator + (const uri & ref) const { uri ret = *this; ret += ref; return ret; };
 
 private:
     std::vector<std::string> url;

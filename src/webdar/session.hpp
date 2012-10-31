@@ -20,7 +20,7 @@ extern "C"
     /// Session object are sollicitated by parser and chooser
     /// objects.
 
-class session
+class session : public responder
 {
 public:
 

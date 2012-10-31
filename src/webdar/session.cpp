@@ -126,6 +126,8 @@ vector<session::session_summary> session::get_summary()
 	throw;
     }
     lock_running.unlock();
+
+    return ret;
 }
 
 bool session::get_session_info(const std::string & session_ID, session_summary & val)

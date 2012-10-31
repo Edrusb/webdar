@@ -95,7 +95,12 @@ protected:
 };
 
     /// exception used to report an request error from the http client
-
+    ///
+    /// \note at the difference of the exception_range type, this exception
+    /// is used when the user request is syntaxically correct but a field value has an
+    /// unexpected value. This implies that we can and must answer to by a error HTTP answer
+    /// which code and reason phrase is carried by this exception. Further request can
+    /// processed on the same connexion.
 class exception_input : public exception_base
 {
 public:

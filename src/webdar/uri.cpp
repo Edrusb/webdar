@@ -9,7 +9,7 @@ extern "C"
 
     // webdar headers
 #include "exceptions.hpp"
-
+#include "webdar_tools.hpp"
 
 
     //
@@ -118,3 +118,5 @@ void uri::read(const string & res)
     if(bk != it)
 	url.push_back(string(bk, it));
 }
+
+void uri::operator += (const uri & ref) { webdar_tools_concat_vectors(url, ref.url); };

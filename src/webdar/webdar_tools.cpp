@@ -116,16 +116,28 @@ string webdar_tools_get_session_ID_from_URI(const uri & url)
 }
 
 
-string webdar_tools_to_lowercase(const string & ch)
+string webdar_tools_to_canonical_case(const string & ch)
 {
     string ret = "";
+    bool previous_is_alpha = false;
 
     for(string::const_iterator it = ch.begin(); it != ch.end(); ++it)
     {
 	if(isalpha((*it)))
-	    ret += tolower(*it);
+	{
+	    if(previous_is_alpha)
+		ret += tolower(*it);
+	    else
+	    {
+		ret+= toupper(*it);
+		previous_is_alpha = true;
+	    }
+	}
 	else
+	{
 	    ret += *it;
+	    previous_is_alpha = false;
+	}
     }
 
     return ret;

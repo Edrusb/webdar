@@ -5,15 +5,150 @@
 using namespace std;
 
 
-    /////////////////////////////////////////////////////////////////////////////////////
-    // cookie_list implementation
-    //
-
-bool cookie_list::find(const std::string & key, std::string & value) const
+void request::clear()
 {
-    map<string, string>::const_iterator it = contents.find(key);
+    status = init;
+    cached_method = cached_uri = "";
+    coordinates.clear();
+    attributes.clear();
+    body = "";
+}
 
-    if(it != contents.end())
+bool request::try_reading(connexion & input)
+{
+    read_method_uri(input, false);
+}
+
+
+void request::read(connexion & input)
+{
+    string key;
+    string val, valorig;
+
+    if(&input == NULL)
+	throw WEBDAR_BUG;
+
+	///////////////////////////////////////////
+	// reading the first line of the request
+	//
+
+    if(!read_method_uri(input, true))
+	throw WEBDAR_BUG;
+
+    status = reading_all;
+
+	// VERSION field
+
+    if(!get_word(input, true, true, val))
+	throw WEBDAR_BUG;
+    if(val == "")
+	val = "HTTP/0.9";
+    set_version(val);
+    skip_line(input);
+
+
+	///////////////////////////////////////////
+	// reading the request's header
+	//
+
+    while(!is_empty_line(input)) // which would mean the end of the header
+    {
+	if(!get_token(input, true, true, key))
+	    throw WEBDAR_BUG;
+	if(key == "")
+	{
+	    string mesg = "non RFC1945 conformant message header: empty string as entity-header field name";
+	    clog->report(debug, mesg);
+	    throw exception_range(mesg);
+	}
+	skip_over(input, ':');
+	skip_over(input, ' ');
+	val = up_to_eol_with_LWS(input);
+	if(find_attribute(key, valorig))
+	    add_attribute(key, valorig + ',' + val);
+	else
+	    add_attribute(key, val);
+    }
+    skip_line(input); // we now point to the beginning of the body
+
+	///////////////////////////////////////////
+	// reading the body
+	//
+
+    if(find_attribute(HDR_CONTENT_LENGTH, val))
+    {
+	int size;
+	try
+	{
+	    size = webdar_tools_convert_to_int(val);
+	}
+	catch(...)
+	{
+	    string mesg = string("Value given to ") + HDR_CONTENT_LENGTH + " is not an integer: " + val;
+	    clog->report(debug, mesg);
+	    throw exception_range(mesg);
+	}
+	body = up_to_length(input, size);
+    }
+    else
+	body = "";
+
+    status = completed;
+
+    extract_cookies();
+
+	///////////////////////////////////////////
+	// Sanity checks
+	//
+
+
+	// HTTP version control
+
+    if(maj_vers != 1 || (min_vers != 0 && min_vers != 1))
+    {
+	string mesg = "The received request is using an unsupported HTTP version: ";
+
+	mesg += webdar_tools_convert_to_string(maj_vers) + "." + webdar_tools_convert_to_string(min_vers);
+	clog->report(info, mesg);
+	throw exception_input(mesg, STATUS_CODE_NOT_IMPLEMENTED);
+    }
+
+
+	// URI scheme
+
+    if(coordinates[0] != "http" && coordinates[0] != "")
+    {
+	string mesg = "Unsupported scheme in URI: ";
+	mesg += coordinates[0];
+
+	clog->report(debug, mesg);
+	throw exception_input(mesg, STATUS_CODE_BAD_REQUEST);
+    }
+
+
+	// HTTP method control
+
+    if(cached_method != "GET" && cached_method != "POST" && cached_method != "HEAD")
+    {
+	string mesg = "The received request using an unknown method: ";
+	mesg += cached_method;
+
+	clog->report(debug, mesg);
+	throw exception_input(mesg, STATUS_CODE_BAD_REQUEST);
+    }
+
+}
+
+bool request::add_cookie(const std::string & key, const std::string & value) const
+{
+    const_cast<request *>(this)->cookies[key] = value;
+}
+
+bool request::find_cookie(const std::string & key, std::string & value) const
+{
+    map<string, string>::const_iterator it = cookies.find(key);
+
+    if(it != cookies.end())
     {
 	value = it->second;
 	return true;
@@ -22,15 +157,49 @@ bool cookie_list::find(const std::string & key, std::string & value) const
 	return false;
 }
 
-
-    /////////////////////////////////////////////////////////////////////////////////////
-    // request implementation
-    //
-
-
-bool request::try_reading(connexion & input)
+bool request::find_attribute(const std::string & key, std::string & value) const
 {
-    read_method_uri(input, false);
+    string lkey = webdar_tools_to_canonical_case(key);
+    map<string, string>::const_iterator it = attributes.find(lkey);
+
+    if(status < reading_all)
+	throw WEBDAR_BUG;
+
+    if(it != attributes.end())
+    {
+	value = it->second;
+	return true;
+    }
+    else
+	return false;
+}
+
+void request::extract_cookies()
+{
+    string key, val;
+    bool found = find_attribute(HDR_COOKIE, val);
+    cookies.clear();
+
+    if(found)
+    {
+	vector<string> comma_sep;
+	vector<string>::iterator it;
+	vector<string> tmp;
+	vector<string> semi_col_sep;
+
+	webdar_tools_split_by(',', val, comma_sep);
+	for(it = comma_sep.begin(); it != comma_sep.end(); ++it)
+	{
+	    webdar_tools_split_by(';', *it, tmp);
+	    webdar_tools_concat_vectors(semi_col_sep, tmp);
+	}
+	for(it = semi_col_sep.begin(); it != semi_col_sep.begin(); ++it)
+	{
+	    webdar_tools_split_in_two('=', *it, key, val);
+	    cookies[key] = val;
+	}
+	drop_attribute(HDR_COOKIE);
+    }
 }
 
 bool request::read_method_uri(connexion & input, bool blocking)
@@ -81,160 +250,12 @@ bool request::read_method_uri(connexion & input, bool blocking)
     return status == uri_read;
 }
 
-void request::read(connexion & input)
+void request::drop_attribute(const std::string & key)
 {
-    string key;
-    string val;
-
-    if(&input == NULL)
-	throw WEBDAR_BUG;
-
-	///////////////////////////////////////////
-	// reading the first line of the request
-	//
-
-    if(!read_method_uri(input, true))
-	throw WEBDAR_BUG;
-
-    status = reading_all;
-
-	// VERSION field
-
-    if(!get_word(input, true, true, val))
-	throw WEBDAR_BUG;
-    if(val == "")
-	val = "HTTP/0.9";
-    set_version(val);
-
-    skip_line(input);
-
-
-	///////////////////////////////////////////
-	// reading the request's header
-	//
-
-    while(!is_empty_line(input)) // which would mean the end of the header
-    {
-	if(!get_token(input, true, true, key))
-	    throw WEBDAR_BUG;
-	if(key == "")
-	{
-	    string mesg = "non RFC1945 conformant message header: empty string as entity-header field name";
-	    clog->report(debug, mesg);
-	    throw exception_range(mesg);
-	}
-	skip_over(input, ':');
-	skip_over(input, ' ');
-	val = up_to_eol_with_LWS(input);
-	add_attribute(key, val);
-    }
-    skip_line(input); // we now point to the beginning of the body
-
-	///////////////////////////////////////////
-	// reading the body
-	//
-
-    if(find_attribute(HDR_CONTENT_LENGTH, val))
-    {
-	int size;
-	try
-	{
-	    size = webdar_tools_convert_to_int(val);
-	}
-	catch(...)
-	{
-	    string mesg = string("Value given to ") + HDR_CONTENT_LENGTH + " is not an integer: " + val;
-	    clog->report(debug, mesg);
-	    throw exception_range(mesg);
-	}
-	body = up_to_length(input, size);
-    }
-    else
-	body = "";
-
-    status = completed;
-
-	///////////////////////////////////////////
-	// Sanity checks
-	//
-
-	// HTTP version control
-    if(maj_vers != 1 || (min_vers != 0 && min_vers != 1))
-    {
-	string mesg = "The received request is using an unsupported HTTP version: ";
-
-	mesg += webdar_tools_convert_to_string(maj_vers) + "." + webdar_tools_convert_to_string(min_vers);
-	clog->report(info, mesg);
-	throw exception_input(mesg, STATUS_CODE_NOT_IMPLEMENTED);
-    }
-
-    if(coordinates[0] != "http" && coordinates[0] != "")
-    {
-	string mesg = "Unsupported scheme in URI: ";
-	mesg += coordinates[0];
-
-	clog->report(debug, mesg);
-	throw exception_input(mesg, STATUS_CODE_BAD_REQUEST);
-    }
-
-
-	// HTTP method control
-
-    if(cached_method != "GET" && cached_method != "POST" && cached_method != "HEAD")
-    {
-	string mesg = "The received request using an unknown method: ";
-	mesg += cached_method;
-
-	clog->report(debug, mesg);
-	throw exception_input(mesg, STATUS_CODE_BAD_REQUEST);
-    }
-
-}
-
-
-bool request::find_attribute(const std::string & key, std::string & value) const
-{
-    string lkey = webdar_tools_to_lowercase(key);
-    multimap<string, string>::const_iterator it = attributes.find(lkey);
-
-    if(status < reading_all)
-	throw WEBDAR_BUG;
+    map<string, string>::iterator it = attributes.find(key);
 
     if(it != attributes.end())
-    {
-	value = it->second;
-	return true;
-    }
-    else
-	return false;
-}
-
-cookie_list request::extract_cookies() const
-{
-    cookie_list ret;
-    pair< multimap<string,string>::const_iterator, multimap<string,string>::const_iterator > range = attributes.equal_range("Cookie");
-    multimap<string,string>::const_iterator it = range.first;
-
-    while(it != range.second)
-    {
-	vector<string> splitted;
-	vector<string>::iterator ut;
-
-	webdar_tools_split_by(';', it->second, splitted);
-	ut = splitted.begin();
-	while(ut != splitted.end())
-	{
-	    string key, val;
-
-	    webdar_tools_split_in_two('=', *ut, key, val);
-	    key = webdar_tools_remove_leading_spaces(key);
-	    ret.add(key, val);
-	    ++ut;
-	}
-	++it;
-    }
-
-    return ret;
+	attributes.erase(it);
 }
 
 bool request::is_empty_line(connexion & input)

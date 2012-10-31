@@ -17,7 +17,7 @@ class authentication
 public:
     virtual ~authentication() {};
 
-    virtual bool valid_credentials(const std::string & username, const std::string & credential) = 0;
+    virtual bool valid_credentials(const std::string & username, const std::string & credential) const = 0;
 };
 
 
@@ -33,7 +33,7 @@ class authentication_cli : public authentication
 public:
     authentication_cli(const std::string & username, const std::string & password) { user = username; pass = password; };
 
-    virtual bool valid_credentials(const std::string & username, const std::string & credential) { return username == user && credential == pass; }; // no need of mutex for this class
+    virtual bool valid_credentials(const std::string & username, const std::string & credential) const { return username == user && credential == pass; }; // no need of mutex for this class
 
 private:
     std::string user;

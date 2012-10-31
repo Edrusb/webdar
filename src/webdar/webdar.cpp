@@ -24,6 +24,7 @@ extern "C"
 #include "webdar_tools.hpp"
 #include "server.hpp"
 #include "authentication.hpp"
+#include "base64.hpp"
 
 #define WEBDAR_EXIT_OK 0
 #define WEBDAR_EXIT_SYNTAX 1
@@ -129,7 +130,7 @@ int main(int argc, char *argv[], char **env)
 	if(creport == NULL)
 	    throw exception_memory();
 	creport->report(debug, "central report object has been created");
-	creport->report(warning, string("HTTP access using the following username/password: ") + fixed_user + " / " + fixed_pass);
+	creport->report(warning, string("HTTP access using the following username/password:\n\t") + fixed_user + " / " + fixed_pass);
 
 
 	    /////////////////////////////////////////////////

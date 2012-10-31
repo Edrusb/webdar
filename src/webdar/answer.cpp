@@ -1,56 +1,42 @@
 #include "answer.hpp"
 #include "exceptions.hpp"
 #include "webdar_tools.hpp"
+#include "tokens.hpp"
 
 using namespace std;
 
-bool answer::find_attribute(const string & key, string & value) const
+void answer::clear()
 {
-    string lkey = webdar_tools_to_lowercase(key);
-    multimap<string,string>::const_iterator it = attributes.find(lkey);
+    status = maj_vers = min_vers = 0;
+    reason = "";
+    attributes.clear();
+    next_read = attributes.begin();
+    set_attribute(HDR_SERVER, "webdar/0.0");
+    add_body(""); // this adds the Content-Lenght header
+};
 
-    if(it != attributes.end())
-    {
-	value = it->second;
-	return true;
-    }
-    else
-	return false;
-}
-
-void answer::reset_read_next_attribute() const
+void answer::add_cookie(const std::string & key, const std::string & value)
 {
-    answer *me = const_cast<answer *>(this);
-    if(me == NULL)
-	throw WEBDAR_BUG;
-    me->next_read = attributes.begin();
-}
-
-bool answer::read_next_attribute(std::string & key, std::string & value) const
-{
-    answer *me = const_cast<answer *>(this);
-    if(me == NULL)
-	throw WEBDAR_BUG;
-
-    if(next_read != attributes.end())
-    {
-	key = next_read->first;
-	value = next_read->second;
-	++(me->next_read);
-	return true;
-    }
-    else
-	return false;
-}
-
-
-void answer::add_cookie(const std::string & key, std::string & value)
-{
-    static const string xkey = "Set-Cookie";
+    string oldval;
     string xval = key+"="+value;
-    add_attribute(xkey, xval);
+    if(find_attribute(HDR_SET_COOKIE, oldval))
+	set_attribute(HDR_SET_COOKIE, oldval + "; " + xval);
+	// we cannot use add_attribute_member as it builds a comma (,) separated list
+	// while the Set-Cookie field receives a semi-column (;) separated list
+    else
+	set_attribute(HDR_SET_COOKIE, xval);
 }
 
+void answer::add_body(const std::string & key)
+{
+    body = key;
+    set_attribute(HDR_CONTENT_LENGTH, webdar_tools_convert_to_string(body.size()));
+}
+
+bool answer::is_valid() const
+{
+    return status < 600 && status > 99;
+}
 
 void answer::write(connexion & output)
 {
@@ -87,3 +73,54 @@ void answer::write(connexion & output)
 	// flushing output writings
     output.flush_write();
 }
+
+void answer::add_attribute_member(const std::string & key, const std::string & value)
+{
+    string in_place;
+    if(find_attribute(key, in_place))
+	set_attribute(key, in_place + "," + value);
+    else
+	set_attribute(key, value);
+}
+
+bool answer::find_attribute(const string & key, string & value) const
+{
+    string lkey = webdar_tools_to_canonical_case(key);
+    map<string,string>::const_iterator it = attributes.find(lkey);
+
+    if(it != attributes.end())
+    {
+	value = it->second;
+	return true;
+    }
+    else
+	return false;
+}
+
+void answer::reset_read_next_attribute() const
+{
+    answer *me = const_cast<answer *>(this);
+    if(me == NULL)
+	throw WEBDAR_BUG;
+    me->next_read = attributes.begin();
+}
+
+bool answer::read_next_attribute(std::string & key, std::string & value) const
+{
+    answer *me = const_cast<answer *>(this);
+    if(me == NULL)
+	throw WEBDAR_BUG;
+
+    if(next_read != attributes.end())
+    {
+	key = next_read->first;
+	value = next_read->second;
+	++(me->next_read);
+	return true;
+    }
+    else
+	return false;
+}
+
+
+
