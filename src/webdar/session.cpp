@@ -142,10 +142,11 @@ bool session::get_session_info(const std::string & session_ID, session_summary &
 	if(it != running_session.end())
 	{
 	    val = publish(it);
+	    if(val.session_ID != session_ID)
+		throw WEBDAR_BUG;
 	    ret = true;
 	}
-	if(val.session_ID != session_ID)
-	    throw WEBDAR_BUG;
+
     }
     catch(...)
     {

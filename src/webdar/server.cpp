@@ -162,7 +162,7 @@ void server::inherited_run()
 		    session_ID = get_session_ID_from(req);
 
 			// extract authentication cookie from request
-		    if(req.find_cookie(COOKIE_NAME_AUTH, input_cookie))
+		    if(!req.find_cookie(COOKIE_NAME_AUTH, input_cookie))
 			input_cookie = "";
 
 			// obtain the expected session cookie from the session table

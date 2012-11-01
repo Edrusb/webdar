@@ -10,6 +10,9 @@ extern "C"
     // webdar headers
 #include "error_page.hpp"
 #include "cookies.hpp"
+#include "html_table.hpp"
+#include "html_page.hpp"
+#include "html_url.hpp"
 
     //
 #include "choose.hpp"
@@ -19,49 +22,41 @@ using namespace std;
 answer choose::give_answer(const request & req)
 {
     answer ret;
-    uri base_uri = string("choose");
-    uri asked = req.get_uri();
     std::vector<session::session_summary> status = session::get_summary();
     std::vector<session::session_summary>::iterator it = status.begin();
-    string body = "";
     unsigned int count = 0;
-    string last_session_ID;
+    html_page page = html_page("Choose a session");
+    html_table table = html_table(4);
 
-    if(asked.size() == 2 && asked[1] == "new")
+    table.add_cell("Session ID");
+    table.add_cell("Locked");
+    table.add_cell("Running");
+    table.add_cell("Closing");
+
+    while(it != status.end())
+    {
+	if(it->owner == owner)
+	{
+	    table.add_cell(html_url(it->session_ID, it->session_ID).display());
+	    table.add_cell(it->locked ? "locked" : "");
+	    table.add_cell(it->libdar_running ? "running" : "");
+	    table.add_cell(it->closing ? "closing" : "");
+	    ++count;
+	}
+	++it;
+    }
+
+    table.set_border(1);
+    page.add_to_body(table.display());
+    page.add_to_body(html_url("new", "create a new session").display());
+
+    if(count == 0) // no existing session for that user
 	ret = create_new_session();
     else
     {
-	body += "<html><head><title>Choose a session</title></head><body>";
-	body += "<table>";
-	body += "<tr><td>Session ID</td><td>Locked</td><td>Running</td><td>Closing</td></tr>";
-	while(it != status.end())
-	{
-	    if(it->owner == owner)
-	    {
-		body += string("<tr><td>")
-		    + "<a href=\"" + (base_uri + it->session_ID).get_string() +"\">"
-		    + it->session_ID + "</a></td><td>"
-		    + (it->locked ? "locked" : "") + "</td><td>"
-		    + (it->libdar_running ? "running" : "") + "</td><td>"
-		    + (it->closing ? "closing" : "") + "</td></tr>";
-
-		last_session_ID = it->session_ID;
-		++it;
-		++count;
-	    }
-	}
-	body += "</table><p>";
-	body += string("<a href=\"") + "/choose/new" + "\"> New session</a>";
-	body += "</html>";
-
-	if(count == 0)
-	    ret = create_new_session();
-	else
-	{
-	    ret.set_status(STATUS_CODE_OK);
-	    ret.set_reason("ok");
-	    ret.add_body(body);
-	}
+	ret.set_status(STATUS_CODE_OK);
+	ret.set_reason("ok");
+	ret.add_body(page.display());
     }
 
     return ret;
@@ -70,8 +65,8 @@ answer choose::give_answer(const request & req)
 answer choose::create_new_session()
 {
     answer ret;
-    uri target;
-    responder *obj = new (nothrow) error_page(STATUS_CODE_OK, "This is a new session");
+    html_page page = html_page("rediction to newly created session page");
+    error_page *obj = new (nothrow) error_page(STATUS_CODE_OK, "This is session temporary page");
     if(obj == NULL)
 	throw exception_memory();
 
@@ -79,12 +74,13 @@ answer choose::create_new_session()
     string cookie;
     if(!session::get_session_cookie(session_ID, cookie))
 	throw WEBDAR_BUG;
-    target += session_ID;
+    obj->set_message_body(string("This is the main page of session ") + session_ID);
 
-    ret.set_status(STATUS_CODE_MOVED_PERMANENTLY);
+    page.set_refresh_redirection(0, session_ID);
+    ret.set_status(STATUS_CODE_OK);
     ret.set_reason("new session created");
     ret.add_cookie(COOKIE_NAME_AUTH, cookie);
-    ret.set_attribute(HDR_LOCATION, target.get_string());
+    ret.add_body(page.display());
 
     return ret;
 }
