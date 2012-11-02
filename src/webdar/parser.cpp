@@ -22,10 +22,13 @@ parser::parser(connexion *input, central_report *log): req(log)
     source = input;
 }
 
-parser::~parser()
+void parser::close()
 {
     if(source != NULL)
+    {
 	delete source;
+	source = NULL;
+    }
 }
 
 bool parser::get_next_request_uri(uri & url)
@@ -73,9 +76,10 @@ const request & parser::get_request()
 	    delete source;
 	    source = NULL;
 	}
-	    // no throw
-	    // answered stays false
+	throw;
     }
+
+    valid_source(); // avoid returning a empty request when the socket is closed
 
     return req;
 }
@@ -93,6 +97,11 @@ void parser::send_answer(answer & ans)
 	checks_main(req, ans);
 	ans.write(*source);
 	answered = true;
+	req.clear();
+    }
+    catch(exception_bug & e)
+    {
+	throw;
     }
     catch(exception_base & e)
     {
@@ -167,6 +176,10 @@ void parser::checks_rfc1945(const request & req, answer & ans)
 		    // seen by this client
 		}
 	    }
+	}
+	catch(exception_bug & e)
+	{
+	    throw;
 	}
 	catch(exception_range & e)
 	{

@@ -33,6 +33,10 @@ listener::listener(central_report *log, authentication *auth, unsigned int port)
     {
 	init(log, auth, "::1", port);
     }
+    catch(exception_bug & e)
+    {
+	throw;
+    }
     catch(...)
     {
 	init(log, auth, "127.0.0.1", port);
@@ -82,6 +86,10 @@ void listener::init(central_report *log, authentication *auth, const std::string
 
 	    set_sockfd(AF_INET6);
 	    rep->report(debug, "listener object: IPv6 socket datastructure setup done");
+	}
+	catch(exception_bug & e)
+	{
+	    throw;
 	}
 	catch(...)
 	{

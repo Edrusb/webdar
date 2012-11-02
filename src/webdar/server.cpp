@@ -13,13 +13,11 @@ extern "C"
 #include "responder.hpp"
 #include "server.hpp"
 #include "webdar_tools.hpp"
-#include "cookies.hpp"
 #include "error_page.hpp"
 #include "challenge.hpp"
+#include "choose.hpp"
 
 using namespace std;
-
-static const string WEBDAR_COOKIE="webdar-session-id";
 
 static string get_session_ID_from(const request & req);
 
@@ -136,18 +134,16 @@ void server::inherited_run()
 {
     answer ans;
     string session_ID = "";
-    string input_cookie = "";
-    string expected_cookie = "";
     uri url;
     session *sess = NULL;
-    bool set_cookie_to_expected_one;
-    bool authenticated;
     challenge chal = authsrc;
+    session::session_summary info;
+    string user;
 
 
-    while(src.get_status() == connexion::connected)
+    try
     {
-	try
+	while(src.get_status() == connexion::connected)
 	{
 	    try
 	    {
@@ -155,66 +151,73 @@ void server::inherited_run()
 		      (src.get_next_request_uri(url)
 		       && webdar_tools_get_session_ID_from_URI(url) == sess->get_session_ID()))
 		{
-		    const request & req = src.get_request();
-		    ans.clear();
-
-			// extract session info if any
-		    session_ID = get_session_ID_from(req);
-
-			// extract authentication cookie from request
-		    if(!req.find_cookie(COOKIE_NAME_AUTH, input_cookie))
-			input_cookie = "";
-
-			// obtain the expected session cookie from the session table
-		    if(session_ID == ""
-		       || !session::get_session_cookie(session_ID, expected_cookie)
-		       || expected_cookie != input_cookie)
-			ans = chal.give_answer(req);
-		    else
+		    try
 		    {
-			if(sess != NULL && sess->get_session_ID() != session_ID)
-			    throw WEBDAR_BUG;
-			if(sess == NULL)
-			{
-			    sess = session::acquire_session(session_ID);
-			    if(sess == NULL)
-				throw WEBDAR_BUG;
-			}
+			const request & req = src.get_request();
+			ans.clear();
 
-			    // obtaining the answer from the session
-			ans = sess->give_answer(req);
+			    // extract session info if any
+			session_ID = get_session_ID_from(req);
+
+			    // check validity of the request
+			if(!chal.is_an_authoritative_request(req, user))
+			    ans = chal.give_answer(req);
+			else
+			    if(!session::get_session_info(session_ID, info)
+			       || info.locked
+			       || info.owner != user)
+				ans = choose(user).give_answer(req);
+			    else
+			    {
+				if(sess != NULL && sess->get_session_ID() != session_ID)
+				    throw WEBDAR_BUG;
+				if(sess == NULL)
+				{
+				    sess = session::acquire_session(session_ID);
+				    if(sess == NULL)
+					throw WEBDAR_BUG;
+				}
+				    // obtaining the answer from the session
+				ans = sess->give_answer(req);
+			    }
+
+			    // send back the anwser
+			src.send_answer(ans);
 		    }
-
-			// send back the anwser
-		    src.send_answer(ans);
+		    catch(exception_input & e)
+		    {
+			    // nothing to do;
+			    // we just end normally the server thread
+		    }
 
 		} // end of the while loop
 
-			// release the lock for the current session
+		    // release the lock for the current session
 		if(sess != NULL)
 		{
 		    session::release_session(sess);
 		    sess = NULL;
 		}
 	    }
-	    catch(exception_input & e)
+	    catch(...)
 	    {
-		    // nothing to do;
-		    // we just end normally the server thread
+		    // release the lock for the current session
+		if(sess != NULL)
+		{
+		    session::release_session(sess);
+		    sess = NULL;
+		}
+		src.close();
+		throw;
 	    }
-	}
-	catch(...)
-	{
-		// release the lock for the current session
-	    if(sess != NULL)
-	    {
-		session::release_session(sess);
-		sess = NULL;
-	    }
-	    throw;
 	}
     }
+    catch(exception_range & e)
+    {
+	rep->report(notice, string("Server thread ending: ") + e.get_message());
+    }
 }
+
 
 
 static string get_session_ID_from(const request & req)

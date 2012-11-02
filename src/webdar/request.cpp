@@ -16,7 +16,7 @@ void request::clear()
 
 bool request::try_reading(connexion & input)
 {
-    read_method_uri(input, false);
+    return read_method_uri(input, false);
 }
 
 
@@ -81,6 +81,10 @@ void request::read(connexion & input)
 	try
 	{
 	    size = webdar_tools_convert_to_int(val);
+	}
+	catch(exception_bug & e)
+	{
+	    throw;
 	}
 	catch(...)
 	{
@@ -193,7 +197,7 @@ void request::extract_cookies()
 	    webdar_tools_split_by(';', *it, tmp);
 	    webdar_tools_concat_vectors(semi_col_sep, tmp);
 	}
-	for(it = semi_col_sep.begin(); it != semi_col_sep.begin(); ++it)
+	for(it = semi_col_sep.begin(); it != semi_col_sep.end(); ++it)
 	{
 	    webdar_tools_split_in_two('=', *it, key, val);
 	    cookies[key] = val;
@@ -268,6 +272,10 @@ bool request::is_empty_line(connexion & input)
 	    throw WEBDAR_BUG;
 	ret = (input.read_test_first(true) == '\r') && (input.read_test_second(true) == '\n');
     }
+    catch(exception_bug & e)
+    {
+	throw;
+    }
     catch(exception_base & e)
     {
 	ret = false;
@@ -292,6 +300,10 @@ string request::up_to_eol(connexion & input)
 	    ret += input.read_one(true);
 	skip_line(input);
     }
+    catch(exception_bug & e)
+    {
+	throw;
+    }
     catch(exception_base & e)
     {
 	    // we ignore here any end of connection
@@ -311,6 +323,10 @@ string request::up_to_eof(connexion & input)
 	while(true)
 	    ret += input.read_one(true);
     }
+    catch(exception_bug & e)
+    {
+	throw;
+    }
     catch(exception_base & e)
     {
 	    // this is the way we know that we reached eof
@@ -328,6 +344,10 @@ void request::skip_over(connexion & input, char a)
     {
 	while(input.read_one(true) != a)
 	    ;
+    }
+    catch(exception_bug & e)
+    {
+	throw;
     }
     catch(exception_base & e)
     {
@@ -371,7 +391,10 @@ void request::skip_line(connexion & input)
 		}
 	    }
 	}
-
+    }
+    catch(exception_bug & e)
+    {
+	throw;
     }
     catch(exception_base & e)
     {
@@ -402,6 +425,10 @@ string request::up_to_eol_with_LWS(connexion & input)
 	    }
 	}
 	while(loop);
+    }
+    catch(exception_bug & e)
+    {
+	throw;
     }
     catch(exception_range & e)
     {
@@ -451,12 +478,17 @@ bool request::get_token(connexion & input, bool initial, bool blocking, string &
 	    }
 	}
     }
+    catch(exception_bug & e)
+    {
+	throw;
+    }
     catch(exception_base & e)
     {
 	if(!blocking)
 	    ret = false;
-	    // else (blocking read) nothing to do, we just reach the end of file
-	    // so we return the so far read data
+	else   // blocking read: returning the read data or failing if not data has been read so far
+	    if(token == "")
+		throw;
     }
 
     return ret;
@@ -473,44 +505,65 @@ bool request::get_word(connexion & input, bool initial, bool blocking, string & 
 	throw WEBDAR_BUG;
 
     word = "";
-    do
-    {
-	loop = false;
-	ret = get_token(input, initial, blocking, tmp);
-	if(tmp != "")
-	{
-	    initial = false;
-	    word += tmp;
-	}
-	if(ret)
-	{
-	    try
-	    {
-		ctmp = input.read_test_first(blocking);
-	    }
-	    catch(...)
-	    {
-		    // EOF met
-		break; // exiting the while loop
-	    }
 
-	    switch(ctmp)
+    try
+    {
+	do
+	{
+	    loop = false;
+	    ret = get_token(input, initial, blocking, tmp);
+	    if(tmp != "")
 	    {
-	    case '/':
-	    case ':':
-	    case '=':
-	    case '@':
-	    case '?':
-		word += input.read_one(blocking);
 		initial = false;
-		loop = true;
-		break;
-	    defaut:
-		break; // nothing to do, as loop is already false
+		word += tmp;
+	    }
+	    if(ret)
+	    {
+		try
+		{
+		    ctmp = input.read_test_first(blocking);
+		}
+		catch(exception_bug & e)
+		{
+		    throw;
+		}
+		catch(...)
+		{
+			// EOF met
+		    if(word != "" || !blocking)
+			break; // exiting the while loop
+		    else
+			throw;
+			// nothing to return so far so propagating the exception
+		}
+
+		switch(ctmp)
+		{
+		case '/':
+		case ':':
+		case '=':
+		case '@':
+		case '?':
+		    word += input.read_one(blocking);
+		    initial = false;
+		    loop = true;
+		    break;
+		defaut:
+		    break; // nothing to do, as loop is already false
+		}
 	    }
 	}
+	while(loop);
     }
-    while(loop);
+    catch(exception_bug & e)
+    {
+	throw;
+    }
+    catch(exception_base & e)
+    {
+	if(word == "")
+	    throw;
+    }
 
     return ret;
 }

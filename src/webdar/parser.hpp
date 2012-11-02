@@ -26,7 +26,7 @@ public:
     const parser & operator = (const parser & ref) { throw WEBDAR_BUG; };
 
 	/// destructor
-    ~parser();
+    ~parser() { close(); };
 
 	/// provides visibility on the connection status
     connexion::status get_status() const { if(source == NULL) return connexion::not_connected; return source->get_status(); };
@@ -43,6 +43,8 @@ public:
 	/// modify the answer to conform to RFC 1945 before sending it
     void send_answer(answer & ans);
 
+	/// closes the current connection
+    void close();
 
 private:
     central_report *clog;      //< central report logging

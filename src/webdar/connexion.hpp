@@ -21,7 +21,7 @@ public:
 	not_connected //< session is closed both directions
     };
 
-	/// create a new object based on a existing socket filedescriptor
+	/// constructor: create a new object based on a existing socket filedescriptor
     connexion(int fd, const std::string & peerip, unsigned int peerport);
 
 	/// forbidding copy constuctor and assignment operator
@@ -43,7 +43,7 @@ public:
     char read_test_first(bool blocking);
 
 	/// gives the second next char to be read, but do not remove it
-	/// from the reading buffer / throw exception if not available (EOF)
+	/// from the reading buffer / throw exception if not available
     char read_test_second(bool blocking);
 
 	/// write data to the socket
@@ -82,7 +82,7 @@ private:
 	/// \param[in] a where to store read data
 	/// \param[in] size width of the buffer pointed to by a
 	/// \param[in] blocking whether reading is blocking or not
-    unsigned int read(char *a, unsigned int size, bool blocking);
+    unsigned int atomic_read(char *a, unsigned int size, bool blocking);
 
 
 	/// manages to get (read) data in buffer and set relative variables acordingly

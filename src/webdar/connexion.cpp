@@ -139,7 +139,7 @@ void connexion::fermeture()
     }
 }
 
-unsigned int connexion::read(char *a, unsigned int size, bool blocking)
+unsigned int connexion::atomic_read(char *a, unsigned int size, bool blocking)
 {
     bool loop = true;
     ssize_t lu = 0;
@@ -153,15 +153,18 @@ unsigned int connexion::read(char *a, unsigned int size, bool blocking)
 	loop = false;
 	lu = recv(filedesc, a, size, flag);
 	if(lu == 0)
+	{
 	    fermeture();
+	    throw exception_range("reached end of data on socket");
+	}
 	if(lu < 0)
 	{
 	    switch(errno)
 	    {
-	    case EINTR:
+	    case EINTR:    // system call interrupted by a signal
 		loop = true;
 		break;
-	    case EAGAIN:
+	    case EAGAIN:   // means no data avaiable in non-blocking mode
 		if(blocking)
 		    throw WEBDAR_BUG;
 		else
@@ -193,7 +196,19 @@ void connexion::fill_buffer(bool blocking)
 		if(already_read > 0)
 		    (void)memmove(buffer, buffer + already_read, data_size - already_read);
 	    }
-	    data_size += read(buffer + data_size, buffer_size - data_size, blocking);
+	    try
+	    {
+		data_size += atomic_read(buffer + data_size, buffer_size - data_size, blocking);
+	    }
+	    catch(exception_bug & e)
+	    {
+		throw;
+	    }
+	    catch(exception_base & e)
+	    {
+		if(already_read == data_size) // no more data in buffer
+		    throw;
+	    }
 	}
 	else
 	{

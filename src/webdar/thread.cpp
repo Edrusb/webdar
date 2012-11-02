@@ -30,6 +30,10 @@ thread::~thread()
 	kill();
 	join();
     }
+    catch(exception_bug & e)
+    {
+	throw;
+    }
     catch(...)
     {
 	    // a destructor should not generate execptions

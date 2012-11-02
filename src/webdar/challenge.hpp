@@ -24,16 +24,19 @@ public:
 	/// \note the base argument must survive this challenge object and is
     challenge(const authentication *base) { if(base == NULL) throw WEBDAR_BUG; database = base; };
 
-	/// inherited from responder
+	/// returns whether the request is authoritative
+	///
+	/// \param[in] req the request to analyse
+	/// \param[out] user the authenticated user
+	/// \return true when the request is authoritative and the set "user" to the name of the authenticated user
+    bool is_an_authoritative_request(const request & req, std::string & user);
+
+	/// to be used to answer a non authoritative request
     answer give_answer(const request & req);
 
 private:
     const authentication *database;
 
-    void set_answer_need_authorization(answer & ans);
-    void set_answer_redirect_to_choose(answer & ans, const std::string & user);
-    void set_answer_from_chooser_object(answer & ans, const std::string & user,
-					const request & req);
 };
 
 #endif
