@@ -1,0 +1,79 @@
+    // C system header files
+extern "C"
+{
+
+}
+
+    // C++ system header files
+
+
+    // webdar headers
+#include "webdar_tools.hpp"
+#include "exceptions.hpp"
+
+
+    //
+#include "html_form_input.hpp"
+
+using namespace std;
+
+html_form_input::html_form_input(const std::string & id,
+				 const std::string & label,
+				 input_type type,
+				 const std::string & initial_value,
+				 unsigned int size)
+{
+    x_id = id;
+    x_label = label;
+    switch(type)
+    {
+    case text:
+	x_type = "text";
+	break;
+    case password:
+	x_type = "password";
+	break;
+    case number:
+	x_type = "number";
+	break;
+    case range:
+	x_type = "range";
+	break;
+    case check:
+	x_type = "checkbox";
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+    x_init = initial_value;
+    x_size = webdar_tools_convert_to_string(size);
+    x_min = x_max ="";
+}
+
+void html_form_input::set_range(int min, int max)
+{
+    x_min = webdar_tools_convert_to_string(min);
+    x_max = webdar_tools_convert_to_string(max);
+}
+
+string html_form_input::display() const
+{
+    string ret = "";
+
+    ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
+    ret += "<input type=\"" + x_type + "\" name=\"" + x_id + "\" id=\"" + x_id + "\" ";
+    if(x_min != "" && x_max != "") // yes both
+	ret += "min=\"" + x_min + "\" max=\"" + x_max + "\" ";
+    if(x_init != "")
+    {
+	if(x_type == "checkbox")
+	    ret += "checked ";
+	else
+	    ret += "placeholder=\"" + x_init +"\" ";
+    }
+    if(x_size != "")
+	ret += "size=\"" + x_size + "\" ";
+    ret += "/>\n";
+
+    return ret;
+}

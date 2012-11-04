@@ -363,9 +363,12 @@ string request::up_to_length(connexion & input, unsigned int length)
     if(&input == NULL)
 	throw WEBDAR_BUG;
 
-	/// TO ME IMPROVED ADDING A READ CALL WITH INPUT BUFFER TO CONNEXION CLASS
-    while(--length >= 0)
+	/// TO BE IMPROVED ADDING A READ CALL WITH INPUT BUFFER TO CONNEXION CLASS
+    while(length > 0)
+    {
 	ret += input.read_one(true);
+	--length;
+    }
 
     return ret;
 }

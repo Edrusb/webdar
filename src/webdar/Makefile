@@ -7,7 +7,7 @@ all: webdar
 clean:
 	rm -f *.o webdar
 
-webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o html.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o
+webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o html.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o
 
 webdar.o : webdar.cpp exceptions.hpp central_report.hpp listener.hpp webdar_tools.hpp server.hpp authentication.hpp
 central_report.o : central_report.cpp central_report.hpp webdar_tools.hpp exceptions.hpp mutex.hpp

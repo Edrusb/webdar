@@ -22,7 +22,7 @@ extern "C"
 
     // if the following #define is commented out, the class thread implementation does
     // not use threads, this may be useful for debugging purposes
-#define THREADED
+// #define THREADED
 
 class thread
 {

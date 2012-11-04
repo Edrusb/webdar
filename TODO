@@ -11,15 +11,17 @@
 + definir la structure de donnee session
 + remplacer de session par un semaphore; faire une class C++ pour enrober les semaphores
 + gerer les cookies dans les class requests et answer
->> implementation de server inherited_run()
-- terminer l'implementation de parser, si possible mettre des outils dans webdar_tools pour la manipulation de chaines de caractere
-(+) implementer une classe authentification par login (a trouver pour le differencier des utilisateur unix)/mot de passe en CLI
-(+) faire l'implementation de la classe server / en fonction de la requete sollicite un object html ou cree une nouvelle session
++ implementation de server inherited_run()
++ terminer l'implementation de parser, si possible mettre des outils dans webdar_tools pour la manipulation de chaines de caractere
++ implementer une classe authentification par login (a trouver pour le differencier des utilisateur unix)/mot de passe en CLI
++ faire l'implementation de la classe server / en fonction de la requete sollicite un object html ou cree une nouvelle session
 + definir la hierarchie de class pour l'authentification : travail a initier depuis la class server faute de cookie dans la requete
+>>>>> revoir la class responder pour construire une arborescence et une dictionnaire
+>> ajouter une class de decodage des POST en retour de formulaire (scinder champ / valeurs) (RFC "URL")
+
+
 - pour les sessions non authentifiees, il faut limiter la duree de la connexion a un temps court
-
-
->>>>>>>>>>> finir la gestion des signaux et masks (avec les informations de sessions ouvertes etc.)
+- finir la gestion des signaux et masks (avec les informations de sessions ouvertes etc.)
 - ajouter la gestion des signaux au sein des threads
 - prendre en compte les signaux qui peuvent etre retournes par une socket
 - revoir la conformite de la classe parser aux vue des RFC HTTP:
