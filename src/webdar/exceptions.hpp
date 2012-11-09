@@ -12,7 +12,7 @@ extern "C"
 #include <new>
 
     // libraries header files
-#include <libdar/libdar.hpp>
+#include <dar/libdar.hpp>
 
 
     /// pure virtual class parent of all webdar exceptions
