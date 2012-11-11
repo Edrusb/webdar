@@ -1,5 +1,5 @@
-#ifndef HTML_HPP
-#define HTML_HPP
+#ifndef CSS_HPP
+#define CSS_HPP
 
     // C system header files
 extern "C"
@@ -13,17 +13,16 @@ extern "C"
     // webdar headers
 
 
-class html
+class css
 {
 public:
-    html() { color = bg_col = bg_img = ""; };
-    virtual ~html() {};
-
+    css() { color = bg_col = bg_img = ""; };
+    virtual ~css() {};
 
     void clear_css_attributes();
-    void set_color(const std::string & col) { color = col; };
-    void set_background_color(const std::string & col) { bg_col = col; };
-    void set_background_image(const std::string & url,
+    void set_css_color(const std::string & col) { color = col; };
+    void set_css_background_color(const std::string & col) { bg_col = col; };
+    void set_css_background_image(const std::string & url,
 			      bool repeat_x,
 			      bool repeat_y,
 			      bool fixed)
@@ -32,11 +31,8 @@ public:
 	img_pos_x = img_pos_y = "";
     };
 
-    void set_background_position(const std::string & x, const std::string & y)
+    void set_css_background_position(const std::string & x, const std::string & y)
     { img_pos_x = x; img_pos_y = y; };
-
-	/// common method to produce HTML content
-    virtual std::string display() const = 0;
 
 protected:
     std::string get_css_string() const;
@@ -51,6 +47,5 @@ private:
     std::string img_pos_x;
     std::string img_pos_y;
 };
-
 
 #endif

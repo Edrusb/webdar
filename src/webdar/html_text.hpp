@@ -11,10 +11,11 @@ extern "C"
 
 
     // webdar headers
-#include "html.hpp"
+#include "body_builder.hpp"
+#include "static_body_builder.hpp"
 
 
-class html_text : public html
+class html_text : public body_builder, public static_body_builder
 {
 public:
 	/// constructor
@@ -22,11 +23,15 @@ public:
 	/// header_size defines the header level (1 to ...) or zero for normal text
     html_text(unsigned int header_size) { size = header_size; };
     void add_text(bool bold, bool underscore, bool italic, const std::string & text);
-    void add_nl() { txt += "<br></br>"; };
-    void add_paragraph() { txt += "<p></p>"; };
+    void add_nl() { txt += "<br />"; };
+    void add_paragraph() { txt += "<p />"; };
 
     void clear(unsigned int header_size) { size = header_size; txt = ""; };
-    std::string display() const;
+
+    virtual std::string get_body_part(const chemin & path,
+				      const request & req) { return get_body_part(); };
+
+    virtual std::string get_body_part() const;
 
 private:
     unsigned int size;

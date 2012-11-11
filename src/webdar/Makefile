@@ -7,7 +7,7 @@ all: webdar
 clean:
 	rm -f *.o webdar
 
-webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o html.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o
+webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o
 
 webdar.o : webdar.cpp exceptions.hpp central_report.hpp listener.hpp webdar_tools.hpp server.hpp authentication.hpp
 central_report.o : central_report.cpp central_report.hpp webdar_tools.hpp exceptions.hpp mutex.hpp
@@ -29,10 +29,12 @@ answer.o : answer.cpp answer.hpp exceptions.hpp webdar_tools.hpp uri.hpp tokens.
 base64.o : base64.cpp base64.hpp exceptions.hpp
 challenge.o : challenge.cpp challenge.hpp base64.hpp responder.hpp authentication.hpp cookies.hpp
 choose.o : choose.cpp choose.hpp session.hpp responder.hpp
-html.o : html.cpp html.hpp
-html_text.o : html_text.cpp html_text.hpp html.hpp
-html_page.o : html_page.cpp html_page.hpp html.hpp
-html_table.o : html_table.cpp html_table.hpp html.hpp
-html_image.o : html_image.cpp html_image.hpp html.hpp
-html_url.o : html_url.cpp html_url.hpp html.hpp
+css.o : css.cpp css.hpp
+body_builder: body_builder.cpp body_builder.hpp
+html_text.o : html_text.cpp html_text.hpp body_builder.hpp
+html_page.o : html_page.cpp html_page.hpp body_builder.hpp
+html_table.o : html_table.cpp html_table.hpp body_builder.hpp
+html_image.o : html_image.cpp html_image.hpp body_builder.hpp
+html_url.o : html_url.cpp html_url.hpp body_builder.hpp
 error_page.o : error_page.cpp error_page.hpp
+chemin.o : chemin.cpp chemin.hpp exceptions.hpp

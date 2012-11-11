@@ -56,9 +56,19 @@ void html_form_input::set_range(int min, int max)
     x_max = webdar_tools_convert_to_string(max);
 }
 
-string html_form_input::display() const
+string html_form_input::get_body_part(const deque<string> & path,
+		     const request & req)
 {
     string ret = "";
+
+	// first we extract informations from return form in the body of the request
+    if(req.get_method() == "POST" && path.empty())
+    {
+	map<string, string> fields = req.get_body_form();
+	map<string, string>::iterator it = fields.find(x_label);
+	if(it != fields.end())
+	    x_init = it->second;
+    }
 
     ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
     ret += "<input type=\"" + x_type + "\" name=\"" + x_id + "\" id=\"" + x_id + "\" ";

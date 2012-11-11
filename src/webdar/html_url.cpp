@@ -17,7 +17,7 @@ extern "C"
 using namespace std;
 
 
-string html_url::display() const
+string html_url::get_body_part() const
 {
     return string("<a ") + get_css_string() + " href=\"" + x_url + "\">" + x_label + "</a>";
 }

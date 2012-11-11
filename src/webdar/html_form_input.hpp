@@ -11,9 +11,9 @@ extern "C"
 
 
     // webdar headers
-#include "html.hpp"
+#include "body_builder.hpp"
 
-class html_form_input : public html
+class html_form_input : public body_builder
 {
 public:
     enum input_type { text, password, number, range, check };
@@ -21,12 +21,15 @@ public:
     html_form_input(const std::string & id,
 		    const std::string & label,
 		    input_type type,
-		    const std::string & initial_value, //< for check set empty string for unchecked anything else for checked
+		    const std::string & initial_value, //< for check set empty string for unchecked , anything else for checked
 		    unsigned int size);
 
     void set_range(int min, int max);
 
-    virtual std::string display() const;
+    const std::string & get_value() const { return x_init; };
+
+    virtual std::string get_body_part(const std::deque<std::string> & path,
+				      const request & req);
 
 private:
     std::string x_id;

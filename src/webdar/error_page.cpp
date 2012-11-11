@@ -23,6 +23,7 @@ using namespace std;
 answer error_page::give_answer(const request & req)
 {
     answer ret;
+/*
     html_page page = html_page(msg);
     html_table table = 1;
     html_text text = 1;
@@ -40,6 +41,8 @@ answer error_page::give_answer(const request & req)
     ret.set_status(status);
     ret.set_reason(msg);
     ret.add_body(page.display());
+*/
+
     return ret;
 }
 

@@ -17,13 +17,14 @@ extern "C"
 using namespace std;
 
 
-string html_form_fieldset::display() const
+string html_form_fieldset::get_body_part(const chemin & path,
+		     const request & req)
 {
     string ret = "";
 
     ret += "<fieldset " + get_css_string() + ">\n";
     ret += "<legend>" + x_label + "</legend>\n";
-    ret += fields;
+    ret += get_body_part_from_all_children(path, req);
     ret += "</fieldset>\n";
     return ret;
 }

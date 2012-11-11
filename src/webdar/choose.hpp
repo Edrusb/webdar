@@ -25,7 +25,8 @@ public:
 
 private:
     std::string owner;
-    answer create_new_session();
+
+    answer create_new_session(const request & req);
 };
 
 #endif

@@ -143,6 +143,30 @@ void request::read(connexion & input)
 
 }
 
+map<string,string> request::get_body_form() const
+{
+    string tmp, aux;
+    vector<string> split;
+    vector<string>::iterator it;
+    map<string, string> ret;
+
+    if(!find_attribute(HDR_CONTENT_TYPE, tmp))
+	return ret;
+    if(webdar_tools_to_canonical_case(tmp)
+       != webdar_tools_to_canonical_case(VAL_CONTENT_TYPE_FORM))
+	return ret;
+
+    tmp = webdar_tools_decode_urlencoded(get_body());
+    webdar_tools_split_by('&', tmp, split);
+    for(vector<string>::iterator it = split.begin(); it != split.end(); ++it)
+    {
+	webdar_tools_split_in_two('=', *it, tmp, aux);
+	ret[tmp] = aux;
+    }
+
+    return ret;
+}
+
 bool request::add_cookie(const std::string & key, const std::string & value) const
 {
     const_cast<request *>(this)->cookies[key] = value;

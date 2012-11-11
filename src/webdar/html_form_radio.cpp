@@ -24,18 +24,52 @@ void html_form_radio::add_choice(const string & id, const string & label)
     choices.push_back(x);
 }
 
+void html_form_radio::set_selected(unsigned int x)
+{
+    if(x >= choices.size())
+	selected = choices.size() - 1;
+    else
+	selected = x;
+}
 
-string html_form_radio::display() const
+string html_form_radio::get_body_part(const chemin & path,
+				      const request & req)
 {
     string ret = "";
-    vector<record>::const_iterator it = choices.begin();
+    string radio_id = get_path().namify();
 
-    while(it != choices.end())
+	// for POST method only, extract user choice from the body of the request
+	// and update this object's fields
+
+    update_field_from_request(req);
+
+	// for any request provide an updated HMTL content in response
+
+    for(unsigned int i = 0; i < choices.size(); ++i)
     {
-	ret += "<input type=\"radio\" name=\"" + get_id() + "\" id=\"" + it->id + "\" />\n";
-	ret += "<label for=\"" + it->id + "\">" + it->label + "</label><br />\n";
-	++it;
+	ret += "<input type=\"radio\" name=\"" + radio_id + "\" id=\"" + choices[i].id + "\" ";
+	if(i == selected)
+	    ret += "checked ";
+	ret += "/>\n";
+	ret += "<label for=\"" + choices[i].id + "\">" + choices[i].label + "</label><br />\n";
     }
 
     return ret;
+}
+
+void html_form_radio::update_field_from_request(const request & req)
+{
+    if(req.get_method() == "POST")
+    {
+	map<string, string> bd = req.get_body_form();
+	map<string, string>::const_iterator it = bd.find(get_path().namify());
+	if(it != bd.end())
+	{
+	    unsigned int u = 0;
+	    while(u < choices.size() && choices[u].id != it->second)
+		++u;
+	    if(u < choices.size())
+		selected = u;
+	}
+    }
 }

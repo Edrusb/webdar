@@ -11,16 +11,22 @@ extern "C"
 #include <vector>
 
     // webdar headers
-#include "html.hpp"
+#include "body_builder.hpp"
 
-class html_form_radio : public html
+class html_form_radio : public body_builder
 {
 public:
-    html_form_radio(const std::string & id) { x_id = id; };
+    html_form_radio() { selected = 0; };
     void add_choice(const std::string & id, const std::string & label);
     void clear() { choices.clear(); };
 
-    virtual std::string display() const;
+    void set_selected(unsigned int x) ;
+    const std::string & get_selected_id() const { return choices[selected].id; };
+    unsigned int get_selected_num() const { return selected; };
+
+	// inherited from body_builder
+    virtual std::string get_body_part(const chemin & path,
+				      const request & req);
 
 protected:
     struct record
@@ -29,12 +35,12 @@ protected:
 	std::string label;
     };
 
-    const std::string & get_id() const { return x_id; };
     const std::vector<record> & get_choices() const { return choices; };
+    void update_field_from_request(const request & req);
 
 private:
-    std::string x_id;
     std::vector<record> choices;
+    unsigned int selected;
 };
 
 

@@ -16,20 +16,13 @@ extern "C"
 
 using namespace std;
 
-html_form::html_form(const std::string & target,
-		     const std::string & validate_msg)
-{
-    url = target;
-    fields = "";
-    go_mesg = validate_msg;
-}
-
-string html_form::display() const
+string html_form::get_body_part(const chemin  & path,
+				const request & req)
 {
     string ret = "";
 
-    ret += "<form method=\"post\" action=\"" + url + "\" " + get_css_string() + ">\n";
-    ret += fields;
+    ret += "<form method=\"post\" action=\"" + get_path().display() + "\" " + get_css_string() + ">\n";
+    ret += get_body_part_from_all_children(path, req);
     ret += "<input type=\"submit\" value=\"" + go_mesg + "\" />\n";
     ret += "</form>\n";
 

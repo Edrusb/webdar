@@ -142,3 +142,59 @@ string webdar_tools_to_canonical_case(const string & ch)
 
     return ret;
 }
+
+string webdar_tools_decode_urlencoded(const std::string & ch)
+{
+    string ret = "";
+    string::const_iterator it = ch.begin();
+    string::const_iterator rf = it;
+    unsigned int x;
+
+    while(it != ch.end())
+    {
+	if(*it == '%')
+	{
+	    ret += string(rf, it);
+	    ++it;
+	    rf = it;
+	    if(it == ch.end() || ++it == ch.end())
+		throw exception_range("escape character found at end of string");
+	    ++it;
+	    x = webdar_tools_convert_hexa_to_int(string(rf, it));
+	    it += (unsigned char)(x);
+	    rf = it;
+	}
+	else
+	    ++it;
+    }
+
+    ret += string(rf, it);
+
+    return ret;
+}
+
+
+unsigned int webdar_tools_convert_hexa_to_int(const std::string & ref)
+{
+    unsigned int ret = 0;
+    unsigned int val = 0;
+    string::const_iterator it = ref.begin();
+
+    while(it != ref.end())
+    {
+	if(*it >= '0' && *it <= '9')
+	    val = *it - '0';
+	else if(*it >= 'a' && *it <= 'f')
+	    val = *it - 'a' + 10;
+	else if(*it >= 'A' && *it <= 'F')
+	    val = *it - 'A' + 10;
+	else
+	    throw exception_range("string does not represent an hexadecimal number");
+
+	ret *= 16;
+	ret += val;
+	++it;
+    }
+
+    return ret;
+}

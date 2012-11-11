@@ -24,7 +24,7 @@ html_image::html_image(const std::string & url, const std::string & alt)
     dim_y = "";
 }
 
-string html_image::display() const
+string html_image::get_body_part() const
 {
     string ret;
 

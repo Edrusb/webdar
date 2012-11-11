@@ -12,37 +12,43 @@ extern "C"
 #include <vector>
 
     // webdar headers
-#include "html.hpp"
+#include "body_builder.hpp"
 #include "exceptions.hpp"
 
 
 
-class html_page : public html
+class html_page : public body_builder
 {
 public:
-    html_page(const std::string & title) { x_title = title; };
-    html_page(const html_page & ref) { throw WEBDAR_BUG; };
-    const html_page & operator =(const html_page & ref) { throw WEBDAR_BUG; };
-    ~html_page() { clear_body(); };
+    html_page() { set_title(""); };
+    html_page(const std::string & title) { set_title(title); };
 
-	/// adding contents to the body of the page
+	/// change page title
+    void set_title(const std::string & title) { x_title = title; };
+
+	/// activate HTML redirection
 	///
-	/// \param[in] obj the object is given to the html_page, it will be released by it
-	/// \`note add_to_body can be called several time, the order of the object passed to it
-	/// drive the order of the page composition.
-    void add_to_body(const std::string & obj) { body_part.push_back(obj); };
-
+	/// \note if url is set to an empty string redirection is disabled
     void set_refresh_redirection(unsigned int seconds, const std::string & url);
 
-	/// drop all objects given so far using the add_to_body method
-    void clear_body();
 
-    virtual std::string display() const;
+	/// add content to the page body
+	///
+	/// \note no transfer of ownerhip is done concerning the object which address is given
+	/// the caller must manage for that the given object exists when get_body_part of this
+	/// object is called
+    void add_content(body_builder *obj);
+
+	/// remove content from the page body
+    void remove_content(body_builder *obj);
+
+	/// inherited from body_builder
+    virtual std::string get_body_part(const chemin & path,
+				      const request & req);
 
 private:
     std::string x_title;
     std::string redirect;
-    std::vector<std::string> body_part;
 };
 
 

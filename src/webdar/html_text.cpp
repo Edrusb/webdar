@@ -40,7 +40,7 @@ void html_text::add_text(bool bold, bool underlined, bool italic, const std::str
 	txt += "</div>";
 }
 
-string html_text::display() const
+string html_text::get_body_part() const
 {
     if(size == 0)
 	return txt;

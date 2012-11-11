@@ -46,7 +46,7 @@ const unsigned int STATUS_CODE_GATEWAY_TIME_OUT = 504;
 const unsigned int STATUS_CODE_HTTP_VERSION_NOT_SUPPORTED = 505;
 
 
-    // webdar headers
+    // HTTP headers
 
 extern const char *HDR_CONTENT_LENGTH;
 extern const char *HDR_IF_MODIFIED_SINCE;
@@ -60,5 +60,8 @@ extern const char *HDR_AUTHORIZATION;
 extern const char *HDR_SET_COOKIE;
 extern const char *HDR_COOKIE;
 extern const char *HDR_LOCATION;
+
+    // HTTP header values
+extern const char *VAL_CONTENT_TYPE_FORM;
 
 #endif

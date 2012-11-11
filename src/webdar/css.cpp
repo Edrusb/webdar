@@ -12,18 +12,18 @@ extern "C"
 
 
     //
-#include "html.hpp"
+#include "css.hpp"
 
 using namespace std;
 
 
-void html::clear_css_attributes()
+void css::clear_css_attributes()
 {
     color = bg_col = bg_img = "";
     img_pos_x = img_pos_y = "";
 }
 
-string html::get_css_string() const
+string css::get_css_string() const
 {
     string ret;
 

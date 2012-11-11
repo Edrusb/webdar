@@ -11,9 +11,9 @@ extern "C"
 
 
     // webdar headers
-#include "html.hpp"
+#include "body_builder.hpp"
 
-class html_form_fieldset : public html
+class html_form_fieldset : public body_builder
 {
 public:
     html_form_fieldset(const std::string & label) { x_label = label; fields = ""; };
@@ -21,8 +21,8 @@ public:
     void add_field(const std::string & val) { fields += val + "\n"; };
     void clear() { fields = ""; };
 
-    virtual std::string display() const;
-
+    virtual std::string get_body_part(const chemin & path,
+				      const request & req);
 private:
     std::string x_label;
     std::string fields;

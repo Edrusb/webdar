@@ -12,3 +12,7 @@ const char *HDR_SET_COOKIE = "Set-Cookie";
 const char *HDR_COOKIE = "Cookie";
 const char *HDR_AUTHORIZATION = "Authorization";
 const char *HDR_LOCATION = "Location";
+
+    //
+
+const char *VAL_CONTENT_TYPE_FORM = "application/x-www-form-urlencoded";

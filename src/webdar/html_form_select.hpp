@@ -16,9 +16,19 @@ extern "C"
 class html_form_select : public html_form_radio
 {
 public:
-    html_form_select(const std::string & id, const std::string & label):html_form_radio(id) { x_label = label; };
+    html_form_select(const std::string & label) { x_label = label; };
 
-    virtual std::string display() const;
+    void change_label(const std::string & label) { x_label = label; };
+
+	// inherit from html_form_radio the following methods to feed contents
+	// . add_choice
+	// . clear
+	// . set_selected
+	// . get_selected_id
+	// . get_selected_num
+
+    virtual std::string get_body_part(const chemin & path,
+				      const request & req);
 
 private:
     std::string x_label;

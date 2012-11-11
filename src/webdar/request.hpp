@@ -57,6 +57,13 @@ public:
 	/// obtain the body of the read request
     const std::string & get_body() const { if(status != completed) throw WEBDAR_BUG; return body; };
 
+	/// obtain the body splitted in as list of attribute-value pair
+	///
+	/// \note this call can be called to analyse POST request's body in response to a form
+	/// \note this call should only be used when the Content-Type is
+	/// application/x-www-form-urlencoded, if not an exception is thrown
+    std::map<std::string,std::string> get_body_form() const;
+
 	/// manually add a cookie to the request (should be used exceptionnaly)
 	///
 	/// \note the semantic of a const method might sound strange here

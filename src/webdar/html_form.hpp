@@ -11,24 +11,21 @@ extern "C"
 
 
     // webdar headers
-#include "html.hpp"
+#include "body_builder.hpp"
 
 
-class html_form : public html
+class html_form : public body_builder
 {
 public:
-    html_form(const std::string & target,
-	      const std::string & validate_msg = "send");
+    html_form(const std::string & validate_msg = "send") { go_mesg = validate_msg; };
 
-    void add_field(const std::string & val) { fields += val + "\n"; };
+	/// only record the given object as child, no memory management is given about that object
+    void add_field(body_builder *obj) { (void)record_child(obj); };
 
-    void clear() { fields = ""; };
-
-    virtual std::string display() const;
+    virtual std::string get_body_part(const chemin & path,
+				      const request & req);
 
 private:
-    std::string url;
-    std::string fields;
     std::string go_mesg;
 };
 
