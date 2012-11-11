@@ -12,14 +12,11 @@ extern "C"
 #include <vector>
 
     // webdar headers
-
+#include "chemin.hpp"
 
     /////////////////////////////////////////////////////////////////////////////////////
     /// uri type holds the splitted list of the scheme / hostname / path
     ///
-    /// the first member is always the scheme
-    /// the second member is always the host part of the URL (or an empty string for local and relative URL)
-    /// the further members is the path of the URL
 
 class uri
 {
@@ -36,30 +33,28 @@ public:
     void read(const std::string & res);
 
 	/// clear the uri (empty uri)
-    void clear() { url.clear(); };
+    void clear() { path.clear(); hostname = scheme = ""; };
 
-	/// number of part that compose the uri
-    unsigned int size() const { return url.size(); };
+	/// obtain the URI scheme
+    const std::string & get_scheme() const { return scheme; };
 
-	/// retrieve a part from the uri
-    const std::string & operator[] (unsigned int item) const { return url[item]; };
+	/// obtain the URI host part
+    const std::string & get_hostname() const { return hostname; };
 
-	/// retrieve a part from the uri
-    std::string & operator[] (unsigned int item) { return url[item]; };
+	/// retrieve a path of the uri
+    const chemin & get_path() const { return path; };
 
 	/// rebuid the uri as a single string
     const std::string get_string() const;
 
 	/// add members to the uri
-    void add(const std::string & chemin) { *this += uri(chemin); };
-
-	/// concatenate an uri
-    void operator += (const uri & ref);
-    uri operator + (const uri & ref) const { uri ret = *this; ret += ref; return ret; };
+    void add(const std::string & suppath) { path.push_back(suppath); };
+    void add(const chemin & suppath) { path += suppath; };
 
 private:
-    std::vector<std::string> url;
-
+    std::string scheme;
+    std::string hostname;
+    chemin path;
 };
 
 #endif

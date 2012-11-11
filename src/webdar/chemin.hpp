@@ -12,6 +12,8 @@ extern "C"
 #include <deque>
 
     // webdar headers
+#include "exceptions.hpp"
+
 
     /// class chemin definition
     /// \note "chemin" means path in French, this class

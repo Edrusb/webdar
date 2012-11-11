@@ -29,7 +29,7 @@ answer choose::give_answer(const request & req)
     html_table table = html_table(4);
     html_url url = html_url("/choose/new", "create a new session");
 
-    if(req.get_uri().size() == 4 && req.get_uri()[2] == "choose" && req.get_uri()[3] == "new")
+    if(req.get_uri().get_path().size() > 2 && req.get_uri().get_path()[0] == "choose" && req.get_uri().get_path()[1] == "new")
 	ret = create_new_session(req);
     else
     {

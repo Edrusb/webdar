@@ -120,10 +120,10 @@ void request::read(connexion & input)
 
 	// URI scheme
 
-    if(coordinates[0] != "http" && coordinates[0] != "")
+    if(coordinates.get_scheme() != "http" && coordinates.get_scheme() != "")
     {
 	string mesg = "Unsupported scheme in URI: ";
-	mesg += coordinates[0];
+	mesg += coordinates.get_scheme();
 
 	clog->report(debug, mesg);
 	throw exception_input(mesg, STATUS_CODE_BAD_REQUEST);
@@ -253,12 +253,7 @@ bool request::read_method_uri(connexion & input, bool blocking)
 	    cached_uri += tmp;
 
 	    if(status == uri_read)
-	    {
 		coordinates.read(cached_uri);
-		if(coordinates.size() < 2)
-		    throw WEBDAR_BUG;
-		    // uri_split should return: (scheme) + (hostname or empty string)
-	    }
 	}
     }
 

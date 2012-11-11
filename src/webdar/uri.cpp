@@ -21,18 +21,25 @@ using namespace std;
 
 const std::string uri::get_string() const
 {
-    std::string ret = url.size() > 1 ? url[0] : "";
+    std::string ret = "";
 
-    for(unsigned int i = 1; i < url.size(); ++i)
-	ret += string("/") + url[i];
+    if(scheme != "")
+	ret += scheme + ":";
+
+    if(hostname != "")
+	ret += "//" + hostname;
+
+    if(path.empty() && hostname != "")
+	ret += "/";
+    else
+	ret += path.display();
 
     return ret;
 }
 
-
 void uri::read(const string & res)
 {
-    enum { scheme, hostname, path } lookup = scheme;
+    enum { l_scheme, l_hostname, l_host_path, l_path } lookup = l_scheme;
     string::const_iterator it = res.begin();
     string::const_iterator bk = it;
 
@@ -42,27 +49,27 @@ void uri::read(const string & res)
     {
 	switch(lookup)
 	{
-	case scheme:
+	case l_scheme:
 	    if(*it != ':' && *it != '/')
 		++it;
 	    else
 	    {
 		if(*it == '/')
 		{
-		    url.push_back(""); // scheme not provided
-		    lookup = hostname;
+		    scheme = "";
+		    lookup = l_hostname;
 		    it = bk;
 		}
 		else
 		{
-		    url.push_back(string(bk, it));
+		    scheme = string(bk, it);
 		    ++it;
 		    bk = it;
-		    lookup = hostname;
+		    lookup = l_hostname;
 		}
 	    }
 	    break;
-	case hostname:
+	case l_hostname:
 	    if(*it == '/')
 	    {
 		++it;
@@ -70,53 +77,40 @@ void uri::read(const string & res)
 		{
 		    ++it;
 		    bk = it;
-		    lookup = path; // well, here the first member of the path will be the hostname, we do not need here to add an empty string
+		    lookup = l_host_path; // well, here the first member of the path will be the hostname, we do not need here to add an empty string
 		}
 		else // just an absolute path
 		{
-		    url.push_back(""); // empty host, the URL is not a net_path
+		    hostname = ""; // empty host, the URL is not a net_path
 		    bk = it;
-		    lookup = path;
+		    lookup = l_path;
 		}
 	    }
 	    else // just a relative path
 	    {
-		url.push_back(""); // empty host, the URL is not a net_path
+		hostname = ""; // empty host, the URL is not a net_path
 		bk = it;
-		lookup = path;
+		lookup = l_path;
 	    }
 	    break;
-	case path:
+	case l_host_path:
 	    if(*it == '/')
 	    {
-		url.push_back(string(bk, it));
+		hostname = string(bk, it);
 		++it;
 		bk = it;
+		lookup = l_path;
 	    }
 	    else
 		++it;
+	    break;
+	case l_path:
+	    path = chemin(string(it, res.end()));
+	    it = res.end();
 	    break;
 	default:
 	    throw WEBDAR_BUG;
 	}
     }
-
-    switch(lookup)
-    {
-    case scheme:
-	url.push_back("");
-	    // no break;
-    case hostname:
-	url.push_back("");
-	break;
-    case path:
-	break;
-    default:
-	throw WEBDAR_BUG;
-    }
-
-    if(bk != it)
-	url.push_back(string(bk, it));
 }
 
-void uri::operator += (const uri & ref) { webdar_tools_concat_vectors(url, ref.url); };

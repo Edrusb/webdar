@@ -109,8 +109,10 @@ string webdar_tools_generate_random_string(unsigned int size)
 
 string webdar_tools_get_session_ID_from_URI(const uri & url)
 {
-    if(url.size() > 2)
-	return url[2];
+    const chemin & path = url.get_path();
+
+    if(!path.empty())
+	return path[0];
     else
 	return "";
 }

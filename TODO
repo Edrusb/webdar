@@ -17,7 +17,7 @@
 + faire l'implementation de la classe server / en fonction de la requete sollicite un object html ou cree une nouvelle session
 + definir la hierarchie de class pour l'authentification : travail a initier depuis la class server faute de cookie dans la requete
 + implementer la classe chemin (avec sa notion d'index)
->>>>>>>>>> revoir la classe uri pour qu'elle utilise la classe chemin
++ revoir la classe uri pour qu'elle utilise la classe chemin
 + finir implementation des classes derivees de body_builder (html_*)
 >>>>>> tester avec un formulaire input lambda dans la page d'erreur
 >>>> savoir decoder un post de formulaire -> request (en parallele de get_body get_fiels (si content type est ok)
