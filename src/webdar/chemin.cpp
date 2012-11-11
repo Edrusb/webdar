@@ -5,7 +5,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <algorithm>
 
     // webdar headers
 #include "exceptions.hpp"
@@ -28,6 +28,15 @@ chemin::chemin(const string & path)
 	tmp.pop_back();
     }
     index = 0;
+}
+
+void chemin::push_back(const std::string & x)
+{
+	// must avoid adding a string that contains a /
+    if(find(x.begin(), x.end(), '/') != x.end())
+	throw exception_range("Cannot add a path member if it contains a slash");
+
+    members.push_back(x);
 }
 
 void chemin::operator += (const chemin & ref)

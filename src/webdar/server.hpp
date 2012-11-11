@@ -22,6 +22,7 @@ public:
     static void set_max_server(unsigned int val) { max_server = val; };
     static void kill_server(pthread_t tid);
     static void kill_all_servers();
+    static void throw_a_pending_exception();
 
 	/// used by another server to ask this object to release the session it uses
     void release_session() { can_keep_session = false; }; // no need of mutex here, several concurrent call will lead to the same result.

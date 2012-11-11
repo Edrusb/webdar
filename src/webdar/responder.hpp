@@ -12,6 +12,7 @@
 #include "exceptions.hpp"
 #include "request.hpp"
 #include "answer.hpp"
+#include "chemin.hpp"
 
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -22,7 +23,17 @@ class responder
 public:
     virtual ~responder() {};
 
+	/// used for body_builder object for they have a proper prefix in path
+    void set_prefix(const chemin & chem) { prefix = chem; };
+	/// get the recorded URI path prefix for body_builder root hierarchy
+    const chemin & get_prefix() const { return prefix; };
+
+	/// provides a standard mean for inherited class to provide answer to requests
     virtual answer give_answer(const request & req) = 0;
+
+private:
+    chemin prefix;
+
 };
 
 

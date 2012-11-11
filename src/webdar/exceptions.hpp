@@ -130,4 +130,3 @@ protected:
 extern void throw_as_most_derivated_class(exception_base *ebase);
 
 #endif
-

@@ -43,7 +43,7 @@ public:
     void operator += (const chemin & ref);
 
 	/// add a member at the end of the path
-    void push_back(const std::string & x) { members.push_back(x); };
+    void push_back(const std::string & x);
 
 	/// get the first member of the path
     std::string front() const { if(empty()) throw exception_range("cannot get front from an empty chemin"); return members.front(); };

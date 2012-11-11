@@ -33,28 +33,6 @@ bool server::run_new_server(central_report *log, authentication *auth, connexion
 
     try
     {
-	    ///////////
-	    // cleaning up the instances list
-
-	list<server *>::iterator it = instances.begin();
-	while(it != instances.end())
-	{
-	    if(*it == NULL)
-		it = instances.erase(it);
-	    else
-	    {
-		if(!((*it)->is_running()))
-		{
-		    (*it)->join(); // necessary to throw exception generated from within the thread
-		    delete (*it);
-		    (*it) = NULL;
-		    it = instances.erase(it);
-		}
-		else
-		    ++it;
-	    }
-	}
-
 	    //////////
 	    // creating a new server object if allowed
 	    // and adding it to the list
@@ -116,6 +94,40 @@ void server::kill_all_servers()
 	throw;
     }
 
+    lock_counter.unlock();
+}
+
+void server::throw_a_pending_exception()
+{
+    lock_counter.lock();
+
+    try
+    {
+	list<server *>::iterator it = instances.begin();
+
+	while(it != instances.end())
+	{
+	    if(*it == NULL)
+		it = instances.erase(it);
+	    else
+	    {
+		if(!((*it)->is_running()))
+		{
+		    (*it)->join(); // necessary to throw exception generated from within the thread
+		    delete (*it);
+		    (*it) = NULL;
+		    it = instances.erase(it);
+		}
+	    else
+		++it;
+	    }
+	}
+    }
+    catch(...)
+    {
+	lock_counter.unlock();
+	throw;
+    }
     lock_counter.unlock();
 }
 

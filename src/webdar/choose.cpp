@@ -79,6 +79,7 @@ answer choose::create_new_session(const request & req)
 
     string session_ID = session::create_new(owner, obj);
     obj->set_message_body(string("This is the main page of session ") + session_ID);
+    obj->set_prefix(chemin(session_ID));
 
     page.set_refresh_redirection(0, session_ID);
     ret.set_status(STATUS_CODE_OK);

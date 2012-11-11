@@ -23,12 +23,6 @@ public:
 	/// constructor
     body_builder() { parent = NULL; children.clear(); revert_child.clear(); };
 
-	/// second constructor
-	///
-	/// \note this second constructor let the path be prefixed (this will be used to carry the session_ID part
-	/// of the path)
-    body_builder(const chemin & prefix);
-
 	/// avoiding copy constructor use
     body_builder(const body_builder & ref) { throw WEBDAR_BUG; };
 
@@ -37,6 +31,13 @@ public:
 
 	/// the (virtual) destructor
     virtual ~body_builder() { clear_children(); unrecord_from_parent(); };
+
+
+	/// set the root path at which this object will be located in the URL path
+	///
+	/// \note this is only used if this object has no parent
+    void set_prefix(const chemin & prefix) { x_prefix = prefix; };
+
 
 	/// ask the object to provide a part of the body to answer the request
 	///
@@ -72,7 +73,7 @@ protected:
 	/// This call builds a hierarchical tree of body_builder that is used in request URI:
 	/// After the session_ID in the path, takes place the name of the object to ask an answer
 	/// from in return to the requested URI.
-     std::string record_child(body_builder *obj);
+    std::string record_child(body_builder *obj);
 
 
 	/// remove the name associated to this object
@@ -105,7 +106,7 @@ protected:
 
 
 private:
-    std::string x_prefix;
+    chemin x_prefix;
     body_builder *parent;
     std::list<body_builder *> order;
     std::map<std::string, body_builder *> children;

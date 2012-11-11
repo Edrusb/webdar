@@ -228,6 +228,29 @@ void listener::inherited_run()
 	    throw WEBDAR_BUG;
 	}
 
+	bool loop = true;
+	do
+	{
+	    try
+	    {
+		server::throw_a_pending_exception();
+		loop = false;
+	    }
+	    catch(exception_bug & e)
+	    {
+		throw;
+	    }
+	    catch(exception_thread & e)
+	    {
+		throw;
+	    }
+	    catch(exception_base & e)
+	    {
+		rep->report(warning, string("listener object: Previous server ended with error: ") + e.get_message());
+	    }
+	}
+	while(loop);
+
 	rep->report(debug, "listener object: creating a new \"connexion\" object");
 	con = new (nothrow) connexion(ret, ip, port);
 	if(con == NULL)
@@ -238,13 +261,21 @@ void listener::inherited_run()
 	    {
 		rep->report(debug, "listener object: spawning in a separated thread the newly created \"connexion\" object");
 		if(!server::run_new_server(rep, src, con))
+		{
+		    rep->report(warning, "failed to create a new server maximum connexion reached");
 		    delete con;
+		    con = NULL;
+		}
 		else // object now managed by the new server object
 		    con = NULL;
 	    }
 	    catch(...)
 	    {
-		delete con;
+		if(con != NULL)
+		{
+		    delete con;
+		    con = NULL;
+		}
 		throw;
 	    }
 	}

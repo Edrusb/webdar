@@ -34,8 +34,8 @@ chemin body_builder::get_path() const
 	ret = parent->get_path();
 	ret.push_back(it->second); // adding the name of "this" to parent's path
     }
-    else // no parent, we are the root, so the path is empty
-	ret.clear();
+    else // no parent, we are the root, so the path is given by prefix
+	ret = x_prefix;
 
     return ret;
 }
