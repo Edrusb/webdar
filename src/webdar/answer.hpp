@@ -15,6 +15,8 @@ class answer
 {
 public:
     answer() { clear(); };
+    answer(const answer & ref) { copy_from(ref); };
+    const answer & operator = (const answer & ref) { copy_from(ref); return *this; };
 
 	/// clear all information from the object
     void clear();
@@ -99,6 +101,9 @@ private:
 	/// \param[out] value value of that attribute
 	/// \return true if a next attribute has been else, key and value are not set
     bool read_next_attribute(std::string & key, std::string & value) const;
+
+
+    void copy_from(const answer & ref);
 
 };
 

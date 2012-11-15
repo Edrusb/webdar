@@ -86,22 +86,28 @@ void body_builder::unrecord_child(body_builder *obj)
     map<body_builder *, string>::iterator rit = revert_child.find(obj);
     list<body_builder *>::iterator ot = find(order.begin(), order.end(), obj);
 
-    if(ot == order.end())
+    if(ot == order.end()) // object not found in the ordered list
 	throw WEBDAR_BUG;
 
     if(rit != revert_child.end())
     {
 	string name = rit->second;
 	map<string, body_builder *>::iterator it = children.find(name);
-	if(it == children.end())
+	if(it == children.end()) // object known by both ordered list and rever_child map, but unknown by children map
 	    throw WEBDAR_BUG;
+
+	    // removing the object from the three lists/maps
 	children.erase(it);
 	revert_child.erase(rit);
-	obj->parent = NULL;
 	order.erase(ot);
+
+	    // unrecording us as its parent
+	if(obj->parent == NULL)
+	    throw WEBDAR_BUG;
+	obj->parent = NULL;
     }
     else
-	throw WEBDAR_BUG; // unknown object asked for removal
+	throw WEBDAR_BUG; // object known in the ordered list but unknown by the revert_child map
 }
 
 
@@ -145,12 +151,26 @@ string body_builder::get_body_part_from_all_children(const chemin & path,
     return ret;
 }
 
-void body_builder::clear_children()
+void body_builder::clear_and_delete_children()
 {
+    body_builder *obj = NULL;
+
     map<string, body_builder *>::iterator it = children.begin();
     while(it != children.end())
     {
-	unrecord_child(it->second);
+	obj = it->second;
+	if(obj == NULL)
+	    throw WEBDAR_BUG;
+	try
+	{
+	    unrecord_child(obj);
+	}
+	catch(...)
+	{
+	    throw WEBDAR_BUG;
+	}
+
+	delete obj;
 	it = children.begin();
 	    // unrecord_child modifies the "children" map
 	    // so we set 'it' to a valid value setting it to begin()
@@ -158,8 +178,12 @@ void body_builder::clear_children()
 	    // so ghd loop will end when the map will become empty
     }
 
-    children.clear();
-    revert_child.clear();
+    if(children.size() != 0)
+	throw WEBDAR_BUG;
+    if(order.size() != 0)
+	throw WEBDAR_BUG;
+    if(revert_child.size() != 0)
+	throw WEBDAR_BUG;
 }
 
 void body_builder::unrecord_from_parent()

@@ -34,6 +34,9 @@ const std::string uri::get_string() const
     else
 	ret += path.display();
 
+    if(ret == "")
+	ret = "/";
+
     return ret;
 }
 

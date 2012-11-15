@@ -20,7 +20,7 @@ string html_form_select::get_body_part(const chemin & path, const request & req)
 {
     string ret = "";
     string select_id = get_path().namify();
-    const vector<record> choices = get_choices();
+    const vector<record> & choices = get_choices();
     vector<record>::const_iterator it = choices.begin();
 
 	// for POST method only, extract used choice from the body of the request

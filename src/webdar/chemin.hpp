@@ -23,7 +23,7 @@ class chemin
 {
 public:
 	/// constucts an empty path
-    chemin() { index = 0; };
+    chemin() { members.clear(); index = 0; };
     chemin(const std::string & path);
 
 	/// default copy constructor is OK

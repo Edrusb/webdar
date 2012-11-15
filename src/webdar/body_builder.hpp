@@ -30,13 +30,29 @@ public:
     const body_builder & operator = (const body_builder & ref) { throw WEBDAR_BUG; };
 
 	/// the (virtual) destructor
-    virtual ~body_builder() { clear_children(); unrecord_from_parent(); };
+    virtual ~body_builder() { clear_and_delete_children(); unrecord_from_parent(); };
 
 
 	/// set the root path at which this object will be located in the URL path
 	///
 	/// \note this is only used if this object has no parent
     void set_prefix(const chemin & prefix) { x_prefix = prefix; };
+
+
+	/// Common interface for class that can/must contain other body_builder to provide a body_part()
+	///
+	/// this call is not mandatory, but must be overwritten by inherited class in order to be used
+	/// \note this call semantic is that the given object is passed to the body_builder, which is in charge
+	/// of its memory management (in particular at body_builder destruction) or un until its returned to the caller
+    virtual void give(body_builder *obj) { throw WEBDAR_BUG; };
+
+	/// Common interface for class the can/must contain other body_builder to provide a body_part()
+	///
+	/// this call is not mandatory, but must be overwritten by inherided class in order to be used
+	/// \note this call semantic is that the given object is returned the caller, this body_builder is no more
+	/// in charge of its memory management.
+	/// \note if the requested object is not known an exception is thrown
+    virtual void take_back(body_builder *obj) { throw WEBDAR_BUG; };
 
 
 	/// ask the object to provide a part of the body to answer the request
@@ -60,17 +76,18 @@ protected:
     chemin get_path() const;
 
 	/// returns the name of 'this' if it has been recorded by a parent body_builder object
-
+	///
 	/// \note, an empty string is returned if the object has not been recorded by a parent body_builder object
     std::string get_recorded_name() const;
 
 
-	/// record a object as child of this object. This gives a official name to this object, as part of a tree heirarchy
+	/// record a object as child of this object. This gives an official name to this object as part of a tree heirarchy
 	///
 	/// \param[in] obj the body_builder inherited class object's address
 	/// \return the name given to that object (which one will be used to build the path)
-	/// \note this call does not transfer any responsibility about child memory management.
-	/// This call builds a hierarchical tree of body_builder that is used in request URI:
+	/// \note this call DOES transfer responsibility about given child memory management. In particular
+	/// if this object is not "unrecorded" it will be unrecorded *and* deleted by the body_builder destructor
+	/// \note This call builds a hierarchical tree of body_builder that is used in request URI:
 	/// After the session_ID in the path, takes place the name of the object to ask an answer
 	/// from in return to the requested URI.
     std::string record_child(body_builder *obj);
@@ -78,10 +95,13 @@ protected:
 
 	/// remove the name associated to this object
 	///
-	/// \param[in] the child's name to delete (the object is not touched, only its
-	/// name is deleted from the base)
+	/// \param[in] the child's address to unrecord (the object is not touched, only its
+	/// name is deleted from the base, the object responsibility passes back to the caller's
 	/// \note if no direct child has such a name an exception exception_range is thrown
     void unrecord_child(body_builder *obj);
+
+	/// unrecord and destroy all children recusively
+    void clear_and_delete_children();
 
 	/// let a parent obtain the body part from one of its children given its official name
 	///
@@ -104,7 +124,6 @@ protected:
     std::string get_body_part_from_all_children(const chemin & path,
 						const request & req);
 
-
 private:
     chemin x_prefix;
     body_builder *parent;
@@ -112,7 +131,6 @@ private:
     std::map<std::string, body_builder *> children;
     std::map<body_builder *, std::string> revert_child;
 
-    void clear_children();
     void unrecord_from_parent();
 };
 

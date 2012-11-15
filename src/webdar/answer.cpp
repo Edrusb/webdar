@@ -122,5 +122,15 @@ bool answer::read_next_attribute(std::string & key, std::string & value) const
 	return false;
 }
 
+void answer::copy_from(const answer & ref)
+{
+    status = ref.status;
+    reason = ref.reason;
+    maj_vers = ref.maj_vers;
+    min_vers = ref.min_vers;
+    attributes = ref.attributes;
+    body = ref.body;
+    next_read = attributes.begin();
+}
 
 

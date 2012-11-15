@@ -17,7 +17,7 @@ extern "C"
 using namespace std;
 
 
-void html_table::add_in_next_cell(body_builder *obj)
+void html_table::give(body_builder *obj)
 {
     bundle bdl;
 
@@ -34,7 +34,7 @@ void html_table::add_in_next_cell(body_builder *obj)
     }
 }
 
-void html_table::add_in_next_cell(const string & fixed)
+void html_table::give(const string & fixed)
 {
     bundle bdl;
 
@@ -68,38 +68,9 @@ const body_builder *html_table::access_cell(unsigned int x, unsigned int y) cons
 
 void html_table::clear()
 {
-    vector<bundle>::iterator it = current_line.begin();
-    vector< vector<bundle> >::iterator tit = table.begin();
-
-    while(it != current_line.end())
-    {
-	if(it->obj != NULL)
-	{
-	    unrecord_child(it->obj);
-	    delete it->obj;
-	    it->obj = NULL;
-	}
-	++it;
-    }
-    current_line.clear();
-
-    while(tit != table.end())
-    {
-	it = tit->begin();
-	while(it != tit->end())
-	{
-	    if(it->obj != NULL)
-	    {
-		unrecord_child(it->obj);
-		delete it->obj;
-		it->obj = NULL;
-	    }
-	    ++it;
-	}
-
-	++tit;
-    }
+    clear_and_delete_children();
     table.clear();
+    current_line.clear();
 }
 
 
@@ -107,7 +78,7 @@ string html_table::get_body_part(const chemin & path,
 				 const request & req)
 {
 	// if the last raw is not completed it is now taken into account
-	// (in other words, we don't look at current_line in this method
+	// (in other words, we don't look at current_line in this method)
 
     string ret = "";
     chemin sub_path = path;

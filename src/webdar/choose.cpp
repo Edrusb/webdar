@@ -33,35 +33,49 @@ answer choose::give_answer(const request & req)
 	ret = create_new_session(req);
     else
     {
-	table.add_in_next_cell("Session ID");
-	table.add_in_next_cell("Locked");
-	table.add_in_next_cell("Running");
-	table.add_in_next_cell("Closing");
+	table.give("Session ID");
+	table.give("Locked");
+	table.give("Running");
+	table.give("Closing");
 
 	while(it != status.end())
 	{
 	    if(it->owner == owner)
 	    {
-		table.add_in_next_cell(html_url(string("/") + it->session_ID, it->session_ID).get_body_part());
-		table.add_in_next_cell(it->locked ? "locked" : "");
-		table.add_in_next_cell(it->libdar_running ? "running" : "");
-		table.add_in_next_cell(it->closing ? "closing" : "");
+		table.give(html_url(string("/") + it->session_ID, it->session_ID).get_body_part());
+		table.give(it->locked ? "locked" : "");
+		table.give(it->libdar_running ? "running" : "");
+		table.give(it->closing ? "closing" : "");
 		++count;
 	    }
 	    ++it;
 	}
 
-	table.set_border(1);
-	page.add_content(& table);
-	page.add_content(& url);
-
 	if(count == 0) // no existing session for that user
 	    ret = create_new_session(req);
 	else
 	{
-	    ret.set_status(STATUS_CODE_OK);
-	    ret.set_reason("ok");
-	    ret.add_body(page.get_body_part(chemin("/"), req));
+	    page.give(& table);
+	    page.give(& url);
+
+	    try
+	    {
+		table.set_border(1);
+
+		ret.set_status(STATUS_CODE_OK);
+		ret.set_reason("ok");
+		ret.add_body(page.get_body_part(chemin("/"), req));
+	    }
+	    catch(...)
+	    {
+		page.take_back(& table);
+		page.take_back(& url);
+		throw;
+	    }
+
+	    page.take_back(& table);
+	    page.take_back(& url);
+
 	}
     }
 
@@ -80,6 +94,7 @@ answer choose::create_new_session(const request & req)
     string session_ID = session::create_new(owner, obj);
     obj->set_message_body(string("This is the main page of session ") + session_ID);
     obj->set_prefix(chemin(session_ID));
+    obj->set_return_uri(uri("/"), "Root Page");
 
     page.set_refresh_redirection(0, session_ID);
     ret.set_status(STATUS_CODE_OK);

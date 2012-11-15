@@ -17,13 +17,11 @@ extern "C"
 
 using namespace std;
 
-html_form_input::html_form_input(const std::string & id,
-				 const std::string & label,
+html_form_input::html_form_input(const std::string & label,
 				 input_type type,
 				 const std::string & initial_value,
 				 unsigned int size)
 {
-    x_id = id;
     x_label = label;
     switch(type)
     {
@@ -56,16 +54,17 @@ void html_form_input::set_range(int min, int max)
     x_max = webdar_tools_convert_to_string(max);
 }
 
-string html_form_input::get_body_part(const deque<string> & path,
-		     const request & req)
+string html_form_input::get_body_part(const chemin & path,
+				      const request & req)
 {
     string ret = "";
+    string x_id = get_path().namify();
 
 	// first we extract informations from return form in the body of the request
     if(req.get_method() == "POST" && path.empty())
     {
 	map<string, string> fields = req.get_body_form();
-	map<string, string>::iterator it = fields.find(x_label);
+	map<string, string>::iterator it = fields.find(x_id);
 	if(it != fields.end())
 	    x_init = it->second;
     }

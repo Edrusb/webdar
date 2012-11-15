@@ -24,13 +24,12 @@ public:
     const html_table & operator = (const html_table & ref) { throw WEBDAR_BUG; };
     ~html_table() { clear(); };
 
-	/// add the object in the next new cell of the table
+	/// add the object in the next new cell of the table (table filled raw by raw, left to right)
 	///
-	/// \param[in] obj is the address of the object that will be asked to fill the cell
-	/// \note, the object which address become owned by the table. It will be destroyed
-	/// by the table when no more necessary.
-    void add_in_next_cell(body_builder *obj);
-    void add_in_next_cell(const std::string & fixed);
+    void give(body_builder *obj);
+
+	/// add the fixed text in the next new cell of the table (table filled raw by raw, left to right)
+    void give(const std::string & fixed);
 
 	/// get access to the object filling a given cell of the table
 	///
@@ -39,7 +38,7 @@ public:
 
     void set_border(unsigned int width) { border = "border=\"" + webdar_tools_convert_to_string(width) + "\""; };
 
-	/// clear all the cells of the table, destroying all associated objects
+	/// clear all the cells of the table
     void clear();
 
     virtual std::string get_body_part(const chemin & path,

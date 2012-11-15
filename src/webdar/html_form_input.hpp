@@ -18,8 +18,7 @@ class html_form_input : public body_builder
 public:
     enum input_type { text, password, number, range, check };
 
-    html_form_input(const std::string & id,
-		    const std::string & label,
+    html_form_input(const std::string & label,
 		    input_type type,
 		    const std::string & initial_value, //< for check set empty string for unchecked , anything else for checked
 		    unsigned int size);
@@ -28,17 +27,16 @@ public:
 
     const std::string & get_value() const { return x_init; };
 
-    virtual std::string get_body_part(const std::deque<std::string> & path,
+    virtual std::string get_body_part(const chemin & path,
 				      const request & req);
 
 private:
-    std::string x_id;
-    std::string x_label;
-    std::string x_type;
-    std::string x_init;
-    std::string x_size;
-    std::string x_min;
-    std::string x_max;
+    std::string x_label; //< field text shown to the user
+    std::string x_type;  //< type of HTML input field
+    std::string x_init;  //< current value / initial value of the field
+    std::string x_size;  //< width of the field in number of characterds
+    std::string x_min;   //< minimum value of the field (for type = number)
+    std::string x_max;   //< maximum value of the field (for type = number)
 };
 
 #endif
