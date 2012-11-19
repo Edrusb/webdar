@@ -233,6 +233,41 @@ void session::release_session(session *sess)
 }
 
 
+bool session::close_session(const string & session_ID)
+{
+    lock_running.lock();
+    map<string, table>::iterator it;
+    bool ret = false;
+
+    try
+    {
+	it = running_session.find(session_ID);
+	if(it != running_session.end())
+	{
+	    it->second.closing = true;
+	    if(it->second.ref_given == 0)
+	    {
+		if(it->second.reference != NULL)
+		    delete it->second.reference;
+		else
+		    throw WEBDAR_BUG;
+	    }
+		// else we the object will be destroyed when no more reference point to that session
+	    ret = true; // session will be destroyed as soon as possible
+	}
+	else
+	    ret = false;
+    }
+    catch(...)
+    {
+	lock_running.unlock();
+	throw;
+    }
+
+    lock_running.unlock();
+
+    return ret;
+}
 
     //////////////////////////
     //  object method implementation

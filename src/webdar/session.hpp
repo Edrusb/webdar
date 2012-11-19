@@ -57,6 +57,7 @@ public:
     static std::string create_new(const std::string & owner, responder *resp); /// returns the session_ID of the newly created session
     static session *acquire_session(const std::string & session_ID);
     static void release_session(session *sess);
+    static bool close_session(const std::string & session_ID); //< return true if the session exists and has been flagged for destruction
 
 private:
 	/// constructor
