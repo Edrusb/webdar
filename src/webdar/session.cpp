@@ -248,7 +248,10 @@ bool session::close_session(const string & session_ID)
 	    if(it->second.ref_given == 0)
 	    {
 		if(it->second.reference != NULL)
+		{
 		    delete it->second.reference;
+		    running_session.erase(it);
+		}
 		else
 		    throw WEBDAR_BUG;
 	    }
