@@ -8,6 +8,8 @@ extern "C"
 
 
     // webdar headers
+#include "html_form_fieldset.hpp"
+#include "html_form_radio.hpp"
 
     //
 #include "error_page.hpp"
@@ -18,8 +20,11 @@ error_page::error_page(unsigned int status_code,
 		       const std::string & reason)
 {
     html_table *table = NULL;
+	// tests:
     html_form *form = NULL;
     html_form_input *input = NULL;
+    html_form_fieldset *fs = NULL;
+    html_form_radio *radio = NULL;
 
     status = status_code;
     msg = reason;
@@ -33,25 +38,47 @@ error_page::error_page(unsigned int status_code,
 	table = new (nothrow) html_table(1);
 	body = new (nothrow) html_text(1);
 	text = new (nothrow) html_text(0);
-	form = new (nothrow) html_form("Go");
+	form = new (nothrow) html_form("Update");
 	input = new (nothrow) html_form_input("this is the label",
 					      html_form_input::text,
 					      "hello",
 					      10);
+	fs = new (nothrow) html_form_fieldset("Tests de formulaire");
+	radio = new (nothrow) html_form_radio();
 
 	if(page == NULL
 	   || table == NULL
 	   || body == NULL
 	   || text == NULL
 	   || form == NULL
+	   || radio == NULL
+	   || fs == NULL
 	   || input == NULL)
 	    throw exception_memory();
 
 	table->set_border(5);
+	radio->add_choice("ete", "summer time");
+	radio->add_choice("automne", "Autumn time");
+	radio->add_choice("hiver", "Winter time");
+	radio->add_choice("printemps", "Spring time");
+	radio->set_selected(3);
     }
     catch(...)
     {
-	field_delete();
+	if(page != NULL)
+	    delete page;
+	if(table != NULL)
+	    delete table;
+	if(body != NULL)
+	    delete body;
+	if(form != NULL)
+	    delete form;
+	if(fs != NULL)
+	    delete fs;
+	if(input != NULL)
+	    delete input;
+	if(radio != NULL)
+	    delete radio;
 	throw;
     }
 
@@ -59,6 +86,8 @@ error_page::error_page(unsigned int status_code,
     table->give(text);
     table->give(form);
     form->give(input);
+    form->give(fs);
+    fs->give(radio);
     page->give(table);
 	// now we only own the page object
 	// all other pointed objects are owned by 'page' or its descendants

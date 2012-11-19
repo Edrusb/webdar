@@ -80,7 +80,7 @@ public:
     void set_index(unsigned int val) const;
 
 	/// return a string corresponding to the expected value of an absolute path
-    std::string display() const;
+    std::string display(bool relative = false) const;
 
 	/// return a compact string to be used as identifier.
 	///

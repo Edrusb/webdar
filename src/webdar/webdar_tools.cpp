@@ -149,28 +149,40 @@ string webdar_tools_decode_urlencoded(const std::string & ch)
 {
     string ret = "";
     string::const_iterator it = ch.begin();
-    string::const_iterator rf = it;
-    unsigned int x;
+    string::const_iterator bk = it;
+    char x;
 
     while(it != ch.end())
     {
-	if(*it == '%')
+	switch(*it)
 	{
-	    ret += string(rf, it);
+	case '+':
+	    ret += string(bk, it) + " ";
 	    ++it;
-	    rf = it;
-	    if(it == ch.end() || ++it == ch.end())
-		throw exception_range("escape character found at end of string");
+	    bk = it;
+	    break;
+	case '%':
+	    ret += string(bk, it);
 	    ++it;
-	    x = webdar_tools_convert_hexa_to_int(string(rf, it));
-	    it += (unsigned char)(x);
-	    rf = it;
+	    bk = it;
+	    if(it != ch.end())
+	    {
+		++it;
+		if(it != ch.end())
+		{
+		    ++it;
+		    x = webdar_tools_convert_hexa_to_int(string(bk, it));
+		    ret += x;
+		}
+		bk = it;
+	    }
+	    break;
+	default:
+	    ++it;
 	}
-	else
-	    ++it;
     }
 
-    ret += string(rf, it);
+    ret += string(bk, it);
 
     return ret;
 }

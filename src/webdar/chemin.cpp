@@ -77,14 +77,14 @@ void chemin::set_index(unsigned int val) const
     const_cast<chemin *>(this)->index = val;
 }
 
-string chemin::display() const
+string chemin::display(bool relative) const
 {
-    string ret = "";
+    string ret = relative ? "" : "/";
     deque<string>::const_iterator it = members.begin();
 
     if(it != members.end())
     {
-	ret = *it;
+	ret += *it;
 	++it;
     }
 

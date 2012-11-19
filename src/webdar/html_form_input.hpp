@@ -8,7 +8,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <vector>
 
     // webdar headers
 #include "body_builder.hpp"
@@ -20,23 +20,32 @@ public:
 
     html_form_input(const std::string & label,
 		    input_type type,
-		    const std::string & initial_value, //< for check set empty string for unchecked , anything else for checked
+		    const std::string & initial_value, //< for check set empty string for unchecked, anything else for checked
 		    unsigned int size);
 
     void set_range(int min, int max);
 
-    const std::string & get_value() const { return x_init; };
+    const std::string & get_value() const { return x_init; }; //< for checkbox empty string means unchecked, anything else checked
 
     virtual std::string get_body_part(const chemin & path,
 				      const request & req);
 
 private:
+    struct record
+    {
+	std::string session_ID;
+	html_form_input *box;
+    };
+
     std::string x_label; //< field text shown to the user
     std::string x_type;  //< type of HTML input field
     std::string x_init;  //< current value / initial value of the field
     std::string x_size;  //< width of the field in number of characterds
     std::string x_min;   //< minimum value of the field (for type = number)
     std::string x_max;   //< maximum value of the field (for type = number)
+
+    html_page *page;
+    std::vector<record> lines;
 };
 
 #endif

@@ -78,7 +78,7 @@ string html_form_input::get_body_part(const chemin & path,
 	if(x_type == "checkbox")
 	    ret += "checked ";
 	else
-	    ret += "placeholder=\"" + x_init +"\" ";
+	    ret += "value=\"" + x_init +"\" ";
     }
     if(x_size != "")
 	ret += "size=\"" + x_size + "\" ";

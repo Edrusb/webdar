@@ -3,7 +3,7 @@
 .SH NAME
 webdar \- web interface to libdar
 .SH SYNOPSIS
-webdar -l [<network interface>:]port [,[<network interface>]:port] [,.. ] ] [-v] [-b <facility>]
+webdar -l [<network interface>:]port [,[<network interface>:]port [,...] ] [-v] [-b <facility>]
 .P
 webdar -h
 .P
@@ -19,8 +19,12 @@ Note that by default webdar is not a daemon, it uses stderr/stdout to report err
 
 .SH OPTIONS
 .TP 20
--l, --listen <network interface>[:port][, ...]
-this is a mandatory option, that defines on which port and interface of the host to listen for incoming requests.
+-l, --listen [<network interface>:]port [, ...]
+this is a mandatory option, that defines on which port and interface of the host to listen for incoming requests. Network interface can be an hostname, IPv4 or IPv6 address. IPv6 address have to be surrounded by squared brackets (`[' and `]'). Note that you will need to quote the argument when using IPv6 address format for the '[' and ']' not to be interpreted by the shell.
+.P
+Example : -l "localhost:8080,[::1]:8082,127.0.0.1:8083"
+.P
+In the previous example, webdar will listen on hostname 'localhost' port 8080, IPv6 address ::1 port 8082, and IPv4 address 127.0.0.1 on port 8083.
 .TP 20
 -v, --verbose
 set webdar to be verbose

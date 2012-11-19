@@ -330,51 +330,57 @@ static void parse_cmd(int argc, char *argv[],
 
 static void add_item_to_list(const char *optarg, vector<interface_port> & ecoute)
 {
-    const char *next = optarg;
-    const char *start = optarg;
-    bool seen_IP = false;
-    interface_port tmp;
+    vector<string> coma;
+    interface_port couple;
 
+    ecoute.clear();
+    webdar_tools_split_by(',', optarg, coma);
 
-    while(*start != '\0')
+    for(vector<string>::iterator itc = coma.begin();
+	itc != coma.end();
+	++itc)
     {
-	while(*next != ':' && *next != ',' && *next != '\0')
-	    ++next;
+	string m1, m2;
 
-	switch(*next)
+	webdar_tools_split_in_two(']', *itc, m1, m2);
+	if(m2 == "") // either final ']' or no ']' at all, assuming no IPv6 has been given
 	{
-	case ':':
-	    if(!seen_IP)
+	    webdar_tools_split_in_two(':', *itc, m1, m2);
+	    try
 	    {
-		tmp.interface = string(start, next);
-		seen_IP = true;
-		++next;
-		start = next;
+		couple.port = webdar_tools_convert_to_int(m2);
 	    }
-	    else
-		throw exception_range("missing IP address to listen on before ':'");
-	    break;
-	case ',':
-	case '\0':
-	    if(!seen_IP)
+	    catch(exception_base & e)
 	    {
-		ecoute.clear();
-		tmp.interface = "";
+		throw exception_range(string("Error while parsing argument \"") + *itc + "\" : " + e.get_message());
 	    }
-	    tmp.port = webdar_tools_convert_to_int(string(start, next));
-	    if(seen_IP)
-	    {
-		if(*next != '\0')
-		    ++next;
-		start = next;
-	    }
-	    else
-		start = ""; // which will end the while loop
-	    ecoute.push_back(tmp);
-	    break;
-	default:
-	    throw WEBDAR_BUG;
+	    couple.interface = m1;
 	}
+	else // an IPv6 was given
+	{
+	    string tmp;
+	    webdar_tools_split_in_two(':',m2, tmp, m2);
+	    if(m2 == "") // either final ':' or no ':' in any case this is a syntax error
+		throw exception_range(string("missing port after IPv6 in argument: ") + *itc);
+	    if(tmp != "") //
+		throw exception_range(string("unexpected string: \"") + tmp + "\" in argument " + *itc);
+	    try
+	    {
+		couple.port = webdar_tools_convert_to_int(m2);
+	    }
+	    catch(exception_base & e)
+	    {
+		throw exception_range(string("Error while parsing argument \"") + *itc + "\" : " + e.get_message());
+	    }
+
+	    webdar_tools_split_in_two('[', m1, tmp, m1);
+	    if(tmp != "")
+		throw exception_range(string("unexpected string before IPv6 address in argument: ") + *itc);
+	    if(m1 == "")
+		throw exception_range(string("missing '[' before IPv6 address in argument: ") + *itc);
+	    couple.interface = m1;
+	}
+	ecoute.push_back(couple);
     }
 }
 
