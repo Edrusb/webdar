@@ -1,5 +1,4 @@
 #include "session.hpp"
-#include "cookies.hpp"
 #include "webdar_tools.hpp"
 
 using namespace std;
@@ -62,7 +61,6 @@ string session::create_new(const string & owner,
 {
     table entry;
     string sessID;
-    string cookie = webdar_tools_generate_random_string(COOKIE_WIDTH);
 
     entry.clear();
     try
@@ -78,7 +76,7 @@ string session::create_new(const string & owner,
 	    while(running_session.find(sessID) != running_session.end());
 
 	    entry.owner = owner;
-	    entry.reference = new (nothrow) session(sessID, cookie, resp);
+	    entry.reference = new (nothrow) session(sessID, resp);
 	    if(entry.reference == NULL)
 		throw exception_memory();
 
@@ -235,34 +233,6 @@ void session::release_session(session *sess)
 }
 
 
-bool session::get_session_cookie(const std::string & session_ID, string & sesscook)
-{
-    bool ret = false;
-    map<string, table>::const_iterator it;
-
-    lock_running.lock();
-    try
-    {
-	it = running_session.find(session_ID);
-
-	if(it != running_session.end())
-	{
-	    if(it->second.reference == NULL)
-		throw WEBDAR_BUG;
-	    sesscook = it->second.reference->cookie;
-	    ret = true;
-	}
-    }
-    catch(...)
-    {
-	lock_running.unlock();
-	throw;
-    }
-    lock_running.unlock();
-
-    return ret;
-}
-
 
     //////////////////////////
     //  object method implementation
@@ -271,10 +241,8 @@ bool session::get_session_cookie(const std::string & session_ID, string & sessco
 
 
 session::session(const string & sess_ID,
-		 const string & x_cookie,
 		 responder *x_resp)
 {
-    cookie = x_cookie;
     gui = x_resp;
     if(gui == NULL)
 	throw WEBDAR_BUG;

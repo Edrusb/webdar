@@ -32,8 +32,6 @@ public:
 	// this class provides a global table of session one can create, lookup or destroy objects in/from this table
 
     answer give_answer(const request & req);
-    void set_cookie(const std::string & cook) { cookie = cook; };
-    const std::string get_cookie() const { return cookie; };
     bool has_waiting_threads() const { return lock_gui.waiting_thread(); };
     bool has_working_server() const { return lock_gui.working_thread(); };
     std::string get_session_ID() const { return session_ID; };
@@ -59,18 +57,15 @@ public:
     static std::string create_new(const std::string & owner, responder *resp); /// returns the session_ID of the newly created session
     static session *acquire_session(const std::string & session_ID);
     static void release_session(session *sess);
-    static bool get_session_cookie(const std::string & session_ID, std::string & sesscook);
 
 private:
 	/// constructor
     session(const std::string & sess_ID,
-	    const std::string & cookie,
 	    responder *x_resp);
 
 	/// destructor
     ~session(); //< free dynamically allocated fields
 
-    std::string cookie;       //< the session cookie if any
     semaphore lock_gui;       //< required locking before accessing gui field
     responder *gui;           //< object containing the current GUI status; this object is managed by the session object; should never be NULL
     pthread_t tid;            //< holds the tid of the thread that acquired the object
