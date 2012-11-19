@@ -43,9 +43,6 @@ private:
     std::string x_size;  //< width of the field in number of characterds
     std::string x_min;   //< minimum value of the field (for type = number)
     std::string x_max;   //< maximum value of the field (for type = number)
-
-    html_page *page;
-    std::vector<record> lines;
 };
 
 #endif
