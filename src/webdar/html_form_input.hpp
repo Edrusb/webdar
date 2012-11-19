@@ -31,12 +31,6 @@ public:
 				      const request & req);
 
 private:
-    struct record
-    {
-	std::string session_ID;
-	html_form_input *box;
-    };
-
     std::string x_label; //< field text shown to the user
     std::string x_type;  //< type of HTML input field
     std::string x_init;  //< current value / initial value of the field
