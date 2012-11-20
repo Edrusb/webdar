@@ -19,6 +19,7 @@
 + implementer la classe chemin (avec sa notion d'index)
 + revoir la classe uri pour qu'elle utilise la classe chemin
 + finir implementation des classes derivees de body_builder (html_*)
+>>>>>>>>>> pouvoir tuer des session depuis chooser =>>> implementation en cours
 >>>>>> tester avec un formulaire input lambda dans la page d'erreur
 >>>> savoir decoder un post de formulaire -> request (en parallele de get_body get_fiels (si content type est ok)
 + savoir transformer une path en nom de champ (pour les object html)

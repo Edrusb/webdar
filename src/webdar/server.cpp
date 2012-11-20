@@ -178,7 +178,7 @@ void server::inherited_run()
 			    if(!session::get_session_info(session_ID, info)
 			       || info.locked
 			       || info.owner != user)
-				ans = choose(user).give_answer(req);
+				ans = choose::give_answer_for(user, req);
 			    else
 			    {
 				if(sess != NULL && sess->get_session_ID() != session_ID)

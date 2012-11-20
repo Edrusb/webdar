@@ -26,6 +26,7 @@ extern "C"
 #include "server.hpp"
 #include "authentication.hpp"
 #include "base64.hpp"
+#include "choose.hpp"
 
 #define WEBDAR_EXIT_OK 0
 #define WEBDAR_EXIT_SYNTAX 1
@@ -192,7 +193,9 @@ int main(int argc, char *argv[], char **env)
 
 		server::kill_all_servers();
 
-		creport->report(info, "all listener threads have ended");
+		creport->report(info, "all server threads have ended");
+
+		choose::cleanup_memory();
 	    }
 	    catch(...)
 	    {
