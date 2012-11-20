@@ -120,6 +120,7 @@ bool thread::is_running(pthread_t & id) const
 void thread::join() const
 {
     pthread_t dyn_tid;
+    thread *me = const_cast<thread *>(this);
 
     if(is_running() || joignable)
     {
@@ -129,12 +130,12 @@ void thread::join() const
 #else
 	int ret = 0;
 	returned_exception = returned;
-	const_cast<thread *>(this)->returned = NULL;
+	me->returned = NULL;
 #endif
-	*(const_cast<bool *>(&joignable)) = false;
+	me->joignable = false;
 	if(ret != ESRCH && ret != 0)
 	    throw exception_system("Failed joining thread: ", errno);
-	if(returned_exception != NULL)
+	if(returned_exception != NULL && returned_exception != PTHREAD_CANCELED)
 	{
 	    exception_base *ebase = reinterpret_cast<exception_base *>(returned_exception);
 	    if(ebase == NULL)
@@ -159,11 +160,20 @@ void thread::kill() const
 
     if(is_running(dyn_tid))
     {
-	int ret = pthread_cancel(dyn_tid);
+	thread *me = const_cast<thread *>(this);
+	int ret;
+
+	ret = pthread_cancel(dyn_tid);
 	if(ret != ESRCH && ret != 0)
 	    throw exception_system("Failed killing thread: ", errno);
-	*(const_cast<bool *>(&running)) = false;
-	*(const_cast<bool *>(&joignable)) = false;
+
+	if(me == NULL)
+	    throw WEBDAR_BUG;
+#ifndef THREADED
+	me->returned = NULL;
+#endif
+	me->running = false;
+	me->joignable = false;
     }
 }
 
