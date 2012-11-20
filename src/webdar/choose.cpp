@@ -119,7 +119,7 @@ answer choose::give_answer(const request & req)
 
 	regenerate_table_page();
 
-	if(boxes.size() == 0)
+	if(req.get_uri().get_path() == chemin("choose/new"))
 	    ret = create_new_session(req);
 	else
 	{
@@ -211,6 +211,7 @@ void choose::regenerate_table_page()
 	form = NULL;
 	page->give(nouvelle);
 	nouvelle = NULL;
+	page->set_prefix(chemin("choose"));
     }
     catch(...)
     {
@@ -285,6 +286,7 @@ void choose::regenerate_confirm_page()
 
 	confirm->give(table);
 	table = NULL;
+	confirm->set_prefix(chemin("choose"));
     }
     catch(...)
     {
@@ -337,6 +339,7 @@ answer choose::give_answer_for(const std::string & user, const request & req)
 	    tmp->obj = new (nothrow) choose(user);
 	    if(tmp->obj == NULL)
 		throw exception_memory();
+	    ret = tmp->obj->create_new_session(req);
 
 	    per_user[user] = tmp;
 	}
@@ -350,25 +353,27 @@ answer choose::give_answer_for(const std::string & user, const request & req)
 	if(it == per_user.end())
 	    throw WEBDAR_BUG;
     }
-
-    if(it->second == NULL)
-	throw WEBDAR_BUG;
-
-    it->second->lock.lock();
-    try
+    else
     {
-	if(it->second->obj == NULL)
+	if(it->second == NULL)
 	    throw WEBDAR_BUG;
 
-	ret = it->second->obj->give_answer(req);
-    }
-    catch(...)
-    {
-	it->second->lock.unlock();
-	throw;
-    }
+	it->second->lock.lock();
+	try
+	{
+	    if(it->second->obj == NULL)
+		throw WEBDAR_BUG;
 
-    it->second->lock.unlock();
+	    ret = it->second->obj->give_answer(req);
+	}
+	catch(...)
+	{
+	    it->second->lock.unlock();
+	    throw;
+	}
+
+	it->second->lock.unlock();
+    }
 
     return ret;
 }
