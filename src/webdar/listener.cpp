@@ -259,10 +259,10 @@ void listener::inherited_run()
 	{
 	    try
 	    {
-		rep->report(debug, "listener object: spawning in a separated thread the newly created \"connexion\" object");
+		rep->report(debug, "listener object: creating a server thread to answer requests received from the new connection");
 		if(!server::run_new_server(rep, src, con))
 		{
-		    rep->report(warning, "failed to create a new server maximum connexion reached");
+		    rep->report(warning, "failed to create a new server maximum connection reached");
 		    delete con;
 		    con = NULL;
 		}

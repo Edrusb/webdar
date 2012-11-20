@@ -52,7 +52,8 @@ static void close_all_listeners(int sig);
     // yes, this will point to a global object, this class handle concurrent access,
     // no problem in this multi-threaded program.
     // it is necessary to have this global for signal handler able to report what they do
-central_report *creport = NULL;
+static central_report *creport = NULL;
+static vector<listener *> taches;
 
 int main(int argc, char *argv[], char **env)
 {
@@ -62,7 +63,6 @@ int main(int argc, char *argv[], char **env)
     int facility;
     int ret = WEBDAR_EXIT_OK;
     bool quit = false;
-    vector<listener *> taches;
     priority_t min;
     string fixed_user = "admin";
     string fixed_pass;
@@ -405,7 +405,17 @@ static void close_all_listeners(int sig)
     else
     {
 	creport->report(crit, "SIGNAL RECEIVED: no libdar job is currently running, aborting all currently running sessions...");
+	for(vector<listener *>::iterator it = taches.begin();
+	    it != taches.end();
+	    ++it)
+	{
+	    if(*it == NULL)
+		throw WEBDAR_BUG;
+	    else
+		(*it)->kill();
+	}
 	server::kill_all_servers();
+
 	creport->report(crit, "SIGNAL RECEIVED: no more sessions is running");
     }
 }
