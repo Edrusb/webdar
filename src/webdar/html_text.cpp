@@ -43,11 +43,11 @@ void html_text::add_text(bool bold, bool underlined, bool italic, const std::str
 string html_text::get_body_part() const
 {
     if(size == 0)
-	return txt;
+	return string("<p ") + get_css_string() + ">" + txt + "</p>";
     else
     {
 	string h = webdar_tools_convert_to_string(size);
 
-	return "<h" + h + ">" + txt + "</h" + h + ">";
+	return "<h" + h + " " + get_css_string() + ">" + txt + "</h" + h + ">";
     }
 }

@@ -19,7 +19,14 @@ using namespace std;
 const unsigned int NAME_WIDTH = 4;
 
 
+void body_builder::give(body_builder *obj)
+{
+    if(obj == NULL)
+	throw WEBDAR_BUG;
+    obj->css_inherit_from(*this);
 
+    inherited_give(obj);
+}
 
 chemin body_builder::get_path() const
 {

@@ -41,10 +41,10 @@ public:
 
 	/// Common interface for class that can/must contain other body_builder to provide a body_part()
 	///
-	/// this call is not mandatory, but must be overwritten by inherited class in order to be used
+	/// this call is not mandatory, but if need, the protected inherited_give() method must be overwritten
 	/// \note this call semantic is that the given object is passed to the body_builder, which is in charge
 	/// of its memory management (in particular at body_builder destruction) or un until its returned to the caller
-    virtual void give(body_builder *obj) { throw WEBDAR_BUG; };
+    void give(body_builder *obj);
 
 	/// Common interface for class the can/must contain other body_builder to provide a body_part()
 	///
@@ -123,6 +123,13 @@ protected:
 	/// \param[in] req, this is the request exactly as received from the get_body_part call
     std::string get_body_part_from_all_children(const chemin & path,
 						const request & req);
+
+       	/// Common interface for class that can/must contain other body_builder to provide a body_part()
+	///
+	/// this call is not mandatory, but must be overwritten by inherited class in order to be used
+	/// \note this call semantic is that the given object is passed to the body_builder, which is in charge
+	/// of its memory management (in particular at body_builder destruction) or un until its returned to the caller
+    virtual void inherited_give(body_builder *obj) { throw WEBDAR_BUG; };
 
 private:
     chemin x_prefix;

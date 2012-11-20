@@ -7,7 +7,7 @@ all: webdar
 clean:
 	rm -f *.o webdar
 
-webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o
+webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o
 
 webdar.o : webdar.cpp exceptions.hpp central_report.hpp listener.hpp webdar_tools.hpp server.hpp authentication.hpp
 central_report.o : central_report.cpp central_report.hpp webdar_tools.hpp exceptions.hpp mutex.hpp
@@ -29,7 +29,8 @@ answer.o : answer.cpp answer.hpp exceptions.hpp webdar_tools.hpp uri.hpp tokens.
 base64.o : base64.cpp base64.hpp exceptions.hpp
 challenge.o : challenge.cpp challenge.hpp base64.hpp responder.hpp authentication.hpp cookies.hpp
 choose.o : choose.cpp choose.hpp session.hpp responder.hpp
-css.o : css.cpp css.hpp
+css.o : css.cpp css.hpp css_property.hpp
+css_property.o : css_property.cpp css_property.hpp
 body_builder: body_builder.cpp body_builder.hpp
 html_text.o : html_text.cpp html_text.hpp body_builder.hpp
 html_page.o : html_page.cpp html_page.hpp body_builder.hpp

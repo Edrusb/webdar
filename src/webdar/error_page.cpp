@@ -82,13 +82,13 @@ error_page::error_page(unsigned int status_code,
 	throw;
     }
 
-    table->give(body);
-    table->give(text);
-    table->give(form);
+    table->body_builder::give(body);
+    table->body_builder::give(text);
+    table->body_builder::give(form);
     form->give(input);
     form->give(fs);
     fs->give(radio);
-    page->give(table);
+    page->body_builder::give(table);
 	// now we only own the page object
 	// all other pointed objects are owned by 'page' or its descendants
 	// in the body builder tree. Destroying 'page' will destroy them

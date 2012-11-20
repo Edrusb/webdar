@@ -19,13 +19,14 @@
 + implementer la classe chemin (avec sa notion d'index)
 + revoir la classe uri pour qu'elle utilise la classe chemin
 + finir implementation des classes derivees de body_builder (html_*)
->>>>>>>>>> pouvoir tuer des session depuis chooser =>>> implementation en cours
->>>>>> tester avec un formulaire input lambda dans la page d'erreur
->>>> savoir decoder un post de formulaire -> request (en parallele de get_body get_fiels (si content type est ok)
++ pouvoir tuer des session depuis chooser =>>> implementation en cours
++ tester avec un formulaire input lambda dans la page d'erreur
++ savoir decoder un post de formulaire -> request (en parallele de get_body get_fiels (si content type est ok)
 + savoir transformer une path en nom de champ (pour les object html)
 + revoir les classes html* a l'aune de la class body_builder; ces classes doivent analyser les retour de formulaire et fournir des methodes pour acceder aux valeurs des champs (method POST)
 + ces objects doit pouvoir gerer les methods GET/HEAD et POST les autres method doivent etre rejetes
 + ajouter une class de decodage des POST en retour de formulaire (scinder champ / valeurs) (RFC "URL")
+>>>>>>>>>>>>> ajouter des primitives css pour l'alignement du text, bold, italic, surligne etc.
 - implementer les classes GUI a partir des primitives HTML_*
 
 - pour les sessions non authentifiees, il faut limiter la duree de la connexion a un temps court

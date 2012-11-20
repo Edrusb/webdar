@@ -17,7 +17,7 @@ extern "C"
 using namespace std;
 
 
-void html_table::give(body_builder *obj)
+void html_table::inherited_give(body_builder *obj)
 {
     bundle bdl;
 

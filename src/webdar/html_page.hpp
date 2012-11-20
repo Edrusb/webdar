@@ -31,8 +31,12 @@ public:
     void set_refresh_redirection(unsigned int seconds, const std::string & url);
 
 
-	/// inherited from body_builder
-    void give(body_builder *obj) { (void)record_child(obj); };
+	/// add static text to the page
+    void give(unsigned int x,
+	      bool bold,
+	      bool underscore,
+	      bool italic,
+	      const std::string & msg);
 
 
 	/// inherited from body_builder
@@ -45,6 +49,12 @@ public:
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
 				      const request & req);
+
+protected:
+	/// inherited from body_builder
+    void inherited_give(body_builder *obj) { (void)record_child(obj); };
+
+
 
 private:
     std::string x_title;

@@ -166,7 +166,10 @@ void choose::regenerate_table_page()
     if(page == NULL)
 	throw WEBDAR_BUG;
     page->clear();
+    page->css_clear_attributes();
     boxes.clear();
+    page->css_background_color("rgb(221, 221, 321)");
+
 
 	// creating a new page
 
@@ -179,6 +182,8 @@ void choose::regenerate_table_page()
 	if(table == NULL || nouvelle == NULL || form == NULL)
 	    throw exception_memory();
 
+	page->css_width("90%", true, true);
+	page->give(2, false, false, false, string("Current sessions for user ") + owner);
 	table->set_border(1);
 	table->give("Session ID");
 	table->give("Locked");
@@ -200,16 +205,16 @@ void choose::regenerate_table_page()
 		if(check == NULL)
 		    throw exception_memory();
 		boxes.push_back(check);
-		table->give(check);
+		table->body_builder::give(check);
 		check = NULL;
 	    }
 	}
 
 	form->give(table);
 	table = NULL;
-	page->give(form);
+	page->body_builder::give(form);
 	form = NULL;
-	page->give(nouvelle);
+	page->body_builder::give(nouvelle);
 	nouvelle = NULL;
 	page->set_prefix(chemin("choose"));
     }
@@ -239,11 +244,14 @@ void choose::regenerate_confirm_page()
 	throw WEBDAR_BUG;
 
     confirm->clear();
+    confirm->css_clear_attributes();
+    confirm->css_background_color("rgb(221, 221, 321)");
+    confirm->css_width("90%", true, true);
     confirmed = NULL;
 
     try
     {
-	html_text text = 1;
+	html_text text = 3;
 
 	table = new (nothrow) html_table(1);
 	form = new (nothrow) html_form("Submit");
@@ -252,7 +260,13 @@ void choose::regenerate_confirm_page()
 	if(table == NULL || form == NULL || block == NULL || radio == NULL)
 	    throw exception_memory();
 
-	text.add_text(false, false, false, "The following session are about to be destroyed");
+	text.add_text(false, false, false, "The following sessions are about to be destroyed:");
+	text.css_background_color("Red");
+	text.css_padding_top("1em");
+	text.css_padding_bottom("1em");
+	text.css_padding_right("3em");
+	text.css_padding_left("3em");
+	text.css_width("100%", true);
 	table->give(text.get_body_part());
 
 	if(boxes.size() != sess.size())
@@ -264,6 +278,8 @@ void choose::regenerate_confirm_page()
 	    if(boxes[i]->get_value() != "")
 	    {
 		text.clear(0);
+		text.css_clear_attributes();
+		text.css_margin_left("3em");
 		text.add_text(false, false, false,
 			      html_url(chemin(sess[i].session_ID).display(false), sess[i].session_ID).get_body_part());
 		table->give(text.get_body_part());
@@ -281,10 +297,10 @@ void choose::regenerate_confirm_page()
 	form->give(block);
 	block = NULL;
 
-	table->give(form);
+	table->body_builder::give(form);
 	form = NULL;
 
-	confirm->give(table);
+	confirm->body_builder::give(table);
 	table = NULL;
 	confirm->set_prefix(chemin("choose"));
     }
