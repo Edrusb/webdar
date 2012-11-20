@@ -32,10 +32,15 @@ public:
 
 
 	/// inherited from body_builder
-    void give(body_builder *obj);
+    void give(body_builder *obj) { (void)record_child(obj); };
+
 
 	/// inherited from body_builder
-    void take_back(body_builder *obj);
+    void take_back(body_builder *obj) { unrecord_child(obj); };
+
+
+	/// destroy all given objects
+    void clear() { clear_and_delete_children(); };
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,

@@ -29,15 +29,6 @@ void html_page::set_refresh_redirection(unsigned int seconds, const std::string 
 	redirect = "";
 }
 
-void html_page::give(body_builder *obj)
-{
-    (void) record_child(obj);
-}
-
-void html_page::take_back(body_builder *obj)
-{
-    unrecord_child(obj);
-}
 
 string html_page::get_body_part(const chemin & path,
 				const request & req)
