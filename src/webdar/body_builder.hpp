@@ -131,6 +131,10 @@ protected:
 	/// of its memory management (in particular at body_builder destruction) or un until its returned to the caller
     virtual void inherited_give(body_builder *obj) { throw WEBDAR_BUG; };
 
+protected:
+	/// inherited from class css
+    void css_updated();
+
 private:
     chemin x_prefix;
     body_builder *parent;

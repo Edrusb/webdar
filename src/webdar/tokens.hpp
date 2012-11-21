@@ -64,4 +64,11 @@ extern const char *HDR_LOCATION;
     // HTTP header values
 extern const char *VAL_CONTENT_TYPE_FORM;
 
+
+    // HTML CSS colors by fonction
+extern const char *COLOR_BACK;
+extern const char *COLOR_TEXT;
+extern const char *COLOR_PADBACK;
+extern const char *COLOR_PADFRONT;
+extern const char *COLOR_PADBORD;
 #endif

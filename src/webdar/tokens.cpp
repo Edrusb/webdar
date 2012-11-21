@@ -16,3 +16,12 @@ const char *HDR_LOCATION = "Location";
     //
 
 const char *VAL_CONTENT_TYPE_FORM = "application/x-www-form-urlencoded";
+
+    //
+
+const char *COLOR_BACK = "rgb(221, 221, 255)";
+const char *COLOR_TEXT = "rgb(42, 0, 100)";
+const char *COLOR_PADBACK = "rgb(10, 0, 30)";
+const char *COLOR_PADFRONT = "rgb(200,200,255)";
+const char *COLOR_PADBORD = "back";
+

@@ -18,7 +18,6 @@ using namespace std;
 
 const unsigned int NAME_WIDTH = 4;
 
-
 void body_builder::give(body_builder *obj)
 {
     if(obj == NULL)
@@ -191,6 +190,20 @@ void body_builder::clear_and_delete_children()
 	throw WEBDAR_BUG;
     if(revert_child.size() != 0)
 	throw WEBDAR_BUG;
+}
+
+void body_builder::css_updated()
+{
+    list<body_builder *>::iterator it = order.begin();
+
+    while(it != order.end())
+    {
+	if((*it) == NULL)
+	    throw WEBDAR_BUG;
+	(*it)->css_inherit_from(*this);
+
+	++it;
+    }
 }
 
 void body_builder::unrecord_from_parent()

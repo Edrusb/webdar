@@ -47,11 +47,11 @@ string html_form_radio::get_body_part(const chemin & path,
 
     for(unsigned int i = 0; i < choices.size(); ++i)
     {
-	ret += "<input type=\"radio\" name=\"" + radio_id + "\" id=\"" + choices[i].id + "\" value=\"" + choices[i].id + "\" ";
+	ret += "<input " + get_css_string() + " type=\"radio\" name=\"" + radio_id + "\" id=\"" + choices[i].id + "\" value=\"" + choices[i].id + "\" ";
 	if(i == selected)
 	    ret += "checked ";
 	ret += "/>\n";
-	ret += "<label for=\"" + choices[i].id + "\">" + choices[i].label + "</label><br />\n";
+	ret += "<label " + get_css_string() + " for=\"" + choices[i].id + "\">" + choices[i].label + "</label><br />\n";
     }
 
     return ret;

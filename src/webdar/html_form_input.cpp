@@ -70,7 +70,7 @@ string html_form_input::get_body_part(const chemin & path,
     }
 
     ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
-    ret += "<input type=\"" + x_type + "\" name=\"" + x_id + "\" id=\"" + x_id + "\" ";
+    ret += "<input " + get_css_string() + " type=\"" + x_type + "\" name=\"" + x_id + "\" id=\"" + x_id + "\" ";
     if(x_min != "" && x_max != "") // yes both
 	ret += "min=\"" + x_min + "\" max=\"" + x_max + "\" ";
     if(x_init != "")

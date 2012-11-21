@@ -17,94 +17,46 @@ extern "C"
 using namespace std;
 
 
-void html_table::inherited_give(body_builder *obj)
-{
-    bundle bdl;
-
-    if(obj == NULL)
-	throw WEBDAR_BUG;
-    bdl.name = record_child(obj);
-    bdl.obj = obj;
-    bdl.static_text = "";
-    current_line.push_back(bdl);
-    if(current_line.size() == dim_x)
-    {
-	table.push_back(current_line);
-	current_line.clear();
-    }
-}
-
-void html_table::give(const string & fixed)
-{
-    bundle bdl;
-
-    bdl.name = "";
-    bdl.obj = NULL;
-    bdl.static_text = fixed;
-    current_line.push_back(bdl);
-    if(current_line.size() == dim_x)
-    {
-	table.push_back(current_line);
-	current_line.clear();
-    }
-}
-
-const body_builder *html_table::access_cell(unsigned int x, unsigned int y) const
-{
-    if(y < table.size())
-	if(x < dim_x)
-	    return table[y][x].obj;
-	else
-	    throw exception_range("requested cell from table is out of range");
-    else
-	if(y == table.size())
-	    if(x < current_line.size())
-		return current_line[x].obj;
-	    else
-		throw exception_range("requested cell from table is out of range");
-	else
-	    throw exception_range("requested cell from table is out of range");
-}
-
-void html_table::clear()
-{
-    clear_and_delete_children();
-    table.clear();
-    current_line.clear();
-}
-
-
 string html_table::get_body_part(const chemin & path,
 				 const request & req)
 {
-	// if the last raw is not completed it is now taken into account
-	// (in other words, we don't look at current_line in this method)
-
     string ret = "";
+    bundle bdl;
     chemin sub_path = path;
-    vector< vector<bundle> >::const_iterator it = table.begin();
+    unsigned int line_length = 0;
 
     if(sub_path.size() > 0)
 	sub_path.pop_front();
 
     ret = "<table " + get_css_string() + " " + border + ">\n";
-    while(it != table.end())
+    reset_read_next();
+    while(read_next(bdl))
     {
-	vector<bundle>::const_iterator cell = it->begin();
-	ret += "<tr>\n";
+	if(line_length == 0)
+	    ret += "<tr>\n";
+	ret += "<td>\n";
+	if(bdl.obj != NULL)
+	    ret += bdl.obj->get_body_part(sub_path, req);
+	else
+	    ret += bdl.static_text;
+	ret += "</td>\n";
 
-	while(cell != it->end())
+	++line_length;
+	if(line_length == dim_x)
 	{
-	    ret += "<td>";
-	    if(cell->obj != NULL)
-		ret += cell->obj->get_body_part(sub_path, req);
-	    else
-		ret += cell->static_text;
-	    ret += "</td>\n";
-	    ++cell;
+	    ret += "</tr>\n";
+	    line_length = 0;
 	}
-	ret += "</tr>\n";
-	++it;
+    }
+
+    if(line_length != 0)
+    {
+	while(line_length < dim_x)
+	{
+	    ret += "<td></td>\n";
+	    ++line_length;
+	}
+	ret += "<tr>\n";
     }
     ret += "</table>\n";
 

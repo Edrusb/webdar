@@ -17,37 +17,18 @@ extern "C"
 using namespace std;
 
 
-void html_text::add_text(bool bold, bool underlined, bool italic, const std::string & text)
+void html_text::add_text(unsigned int level, const std::string & text)
 {
-    string css = get_css_string();
+    string css_val = get_css_string();
 
-    if(css != "")
-	txt += "<div " + css + ">";
-    if(bold)
-	txt += "<b>";
-    if(underlined)
-	txt += "<u>";
-    if(italic)
-	txt += "<i>";
-    txt += text;
-    if(italic)
-	txt += "</i>";
-    if(underlined)
-	txt += "</u>";
-    if(bold)
-	txt += "</b>";
-    if(css != "")
-	txt += "</div>";
-}
-
-string html_text::get_body_part() const
-{
-    if(size == 0)
-	return string("<p ") + get_css_string() + ">" + txt + "</p>";
+    if(level == 0)
+	if(css_val.empty())
+	    txt += text + "\n";
+	else
+	    txt += "<div " + css_val + ">" + text + "</div>\n";
     else
     {
-	string h = webdar_tools_convert_to_string(size);
-
-	return "<h" + h + " " + get_css_string() + ">" + txt + "</h" + h + ">";
+	string h = webdar_tools_convert_to_string(level);
+	txt += "<h" + h + " " + css_val + ">" + text + "</h" + h + ">\n";
     }
 }

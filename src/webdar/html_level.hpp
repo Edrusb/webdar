@@ -1,0 +1,59 @@
+#ifndef HTML_LEVEL_HPP
+#define HTML_LEVEL_HPP
+
+    // C system header files
+extern "C"
+{
+
+}
+
+    // C++ system header files
+#include <string>
+#include <vector>
+
+    // webdar headers
+#include "body_builder.hpp"
+
+    /// class html_level is a pure virtual class
+    ///
+    /// it implements the management of a mixed list of object and static html text
+    /// and provides method to read this list. This class does not implement the
+    /// get_body_part() pure virtual method of its body_builder ancestor class
+
+class html_level : public body_builder
+{
+public:
+    html_level();
+
+	/// used in concurrency with body_builder::give()
+    void give_static_html(const std::string & html);
+
+	/// clear all data
+    void clear();
+
+protected:
+	/// inherited from body_builder to implement the body_builder::give() method
+    virtual void inherited_give(body_builder *obj);
+
+    struct bundle
+    {
+	body_builder *obj;       //< if set to NULL, using static_text instead
+	std::string static_text; //< used if obj is NULL
+	bundle() { obj = NULL; };
+    };
+
+    void reset_read_next() { nxt = table.begin(); };
+    bool read_next(bundle & bdl); //< return false if bdl could not be set
+
+	/// this is an alternative of using read_next
+	///
+	/// \note to be used when all children body_part are needed as a single block of text
+    std::string get_body_part_from_children_as_a_block(const chemin & path,
+						       const request & req);
+
+private:
+    std::vector<bundle>::iterator nxt;
+    std::vector<bundle> table;
+};
+
+#endif

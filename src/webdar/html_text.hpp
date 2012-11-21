@@ -18,23 +18,21 @@ extern "C"
 class html_text : public body_builder, public static_body_builder
 {
 public:
-	/// constructor
+	/// adding text
 	///
-	/// header_size defines the header level (1 to ...) or zero for normal text
-    html_text(unsigned int header_size) { size = header_size; };
-    void add_text(bool bold, bool underscore, bool italic, const std::string & text);
+	/// \param[in] level 1 for <h1> etc. and zero for normal text
+    void add_text(unsigned int level, const std::string & text);
     void add_nl() { txt += "<br />"; };
     void add_paragraph() { txt += "<p />"; };
 
-    void clear(unsigned int header_size) { size = header_size; txt = ""; };
+    void clear() { txt = ""; };
 
     virtual std::string get_body_part(const chemin & path,
 				      const request & req) { return get_body_part(); };
 
-    virtual std::string get_body_part() const;
+    virtual std::string get_body_part() const { return txt; };
 
 private:
-    unsigned int size;
     std::string txt;
 
 };

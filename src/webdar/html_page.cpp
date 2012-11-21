@@ -29,28 +29,6 @@ void html_page::set_refresh_redirection(unsigned int seconds, const std::string 
 	redirect = "";
 }
 
-void html_page::give(unsigned int x,
-		     bool bold,
-		     bool underscore,
-		     bool italic,
-		     const std::string & msg)
-{
-    html_text *tmp = new (nothrow) html_text(x);
-
-    if(tmp == NULL)
-	throw exception_memory();
-    try
-    {
-	tmp->add_text(bold, underscore, italic, msg);
-	body_builder::give(tmp);
-    }
-    catch(...)
-    {
-	delete tmp;
-	throw;
-    }
-}
-
 
 string html_page::get_body_part(const chemin & path,
 				const request & req)
@@ -65,8 +43,8 @@ string html_page::get_body_part(const chemin & path,
 	ret += redirect + "\n";
     ret += "</head>\n<body ";
     ret += get_css_string() + ">\n";
-    ret += get_body_part_from_all_children(path, req);
-    ret += "\n</body>\n</html>\n";
+    ret += get_body_part_from_children_as_a_block(path, req);
+    ret += "</body>\n</html>\n";
 
     return ret;
 }

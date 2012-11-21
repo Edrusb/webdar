@@ -70,7 +70,7 @@ int main(int argc, char *argv[], char **env)
     try
     {
 	webdar_tools_init_randomization();
-	fixed_pass = webdar_tools_generate_random_string(10);
+	fixed_pass = ""; // webdar_tools_generate_random_string(10);
 	authentication_cli auth = authentication_cli(fixed_user, fixed_pass);
 
 	    /////////////////////////////////////////////////
