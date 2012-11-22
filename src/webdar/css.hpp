@@ -131,9 +131,11 @@ public:
     void css_border_color(border which, const std::string & col, bool inherit=false);
     void css_border_style(border which, bd_style val, bool inherit=false);
 
+
 	/// inherit properties from the given reference
 	///
-	/// only unset properties are set to the value of the given reference
+	/// \note only unset properties are set to the value of the given reference
+	/// and only inheritable properties of the references are copied
     void css_inherit_from(const css & ref);
 
 protected:
