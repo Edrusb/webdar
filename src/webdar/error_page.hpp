@@ -38,7 +38,7 @@ private:
     unsigned int status;  //< return code of the answer (seen by browser, rarely visibile by the user)
     std::string msg;      //< returned reason of the answer ( seen by browser, rarely visibile by the user)
 
-	/// TESTING !
+	// body_builder objects
     html_page *page;      //< html construction primitive
     html_text *body;      //< message displayed to the user set by 'set_message_body()'
     html_text *text;      //< used to build the return path in HTML body

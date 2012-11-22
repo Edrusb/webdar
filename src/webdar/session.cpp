@@ -3,7 +3,7 @@
 
 using namespace std;
 
-const unsigned int SESSION_ID_WIDTH = 20;
+const unsigned int SESSION_ID_WIDTH = 8;
 
 
     //////////////////////////

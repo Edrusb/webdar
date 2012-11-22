@@ -69,7 +69,6 @@ string html_form_input::get_body_part(const chemin & path,
 	    x_init = it->second;
     }
 
-    ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
     ret += "<input " + get_css_string() + " type=\"" + x_type + "\" name=\"" + x_id + "\" id=\"" + x_id + "\" ";
     if(x_min != "" && x_max != "") // yes both
 	ret += "min=\"" + x_min + "\" max=\"" + x_max + "\" ";
@@ -82,7 +81,9 @@ string html_form_input::get_body_part(const chemin & path,
     }
     if(x_size != "")
 	ret += "size=\"" + x_size + "\" ";
-    ret += "/>\n";
+    ret += "/>";
+    ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
+    ret += "<br />\n";
 
     return ret;
 }

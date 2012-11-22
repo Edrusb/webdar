@@ -8,9 +8,9 @@ extern "C"
 
 
     // webdar headers
-#include "html_form_fieldset.hpp"
-#include "html_form_radio.hpp"
+#include "options_listing.hpp"
 #include "html_div.hpp"
+#include "tokens.hpp"
 
     //
 #include "error_page.hpp"
@@ -20,13 +20,15 @@ using namespace std;
 error_page::error_page(unsigned int status_code,
 		       const std::string & reason)
 {
-	// tests:
-    html_form *form = NULL;
-    html_form_input *input = NULL;
-    html_form_fieldset *fs = NULL;
-    html_form_radio *radio = NULL;
-    html_div *div = NULL;
+	// construction objects
+    html_div *tmp_div = NULL;
+    html_page *tmp_page = NULL;
+    html_text *tmp_body = NULL;
+    html_text *tmp_text = NULL;
+	// FOR TESTING
+    options_listing *tmp_opt = NULL;
 
+	// objects's fields
     status = status_code;
     msg = reason;
     page = NULL;
@@ -35,98 +37,75 @@ error_page::error_page(unsigned int status_code,
 
     try
     {
-	page = new (nothrow) html_page(msg);
-	body = new (nothrow) html_text();
-	text = new (nothrow) html_text();
-	form = new (nothrow) html_form("Update");
-	input = new (nothrow) html_form_input("this is the label",
-					      html_form_input::text,
-					      "hello",
-					      25);
-	fs = new (nothrow) html_form_fieldset("Tests de formulaire");
-	radio = new (nothrow) html_form_radio();
-	div = new (nothrow) html_div();
+	tmp_page = new (nothrow) html_page(msg);
+	tmp_body = new (nothrow) html_text();
+	tmp_text = new (nothrow) html_text();
+	tmp_div = new (nothrow) html_div();
+	tmp_opt = new (nothrow) options_listing();
 
-	if(page == NULL
-	   || body == NULL
-	   || text == NULL
-	   || form == NULL
-	   || radio == NULL
-	   || fs == NULL
-	   || div == NULL
-	   || input == NULL)
+	if(tmp_page == NULL
+	   || tmp_body == NULL
+	   || tmp_text == NULL
+	   || tmp_opt == NULL
+	   || tmp_div == NULL)
 	    throw exception_memory();
 
-	page->css_color("Blue");
-	page->css_background_color("Orange");
-	page->css_padding("1em");
+	    // we record the address of the newly created objets
+	    // only useful objects are record (tmp_div is not directly used outside the constructor)
 
-	body->css_font_weight_bold();
-	body->css_color("White");
-	body->css_background_color("Red");
-	body->css_text_align(css::al_center);
-	body->css_padding("2em");
-	body->css_float(css::fl_left);
-	body->css_border_width(css::bd_all, css::bd_thick);
-	body->css_border_style(css::bd_all, css::bd_dashed);
-	body->css_border_color(css::bd_all, "rgb(100,0,0)");
-	body->css_width("6em", false);
+	page = tmp_page;
+	body = tmp_body;
+	text = tmp_text;
 
-	div->css_border_color(css::bd_all, "Blue");
-	div->css_border_style(css::bd_all, css::bd_double);
-	div->css_border_width(css::bd_all, css::bd_thin);
-	div->css_margin_left("13em");
+	    // setting css properties for each object
 
-	text->css_margin_left("2em");
-	text->css_background_color("White");
-	text->css_border_style(css::bd_bottom, css::bd_outset);
-	text->css_border_style(css::bd_right, css::bd_outset);
-	text->css_border_width(css::bd_bottom, css::bd_medium);
-	text->css_border_width(css::bd_right, css::bd_medium);
-	text->css_border_color(css::bd_bottom, "Yellow");
-	text->css_border_color(css::bd_right, "Yellow");
+	tmp_page->css_color(COLOR_TEXT);
+	tmp_page->css_background_color(COLOR_BACK);
+	tmp_page->css_padding("1em");
 
-	input->css_margin("1em");
-	input->css_background_color("Grey");
+	tmp_body->css_font_weight_bold();
+	tmp_body->css_color("White");
+	tmp_body->css_background_color("Red");
+	tmp_body->css_text_align(css::al_center);
+	tmp_body->css_padding("1em");
+	tmp_body->css_float(css::fl_left);
+	tmp_body->css_border_width(css::bd_all, css::bd_thick);
+	tmp_body->css_border_style(css::bd_all, css::bd_dashed);
+	tmp_body->css_border_color(css::bd_all, "rgb(100,0,0)");
+	tmp_body->css_width("6em", false);
 
-	radio->css_background_color("Yellow");
-	radio->add_choice("ete", "summer time");
-	radio->add_choice("automne", "Autumn time");
-	radio->add_choice("hiver", "Winter time");
-	radio->add_choice("printemps", "Spring time");
-	radio->set_selected(3);
+	tmp_div->css_margin_left("13em");
 
-	form->css_text_align(css::al_right);
+	tmp_text->css_float(css::fl_left);
+	tmp_text->css_float_clear(css::fc_left);
+	tmp_text->css_margin_left("2em");
+
+	    // building the body_builder tree
+
+	tmp_div->give(tmp_opt);
+	tmp_opt = NULL;
+
+	tmp_page->give(tmp_body);
+	tmp_body = NULL;
+	tmp_page->give(tmp_text);
+	tmp_text = NULL;
+	tmp_page->give(tmp_div);
+	tmp_div = NULL;
     }
     catch(...)
     {
-	if(page != NULL)
-	    delete page;
-	if(body != NULL)
-	    delete body;
-	if(form != NULL)
-	    delete form;
-	if(fs != NULL)
-	    delete fs;
-	if(input != NULL)
-	    delete input;
-	if(radio != NULL)
-	    delete radio;
-	if(div != NULL)
-	    delete div;
+	if(tmp_page != NULL)
+	    delete tmp_page;
+	if(tmp_body != NULL)
+	    delete tmp_body;
+	if(tmp_text != NULL)
+	    delete tmp_text;
+	if(tmp_div != NULL)
+	    delete tmp_div;
+	if(tmp_opt != NULL)
+	    delete tmp_opt;
 	throw;
     }
-
-    fs->give(radio);
-    form->give(input);
-    form->give(fs);
-    div->give(text);
-    div->give(form);
-    page->give(body);
-    page->give(div);
-	// now we only own the page object
-	// all other pointed objects are owned by 'page' or its descendants
-	// in the body builder tree. Destroying 'page' will destroy them
 }
 
 void error_page::set_message_body(const std::string & message)
