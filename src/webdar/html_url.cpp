@@ -19,5 +19,5 @@ using namespace std;
 
 string html_url::get_body_part() const
 {
-    return string("<a ") + get_css_string() + " href=\"" + x_url + "\">" + x_label + "</a>";
+    return string("<a ") + css_get_string() + x_class + " href=\"" + x_url + "\">" + x_label + "</a>";
 }

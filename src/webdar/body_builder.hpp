@@ -36,7 +36,7 @@ public:
 	/// set the root path at which this object will be located in the URL path
 	///
 	/// \note this is only used if this object has no parent
-    void set_prefix(const chemin & prefix) { x_prefix = prefix; };
+    void set_prefix(const chemin & prefix) { x_prefix = prefix; recursive_path_has_changed(); };
 
 
 	/// Common interface for class that can/must contain other body_builder to provide a body_part()
@@ -52,7 +52,7 @@ public:
 	/// \note this call semantic is that the given object is returned the caller, this body_builder is no more
 	/// in charge of its memory management.
 	/// \note if the requested object is not known an exception is thrown
-    virtual void take_back(body_builder *obj) { throw WEBDAR_BUG; };
+    void take_back(body_builder *obj);
 
 
 	/// ask the object to provide a part of the body to answer the request
@@ -126,14 +126,21 @@ protected:
 
        	/// Common interface for class that can/must contain other body_builder to provide a body_part()
 	///
-	/// this call is not mandatory, but must be overwritten by inherited class in order to be used
+	/// this call is not mandatory, but must be overwritten by inherited class in order to activate give() method
 	/// \note this call semantic is that the given object is passed to the body_builder, which is in charge
 	/// of its memory management (in particular at body_builder destruction) or un until its returned to the caller
     virtual void inherited_give(body_builder *obj) { throw WEBDAR_BUG; };
 
-protected:
-	/// inherited from class css
-    void css_updated();
+	/// Common interface for class that can/must contain other body_builder to provide a body_part()
+	///
+	/// this call is not mandatory, but must be overwrittent by inherited class in order to activate take_back() method
+	/// \note this call semantic is that the given object is returned the caller, this body_builder is no more
+	/// in charge of its memory management.
+	/// \note if the requested object is not known an exception should be thrown
+    virtual void inherited_take_back(body_builder *obk) { throw WEBDAR_BUG; };
+
+	/// For inherited class, called when the path has changed, tipically when this object has been given() or taken_back()
+    virtual void path_has_changed() {};
 
 private:
     chemin x_prefix;
@@ -143,6 +150,7 @@ private:
     std::map<body_builder *, std::string> revert_child;
 
     void unrecord_from_parent();
+    void recursive_path_has_changed();
 };
 
 #endif

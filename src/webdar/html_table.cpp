@@ -28,7 +28,7 @@ string html_table::get_body_part(const chemin & path,
     if(sub_path.size() > 0)
 	sub_path.pop_front();
 
-    ret = "<table " + get_css_string() + " " + border + ">\n";
+    ret = "<table " + css_get_string() + " " + border + ">\n";
     reset_read_next();
     while(read_next(bdl))
     {

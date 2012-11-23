@@ -71,4 +71,15 @@ extern const char *COLOR_TEXT;
 extern const char *COLOR_PADBACK;
 extern const char *COLOR_PADFRONT;
 extern const char *COLOR_PADBORD;
+extern const char *COLOR_MENU_FRONT_ON;
+extern const char *COLOR_MENU_BACK_ON;
+extern const char *COLOR_MENU_BORDER_ON;
+extern const char *COLOR_MENU_FRONT_OFF;
+extern const char *COLOR_MENU_BACK_OFF;
+extern const char *COLOR_MENU_BORDER_OFF;
+extern const char *COLOR_MENU_FRONT_HOVER_ON;
+extern const char *COLOR_MENU_FRONT_HOVER_OFF;
+extern const char *COLOR_MENU_FRONT_ACTIVE_ON;
+extern const char *COLOR_MENU_FRONT_ACTIVE_OFF;
+
 #endif

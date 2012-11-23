@@ -19,7 +19,7 @@ using namespace std;
 
 void html_text::add_text(unsigned int level, const std::string & text)
 {
-    string css_val = get_css_string();
+    string css_val = css_get_string();
 
     if(level == 0)
 	if(css_val.empty())

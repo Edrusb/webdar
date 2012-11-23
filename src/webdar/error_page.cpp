@@ -11,6 +11,7 @@ extern "C"
 #include "options_listing.hpp"
 #include "html_div.hpp"
 #include "tokens.hpp"
+#include "menu.hpp"
 
     //
 #include "error_page.hpp"
@@ -27,6 +28,7 @@ error_page::error_page(unsigned int status_code,
     html_text *tmp_text = NULL;
 	// FOR TESTING
     options_listing *tmp_opt = NULL;
+    menu *main_menu = NULL;
 
 	// objects's fields
     status = status_code;
@@ -42,16 +44,19 @@ error_page::error_page(unsigned int status_code,
 	tmp_text = new (nothrow) html_text();
 	tmp_div = new (nothrow) html_div();
 	tmp_opt = new (nothrow) options_listing();
+	main_menu = new (nothrow) menu();
 
 	if(tmp_page == NULL
 	   || tmp_body == NULL
 	   || tmp_text == NULL
 	   || tmp_opt == NULL
-	   || tmp_div == NULL)
+	   || tmp_div == NULL
+	   || main_menu == NULL)
 	    throw exception_memory();
 
 	    // we record the address of the newly created objets
 	    // only useful objects are record (tmp_div is not directly used outside the constructor)
+
 
 	page = tmp_page;
 	body = tmp_body;
@@ -80,8 +85,24 @@ error_page::error_page(unsigned int status_code,
 	tmp_text->css_float_clear(css::fc_left);
 	tmp_text->css_margin_left("2em");
 
+	    // main menu
+
+	main_menu->add_entry("main", "Main Page");
+	main_menu->add_entry("restore", "Restoration");
+	main_menu->add_entry("compare", "Comparison");
+	main_menu->add_entry("test", "Testing");
+	main_menu->add_entry("create", "Creation");
+	main_menu->add_entry("isolate", "Isolation");
+	main_menu->add_entry("merge", "Merging");
+	main_menu->add_entry("filters", "Filters");
+	main_menu->add_entry("sep", "");
+	main_menu->add_entry("close", "Close Session");
+	main_menu->css_float(css::fl_right);
+
 	    // building the body_builder tree
 
+	tmp_div->give(main_menu);
+	main_menu = NULL;
 	tmp_div->give(tmp_opt);
 	tmp_opt = NULL;
 
@@ -104,6 +125,8 @@ error_page::error_page(unsigned int status_code,
 	    delete tmp_div;
 	if(tmp_opt != NULL)
 	    delete tmp_opt;
+	if(main_menu != NULL)
+	    delete main_menu;
 	throw;
     }
 }

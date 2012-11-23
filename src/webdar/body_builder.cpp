@@ -22,9 +22,17 @@ void body_builder::give(body_builder *obj)
 {
     if(obj == NULL)
 	throw WEBDAR_BUG;
-    obj->css_inherit_from(*this);
 
     inherited_give(obj);
+    obj->recursive_path_has_changed();
+}
+
+void body_builder::take_back(body_builder *obj)
+{
+    if(obj == NULL)
+	throw WEBDAR_BUG;
+    inherited_take_back(obj);
+    obj->recursive_path_has_changed();
 }
 
 chemin body_builder::get_path() const
@@ -192,22 +200,23 @@ void body_builder::clear_and_delete_children()
 	throw WEBDAR_BUG;
 }
 
-void body_builder::css_updated()
-{
-    list<body_builder *>::iterator it = order.begin();
-
-    while(it != order.end())
-    {
-	if((*it) == NULL)
-	    throw WEBDAR_BUG;
-	(*it)->css_inherit_from(*this);
-
-	++it;
-    }
-}
 
 void body_builder::unrecord_from_parent()
 {
     if(parent != NULL)
 	parent->unrecord_child(this);
+}
+
+void body_builder::recursive_path_has_changed()
+{
+    std::list<body_builder *>::iterator it = order.begin();
+
+    path_has_changed();
+    while(it != order.end())
+    {
+	if((*it) == NULL)
+	    throw WEBDAR_BUG;
+	(*it)->recursive_path_has_changed();
+	++it;
+    }
 }

@@ -95,7 +95,8 @@ public:
 
     enum decoration { dc_underline,
 		      dc_overline,
-		      dc_line_through };
+		      dc_line_through,
+		      dc_none };
 
     void css_font_style_italic(bool inherit=false);
     void css_font_style_normal(bool inherit=false);
@@ -134,15 +135,25 @@ public:
 
 	/// inherit properties from the given reference
 	///
+	/// \param[in] ref from which to inherit properties
+	/// \param[in] all if true even properties with inheritance unset are taken into account
+	/// \param[in] force if false, only unset properties are inhertied, we do not erase existing properties
 	/// \note only unset properties are set to the value of the given reference
 	/// and only inheritable properties of the references are copied
-    void css_inherit_from(const css & ref);
+    void css_inherit_from(const css & ref, bool all=false, bool force=false);
+
+	/// returns the css raw css string
+    std::string css_get_raw_string() const;
+
+	/// returns the css string as in-line CSS
+    std::string css_get_string() const;
 
 protected:
-    std::string get_css_string() const;
 
-	// this method is called when a property has been modified with inheritance set
-    virtual void css_updated() {};
+	// this method is called when a property has been modified
+	//
+	// \param[in] inherit is set to true if the modified property has inheritance set
+    virtual void css_updated(bool inherited) {};
 
 private:
 

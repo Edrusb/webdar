@@ -46,7 +46,10 @@ public:
     void push_back(const std::string & x);
 
 	/// get the first member of the path
-    std::string front() const { if(empty()) throw exception_range("cannot get front from an empty chemin"); return members.front(); };
+    std::string front() const { if(empty()) throw exception_range("cannot get front() from an empty chemin"); return members.front(); };
+
+	/// get the last member of the path
+    std::string back() const { if(empty()) throw exception_range("cannot get back() from an empty chemin"); return members.back(); };
 
 	/// removes the first member of the path from this object
 	///
@@ -60,7 +63,7 @@ public:
     unsigned int size() const { return members.size(); };
 
 	/// return true if the path is an empty path (having no members)
-    bool empty() const { return members.size() == 0; };
+    bool empty() const { return members.empty(); };
 
 
 	/// return the index of the path

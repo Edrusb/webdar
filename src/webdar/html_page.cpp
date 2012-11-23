@@ -42,7 +42,7 @@ string html_page::get_body_part(const chemin & path,
     if(redirect != "")
 	ret += redirect + "\n";
     ret += "</head>\n<body ";
-    ret += get_css_string() + ">\n";
+    ret += css_get_string() + ">\n";
     ret += get_body_part_from_children_as_a_block(path, req);
     ret += "</body>\n</html>\n";
 

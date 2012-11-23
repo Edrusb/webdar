@@ -25,7 +25,11 @@ public:
     bool is_unset() const { return unset; };
 
 	/// copy the value from ref if unset and ref has inheritance set
-    void inherit_from(const css_property & ref);
+	///
+	/// \param[in] ref is the property to copy from
+	/// \param|in] any_inheritance, if false, copy is done only if ref has inheritance set
+	/// \param[in] even_if_set, if false, copy is not done if "this" is set
+    void inherit_from(const css_property & ref, bool any_inheritance=false, bool even_if_set=false);
 
 private:
     std::string value;

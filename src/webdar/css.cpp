@@ -50,8 +50,7 @@ void css::css_color(const std::string & col,
 {
     color.set_value(string(" color: ") + col + ";");
     color.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_background_color(const std::string & col,
@@ -59,8 +58,7 @@ void css::css_background_color(const std::string & col,
 {
     bg_col.set_value(string(" background-color: ") + col + ";");
     bg_col.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 
@@ -86,10 +84,8 @@ void css::css_background_image(const std::string & url,
 
     bg_img.set_value(val);
     bg_img.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
-
 
 void css::set_css_background_position(const std::string & x,
 				      const std::string & y,
@@ -102,8 +98,7 @@ void css::set_css_background_position(const std::string & x,
     }
     else
 	img_pos.clear();
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_margin(const std::string & all, bool inherit)
@@ -118,32 +113,28 @@ void css::css_margin_top(const std::string & top, bool inherit)
 {
     margin_top.set_value(string(" margin-top: ") + top + ";");
     margin_top.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_margin_right(const std::string & right, bool inherit)
 {
     margin_right.set_value(string(" margin-right: ") + right + ";");
     margin_right.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 
 }
 void css::css_margin_bottom(const std::string & bottom, bool inherit)
 {
     margin_bottom.set_value(string(" margin-bottom: ") + bottom + ";");
     margin_bottom.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_margin_left(const std::string & left, bool inherit)
 {
     margin_left.set_value(string(" margin-left: ") + left + ";");
     margin_left.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_height(const std::string & val,
@@ -157,8 +148,7 @@ void css::css_height(const std::string & val,
 	css_margin_top("auto", inherit);
 	css_margin_bottom("auto", inherit);
     }
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_width(const std::string & val,
@@ -172,8 +162,7 @@ void css::css_width(const std::string & val,
 	css_margin_left("auto", inherit);
 	css_margin_right("auto", inherit);
     }
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 
@@ -198,8 +187,7 @@ void css::css_float(floating val, bool inherit)
 
     float_pos.set_value(arg);
     float_pos.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_float_clear(floatclear val, bool inherit)
@@ -225,8 +213,7 @@ void css::css_float_clear(floatclear val, bool inherit)
     }
     float_clear.set_value(arg);
     float_clear.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_padding(const string & val,
@@ -243,8 +230,7 @@ void css::css_padding_top(const string & top,
 {
     padding_top.set_value(string(" padding-top: ") + top + ";");
     padding_top.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_padding_right(const std::string & right,
@@ -252,56 +238,49 @@ void css::css_padding_right(const std::string & right,
 {
     padding_right.set_value(string(" padding-right: ") + right + ";");
     padding_right.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 void css::css_padding_bottom(const std::string & bottom,
 			bool inherit)
 {
     padding_bottom.set_value(string(" padding-bottom: ") + bottom + ";");
     padding_bottom.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 void css::css_padding_left(const std::string & left,
 		      bool inherit)
 {
     padding_left.set_value(string(" padding-left: ") + left + ";");
     padding_left.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_font_style_italic(bool inherit)
 {
     font_style.set_value(" font-style: italic;");
     font_style.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_font_style_normal(bool inherit)
 {
     font_style.set_value(" font-style: normal;");
     font_style.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_font_weight_bold(bool inherit)
 {
     font_weight.set_value(" font-weight: bold;");
     font_weight.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_font_weight_normal(bool inherit)
 {
     font_weight.set_value(" font-weight: normal;");
     font_weight.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_text_align(align val, bool inherit)
@@ -326,8 +305,7 @@ void css::css_text_align(align val, bool inherit)
     }
     text_align.set_value(arg);
     text_align.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_text_decoration(decoration val, bool inherit)
@@ -345,13 +323,15 @@ void css::css_text_decoration(decoration val, bool inherit)
     case dc_line_through:
 	arg += "line-through;";
 	break;
+    case dc_none:
+	arg += "none;";
+	break;
     default:
 	throw WEBDAR_BUG;
     }
     text_deco.set_value(arg);
     text_deco.set_inheritance(inherit);
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_border_width(border which, bd_width val, bool inherit)
@@ -386,8 +366,7 @@ void css::css_border_width(border which, bd_width val, bool inherit)
 	border_width.set_value(border_width.get_value() + arg);
 	break; // not usefull here, but does not hurt
     }
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_border_color(border which, const std::string & col, bool inherit)
@@ -409,8 +388,7 @@ void css::css_border_color(border which, const std::string & col, bool inherit)
 	border_color.set_value(border_color.get_value() + arg);
 	break; // not usefull here, but does not hurt
     }
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
 void css::css_border_style(border which, bd_style val, bool inherit)
@@ -463,40 +441,39 @@ void css::css_border_style(border which, bd_style val, bool inherit)
 	border_style.set_value(border_style.get_value() + arg);
 	break; // not usefull here, but does not hurt
     }
-    if(inherit)
-	css_updated();
+    css_updated(inherit);
 }
 
-void css::css_inherit_from(const css & ref)
+void css::css_inherit_from(const css & ref, bool all, bool force)
 {
-    color.inherit_from(ref.color);
-    bg_col.inherit_from(ref.bg_col);
-    bg_img.inherit_from(ref.bg_img);
-    img_pos.inherit_from(ref.img_pos);
-    margin_top.inherit_from(ref.margin_top);
-    margin_right.inherit_from(ref.margin_right);
-    margin_bottom.inherit_from(ref.margin_bottom);
-    margin_left.inherit_from(ref.margin_left);
-    height.inherit_from(ref.height);
-    width.inherit_from(ref.width);
-    float_pos.inherit_from(ref.float_pos);
-    float_clear.inherit_from(ref.float_clear);
-    padding_top.inherit_from(ref.padding_top);
-    padding_right.inherit_from(ref.padding_right);
-    padding_bottom.inherit_from(ref.padding_bottom);
-    padding_left.inherit_from(ref.padding_left);
-    font_style.inherit_from(ref.font_style);
-    font_weight.inherit_from(ref.font_weight);
-    text_align.inherit_from(ref.text_align);
-    text_deco.inherit_from(ref.text_deco);
-    border_width.inherit_from(ref.border_width);
-    border_color.inherit_from(ref.border_color);
-    border_style.inherit_from(ref.border_style);
+    color.inherit_from(ref.color, all, force);
+    bg_col.inherit_from(ref.bg_col, all, force);
+    bg_img.inherit_from(ref.bg_img, all, force);
+    img_pos.inherit_from(ref.img_pos, all, force);
+    margin_top.inherit_from(ref.margin_top, all, force);
+    margin_right.inherit_from(ref.margin_right, all, force);
+    margin_bottom.inherit_from(ref.margin_bottom, all, force);
+    margin_left.inherit_from(ref.margin_left, all, force);
+    height.inherit_from(ref.height, all, force);
+    width.inherit_from(ref.width, all, force);
+    float_pos.inherit_from(ref.float_pos, all, force);
+    float_clear.inherit_from(ref.float_clear, all, force);
+    padding_top.inherit_from(ref.padding_top, all, force);
+    padding_right.inherit_from(ref.padding_right, all, force);
+    padding_bottom.inherit_from(ref.padding_bottom, all, force);
+    padding_left.inherit_from(ref.padding_left, all, force);
+    font_style.inherit_from(ref.font_style, all, force);
+    font_weight.inherit_from(ref.font_weight, all, force);
+    text_align.inherit_from(ref.text_align, all, force);
+    text_deco.inherit_from(ref.text_deco, all, force);
+    border_width.inherit_from(ref.border_width, all, force);
+    border_color.inherit_from(ref.border_color, all, force);
+    border_style.inherit_from(ref.border_style, all, force);
 
-    css_updated();
+    css_updated(true);
 }
 
-string css::get_css_string() const
+string css::css_get_raw_string() const
 {
     string ret = "";
 
@@ -523,6 +500,13 @@ string css::get_css_string() const
     ret += border_width.get_value();
     ret += border_color.get_value();
     ret += border_style.get_value();
+
+    return ret;
+}
+
+string css::css_get_string() const
+{
+    string ret = css_get_raw_string();
 
     if(ret != "")
 	ret = "style=\"" + ret + "\"";
