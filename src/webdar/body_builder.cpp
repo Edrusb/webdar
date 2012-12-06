@@ -98,7 +98,7 @@ string body_builder::record_child(body_builder *obj)
 void body_builder::unrecord_child(body_builder *obj)
 {
     map<body_builder *, string>::iterator rit = revert_child.find(obj);
-    list<body_builder *>::iterator ot = find(order.begin(), order.end(), obj);
+    vector<body_builder *>::iterator ot = find(order.begin(), order.end(), obj);
 
     if(ot == order.end()) // object not found in the ordered list
 	throw WEBDAR_BUG;
@@ -149,7 +149,7 @@ string body_builder::get_body_part_from_all_children(const chemin & path,
 {
     string ret = "";
     chemin sub_path = path;
-    list<body_builder *>::iterator it = order.begin();
+    vector<body_builder *>::iterator it = order.begin();
 
     if(!sub_path.empty())
 	sub_path.pop_front();
@@ -209,7 +209,7 @@ void body_builder::unrecord_from_parent()
 
 void body_builder::recursive_path_has_changed()
 {
-    std::list<body_builder *>::iterator it = order.begin();
+    vector<body_builder *>::iterator it = order.begin();
 
     path_has_changed();
     while(it != order.end())

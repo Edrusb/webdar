@@ -8,6 +8,9 @@ extern "C"
 }
     // C++ system header files
 
+    // WEBDAR Version
+extern const char * WEBDAR_VERSION;
+
     // the different answer codes
 const unsigned int STATUS_CODE_CONTINUE = 101;
 const unsigned int STATUS_CODE_SWITCHING_PROTOCOLS = 101;

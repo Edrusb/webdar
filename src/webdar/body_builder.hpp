@@ -10,6 +10,7 @@ extern "C"
     // C++ system header files
 #include <string>
 #include <map>
+#include <vector>
 
     // webdar headers
 #include "request.hpp"
@@ -137,15 +138,24 @@ protected:
 	/// \note this call semantic is that the given object is returned the caller, this body_builder is no more
 	/// in charge of its memory management.
 	/// \note if the requested object is not known an exception should be thrown
-    virtual void inherited_take_back(body_builder *obk) { throw WEBDAR_BUG; };
+    virtual void inherited_take_back(body_builder *obj) { throw WEBDAR_BUG; };
 
 	/// For inherited class, called when the path has changed, tipically when this object has been given() or taken_back()
     virtual void path_has_changed() {};
 
+	/// access to recorded childs
+	///
+	/// \note accessed to recorded objects does not mean any change of responsibility,
+	/// they keep to be managed by the body_builder class
+    unsigned int size() const { return order.size(); };
+
+    body_builder *operator[] (unsigned int i) { return order[i]; };
+
+
 private:
     chemin x_prefix;
     body_builder *parent;
-    std::list<body_builder *> order;
+    std::vector<body_builder *> order;
     std::map<std::string, body_builder *> children;
     std::map<body_builder *, std::string> revert_child;
 

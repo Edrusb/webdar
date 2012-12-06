@@ -186,6 +186,21 @@ void menu::add_entry(const std::string & reference, const std::string & label)
 	set_mode(0);
 }
 
+string menu::get_current_label() const
+{
+    string ret;
+
+    if(current_mode >= item.size())
+	throw WEBDAR_BUG;
+
+    if(item[current_mode].inside == NULL)
+	throw WEBDAR_BUG;
+
+    ret = item[current_mode].inside->get_label();
+
+    return ret;
+}
+
 
 string menu::get_body_part(const chemin & path,
 			   const request & req)

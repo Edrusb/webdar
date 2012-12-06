@@ -29,9 +29,13 @@ public:
     void add_entry(const std::string & reference, const std::string & label);
 
 	/// return the reference of the current mode
+	///
 	/// \return the selected item in the order of addition using add_entry
-	/// starting from 1: First add_entry gives item number 1
-    unsigned int get_current_mode() const { return current_mode + 1; };
+	/// starting from 0: First add_entry gives item number 0, second gives 1, etc.
+    unsigned int get_current_mode() const { return current_mode; };
+
+	/// return the current selected message
+    std::string get_current_label() const;
 
 	/// inherited from body_builder
     std::string get_body_part(const chemin & path,

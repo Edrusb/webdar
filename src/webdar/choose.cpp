@@ -8,13 +8,15 @@ extern "C"
 #include <new>
 
     // webdar headers
-#include "error_page.hpp"
+#include "html_form.hpp"
 #include "html_table.hpp"
 #include "html_page.hpp"
 #include "html_url.hpp"
+#include "html_text.hpp"
 #include "html_form_fieldset.hpp"
 #include "tokens.hpp"
 #include "html_div.hpp"
+#include "user_interface.hpp"
     //
 #include "choose.hpp"
 
@@ -147,14 +149,12 @@ answer choose::create_new_session(const request & req)
     answer ret;
 
     html_page page = html_page("rediction to newly created session page");
-    error_page *obj = new (nothrow) error_page(STATUS_CODE_OK, "This is session temporary page");
+    user_interface *obj = new (nothrow) user_interface();
     if(obj == NULL)
 	throw exception_memory();
 
     string session_ID = session::create_new(owner, obj);
-    obj->set_message_body(string("This is the main page of session ") + session_ID);
     obj->set_prefix(chemin(session_ID));
-    obj->set_return_uri(uri("/"), "Root Page");
 
     page.set_refresh_redirection(0, session_ID);
     ret.set_status(STATUS_CODE_OK);
