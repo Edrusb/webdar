@@ -33,7 +33,4 @@ private:
     saisie parametrage;
 };
 
-
-
-
 #endif
