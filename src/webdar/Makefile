@@ -7,7 +7,7 @@ all: webdar
 clean:
 	rm -f *.o webdar
 
-webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o options_listing.o menu.o html_url_class.o aiguille.o saisie.o user_interface.o events.o
+webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o options_listing.o menu.o html_url_class.o aiguille.o saisie.o user_interface.o events.o reference.o
 
 webdar.o : webdar.cpp exceptions.hpp central_report.hpp listener.hpp webdar_tools.hpp server.hpp authentication.hpp
 central_report.o : central_report.cpp central_report.hpp webdar_tools.hpp exceptions.hpp mutex.hpp
@@ -48,3 +48,4 @@ aiguille.o : aiguille.cpp aiguille.hpp body_builder.hpp
 saisie.o : saisie.cpp saisie.hpp html_url.hpp html_div.hpp options_listing.hpp aiguille.hpp menu.hpp
 user_interface.o : user_interface.cpp user_interface.hpp saisie.hpp responder.hpp
 events.o : events.cpp events.hpp exceptions.hpp
+reference.o : reference.cpp reference.hpp exception.hpp

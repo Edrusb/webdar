@@ -26,8 +26,13 @@
 + revoir les classes html* a l'aune de la class body_builder; ces classes doivent analyser les retour de formulaire et fournir des methodes pour acceder aux valeurs des champs (method POST)
 + ces objects doit pouvoir gerer les methods GET/HEAD et POST les autres method doivent etre rejetes
 + ajouter une class de decodage des POST en retour de formulaire (scinder champ / valeurs) (RFC "URL")
->>>>>>>>>>>>> ajouter des primitives css pour l'alignement du text, bold, italic, surligne etc.
-- implementer les classes GUI a partir des primitives HTML_*
++ ajouter des primitives css pour l'alignement du text, bold, italic, surligne etc.
+>>> revoir events.hpp et faire deriver event_trigger et event_action de la classe reference
+> revoir menu pour qu'il derive d'un events_trigger,
+> revoir "saisie" pour qu'il derive d'un events_actor, et lui associer les evenements de menu pour
+> affecter les object show_archive et aiguille, simplifier le get_body_part() qui doit sauter meme
+> faire deriver saisie d'un event_trigger et gui de events_actor pour implementer la fin de session
+>>> implementer les classes GUI a partir des primitives HTML_*
 
 - pour les sessions non authentifiees, il faut limiter la duree de la connexion a un temps court
 - finir la gestion des signaux et masks (avec les informations de sessions ouvertes etc.)
