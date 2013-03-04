@@ -17,67 +17,103 @@ extern "C"
 using namespace std;
 
 
+reference::reference(const reference & ref)
+{
+    if(ref.is_empty())
+	reset();
+    else
+	throw WEBDAR_BUG; // cannot copy-construct an object already linked with another one
+}
+
+const reference & reference::operator = (const reference & ref)
+{
+    if(ref.is_empty())
+    {
+	shut_all_peerings();
+	reset();
+    }
+    else
+	throw WEBDAR_BUG;
+}
+
+
 void reference::peer_with(reference *obj)
 {
     if(obj == NULL)
 	throw WEBDAR_BUG;
 
-    peers.push_back(obj);
-    try
+    if(is_peer(obj))
     {
-	obj->peers.push_back(this);
+	if(!obj->is_peer(this))
+	    throw WEBDAR_BUG;
     }
-    catch(...)
+    else
     {
-	peers.pop_back();
-	throw;
+	peers.insert(obj);
+	try
+	{
+	    obj->peers.insert(this);
+	}
+	catch(...)
+	{
+	    peers.erase(obj);
+	    throw;
+	}
     }
 }
 
-void reference::break_peer_from(reference *obj)
+void reference::break_peer_with(reference *obj)
 {
-    list<reference *>::iterator it = peers.begin();
-    list<reference *>::iterator ot;
-
     if(obj == NULL)
 	throw WEBDAR_BUG;
 
-    while(it != peers.end() && *it != obj)
-	++it;
-
-    if(it == peers.end())
-	throw exception_range("Cannot break peering with an object we do not peer with");
-
-    ot = obj->peers.begin();
-
-    while(ot != obj->peers.end() && *ot != this)
-	++ot;
-
-    if(ot == obj->peers.end())
-	throw WEBDAR_BUG; // asymetrical peering
-
-    try
+    if(is_peer(obj))
     {
-	peers.erase(it);
+	try
+	{
+	    peers.erase(obj);
+	}
+	catch(...)
+	{
+	    obj->peers.erase(this);
+	    throw;
+	}
+	obj->peers.erase(this);
+	obj->broken_peering_from(this);
     }
-    catch(...)
-    {
-	obj->peers.erase(ot);
-	throw;
-    }
-    obj->peers.erase(ot);
-
-    obj->broken_peering_from(this);
+    else
+	throw WEBDAR_BUG;
 }
+
 
 bool reference::read_next_peer(reference * & peer)
 {
-    if(rd != peers.end())
+    if(next_to_read != peers.end())
     {
-	peer = *rd;
-	++rd;
-	return true;
+	peer = *next_to_read;
+	++next_to_read;
     }
     else
 	return false;
 }
+
+
+void reference::reset()
+{
+    peers.clear();
+    next_to_read = peers.begin();
+}
+
+
+void reference::shut_all_peerings()
+{
+    while(peers.begin() != peers.end())
+    {
+	if(*(peers.begin()) == NULL)
+	    throw WEBDAR_BUG;
+	break_peer_with(*(peers.begin()));
+    }
+
+    reset();
+}
+

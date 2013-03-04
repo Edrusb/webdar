@@ -16,60 +16,78 @@ extern "C"
 
 using namespace std;
 
-void events_referrer::add_me_to_referred(events_referred *obj)
+
+void events::register_name(const string & name)
 {
-    if(obj == NULL)
-	throw WEBDAR_BUG;
-    obj->add_referrer(this);
+    map < string , list<actor *> >::iterator it = carte.find(name);
+
+    if(it != carte.end())
+	throw WEBDAR_BUG; // events already registered
+    else
+    {
+	list<actor *> tmp;
+	carte[name] = tmp;
+    }
 }
 
-void events_referred::break_all_links()
+void events::record_actor_on_event(actor *ptr, const string & name)
 {
-    set<events_referrer *>::iterator it = links.begin();
+    map < string , list<actor *> >::iterator it = carte.find(name);
 
-    while(it != links.end())
+    if(it == carte.end())
+	throw WEBDAR_BUG; // unknown event !
+
+    if(ptr == NULL)
+	throw WEBDAR_BUG;
+
+    it->second.push_back(ptr);
+    try
     {
-	if((*it) == NULL)
+	peer_with(ptr);
+    }
+    catch(...)
+    {
+	    // nothing to do, this failure just indicates
+	    // that the peer is already recorded on another event on
+	    // that events objects
+    }
+}
+
+
+void events::act(const std::string & name)
+{
+    map < string , list<actor *> >::iterator it = carte.find(name);
+    list<actor *>::iterator ptr;
+
+    if(it == carte.end())
+	throw WEBDAR_BUG; // unknown event !
+
+    for(ptr = it->second.begin(); ptr != it->second.end(); ++ptr)
+    {
+	if(*ptr == NULL)
 	    throw WEBDAR_BUG;
-	(*it)->breaking_link(this);
+	(*ptr)->on_event(name);
+    }
+}
+
+
+void events::broken_peering_from(reference *obj)
+{
+    map< string, list<actor *> >::iterator it = carte.begin();
+
+    while(it != carte.end())
+    {
+	list<actor *>::iterator ptr = it->second.begin();
+	while(ptr != it->second.end())
+	{
+	    if(*ptr == NULL)
+		throw WEBDAR_BUG;
+	    if(*ptr == obj)
+		ptr = it->second.erase(ptr);
+	    else
+		++ptr;
+	}
 	++it;
     }
-    links.clear();
 }
 
-void events_trigger::bind(const string & events_name, events_actor *obj)
-{
-    if(obj == NULL)
-	throw WEBDAR_BUG;
-    associated[events_name] = obj;
-    add_me_to_referred(obj);
-}
-
-void events_trigger::breaking_link(const void *ptr)
-{
-    map<string, events_actor *>::iterator it;
-
-    do
-    {
-	it = associated.begin();
-	while(it != associated.end() && it->second != ptr)
-	    ++it;
-	if(it != associated.end())
-	{
-	    associated.erase(it);
-	    it = associated.begin();
-	}
-    }
-    while(it != associated.end());
-}
-
-void events_trigger::trigger(const string & events_name) const
-{
-    map<string, events_actor *>::const_iterator it = associated.find(events_name);
-
-    if(it != associated.end())
-    {
-	if(it->second != NULL)
-	    it->second->on_events(events_name);
-    }
-}

@@ -15,24 +15,25 @@ extern "C"
 class reference
 {
 public:
-    reference() { rd = peers.begin(); };
-    virtual ~reference() { clear_all_peers(); };
-
-protected:
+    reference() { reset(); }; // default constructor
+    reference(const reference & ref); // copy constructor
+    const reference & operator = (const reference & ref); // assignment operator
+    virtual ~reference() { shut_all_peerings(); };
 
 	/// method used to create a relation between two objects
 	///
-	/// \note the relation is symetrical (a.peer_with(&b) is the same
-	/// as b.peer_with(&a). The relation ends when one or the other object
-	/// is destroyed. The other object is then informed of this event
+	/// \note the relation is symetrical [a.peer_with(&b) is the same
+	/// as b.peer_with(&a)]. The relation ends when one or the other object
+	/// is destroyed. The other object is then notified of this event by
+	/// a call to its broken_peering_from() method
 
     void peer_with(reference *obj);
 
 	/// break the peering with the object given as argument
-    void break_peer_from(reference *obj);
+    void break_peer_with(reference *obj);
 
-	/// to be informed when a peer has broke an established peering
-    virtual void broken_peering_from(reference *obj) {};
+	/// whether a peering exists with that object
+    bool is_peer(reference *obj) const { return peers.find(obj) != peers.end(); };
 
 	/// whether the current object has peering
     bool is_empty() const { return peers.empty(); };
@@ -40,8 +41,14 @@ protected:
 	/// the number of peers
     unsigned int size() const { return peers.size(); };
 
+protected:
+
+	/// to be informed when a peer has broke the peering with me
+    virtual void broken_peering_from(reference *obj) {};
+
+
 	/// reset the peers reading
-    void reset_read_peers() { rd = peers.begin(); };
+    void reset_read_peers() { next_to_read = peers.begin(); };
 
 	/// provide the next peer
 	///
@@ -50,12 +57,12 @@ protected:
 	/// the argument is undefined
     bool read_next_peer(reference * & peer);
 
-	/// break all peering from all peers
-    void clear_all_peers();
-
 private:
-    std::list<reference *> peers;
-    std::list<reference *>::iterator rd;
+    std::set<reference *>::iterator next_to_read;
+    std::set<reference *> peers;
+
+    void reset();
+    void shut_all_peerings();
 };
 
 #endif

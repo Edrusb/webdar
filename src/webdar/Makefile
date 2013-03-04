@@ -48,4 +48,4 @@ aiguille.o : aiguille.cpp aiguille.hpp body_builder.hpp
 saisie.o : saisie.cpp saisie.hpp html_url.hpp html_div.hpp options_listing.hpp aiguille.hpp menu.hpp
 user_interface.o : user_interface.cpp user_interface.hpp saisie.hpp responder.hpp
 events.o : events.cpp events.hpp exceptions.hpp
-reference.o : reference.cpp reference.hpp exception.hpp
+reference.o : reference.cpp reference.hpp exceptions.hpp
