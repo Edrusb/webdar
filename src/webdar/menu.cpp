@@ -24,6 +24,7 @@ menu::menu()
     css tmp_set;
 
     current_mode = 0;
+    previous_mode = 0;
 
 	// Common aspects
     box_off.css_border_style(css::bd_all, css::bd_solid, true);
@@ -130,7 +131,43 @@ void menu::add_entry(const std::string & reference, const std::string & label)
     global.adopt(&(box->surround));
 
     if(item.size() == 1)
-	set_mode(0);
+	 set_current_mode(0);
+}
+
+void menu::set_current_mode(unsigned int mode)
+{
+    unsigned int size = item.size();
+    bool has_changed = (mode != current_mode);
+    if(mode >= size)
+	throw WEBDAR_BUG;
+
+    if(current_mode >= size)
+    	throw WEBDAR_BUG;
+
+    if(item[current_mode] == NULL)
+	throw WEBDAR_BUG;
+
+    if(item[mode] == NULL)
+	throw WEBDAR_BUG;
+
+	/// all is fine, we can go on modifying the objects
+
+    if(item[current_mode]->inside.get_label() == "")
+	item[current_mode]->surround.css_inherit_from(box_void, false, true);
+    else
+    {
+	item[current_mode]->surround.css_inherit_from(box_off, false, true);
+	item[current_mode]->inside.set_class(url_normal.get_class_id());
+    }
+
+    item[mode]->surround.css_inherit_from(box_on, false, true);
+    item[mode]->inside.set_class(url_selected.get_class_id());
+    if(has_changed)
+    {
+	previous_mode = current_mode;
+	current_mode = mode;
+	act(changed); // trigger the "changed" event
+    }
 }
 
 string menu::get_current_label() const
@@ -159,7 +196,7 @@ void menu::set_current_label(const std::string & label)
 	if(item[i] == NULL)
 	    throw WEBDAR_BUG;
 	else
-	    set_mode(i);
+	    set_current_mode(i);
     }
     else
 	throw WEBDAR_BUG; // unknown label in this menu
@@ -187,7 +224,7 @@ string menu::get_body_part(const chemin & path,
 	while(i < size && item[i] != NULL && item[i]->value != choice)
 	    ++i;
 	if(i < size)
-	    set_mode(i);
+	    set_current_mode(i);
     }
 
     return get_body_part_from_all_children(path, req);
@@ -210,7 +247,7 @@ void menu::path_has_changed()
     }
 
     if(item.size() > 0)
-	set_mode(current_mode);
+	set_current_mode(current_mode);
 }
 
 void menu::css_updated(bool inherit)
@@ -219,35 +256,3 @@ void menu::css_updated(bool inherit)
 }
 
 
-void menu::set_mode(unsigned int mode)
-{
-    unsigned int size = item.size();
-    bool has_changed = (mode != current_mode);
-    if(mode >= size)
-	throw WEBDAR_BUG;
-
-    if(current_mode >= size)
-    	throw WEBDAR_BUG;
-
-    if(item[current_mode] == NULL)
-	throw WEBDAR_BUG;
-
-    if(item[mode] == NULL)
-	throw WEBDAR_BUG;
-
-	/// all is fine, we can go on modifying the objects
-
-    if(item[current_mode]->inside.get_label() == "")
-	item[current_mode]->surround.css_inherit_from(box_void, false, true);
-    else
-    {
-	item[current_mode]->surround.css_inherit_from(box_off, false, true);
-	item[current_mode]->inside.set_class(url_normal.get_class_id());
-    }
-
-    item[mode]->surround.css_inherit_from(box_on, false, true);
-    item[mode]->inside.set_class(url_selected.get_class_id());
-    current_mode = mode;
-    if(has_changed)
-	act(changed); // trigger the "changed" event
-}

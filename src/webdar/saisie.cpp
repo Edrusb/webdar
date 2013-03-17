@@ -184,7 +184,7 @@ string saisie::get_body_part(const chemin & path,
 	    set_title("Redirection to all user sessions");
 	    set_refresh_redirection(0, "/");
 	    ret = html_page::get_body_part(path, req);
-	    choice.set_current_label("about");
+	    choice.set_current_mode(choice.get_previous_mode());
 	}
 
     return ret;

@@ -41,11 +41,18 @@ public:
 	/// \param[in] label is any text that will be showed to the user
     void add_entry(const std::string & reference, const std::string & label);
 
-	/// return the reference of the current mode
+	/// returns the reference of the current mode
 	///
 	/// \return the selected item in the order of addition using add_entry
 	/// starting from 0: First add_entry gives item number 0, second gives 1, etc.
     unsigned int get_current_mode() const { return current_mode; };
+
+	/// set html field accordingly to the given mode
+	/// \param[in] mode is the mode to set, it start from 0
+    void set_current_mode(unsigned int mode);
+
+	/// returns the reference of the previous mode (the mode that was selected before current mode)
+    unsigned int get_previous_mode() const { return previous_mode; };
 
 	/// return the current selected message
     std::string get_current_label() const;
@@ -78,6 +85,7 @@ private:
     };
 
     unsigned int current_mode; // which item is currently selected
+    unsigned int previous_mode; // which item was previously selected
 
     html_div global;           // first level object containing all others
     std::vector<boite *> item; // items for choices
@@ -88,9 +96,6 @@ private:
     html_url_class url_selected; //< links when box selected
     html_url_class url_normal;   //< links when box no selected
 
-	/// set html field accordingly to the new mode
-	/// \param[in] mode is the mode to set, it start from 0 !!!
-    void set_mode(unsigned int mode);
 };
 
 #endif
