@@ -59,7 +59,7 @@ public:
 
 	/// obtain the body splitted in as list of attribute-value pair
 	///
-	/// \note this call can be called to analyse POST request's body in response to a form
+	/// \note this call can be used to analyse POST request's body in response to a form
 	/// \note this call should only be used when the Content-Type is
 	/// application/x-www-form-urlencoded, if not an exception is thrown
     std::map<std::string,std::string> get_body_form() const;

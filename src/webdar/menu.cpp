@@ -147,6 +147,23 @@ string menu::get_current_label() const
     return box->value;
 }
 
+void menu::set_current_label(const std::string & label)
+{
+    unsigned int i = 0;
+
+    while(i < item.size() && item[i] != NULL && item[i]->value != label)
+	++i;
+
+    if(i < item.size())
+    {
+	if(item[i] == NULL)
+	    throw WEBDAR_BUG;
+	else
+	    set_mode(i);
+    }
+    else
+	throw WEBDAR_BUG; // unknown label in this menu
+}
 
 string menu::get_body_part(const chemin & path,
 			   const request & req)

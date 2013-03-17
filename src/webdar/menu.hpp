@@ -50,6 +50,9 @@ public:
 	/// return the current selected message
     std::string get_current_label() const;
 
+	/// set the current selected mode
+    void set_current_label(const std::string & label);
+
 	/// inherited from body_builder
     std::string get_body_part(const chemin & path,
 			      const request & req);

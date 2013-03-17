@@ -61,7 +61,7 @@ void body_builder::foresake(body_builder *obj)
     if(obj == NULL)
 	throw WEBDAR_BUG;
 
-        map<body_builder *, string>::iterator rit = revert_child.find(obj);
+    map<body_builder *, string>::iterator rit = revert_child.find(obj);
     vector<body_builder *>::iterator ot = find(order.begin(), order.end(), obj);
 
     if(ot == order.end()) // object not found in the ordered list

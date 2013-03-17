@@ -34,6 +34,7 @@ string html_page::get_body_part(const chemin & path,
 				const request & req)
 {
     string ret = "";
+    string children = get_body_part_from_children_as_a_block(path, req);
 
     ret += "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n";
     ret += "<html>\n<head>\n<title>\n";
@@ -43,7 +44,7 @@ string html_page::get_body_part(const chemin & path,
 	ret += redirect + "\n";
     ret += "</head>\n<body ";
     ret += css_get_string() + ">\n";
-    ret += get_body_part_from_children_as_a_block(path, req);
+    ret += children;
     ret += "</body>\n</html>\n";
 
     return ret;

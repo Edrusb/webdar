@@ -30,14 +30,18 @@ string html_form_select::get_body_part(const chemin & path, const request & req)
 
 	// for any request provide an updated HTML content in response
 
-    ret += "<label for=\"" + select_id + "\">" + x_label + "</label><br />\n";
+    ret += "<label for=\"" + select_id + "\">" + x_label + "</label>\n";
     ret += "<select name=\"" + select_id + "\" id=\"" + select_id + "\">\n";
     while(it != get_choices().end())
     {
-	ret += "<option value=\"" + it->id + "\">" + it->label + "</option>\n";
+	ret += "<option value=\"" + it->id + "\"";
+	if(it->id == get_selected_id())
+	    ret += " selected";
+	ret += ">" + it->label + "</option>\n";
 	++it;
     }
     ret += "</select>\n";
+    ret += "<br />\n";
 
     return ret;
 };

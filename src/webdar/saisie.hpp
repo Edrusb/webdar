@@ -48,29 +48,31 @@ public:
 private:
     menu choice;           ///< left main menu
     aiguille show_archive; ///< top middle zone hidden or show depending of choice's value
-    html_url sessions;     ///< below the menu, points to the all sessions page
     aiguille select;       ///< middle center zone, containing the different pages according to choice's value
 
 	/// show_archive zone
-    html_form_input archive; ///< child of show_archive, contains the archive name
-    html_text archive_blank;
-    html_form archive_form;
+    html_form archive_form;  ///< form containing the path to the archive to operate on
+    html_form_input archive; ///< child of archive_form, contains the archive name
+    html_text archive_blank; ///< shows a blank place in place of archive_form
 
 	// the different sub pages contained by "select" and shown depending on choice's value
     html_div about;
+    html_div sep0;
     html_div compare;
     html_div test;
     options_listing list;
     html_div create;
     html_div isolate;
     html_div merge;
+    html_div sep1;
     html_div filters;
-    html_div sep;
+    html_div repo;
+    html_div sess;
+    html_div sep2;
     html_yes_no_box close;
 
+
 	// the restore sub-page
-    html_form ex_form;
-    html_form_fieldset ex_fs;
     options_extract extract;
 
 };

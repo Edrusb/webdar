@@ -43,7 +43,10 @@ void answer::write(connexion & output)
     string key, val;
 
     if(maj_vers != 1 || (min_vers != 0 && min_vers != 1))
-       throw WEBDAR_BUG;
+	throw exception_feature("Unsupported HTTP protocole version: "
+				+ webdar_tools_convert_to_string(maj_vers)
+				+ "/"
+				+ webdar_tools_convert_to_string(min_vers));
 
     if(status < 100 && status > 599)
 	throw WEBDAR_BUG;

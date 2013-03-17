@@ -17,7 +17,7 @@ extern "C"
 using namespace std;
 
 options_extract::options_extract():
-    form("Update"),
+    form("Update Options"),
     fs("Restoration options"),
     warn_over("Warn before overwriting",
 	      html_form_input::check,
@@ -76,6 +76,17 @@ options_extract::options_extract():
     only_deleted.set_value_as_bool(defaults.get_only_deleted());
     ignore_deleted.set_value_as_bool(defaults.get_ignore_deleted());
 
+    warn_over.css_float_clear(css::fc_left, true);
+    info_details.css_float_clear(css::fc_left, true);
+    flat.css_float_clear(css::fc_left, true);
+    what_to_check.css_float_clear(css::fc_left, true);
+    warn_remove_no_match.css_float_clear(css::fc_left, true);
+    empty.css_float_clear(css::fc_left, true);
+    display_skipped.css_float_clear(css::fc_left, true);
+    dirty_behavior.css_float_clear(css::fc_left, true);
+    only_deleted.css_float_clear(css::fc_left, true);
+    ignore_deleted.css_float_clear(css::fc_left, true);
+
     fs.adopt(&warn_over);
     fs.adopt(&info_details);
     fs.adopt(&flat);
@@ -129,6 +140,6 @@ libdar::archive_options_extract options_extract::get_options() const
 std::string options_extract::get_body_part(const chemin & path,
 					   const request & req)
 {
-    return get_body_part_from_all_childre(path, req);
+    return get_body_part_from_all_children(path, req);
 }
 
