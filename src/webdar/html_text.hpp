@@ -27,9 +27,11 @@ public:
 
     void clear() { txt = ""; };
 
+	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
 				      const request & req) { return get_body_part(); };
 
+	/// inherited from static_body_builder
     virtual std::string get_body_part() const { return txt; };
 
 private:

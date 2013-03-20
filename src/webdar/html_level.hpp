@@ -19,21 +19,22 @@ extern "C"
     /// it implements the management of a mixed list of object and static html text
     /// and provides method to read this list. This class does not implement the
     /// get_body_part() pure virtual method of its body_builder ancestor class
+    /// this is left to its inherited classes
 
 class html_level : public body_builder
 {
 public:
     html_level();
 
-	/// used in concurrency with body_builder::give()
-    void give_static_html(const std::string & html);
+	/// used in concurrency with body_builder::adopt()
+    void adopt_static_html(const std::string & html);
 
 	/// clear all data
     void clear();
 
 protected:
-	/// inherited from body_builder to implement the body_builder::give() method
-    virtual void inherited_give(body_builder *obj);
+	/// inherited from body_builder
+    virtual void has_been_adopted(body_builder *obj);
 
     struct bundle
     {

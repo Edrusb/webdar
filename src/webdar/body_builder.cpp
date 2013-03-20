@@ -18,21 +18,76 @@ using namespace std;
 
 const unsigned int NAME_WIDTH = 4;
 
-void body_builder::give(body_builder *obj)
+void body_builder::set_prefix(const chemin & prefix)
 {
-    if(obj == NULL)
+    if(parent != NULL)
 	throw WEBDAR_BUG;
-
-    inherited_give(obj);
-    obj->recursive_path_has_changed();
+    x_prefix = prefix;
+    recursive_path_has_changed();
 }
 
-void body_builder::take_back(body_builder *obj)
+void body_builder::adopt(body_builder *obj)
 {
     if(obj == NULL)
 	throw WEBDAR_BUG;
-    inherited_take_back(obj);
+
+    string new_name;
+    map<string, body_builder *>::iterator it;
+    map<body_builder *, string>::iterator rit = revert_child.find(obj);
+
+    if(rit != revert_child.end())
+	throw WEBDAR_BUG; // object already recorded
+
+    if(obj->parent != NULL)
+	throw WEBDAR_BUG; // object already recorded in another parent
+
+    do
+    {
+	new_name = webdar_tools_generate_random_string(NAME_WIDTH);
+	it = children.find(new_name);
+    }
+    while(it != children.end());
+
+    order.push_back(obj);
+    children[new_name] = obj;
+    revert_child[obj] = new_name;
+    obj->parent = this;
     obj->recursive_path_has_changed();
+    has_been_adopted(obj);
+}
+
+void body_builder::foresake(body_builder *obj)
+{
+    if(obj == NULL)
+	throw WEBDAR_BUG;
+
+        map<body_builder *, string>::iterator rit = revert_child.find(obj);
+    vector<body_builder *>::iterator ot = find(order.begin(), order.end(), obj);
+
+    if(ot == order.end()) // object not found in the ordered list
+	throw WEBDAR_BUG;
+
+    if(rit != revert_child.end())
+    {
+	string name = rit->second;
+	map<string, body_builder *>::iterator it = children.find(name);
+	if(it == children.end()) // object known by both ordered list and rever_child map, but unknown by children map
+	    throw WEBDAR_BUG;
+
+	    // removing the object from the three lists/maps
+	children.erase(it);
+	revert_child.erase(rit);
+	order.erase(ot);
+
+	    // unrecording us as its parent
+	if(obj->parent == NULL)
+	    throw WEBDAR_BUG;
+	obj->parent = NULL;
+    }
+    else
+	throw WEBDAR_BUG; // object known in the ordered list but unknown by the revert_child map
+    obj->recursive_path_has_changed();
+    has_been_foresaken(obj);
 }
 
 chemin body_builder::get_path() const
@@ -68,61 +123,6 @@ string body_builder::get_recorded_name() const
 	return "";
 }
 
-string body_builder::record_child(body_builder *obj)
-{
-    string new_name;
-    map<string, body_builder *>::iterator it;
-    map<body_builder *, string>::iterator rit = revert_child.find(obj);
-
-    if(rit != revert_child.end())
-	throw WEBDAR_BUG; // object already recorded
-
-    if(obj->parent != NULL)
-	throw WEBDAR_BUG; // object already recorded in another parent
-
-    do
-    {
-	new_name = webdar_tools_generate_random_string(NAME_WIDTH);
-	it = children.find(new_name);
-    }
-    while(it != children.end());
-
-    order.push_back(obj);
-    children[new_name] = obj;
-    revert_child[obj] = new_name;
-    obj->parent = this;
-
-    return new_name;
-}
-
-void body_builder::unrecord_child(body_builder *obj)
-{
-    map<body_builder *, string>::iterator rit = revert_child.find(obj);
-    vector<body_builder *>::iterator ot = find(order.begin(), order.end(), obj);
-
-    if(ot == order.end()) // object not found in the ordered list
-	throw WEBDAR_BUG;
-
-    if(rit != revert_child.end())
-    {
-	string name = rit->second;
-	map<string, body_builder *>::iterator it = children.find(name);
-	if(it == children.end()) // object known by both ordered list and rever_child map, but unknown by children map
-	    throw WEBDAR_BUG;
-
-	    // removing the object from the three lists/maps
-	children.erase(it);
-	revert_child.erase(rit);
-	order.erase(ot);
-
-	    // unrecording us as its parent
-	if(obj->parent == NULL)
-	    throw WEBDAR_BUG;
-	obj->parent = NULL;
-    }
-    else
-	throw WEBDAR_BUG; // object known in the ordered list but unknown by the revert_child map
-}
 
 
 string body_builder::get_body_part_from_target_child(const chemin & path,
@@ -165,7 +165,7 @@ string body_builder::get_body_part_from_all_children(const chemin & path,
     return ret;
 }
 
-void body_builder::clear_and_delete_children()
+void body_builder::orphan_all_children()
 {
     body_builder *obj = NULL;
 
@@ -177,14 +177,13 @@ void body_builder::clear_and_delete_children()
 	    throw WEBDAR_BUG;
 	try
 	{
-	    unrecord_child(obj);
+	    foresake(obj);
 	}
 	catch(...)
 	{
 	    throw WEBDAR_BUG;
 	}
 
-	delete obj;
 	it = children.begin();
 	    // unrecord_child modifies the "children" map
 	    // so we set 'it' to a valid value setting it to begin()
@@ -204,7 +203,7 @@ void body_builder::clear_and_delete_children()
 void body_builder::unrecord_from_parent()
 {
     if(parent != NULL)
-	parent->unrecord_child(this);
+	parent->foresake(this);
 }
 
 void body_builder::recursive_path_has_changed()

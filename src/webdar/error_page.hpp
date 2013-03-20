@@ -16,14 +16,13 @@ extern "C"
 #include "html_url.hpp"
 #include "html_form_input.hpp"
 #include "html_form.hpp"
+#include "html_div.hpp"
 
 class error_page : public responder
 {
 public:
     error_page(unsigned int status_code,
 	       const std::string & reason);
-
-    ~error_page() { field_delete(); };
 
     void set_message_body(const std::string & message);
     void set_return_uri(const uri &ref, const std::string & label);
@@ -39,9 +38,10 @@ private:
     std::string msg;      //< returned reason of the answer ( seen by browser, rarely visibile by the user)
 
 	// body_builder objects
-    html_page *page;      //< html construction primitive
-    html_text *body;      //< message displayed to the user set by 'set_message_body()'
-    html_text *text;      //< used to build the return path in HTML body
+    html_page page;      //< html construction primitive
+    html_div div;        //< construction object containing both body and text
+    html_text body;      //< message displayed to the user set by 'set_message_body()'
+    html_text text;      //< used to build the return path in HTML body
 
     void field_delete();
 };

@@ -45,26 +45,31 @@ public:
 	/// inherited from actor
     void on_event(const std::string & event_name);
 private:
-    menu *choice;
-    aiguille *select;
-    aiguille *show_archive;
-    html_url *sessions;
-    html_form_input *archive;
+    menu choice;           ///< left main menu
+    aiguille show_archive; ///< top middle zone hidden or show depending of choice's value
+    html_url sessions;     ///< below the menu, points to the all sessions page
+    aiguille select;       ///< middle center zone, containing the different pages according to choice's value
 
-	// the different sub pages:
-    html_div *about;
-    html_div *restore;
-    html_div *compare;
-    html_div *test;
-    options_listing *list;
-    html_div *create;
-    html_div *isolate;
-    html_div *merge;
-    html_div *filters;
-    html_div *sep;
-    html_yes_no_box *close;
+	/// show_archive zone
+    html_form_input archive; ///< child of show_archive, contains the archive name
+    html_text archive_blank;
+    html_form archive_form;
 
-    void set_show_archive();
+	// the different sub pages contained by "select" and shown depending on choice's value
+    html_div about;
+    html_div restore;
+    html_div compare;
+    html_div test;
+    options_listing list;
+    html_div create;
+    html_div isolate;
+    html_div merge;
+    html_div filters;
+    html_div sep;
+    html_yes_no_box close;
+
+	/// the about page
+
     void set_about();
     void set_restore();
     void set_compare();

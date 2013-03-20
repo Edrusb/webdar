@@ -21,8 +21,7 @@ public:
     void set_mode(unsigned int m);
 
 	// inherited from body_builder
-    void inherited_give(body_builder *obj);
-    void inherited_take_back(body_builder *obj) { unrecord_child(obj); };
+    void has_been_adopted(body_builder *obj);
 
     std::string get_body_part(const chemin & path,
 			      const request & req);

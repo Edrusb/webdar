@@ -15,6 +15,12 @@ extern "C"
 #include "session.hpp"
 #include "responder.hpp"
 #include "html_page.hpp"
+#include "html_page.hpp"
+#include "html_url.hpp"
+#include "html_form.hpp"
+#include "html_div.hpp"
+#include "html_table.hpp"
+#include "html_form_fieldset.hpp"
 #include "html_form_input.hpp"
 #include "html_form_radio.hpp"
 
@@ -30,7 +36,7 @@ private:
 
 	// constructor
     choose(const std::string & user);
-    ~choose();
+    ~choose() { release_boxes(); };
 
 	// inherited from responder
     answer give_answer(const request & req);
@@ -38,14 +44,27 @@ private:
 
     std::string owner;       //< list only sessions for that owner
     bool confirm_mode;       //< whether we display session list or kill confirmation
-    html_page *page;         //< page root for session listing
+	/// listing session page and associated objects
+    html_page page;         //< page root for session listing
+    html_table table;
+    html_url nouvelle;
+    html_form form;
+    html_div div;
     std::vector<html_form_input *> boxes; //< list of checkboxes in "page"
-    html_page *confirm;      //< page root for kill confirmation
-    html_form_radio *confirmed; //< radio button for user confirmation
     std::vector<session::session_summary> sess; //< list of sessions in page
+
+	/// confirmation page and associated objects
+    html_page confirm;      //< page root for kill confirmation
+    html_div cdiv;
+    html_table ctable;
+    html_form cform;
+    html_form_fieldset block;
+    html_form_radio radio;
+
 
     answer create_new_session(const request & req);
     void regenerate_table_page();
+    void release_boxes();
     void regenerate_confirm_page();
     void kill_selected_sessions() const;
 

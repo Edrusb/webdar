@@ -21,21 +21,17 @@ class html_yes_no_box : public body_builder
 public:
     html_yes_no_box(const std::string & message, bool default_value);
 
-    bool get_value() const { if(rd == NULL) throw WEBDAR_BUG; return rd->get_selected_num() != 0; };
+    bool get_value() const { return rd.get_selected_num() != 0; };
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
 				      const request & req)
-    { return form->get_body_part(path, req); };
-
-protected:
-	/// inherited from body_builder
-    virtual void inherited_give(body_builder *obj) { if(obj == NULL) throw WEBDAR_BUG; (void)record_child(obj); };
-
+    { return get_body_part_from_all_children(path, req); };
 
 private:
-    html_form *form;     // a pointer to a value managed by parent class
-    html_form_radio *rd; // another  pointer to a value managed by parent class
+    html_form form;
+    html_form_fieldset form_fs;
+    html_form_radio rd;
 
 };
 

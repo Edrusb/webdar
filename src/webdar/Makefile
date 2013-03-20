@@ -37,6 +37,10 @@ html_page.o : html_page.cpp html_page.hpp body_builder.hpp
 html_table.o : html_table.cpp html_table.hpp body_builder.hpp
 html_image.o : html_image.cpp html_image.hpp body_builder.hpp
 html_url.o : html_url.cpp html_url.hpp body_builder.hpp
+html_form.o : html_form.cpp html_form.hpp body_builder.hpp
+html_form_input.o : html_form_input.cpp html_form_input.hpp body_builder.hpp
+html_form_radio.o : html_form_radio.cpp html_form_radio.hpp body_builder.hpp
+html_form_fieldset.o : html_form_fieldset.cpp html_form_fieldset.hpp body_builder.hpp
 error_page.o : error_page.cpp error_page.hpp
 chemin.o : chemin.cpp chemin.hpp exceptions.hpp
 html_level.o : html_level.cpp html_level.hpp body_builder.hpp

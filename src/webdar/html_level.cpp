@@ -23,7 +23,7 @@ html_level::html_level()
 }
 
 
-void html_level::give_static_html(const std::string & html)
+void html_level::adopt_static_html(const std::string & html)
 {
     bundle tmp;
 
@@ -36,18 +36,17 @@ void html_level::give_static_html(const std::string & html)
 
 void html_level::clear()
 {
-    clear_and_delete_children();
+    orphan_all_children();
     table.clear();
     reset_read_next();
 }
 
-void html_level::inherited_give(body_builder *obj)
+void html_level::has_been_adopted(body_builder *obj)
 {
     bundle tmp;
 
     if(obj == NULL)
 	throw WEBDAR_BUG;
-    (void)record_child(obj);
     tmp.obj = obj;
     table.push_back(tmp);
     reset_read_next();

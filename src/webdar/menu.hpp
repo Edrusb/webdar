@@ -28,7 +28,11 @@ public:
 	/// the available event for this class
     static const std::string changed;
 
+	/// constructor
     menu();
+
+	/// destructor
+    ~menu();
 
 	/// add an entry in the menu
 	///
@@ -65,19 +69,21 @@ private:
     struct boite
     {
 	std::string value;
-	html_div *surround;
-	html_url *inside;
-	boite() { surround = NULL; inside = NULL; };
+	html_div surround;
+	html_url inside;
+	boite(const std::string & url, const std::string & label): inside(url, label) { value = ""; };
     };
 
     unsigned int current_mode; // which item is currently selected
-    html_div *global;    // managed by body_builder parent class, but direct access needed
-    std::vector<boite> item;
+
+    html_div global;           // first level object containing all others
+    std::vector<boite *> item; // items for choices
+
     html_div box_off; //< used to assign CSS attributes: unselected item
     html_div box_on;  //< used to assign CSS attributes: selected item
     html_div box_void;//< used to assign CSS attributes: separators
-    html_url_class *url_selected; //< links when box selected
-    html_url_class *url_normal;   //< links when box no selected
+    html_url_class url_selected; //< links when box selected
+    html_url_class url_normal;   //< links when box no selected
 
 	/// set html field accordingly to the new mode
 	/// \param[in] mode is the mode to set, it start from 0 !!!

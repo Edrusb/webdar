@@ -22,7 +22,7 @@ class body_builder : public css
 {
 public:
 	/// constructor
-    body_builder() { parent = NULL; children.clear(); revert_child.clear(); };
+    body_builder() { parent = NULL; order.clear(); children.clear(); revert_child.clear(); };
 
 	/// avoiding copy constructor use
     body_builder(const body_builder & ref) { throw WEBDAR_BUG; };
@@ -31,29 +31,35 @@ public:
     const body_builder & operator = (const body_builder & ref) { throw WEBDAR_BUG; };
 
 	/// the (virtual) destructor
-    virtual ~body_builder() { clear_and_delete_children(); unrecord_from_parent(); };
+    virtual ~body_builder() { orphan_all_children(); unrecord_from_parent(); };
+
+
 
 
 	/// set the root path at which this object will be located in the URL path
 	///
 	/// \note this is only used if this object has no parent
-    void set_prefix(const chemin & prefix) { x_prefix = prefix; recursive_path_has_changed(); };
+    void set_prefix(const chemin & prefix);
 
 
-	/// Common interface for class that can/must contain other body_builder to provide a body_part()
+	/// Common interface for class that have to ask other body_builder to provide their own body_part()
 	///
-	/// this call is not mandatory, but if need, the protected inherited_give() method must be overwritten
-	/// \note this call semantic is that the given object is passed to the body_builder, which is in charge
-	/// of its memory management (in particular at body_builder destruction) or un until its returned to the caller
-    void give(body_builder *obj);
+	/// this call is not mandatory, but let a body_builder the possibility to rely on a set of
+	/// body_builder protected routines that will build the body part recursively from the children
+	/// adpted this way.
+	/// \note this call semantic is that the adopted object becomes a child of the body_builder.
+	/// The adopted child stays managed by its real parent, the adoption relationship builds a tree
+	/// of dependant objects using one another to provide a body_part (see get_body_part() method).
+	/// this tree is automatically broken when an object is destroyed in the way that all recorded
+	/// children exists (the recorded address always points to real existing objects)
+    void adopt(body_builder *obj);
 
-	/// Common interface for class the can/must contain other body_builder to provide a body_part()
+	/// Common interface for class that have to ask other body_builder to provide their own body_part()
 	///
-	/// this call is not mandatory, but must be overwritten by inherided class in order to be used
-	/// \note this call semantic is that the given object is returned the caller, this body_builder is no more
-	/// in charge of its memory management.
+	/// this call is not mandatory, it is the opposite action of adopt(). After this call
+	/// the given object is no more sollicited to build a body part.
 	/// \note if the requested object is not known an exception is thrown
-    void take_back(body_builder *obj);
+    void foresake(body_builder *obj);
 
 
 	/// ask the object to provide a part of the body to answer the request
@@ -73,38 +79,16 @@ public:
 
 protected:
 
-	/// return the path of 'this' according to its descent in the body_builder tree
+	/// return the path of 'this' according to its descent in the body_builder tree of adopted children
     chemin get_path() const;
 
-	/// returns the name of 'this' if it has been recorded by a parent body_builder object
+	/// returns the name of 'this' if it has been adopted by a parent body_builder object
 	///
-	/// \note, an empty string is returned if the object has not been recorded by a parent body_builder object
+	/// \note, an empty string is returned if the object has not been adopted
     std::string get_recorded_name() const;
 
 
-	/// record a object as child of this object. This gives an official name to this object as part of a tree heirarchy
-	///
-	/// \param[in] obj the body_builder inherited class object's address
-	/// \return the name given to that object (which one will be used to build the path)
-	/// \note this call DOES transfer responsibility about given child memory management. In particular
-	/// if this object is not "unrecorded" it will be unrecorded *and* deleted by the body_builder destructor
-	/// \note This call builds a hierarchical tree of body_builder that is used in request URI:
-	/// After the session_ID in the path, takes place the name of the object to ask an answer
-	/// from in return to the requested URI.
-    std::string record_child(body_builder *obj);
-
-
-	/// remove the name associated to this object
-	///
-	/// \param[in] the child's address to unrecord (the object is not touched, only its
-	/// name is deleted from the base, the object responsibility passes back to the caller's
-	/// \note if no direct child has such a name an exception exception_range is thrown
-    void unrecord_child(body_builder *obj);
-
-	/// unrecord and destroy all children recusively
-    void clear_and_delete_children();
-
-	/// let a parent obtain the body part from one of its children given its official name
+	/// let a parent obtain the body part from one of its children given its official name and seen the path of the request
 	///
 	/// \param[in] path, this is the path exactly as received from the get_body_part call:
 	/// the first member is the name of a child object.
@@ -117,7 +101,7 @@ protected:
     std::string get_body_part_from_target_child(const chemin & path,
 						const request & req);
 
-	/// let a parent obtain the body part from all children in the order the have been recorded
+	/// let a parent obtain the body part from all children in the order the have been adopted
 	///
 	/// \param[in] path, this is the path, it can be empty. If not the front member is poped from the target
 	/// even if the poped part of the path does not match the name of the consulted child object
@@ -125,32 +109,22 @@ protected:
     std::string get_body_part_from_all_children(const chemin & path,
 						const request & req);
 
-       	/// Common interface for class that can/must contain other body_builder to provide a body_part()
-	///
-	/// this call is not mandatory, but must be overwritten by inherited class in order to activate give() method
-	/// \note this call semantic is that the given object is passed to the body_builder, which is in charge
-	/// of its memory management (in particular at body_builder destruction) or un until its returned to the caller
-    virtual void inherited_give(body_builder *obj) { throw WEBDAR_BUG; };
-
-	/// Common interface for class that can/must contain other body_builder to provide a body_part()
-	///
-	/// this call is not mandatory, but must be overwrittent by inherited class in order to activate take_back() method
-	/// \note this call semantic is that the given object is returned the caller, this body_builder is no more
-	/// in charge of its memory management.
-	/// \note if the requested object is not known an exception should be thrown
-    virtual void inherited_take_back(body_builder *obj) { throw WEBDAR_BUG; };
-
-	/// For inherited class, called when the path has changed, tipically when this object has been given() or taken_back()
+	/// For inherited class, called when the path has changed, tipically when this object has been adopted or foresaken
     virtual void path_has_changed() {};
 
-	/// access to recorded childs
-	///
-	/// \note accessed to recorded objects does not mean any change of responsibility,
-	/// they keep to be managed by the body_builder class
+	/// Be informed that a new child has been adopted
+    virtual void has_been_adopted(body_builder *obj) {};
+
+	/// Be informed that a child has been foresaken
+    virtual void has_been_foresaken(body_builder *obj) {};
+
+	/// access to adopted childs
     unsigned int size() const { return order.size(); };
 
     body_builder *operator[] (unsigned int i) { return order[i]; };
 
+	/// orphan all adopted children
+    void orphan_all_children();
 
 private:
     chemin x_prefix;
@@ -159,7 +133,11 @@ private:
     std::map<std::string, body_builder *> children;
     std::map<body_builder *, std::string> revert_child;
 
+
+	/// unrecord 'this' from its parent as a adopted child
     void unrecord_from_parent();
+
+	/// inform children and all their descendant children that the path has changed calling their path_has_changed() method
     void recursive_path_has_changed();
 };
 

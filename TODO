@@ -35,8 +35,10 @@
 
 >>>> simplifier body_builder, laisser la gestion des objets a leurs classe parent, l'arborescence
 body_builder se construit par "reference" (event/actor)
+>>>>>> revoir chooser pour utiliser html_yes_no_box
 
 >>> implementer les classes GUI a partir des primitives HTML_*
+>>> user_interface doit fournir des libdar::options et proposer un evenement pour chaque action
 
 - pour les sessions non authentifiees, il faut limiter la duree de la connexion a un temps court
 - finir la gestion des signaux et masks (avec les informations de sessions ouvertes etc.)

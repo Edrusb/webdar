@@ -24,12 +24,11 @@ void aiguille::set_mode(unsigned int m)
 	throw WEBDAR_BUG;
 }
 
-void aiguille::inherited_give(body_builder *obj)
+void aiguille::has_been_adopted(body_builder *obj)
 {
     if(obj == NULL)
 	throw WEBDAR_BUG;
     obj->css_inherit_from(*this, true, false);
-    (void)record_child(obj);
 }
 
 string aiguille::get_body_part(const chemin & path,
