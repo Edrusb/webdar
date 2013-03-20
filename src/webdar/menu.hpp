@@ -15,10 +15,19 @@ extern "C"
 #include "html_url.hpp"
 #include "html_div.hpp"
 #include "html_url_class.hpp"
+#include "events.hpp"
 
-class menu : public body_builder
+
+    /// class menu provides a menu of choices to dynamically
+    /// change a part of the user interface
+    /// upon change the event "changed" is generated
+
+class menu : public body_builder, protected events
 {
 public:
+	/// the available event for this class
+    static const std::string changed;
+
     menu();
 
 	/// add an entry in the menu
@@ -40,6 +49,9 @@ public:
 	/// inherited from body_builder
     std::string get_body_part(const chemin & path,
 			      const request & req);
+
+	/// modified wrapper for inherited methods from events
+    void record_actor_on_event(actor *ptr) { events::record_actor_on_event(ptr, changed); };
 
 
 protected:

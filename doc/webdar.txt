@@ -1,7 +1,3 @@
-<=== creuser formulaires HTML
-<=== mettre la documentation pthread_t
-<=== ajouter un repository dar (trunk, 2.3.x et 2.4.x)
-
 WEBDAR PROJECT
 
 Introduction:
@@ -231,125 +227,141 @@ ACTION HISTORY
 
 CLASSES
 
-	thread : pure virtual class which objects may run in a particular thread, provides an pure virtual
-	method to inherited classes to be run as a separated thread.
-	       class listener and class server inherit from thread
+	thread : pure virtual class which objects may run in a particular thread, provides
+  	    an pure virtual method to inherited classes to be run as a separated thread.
+	    class listener and class server inherit from thread
 
 	request : struct/class that holds all attributes of a request
-	answer : struct/class that holds all attributes of an answer, it is able to generate corresponding
-	      http data
+	answer : struct/class that holds all attributes of an answer, it is able to generate
+	      corresponding http data
 
-	connexion : this class is a wrapper around socket filedescriptor to provide easy read/write interface
-	    connexion objects are created by listerner object/class and given to brand-new generated parser object
-	    which in turn is give to the brand-new server class/thread.
+	connexion : this class is a wrapper around socket filedescriptor to provide easy
+	    read/write interface connexion objects are created by listerner object/class
+	    and given to brand-new generated parser object which in turn is give to the
+	    brand-new server class/thread.
 
-	parser : class that take a connexion as argument and creates from it a single request. (the parser can be
-	    used several times over the same connexion to extract the following requests). it also receives the answer
-	    which it modifies in accordance to the HTTP protocol requirements.
+	parser : class that take a connexion as argument and creates from it a single request.
+	    (the parser can be used several times over the same connexion to extract the
+	    following requests). it also receives the answer which it modifies in accordance
+	     to the HTTP protocol requirements.
 
-	session : this class manages a global list of objects (mutex for concurrent access) that store the status
-	     of a particular session, like user owner, current status, options selected in the different mode, etc.
-             This status information is stored as dynamic tree of objects generating HTML code, which root is owned
-	     by the corresponding the session object is the root. When comes the time to call libdar, the session object
-	     owns a thread that updates object's structure to be able to have progession information as well as being
-	     able to abort the operation in progress.
+	session : this class manages a global list of objects (mutex for concurrent access)
+	    that store the status of a particular session, like user owner, current status,
+	    options selected in the different mode, etc. This status information is stored
+	    as dynamic tree of objects generating HTML code, which root is owned by the
+	    corresponding the session object is the root. When comes the time to call libdar,
+	    the session object owns a thread that updates object's structure to be able to
+	    have progession information as well as being able to abort the operation in
+	    progress.
 
-	    A mutex is used for each object to avoid a session to be solicited for several requests at the same time from
-	    different servers. The class itslef owns a mutex to provide coherent status about existing sessions.
+	    A mutex is used for each object to avoid a session to be solicited for several
+	    requests at the same time from different servers. The class itslef owns a mutex
+	    to provide coherent status about existing sessions.
 
 ---------------
-	    This is the main design problem here, as we have a strong dependency of the server threads by the
-	    use of this unique session table. Having a session associated of temporarily given to a server class
-	    is not possible in regard to the HTTP protocol 1.1 and the use that proxy may have by the way that they
-	    can use a single TCP session to send requests to different webdar sessions. However, a optimization could be
-	    to "give" a session to a server object and thus to record that server object adress in the session for
-	    that in case another server object needs to send a request to that session it can ask the first server object
-	    to release the session and associated mutex.
+	    This is the main design problem here, as we have a strong dependency of the server
+	    threads by the use of this unique session table. Having a session associated or
+	    temporarily given to a server class is not possible in regard to the HTTP protocol
+	    1.1 and the use that proxy may have by the way that they can use a single TCP session
+	    to send requests to different webdar sessions. However, a optimization could be
+	    to "give" a session to a server object and thus to record that server object adress
+	    in the session for that in case another server object needs to send a request to
+	    that session it can ask the first server object to release the session and associated
+	     mutex.
 
-	    This way, a server need not release and acquire a session mutex for each request, but only if it has been
-	    asked to by another server object or if it need to send a request to another session.
+	    This way, a server need not release and acquire a session mutex for each request,
+	    but only if it has been asked to by another server object or if it need to send a
+	    request to another session.
 ---------------
 
-        server : this class implements the thread that read request from its given parser object, lookup for
-	   the corresponding session in the session table, authenticates the requests to the session (correct cookie
-	   must be set in the request) else (no session in the request or wrong cookie) pass the request to the
-	   authentication class, which provides the response (error message or list of existing sessions for the
-	   authenticated user, the list provides for each session the associated URL and cookie).
+        server : this class implements the thread that read request from its given parser object,
+	lookup for the corresponding session in the session table, authenticates the requests
+	to the session (correct cookie must be set in the request) else (no session in the request
+	or wrong cookie) pass the request to the authentication class, which provides the
+	response (error message or list of existing sessions for the authenticated user, the list
+	provides for each session the associated URL and cookie).
 
 	authentication : the authentication class is a html
 
+	server : (inherit from thread) this class provides threaded objects retrieve each
+	    request from a parser object find the proper object to answer the request
+	    (session object, static object, error message (for too request format or corrupted
+	    format, etc.), and modify the answer provided to conform to the HTTP RFC (adding a
+	    close attribut for HTTP/1.1 etc). and send it back to the client.
 
+	    the HTTP protocol aspect is managed here, no HTML genereration is done heer. The
+	    class holds a counter on the number of running parser (=connexions), if a maximum
+	    has been defined the constructor fails if the counter has reached this threshold.
+	    The parser object owns the connexion that it has been given by the listener object
+	    that it has been createed by, and when the connexion ends the parser thread also ends,
+	    the parser object is also destroyed. The parser, lookup the session object based on
+	    the requested URL and if found transmit the request to the found object. The answer
+	    provided by the session object is returned to the client. An parser may send request
+	    to different sessions, depending on the nature of the requests received from the
+	    connexion.
 
-	server : (inherit from thread) this class provides threaded objects retrieve each request from a parser object
+	    Some static content (like images, logo, or documentation) may be provided directly
+	    by the parser from a catalog of contents.
 
-	   find the proper object to answer the request (session object, static object, error message (for too
-	   request format or corrupted format, etc.), and modify the answer provided to conform to the HTTP RFC
-	   (adding a close attribut for HTTP/1.1 etc). and send it back to the client.
+	    A parser object may receive a request that does not target a particular session. In
+	    that case the parser authenticates the client and upon success, calls a chooser
+	    object instead of a session object.
 
-	    the HTTP protocol aspect is managed here, no HTML genereration is done heer. The class holds a counter
-	    on the number of running parser (=connexions), if a maximum has been defined the constructor fails if the
-	    counter has reached this threshold.
-	    The parser object owns the connexion that it has been given by the listener object that it has been createed by,
-	    and when the connexion ends the parser thread also ends, the parser object is also destroyed.
-	    The parser, lookup the session object based on the requested URL
-	    and if found transmit the request to the found object. The answer provided by the session object is returned
-	    to the client. An parser may send request to different sessions, depending
-	    on the nature of the requests received from the connexion.
+	 generator: pure virtual class (interface) that defines the ability to receive an request
+	    an provide a answer even a partial answer (just HTML code for example).
 
-	    Some static content (like images, logo, or documentation) may be provided directly by the parser from a
-	    catalog of contents.
+	 html_body : (inherites from generator) pure virtual class that defines an interface
+	    that bases on a request provides html partial output
 
-	    A parser object may receive a request that does not target a particular session. In that case the parser	authenticates
-	    the client and upon success, calls a chooser object instead of a session object.
+	 html_header : (inherites from generator) class that given a request provide header and
+	    body delimiter of an html page, it subsequently calls html inherited class objects
+	    to defines the html body. The format of the output is an "answer" object
 
-	 generator: pure virtual class (interface) that defines the ability to receive an request  an provide a answer
-	        even a partial answer (just HTML code for example).
-	 html_body : (inherites from generator) pure virtual class that defines an interface that bases on a request provides html partial output
+	listener : (inherit from thread) a listener object is bound to a port and eventually to
+	    an IP address, this is a threaded object. Its role is to wait for incoming connexions
+	    and to create connexions objects and a parser object, giving it the connexion
+	    the parser object being a threaded object manages all further actions independly of
+	    his listener parent or from other listener. it may in future release use a derivated
+	    "connexion" class that provide SSL encryption/decryption and authentification. The
+	    listener class provide a mean to signal the end request to all its members (used by
+	    signal handler).
 
-	 html_header : (inherites from generator) class that given a request provide header and body delimiter of an html page, it subsequently calls
-	       html inherited class objects to defines the html body. The format of the output is an "answer" object
-
-	listener : (inherit from thread) a listener object is bound to a port and eventually to an IP address,
-            this is a threaded object
-	    Its role is to wait for incoming connexions and to create connexions objects and a parser object,
-	    giving it the connexion
-	    the parser object being a threaded object manages all further actions independly of his listener parent
-	    or from other listener. it may in future release use a derivated "connexion" class that provide
-	    SSL encryption/decryption and authentification. The listener class provide a mean to signal the end
-	    request to all its members (used by signal handler).
-
-	chooser : chooser is an implementation of req_ans
-	    a chooser object does a lookup of the session table. If no session object owned by the authenticated user exist,
-	    it manages for a new one to be created
-	    and transmit the request to this newly object and send back the answer to it its caller (a parser). Then it dies, further
-	    exchanges are done directly between the parser and the session object.
-	    if several session owned by the authenticated user exists, the chooser provides a list of them as answer to the request
-	    and dies.
+	chooser : chooser is an implementation of req_ans a chooser object does a lookup of the
+	    session table. If no session object owned by the authenticated user exist, it manages
+	    for a new one to be created and transmit the request to this newly object and send
+	    back the answer to it its caller (a parser). Then it dies, further exchanges are done
+	    directly between the parser and the session object.
+	    if several session owned by the authenticated user exists, the chooser provides a list
+	    of them as answer to the request and dies.
 
 
 	 entrepot <- ajouter des fonctionnalités de listing et parcours de répertoire
 
 HTML generating classes:
-	   the following classes provide the req_ans interface. The answer is always HTML formated.  The objects of
-	   these classes may user other objects and build their answer as a consolidation of used objects answers.
+	   the following classes provide the req_ans interface. The answer is always HTML
+	   formated.  The objects of these classes may user other objects and build their answer
+	   as a consolidation of used objects answers.
 
-	 class action: pure virtual class that inherit from class thread that implements communication with spawn a
-           thread running libdar and requests for statistics update and thread cancellation
+	 class action: pure virtual class that inherit from class thread that implements
+	   communication with spawn a thread running libdar and requests for statistics update
+	   and thread cancellation
 
-	   action_backup: inherit from class action: manages all options and arguments and answers requests to present and
+	 action_backup: inherit from class action: manages all options and arguments and
+	   answers requests to present and
 	   update them.
 
-	   action_restore
+	 action_restore
 
-	   action_isolate
+	 action_isolate
 
-	   action_test
+	 action_test
 
-	   action_diff
+	 action_diff
 
-	   action_merge
+	 action_merge
 
-OUTILS EVOLUES
+
+ADVANCED TOOLS
 
 	   show_mask_dir(mask);
 
@@ -369,21 +381,25 @@ HTML PRIMITIVES
 LIBDAR CLASSES
 
 	web_interaction : inherits from libdar's user_interaction
- 		the role is to implement the user interaction requested by libdar either for asking questions
-		to the user or to provide reporting on the operation under progress
+ 		the role is to implement the user interaction requested by libdar either for
+		asking questions to the user or to provide reporting on the operation under
+		progress
 
 	due to the nature of HTTP, where no mean are available to initiate a transaction by the
 	server, this class has the role to buffer output pending for to built the next HTTP answer
-	and buffer pending requests to provide a mean to the user to answer it after the next request he will do.
+	and buffer pending requests to provide a mean to the user to answer it after the next
+	request he will do.
 
-	Second point is the nature of the threads used. One tread is running libdar, while a second is
-	managing user interaction by mean of HTTP protocol (parser object/thread solliciating a session object)
-	First, no HTTP session may be active for a particular libdar job, leading the job to be suspended
-	if libdar need user's decision. Second even if a parser thread is actively associated with this libdar
-	job, the libdar thread must be suspended up the next HTTP request, the answer with libdar question in it
-	and the new request with the user's answer, (then the aswer with pre-libdar interaction output).
+	Second point is the nature of the threads used. One tread is running libdar, while a
+	second is managing user interaction by mean of HTTP protocol (parser object/thread
+	solliciating a session object) First, no HTTP session may be active for a particular
+	libdar job, leading the job to be suspended if libdar need user's decision. Second even
+	if a parser thread is actively associated with this libdar job, the libdar thread must be
+	suspended up the next HTTP request, the answer with libdar question in it and the new
+	request with the user's answer, (then the aswer with pre-libdar interaction output).
 
-	This is tiplically a mutex used as semaphore is necessary (a mutex not protecting a critical session,
-	but "up" by default, on which the libdar thread will be pending, and set to down by the HTTP thread, to
-	release the libdar thread when the answer will be provided).
+	This is tiplically a mutex used as semaphore is necessary (a mutex not protecting a
+	critical session, but "up" by default, on which the libdar thread will be pending, and
+	set to down by the HTTP thread, to release the libdar thread when the answer will be
+	provided).
 

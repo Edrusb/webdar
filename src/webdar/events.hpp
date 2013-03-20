@@ -17,11 +17,19 @@ extern "C"
 
     /// \file events.hpp defines 2 classes:
     //. actor that get triggered upon certain events
-    //. a collection of events an actor may register against for notification
+    //. events which is a collection of events
+    /// events contains a set of labelled events, each one having a name
+    /// an actor object must register for one or more named event of a events object
+    /// (or of different events objects) to be triggered by a named event
+    ///
+    /// when a named event occurs the actor is triggered calling its on_event() method
+    /// having the name of the event passed as argument
 
-    /// actors are triggered by events
-    /// when an event occurrs the actor is triggered calling its on_event() method
-class actor : public reference
+    /// class of object that are pointed/triggered to by others
+    ///
+    /// and that informs these pointers about their imminent death in order
+    /// to be removed from the pointed objects list
+class actor : virtual public reference
 {
 public:
     virtual ~actor() {};
@@ -30,13 +38,21 @@ public:
 };
 
 
-    /// class of object that are pointed to by others
-    /// and that informs these pointers about their imminent death
-class events : public reference
+// Note: both class actor and events inherit from the same class "reference"
+// It is possible that a class inherit from both actor and events, being an
+// actor with certain peers and a events for other peers. Having non virtual
+// inheritance for actor and events in relation to class reference would not
+// be a problem, as it would lead such object to have two parent reference
+// objects one containing the peer with which it is actor, and another with
+// which it is event. However, as both type of relation are forever, having
+// a single base for both roles is possible. It also reduces a bit memory
+// requirement.
+
+class events : virtual public reference
 {
 public:
 
-	/// add a new event actors can register against
+	/// add a new event for actors to register against
     void register_name(const std::string & name);
 
 	/// record an actor for an given event

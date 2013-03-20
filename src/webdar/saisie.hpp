@@ -16,26 +16,34 @@ extern "C"
 #include "aiguille.hpp"
 #include "html_div.hpp"
 #include "options_listing.hpp"
+#include "events.hpp"
+#include "html_yes_no_box.hpp"
 
     /// class saisie
     ///
     /// defines the web "pages" when no operation is
     /// running in the current session.
-    /// .on the left a menu 'choices'
-    /// .on the top midle a aiguille 'show_archive' which
+    /// .on the left a menu 'choices' that triggers 'this' to modify the middle and top areasfu:
+    /// .on the top midle an aiguille 'show_archive' which
     /// contains two alternatives, nothing or the archive path
-    /// .just below and beside the menu, a aiguille "select" that
-    /// shows the different fields in the contect of the menu choices'
+    /// .just below and beside the menu, an aiguille "select" that
+    /// shows the different fields in the context of the menu "choices"
 
-class saisie : public html_page
+class saisie : public html_page, public actor, public events
 {
 public:
+	/// available event for that class
+    static const std::string closing;
+
+
     saisie();
 
 	/// inherited from html_page
     virtual std::string get_body_part(const chemin & path,
 				      const request & req);
 
+	/// inherited from actor
+    void on_event(const std::string & event_name);
 private:
     menu *choice;
     aiguille *select;
@@ -54,7 +62,7 @@ private:
     html_div *merge;
     html_div *filters;
     html_div *sep;
-    html_div *close;
+    html_yes_no_box *close;
 
     void set_show_archive();
     void set_about();

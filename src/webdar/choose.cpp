@@ -16,7 +16,6 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "tokens.hpp"
 #include "html_div.hpp"
-#include "user_interface.hpp"
     //
 #include "choose.hpp"
 
@@ -148,13 +147,8 @@ answer choose::create_new_session(const request & req)
 {
     answer ret;
 
-    html_page page = html_page("rediction to newly created session page");
-    user_interface *obj = new (nothrow) user_interface();
-    if(obj == NULL)
-	throw exception_memory();
-
-    string session_ID = session::create_new(owner, obj);
-    obj->set_prefix(chemin(session_ID));
+    html_page page = html_page("redirection to newly created session page");
+    string session_ID = session::create_new(owner);
 
     page.set_refresh_redirection(0, session_ID);
     ret.set_status(STATUS_CODE_OK);

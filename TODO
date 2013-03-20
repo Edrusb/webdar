@@ -27,11 +27,15 @@
 + ces objects doit pouvoir gerer les methods GET/HEAD et POST les autres method doivent etre rejetes
 + ajouter une class de decodage des POST en retour de formulaire (scinder champ / valeurs) (RFC "URL")
 + ajouter des primitives css pour l'alignement du text, bold, italic, surligne etc.
->>> revoir events.hpp et faire deriver event_trigger et event_action de la classe reference
-> revoir menu pour qu'il derive d'un events_trigger,
-> revoir "saisie" pour qu'il derive d'un events_actor, et lui associer les evenements de menu pour
-> affecter les object show_archive et aiguille, simplifier le get_body_part() qui doit sauter meme
-> faire deriver saisie d'un event_trigger et gui de events_actor pour implementer la fin de session
++ revoir events.hpp et faire deriver event_trigger et event_action de la classe reference
++ revoir menu pour qu'il derive d'un events
++ revoir "saisie" pour qu'il derive d'un actor, et lui associer les evenements de menu pour
++   affecter les object show_archive et aiguille, simplifier le get_body_part() qui doit sauter meme
++ faire deriver saisie d'un events et gui de actor pour implementer la fin de session
+
+>>>> simplifier body_builder, laisser la gestion des objets a leurs classe parent, l'arborescence
+body_builder se construit par "reference" (event/actor)
+
 >>> implementer les classes GUI a partir des primitives HTML_*
 
 - pour les sessions non authentifiees, il faut limiter la duree de la connexion a un temps court

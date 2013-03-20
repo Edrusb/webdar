@@ -17,6 +17,7 @@ extern "C"
 
 using namespace std;
 
+const string menu::changed = "menu_changed";
 
 menu::menu()
 {
@@ -29,7 +30,7 @@ menu::menu()
     url_selected = NULL;
     url_normal = NULL;
 
-//>>>>> ajouters deux classes en champ d'objet !!!-('
+//>>>>> ajouter deux classes en champ d'objet !!!-('
 
     try
     {
@@ -109,6 +110,8 @@ menu::menu()
 	tmp_norm = NULL;
 	record_child(tmp_select);
 	tmp_select = NULL;
+
+	register_name(changed); // add the "menu_changed" event to this object
     }
     catch(...)
     {
@@ -188,17 +191,10 @@ void menu::add_entry(const std::string & reference, const std::string & label)
 
 string menu::get_current_label() const
 {
-    string ret;
-
     if(current_mode >= item.size())
 	throw WEBDAR_BUG;
 
-    if(item[current_mode].inside == NULL)
-	throw WEBDAR_BUG;
-
-    ret = item[current_mode].inside->get_label();
-
-    return ret;
+    return item[current_mode].value;
 }
 
 
@@ -263,6 +259,7 @@ void menu::css_updated(bool inherit)
 void menu::set_mode(unsigned int mode)
 {
     unsigned int size = item.size();
+    bool has_changed = (mode != current_mode);
     if(mode >= size)
 	throw WEBDAR_BUG;
 
@@ -292,6 +289,8 @@ void menu::set_mode(unsigned int mode)
 	item[mode].surround->css_inherit_from(box_on, false, true);
 	item[mode].inside->set_class(url_selected->get_class_id());
 	current_mode = mode;
+	if(has_changed)
+	    act(changed); // trigger the "changed" event
     }
     else
 	throw WEBDAR_BUG;

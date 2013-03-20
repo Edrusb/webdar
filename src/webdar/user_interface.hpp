@@ -17,10 +17,16 @@ extern "C"
 class user_interface : public responder
 {
 public:
-    user_interface() { mode = config; };
+	/// available event for that class
+    static const std::string closing;
 
-	// inherited from responder
+    user_interface();
+
+	/// inherited from responder
     virtual answer give_answer(const request & req);
+
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name);
 
 protected:
 
@@ -28,7 +34,7 @@ protected:
     virtual void prefix_has_changed();
 
 private:
-    enum { config, running } mode;
+    enum { config, listing, running } mode;
 
     saisie parametrage;
 };

@@ -36,6 +36,11 @@ public:
     bool has_working_server() const { return lock_gui.working_thread(); };
     std::string get_session_ID() const { return session_ID; };
 
+
+	/// inherited from actor grand-parent
+    virtual void on_event(const std::string & event_name);
+
+
 	//////////////////////////
 	// Class types and methods
 	//
@@ -54,7 +59,7 @@ public:
     static unsigned int get_num_session(const std::string & user);
     static std::vector<session_summary> get_summary();
     static bool get_session_info(const std::string & session_ID, session_summary & val);
-    static std::string create_new(const std::string & owner, responder *resp); /// returns the session_ID of the newly created session
+    static std::string create_new(const std::string & owner); /// returns the session_ID of the newly created session
     static session *acquire_session(const std::string & session_ID);
     static void release_session(session *sess);
     static bool close_session(const std::string & session_ID); //< return true if the session exists and has been flagged for destruction

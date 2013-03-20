@@ -17,6 +17,8 @@ extern "C"
 
 using namespace std;
 
+const string saisie::closing = "saisie_closing";
+
 saisie::saisie()
 {
     menu *tmp_choice = NULL;
@@ -107,6 +109,13 @@ saisie::saisie()
 	tmp_select->set_mode(0);
 	give(tmp_select);
 	tmp_select = NULL;
+
+	    // define the closing event for this
+	register_name(closing);
+
+	    // attaching the "changed" event of the menu "choice" to "this" saisie object
+	choice->record_actor_on_event(this);
+	on_event(""); // manually triggering the event for the initial setup
     }
     catch(...)
     {
@@ -122,22 +131,14 @@ saisie::saisie()
     }
 }
 
-string saisie::get_body_part(const chemin & path,
-			     const request & req)
+void saisie::on_event(const std::string & event_name)
 {
-    chemin sub_path = path;
 
-    if(!sub_path.empty())
-	sub_path.pop_front();
-
-    if(choice == NULL)
-	throw WEBDAR_BUG;
-    if(select == NULL)
-	throw WEBDAR_BUG;
-    if(show_archive == NULL)
+    if(event_name != menu::changed && event_name != "")
 	throw WEBDAR_BUG;
 
-    (void)choice->get_body_part(sub_path, req);
+	// menu "choice" changed
+
     set_title(string("WEBDAR - ") + choice->get_current_label());
     switch(choice->get_current_mode())
     {
@@ -160,8 +161,47 @@ string saisie::get_body_part(const chemin & path,
 	throw WEBDAR_BUG;
     }
     select->set_mode(choice->get_current_mode());
+}
 
-    return html_page::get_body_part(path, req);
+string saisie::get_body_part(const chemin & path,
+			     const request & req)
+{
+    chemin sub_path = path;
+    string ret;
+
+    if(!sub_path.empty())
+	sub_path.pop_front();
+
+    if(choice == NULL)
+	throw WEBDAR_BUG;
+    if(select == NULL)
+	throw WEBDAR_BUG;
+    if(show_archive == NULL)
+	throw WEBDAR_BUG;
+
+	// we need first to let the menu define its new value
+//    (void)choice->get_body_part(sub_path, req);
+	// upon change the on_event() method will be triggered
+
+	// now we can generate in return the whole HTML code for "this" object
+    ret = html_page::get_body_part(path, req);
+    if(choice->get_current_label() == "close")
+    {
+	if(close == NULL)
+	    throw WEBDAR_BUG;
+	else
+	{
+	    if(close->get_value())
+	    {
+		act(closing);
+		set_title("Session closed");
+		set_refresh_redirection(0, "/");
+		ret = html_page::get_body_part(path, req);
+	    }
+	}
+    }
+
+    return ret;
 }
 
 void saisie::set_show_archive()
@@ -406,24 +446,9 @@ void saisie::set_filters()
 
 void saisie::set_close()
 {
-    html_text text;
-
-    close = new (nothrow) html_div();
-    if(close == NULL)
+    html_yes_no_box *tmp_close = new (nothrow) html_yes_no_box("Do you really want to close this session?", false);
+    if(tmp_close == NULL)
 	throw exception_memory();
 
-    try
-    {
-	text.clear();
-	text.add_text(1, "session close page");
-	text.add_nl();
-	text.add_text(0, "to be implemented");
-	close->give_static_html(text.get_body_part());
-    }
-    catch(...)
-    {
-	delete close;
-	close = NULL;
-	throw;
-    }
+    close = tmp_close;
 }

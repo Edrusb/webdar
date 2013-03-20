@@ -1,5 +1,6 @@
 #include "session.hpp"
 #include "webdar_tools.hpp"
+#include "user_interface.hpp"
 
 using namespace std;
 
@@ -56,43 +57,66 @@ unsigned int session::get_num_session(const string & user)
     return ret;
 }
 
-string session::create_new(const string & owner,
-			   responder *resp)
+string session::create_new(const string & owner)
 {
     table entry;
     string sessID;
+    user_interface *obj = new (nothrow) user_interface();
 
-    entry.clear();
+    if(obj == NULL)
+	throw exception_memory();
+
     try
     {
-	lock_running.lock();
+	entry.clear();
 	try
 	{
-		// looking whether the new session_ID is not already used
-	    do
+	    lock_running.lock();
+	    try
 	    {
-		sessID = webdar_tools_generate_random_string(SESSION_ID_WIDTH);
+		    // looking whether the new session_ID is not already used
+		do
+		{
+		    sessID = webdar_tools_generate_random_string(SESSION_ID_WIDTH);
+		}
+		while(running_session.find(sessID) != running_session.end());
+
+		obj->set_prefix(chemin(sessID));
+		entry.owner = owner;
+		entry.reference = new (nothrow) session(sessID, obj);
+		if(entry.reference == NULL)
+		    throw exception_memory();
+		try
+		{
+		    obj->record_actor_on_event(entry.reference, user_interface::closing);
+		}
+		catch(...)
+		{
+		    obj = NULL;
+		    throw;
+		}
+		obj = NULL;
+
+		running_session[sessID] = entry;
 	    }
-	    while(running_session.find(sessID) != running_session.end());
-
-	    entry.owner = owner;
-	    entry.reference = new (nothrow) session(sessID, resp);
-	    if(entry.reference == NULL)
-		throw exception_memory();
-
-	    running_session[sessID] = entry;
+	    catch(...)
+	    {
+		lock_running.unlock();
+		throw;
+	    }
+	    lock_running.unlock();
 	}
 	catch(...)
 	{
-	    lock_running.unlock();
+	    if(entry.reference != NULL)
+		delete entry.reference;
 	    throw;
 	}
-	lock_running.unlock();
     }
     catch(...)
     {
-	if(entry.reference != NULL)
-	    delete entry.reference;
+	if(obj != NULL)
+	    delete obj;
 	throw;
     }
 
@@ -284,6 +308,7 @@ session::session(const string & sess_ID,
     gui = x_resp;
     if(gui == NULL)
 	throw WEBDAR_BUG;
+
     libdar_running = false;
     session_ID = sess_ID;
 }
@@ -306,6 +331,13 @@ answer session::give_answer(const request & req)
     return gui->give_answer(req);
 }
 
+void session::on_event(const std::string & event_name)
+{
+    if(event_name == user_interface::closing)
+	close_session(get_session_ID());
+    else
+	throw WEBDAR_BUG; // what's that event !?!
+}
 
 session::session_summary session::publish(std::map<std::string, table>::iterator it)
 {

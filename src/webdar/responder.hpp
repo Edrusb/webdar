@@ -13,12 +13,13 @@
 #include "request.hpp"
 #include "answer.hpp"
 #include "chemin.hpp"
+#include "events.hpp"
 
 
     /////////////////////////////////////////////////////////////////////////////////////
     /// pure virtual class, base class for all classes that can generate an anwser to a request
 
-class responder
+class responder : public actor, public events
 {
 public:
     virtual ~responder() {};
@@ -30,6 +31,10 @@ public:
 
 	/// provides a standard mean for inherited class to provide answer to requests
     virtual answer give_answer(const request & req) = 0;
+
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) {};
+
 
 protected:
 	/// hook for inherited class, when the body builder object had its prefix changed
