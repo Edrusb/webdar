@@ -16,6 +16,7 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "tokens.hpp"
 #include "html_div.hpp"
+#include "html_yes_no_box.hpp"
     //
 #include "choose.hpp"
 
@@ -30,8 +31,7 @@ choose::choose(const std::string & user):
     form("Kill the selected session"),
     confirm("Killing a session"),
     ctable(1),
-    cform("Sumbit"),
-    block("Confirm destruction of sessions listed above?")
+    confirmed("Confirm destruction of sessions listed above?", false)
 {
     html_text tmp;
 
@@ -57,6 +57,8 @@ choose::choose(const std::string & user):
     page.adopt_static_html(tmp.get_body_part());
 
     table.set_border(1);
+    table.css_width("90%", true);
+    form.css_margin_top("1em", true);
 
     div.css_width("90%", true);
     div.adopt(&table);
@@ -71,15 +73,11 @@ choose::choose(const std::string & user):
     confirm.css_background_color(COLOR_BACK);
     confirm.css_color(COLOR_TEXT, true);
     confirm.css_text_align(css::al_center);
-    cdiv.css_width("90%", true);
-    radio.add_choice("no", "No");
-    radio.add_choice("yes", "Yes");
+    ctable.css_width("90%", true);
+    confirmed.css_text_align(css::al_left, true);
 
-    block.adopt(&radio);
-    cform.adopt(&block);
-    ctable.adopt(&cform);
-    cdiv.adopt(&ctable);
-    confirm.adopt(&cdiv);
+    ctable.adopt(&confirmed);
+    confirm.adopt(&ctable);
     confirm.set_prefix(chemin("choose"));
 }
 
@@ -96,7 +94,7 @@ answer choose::give_answer(const request & req)
 		// updating form fields
 	    (void)confirm.get_body_part(req.get_uri().get_path(), req);
 
-	    if(radio.get_selected_num() == 1) // kill confirmed
+	    if(confirmed.get_value()) // kill confirmed
 		kill_selected_sessions();
 	    confirm_mode = false;
 	}
@@ -228,7 +226,6 @@ void choose::regenerate_confirm_page()
     text.css_border_style(css::bd_all, css::bd_solid);
     text.css_border_color(css::bd_all, COLOR_PADBORD);
     ctable.adopt_static_html(text.get_body_part());
-    ctable.adopt(&cform);
 
     text.css_clear_attributes();
     text.css_padding_left("1em");
@@ -249,7 +246,8 @@ void choose::regenerate_confirm_page()
 	}
     }
 
-    radio.set_selected(0);
+    ctable.adopt(&confirmed);
+    confirmed.set_value(false);
 }
 
 void choose::kill_selected_sessions() const

@@ -23,6 +23,7 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_form_input.hpp"
 #include "html_form_radio.hpp"
+#include "html_yes_no_box.hpp"
 
 class choose : public responder
 {
@@ -55,12 +56,8 @@ private:
 
 	/// confirmation page and associated objects
     html_page confirm;      //< page root for kill confirmation
-    html_div cdiv;
     html_table ctable;
-    html_form cform;
-    html_form_fieldset block;
-    html_form_radio radio;
-
+    html_yes_no_box confirmed;
 
     answer create_new_session(const request & req);
     void regenerate_table_page();

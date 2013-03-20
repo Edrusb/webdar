@@ -23,10 +23,16 @@ public:
 
     bool get_value() const { return rd.get_selected_num() != 0; };
 
+    void set_value(bool val) { rd.set_selected(val ? 1 : 0); };
+
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
 				      const request & req)
     { return get_body_part_from_all_children(path, req); };
+
+protected:
+	/// inherited from ancestor class css
+    void css_updated(bool inherited);
 
 private:
     html_form form;
