@@ -34,8 +34,11 @@
 + faire deriver saisie d'un events et gui de actor pour implementer la fin de session
 + simplifier body_builder, laisser la gestion des objets a leurs classe parent, l'arborescence
 body_builder se construit par "reference" (event/actor)
->>>>>> revoir chooser pour utiliser html_yes_no_box
++ revoir chooser pour utiliser html_yes_no_box
 
+>>>>> implementer dans saisie la page restore
+>>>> cadre autour des parametres propre a l'ouverture d'une archive en lecture / en ecriture
+>>> ajouter un item "entrepot/repositories" et separer les actions par de "main page" et de "filters"
 >>> implementer les classes GUI a partir des primitives HTML_*
 >>> user_interface doit fournir des libdar::options et proposer un evenement pour chaque action
 

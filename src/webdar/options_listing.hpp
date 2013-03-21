@@ -24,7 +24,7 @@ class options_listing : public body_builder
 public:
     options_listing();
 
-    libdar::archive_options_listing get_options();
+    libdar::archive_options_listing get_options() const;
 
 	/// inherited from body_builder
     std::string get_body_part(const chemin & path,

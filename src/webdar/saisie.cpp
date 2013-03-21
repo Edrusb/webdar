@@ -23,6 +23,8 @@ saisie::saisie():
 	     html_form_input::text,
 	    "",
 	    50),
+    ex_fs("Restoration Options"),
+    ex_form("Update Options"),
     close("Do you really want to close this session?", false)
 {
     html_text text;
@@ -53,7 +55,7 @@ saisie::saisie():
     sessions.css_float_clear(css::fc_left);
     adopt(&sessions);
 
-	// configuration of "select" sub-pages
+	// configuration of the sub-pages brought by "select"
 
 	//  configuration of the about sub-page
     text.clear();
@@ -66,12 +68,9 @@ saisie::saisie():
     select.adopt(&about);
 
 	// configuration of the restore sub-page
-    text.clear();
-    text.add_text(1, "restoration page");
-    text.add_nl();
-    text.add_text(0, "to be implemented");
-    restore.adopt_static_html(text.get_body_part());
-    select.adopt(&restore);
+    ex_fs.adopt(&extract);
+    ex_form.adopt(&ex_fs);
+    select.adopt(&ex_form);
 
     compare.adopt_static_html(text.get_body_part());
     select.adopt(&compare);

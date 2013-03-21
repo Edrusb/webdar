@@ -49,7 +49,7 @@ string options_listing::get_body_part(const chemin & path,
 }
 
 
-libdar::archive_options_listing options_listing::get_options()
+libdar::archive_options_listing options_listing::get_options() const
 {
     libdar::archive_options_listing ret;
 

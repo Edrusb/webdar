@@ -18,6 +18,7 @@ extern "C"
 #include "options_listing.hpp"
 #include "events.hpp"
 #include "html_yes_no_box.hpp"
+#include "options_extract.hpp"
 
     /// class saisie
     ///
@@ -57,7 +58,6 @@ private:
 
 	// the different sub pages contained by "select" and shown depending on choice's value
     html_div about;
-    html_div restore;
     html_div compare;
     html_div test;
     options_listing list;
@@ -68,18 +68,11 @@ private:
     html_div sep;
     html_yes_no_box close;
 
-	/// the about page
+	// the restore sub-page
+    html_form ex_form;
+    html_form_fieldset ex_fs;
+    options_extract extract;
 
-    void set_about();
-    void set_restore();
-    void set_compare();
-    void set_test();
-    void set_list();
-    void set_create();
-    void set_isolate();
-    void set_merge();
-    void set_filters();
-    void set_close();
 };
 
 

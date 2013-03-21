@@ -26,7 +26,9 @@ public:
     void set_range(int min, int max);
 
     const std::string & get_value() const { return x_init; };
+    void set_value(const std::string & val) { x_init = val; };
     const bool get_value_as_bool() const { return !x_init.empty(); }; //< for checkbox empty string means unchecked, anything else checked
+    void set_value_as_bool(bool val) { x_init = val ? "x" : ""; };
 
     virtual std::string get_body_part(const chemin & path,
 				      const request & req);
