@@ -22,7 +22,14 @@ string html_form::get_body_part(const chemin  & path,
     string ret = "";
 
     ret += "<form method=\"post\" action=\"" + get_path().display() + "\">\n";
-    ret += get_body_part_from_all_children(path, req);
+    if(get_path() != req.get_uri().get_path() && req.get_method() == "POST")
+    {
+	request tmp = req;
+	tmp.change_method("GET");
+	ret += get_body_part_from_all_children(path, tmp);
+    }
+    else
+	ret += get_body_part_from_all_children(path, req);
     ret += "<input " + css_get_string() + " type=\"submit\" value=\"" + go_mesg + "\" />\n";
     ret += "</form>\n";
 

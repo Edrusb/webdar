@@ -38,6 +38,7 @@ public:
 
 	/// compaires two path
     bool operator == (const chemin & ref) const { return members == ref.members; };
+    bool operator != (const chemin & ref) const { return !((*this) == ref); };
 
 	/// concatenate a path to this object
     void operator += (const chemin & ref);

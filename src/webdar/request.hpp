@@ -45,6 +45,9 @@ public:
 	/// obtains the method of the read request
     const std::string & get_method() const { if(status < method_read) throw WEBDAR_BUG; return cached_method; };
 
+	/// manually change the method of the request
+    void change_method(const std::string & val) { if(status < method_read) throw WEBDAR_BUG; cached_method = val; };
+
 	/// obtains the URI of the read request
     const uri & get_uri() const { if(status < uri_read) throw WEBDAR_BUG; return coordinates; };
 
