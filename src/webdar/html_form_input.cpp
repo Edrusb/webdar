@@ -50,6 +50,7 @@ html_form_input::html_form_input(const std::string & label,
     x_min = x_max ="";
     cr = true;
     enabled = true;
+    visible = true;
 
     register_name(changed);
 }
@@ -76,33 +77,41 @@ string html_form_input::get_body_part(const chemin & path,
 	if(it != fields.end())
 	    x_init = it->second;
 	else
-	    x_init = "";
+	{
+	    if(visible)
+		x_init = "";
+	}
 
 	if(x_init != old)
 	    act(changed);
     }
 
-    if(x_type != "checkbox")
-	ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
-    ret += "<input " + css_get_string() + " type=\"" + x_type + "\" name=\"" + x_id + "\" id=\"" + x_id + "\" ";
-    if(x_min != "" && x_max != "") // yes both
-	ret += "min=\"" + x_min + "\" max=\"" + x_max + "\" ";
-    if(x_init != "")
+    if(visible)
     {
+	if(x_type != "checkbox")
+	    ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
+	ret += "<input " + css_get_string() + " type=\"" + x_type + "\" name=\"" + x_id + "\" id=\"" + x_id + "\" ";
+	if(x_min != "" && x_max != "") // yes both
+	    ret += "min=\"" + x_min + "\" max=\"" + x_max + "\" ";
+	if(x_init != "")
+	{
+	    if(x_type == "checkbox")
+		ret += "checked ";
+	    else
+		ret += "value=\"" + x_init +"\" ";
+	}
+	if(x_size != "")
+	    ret += "size=\"" + x_size + "\" ";
+	if(!enabled)
+	    ret += "disabled ";
+	ret += "/>";
 	if(x_type == "checkbox")
-	    ret += "checked ";
-	else
-	    ret += "value=\"" + x_init +"\" ";
+	    ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
+	if(cr)
+	    ret += "<br />\n";
     }
-    if(x_size != "")
-	ret += "size=\"" + x_size + "\" ";
-    if(!enabled)
-	ret += "disabled ";
-    ret += "/>";
-    if(x_type == "checkbox")
-	ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
-    if(cr)
-	ret += "<br />\n";
+    else // HTML control not visible
+	ret = "";
 
     return ret;
 }

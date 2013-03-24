@@ -12,11 +12,14 @@ extern "C"
 
     // webdar headers
 #include "body_builder.hpp"
+#include "events.hpp"
 
-class html_form_radio : public body_builder
+class html_form_radio : public body_builder, public events
 {
 public:
-    html_form_radio() { selected = 0; };
+    static std::string changed;
+
+    html_form_radio() { selected = 0; visible = true; };
     void add_choice(const std::string & id, const std::string & label);
     void clear() { choices.clear(); selected = 0; };
 
@@ -24,9 +27,13 @@ public:
     const std::string & get_selected_id() const { return choices[selected].id; };
     unsigned int get_selected_num() const { return selected; };
 
+	/// whether the HTML control shows or not
+    void set_visibile(bool val) { visible = val; };
+
 	// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
 				      const request & req);
+
 
 protected:
     struct record
@@ -37,10 +44,12 @@ protected:
 
     const std::vector<record> & get_choices() const { return choices; };
     void update_field_from_request(const request & req);
+    bool is_visible() const { return visible; };
 
 private:
     std::vector<record> choices;
     unsigned int selected;
+    bool visible;
 };
 
 
