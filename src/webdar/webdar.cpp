@@ -48,6 +48,8 @@ static void parse_cmd(int argc, char *argv[],
 		      vector<interface_port> & ecoute, bool & verbose, bool & background, int & facility);
 static void add_item_to_list(const char *optarg, vector<interface_port> & ecoute);
 static void close_all_listeners(int sig);
+static void libdar_init();
+void libdar_end();
 
     // yes, this will point to a global object, this class handle concurrent access,
     // no problem in this multi-threaded program.
@@ -143,6 +145,7 @@ int main(int argc, char *argv[], char **env)
 	    listener *tmp = NULL;
 	    pthread_t unused_arg;
 
+	    libdar_init();
 	    server::set_max_server(10);
 
 	    try
@@ -213,7 +216,7 @@ int main(int argc, char *argv[], char **env)
 		taches.clear();
 		throw;
 	    }
-
+	    libdar_end();
 	}
 	catch(...)
 	{
@@ -221,9 +224,9 @@ int main(int argc, char *argv[], char **env)
 		throw WEBDAR_BUG;
 	    delete creport;
 	    creport = NULL;
+	    libdar_end();
 	    throw;
 	}
-
     }
     catch(exception_memory & e)
     {
@@ -266,6 +269,11 @@ int main(int argc, char *argv[], char **env)
 	cerr << "Libdar bug met: " << endl;
 	cerr << e.get_message() << endl;
 	ret = WEBDAR_EXIT_LIBDAR_BUG;
+    }
+    catch(libdar::Egeneric & e)
+    {
+	cerr << "LIBDAR exception caught: "<< e.get_message() << endl;
+	ret = WEBDAR_EXIT_RESOURCE;
     }
     catch(...)
     {
@@ -418,4 +426,20 @@ static void close_all_listeners(int sig)
 
 	creport->report(crit, "SIGNAL RECEIVED: no more sessions is running");
     }
+}
+
+void libdar_init()
+{
+    libdar::U_I maj, med, min;
+
+    libdar::get_version(maj, med, min);
+    if(maj != libdar::LIBDAR_COMPILE_TIME_MAJOR ||
+       med < libdar::LIBDAR_COMPILE_TIME_MEDIUM)
+        throw libdar::Erange("initialization",
+			     "we are linking against a wrong libdar");
+}
+
+void libdar_end()
+{
+    libdar::close_and_clean();
 }

@@ -8,7 +8,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/libdar.hpp>
 
     // webdar headers
 #include "body_builder.hpp"

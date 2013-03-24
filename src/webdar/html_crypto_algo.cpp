@@ -16,7 +16,7 @@ extern "C"
 
 using namespace std;
 
-html_crypto_algo::html_crypto_algo(const string & label): html_form_select(label)
+html_crypto_algo::html_crypto_algo(const string & title): html_form_select(title)
 {
     label.push_back("none");
     label.push_back("scram");

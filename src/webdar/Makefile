@@ -1,6 +1,6 @@
-CFLAGS=-ggdb -pthread
-CXXFLAGS=-ggdb -pthread
-LDFLAGS=-ggdb -lstdc++ -ldar64 -pthread
+CFLAGS=-ggdb -pthread `pkg-config --cflags libdar64`
+CXXFLAGS=-ggdb -pthread `pkg-config --cflags libdar64`
+LDFLAGS=-ggdb -lstdc++ -pthread `pkg-config --libs libdar64`
 
 all: webdar
 
