@@ -17,6 +17,8 @@ extern "C"
 
 using namespace std;
 
+string html_form_input::changed = "html_form_input_changed";
+
 html_form_input::html_form_input(const std::string & label,
 				 input_type type,
 				 const std::string & initial_value,
@@ -46,6 +48,10 @@ html_form_input::html_form_input(const std::string & label,
     x_init = initial_value;
     x_size = webdar_tools_convert_to_string(size);
     x_min = x_max ="";
+    cr = true;
+    enabled = true;
+
+    register_name(changed);
 }
 
 void html_form_input::set_range(int min, int max)
@@ -63,12 +69,17 @@ string html_form_input::get_body_part(const chemin & path,
 	// first we extract informations from return form in the body of the request
     if(req.get_method() == "POST" && path.empty())
     {
+	string old = x_init;
+
 	map<string, string> fields = req.get_body_form();
 	map<string, string>::iterator it = fields.find(x_id);
 	if(it != fields.end())
 	    x_init = it->second;
 	else
 	    x_init = "";
+
+	if(x_init != old)
+	    act(changed);
     }
 
     if(x_type != "checkbox")
@@ -85,10 +96,13 @@ string html_form_input::get_body_part(const chemin & path,
     }
     if(x_size != "")
 	ret += "size=\"" + x_size + "\" ";
+    if(!enabled)
+	ret += "disabled ";
     ret += "/>";
     if(x_type == "checkbox")
 	ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
-    ret += "<br />\n";
+    if(cr)
+	ret += "<br />\n";
 
     return ret;
 }
