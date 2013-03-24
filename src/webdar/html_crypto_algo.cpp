@@ -16,8 +16,7 @@ extern "C"
 
 using namespace std;
 
-html_crypto_algo::html_crypto_algo():
-    sel("Cipher")
+html_crypto_algo::html_crypto_algo(const string & label): html_form_select(label)
 {
     label.push_back("none");
     label.push_back("scram");
@@ -26,19 +25,19 @@ html_crypto_algo::html_crypto_algo():
     label.push_back("twofish");
     label.push_back("serpent");
     label.push_back("camellia");
-    sel.add_choice(label[0], "None");
-    sel.add_choice(label[1], "Scrambling (weak)");
-    sel.add_choice(label[2], "Blowfish");
-    sel.add_choice(label[3], "AES");
-    sel.add_choice(label[4], "Twofish");
-    sel.add_choice(label[5], "Serpent");
-    sel.add_choice(label[6], "Camellia");
-    sel.set_selected(0);
+    add_choice(label[0], "None");
+    add_choice(label[1], "Scrambling (weak)");
+    add_choice(label[2], "Blowfish");
+    add_choice(label[3], "AES");
+    add_choice(label[4], "Twofish");
+    add_choice(label[5], "Serpent");
+    add_choice(label[6], "Camellia");
+    set_selected(0);
 }
 
 libdar::crypto_algo html_crypto_algo::get_value() const
 {
-    switch(sel.get_selected_num())
+    switch(get_selected_num())
     {
     case 0:
 	return libdar::crypto_none;
@@ -64,25 +63,25 @@ void html_crypto_algo::set_value(libdar::crypto_algo val)
     switch(val)
     {
     case libdar::crypto_none:
-	sel.set_selected(0);
+	set_selected(0);
 	break;
     case libdar::crypto_scrambling:
-	sel.set_selected(1);
+	set_selected(1);
 	break;
     case libdar::crypto_blowfish:
-	sel.set_selected(2);
+	set_selected(2);
 	break;
     case libdar::crypto_aes256:
-	sel.set_selected(3);
+	set_selected(3);
 	break;
     case libdar::crypto_twofish256:
-	sel.set_selected(4);
+	set_selected(4);
 	break;
     case libdar::crypto_serpent256:
-	sel.set_selected(5);
+	set_selected(5);
 	break;
     case libdar::crypto_camellia256:
-	sel.set_selected(6);
+	set_selected(6);
 	break;
     default:
 	throw WEBDAR_BUG;
