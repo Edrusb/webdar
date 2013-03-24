@@ -19,6 +19,7 @@ extern "C"
 #include "events.hpp"
 #include "html_yes_no_box.hpp"
 #include "options_extract.hpp"
+#include "options_read.hpp"
 
     /// class saisie
     ///
@@ -53,6 +54,7 @@ private:
 	/// show_archive zone
     html_form archive_form;  ///< form containing the path to the archive to operate on
     html_form_input archive; ///< child of archive_form, contains the archive name
+    options_read opt_read;   ///< read options
     html_text archive_blank; ///< shows a blank place in place of archive_form
 
 	// the different sub pages contained by "select" and shown depending on choice's value

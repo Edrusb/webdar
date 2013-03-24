@@ -19,6 +19,8 @@ extern "C"
 class html_crypto_algo : public html_form_select
 {
 public:
+    static std::string changed;
+
     html_crypto_algo(const std::string & title);
 
     libdar::crypto_algo get_value() const;

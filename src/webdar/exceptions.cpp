@@ -11,6 +11,7 @@ void throw_as_most_derivated_class(exception_base *ebase)
     exception_range *erange = dynamic_cast<exception_range *>(ebase);
     exception_input *input = dynamic_cast<exception_input *>(ebase);
     exception_feature *feature = dynamic_cast<exception_feature *>(ebase);
+    exception_libcall *libcall = dynamic_cast<exception_libcall *>(ebase);
 
     if(emem != NULL)
 	throw *emem;
@@ -26,6 +27,8 @@ void throw_as_most_derivated_class(exception_base *ebase)
 	throw *input;
     if(feature != NULL)
 	throw *feature;
+    if(libcall != NULL)
+	throw *libcall;
 
     throw WEBDAR_BUG; // unknown exception
 }

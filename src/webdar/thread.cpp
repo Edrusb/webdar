@@ -6,6 +6,9 @@ extern "C"
 #include <string.h>
 }
 
+    // C++ headers
+#include <dar/libdar.hpp>
+
     // webdar headers
 #include "exceptions.hpp"
 #include "thread.hpp"
@@ -235,6 +238,20 @@ void *thread::run_obj(void *obj)
     catch(exception_base & e)
     {
 	ret = e.clone();
+	if(ret == NULL)
+	    throw;
+    }
+    catch(libdar::Elibcall & e)
+    {
+	ret = new (nothrow) exception_libcall(e);
+	if(ret == NULL)
+	    throw;
+    }
+    catch(libdar::Egeneric & e)
+    {
+	ret = new (nothrow) exception_range(string("LIBDAR error: " + e.get_message()));
+	if(ret == NULL)
+	    throw;
     }
     catch(...) // this statement is useless but explicitely states
     {          // that some implementations of pthread use exception

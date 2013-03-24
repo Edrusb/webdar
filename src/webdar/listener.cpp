@@ -244,6 +244,10 @@ void listener::inherited_run()
 	    {
 		throw;
 	    }
+	    catch(exception_libcall & e)
+	    {
+		throw;
+	    }
 	    catch(exception_base & e)
 	    {
 		rep->report(warning, string("listener object: Previous server ended with error: ") + e.get_message());

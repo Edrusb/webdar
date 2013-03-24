@@ -16,6 +16,8 @@ extern "C"
 
 using namespace std;
 
+string html_crypto_algo::changed = "html_crypto_algo_changed";
+
 html_crypto_algo::html_crypto_algo(const string & title): html_form_select(title)
 {
     label.push_back("none");
@@ -33,6 +35,7 @@ html_crypto_algo::html_crypto_algo(const string & title): html_form_select(title
     add_choice(label[5], "Serpent");
     add_choice(label[6], "Camellia");
     set_selected(0);
+    register_name(changed);
 }
 
 libdar::crypto_algo html_crypto_algo::get_value() const

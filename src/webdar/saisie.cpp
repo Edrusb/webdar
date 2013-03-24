@@ -47,6 +47,7 @@ saisie::saisie():
 
 	// Configuring show_archive
     archive_form.adopt(&archive);
+    archive_form.adopt(&opt_read);
     show_archive.adopt(&archive_blank);
     show_archive.adopt(&archive_form);
     adopt(&show_archive);

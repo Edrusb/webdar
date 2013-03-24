@@ -126,6 +126,17 @@ protected:
     virtual exception_base *clone() const { return cloner<exception_feature>((void *)this); };
 };
 
+    /// transcription of libdar exception into the webdar exception type
+
+class exception_libcall : public exception_base
+{
+public:
+    exception_libcall(const libdar::Elibcall & e): exception_base(e.get_message()) {};
+
+protected:
+    virtual exception_base *clone() const { return cloner<exception_libcall>((void *)this); };
+};
+
 
 extern void throw_as_most_derivated_class(exception_base *ebase);
 

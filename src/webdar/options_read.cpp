@@ -49,13 +49,16 @@ options_read::options_read():
     lax.set_value_as_bool(defaults.get_lax());
     sequential_read.set_value_as_bool(defaults.get_sequential_read());
     src_use_external_catalogue.set_value_as_bool(defaults.is_external_catalogue_set());
-    ref_path.set_value(defaults.get_ref_path().display());
-    ref_basename.set_value(defaults.get_ref_basename());
-    ref_crypto_algo.set_value(defaults.get_ref_crypto_algo());
-    ref_crypto_pass.set_value("");
-    ref_crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_ref_crypto_size()));
-    ref_execute.set_value(defaults.get_ref_execute());
-    ref_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_ref_slice_min_digits()));
+    if(src_use_external_catalogue.get_value_as_bool())
+    {
+	ref_path.set_value(defaults.get_ref_path().display());
+	ref_basename.set_value(defaults.get_ref_basename());
+	ref_crypto_algo.set_value(defaults.get_ref_crypto_algo());
+	ref_crypto_pass.set_value("");
+	ref_crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_ref_crypto_size()));
+	ref_execute.set_value(defaults.get_ref_execute());
+	ref_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_ref_slice_min_digits()));
+    }
 
 	// constructing the view
     fs_src.adopt(&src_crypto_algo);
@@ -78,10 +81,9 @@ options_read::options_read():
     div.adopt(&form);
 
 	// binding the events
-    src_crypto_algo.record_actor_on_event(this, html_form_radio::changed);
+    src_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
     src_use_external_catalogue.record_actor_on_event(this, html_form_input::changed);
-
-    ref_crypto_algo.record_actor_on_event(this, html_form_radio::changed);
+    ref_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
 }
 
 libdar::archive_options_read options_read::get_options() const
