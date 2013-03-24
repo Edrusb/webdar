@@ -24,7 +24,6 @@ void html_form_radio::add_choice(const string & id, const string & label)
     x.id = id;
     x.label = label;
     choices.push_back(x);
-    register_name(changed);
 }
 
 void html_form_radio::set_selected(unsigned int x)

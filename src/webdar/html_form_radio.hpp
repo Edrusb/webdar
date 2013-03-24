@@ -19,7 +19,7 @@ class html_form_radio : public body_builder, public events
 public:
     static std::string changed;
 
-    html_form_radio() { selected = 0; visible = true; };
+    html_form_radio() { selected = 0; visible = true; register_name(changed); };
     void add_choice(const std::string & id, const std::string & label);
     void clear() { choices.clear(); selected = 0; };
 
