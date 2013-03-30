@@ -90,12 +90,11 @@ saisie::saisie():
     select.adopt(&compare);
 
 	// testing sub-page
-    text.clear();
-    text.add_text(1,"NOT YET IMPLEMENTED");
-    test.adopt_static_html(text.get_body_part());
     select.adopt(&test);
 
 	// listing sub-page
+    text.clear();
+    text.add_text(1,"NOT YET IMPLEMENTED");
     select.adopt(&list);
 
 	// creation sub-page
@@ -181,14 +180,16 @@ void saisie::on_event(const std::string & event_name)
     if(show_operation_options.get_value_as_bool())
     {
 	extract.set_visible(true);
-	list.set_visible(true);
 	compare.set_visible(true);
+	test.set_visible(true);
+	list.set_visible(true);
     }
     else
     {
 	extract.set_visible(false);
-	list.set_visible(false);
 	compare.set_visible(false);
+	test.set_visible(false);
+	list.set_visible(false);
     }
 }
 

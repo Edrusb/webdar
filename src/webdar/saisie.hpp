@@ -21,6 +21,7 @@ extern "C"
 #include "options_extract.hpp"
 #include "options_read.hpp"
 #include "options_compare.hpp"
+#include "options_test.hpp"
 
     /// class saisie
     ///
@@ -70,7 +71,7 @@ private:
     html_div sep0;
     options_extract extract;
     options_compare compare;
-    html_div test;
+    options_test test;
     options_listing list;
     html_div create;
     html_div isolate;

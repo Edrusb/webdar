@@ -84,8 +84,8 @@ libdar::archive_options_diff options_compare::get_options() const
 }
 
 
-std::string options_compare::get_body_part(const chemin & path,
-					   const request & req)
+string options_compare::get_body_part(const chemin & path,
+				      const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }
