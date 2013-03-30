@@ -20,6 +20,7 @@ extern "C"
 #include "html_yes_no_box.hpp"
 #include "options_extract.hpp"
 #include "options_read.hpp"
+#include "options_compare.hpp"
 
     /// class saisie
     ///
@@ -68,7 +69,7 @@ private:
     html_div about;
     html_div sep0;
     options_extract extract;
-    html_div compare;
+    options_compare compare;
     html_div test;
     options_listing list;
     html_div create;
