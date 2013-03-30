@@ -28,9 +28,6 @@ public:
 
 	/// actor inheritance
     virtual void on_event(const std::string & event_name);
-
-private:
-    std::vector< std::string > label;
 };
 
 #endif

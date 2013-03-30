@@ -20,20 +20,13 @@ const string html_crypto_algo::changed = "html_crypto_algo_changed";
 
 html_crypto_algo::html_crypto_algo(const string & title): html_form_select(title)
 {
-    label.push_back("none");
-    label.push_back("scram");
-    label.push_back("blowfish");
-    label.push_back("aes");
-    label.push_back("twofish");
-    label.push_back("serpent");
-    label.push_back("camellia");
-    add_choice(label[0], "None");
-    add_choice(label[1], "Scrambling (weak)");
-    add_choice(label[2], "Blowfish");
-    add_choice(label[3], "AES");
-    add_choice(label[4], "Twofish");
-    add_choice(label[5], "Serpent");
-    add_choice(label[6], "Camellia");
+    add_choice("none", "None");
+    add_choice("scram", "Scrambling (weak)");
+    add_choice("blowfish", "Blowfish");
+    add_choice("aes", "AES");
+    add_choice("twofish", "Twofish");
+    add_choice("serpent", "Serpent");
+    add_choice("camellia", "Camellia");
     set_selected(0);
     register_name(changed);
     record_actor_on_event(this, html_form_select::changed);
