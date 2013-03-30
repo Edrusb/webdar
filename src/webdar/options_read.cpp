@@ -17,9 +17,10 @@ extern "C"
 using namespace std;
 
 options_read::options_read():
-    form("Update"),
-    fs_src("Archive Parameters"),
-    fs_ref("Auxilliary Archive Parameters"),
+    visible(true),
+    form_src("Update Options"),
+    fs_src("Archive Options"),
+    fs_ref("Auxilliary Archive Options"),
     src_crypto_algo("Cipher"),
     src_crypto_pass("Passphrase", html_form_input::password, "", 30),
     src_crypto_size("Cipher block size", html_form_input::number, "0", 8),
@@ -28,7 +29,8 @@ options_read::options_read():
     info_details("Detailed information", html_form_input::check, "", 1),
     lax("Laxist check mode", html_form_input::check, "", 1),
     sequential_read("Sequential read", html_form_input::check, "", 1),
-    src_use_external_catalogue("Use external catalogue", html_form_input::check, "", 1),
+    src_use_external_catalogue("Use auxilliary archive", html_form_input::check, "", 1),
+    form_ref("Update Options"),
     ref_path("Path", html_form_input::text, "", 30),
     ref_basename("Archive basename", html_form_input::text, "", 30),
     ref_crypto_algo("Cipher"),
@@ -63,12 +65,15 @@ options_read::options_read():
 	// constructing the view
     fs_src.adopt(&src_crypto_algo);
     fs_src.adopt(&src_crypto_pass);
+    fs_src.adopt(&src_crypto_size);
     fs_src.adopt(&src_execute);
     fs_src.adopt(&src_slice_min_digits);
     fs_src.adopt(&info_details);
     fs_src.adopt(&lax);
     fs_src.adopt(&sequential_read);
     fs_src.adopt(&src_use_external_catalogue);
+    form_src.adopt(&fs_src);
+
     fs_ref.adopt(&ref_path);
     fs_ref.adopt(&ref_basename);
     fs_ref.adopt(&ref_crypto_algo);
@@ -76,14 +81,20 @@ options_read::options_read():
     fs_ref.adopt(&ref_crypto_size);
     fs_ref.adopt(&ref_execute);
     fs_ref.adopt(&ref_slice_min_digits);
-    form.adopt(&fs_src);
-    form.adopt(&fs_ref);
-    div.adopt(&form);
+    form_ref.adopt(&fs_ref);
+
+    div.adopt(&form_src);
+    div.adopt(&form_ref);
+
+    adopt(&div);
 
 	// binding the events
     src_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
     src_use_external_catalogue.record_actor_on_event(this, html_form_input::changed);
     ref_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
+
+	// manually launching on event to have coherent visibility between fields
+    on_event(html_crypto_algo::changed);
 }
 
 libdar::archive_options_read options_read::get_options() const
@@ -144,13 +155,16 @@ void options_read::on_event(const std::string & event_name)
     }
 
     if(src_use_external_catalogue.get_value_as_bool())
-	fs_ref.set_visible(false);
+	form_ref.set_visible(true);
     else
-	fs_ref.set_visible(true);
+	form_ref.set_visible(false);
 }
 
 string options_read::get_body_part(const chemin & path,
 				   const request & req)
 {
-    return div.get_body_part(path, req);
+    if(visible)
+	return get_body_part_from_all_children(path, req);
+    else
+	return "";
 }

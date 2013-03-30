@@ -17,7 +17,7 @@ extern "C"
 
 using namespace std;
 
-string html_form_input::changed = "html_form_input_changed";
+const string html_form_input::changed = "html_form_input_changed";
 
 html_form_input::html_form_input(const std::string & label,
 				 input_type type,

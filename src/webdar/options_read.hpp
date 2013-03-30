@@ -27,6 +27,9 @@ public:
 
     libdar::archive_options_read get_options() const;
 
+	/// whether the HTML control shows or not
+    void set_visible(bool val) { visible = val; };
+
 	/// inherited from actor
     void on_event(const std::string & event_name);
 
@@ -35,9 +38,11 @@ public:
 			      const request & req);
 
 private:
+    bool visible;
+
 	// construction fields
     html_div div;
-    html_form form;
+    html_form form_src;
     html_form_fieldset fs_src;
     html_form_fieldset fs_ref;
 	// archive_options_read fields
@@ -51,6 +56,7 @@ private:
     html_form_input sequential_read;
 	// html_select src_entrepot;
     html_form_input src_use_external_catalogue;
+    html_form form_ref;
     html_form_input ref_path;
     html_form_input ref_basename;
     html_crypto_algo ref_crypto_algo;

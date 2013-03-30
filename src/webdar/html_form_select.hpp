@@ -13,10 +13,12 @@ extern "C"
     // webdar headers
 #include "html_form_radio.hpp"
 
-class html_form_select : public html_form_radio
+class html_form_select : public html_form_radio, public actor
 {
 public:
-    html_form_select(const std::string & label) { x_label = label; };
+    static const std::string changed;
+
+    html_form_select(const std::string & label) { x_label = label; register_name(changed); record_actor_on_event(this, html_form_radio::changed); };
 
     void change_label(const std::string & label) { x_label = label; };
 
@@ -30,6 +32,9 @@ public:
     virtual std::string get_body_part(const chemin & path,
 				      const request & req);
 
+
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) { act(changed); };
 private:
     std::string x_label;
 

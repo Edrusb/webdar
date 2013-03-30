@@ -16,7 +16,7 @@ extern "C"
 
 using namespace std;
 
-string html_form_radio::changed = "html_form_radio::changed";
+const string html_form_radio::changed = "html_form_radio::changed";
 
 void html_form_radio::add_choice(const string & id, const string & label)
 {

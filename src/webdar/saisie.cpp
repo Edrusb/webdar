@@ -22,9 +22,20 @@ saisie::saisie():
 	     html_form_input::text,
 	    "",
 	    30),
+    show_read_options("Show archive options",
+		      html_form_input::check,
+		      "",
+		      1),
+    show_operation_options("Show operation options",
+			   html_form_input::check,
+			   "",
+			   1),
     close("Do you really want to close this session?", false)
 {
     html_text text;
+
+	// right pan configuration
+    right_pan.css_float(fl_left, true);
 
 	// configuration of "choice"
     choice.add_entry("about", "Main Page");
@@ -47,10 +58,13 @@ saisie::saisie():
 
 	// Configuring show_archive
     archive_form.adopt(&archive);
-    archive_form.adopt(&opt_read);
+    archive_form.adopt(&show_read_options);
+    archive_form.adopt(&show_operation_options);
+    archive_show.adopt(&archive_form);
+    archive_show.adopt(&opt_read);
     show_archive.adopt(&archive_blank);
-    show_archive.adopt(&archive_form);
-    adopt(&show_archive);
+    show_archive.adopt(&archive_show);
+    right_pan.adopt(&show_archive);
 
 	// configuration of the sub-pages brought by "select"
 
@@ -126,19 +140,24 @@ saisie::saisie():
 	/// configuration of "select"
     select.css_margin_left("9.4em");
     select.set_mode(0);
-    adopt(&select);
+    right_pan.adopt(&select);
+    adopt(&right_pan);
 
 	// define the closing event for this
     register_name(closing);
 
 	// attaching the "changed" event of the menu "choice" to "this" saisie object
     choice.record_actor_on_event(this);
+    show_read_options.record_actor_on_event(this, html_form_input::changed);
+    show_operation_options.record_actor_on_event(this, html_form_input::changed);
     on_event(""); // manually triggering the event for the initial setup
 }
 
 void saisie::on_event(const std::string & event_name)
 {
-    if(event_name != menu::changed && event_name != "")
+    if(event_name != menu::changed
+       && event_name != html_form_input::changed
+       && event_name != "")
 	throw WEBDAR_BUG;
 
 	// menu "choice" changed
@@ -155,6 +174,21 @@ void saisie::on_event(const std::string & event_name)
     else
 	show_archive.set_mode(0);
     select.set_mode(choice.get_current_mode());
+
+    if(show_read_options.get_value_as_bool())
+	opt_read.set_visible(true);
+    else
+	opt_read.set_visible(false);
+    if(show_operation_options.get_value_as_bool())
+    {
+	extract.set_visible(true);
+	list.set_visible(true);
+    }
+    else
+    {
+	extract.set_visible(false);
+	list.set_visible(false);
+    }
 }
 
 string saisie::get_body_part(const chemin & path,

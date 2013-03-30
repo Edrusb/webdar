@@ -19,6 +19,7 @@ extern "C"
 using namespace std;
 
 options_listing::options_listing():
+    visible(true),
     form("Update"),
     fs("Listing options"),
     info_details("Detailed informations",
@@ -45,7 +46,10 @@ options_listing::options_listing():
 string options_listing::get_body_part(const chemin & path,
 				       const request & req)
 {
-    return get_body_part_from_all_children(path, req);
+    if(visible)
+	return get_body_part_from_all_children(path, req);
+    else
+	return "";
 }
 
 

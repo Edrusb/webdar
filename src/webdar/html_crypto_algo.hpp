@@ -19,12 +19,15 @@ extern "C"
 class html_crypto_algo : public html_form_select
 {
 public:
-    static std::string changed;
+    static const std::string changed;
 
     html_crypto_algo(const std::string & title);
 
     libdar::crypto_algo get_value() const;
     void set_value(libdar::crypto_algo val);
+
+	/// actor inheritance
+    virtual void on_event(const std::string & event_name);
 
 private:
     std::vector< std::string > label;

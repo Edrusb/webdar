@@ -48,18 +48,26 @@ public:
     void on_event(const std::string & event_name);
 private:
     menu choice;           ///< left main menu
-    aiguille show_archive; ///< top middle zone hidden or show depending of choice's value
-    aiguille select;       ///< middle center zone, containing the different pages according to choice's value
+    html_div right_pan;    ///< holds all that is beside main menu
 
-	/// show_archive zone
+	/// right_pan zone
+    aiguille show_archive;   ///< top middle zone hidden or show depending of choice's value
+    aiguille select;         ///< middle center zone, containing the different pages according to choice's value
+
+	/// show archive zone
+    html_div archive_show;   ///< contains all that is "shown"
+    html_text archive_blank; ///< shows a blank place in place of archive_form
+	/// what is shown
     html_form archive_form;  ///< form containing the path to the archive to operate on
     html_form_input archive; ///< child of archive_form, contains the archive name
+    html_form_input show_read_options;
+    html_form_input show_operation_options;
     options_read opt_read;   ///< read options
-    html_text archive_blank; ///< shows a blank place in place of archive_form
 
 	// the different sub pages contained by "select" and shown depending on choice's value
     html_div about;
     html_div sep0;
+    options_extract extract;
     html_div compare;
     html_div test;
     options_listing list;
@@ -72,10 +80,6 @@ private:
     html_div sess;
     html_div sep2;
     html_yes_no_box close;
-
-
-	// the restore sub-page
-    options_extract extract;
 
 };
 

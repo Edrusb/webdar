@@ -16,6 +16,8 @@ extern "C"
 
 using namespace std;
 
+const string html_form_select::changed = "html_form_select_changed";
+
 string html_form_select::get_body_part(const chemin & path, const request & req)
 {
     string ret = "";

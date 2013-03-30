@@ -16,7 +16,7 @@ extern "C"
 
 using namespace std;
 
-string html_crypto_algo::changed = "html_crypto_algo_changed";
+const string html_crypto_algo::changed = "html_crypto_algo_changed";
 
 html_crypto_algo::html_crypto_algo(const string & title): html_form_select(title)
 {
@@ -36,6 +36,7 @@ html_crypto_algo::html_crypto_algo(const string & title): html_form_select(title
     add_choice(label[6], "Camellia");
     set_selected(0);
     register_name(changed);
+    record_actor_on_event(this, html_form_select::changed);
 }
 
 libdar::crypto_algo html_crypto_algo::get_value() const
@@ -89,4 +90,10 @@ void html_crypto_algo::set_value(libdar::crypto_algo val)
     default:
 	throw WEBDAR_BUG;
     }
+}
+
+void html_crypto_algo::on_event(const std::string & event_name)
+{
+	// when html_form_select changed propagate the change event to our own event name
+    act(changed);
 }

@@ -26,11 +26,16 @@ public:
 
     libdar::archive_options_listing get_options() const;
 
+	/// whether the HTML control shows or not
+    void set_visible(bool val) { visible = val; };
+
 	/// inherited from body_builder
     std::string get_body_part(const chemin & path,
 			      const request & req);
 
 private:
+    bool visible;
+
     html_div div;
     html_form form;
     html_form_fieldset fs;

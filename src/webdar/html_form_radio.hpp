@@ -17,7 +17,7 @@ extern "C"
 class html_form_radio : public body_builder, public events
 {
 public:
-    static std::string changed;
+    static const std::string changed;
 
     html_form_radio() { selected = 0; visible = true; register_name(changed); };
     void add_choice(const std::string & id, const std::string & label);
