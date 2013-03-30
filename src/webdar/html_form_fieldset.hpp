@@ -16,19 +16,15 @@ extern "C"
 class html_form_fieldset : public body_builder
 {
 public:
-    html_form_fieldset(const std::string & label) { x_label = label; visible = true; };
+    html_form_fieldset(const std::string & label) { x_label = label; };
 
 	/// clear and destroy previously added objects
     void clear() { orphan_all_children(); };
-
-	/// whether the whole fieldset shows or not
-    void set_visible(bool val) { visible = val; };
 
     virtual std::string get_body_part(const chemin & path,
 				      const request & req);
 
 private:
-    bool visible;
     std::string x_label;
 
 };

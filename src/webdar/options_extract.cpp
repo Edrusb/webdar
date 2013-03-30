@@ -17,7 +17,6 @@ extern "C"
 using namespace std;
 
 options_extract::options_extract():
-    visible(true),
     form("Update Options"),
     fs("Restoration options"),
     warn_over("Warn before overwriting",
@@ -145,9 +144,6 @@ libdar::archive_options_extract options_extract::get_options() const
 std::string options_extract::get_body_part(const chemin & path,
 					   const request & req)
 {
-    if(visible)
-	return get_body_part_from_all_children(path, req);
-    else
-	return "";
+    return get_body_part_from_all_children(path, req);
 }
 

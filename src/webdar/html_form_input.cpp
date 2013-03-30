@@ -50,7 +50,6 @@ html_form_input::html_form_input(const std::string & label,
     x_min = x_max ="";
     cr = true;
     enabled = true;
-    visible = true;
 
     register_name(changed);
 }
@@ -67,7 +66,9 @@ string html_form_input::get_body_part(const chemin & path,
     string ret = "";
     string x_id = get_path().namify();
 
-	// first we extract informations from return form in the body of the request
+	// first we extract informations from the returned form in
+	// the body of the request
+
     if(req.get_method() == "POST" && path.empty())
     {
 	string old = x_init;
@@ -78,7 +79,7 @@ string html_form_input::get_body_part(const chemin & path,
 	    x_init = it->second;
 	else
 	{
-	    if(visible)
+	    if(get_visible())
 		x_init = "";
 	}
 
@@ -86,7 +87,10 @@ string html_form_input::get_body_part(const chemin & path,
 	    act(changed);
     }
 
-    if(visible)
+	// we can now return the up to date value of
+	// the field
+
+    if(get_visible())
     {
 	if(x_type != "checkbox")
 	    ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";

@@ -17,7 +17,6 @@ extern "C"
 using namespace std;
 
 options_read::options_read():
-    visible(true),
     form_src("Update Options"),
     fs_src("Archive Options"),
     fs_ref("Auxilliary Archive Options"),
@@ -163,7 +162,7 @@ void options_read::on_event(const std::string & event_name)
 string options_read::get_body_part(const chemin & path,
 				   const request & req)
 {
-    if(visible)
+    if(get_visible())
 	return get_body_part_from_all_children(path, req);
     else
 	return "";

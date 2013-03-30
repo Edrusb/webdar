@@ -21,7 +21,7 @@ string html_form::get_body_part(const chemin  & path,
 {
     string ret = "";
 
-    if(visible)
+    if(get_visible())
     {
 	ret += "<form method=\"post\" action=\"" + get_path().display() + "\">\n";
 	if(get_path() != req.get_uri().get_path() && req.get_method() == "POST")

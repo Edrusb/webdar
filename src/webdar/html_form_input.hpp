@@ -39,16 +39,12 @@ public:
 	/// whether the HTML control is enable or disabled
     void set_enabled(bool val) { enabled = val; };
 
-	/// whether the HTML control shows or not
-    void set_visible(bool val) { visible = val; };
-
     virtual std::string get_body_part(const chemin & path,
 				      const request & req);
 
 private:
     bool cr;             //< whether to add a new line after the HTML code
     bool enabled;        //< whether the control is enabled or disabled
-    bool visible;       //< whether the control shows or not
     std::string x_label; //< field text shown to the user
     std::string x_type;  //< type of HTML input field
     std::string x_init;  //< current value / initial value of the field

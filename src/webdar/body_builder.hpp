@@ -22,7 +22,7 @@ class body_builder : public css
 {
 public:
 	/// constructor
-    body_builder() { parent = NULL; order.clear(); children.clear(); revert_child.clear(); };
+    body_builder() { parent = NULL; order.clear(); children.clear(); revert_child.clear(); visible = true; };
 
 	/// avoiding copy constructor use
     body_builder(const body_builder & ref) { throw WEBDAR_BUG; };
@@ -62,6 +62,12 @@ public:
     void foresake(body_builder *obj);
 
 
+	/// whether the object is visible in HTML page or temporarily hidden
+    void set_visible(bool mode) { visible = mode; };
+
+	/// returns the current visible status of the object
+    bool get_visible() const { return visible; };
+
 	/// ask the object to provide a part of the body to answer the request
 	///
 	/// \param[in] path is the full path, but the path.index points to the asked object name
@@ -73,6 +79,8 @@ public:
 	/// used to answer, no child object can be invoked by mean of its name.
 	/// \note when going down to the leaf of the tree, the path get shorter by removing
 	/// the first items one at each step. Empty path means the object itslef
+	/// \note the inherited class should take the visible status in consideration when
+	/// returning HTML from this call
     virtual std::string get_body_part(const chemin & path,
 				      const request & req) = 0;
 
@@ -98,6 +106,7 @@ protected:
 	/// no further name is available to find an child object to return its body part.
 	/// In consequence, the caller must check whether the path is empty() or not before
 	/// invoking this method
+	/// \note if the object is not visible, this call will return an empty string
     std::string get_body_part_from_target_child(const chemin & path,
 						const request & req);
 
@@ -106,6 +115,7 @@ protected:
 	/// \param[in] path, this is the path, it can be empty. If not the front member is poped from the target
 	/// even if the poped part of the path does not match the name of the consulted child object
 	/// \param[in] req, this is the request exactly as received from the get_body_part call
+	/// \note if the object is not visible, this call will return an empty string
     std::string get_body_part_from_all_children(const chemin & path,
 						const request & req);
 
@@ -127,6 +137,7 @@ protected:
     void orphan_all_children();
 
 private:
+    bool visible;
     chemin x_prefix;
     body_builder *parent;
     std::vector<body_builder *> order;

@@ -47,7 +47,7 @@ string html_form_radio::get_body_part(const chemin & path,
 
 	// for any request provide an updated HMTL content in response
 
-    if(visible)
+    if(get_visible())
     {
 	for(unsigned int i = 0; i < choices.size(); ++i)
 	{

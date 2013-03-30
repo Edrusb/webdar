@@ -24,16 +24,12 @@ public:
 
     libdar::archive_options_diff get_options() const;
 
-    void set_visible(bool val) { visible = val; };
-
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
 				      const request & req);
 
 
 private:
-    bool visible;
-
     html_form form;
     html_form_fieldset fs;
     html_form_input info_details;

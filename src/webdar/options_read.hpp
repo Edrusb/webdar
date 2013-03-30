@@ -27,9 +27,6 @@ public:
 
     libdar::archive_options_read get_options() const;
 
-	/// whether the HTML control shows or not
-    void set_visible(bool val) { visible = val; };
-
 	/// inherited from actor
     void on_event(const std::string & event_name);
 
@@ -38,8 +35,6 @@ public:
 			      const request & req);
 
 private:
-    bool visible;
-
 	// construction fields
     html_div div;
     html_form form_src;

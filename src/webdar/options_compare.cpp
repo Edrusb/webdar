@@ -17,7 +17,6 @@ extern "C"
 using namespace std;
 
 options_compare::options_compare():
-    visible(true),
     form("Update options"),
     fs("Comparison options"),
     info_details("Detailed information",
@@ -88,9 +87,6 @@ libdar::archive_options_diff options_compare::get_options() const
 std::string options_compare::get_body_part(const chemin & path,
 					   const request & req)
 {
-    if(visible)
-	return get_body_part_from_all_children(path, req);
-    else
-	return "";
+    return get_body_part_from_all_children(path, req);
 }
 

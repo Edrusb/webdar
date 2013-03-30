@@ -131,17 +131,22 @@ string body_builder::get_body_part_from_target_child(const chemin & path,
     if(path.empty())
 	throw WEBDAR_BUG; // invoked with an empty path
 
-    string name = path.front();
-    map<string, body_builder *>::iterator it = children.find(name);
-
-    if(it != children.end())
+    if(visible)
     {
-	chemin sub_path = path;
-	sub_path.pop_front();
-	return it->second->get_body_part(sub_path, req);
+	string name = path.front();
+	map<string, body_builder *>::iterator it = children.find(name);
+
+	if(it != children.end())
+	{
+	    chemin sub_path = path;
+	    sub_path.pop_front();
+	    return it->second->get_body_part(sub_path, req);
+	}
+	else
+	    throw exception_input("unkown URL requested", STATUS_CODE_NOT_FOUND);
     }
     else
-	throw exception_input("unkown URL requested", STATUS_CODE_NOT_FOUND);
+	return "";
 }
 
 string body_builder::get_body_part_from_all_children(const chemin & path,
@@ -151,16 +156,21 @@ string body_builder::get_body_part_from_all_children(const chemin & path,
     chemin sub_path = path;
     vector<body_builder *>::iterator it = order.begin();
 
-    if(!sub_path.empty())
-	sub_path.pop_front();
-
-    while(it != order.end())
+    if(visible)
     {
-	if(*it == NULL)
-	    throw WEBDAR_BUG;
-	ret += (*it)->get_body_part(sub_path, req);
-	++it;
+	if(!sub_path.empty())
+	    sub_path.pop_front();
+
+	while(it != order.end())
+	{
+	    if(*it == NULL)
+		throw WEBDAR_BUG;
+	    ret += (*it)->get_body_part(sub_path, req);
+	    ++it;
+	}
     }
+    else
+	ret = "";
 
     return ret;
 }

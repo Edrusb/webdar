@@ -22,7 +22,7 @@ string html_form_fieldset::get_body_part(const chemin & path,
 {
     string ret = "";
 
-    if(visible)
+    if(get_visible())
     {
 	ret += "<fieldset " + css_get_string() + ">\n";
 	ret += "<legend>" + x_label + "</legend>\n";
