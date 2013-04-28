@@ -57,7 +57,7 @@ archive_read::archive_read(const archive_read & ref):
     throw WEBDAR_BUG;
 }
 
-void archive_read::open_archive(/* webinteraction required here */)
+void archive_read::open_archive(/* web_user_interaction required here */)
 {
     if(ptr != NULL)
 	throw WEBDAR_BUG;
