@@ -22,6 +22,7 @@ extern "C"
 #include "options_read.hpp"
 #include "options_compare.hpp"
 #include "options_test.hpp"
+#include "archive_read.hpp"
 
     /// class saisie
     ///
@@ -60,11 +61,11 @@ private:
     html_div archive_show;   ///< contains all that is "shown"
     html_text archive_blank; ///< shows a blank place in place of archive_form
 	/// what is shown
-    html_form archive_form;  ///< form containing the path to the archive to operate on
-    html_form_input archive; ///< child of archive_form, contains the archive name
-    html_form_input show_read_options;
-    html_form_input show_operation_options;
-    options_read opt_read;   ///< read options
+    archive_read archread;   ///< the archive to operate on (reading)
+    html_form_input show_operation_options; ///< whether operation options are shown or not
+    html_form_fieldset show_archive_fs_options; //< around  show_operations_options
+    html_form show_archive_form_options;    ///< around show_archive_fs_options
+
 
 	// the different sub pages contained by "select" and shown depending on choice's value
     html_div about;

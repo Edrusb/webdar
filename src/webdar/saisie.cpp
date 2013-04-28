@@ -17,15 +17,9 @@ using namespace std;
 const string saisie::closing = "saisie_closing";
 
 saisie::saisie():
-    archive_form("Update"),
-    archive("Archive Basename",
-	     html_form_input::text,
-	    "",
-	    30),
-    show_read_options("Show archive options",
-		      html_form_input::check,
-		      "",
-		      1),
+    show_archive_form_options("Update"),
+    show_archive_fs_options("Options details"),
+    archread("Source archive"),
     show_operation_options("Show operation options",
 			   html_form_input::check,
 			   "",
@@ -57,11 +51,10 @@ saisie::saisie():
     adopt(&choice);
 
 	// Configuring show_archive
-    archive_form.adopt(&archive);
-    archive_form.adopt(&show_read_options);
-    archive_form.adopt(&show_operation_options);
-    archive_show.adopt(&archive_form);
-    archive_show.adopt(&opt_read);
+    archive_show.adopt(&archread);
+    show_archive_form_options.adopt(&show_operation_options);
+    show_archive_fs_options.adopt(&show_archive_form_options);
+    archive_show.adopt(&show_archive_fs_options);
     show_archive.adopt(&archive_blank);
     show_archive.adopt(&archive_show);
     right_pan.adopt(&show_archive);
@@ -146,7 +139,7 @@ saisie::saisie():
 
 	// attaching the "changed" event of the menu "choice" to "this" saisie object
     choice.record_actor_on_event(this);
-    show_read_options.record_actor_on_event(this, html_form_input::changed);
+	// attaching the "changed" event of the show_operation_options checkbox to "this"
     show_operation_options.record_actor_on_event(this, html_form_input::changed);
     on_event(""); // manually triggering the event for the initial setup
 }
@@ -173,10 +166,6 @@ void saisie::on_event(const std::string & event_name)
 	show_archive.set_mode(0);
     select.set_mode(choice.get_current_mode());
 
-    if(show_read_options.get_value_as_bool())
-	opt_read.set_visible(true);
-    else
-	opt_read.set_visible(false);
     if(show_operation_options.get_value_as_bool())
     {
 	extract.set_visible(true);
