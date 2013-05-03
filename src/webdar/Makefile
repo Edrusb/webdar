@@ -7,7 +7,7 @@ all: webdar
 clean:
 	rm -f *.o webdar
 
-webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o options_listing.o menu.o  aiguille.o saisie.o user_interface.o events.o reference.o html_url_class.o html_yes_no_box.o options_extract.o options_read.o html_crypto_algo.o html_comparison_fields.o options_compare.o options_test.o archive_read.o html_compression.o html_size_unit.o
+webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o options_listing.o menu.o  aiguille.o saisie.o user_interface.o events.o reference.o html_url_class.o html_yes_no_box.o options_extract.o options_read.o html_crypto_algo.o html_comparison_fields.o options_compare.o options_test.o archive_read.o html_compression.o html_size_unit.o html_hash_algo.o
 
 webdar.o : webdar.cpp exceptions.hpp central_report.hpp listener.hpp webdar_tools.hpp server.hpp authentication.hpp
 central_report.o : central_report.cpp central_report.hpp webdar_tools.hpp exceptions.hpp mutex.hpp
@@ -63,3 +63,4 @@ options_test.o : options_test.cpp options_test.hpp body_builder.hpp html_form.hp
 archive_read.o : archive_read.cpp archive_read.cpp body_builder.hpp html_div.hpp html_form.hpp html_form_fieldset.hpp html_form_select.hpp html_form_input.hpp html_crypto_algo.hpp events.hpp
 html_compression.o : html_compression.cpp html_compression.hpp html_form_select.hpp
 html_size_unit.o : html_size_unit.cpp html_size_unit.hpp html_form_select.hpp
+html_hash_algo.o : html_hash_algo.cpp html_hash_algo.hpp html_form_select.hpp
