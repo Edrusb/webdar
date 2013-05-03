@@ -66,9 +66,3 @@ void html_compression::set_value(libdar::compression val)
 	throw WEBDAR_BUG;
     }
 }
-
-void html_compression::on_event(const std::string & event_name)
-{
-	// when html_form_select changed propagate the change event to our own event name
-    act(changed);
-}

@@ -25,8 +25,8 @@ public:
     libdar::compression get_value() const;
     void set_value(libdar::compression val);
 
-	/// actor inheritance
-    virtual void on_event(const std::string & event_name);
+	/// actor indirect inheritance
+    virtual void on_event(const std::string & event_name) { act(changed); };
 };
 
 #endif
