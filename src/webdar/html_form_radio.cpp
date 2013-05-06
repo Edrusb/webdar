@@ -55,7 +55,11 @@ string html_form_radio::get_body_part(const chemin & path,
 	    if(i == selected)
 		ret += "checked ";
 	    ret += "/>\n";
-	    ret += "<label " + css_get_string() + " for=\"" + choices[i].id + "\">" + choices[i].label + "</label><br />\n";
+	    ret += "<label " + css_get_string() + " for=\"" + choices[i].id + "\">" + choices[i].label + "</label>";
+	    if(i+1 < choices.size() || !get_no_CR())
+		ret += "<br />\n";
+	    else
+		ret += "\n";
 	}
     }
     else

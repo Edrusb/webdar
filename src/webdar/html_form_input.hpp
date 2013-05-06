@@ -33,9 +33,6 @@ public:
     const bool get_value_as_bool() const { return !x_init.empty(); }; //< for checkbox empty string means unchecked, anything else checked
     void set_value_as_bool(bool val) { x_init = val ? "x" : ""; act(changed); };
 
-	/// whether a new line is added after the HTML code
-    void set_cr(bool val) { cr = val; };
-
 	/// whether the HTML control is enable or disabled
     void set_enabled(bool val) { enabled = val; };
 
@@ -43,7 +40,6 @@ public:
 				      const request & req);
 
 private:
-    bool cr;             //< whether to add a new line after the HTML code
     bool enabled;        //< whether the control is enabled or disabled
     std::string x_label; //< field text shown to the user
     std::string x_type;  //< type of HTML input field

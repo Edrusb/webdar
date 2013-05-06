@@ -43,7 +43,8 @@ string html_form_select::get_body_part(const chemin & path, const request & req)
 	++it;
     }
     ret += "</select>\n";
-    ret += "<br />\n";
+    if(!get_no_CR())
+	ret += "<br />\n";
 
     return ret;
 };

@@ -48,7 +48,6 @@ html_form_input::html_form_input(const std::string & label,
     x_init = initial_value;
     x_size = webdar_tools_convert_to_string(size);
     x_min = x_max ="";
-    cr = true;
     enabled = true;
 
     register_name(changed);
@@ -111,7 +110,7 @@ string html_form_input::get_body_part(const chemin & path,
 	ret += "/>";
 	if(x_type == "checkbox")
 	    ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
-	if(cr)
+	if(!get_no_CR())
 	    ret += "<br />\n";
     }
     else // HTML control not visible

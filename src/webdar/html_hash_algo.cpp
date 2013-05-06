@@ -16,6 +16,8 @@ extern "C"
 
 using namespace std;
 
+const string html_hash_algo::changed = "html_hash_algo_changed";
+
 html_hash_algo::html_hash_algo(const string & title):
     html_form_select(title)
 {

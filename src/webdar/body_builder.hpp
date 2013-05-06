@@ -22,7 +22,7 @@ class body_builder : public css
 {
 public:
 	/// constructor
-    body_builder() { parent = NULL; order.clear(); children.clear(); revert_child.clear(); visible = true; };
+    body_builder() { parent = NULL; order.clear(); children.clear(); revert_child.clear(); visible = true; no_CR = false; };
 
 	/// avoiding copy constructor use
     body_builder(const body_builder & ref) { throw WEBDAR_BUG; };
@@ -84,6 +84,8 @@ public:
     virtual std::string get_body_part(const chemin & path,
 				      const request & req) = 0;
 
+	/// ask for the implementation not to add a new line after this control
+    void set_no_CR() { no_CR = true; };
 
 protected:
 
@@ -136,9 +138,13 @@ protected:
 	/// orphan all adopted children
     void orphan_all_children();
 
+	/// true if it has been requested no to add Carriage Return after the HTML object
+    bool get_no_CR() const { return no_CR; };
+
 private:
     bool visible;
     chemin x_prefix;
+    bool no_CR;
     body_builder *parent;
     std::vector<body_builder *> order;
     std::map<std::string, body_builder *> children;
