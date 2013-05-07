@@ -43,12 +43,14 @@ body_builder se construit par "reference" (event/actor)
 + utiliser archive_read dans saisie a la place des champs eparpilles
 + finir l'implementation de options_read et archive_read
 + faire l'implementation de html_hash_algo
++ faire l'implementation de html_datetime
 
->> faire l'implementation de html_datetime
++ finir l'implementation de options_create
+>>> a tester
 
->>>> finir l'implementation de options_create
 >>> revoir la nomenclature des class, prefixer par html celles relative a l'interface graphique option_read, etc.
 >>> implementer les pages creation, isolation et merging
+>> ajouter un controle sur les valeurs des methodes dans les requetes
 >>>>> implementer une class derivee de libdar::user_interaction : web_user_interaction
 >>>>>>> finir l'implementation de archive_read avec la class web_user_interaction
 >>>>> ajouter le support CSS des superpositions

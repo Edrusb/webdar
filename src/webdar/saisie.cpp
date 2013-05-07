@@ -91,7 +91,6 @@ saisie::saisie():
     select.adopt(&list);
 
 	// creation sub-page
-    create.adopt_static_html(text.get_body_part());
     select.adopt(&create);
 
 	// isolation sub-page

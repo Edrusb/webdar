@@ -23,6 +23,7 @@ extern "C"
 #include "options_compare.hpp"
 #include "options_test.hpp"
 #include "archive_read.hpp"
+#include "options_create.hpp"
 
     /// class saisie
     ///
@@ -74,7 +75,7 @@ private:
     options_compare compare;
     options_test test;
     options_listing list;
-    html_div create;
+    options_create create;
     html_div isolate;
     html_div merge;
     html_div sep1;
