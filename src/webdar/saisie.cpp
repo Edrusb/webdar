@@ -157,7 +157,6 @@ void saisie::on_event(const std::string & event_name)
        || choice.get_current_label() == "compare"
        || choice.get_current_label() == "test"
        || choice.get_current_label() == "list"
-       || choice.get_current_label() == "create"
        || choice.get_current_label() == "isolate"
        || choice.get_current_label() == "merge")
 	show_archive.set_mode(1);

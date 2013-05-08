@@ -162,8 +162,15 @@ void options_read::on_event(const std::string & event_name)
 string options_read::get_body_part(const chemin & path,
 				   const request & req)
 {
+    string ret;
+
     if(get_visible())
-	return get_body_part_from_all_children(path, req);
-    else
-	return "";
+	ret = get_body_part_from_all_children(path, req);
+
+    if(!get_next_visible())
+	ret = "";
+
+    ack_visible();
+
+    return ret;
 }

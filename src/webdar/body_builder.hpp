@@ -22,7 +22,7 @@ class body_builder : public css
 {
 public:
 	/// constructor
-    body_builder() { parent = NULL; order.clear(); children.clear(); revert_child.clear(); visible = true; no_CR = false; };
+    body_builder() { parent = NULL; order.clear(); children.clear(); revert_child.clear(); visible = true ; next_visible = true; no_CR = false; };
 
 	/// avoiding copy constructor use
     body_builder(const body_builder & ref) { throw WEBDAR_BUG; };
@@ -62,10 +62,15 @@ public:
     void foresake(body_builder *obj);
 
 
-	/// whether the object is visible in HTML page or temporarily hidden
-    void set_visible(bool mode) { visible = mode; };
+	/// ask for the object to become visible in HTML page or temporarily hidden
+    void set_visible(bool mode) { next_visible = mode; };
 
 	/// returns the current visible status of the object
+	///
+	/// \note the returned visible status becomes what is set calling set_visible() method
+	/// only once the object has acknoledged its new status thanks to the ack_visible() method.
+	/// The object can known the current visible status but also the next_visible() status, which
+	/// is the one that is pending for acknoledgment.
     bool get_visible() const { return visible; };
 
 	/// ask the object to provide a part of the body to answer the request
@@ -141,8 +146,16 @@ protected:
 	/// true if it has been requested no to add Carriage Return after the HTML object
     bool get_no_CR() const { return no_CR; };
 
+	/// what the still non acknoledged visible status
+    bool get_next_visible() const { return next_visible; };
+
+	/// acknoledge the new visible status
+    void ack_visible() { visible = next_visible; };
+
+
 private:
     bool visible;
+    bool next_visible;
     chemin x_prefix;
     bool no_CR;
     body_builder *parent;

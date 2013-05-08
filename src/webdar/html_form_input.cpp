@@ -68,7 +68,7 @@ string html_form_input::get_body_part(const chemin & path,
 	// first we extract informations from the returned form in
 	// the body of the request
 
-    if(req.get_method() == "POST" && path.empty())
+    if(req.get_method() == "POST" && path.empty() && get_visible())
     {
 	string old = x_init;
 
@@ -89,7 +89,7 @@ string html_form_input::get_body_part(const chemin & path,
 	// we can now return the up to date value of
 	// the field
 
-    if(get_visible())
+    if(get_next_visible())
     {
 	if(x_type != "checkbox")
 	    ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
@@ -115,6 +115,8 @@ string html_form_input::get_body_part(const chemin & path,
     }
     else // HTML control not visible
 	ret = "";
+
+    ack_visible();
 
     return ret;
 }

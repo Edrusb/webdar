@@ -36,33 +36,32 @@ options_create::options_create():
     allow_over("Allow slice overwriting", html_form_input::check, "", 1),
     warn_over("Warn before overwriting", html_form_input::check, "", 1),
     info_details("Detailed informations", html_form_input::check, "", 1),
-    pause("Pause between slices", html_form_input::number, "", 5),
+    pause("Pause at each N slices (zero = no pause)", html_form_input::number, "", 3),
     empty_dir("Store ignored directories as empty directories", html_form_input::check, "", 1),
     compression("Compression algorithm"),
     compression_level("Compression level", html_form_input::range, "", 3),
     slicing("Sliced archive", html_form_input::check, "", 1),
-    slice_size("Slice size", html_form_input::number, "", 1),
+    slice_size("Slice size", html_form_input::number, "", 6),
     different_first_slice("Specific size for first slice", html_form_input::check, "", 1),
-    first_slice_size("Slice size", html_form_input::number, "", 1),
+    first_slice_size("Slice size", html_form_input::number, "", 6),
     execute("Command to execute after each slice", html_form_input::text, "", 30),
     crypto_algo("Cipher used"),
     crypto_pass1("Pass phrase", html_form_input::password, "", 30),
     crypto_pass2("Confirm pass phrase", html_form_input::password, "", 30),
-    crypto_size("Block size (?)", html_form_input::number, "", 30),
+    crypto_size("Cipher Block size", html_form_input::number, "", 30),
     min_compr_size("Minimum file sized compressed", html_form_input::number, "", 30),
     nodump("Avoid saving files having the 'Nodump' flag set", html_form_input::check, "", 1),
     hourshift("Hour shift", html_form_input::number, "", 5),
     empty("Dry run execution", html_form_input::check, "", 1),
-    alter_atime("Alter atime reading files", html_form_input::check, "", 1),
+    fs_alter_atime("What to alter if furtive read mode is not used"),
     furtive_read_mode("Furtive read mode (if available)", html_form_input::check, "", 1),
     same_fs("Only consider files located on the same filesystem as the rooted directory", html_form_input::check, "", 1),
-    snapshot("Perform a snapshot backup", html_form_input::check, "", 1),
-    cache_directory_tagging("Ignore directory using a cache directory tag", html_form_input::check, "", 1),
+    cache_directory_tagging("Ignore directories that use a cache directory tag", html_form_input::check, "", 1),
     display_skipped("Display skipped files", html_form_input::check, "", 1),
     fixed_date("Only record files changed since:"),
-    slice_permission("Slice permission", html_form_input::text, "", 1),
-    slice_user_ownership("Slice user ownership", html_form_input::text, "", 1),
-    slice_group_ownership("slice group ownership", html_form_input::text, "", 1),
+    slice_permission("Slice permission (octal)", html_form_input::text, "", 10),
+    slice_user_ownership("Slice user ownership", html_form_input::text, "", 10),
+    slice_group_ownership("slice group ownership", html_form_input::text, "", 10),
     retry_on_change_times("Max retries saving files that changed", html_form_input::number, "", 3),
     retry_on_change_overhead("Max wasted bytes retrying saving changed files", html_form_input::number, "", 10),
     sequential_marks("Add sequential marks", html_form_input::check, "", 1),
@@ -70,7 +69,7 @@ options_create::options_create():
     security_check("Security warning", html_form_input::check, "", 1),
     user_comment("User comment in slice header", html_form_input::text, "", 40),
     hash_algo("Hashing algorithm"),
-    slice_min_digits("Minimum digits in slice filenames", html_form_input::number, "", 5),
+    slice_min_digits("Minimum digits in slice filenames", html_form_input::number, "", 3),
     ignore_unknown_inode_type("Ignore unknown inode type instead of warning", html_form_input::check, "", 1)
 {
     libdar::archive_options_create defaults;
@@ -81,11 +80,20 @@ options_create::options_create():
     archtype.add_choice("diff", "Differential/Incremental backup");
     archtype.add_choice("snap", "Snapshot backup");
     archtype.add_choice("date", "Date based differential backup");
+    alter_atime.add_choice("atime", "Data last access time (atime)");
+    alter_atime.add_choice("ctime", "Inode last change time (ctime)");
     compression_level.set_range(1, 9);
     if(defaults.get_reference() != NULL)
 	throw WEBDAR_BUG; // not able to fill html form with an existing archive
     else
-	archtype.set_selected(0);
+	if(defaults.get_snapshot())
+	    archtype.set_selected(2);
+	else
+	    if(defaults.get_fixed_date() != 0)
+		archtype.set_selected(3);
+	    else
+		archtype.set_selected(0);
+
     compression.set_no_CR();
     slice_size.set_no_CR();
     first_slice_size.set_no_CR();
@@ -113,12 +121,14 @@ options_create::options_create():
     min_compr_size.set_value(libdar::deci(defaults.get_min_compr_size()).human());
     nodump.set_value_as_bool(defaults.get_nodump());
     what_to_check.set_value(defaults.get_comparison_fields());
-    hourshift.set_value(webdar_tools_convert_to_string(defaults.get_hourshift()));
+    hourshift.set_value(libdar::deci(defaults.get_hourshift()).human());
     empty.set_value_as_bool(defaults.get_empty());
-    alter_atime.set_value_as_bool(defaults.get_alter_atime());
+    if(defaults.get_alter_atime())
+	alter_atime.set_selected(0);
+    else
+	alter_atime.set_selected(1);
     furtive_read_mode.set_value_as_bool(defaults.get_furtive_read_mode());
     same_fs.set_value_as_bool(defaults.get_same_fs());
-    snapshot.set_value_as_bool(defaults.get_snapshot());
     cache_directory_tagging.set_value_as_bool(defaults.get_cache_directory_tagging());
     display_skipped.set_value_as_bool(defaults.get_display_skipped());
     fixed_date.set_value(defaults.get_fixed_date());
@@ -139,12 +149,13 @@ options_create::options_create():
 
 	// archive type and associated optional fields
     fs_archtype.adopt(&archtype);
-    fs_archtype.adopt(&reference);
+    fs_archtype.adopt(&what_to_check);
     fs_archtype.adopt(&hourshift);
-    fs_archtype.adopt(&snapshot);
     fs_archtype.adopt(&fixed_date);
     form_archtype.adopt(&fs_archtype);
     adopt(&form_archtype);
+    adopt(&reference);
+
 
 	// archive generation
     fs_archgen.adopt(&allow_over);
@@ -178,15 +189,15 @@ options_create::options_create():
 	// perimeter
     fs_perimeter.adopt(&empty_dir);
     fs_perimeter.adopt(&nodump);
-    fs_perimeter.adopt(&what_to_check);
     fs_perimeter.adopt(&same_fs);
     fs_perimeter.adopt(&cache_directory_tagging);
     form_perimeter.adopt(&fs_perimeter);
     adopt(&form_perimeter);
 
 	// source data
-    fs_reading.adopt(&alter_atime);
+    fs_alter_atime.adopt(&alter_atime);
     fs_reading.adopt(&furtive_read_mode);
+    fs_reading.adopt(&fs_alter_atime);
     form_reading.adopt(&fs_reading);
     adopt(&form_reading);
 
@@ -234,21 +245,25 @@ void options_create::on_event(const std::string & event_name)
 	reference.set_visible(false);
 	hourshift.set_visible(false);
 	fixed_date.set_visible(false);
+	what_to_check.set_visible(false);
 	break;
     case 1: // diff
 	reference.set_visible(true);
 	hourshift.set_visible(true);
 	fixed_date.set_visible(false);
+	what_to_check.set_visible(true);
 	break;
     case 2: // snapshot
 	reference.set_visible(false);
 	hourshift.set_visible(false);
 	fixed_date.set_visible(false);
+	what_to_check.set_visible(false);
 	break;
     case 3: // date
 	reference.set_visible(false);
 	hourshift.set_visible(true);
 	fixed_date.set_visible(true);
+	what_to_check.set_visible(false);
 	break;
     default:
 	throw WEBDAR_BUG;
@@ -300,9 +315,9 @@ void options_create::on_event(const std::string & event_name)
     switch(crypto_algo.get_value())
     {
     case libdar::crypto_none:
-	crypto_pass1.set_visible(true);
-	crypto_pass2.set_visible(true);
-	crypto_size.set_visible(true);
+	crypto_pass1.set_visible(false);
+	crypto_pass2.set_visible(false);
+	crypto_size.set_visible(false);
 	break;
     case libdar::crypto_scrambling:
     case libdar::crypto_blowfish:
@@ -310,9 +325,9 @@ void options_create::on_event(const std::string & event_name)
     case libdar::crypto_twofish256:
     case libdar::crypto_serpent256:
     case libdar::crypto_camellia256:
-	crypto_pass1.set_visible(false);
-	crypto_pass2.set_visible(false);
-	crypto_size.set_visible(false);
+	crypto_pass1.set_visible(true);
+	crypto_pass2.set_visible(true);
+	crypto_size.set_visible(true);
 	break;
     default:
 	throw WEBDAR_BUG;
@@ -323,8 +338,5 @@ void options_create::on_event(const std::string & event_name)
 string options_create::get_body_part(const chemin & path,
 				     const request & req)
 {
-    if(get_visible())
-	return get_body_part_from_all_children(path, req);
-    else
-	return "";
+    return get_body_part_from_all_children(path, req);
 }

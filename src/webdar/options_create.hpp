@@ -88,10 +88,10 @@ private:
     html_comparison_fields what_to_check;
     html_form_input hourshift;     // fs_archtype member
     html_form_input empty;
-    html_form_input alter_atime;
+    html_form_fieldset fs_alter_atime;
+    html_form_radio alter_atime;
     html_form_input furtive_read_mode;
     html_form_input same_fs;
-    html_form_input snapshot;      // fs_archtype member
     html_form_input cache_directory_tagging;
     html_form_input display_skipped;
     html_datetime fixed_date;      // fs_archtype member

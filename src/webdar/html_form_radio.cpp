@@ -43,11 +43,12 @@ string html_form_radio::get_body_part(const chemin & path,
 	// for POST method only, extract user choice from the body of the request
 	// and update this object's fields
 
-    update_field_from_request(req);
+    if(get_visible())
+	update_field_from_request(req);
 
 	// for any request provide an updated HMTL content in response
 
-    if(get_visible())
+    if(get_next_visible())
     {
 	for(unsigned int i = 0; i < choices.size(); ++i)
 	{
@@ -64,6 +65,8 @@ string html_form_radio::get_body_part(const chemin & path,
     }
     else
 	ret = "";
+
+    ack_visible();
 
     return ret;
 }

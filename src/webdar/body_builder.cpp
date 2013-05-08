@@ -128,10 +128,12 @@ string body_builder::get_recorded_name() const
 string body_builder::get_body_part_from_target_child(const chemin & path,
 						     const request & req)
 {
+    string ret;
+
     if(path.empty())
 	throw WEBDAR_BUG; // invoked with an empty path
 
-    if(visible)
+    if(get_visible() || get_next_visible())
     {
 	string name = path.front();
 	map<string, body_builder *>::iterator it = children.find(name);
@@ -140,13 +142,19 @@ string body_builder::get_body_part_from_target_child(const chemin & path,
 	{
 	    chemin sub_path = path;
 	    sub_path.pop_front();
-	    return it->second->get_body_part(sub_path, req);
+	    ret = it->second->get_body_part(sub_path, req);
 	}
 	else
 	    throw exception_input("unkown URL requested", STATUS_CODE_NOT_FOUND);
     }
     else
-	return "";
+	ret = "";
+
+    if(!get_next_visible())
+	ret = "";
+    ack_visible();
+
+    return ret;
 }
 
 string body_builder::get_body_part_from_all_children(const chemin & path,
@@ -156,7 +164,7 @@ string body_builder::get_body_part_from_all_children(const chemin & path,
     chemin sub_path = path;
     vector<body_builder *>::iterator it = order.begin();
 
-    if(visible)
+    if(get_visible() || get_next_visible())
     {
 	if(!sub_path.empty())
 	    sub_path.pop_front();
@@ -169,8 +177,10 @@ string body_builder::get_body_part_from_all_children(const chemin & path,
 	    ++it;
 	}
     }
-    else
+
+    if(!get_next_visible())
 	ret = "";
+    ack_visible();
 
     return ret;
 }

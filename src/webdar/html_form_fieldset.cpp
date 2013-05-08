@@ -29,7 +29,9 @@ string html_form_fieldset::get_body_part(const chemin & path,
 	ret += get_body_part_from_all_children(path, req);
 	ret += "</fieldset>\n";
     }
-    else
+
+    ack_visible();
+    if(!get_visible())
 	ret = "";
 
     return ret;

@@ -213,19 +213,30 @@ string html_datetime::get_body_part(const chemin & path,
 				    const request & req)
 {
     string ret;
+    bool err = false;
+    int annees;
 
     if(get_no_CR())
 	minute.set_no_CR();
     ret = get_body_part_from_all_children(path, req);
 
-    if(webdar_tools_convert_to_int(year.get_value()) < 1900)
+    try
     {
-	year.set_value("1900");
+	annees = webdar_tools_convert_to_int(year.get_value());
+    }
+    catch(exception_range & e)
+    {
+	err = true;
+    }
+
+    if(err || annees < 70)
+    {
+	year.set_value("1970");
 	if(req.get_method() == "POST")
 	{
 	    request tmpreq = req;
 	    tmpreq.change_method("GET");
-	    ret = get_body_part_from_all_children(path, req);
+	    ret = get_body_part_from_all_children(path, tmpreq);
 	}
 	else
 	    ret = get_body_part_from_all_children(path, req);
