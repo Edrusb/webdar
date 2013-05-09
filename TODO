@@ -44,9 +44,8 @@ body_builder se construit par "reference" (event/actor)
 + finir l'implementation de options_read et archive_read
 + faire l'implementation de html_hash_algo
 + faire l'implementation de html_datetime
-
 + finir l'implementation de options_create
->>> a tester
++ ajouter les champs non optionnels pour la creation d'archive
 
 >>> revoir la nomenclature des class, prefixer par html celles relative a l'interface graphique option_read, etc.
 >>> implementer les pages creation, isolation et merging

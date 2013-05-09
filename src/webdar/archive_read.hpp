@@ -23,7 +23,7 @@ class archive_read: public body_builder, public actor
 public:
     archive_read(const std::string & archive_description);
     archive_read(const archive_read & ref);
-    archive_read & operator = (const archive_read & ref) { throw WEBDAR_BUG; };
+    const archive_read & operator = (const archive_read & ref) { throw WEBDAR_BUG; };
     ~archive_read() { if(ptr != NULL) close_archive(); };
 
     void open_archive(/* webinteraction required here */);
