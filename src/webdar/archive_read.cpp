@@ -110,6 +110,8 @@ void archive_read::close_archive()
 string archive_read::get_body_part(const chemin & path,
 				   const request & req)
 {
+    if(ptr != NULL)
+	throw WEBDAR_BUG; // archive should be closed before changing any of its parameters
     return get_body_part_from_all_children(path, req);
 }
 

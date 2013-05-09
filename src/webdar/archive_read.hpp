@@ -27,6 +27,7 @@ public:
     ~archive_read() { if(ptr != NULL) close_archive(); };
 
     void open_archive(/* webinteraction required here */);
+    bool is_archive_open() const { return ptr != NULL; };
     libdar::archive & get_archive();
     void close_archive();
 

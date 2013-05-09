@@ -237,6 +237,88 @@ options_create::options_create():
     on_event("");
 }
 
+libdar::archive_options_create options_create::get_options() const
+{
+    libdar::archive_options_create ret;
+
+    switch(archtype.get_selected_num())
+    {
+    case 0: // full backup
+	break;
+    case 1: // diff/incremental backup
+	    /*	reference.open_archive( <web_user_interaction> ) */
+	ret.set_reference(&(const_cast<options_create *>(this)->reference.get_archive()));
+	ret.set_hourshift(libdar::deci(hourshift.get_value()).computer());
+	break;
+    case 2: // snapshot
+	ret.set_snapshot(true);
+	break;
+    case 3: // fixed date
+	ret.set_fixed_date(fixed_date.get_value());
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+    ret.set_allow_over(allow_over.get_value_as_bool());
+    ret.set_warn_over(warn_over.get_value_as_bool());
+    ret.set_info_details(info_details.get_value_as_bool());
+    ret.set_pause(libdar::deci(pause.get_value()).computer());
+    ret.set_empty_dir(empty_dir.get_value_as_bool());
+    ret.set_compression(compression.get_value());
+    ret.set_compression_level(webdar_tools_convert_to_int(compression_level.get_value()));
+    ret.set_min_compr_size(libdar::deci(min_compr_size.get_value()).computer() * min_compr_size_unit.get_value());
+    if(slicing.get_value_as_bool())
+    {
+	libdar::infinint s_size = libdar::deci(slice_size.get_value()).computer() * slice_size_unit.get_value();
+	libdar::infinint f_s_size = 0;
+
+	if(different_first_slice.get_value_as_bool())
+	    f_s_size = libdar::deci(first_slice_size.get_value()).computer() * first_slice_size_unit.get_value();
+
+	ret.set_slicing(s_size, f_s_size);
+    }
+
+    ret.set_crypto_algo(crypto_algo.get_value());
+    if(crypto_algo.get_value() != libdar::crypto_none)
+    {
+	if(crypto_pass1.get_value() != crypto_pass2.get_value())
+	    throw exception_range("crypto password and its confirmation do not match");
+	ret.set_crypto_pass(crypto_algo.get_value());
+	ret.set_crypto_size(webdar_tools_convert_to_int(crypto_size.get_value()));
+    }
+    ret.set_nodump(nodump.get_value_as_bool());
+    ret.set_what_to_check(what_to_check.get_value());
+    ret.set_empty(empty.get_value_as_bool());
+    ret.set_alter_atime(alter_atime.get_selected_id() == "atime");
+    ret.set_furtive_read_mode(furtive_read_mode.get_value_as_bool());
+    ret.set_same_fs(same_fs.get_value_as_bool());
+    ret.set_cache_directory_tagging(cache_directory_tagging.get_value_as_bool());
+    ret.set_display_skipped(display_skipped.get_value_as_bool());
+    ret.set_slice_permission(slice_permission.get_value());
+    ret.set_slice_user_ownership(slice_user_ownership.get_value());
+    ret.set_slice_group_ownership(slice_group_ownership.get_value());
+    ret.set_retry_on_change(libdar::deci(retry_on_change_times.get_value()).computer(),
+			    libdar::deci(retry_on_change_overhead.get_value()).computer() * retry_on_change_overhead_unit.get_value());
+    ret.set_sequential_marks(sequential_marks.get_value_as_bool());
+    ret.set_sparse_file_min_size(libdar::deci(sparse_file_min_size.get_value()).computer() * sparse_file_min_size_unit.get_value());
+    ret.set_security_check(security_check.get_value_as_bool());
+    ret.set_user_comment(user_comment.get_value());
+    ret.set_hash_algo(hash_algo.get_value());
+    ret.set_slice_min_digits(libdar::deci(slice_min_digits.get_value()).computer());
+    ret.set_ignore_unknown_inode_type(ignore_unknown_inode_type.get_value_as_bool());
+
+    return ret;
+}
+
+
+string options_create::get_body_part(const chemin & path,
+				     const request & req)
+{
+    if(reference.is_archive_open())
+	reference.close_archive();
+    return get_body_part_from_all_children(path, req);
+}
+
 void options_create::on_event(const std::string & event_name)
 {
     switch(archtype.get_selected_num())
@@ -334,9 +416,3 @@ void options_create::on_event(const std::string & event_name)
     }
 }
 
-
-string options_create::get_body_part(const chemin & path,
-				     const request & req)
-{
-    return get_body_part_from_all_children(path, req);
-}
