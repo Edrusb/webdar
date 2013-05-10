@@ -25,29 +25,10 @@ html_form_input::html_form_input(const std::string & label,
 				 unsigned int size)
 {
     x_label = label;
-    switch(type)
-    {
-    case text:
-	x_type = "text";
-	break;
-    case password:
-	x_type = "password";
-	break;
-    case number:
-	x_type = "number";
-	break;
-    case range:
-	x_type = "range";
-	break;
-    case check:
-	x_type = "checkbox";
-	break;
-    default:
-	throw WEBDAR_BUG;
-    }
+    x_type = string_for_type(type);
     x_init = initial_value;
     x_size = webdar_tools_convert_to_string(size);
-    x_min = x_max ="";
+    x_min = x_max = "";
     enabled = true;
 
     register_name(changed);
@@ -120,3 +101,32 @@ string html_form_input::get_body_part(const chemin & path,
 
     return ret;
 }
+
+string html_form_input::string_for_type(input_type type)
+{
+    string ret;
+
+    switch(type)
+    {
+    case text:
+	ret = "text";
+	break;
+    case password:
+	ret = "password";
+	break;
+    case number:
+	ret = "number";
+	break;
+    case range:
+	ret = "range";
+	break;
+    case check:
+	ret = "checkbox";
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+
+    return ret;
+}
+

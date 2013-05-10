@@ -18,6 +18,7 @@ class html_form_fieldset : public body_builder
 public:
     html_form_fieldset(const std::string & label) { x_label = label; };
 
+    void change_label(const std::string & label) { x_label = label; };
 	/// clear and destroy previously added objects
     void clear() { orphan_all_children(); };
 

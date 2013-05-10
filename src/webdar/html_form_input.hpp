@@ -27,6 +27,8 @@ public:
 		    unsigned int size);
 
     void set_range(int min, int max);
+    void change_label(const std::string & label) { x_label = label; };
+    void change_type(input_type type) { x_type = string_for_type(type); };
 
     const std::string & get_value() const { return x_init; };
     void set_value(const std::string & val) { x_init = val; act(changed); };
@@ -47,6 +49,8 @@ private:
     std::string x_size;  //< width of the field in number of characterds
     std::string x_min;   //< minimum value of the field (for type = number)
     std::string x_max;   //< maximum value of the field (for type = number)
+
+    static std::string string_for_type(input_type type);
 };
 
 #endif
