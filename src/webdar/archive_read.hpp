@@ -17,6 +17,7 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "options_read.hpp"
 #include "events.hpp"
+#include "web_user_interaction.hpp"
 
 class archive_read: public body_builder, public actor
 {
@@ -26,7 +27,7 @@ public:
     const archive_read & operator = (const archive_read & ref) { throw WEBDAR_BUG; };
     ~archive_read() { if(ptr != NULL) close_archive(); };
 
-    void open_archive(/* webinteraction required here */);
+    void open_archive(web_user_interaction & ui);
     bool is_archive_open() const { return ptr != NULL; };
     libdar::archive & get_archive();
     void close_archive();

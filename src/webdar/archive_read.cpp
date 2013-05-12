@@ -57,39 +57,35 @@ archive_read::archive_read(const archive_read & ref):
     throw WEBDAR_BUG;
 }
 
-void archive_read::open_archive(/* web_user_interaction required here */)
+void archive_read::open_archive(web_user_interaction & ui)
 {
     if(ptr != NULL)
 	throw WEBDAR_BUG;
 
     try
     {
-/*
+	libdar::path chem = archive.get_value();
+	string basename;
 
-        A IMPLEMENTER
+	if(!chem.pop(basename))
+	{
+	    basename = archive.get_value();
+	    chem = ".";
+	}
 
-	    /// split archive.get_value() in path and basename
-	libdar::path chem = ...;
-	string::basename;
-	ptr = new archive(web_interaction,
-			  chem,
-			  basename,
-			  /// extension
-			  opt_read.get_options());
+	ptr = new (nothrow) libdar::archive(ui,
+					    chem,
+					    basename,
+					    "dar",
+					    opt_read.get_options());
 
 	if(ptr == NULL)
-	    throw ...
-*/
+	    throw exception_memory();
     }
     catch(libdar::Egeneric & e)
     {
-/*
-
-  A IMPLEMENTER
-
-*/
+	throw exception_libcall(e);
     }
-
 }
 
 libdar::archive & archive_read::get_archive()
