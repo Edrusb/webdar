@@ -65,7 +65,7 @@ struct web_user_interaction_html_data
 class web_user_interaction: public libdar::user_interaction, public body_builder, public actor
 {
 public:
-    web_user_interaction(unsigned int x_warn_size);
+    web_user_interaction(unsigned int x_warn_size = 10);
     web_user_interaction(const web_user_interaction & ref) { copy_from(ref); };
     const web_user_interaction & operator = (const web_user_interaction & ref) { destroy(); copy_from(ref); };
     ~web_user_interaction() { destroy(); };
