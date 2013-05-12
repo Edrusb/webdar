@@ -51,19 +51,18 @@ public:
 class events : virtual public reference
 {
 public:
+	/// record an actor for an given event
+    void record_actor_on_event(actor *ptr, const std::string & name);
+
+protected:
+	/// inherited from class reference
+    void broken_peering_from(reference *obj);
 
 	/// add a new event for actors to register against
     void register_name(const std::string & name);
 
-	/// record an actor for an given event
-    void record_actor_on_event(actor *ptr, const std::string & name);
-
 	/// trigger a given event
     void act(const std::string & name);
-
-	/// inherited from class reference
-    void broken_peering_from(reference *obj);
-
 
 private:
     std::map< std::string , std::list<actor *> > carte;
