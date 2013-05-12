@@ -46,22 +46,24 @@ body_builder se construit par "reference" (event/actor)
 + faire l'implementation de html_datetime
 + finir l'implementation de options_create
 + ajouter les champs non optionnels pour la creation d'archive
++ resoudre probleme de deadlock lors de l'initialisation des champs -> acteur/event
++ implementer une class derivee de libdar::user_interaction : web_user_interaction
 
->>> revoir la nomenclature des class, prefixer par html celles relative a l'interface graphique option_read, etc.
->>> implementer les pages creation, isolation et merging
->> ajouter un controle sur les valeurs des methodes dans les requetes
->>>>> implementer une class derivee de libdar::user_interaction : web_user_interaction
->>>>>>> finir l'implementation de archive_read avec la class web_user_interaction
->>>>> ajouter le support CSS des superpositions
->>>>>>>> implementer le parcours d'une archive ouverte
->>>>>>>>> implementer les operations restoration, comparaison, testing, etc.
->>>>>>>>>> implementer la construction de filtres
->>>>>>>>>>>> implementer la construction de repositories
-+ revoir html_form_input pour utiliser des libdar::secu_string au lieu des string
-+ rajouter les masks filtrage, EA, backup hook, compression
-+ rajouter les entrepots
-+ bouton et page d'aide contextuelle (dans encart flotant a gauche dans "selection")
-+ implementer l'entrepot FTP
+? revoir la nomenclature des class, prefixer par html celles relative a l'interface graphique option_read, etc.
+- implementer les pages isolation et merging
+- >>> ajouter un controle sur les valeurs des methodes dans les requetes
++ finir l'implementation de archive_read avec la class web_user_interaction
+- ajouter le support CSS des superpositions
+- implementer le parcours d'une archive ouverte
+- implementer les operations restoration, comparaison, testing, etc.
+- implementer la construction de filtres
+- implementer la construction de repositories
+- implementer la construction d'overwriting policy
+- revoir html_form_input pour utiliser des libdar::secu_string au lieu des string
+- rajouter les masks filtrage, EA, backup hook, compression
+- rajouter les entrepots
+- bouton et page d'aide contextuelle (dans encart flotant a gauche dans "selection")
+- implementer l'entrepot FTP
 
 - pour les sessions non authentifiees, il faut limiter la duree de la connexion a un temps court
 - finir la gestion des signaux et masks (avec les informations de sessions ouvertes etc.)
@@ -76,7 +78,7 @@ body_builder se construit par "reference" (event/actor)
 - implementer class authentification par user du systeme
 - implementer le mode daemon / syslog (qui interdit l'authentification par CLI)
 - pouvoir saisir des nom et convertir les IP en nom si possible (peer IP)
-- revoir sterrror_r dans exception_system (strerror n'est pas thread safe, mais errno l'est !!!)
++ revoir sterrror_r dans exception_system (strerror n'est pas thread safe, mais errno l'est !!!)
 - revoir toutes les allocations dynamiques en "new (nothrow)"
 - ajouter des #ifdef dans les includes
 - ajouter la licence en CLI -L et http, entetes des fichiers avec GPLv3
