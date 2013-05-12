@@ -2,6 +2,20 @@
     // webdar headers
 #include "exceptions.hpp"
 
+exception_system::exception_system(const std::string & context, int error_code) : exception_base("")
+{
+    const unsigned int SIZE = 300;
+    char buffer[SIZE];
+#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+    int ret = strerror_r(error_code, buffer, SIZE);
+    buffer[SIZE - 1] = '\0'; // that does not hurt
+    if(ret == 0) // (successfull call)
+	change_message(context + ": " + buffer);
+    else
+#endif
+	change_message(libdar::tools_printf("System failed with error code %d", error_code));
+}
+
 void throw_as_most_derivated_class(exception_base *ebase)
 {
     exception_memory *emem = dynamic_cast<exception_memory *>(ebase);

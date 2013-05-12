@@ -25,6 +25,7 @@ public:
     virtual ~exception_base() {};
 
     const std::string & get_message() const { return msg; };
+    void change_message(const std::string & x_msg) { msg = x_msg; };
 
     virtual exception_base *clone() const = 0;
 
@@ -77,7 +78,7 @@ protected:
 class exception_system : public exception_base
 {
 public:
-     exception_system(const std::string & context, int error_code) : exception_base(context + ": " + strerror(error_code)) {};
+    exception_system(const std::string & context, int error_code);
 
 protected:
     virtual exception_base *clone() const { return cloner<exception_system>((void *)this); };
@@ -131,7 +132,7 @@ protected:
 class exception_libcall : public exception_base
 {
 public:
-    exception_libcall(const libdar::Elibcall & e): exception_base(e.get_message()) {};
+    exception_libcall(const libdar::Egeneric & e): exception_base(e.get_message()) {};
 
 protected:
     virtual exception_base *clone() const { return cloner<exception_libcall>((void *)this); };
