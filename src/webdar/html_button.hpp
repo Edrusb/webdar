@@ -17,12 +17,13 @@ extern "C"
 #include "html_url.hpp"
 #include "html_div.hpp"
 
-class html_button : public body_builder, public events
+class html_button : public html_div, public events
 {
 public:
     html_button(const std::string & label, const std::string & x_event_name);
 
-    html_url_class & change_url_class() { return url_class; };
+    void set_url_class(const html_url_class & val);
+    void set_url_css(const css & val) { inside.css_inherit_from(val); };
 
 	// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
@@ -31,7 +32,6 @@ public:
     virtual void path_has_changed();
 
 private:
-    html_div surround;
     html_url inside;
     std::string event_name;
     html_url_class url_class;

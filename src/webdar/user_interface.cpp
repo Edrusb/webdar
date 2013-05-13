@@ -22,7 +22,7 @@ user_interface::user_interface()
 {
     mode = config;
     register_name(closing);
-    parametrage.record_actor_on_event(this, saisie::closing);
+    parametrage.record_actor_on_event(this, saisie::event_closing);
 }
 
 answer user_interface::give_answer(const request & req)
@@ -50,7 +50,7 @@ answer user_interface::give_answer(const request & req)
 
 void user_interface::on_event(const std::string & event_name)
 {
-    if(event_name == saisie::closing)
+    if(event_name == saisie::event_closing)
 	act(closing);
     else
 	throw WEBDAR_BUG; // what's that event !?!

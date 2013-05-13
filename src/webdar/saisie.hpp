@@ -24,6 +24,8 @@ extern "C"
 #include "options_test.hpp"
 #include "archive_read.hpp"
 #include "archive_create.hpp"
+#include "html_button.hpp"
+#include "html_url_class.hpp"
 
     /// class saisie
     ///
@@ -39,9 +41,16 @@ class saisie : public html_page, public actor, public events
 {
 public:
 	/// available event for that class
-    static const std::string closing;
+    static const std::string event_closing;
+    static const std::string event_restore;
+    static const std::string event_compare;
+    static const std::string event_test;
+    static const std::string event_list;
+    static const std::string event_create;
+    static const std::string event_isolate;
+    static const std::string event_merge;
 
-
+	/// constructor
     saisie();
 
 	/// inherited from html_page
@@ -69,25 +78,54 @@ private:
 
 
 	// the different sub pages contained by "select" and shown depending on choice's value
-    html_div about;
-    html_div sep0;
+    html_div div_about;
+	//
+    html_div div_sep0;
+	//
+    html_div div_extract;
     options_extract extract;
+    html_button go_extract;
+	//
+    html_div div_compare;
     options_compare compare;
+    html_button go_compare;
+	//
+    html_div div_test;
     options_test test;
+    html_button go_test;
+	//
+    html_div div_list;
     options_listing list;
+    html_button go_list;
+	//
+    html_div div_create;
     archive_create create;
-    html_div isolate;
-    html_div merge;
-    html_div sep1;
-    html_div filters;
-    html_div repo;
-    html_div sess;
-    html_div sep2;
+    html_button go_create;
+	//
+    html_div div_isolate;
+    html_button go_isolate;
+	//
+    html_div div_merge;
+    html_button go_merge;
+	//
+    html_div div_sep1;
+	//
+    html_div div_filters;
+	//
+    html_div div_repo;
+	//
+    html_div div_sess;
+	//
+    html_div div_sep2;
+	//
     html_yes_no_box close;
 
+	// CSS attributes to buttons and menu
+    html_div box_off; //< used to assign CSS attributes: unselected item
+    html_div box_on;  //< used to assign CSS attributes: selected item
+    html_div box_void;//< used to assign CSS attributes: separators
+    html_url_class url_selected; //< links when box selected
+    html_url_class url_normal;   //< links when box no selected
 };
-
-
-
 
 #endif
