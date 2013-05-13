@@ -108,6 +108,7 @@ void html_statistics::build()
 	    table->adopt_static_html(byte_amount_lbl.get_body_part());
 	    table->adopt(&byte_amount_count);
 	}
+	adopt(table);
     }
     catch(...)
     {
