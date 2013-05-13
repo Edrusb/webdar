@@ -24,11 +24,11 @@ public:
 	/// constructor
     body_builder() { parent = NULL; order.clear(); children.clear(); revert_child.clear(); visible = true ; next_visible = true; no_CR = false; };
 
-	/// avoiding copy constructor use
-    body_builder(const body_builder & ref) { throw WEBDAR_BUG; };
+	/// copy constructor allowed only if the object has no parent nor child
+    body_builder(const body_builder & ref);
 
-	/// avoiding assignment operator are fine here
-    const body_builder & operator = (const body_builder & ref) { throw WEBDAR_BUG; };
+	/// assignment operator copy constructor allowed only if the object has no parent nor child
+    const body_builder & operator = (const body_builder & ref);
 
 	/// the (virtual) destructor
     virtual ~body_builder() { orphan_all_children(); unrecord_from_parent(); };

@@ -18,6 +18,33 @@ using namespace std;
 
 const unsigned int NAME_WIDTH = 4;
 
+body_builder::body_builder(const body_builder & ref)
+{
+    if(parent != NULL || !order.empty() || ! children.empty() || ! revert_child.empty())
+	throw WEBDAR_BUG;
+    if(ref.parent != NULL || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty())
+	throw WEBDAR_BUG;
+    visible = ref.visible;
+    next_visible = ref.next_visible;
+    no_CR = ref.no_CR;
+}
+
+const body_builder & body_builder::operator = (const body_builder & ref)
+{
+    css *me = this;
+    const css *you = & ref;
+
+    if(parent != NULL || !order.empty() || ! children.empty() || ! revert_child.empty())
+	throw WEBDAR_BUG;
+    if(ref.parent != NULL || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty())
+	throw WEBDAR_BUG;
+
+    *me = *you; // copying the ancestor class fields
+    visible = ref.visible;
+    next_visible = ref.next_visible;
+    no_CR = ref.no_CR;
+}
+
 void body_builder::set_prefix(const chemin & prefix)
 {
     if(parent != NULL)
