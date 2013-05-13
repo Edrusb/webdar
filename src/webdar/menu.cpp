@@ -211,8 +211,12 @@ string menu::get_body_part(const chemin & path,
     string choice;
 
     if(!target.empty())
+    {
 	choice = target.back();
-    target.pop_back();
+	target.pop_back();
+    }
+    else
+	choice = "";
 
     if(target == get_path() && choice != "")
     {
