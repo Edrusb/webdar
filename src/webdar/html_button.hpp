@@ -11,7 +11,6 @@ extern "C"
 #include <string>
 
     // webdar headers
-#include "body_builder.hpp"
 #include "events.hpp"
 #include "html_url_class.hpp"
 #include "html_url.hpp"
