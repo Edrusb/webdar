@@ -34,7 +34,7 @@ const body_builder & body_builder::operator = (const body_builder & ref)
     css *me = this;
     const css *you = & ref;
 
-    if(parent != NULL || !order.empty() || ! children.empty() || ! revert_child.empty())
+    if(parent != NULL || !order.empty() || !children.empty() || !revert_child.empty())
 	throw WEBDAR_BUG;
     if(ref.parent != NULL || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty())
 	throw WEBDAR_BUG;
