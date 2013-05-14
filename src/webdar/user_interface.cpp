@@ -17,12 +17,30 @@ extern "C"
 using namespace std;
 
 const string user_interface::closing = "user_interface_closing";
+const string user_interface::end_libdar = "user_interface_end_libdar";
 
-user_interface::user_interface()
+user_interface::user_interface():
+    close_click("Close", end_libdar)
 {
     mode = config;
+    mode_changed = false;
     register_name(closing);
     parametrage.record_actor_on_event(this, saisie::event_closing);
+    parametrage.record_actor_on_event(this, saisie::event_restore);
+    parametrage.record_actor_on_event(this, saisie::event_compare);
+    parametrage.record_actor_on_event(this, saisie::event_test);
+    parametrage.record_actor_on_event(this, saisie::event_list);
+    parametrage.record_actor_on_event(this, saisie::event_create);
+    parametrage.record_actor_on_event(this, saisie::event_isolate);
+    parametrage.record_actor_on_event(this, saisie::event_merge);
+    close_click.record_actor_on_event(this, end_libdar);
+
+    stats.set_treated_label("Treated inode(s)");
+    stats.set_skipped_label("Skipped inode(s)");
+    stats.set_errored_label("Error(s) met");
+    run_div.adopt(&web_ui);
+    run_div.adopt(&stats);
+    run_div.adopt(&close_click);
 }
 
 answer user_interface::give_answer(const request & req)
@@ -32,18 +50,24 @@ answer user_interface::give_answer(const request & req)
     ret.set_status(STATUS_CODE_OK);
     ret.set_reason("ok");
 
-    switch(mode)
+    do
     {
-    case config:
-	ret.add_body(parametrage.get_body_part(req.get_uri().get_path(), req));
-	break;
-    case listing:
-	throw exception_feature("libdar listing mode reached in user_interface");
-    case running:
-	throw exception_feature("libdar running mode reached in user_interface");
-    default:
-	throw WEBDAR_BUG;
+	mode_changed = false;
+	switch(mode)
+	{
+	case config:
+	    ret.add_body(parametrage.get_body_part(req.get_uri().get_path(), req));
+	    break;
+	case listing:
+	    throw exception_feature("libdar listing mode reached in user_interface");
+	case running:
+	    ret.add_body(run_div.get_body_part(req.get_uri().get_path(), req));
+	    break;
+	default:
+	    throw WEBDAR_BUG;
+	}
     }
+    while(mode_changed);
 
     return ret;
 }
@@ -53,10 +77,34 @@ void user_interface::on_event(const std::string & event_name)
     if(event_name == saisie::event_closing)
 	act(closing);
     else
-	throw WEBDAR_BUG; // what's that event !?!
+	if(event_name == end_libdar)
+	{
+	    mode = config;
+	    mode_changed = true;
+	}
+	else
+	    if(event_name == saisie::event_restore
+	       || event_name == saisie::event_compare
+	       || event_name == saisie::event_test
+	       || event_name == saisie::event_create
+	       || event_name == saisie::event_isolate
+	       || event_name == saisie::event_merge)
+	    {
+		mode = running;
+		mode_changed = true;
+	    }
+	    else
+		if(event_name == saisie::event_list)
+		{
+		    mode = listing;
+		    mode_changed = true;
+		}
+		else
+		    throw WEBDAR_BUG; // what's that event !?!
 }
 
 void user_interface::prefix_has_changed()
 {
     parametrage.set_prefix(get_prefix());
+    run_div.set_prefix(get_prefix());
 }

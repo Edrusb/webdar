@@ -34,6 +34,7 @@ web_user_interaction_html_data::web_user_interaction_html_data():
 
     inter.set_visible(false);
     get_string.set_visible(false);
+    form.set_visible(false);
 };
 
 
@@ -281,9 +282,9 @@ string web_user_interaction::get_body_part(const chemin & path,
 
 	if(lib_data->pause2_pending && !lib_data->answered)
 	{
-	    if(!html_data->pause2.get_visible());
+	    if(!html_data->inter.get_visible());
 	    {
-		html_data->pause2.set_visible(true);
+		html_data->inter.set_visible(true);
 		html_data->inter.change_label(lib_data->pause2_msg);
 		clear_pause2 = true;
 	    }
@@ -316,6 +317,11 @@ string web_user_interaction::get_body_part(const chemin & path,
 		clear_get_string = true;
 	    }
 	}
+
+	if(html_data->get_string.get_visible() || html_data->inter.get_visible())
+	    html_data->form.set_visible(true);
+	else
+	    html_data->form.set_visible(false);
     }
     catch(...)
     {

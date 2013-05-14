@@ -48,20 +48,40 @@ body_builder se construit par "reference" (event/actor)
 + ajouter les champs non optionnels pour la creation d'archive
 + resoudre probleme de deadlock lors de l'initialisation des champs -> acteur/event
 + implementer une class derivee de libdar::user_interaction : web_user_interaction
-
-? revoir la nomenclature des class, prefixer par html celles relative a l'interface graphique option_read, etc.
-- implementer les pages isolation et merging
-- >>> ajouter un controle sur les valeurs des methodes dans les requetes
 + finir l'implementation de archive_read avec la class web_user_interaction
+
++ implementer classe html_bouton issue de body_builder et events, l'evenement genere est fourni via le constucteur
++ ajouter un bouton a chaque page (backup, test, etc.)
++ faire une classe progressive (libdar::statistics) report representation HTML de la classe libdar::statistics
++ ajouter un champ web_user_interface a la classe user_interface,
++ placer la class user_interface comme acteur sur boutons de chaque page
+
+- revoir l'implementation de menu pour utiliser des html_button
+- voir comment partager les proprietes CSS des boutons seuls et au sein d'un menu (methode sur class saisie  transmise a ses bouton et ses menus, invoquee depuis la class user_interface pour ses propres boutons en direct) ?
+- faire une classe abort_libdar, invoquant libdar::thread_cancel et fournissant un bouton "abort"
+- voir probleme d'initialisation de mutex lorsqu'on ferme une session depuis elle-meme
+- faire une class derivee de thread pour lancer les appels libdar (voire une classe par action, ou une meme classe avec plusieurs methods "run", run_create(..)etc.)
+- utiliser un user_interface * au lieu d'un respondeur * dans la classe session => les informations de session libdar, thread_id, etc. ne sont plus par l'objet session, l'objet session gere uniquement l'acces a l'objet user_interface. Celui-ci gere sa thread libdar et dispose d'un moyen HTML et d'une methode pour avorter une thread libdar.
+
++ la classe user_interface dispose d'un etat modifie entre autres par les evenements sur les boutons (saisie, create, test, etc.)
++ ajouter un champ ou plusieurs champs html_progressive_report a la classe user_interface
+
 - ajouter le support CSS des superpositions
-- implementer le parcours d'une archive ouverte
-- implementer les operations restoration, comparaison, testing, etc.
+- ajouter un controle sur les valeurs des methodes dans les requetes afin de valider les champs avant de les soumettre a libdar (coherence de mots de passe, range des valeurs, chaine reprensant des nombres, etc.) => gestion via des exceptions => page speciale avec bouton retour ou CSS en premier plan.
+- implementer les pages isolation et merging
+- revoir la nomenclature des class, prefixer par html celles relative a l'interface graphique option_read, etc.
+
+- implementer le parcours d'une archive ouverte (listing)
+
 - implementer la construction de filtres
-- implementer la construction de repositories
 - implementer la construction d'overwriting policy
+- ajouter les champs filtres aux classes d'options
+- ajouter les champs overwriting aux classes d'options
+- implementer la construction de repositories
+- creer un controle pour parcourir un repository afin de selectionner un repertoire ou un fichier (et qui retourne le chemin de l'object selectionne par l'utilisateur).
+
 - revoir html_form_input pour utiliser des libdar::secu_string au lieu des string
-- rajouter les masks filtrage, EA, backup hook, compression
-- rajouter les entrepots
+
 - bouton et page d'aide contextuelle (dans encart flotant a gauche dans "selection")
 - implementer l'entrepot FTP
 
@@ -81,6 +101,7 @@ body_builder se construit par "reference" (event/actor)
 + revoir sterrror_r dans exception_system (strerror n'est pas thread safe, mais errno l'est !!!)
 - revoir toutes les allocations dynamiques en "new (nothrow)"
 - ajouter des #ifdef dans les includes
+
 - ajouter la licence en CLI -L et http, entetes des fichiers avec GPLv3
 - portabilite avec automake / autoconf
 - internationalisation avec gettext

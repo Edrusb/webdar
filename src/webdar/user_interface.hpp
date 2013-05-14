@@ -13,12 +13,15 @@ extern "C"
     // webdar headers
 #include "responder.hpp"
 #include "saisie.hpp"
+#include "html_statistics.hpp"
+#include "web_user_interaction.hpp"
 
 class user_interface : public responder
 {
 public:
 	/// available event for that class
     static const std::string closing;
+    static const std::string end_libdar;
 
     user_interface();
 
@@ -35,8 +38,13 @@ protected:
 
 private:
     enum { config, listing, running } mode;
+    bool mode_changed;
 
     saisie parametrage;
+    web_user_interaction web_ui;
+    html_statistics stats;
+    html_button close_click;
+    html_div run_div;
 };
 
 #endif

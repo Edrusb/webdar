@@ -21,6 +21,9 @@ class html_statistics : public body_builder
 {
 public:
     html_statistics();
+    html_statistics(const html_statistics & ref) { throw WEBDAR_BUG; };
+    const html_statistics operator = (const html_statistics & ref) { throw WEBDAR_BUG; };
+    ~html_statistics() { unbuild(); };
 
     void clear_counters() { stats.clear(); };
     void clear_labels();
@@ -33,7 +36,7 @@ public:
     void set_tooold_label(const std::string & label) { tooold_lbl.clear(); tooold_lbl.add_text(0, label); unbuild(); };
     void set_errored_label(const std::string & label) { errored_lbl.clear(); errored_lbl.add_text(0, label); unbuild(); };
     void set_deleted_label(const std::string & label) { deleted_lbl.clear(); deleted_lbl.add_text(0, label); unbuild(); };
-    void set_ea_treated_label(const std::string & label) { ea_deleted_lbl.clear(); ea_deleted_lbl.add_text(0, label); unbuild(); };
+    void set_ea_treated_label(const std::string & label) { ea_treated_lbl.clear(); ea_treated_lbl.add_text(0, label); unbuild(); };
     void set_byte_amount_label(const std::string & label) { byte_amount_lbl.clear(); byte_amount_lbl.add_text(0, label); unbuild(); };
 
 	/// the address of the object to be updated by libdar
@@ -44,8 +47,7 @@ public:
 	/// \note always fields that got a label (using a set_*_label() method)
 	/// are displayed.
     virtual std::string get_body_part(const chemin & path,
-				      const request & req)
-    { return get_body_part_from_all_children(path, req); };
+				      const request & req);
 
 private:
     libdar::statistics stats;
@@ -59,7 +61,7 @@ private:
     html_text tooold_lbl;
     html_text errored_lbl;
     html_text deleted_lbl;
-    html_text ea_deleted_lbl;
+    html_text ea_treated_lbl;
     html_text byte_amount_lbl;
 
     html_text treated_count;
@@ -69,7 +71,7 @@ private:
     html_text tooold_count;
     html_text errored_count;
     html_text deleted_count;
-    html_text ea_deleted_count;
+    html_text ea_treated_count;
     html_text byte_amount_count;
 
 	/// build the html body_builder tree using only labelled field
