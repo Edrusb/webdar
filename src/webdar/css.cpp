@@ -9,6 +9,7 @@ extern "C"
 
     // webdar headers
 #include "exceptions.hpp"
+#include "webdar_tools.hpp"
 
 
     //
@@ -30,6 +31,12 @@ void css::css_clear_attributes()
     margin_left.clear();
     height.clear();
     width.clear();
+    z_index.clear();
+    position_absolute.clear();
+    position_top.clear();
+    position_left.clear();
+    position_bottom.clear();
+    position_right.clear();
     float_pos.clear();
     float_clear.clear();
     padding_top.clear();
@@ -45,7 +52,7 @@ void css::css_clear_attributes()
     border_style.clear();
 }
 
-void css::css_color(const std::string & col,
+void css::css_color(const string & col,
 		    bool inherit)
 {
     color.set_value(string(" color: ") + col + ";");
@@ -53,7 +60,7 @@ void css::css_color(const std::string & col,
     css_updated(inherit);
 }
 
-void css::css_background_color(const std::string & col,
+void css::css_background_color(const string & col,
 			       bool inherit)
 {
     bg_col.set_value(string(" background-color: ") + col + ";");
@@ -62,7 +69,7 @@ void css::css_background_color(const std::string & col,
 }
 
 
-void css::css_background_image(const std::string & url,
+void css::css_background_image(const string & url,
 			       bool repeat_x,
 			       bool repeat_y,
 			       bool fixed,
@@ -87,8 +94,8 @@ void css::css_background_image(const std::string & url,
     css_updated(inherit);
 }
 
-void css::set_css_background_position(const std::string & x,
-				      const std::string & y,
+void css::set_css_background_position(const string & x,
+				      const string & y,
 				      bool inherit)
 {
     if(x != "" && y != "") // yes both
@@ -101,7 +108,7 @@ void css::set_css_background_position(const std::string & x,
     css_updated(inherit);
 }
 
-void css::css_margin(const std::string & all, bool inherit)
+void css::css_margin(const string & all, bool inherit)
 {
     css_margin_top(all, inherit);
     css_margin_right(all, inherit);
@@ -109,35 +116,35 @@ void css::css_margin(const std::string & all, bool inherit)
     css_margin_left(all, inherit);
 }
 
-void css::css_margin_top(const std::string & top, bool inherit)
+void css::css_margin_top(const string & top, bool inherit)
 {
     margin_top.set_value(string(" margin-top: ") + top + ";");
     margin_top.set_inheritance(inherit);
     css_updated(inherit);
 }
 
-void css::css_margin_right(const std::string & right, bool inherit)
+void css::css_margin_right(const string & right, bool inherit)
 {
     margin_right.set_value(string(" margin-right: ") + right + ";");
     margin_right.set_inheritance(inherit);
     css_updated(inherit);
 
 }
-void css::css_margin_bottom(const std::string & bottom, bool inherit)
+void css::css_margin_bottom(const string & bottom, bool inherit)
 {
     margin_bottom.set_value(string(" margin-bottom: ") + bottom + ";");
     margin_bottom.set_inheritance(inherit);
     css_updated(inherit);
 }
 
-void css::css_margin_left(const std::string & left, bool inherit)
+void css::css_margin_left(const string & left, bool inherit)
 {
     margin_left.set_value(string(" margin-left: ") + left + ";");
     margin_left.set_inheritance(inherit);
     css_updated(inherit);
 }
 
-void css::css_height(const std::string & val,
+void css::css_height(const string & val,
 		     bool center,
 		     bool inherit)
 {
@@ -151,7 +158,7 @@ void css::css_height(const std::string & val,
     css_updated(inherit);
 }
 
-void css::css_width(const std::string & val,
+void css::css_width(const string & val,
 		    bool center,
 		    bool inherit)
 {
@@ -162,6 +169,57 @@ void css::css_width(const std::string & val,
 	css_margin_left("auto", inherit);
 	css_margin_right("auto", inherit);
     }
+    css_updated(inherit);
+}
+
+void css::css_z_index(unsigned int index, bool inherit)
+{
+    z_index.set_value(string(" z-index: ") + webdar_tools_convert_to_string(index) + ";");
+    z_index.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
+void css::css_position_absolute(bool val,
+				bool inherit)
+{
+    if(val)
+	position_absolute.set_value(" position:absolute;");
+    else
+	position_absolute.set_value(" position:relative;");
+    position_absolute.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
+
+void css::css_position_top(const string & top,
+			  bool inherit)
+{
+    position_top.set_value(string(" top:") + top + ";");
+    position_top.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
+void css::css_position_left(const string & left,
+			   bool inherit)
+{
+    position_left.set_value(string(" left:") + left + ";");
+    position_left.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
+void css::css_position_bottom(const string & bottom,
+			     bool inherit)
+{
+    position_bottom.set_value(string(" bottom:") + bottom + ";");
+    position_bottom.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
+void css::css_position_right(const string & right,
+			    bool inherit)
+{
+    position_right.set_value(string(" right:") + right + ";");
+    position_right.set_inheritance(inherit);
     css_updated(inherit);
 }
 
@@ -233,21 +291,21 @@ void css::css_padding_top(const string & top,
     css_updated(inherit);
 }
 
-void css::css_padding_right(const std::string & right,
+void css::css_padding_right(const string & right,
 		       bool inherit)
 {
     padding_right.set_value(string(" padding-right: ") + right + ";");
     padding_right.set_inheritance(inherit);
     css_updated(inherit);
 }
-void css::css_padding_bottom(const std::string & bottom,
+void css::css_padding_bottom(const string & bottom,
 			bool inherit)
 {
     padding_bottom.set_value(string(" padding-bottom: ") + bottom + ";");
     padding_bottom.set_inheritance(inherit);
     css_updated(inherit);
 }
-void css::css_padding_left(const std::string & left,
+void css::css_padding_left(const string & left,
 		      bool inherit)
 {
     padding_left.set_value(string(" padding-left: ") + left + ";");
@@ -369,7 +427,7 @@ void css::css_border_width(border which, bd_width val, bool inherit)
     css_updated(inherit);
 }
 
-void css::css_border_color(border which, const std::string & col, bool inherit)
+void css::css_border_color(border which, const string & col, bool inherit)
 {
     string arg = string(" border") + border_to_string(which) + "color: ";
 
@@ -456,6 +514,12 @@ void css::css_inherit_from(const css & ref, bool all, bool force)
     margin_left.inherit_from(ref.margin_left, all, force);
     height.inherit_from(ref.height, all, force);
     width.inherit_from(ref.width, all, force);
+    z_index.inherit_from(ref.z_index, all, force);
+    position_absolute.inherit_from(ref.position_absolute, all, force);
+    position_top.inherit_from(ref.position_top, all, force);
+    position_left.inherit_from(ref.position_left, all, force);
+    position_bottom.inherit_from(ref.position_bottom, all, force);
+    position_right.inherit_from(ref.position_right, all, force);
     float_pos.inherit_from(ref.float_pos, all, force);
     float_clear.inherit_from(ref.float_clear, all, force);
     padding_top.inherit_from(ref.padding_top, all, force);
@@ -487,6 +551,28 @@ string css::css_get_raw_string() const
     ret += margin_left.get_value();
     ret += height.get_value();
     ret += width.get_value();
+
+    if(!position_top.is_unset() && position_absolute.is_unset())
+	const_cast<css *>(this)->css_position_absolute(true, position_top.get_inheritance());
+    if(!position_left.is_unset() && position_absolute.is_unset())
+	const_cast<css *>(this)->css_position_absolute(true, position_left.get_inheritance());
+    if(!position_bottom.is_unset() && position_absolute.is_unset())
+	const_cast<css *>(this)->css_position_absolute(true, position_bottom.get_inheritance());
+    if(!position_right.is_unset() && position_absolute.is_unset())
+	const_cast<css *>(this)->css_position_absolute(true, position_right.get_inheritance());
+
+    if(!position_top.is_unset()
+       || !position_left.is_unset()
+       || !position_bottom.is_unset()
+       || !position_right.is_unset())
+    {
+	ret += position_absolute.get_value();
+	ret += position_top.get_value();
+	ret += position_left.get_value();
+	ret += position_bottom.get_value();
+	ret += position_right.get_value();
+    }
+    ret += z_index.get_value();
     ret += float_pos.get_value();
     ret += float_clear.get_value();
     ret += padding_top.get_value();

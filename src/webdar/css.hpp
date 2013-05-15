@@ -58,6 +58,18 @@ public:
     void css_width(const std::string & val,
 		   bool center,
 		   bool inherit=false);
+    void css_z_index(unsigned int index,
+		     bool inherit=false);
+    void css_position_absolute(bool val=true,
+			       bool inherit=false);
+    void css_position_top(const std::string & top,
+			  bool inherit=false);
+    void css_position_left(const std::string & left,
+			   bool inherit=false);
+    void css_position_bottom(const std::string & bottom,
+			     bool inherit=false);
+    void css_position_right(const std::string & right,
+			    bool inherit=false);
 
 	// floating
 
@@ -172,6 +184,12 @@ private:
     css_property margin_left;
     css_property height;
     css_property width;
+    css_property z_index;
+    css_property position_absolute;
+    css_property position_top;
+    css_property position_left;
+    css_property position_bottom;
+    css_property position_right;
 
 	// floating properties
     css_property float_pos;

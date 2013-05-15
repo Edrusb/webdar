@@ -66,7 +66,7 @@ body_builder se construit par "reference" (event/actor)
 + la classe user_interface dispose d'un etat modifie entre autres par les evenements sur les boutons (saisie, create, test, etc.)
 + ajouter un champ ou plusieurs champs html_progressive_report a la classe user_interface
 
-- ajouter le support CSS des superpositions
++ ajouter le support CSS des superpositions (css_z_index + css_position_absolute + css_position_top/right/bottom/left)
 - ajouter un controle sur les valeurs des methodes dans les requetes afin de valider les champs avant de les soumettre a libdar (coherence de mots de passe, range des valeurs, chaine reprensant des nombres, etc.) => gestion via des exceptions => page speciale avec bouton retour ou CSS en premier plan.
 - implementer les pages isolation et merging
 - revoir la nomenclature des class, prefixer par html celles relative a l'interface graphique option_read, etc.
