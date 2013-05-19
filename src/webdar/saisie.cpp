@@ -44,6 +44,8 @@ saisie::saisie():
     css tmp_set;
     css tmp_set_url;
 
+    status = st_idle;
+
 	// Common aspects
     box_off.css_border_style(css::bd_all, css::bd_solid, true);
     box_off.css_border_width(css::bd_all, css::bd_medium, true);
@@ -268,6 +270,42 @@ saisie::saisie():
     register_name(event_merge);
 }
 
+string saisie::get_body_part(const chemin & path,
+			     const request & req)
+{
+    chemin sub_path = path;
+    string ret;
+
+    if(!sub_path.empty())
+	sub_path.pop_front();
+
+    status = st_idle;
+
+	// now we can generate in return the whole HTML code for "this" object
+    set_refresh_redirection(0,""); // clearing redirection that could have been set previously
+    ret = html_page::get_body_part(path, req);
+    if(choice.get_current_label() == "close")
+    {
+	if(close.get_value())
+	{
+	    act(event_closing);
+	    set_title("Session closed");
+	    set_refresh_redirection(0, "/");
+	    ret = html_page::get_body_part(path, req);
+	}
+    }
+    else
+	if(choice.get_current_label() == "sess")
+	{
+	    set_title("Redirection to all user sessions");
+	    set_refresh_redirection(0, "/");
+	    ret = html_page::get_body_part(path, req);
+	    choice.set_current_mode(choice.get_previous_mode());
+	}
+
+    return ret;
+}
+
 void saisie::on_event(const std::string & event_name)
 {
     if(event_name == menu::changed
@@ -303,53 +341,134 @@ void saisie::on_event(const std::string & event_name)
 	    list.set_visible(false);
 	}
     }
-    else
-	if(event_name == event_restore
-	   || event_name == event_compare
-	   || event_name == event_test
-	   || event_name == event_list
-	   || event_name == event_create
-	   || event_name == event_isolate
-	   || event_name == event_merge)
-	{
-	    act(event_name); // propagate the event to the subscribers
-	}
+    else if(event_name == event_restore
+	    || event_name == event_compare
+	    || event_name == event_test
+	    || event_name == event_list
+	    || event_name == event_create
+	    || event_name == event_isolate
+	    || event_name == event_merge)
+    {
+	act(event_name); // propagate the event to the subscribers
+	if(event_name == event_restore)
+	    status = st_restore;
+	else if(event_name == event_compare)
+	    status = st_compare;
+	else if(event_name == event_test)
+	    status = st_test;
+	else if(event_name == event_list)
+	    status = st_list;
+	else if(event_name == event_create)
+	    status = st_create;
+	else if(event_name == event_isolate)
+	    status = st_isolate;
+	else if(event_name == event_merge)
+	    status = st_merge;
 	else
 	    throw WEBDAR_BUG;
-}
 
-
-string saisie::get_body_part(const chemin & path,
-			     const request & req)
-{
-    chemin sub_path = path;
-    string ret;
-
-    if(!sub_path.empty())
-	sub_path.pop_front();
-
-	// now we can generate in return the whole HTML code for "this" object
-    set_refresh_redirection(0,""); // clearing redirection that could have been set previously
-    ret = html_page::get_body_part(path, req);
-    if(choice.get_current_label() == "close")
-    {
-	if(close.get_value())
-	{
-	    act(event_closing);
-	    set_title("Session closed");
-	    set_refresh_redirection(0, "/");
-	    ret = html_page::get_body_part(path, req);
-	}
     }
     else
-	if(choice.get_current_label() == "sess")
-	{
-	    set_title("Redirection to all user sessions");
-	    set_refresh_redirection(0, "/");
-	    ret = html_page::get_body_part(path, req);
-	    choice.set_current_mode(choice.get_previous_mode());
-	}
-
-    return ret;
+	throw WEBDAR_BUG;
 }
+
+const string & saisie::get_archive_path() const
+{
+    switch(status)
+    {
+    case st_idle:
+	throw WEBDAR_BUG;
+    case st_restore:
+    case st_compare:
+    case st_test:
+    case st_list:
+	return archread.get_archive_path();
+	break;
+    case st_create:
+	return create.get_archive_path();
+	break;
+    case st_isolate:
+	throw exception_feature("isolation operation");
+    case st_merge:
+	throw exception_feature("merging operation");
+    default:
+	throw WEBDAR_BUG;
+    }
+}
+
+const string & saisie::get_archive_basename() const
+{
+    switch(status)
+    {
+    case st_idle:
+	throw WEBDAR_BUG;
+    case st_restore:
+    case st_compare:
+    case st_test:
+    case st_list:
+	return archread.get_archive_basename();
+	break;
+    case st_create:
+	return create.get_archive_basename();
+	break;
+    case st_isolate:
+	throw exception_feature("isolation operation");
+    case st_merge:
+	throw exception_feature("merging operation");
+    default:
+	throw WEBDAR_BUG;
+    }
+}
+
+const libdar::archive_options_read saisie::get_read_options() const
+{
+    if(status != st_restore
+       && status != st_compare
+       && status != st_test
+       && status != st_list)
+	throw WEBDAR_BUG;
+
+    return archread.get_read_options();
+}
+
+const libdar::archive_options_extract saisie::get_extraction_options() const
+{
+    if(status != st_restore)
+	throw WEBDAR_BUG;
+
+    return extract.get_options();
+}
+
+const libdar::archive_options_diff saisie::get_comparison_options() const
+{
+    if(status != st_compare)
+	throw WEBDAR_BUG;
+
+    return compare.get_options();
+}
+
+const libdar::archive_options_test saisie::get_testing_options() const
+{
+    if(status != st_test)
+	throw WEBDAR_BUG;
+
+    return test.get_options();
+}
+
+const libdar::archive_options_listing saisie::get_listing_options() const
+{
+    if(status != st_list)
+	throw WEBDAR_BUG;
+
+    return list.get_options();
+}
+
+const options_create & saisie::get_creating_options() const
+{
+    if(status != st_create)
+	throw WEBDAR_BUG;
+
+    return create.get_options_create();
+}
+
 

@@ -246,8 +246,6 @@ libdar::archive_options_create options_create::get_options() const
     case 0: // full backup
 	break;
     case 1: // diff/incremental backup
-	    /*	reference.open_archive( <web_user_interaction> ) */
-	ret.set_reference(&(const_cast<options_create *>(this)->reference.get_archive()));
 	ret.set_hourshift(libdar::deci(hourshift.get_value()).computer());
 	break;
     case 2: // snapshot
@@ -314,8 +312,6 @@ libdar::archive_options_create options_create::get_options() const
 string options_create::get_body_part(const chemin & path,
 				     const request & req)
 {
-    if(reference.is_archive_open())
-	reference.close_archive();
     return get_body_part_from_all_children(path, req);
 }
 

@@ -23,14 +23,6 @@ class archive_read: public body_builder, public actor
 {
 public:
     archive_read(const std::string & archive_description);
-    archive_read(const archive_read & ref);
-    const archive_read & operator = (const archive_read & ref) { throw WEBDAR_BUG; };
-    ~archive_read() { if(ptr != NULL) close_archive(); };
-
-    void open_archive(web_user_interaction & ui);
-    bool is_archive_open() const { return ptr != NULL; };
-    libdar::archive & get_archive();
-    void close_archive();
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
@@ -39,14 +31,19 @@ public:
 	/// inherited from events
     virtual void on_event(const std::string & event_name);
 
+	// available fields for libdar
+
+    const std::string & get_archive_path() const { return arch_path.get_value(); };
+    const std::string & get_archive_basename() const { return archive.get_value(); };
+    const libdar::archive_options_read get_read_options() const { opt_read.get_options(); };
+
 private:
     html_form form;
     html_form_fieldset fs;
+    html_form_input arch_path;
     html_form_input archive;
     html_form_input show_read_options;
     options_read opt_read;
-
-    libdar::archive *ptr;
 };
 
 #endif

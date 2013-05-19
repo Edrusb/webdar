@@ -59,7 +59,40 @@ public:
 
 	/// inherited from actor
     void on_event(const std::string & event_name);
+
+
+	// list of field available to run libdar
+
+	// archive to operate on
+    const std::string & get_archive_path() const;
+    const std::string & get_archive_basename() const;
+
+	// reading options (available for listing, testing, diffing, extracting events)
+    const libdar::archive_options_read get_read_options() const;
+
+	// extraction options
+    const libdar::archive_options_extract get_extraction_options() const;
+
+	// comparison options
+    const libdar::archive_options_diff get_comparison_options() const;
+
+	// testing options
+    const libdar::archive_options_test get_testing_options() const;
+
+	// listing options
+    const libdar::archive_options_listing get_listing_options() const;
+
+	// create options --- attention, given argument is not a libdar object but holds the information to create it completely
+    const options_create & get_creating_options() const;
+
+	// isolate options
+	/* A IMPLEMENTER */
+
+	// merge options
+	/* A IMPLEMENTER */
+
 private:
+    enum { st_idle, st_restore, st_compare, st_test, st_list, st_create, st_isolate, st_merge } status;
     menu choice;           ///< left main menu
     html_div right_pan;    ///< holds all that is beside main menu
 

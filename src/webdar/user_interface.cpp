@@ -18,13 +18,18 @@ using namespace std;
 
 const string user_interface::closing = "user_interface_closing";
 const string user_interface::end_libdar = "user_interface_end_libdar";
+const string user_interface::start_restore = "user_interface_start_restore";
+const string user_interface::start_compare = "user_interface_start_compare";
+const string user_interface::start_test = "user_interface_start_test";
+const string user_interface::start_create = "user_interface_start_create";
+const string user_interface::start_isolate = "user_interface_start_isolate";
+const string user_interface::start_merge = "user_interface_start_merge";
 
 user_interface::user_interface():
     close_click("Close", end_libdar)
 {
     mode = config;
     mode_changed = false;
-    register_name(closing);
     parametrage.record_actor_on_event(this, saisie::event_closing);
     parametrage.record_actor_on_event(this, saisie::event_restore);
     parametrage.record_actor_on_event(this, saisie::event_compare);
@@ -41,6 +46,15 @@ user_interface::user_interface():
     run_div.adopt(&web_ui);
     run_div.adopt(&stats);
     run_div.adopt(&close_click);
+
+    register_name(closing);
+    register_name(end_libdar);
+    register_name(start_restore);
+    register_name(start_compare);
+    register_name(start_test);
+    register_name(start_create);
+    register_name(start_isolate);
+    register_name(start_merge);
 }
 
 answer user_interface::give_answer(const request & req)
@@ -76,31 +90,44 @@ void user_interface::on_event(const std::string & event_name)
 {
     if(event_name == saisie::event_closing)
 	act(closing);
-    else
-	if(event_name == end_libdar)
-	{
-	    mode = config;
-	    mode_changed = true;
-	}
+    else if(event_name == end_libdar)
+    {
+	mode = config;
+	mode_changed = true;
+	act(end_libdar);
+    }
+    else if(event_name == saisie::event_restore
+	    || event_name == saisie::event_compare
+	    || event_name == saisie::event_test
+	    || event_name == saisie::event_create
+	    || event_name == saisie::event_isolate
+	    || event_name == saisie::event_merge)
+    {
+	mode = running;
+	mode_changed = true;
+
+	if(event_name == saisie::event_restore)
+	    act(start_restore);
+	else if(event_name == saisie::event_compare)
+	    act(start_compare);
+	else if(event_name == saisie::event_test)
+	    act(start_test);
+	else if(event_name == saisie::event_create)
+	    act(start_create);
+	else if(event_name == saisie::event_isolate)
+	    act(start_isolate);
+	else if(event_name == saisie::event_merge)
+	    act(start_merge);
 	else
-	    if(event_name == saisie::event_restore
-	       || event_name == saisie::event_compare
-	       || event_name == saisie::event_test
-	       || event_name == saisie::event_create
-	       || event_name == saisie::event_isolate
-	       || event_name == saisie::event_merge)
-	    {
-		mode = running;
-		mode_changed = true;
-	    }
-	    else
-		if(event_name == saisie::event_list)
-		{
-		    mode = listing;
-		    mode_changed = true;
-		}
-		else
-		    throw WEBDAR_BUG; // what's that event !?!
+	    throw WEBDAR_BUG;
+    }
+    else if(event_name == saisie::event_list)
+    {
+	mode = listing;
+	mode_changed = true;
+    }
+    else
+	throw WEBDAR_BUG; // what's that event !?!
 }
 
 void user_interface::prefix_has_changed()

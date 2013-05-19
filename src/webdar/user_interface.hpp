@@ -15,13 +15,20 @@ extern "C"
 #include "saisie.hpp"
 #include "html_statistics.hpp"
 #include "web_user_interaction.hpp"
+#include "events.hpp"
 
-class user_interface : public responder
+class user_interface : public responder, public events, public actor
 {
 public:
 	/// available event for that class
-    static const std::string closing;
-    static const std::string end_libdar;
+    static const std::string closing;      //< used to signal end of user session
+    static const std::string end_libdar;   //< used to signal request to end the running libdar thread
+    static const std::string start_restore; //< used to signal request to start a libdar thread
+    static const std::string start_compare;
+    static const std::string start_test;
+    static const std::string start_create;
+    static const std::string start_isolate;
+    static const std::string start_merge;
 
     user_interface();
 
@@ -30,6 +37,12 @@ public:
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name);
+
+	/// available parameters for libdar execution
+    const saisie & get_parametrage() const { return parametrage; };
+
+	/// obtain the user_interaction for libdar
+    libdar::user_interaction *get_user_interaction() { return &web_ui; };
 
 protected:
 

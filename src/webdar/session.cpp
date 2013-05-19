@@ -8,7 +8,74 @@ const unsigned int SESSION_ID_WIDTH = 8;
 
 
     //////////////////////////
-    //  class method implementation
+    //  object method implementation
+    //
+
+session::session()
+{
+    libdar_running = false;
+    session_ID = "";
+    wui.record_actor_on_event(this, user_interface::closing);
+    wui.record_actor_on_event(this, user_interface::end_libdar);
+    wui.record_actor_on_event(this, user_interface::start_restore);
+    wui.record_actor_on_event(this, user_interface::start_compare);
+    wui.record_actor_on_event(this, user_interface::start_test);
+    wui.record_actor_on_event(this, user_interface::start_create);
+    wui.record_actor_on_event(this, user_interface::start_isolate);
+    wui.record_actor_on_event(this, user_interface::start_merge);
+}
+
+void session::set_session_id(const string & sessid)
+{
+    session_ID = sessid;
+    wui.set_prefix(chemin(sessid));
+}
+
+void session::check_caller() const
+{
+    if(pthread_self() != tid)
+	throw WEBDAR_BUG;
+    if(session_ID == "")
+	throw WEBDAR_BUG;
+}
+
+answer session::give_answer(const request & req)
+{
+    check_caller();
+    return wui.give_answer(req);
+}
+
+void session::on_event(const std::string & event_name)
+{
+    if(event_name == user_interface::closing)
+	close_session(get_session_ID());
+    else if(event_name == user_interface::end_libdar)
+    {
+    }
+    else if(event_name == user_interface::start_restore)
+    {
+    }
+    else if(event_name == user_interface::start_compare)
+    {
+    }
+    else if(event_name == user_interface::start_test)
+    {
+    }
+    else if(event_name == user_interface::start_create)
+    {
+    }
+    else if(event_name == user_interface::start_isolate)
+    {
+    }
+    else if(event_name == user_interface::start_merge)
+    {
+    }
+    else
+	throw WEBDAR_BUG; // what's that event !?!
+}
+
+    //////////////////////////
+    //  class fields and methods implementation
     //
 
 mutex session::lock_running;
@@ -57,71 +124,6 @@ unsigned int session::get_num_session(const string & user)
     return ret;
 }
 
-string session::create_new(const string & owner)
-{
-    table entry;
-    string sessID;
-    user_interface *obj = new (nothrow) user_interface();
-
-    if(obj == NULL)
-	throw exception_memory();
-
-    try
-    {
-	entry.clear();
-	try
-	{
-	    lock_running.lock();
-	    try
-	    {
-		    // looking whether the new session_ID is not already used
-		do
-		{
-		    sessID = webdar_tools_generate_random_string(SESSION_ID_WIDTH);
-		}
-		while(running_session.find(sessID) != running_session.end());
-
-		obj->set_prefix(chemin(sessID));
-		entry.owner = owner;
-		entry.reference = new (nothrow) session(sessID, obj);
-		if(entry.reference == NULL)
-		    throw exception_memory();
-		try
-		{
-		    obj->record_actor_on_event(entry.reference, user_interface::closing);
-		}
-		catch(...)
-		{
-		    obj = NULL;
-		    throw;
-		}
-		obj = NULL;
-
-		running_session[sessID] = entry;
-	    }
-	    catch(...)
-	    {
-		lock_running.unlock();
-		throw;
-	    }
-	    lock_running.unlock();
-	}
-	catch(...)
-	{
-	    if(entry.reference != NULL)
-		delete entry.reference;
-	    throw;
-	}
-    }
-    catch(...)
-    {
-	if(obj != NULL)
-	    delete obj;
-	throw;
-    }
-
-    return sessID;
-}
 
 vector<session::session_summary> session::get_summary()
 {
@@ -180,6 +182,52 @@ bool session::get_session_info(const std::string & session_ID, session_summary &
     return ret;
 }
 
+string session::create_new(const string & owner)
+{
+    table entry;
+    string sessID;
+    session *obj = new (nothrow) session();
+
+    if(obj == NULL)
+	throw exception_memory();
+
+    try
+    {
+	entry.clear();
+
+	lock_running.lock();
+	try
+	{
+		// looking whether the new session_ID is not already used
+	    do
+	    {
+		sessID = webdar_tools_generate_random_string(SESSION_ID_WIDTH);
+	    }
+	    while(running_session.find(sessID) != running_session.end());
+
+	    obj->set_session_id(sessID);
+	    entry.owner = owner;
+	    entry.reference = obj;
+
+	    running_session[sessID] = entry;
+	}
+	catch(...)
+	{
+	    lock_running.unlock();
+	    throw;
+	}
+	lock_running.unlock();
+    }
+    catch(...)
+    {
+	if(obj != NULL)
+	    delete obj;
+	throw;
+    }
+
+    return sessID;
+}
+
 session *session::acquire_session(const std::string & session_ID)
 {
     session *ret = NULL;
@@ -207,7 +255,7 @@ session *session::acquire_session(const std::string & session_ID)
 
     if(ret != NULL)
     {
-	ret->lock_gui.lock();
+	ret->lock_wui.lock(); // eventually waiting for another thread to release the mutex
 	ret->tid = pthread_self();
     }
 
@@ -232,12 +280,12 @@ void session::release_session(session *sess)
 
 	    // checks
 	if(it == running_session.end())
-	    throw WEBDAR_BUG;
+	    throw WEBDAR_BUG; // releasing an unknown session !?!
 	sess->check_caller();
 
 	    // all check passed, we can proceed
 	--(it->second.ref_given);
-	sess->lock_gui.unlock();
+	sess->lock_wui.unlock();
 	if(it->second.ref_given == 0 && it->second.closing)
 	{
 	    if(it->second.reference == NULL)
@@ -279,7 +327,7 @@ bool session::close_session(const string & session_ID)
 		else
 		    throw WEBDAR_BUG;
 	    }
-		// else we the object will be destroyed when no more reference point to that session
+		// else we the object will be destroyed when no more reference will point it
 	    ret = true; // session will be destroyed as soon as possible
 	}
 	else
@@ -294,49 +342,6 @@ bool session::close_session(const string & session_ID)
     lock_running.unlock();
 
     return ret;
-}
-
-    //////////////////////////
-    //  object method implementation
-    //
-
-
-
-session::session(const string & sess_ID,
-		 responder *x_resp)
-{
-    gui = x_resp;
-    if(gui == NULL)
-	throw WEBDAR_BUG;
-
-    libdar_running = false;
-    session_ID = sess_ID;
-}
-
-session::~session()
-{
-    if(gui != NULL)
-	delete gui;
-}
-
-void session::check_caller() const
-{
-    if(pthread_self() != tid)
-	throw WEBDAR_BUG;
-}
-
-answer session::give_answer(const request & req)
-{
-    check_caller();
-    return gui->give_answer(req);
-}
-
-void session::on_event(const std::string & event_name)
-{
-    if(event_name == user_interface::closing)
-	close_session(get_session_ID());
-    else
-	throw WEBDAR_BUG; // what's that event !?!
 }
 
 session::session_summary session::publish(std::map<std::string, table>::iterator it)

@@ -19,7 +19,11 @@ using namespace std;
 archive_read::archive_read(const string & archive_description):
     form("Update"),
     fs(archive_description),
-    archive("Archive Basename",
+    arch_path("Archive path",
+	      html_form_input::text,
+	      "",
+	      50),
+    archive("Archive basename",
 	    html_form_input::text,
 	    "",
 	    30),
@@ -28,9 +32,9 @@ archive_read::archive_read(const string & archive_description):
 		      "",
 		      1)
 {
-    ptr = NULL;
 
 	/// web components layout
+    form.adopt(&arch_path);
     form.adopt(&archive);
     form.adopt(&show_read_options);
     fs.adopt(&form);
@@ -42,72 +46,10 @@ archive_read::archive_read(const string & archive_description):
     on_event(html_form_input::changed); // set the object in a coherent status
 }
 
-archive_read::archive_read(const archive_read & ref):
-    form(""),
-    fs(""),
-    archive("",
-	    html_form_input::text,
-	    "",
-	    30),
-    show_read_options("",
-		      html_form_input::check,
-		      "",
-		      1)
-{
-    throw WEBDAR_BUG;
-}
-
-void archive_read::open_archive(web_user_interaction & ui)
-{
-    if(ptr != NULL)
-	throw WEBDAR_BUG;
-
-    try
-    {
-	libdar::path chem = archive.get_value();
-	string basename;
-
-	if(!chem.pop(basename))
-	{
-	    basename = archive.get_value();
-	    chem = ".";
-	}
-
-	ptr = new (nothrow) libdar::archive(ui,
-					    chem,
-					    basename,
-					    "dar",
-					    opt_read.get_options());
-
-	if(ptr == NULL)
-	    throw exception_memory();
-    }
-    catch(libdar::Egeneric & e)
-    {
-	throw exception_libcall(e);
-    }
-}
-
-libdar::archive & archive_read::get_archive()
-{
-    if(ptr == NULL)
-	throw WEBDAR_BUG;
-    return *ptr;
-}
-
-void archive_read::close_archive()
-{
-    if(ptr == NULL)
-	throw WEBDAR_BUG;
-    delete ptr;
-    ptr = NULL;
-}
 
 string archive_read::get_body_part(const chemin & path,
 				   const request & req)
 {
-    if(ptr != NULL)
-	throw WEBDAR_BUG; // archive should be closed before changing any of its parameters
     return get_body_part_from_all_children(path, req);
 }
 

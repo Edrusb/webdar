@@ -10,8 +10,9 @@ extern "C"
 #include <list>
 
     // webdar headers
-#include "responder.hpp"
+#include "user_interface.hpp"
 #include "semaphore.hpp"
+#include "events.hpp"
 
     /// class session - holds information about a current user session
 
@@ -20,7 +21,7 @@ extern "C"
     /// Session object are sollicitated by parser and chooser
     /// objects.
 
-class session : public responder
+class session : public responder, public actor
 {
 public:
 
@@ -32,12 +33,12 @@ public:
 	// this class provides a global table of session one can create, lookup or destroy objects in/from this table
 
     answer give_answer(const request & req);
-    bool has_waiting_threads() const { return lock_gui.waiting_thread(); };
-    bool has_working_server() const { return lock_gui.working_thread(); };
+    bool has_waiting_threads() const { return lock_wui.waiting_thread(); };
+    bool has_working_server() const { return lock_wui.working_thread(); };
     std::string get_session_ID() const { return session_ID; };
 
 
-	/// inherited from actor grand-parent
+	/// inherited from actor parent class
     virtual void on_event(const std::string & event_name);
 
 
@@ -66,14 +67,13 @@ public:
 
 private:
 	/// constructor
-    session(const std::string & sess_ID,
-	    responder *x_resp);
+    session();
 
-	/// destructor
-    ~session(); //< free dynamically allocated fields
+	/// set session_ID
+    void set_session_id(const std::string & sessid);
 
-    semaphore lock_gui;       //< required locking before accessing gui field
-    responder *gui;           //< object containing the current GUI status; this object is managed by the session object; should never be NULL
+    semaphore lock_wui;       //< required locking before accessing wui field
+    user_interface wui;       //< object containing the current Web User Interface; is managed by the session object and should never be NULL
     pthread_t tid;            //< holds the tid of the thread that acquired the object
     bool libdar_running;      //< whether a libdar child thread is running
     std::string session_ID;   //< session_ID info (duplicated info to avoid table lookup and mutex lock)

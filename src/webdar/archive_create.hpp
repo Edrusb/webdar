@@ -23,14 +23,16 @@ public:
     archive_create(const archive_create & ref);
     const archive_create & operator = (const archive_create & ref) { throw WEBDAR_BUG; };
 
-    void create_archive(/* webdinteraction required here */);
-
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
 				      const request & req);
 
 	/// inherited from on_event
     virtual void on_event(const std::string & event_name);
+
+    const std::string & get_archive_path() const { return sauv_path.get_value(); };
+    const std::string & get_archive_basename() const { return basename.get_value(); };
+    const options_create & get_options_create() const { return options; };
 
 private:
     html_form_input fs_root;

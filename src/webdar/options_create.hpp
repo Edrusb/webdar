@@ -28,14 +28,23 @@ class options_create : public body_builder , public actor
 public:
     options_create();
 
-    libdar::archive_options_create get_options() const;
-
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
 				      const request & req);
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name);
+
+	/// informations available for libdar
+	///
+	/// \note if a reference is requested it implies openninng a archive
+	/// and feeding the libdar::archive_options_create::set_reference(libdar::archive *)
+	/// with the object built from this->get_reference().*
+    libdar::archive_options_create get_options() const;
+	/// whether an archive of reference has to be added to the libdar::archive_options_create object
+    bool has_reference() { return archtype.get_selected_num() == 1; };
+	/// parameters required to build the archive of reference
+    const archive_read & get_reference() const { return reference; };
 
 private:
     html_form form_archtype;
