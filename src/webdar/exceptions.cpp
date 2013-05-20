@@ -1,6 +1,20 @@
+    // C system header files
+extern "C"
+{
+
+}
+
+    // C++ system header files
+
 
     // webdar headers
+
+
+
+    //
 #include "exceptions.hpp"
+
+using namespace std;
 
 exception_system::exception_system(const std::string & context, int error_code) : exception_base("")
 {
@@ -13,7 +27,7 @@ exception_system::exception_system(const std::string & context, int error_code) 
 	change_message(context + ": " + buffer);
     else
 #endif
-	change_message(libdar::tools_printf("System failed with error code %d", error_code));
+	change_message(string(strerror(error_code)));
 }
 
 void throw_as_most_derivated_class(exception_base *ebase)

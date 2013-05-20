@@ -14,6 +14,25 @@ extern "C"
     //
 #include "web_user_interaction.hpp"
 
+web_user_interaction_libdar_data::web_user_interaction_libdar_data(unsigned int x_warn_size)
+{
+    instances = 1;
+    pause2_pending = false;
+    get_string_pending = false;
+    get_secu_string_pending = false;
+    warn_size = x_warn_size;
+	// acquiring the libdar pending semaphore for libdar thread get frozen waiting of the html thread to obtain an answer for the user
+    libdar_sem.lock();
+}
+
+web_user_interaction_libdar_data::~web_user_interaction_libdar_data()
+{
+    if(instances == 0)
+	libdar_sem.unlock();
+    else
+	throw WEBDAR_BUG;
+}
+
 web_user_interaction_html_data::web_user_interaction_html_data():
     get_string("", html_form_input::text, "", 20),
     inter("User interaction requested from libdar"),
@@ -46,21 +65,13 @@ web_user_interaction::web_user_interaction(unsigned int x_warn_size)
     html_data = NULL;
     try
     {
-	lib_data = new (nothrow) web_user_interaction_libdar_data();
+	lib_data = new (nothrow) web_user_interaction_libdar_data(x_warn_size);
 	html_data = new (nothrow) web_user_interaction_html_data();
 
 	if(lib_data == NULL)
 	    throw exception_memory();
 	if(html_data == NULL)
 	    throw exception_memory();
-
-	lib_data->instances = 1;
-	lib_data->pause2_pending = false;
-	lib_data->get_string_pending = false;
-	lib_data->get_secu_string_pending = false;
-	lib_data->warn_size = x_warn_size;
-	    // acquiring the libdar pending semaphore for libdar thread get frozen waiting of the html thread to obtain an answer for the user
-	lib_data->libdar_sem.lock();
 
 	adopt(&html_data->global);
 

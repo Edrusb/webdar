@@ -316,19 +316,24 @@ bool session::close_session(const string & session_ID)
 	it = running_session.find(session_ID);
 	if(it != running_session.end())
 	{
-	    it->second.closing = true;
-	    if(it->second.ref_given == 0)
+	    if(!it->second.closing)
 	    {
-		if(it->second.reference != NULL)
+		it->second.closing = true;
+		if(it->second.ref_given == 0)
 		{
-		    delete it->second.reference;
-		    running_session.erase(it);
+		    if(it->second.reference != NULL)
+		    {
+			delete it->second.reference;
+			running_session.erase(it);
+		    }
+		    else
+			throw WEBDAR_BUG;
 		}
-		else
-		    throw WEBDAR_BUG;
+		    // else we the object will be destroyed when no more reference will point it
+		ret = true; // session will be destroyed as soon as possible
 	    }
-		// else we the object will be destroyed when no more reference will point it
-	    ret = true; // session will be destroyed as soon as possible
+	    else
+		ret = true; // this session end has already been asked
 	}
 	else
 	    ret = false;

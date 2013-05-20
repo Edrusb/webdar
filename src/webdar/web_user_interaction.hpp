@@ -24,27 +24,32 @@ struct web_user_interaction_libdar_data
 {
     mutex control;          //< control access to any value this object has
     unsigned int instances; //< number of reference existing toward this object, this object data get destroyed when this number drops to zero
-    semaphore libdar_sem;   //< true if a pause2() is pending for a response
+    semaphore libdar_sem;   //< libdar thread wait on it for an answer
     bool answered;          //< true if the pending pause2(), get_string() or get_secu_string() has been answered, so the question has not to be shown twice
 
-	// pause2()
+	// pause2() fields
     bool pause2_pending;    //< true if a pause2() is pending for a response
     std::string pause2_msg; //< the request to answser to
     bool pause2_ans;        //< the answer to the request
 
-	// get_string() / get_secu_string()
+	// get_string() fields
     bool get_string_pending;//< true if a get_string() is pending for a response
     std::string get_string_msg;
     bool get_string_echo;
     std::string get_string_ans;
-	// get_secu_string()
+
+	// get_secu_string() fields
     bool get_secu_string_pending; //< true if a get_secu_string() is pending for a response
     std::string get_secu_string_msg;
     bool get_secu_string_echo;
     libdar::secu_string get_secu_string_ans;
-	// warnings
+
+	// libdar warnings (= logs)
     std::list<std::string> warnings;
     unsigned warn_size;
+
+    web_user_interaction_libdar_data(unsigned int x_warn_size);
+    ~web_user_interaction_libdar_data();
 };
 
 struct web_user_interaction_html_data
