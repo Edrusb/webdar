@@ -1,5 +1,5 @@
-#ifndef OPTIONS_READ_HPP
-#define OPTIONS_READ_HPP
+#ifndef HTML_OPTIONS_READ_HPP
+#define HTML_OPTIONS_READ_HPP
 
     // C system header files
 extern "C"
@@ -20,10 +20,10 @@ extern "C"
 #include "html_crypto_algo.hpp"
 #include "events.hpp"
 
-class options_read : public body_builder, public actor
+class html_options_read : public body_builder, public actor
 {
 public:
-    options_read();
+    html_options_read();
 
     libdar::archive_options_read get_options() const;
 

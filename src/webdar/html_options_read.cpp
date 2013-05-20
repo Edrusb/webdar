@@ -12,11 +12,11 @@ extern "C"
 
 
     //
-#include "options_read.hpp"
+#include "html_options_read.hpp"
 
 using namespace std;
 
-options_read::options_read():
+html_options_read::html_options_read():
     form_src("Update Options"),
     fs_src("Archive Options"),
     fs_ref("Auxilliary Archive Options"),
@@ -96,7 +96,7 @@ options_read::options_read():
     on_event(html_crypto_algo::changed);
 }
 
-libdar::archive_options_read options_read::get_options() const
+libdar::archive_options_read html_options_read::get_options() const
 {
     libdar::archive_options_read ret;
 
@@ -129,7 +129,7 @@ libdar::archive_options_read options_read::get_options() const
     return ret;
 }
 
-void options_read::on_event(const std::string & event_name)
+void html_options_read::on_event(const std::string & event_name)
 {
     if(src_crypto_algo.get_value() == 0)
     {
@@ -159,8 +159,8 @@ void options_read::on_event(const std::string & event_name)
 	form_ref.set_visible(false);
 }
 
-string options_read::get_body_part(const chemin & path,
-				   const request & req)
+string html_options_read::get_body_part(const chemin & path,
+					const request & req)
 {
     string ret;
 

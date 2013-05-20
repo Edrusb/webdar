@@ -15,7 +15,7 @@ extern "C"
 #include "html_form.hpp"
 #include "html_form_input.hpp"
 #include "html_form_fieldset.hpp"
-#include "options_read.hpp"
+#include "html_options_read.hpp"
 #include "events.hpp"
 #include "web_user_interaction.hpp"
 
@@ -43,7 +43,7 @@ private:
     html_form_input arch_path;
     html_form_input archive;
     html_form_input show_read_options;
-    options_read opt_read;
+    html_options_read opt_read;
 };
 
 #endif
