@@ -12,11 +12,11 @@ extern "C"
 
 
     //
-#include "aiguille.hpp"
+#include "html_aiguille.hpp"
 
 using namespace std;
 
-void aiguille::set_mode(unsigned int m)
+void html_aiguille::set_mode(unsigned int m)
 {
     if(m < size())
 	mode = m;
@@ -24,14 +24,14 @@ void aiguille::set_mode(unsigned int m)
 	throw WEBDAR_BUG;
 }
 
-void aiguille::has_been_adopted(body_builder *obj)
+void html_aiguille::has_been_adopted(body_builder *obj)
 {
     if(obj == NULL)
 	throw WEBDAR_BUG;
     obj->css_inherit_from(*this, true, false);
 }
 
-string aiguille::get_body_part(const chemin & path,
+string html_aiguille::get_body_part(const chemin & path,
 			      const request & req)
 {
     if(mode < size())
@@ -54,7 +54,7 @@ string aiguille::get_body_part(const chemin & path,
 }
 
 
-void aiguille::css_updated(bool inherited)
+void html_aiguille::css_updated(bool inherited)
 {
     unsigned int s = size();
 

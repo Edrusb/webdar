@@ -13,7 +13,7 @@ extern "C"
     // webdar headers
 #include "html_page.hpp"
 #include "menu.hpp"
-#include "aiguille.hpp"
+#include "html_aiguille.hpp"
 #include "html_div.hpp"
 #include "options_listing.hpp"
 #include "events.hpp"
@@ -32,9 +32,9 @@ extern "C"
     /// defines the web "pages" when no operation is
     /// running in the current session.
     /// .on the left a menu 'choices' that triggers 'this' to modify the middle and top areasfu:
-    /// .on the top midle an aiguille 'show_archive' which
+    /// .on the top midle an html_aiguille 'show_archive' which
     /// contains two alternatives, nothing or the archive path
-    /// .just below and beside the menu, an aiguille "select" that
+    /// .just below and beside the menu, an html_aiguille "select" that
     /// shows the different fields in the context of the menu "choices"
 
 class saisie : public html_page, public actor, public events
@@ -97,8 +97,8 @@ private:
     html_div right_pan;    ///< holds all that is beside main menu
 
 	/// right_pan zone
-    aiguille show_archive;   ///< top middle zone hidden or show depending of choice's value
-    aiguille select;         ///< middle center zone, containing the different pages according to choice's value
+    html_aiguille show_archive;   ///< top middle zone hidden or show depending of choice's value
+    html_aiguille select;         ///< middle center zone, containing the different pages according to choice's value
 
 	/// show archive zone
     html_div archive_show;   ///< contains all that is "shown"

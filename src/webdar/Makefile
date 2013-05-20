@@ -7,7 +7,7 @@ all: webdar
 clean:
 	rm -f *.o webdar
 
-webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o options_listing.o menu.o  aiguille.o saisie.o user_interface.o events.o reference.o html_url_class.o html_yes_no_box.o options_extract.o options_read.o html_crypto_algo.o html_comparison_fields.o options_compare.o options_test.o archive_read.o html_compression.o html_size_unit.o html_hash_algo.o html_datetime.o options_create.o html_archive_create.o web_user_interaction.o html_button.o html_statistics.o
+webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o options_listing.o menu.o  html_aiguille.o saisie.o user_interface.o events.o reference.o html_url_class.o html_yes_no_box.o options_extract.o options_read.o html_crypto_algo.o html_comparison_fields.o options_compare.o options_test.o archive_read.o html_compression.o html_size_unit.o html_hash_algo.o html_datetime.o options_create.o html_archive_create.o web_user_interaction.o html_button.o html_statistics.o
 
 webdar.o : webdar.cpp exceptions.hpp central_report.hpp listener.hpp webdar_tools.hpp server.hpp authentication.hpp
 central_report.o : central_report.cpp central_report.hpp webdar_tools.hpp exceptions.hpp mutex.hpp
@@ -48,8 +48,8 @@ html_div.o : html_div.cpp html_div.hpp html_level.hpp
 options_lisiting.o : options_listing.cpp options_listing.hpp body_builder.hpp html_form.hpp html_form_input.hpp exceptions.hpp
 menu.o : menu.cpp menu.hpp body_builder.hpp html_div.hpp html_url.hpp html_text.hpp tokens.hpp exceptions.hpp
 html_url_class.o : html_url_class.cpp html_url_class.hpp body_builder.hpp
-aiguille.o : aiguille.cpp aiguille.hpp body_builder.hpp
-saisie.o : saisie.cpp saisie.hpp html_url.hpp html_div.hpp options_listing.hpp aiguille.hpp menu.hpp
+html_aiguille.o : html_aiguille.cpp html_aiguille.hpp body_builder.hpp
+saisie.o : saisie.cpp saisie.hpp html_url.hpp html_div.hpp options_listing.hpp html_aiguille.hpp menu.hpp
 user_interface.o : user_interface.cpp user_interface.hpp saisie.hpp responder.hpp
 events.o : events.cpp events.hpp exceptions.hpp
 reference.o : reference.cpp reference.hpp exceptions.hpp

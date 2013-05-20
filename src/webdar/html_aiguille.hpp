@@ -1,5 +1,5 @@
-#ifndef AIGUILLE_HPP
-#define AIGUILLE_HPP
+#ifndef HTML_AIGUILLE_HPP
+#define HTML_AIGUILLE_HPP
 
     // C system header files
 extern "C"
@@ -13,10 +13,10 @@ extern "C"
     // webdar headers
 #include "body_builder.hpp"
 
-class aiguille : public body_builder
+class html_aiguille : public body_builder
 {
 public:
-    aiguille() { mode = 0; };
+    html_aiguille() { mode = 0; };
 
     void set_mode(unsigned int m);
 
