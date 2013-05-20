@@ -7,7 +7,7 @@ all: webdar
 clean:
 	rm -f *.o webdar
 
-webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o options_listing.o html_menu.o  html_aiguille.o saisie.o user_interface.o events.o reference.o html_url_class.o html_yes_no_box.o options_extract.o options_read.o html_crypto_algo.o html_comparison_fields.o options_compare.o options_test.o html_archive_read.o html_compression.o html_size_unit.o html_hash_algo.o html_datetime.o options_create.o html_archive_create.o web_user_interaction.o html_button.o html_statistics.o
+webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o options_listing.o html_menu.o  html_aiguille.o saisie.o user_interface.o events.o reference.o html_url_class.o html_yes_no_box.o options_extract.o options_read.o html_crypto_algo.o html_comparison_fields.o html_options_compare.o options_test.o html_archive_read.o html_compression.o html_size_unit.o html_hash_algo.o html_datetime.o options_create.o html_archive_create.o web_user_interaction.o html_button.o html_statistics.o
 
 webdar.o : webdar.cpp exceptions.hpp central_report.hpp listener.hpp webdar_tools.hpp server.hpp authentication.hpp
 central_report.o : central_report.cpp central_report.hpp webdar_tools.hpp exceptions.hpp mutex.hpp
@@ -58,7 +58,7 @@ options_extract.o : options_extract.cpp options_extract.hpp html_form.hpp html_f
 options_read.o : options_read.cpp options_read.hpp body_builder.hpp html_div.hpp html_form.hpp html_form_fieldset.hpp html_form_select.hpp html_form_input.hpp
 html_crypto_algo.o : html_crypto_algo.cpp html_crypto_algo.hpp html_form_select.hpp body_builder.hpp
 html_comparison_fields.o : html_comparison_fields.cpp html_comparison_fields.hpp html_form_select.hpp
-options_compare.o : options_compare.cpp options_compare.hpp body_builder.hpp html_form_input.hpp html_form_fieldset.hpp html_form.hpp html_comparison_fields.hpp
+html_options_compare.o : html_options_compare.cpp html_options_compare.hpp body_builder.hpp html_form_input.hpp html_form_fieldset.hpp html_form.hpp html_comparison_fields.hpp
 options_test.o : options_test.cpp options_test.hpp body_builder.hpp html_form.hpp html_form_fieldset.hpp html_form_input.hpp
 html_archive_read.o : html_archive_read.cpp html_archive_read.cpp body_builder.hpp html_div.hpp html_form.hpp html_form_fieldset.hpp html_form_select.hpp html_form_input.hpp html_crypto_algo.hpp events.hpp
 html_compression.o : html_compression.cpp html_compression.hpp html_form_select.hpp

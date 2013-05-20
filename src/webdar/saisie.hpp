@@ -20,7 +20,7 @@ extern "C"
 #include "html_yes_no_box.hpp"
 #include "options_extract.hpp"
 #include "options_read.hpp"
-#include "options_compare.hpp"
+#include "html_options_compare.hpp"
 #include "options_test.hpp"
 #include "html_archive_read.hpp"
 #include "html_archive_create.hpp"
@@ -120,7 +120,7 @@ private:
     html_button go_extract;
 	//
     html_div div_compare;
-    options_compare compare;
+    html_options_compare compare;
     html_button go_compare;
 	//
     html_div div_test;

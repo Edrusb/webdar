@@ -12,11 +12,11 @@ extern "C"
 
 
     //
-#include "options_compare.hpp"
+#include "html_options_compare.hpp"
 
 using namespace std;
 
-options_compare::options_compare():
+html_options_compare::html_options_compare():
     form("Update options"),
     fs("Comparison options"),
     info_details("Detailed information",
@@ -68,7 +68,7 @@ options_compare::options_compare():
     adopt(&form);
 }
 
-libdar::archive_options_diff options_compare::get_options() const
+libdar::archive_options_diff html_options_compare::get_options() const
 {
     libdar::archive_options_diff ret;
 
@@ -84,7 +84,7 @@ libdar::archive_options_diff options_compare::get_options() const
 }
 
 
-string options_compare::get_body_part(const chemin & path,
+string html_options_compare::get_body_part(const chemin & path,
 				      const request & req)
 {
     return get_body_part_from_all_children(path, req);

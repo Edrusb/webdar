@@ -1,5 +1,5 @@
-#ifndef OPTIONS_COMPARE_HPP
-#define OPTIONS_COMPARE_HPP
+#ifndef HTML_OPTIONS_COMPARE_HPP
+#define HTML_OPTIONS_COMPARE_HPP
 
     // C system header files
 extern "C"
@@ -17,10 +17,10 @@ extern "C"
 #include "html_comparison_fields.hpp"
 #include "html_form.hpp"
 
-class options_compare : public body_builder
+class html_options_compare : public body_builder
 {
 public:
-    options_compare();
+    html_options_compare();
 
     libdar::archive_options_diff get_options() const;
 
