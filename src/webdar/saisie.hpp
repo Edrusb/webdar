@@ -83,7 +83,7 @@ public:
     const libdar::archive_options_listing get_listing_options() const;
 
 	// create options --- attention, given argument is not a libdar object but holds the information to create it completely
-    const options_create & get_creating_options() const;
+    const html_options_create & get_creating_options() const;
 
 	// isolate options
 	/* A IMPLEMENTER */

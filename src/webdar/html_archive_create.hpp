@@ -12,7 +12,7 @@ extern "C"
 
     // webdar headers
 #include "html_form_input.hpp"
-#include "options_create.hpp"
+#include "html_options_create.hpp"
 #include "body_builder.hpp"
 #include "events.hpp"
 
@@ -32,14 +32,14 @@ public:
 
     const std::string & get_archive_path() const { return sauv_path.get_value(); };
     const std::string & get_archive_basename() const { return basename.get_value(); };
-    const options_create & get_options_create() const { return options; };
+    const html_options_create & get_options_create() const { return options; };
 
 private:
     html_form_input fs_root;
     html_form_input sauv_path;
     html_form_input basename;
     html_form_input show_options;
-    options_create options;
+    html_options_create options;
     html_form form;
 };
 

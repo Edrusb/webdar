@@ -11,11 +11,11 @@ extern "C"
 
 
     //
-#include "options_create.hpp"
+#include "html_options_create.hpp"
 
 using namespace std;
 
-options_create::options_create():
+html_options_create::html_options_create():
     form_archtype("Update"),
     fs_archtype("Type of Backup and relative options"),
     form_archgen("Update"),
@@ -237,7 +237,7 @@ options_create::options_create():
     on_event("");
 }
 
-libdar::archive_options_create options_create::get_options() const
+libdar::archive_options_create html_options_create::get_options() const
 {
     libdar::archive_options_create ret;
 
@@ -309,13 +309,13 @@ libdar::archive_options_create options_create::get_options() const
 }
 
 
-string options_create::get_body_part(const chemin & path,
+string html_options_create::get_body_part(const chemin & path,
 				     const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }
 
-void options_create::on_event(const std::string & event_name)
+void html_options_create::on_event(const std::string & event_name)
 {
     switch(archtype.get_selected_num())
     {

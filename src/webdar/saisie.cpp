@@ -463,7 +463,7 @@ const libdar::archive_options_listing saisie::get_listing_options() const
     return list.get_options();
 }
 
-const options_create & saisie::get_creating_options() const
+const html_options_create & saisie::get_creating_options() const
 {
     if(status != st_create)
 	throw WEBDAR_BUG;

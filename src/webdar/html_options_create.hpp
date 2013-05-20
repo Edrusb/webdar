@@ -1,5 +1,5 @@
-#ifndef OPTIONS_CREATE_HPP
-#define OPTIONS_CREATE_HPP
+#ifndef HTML_OPTIONS_CREATE_HPP
+#define HTML_OPTIONS_CREATE_HPP
 
     // C system header files
 extern "C"
@@ -23,10 +23,10 @@ extern "C"
 #include "html_archive_read.hpp"
 #include "html_hash_algo.hpp"
 
-class options_create : public body_builder , public actor
+class html_options_create : public body_builder , public actor
 {
 public:
-    options_create();
+    html_options_create();
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
