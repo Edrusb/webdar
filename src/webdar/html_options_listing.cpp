@@ -14,11 +14,11 @@ extern "C"
 #include "exceptions.hpp"
 
     //
-#include "options_listing.hpp"
+#include "html_options_listing.hpp"
 
 using namespace std;
 
-options_listing::options_listing():
+html_options_listing::html_options_listing():
     form("Update"),
     fs("Listing options"),
     info_details("Detailed informations",
@@ -42,14 +42,14 @@ options_listing::options_listing():
     adopt(&div);
 }
 
-string options_listing::get_body_part(const chemin & path,
+string html_options_listing::get_body_part(const chemin & path,
 				       const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }
 
 
-libdar::archive_options_listing options_listing::get_options() const
+libdar::archive_options_listing html_options_listing::get_options() const
 {
     libdar::archive_options_listing ret;
 

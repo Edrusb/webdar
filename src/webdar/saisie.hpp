@@ -15,7 +15,7 @@ extern "C"
 #include "html_menu.hpp"
 #include "html_aiguille.hpp"
 #include "html_div.hpp"
-#include "options_listing.hpp"
+#include "html_options_listing.hpp"
 #include "events.hpp"
 #include "html_yes_no_box.hpp"
 #include "html_options_extract.hpp"
@@ -128,7 +128,7 @@ private:
     html_button go_test;
 	//
     html_div div_list;
-    options_listing list;
+    html_options_listing list;
     html_button go_list;
 	//
     html_div div_create;

@@ -1,5 +1,5 @@
-#ifndef OPTIONS_LISTING_HPP
-#define oOPTIONS_LISTING_HPP
+#ifndef HTML_OPTIONS_LISTING_HPP
+#define oHTML_OPTIONS_LISTING_HPP
 
     // C system header files
 extern "C"
@@ -19,10 +19,10 @@ extern "C"
 #include "html_form_fieldset.hpp"
 
 
-class options_listing : public body_builder
+class html_options_listing : public body_builder
 {
 public:
-    options_listing();
+    html_options_listing();
 
     libdar::archive_options_listing get_options() const;
 
