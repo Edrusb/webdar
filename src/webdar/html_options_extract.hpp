@@ -1,5 +1,5 @@
-#ifndef OPTIONS_EXTRACT_HPP
-#define OPTIONS_EXTRACT_HPP
+#ifndef HTML_OPTIONS_EXTRACT_HPP
+#define HTML_OPTIONS_EXTRACT_HPP
 
     // C system header files
 extern "C"
@@ -17,10 +17,10 @@ extern "C"
 #include "html_form.hpp"
 #include "html_form_fieldset.hpp"
 
-class options_extract : public body_builder
+class html_options_extract : public body_builder
 {
 public:
-    options_extract();
+    html_options_extract();
 
     libdar::archive_options_extract get_options() const;
 

@@ -12,11 +12,11 @@ extern "C"
 
 
     //
-#include "options_extract.hpp"
+#include "html_options_extract.hpp"
 
 using namespace std;
 
-options_extract::options_extract():
+html_options_extract::html_options_extract():
     form("Update Options"),
     fs("Restoration options"),
     warn_over("Warn before overwriting",
@@ -106,7 +106,7 @@ options_extract::options_extract():
     adopt(&form);
 }
 
-libdar::archive_options_extract options_extract::get_options() const
+libdar::archive_options_extract html_options_extract::get_options() const
 {
     libdar::archive_options_extract ret;
 
@@ -141,7 +141,7 @@ libdar::archive_options_extract options_extract::get_options() const
 }
 
 
-std::string options_extract::get_body_part(const chemin & path,
+std::string html_options_extract::get_body_part(const chemin & path,
 					   const request & req)
 {
     return get_body_part_from_all_children(path, req);

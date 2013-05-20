@@ -18,7 +18,7 @@ extern "C"
 #include "options_listing.hpp"
 #include "events.hpp"
 #include "html_yes_no_box.hpp"
-#include "options_extract.hpp"
+#include "html_options_extract.hpp"
 #include "options_read.hpp"
 #include "html_options_compare.hpp"
 #include "options_test.hpp"
@@ -116,7 +116,7 @@ private:
     html_div div_sep0;
 	//
     html_div div_extract;
-    options_extract extract;
+    html_options_extract extract;
     html_button go_extract;
 	//
     html_div div_compare;
