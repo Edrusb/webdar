@@ -1,5 +1,5 @@
-#ifndef ARCHIVE_READ_HPP
-#define ARCHIVE_READ_HPP
+#ifndef HTML_ARCHIVE_READ_HPP
+#define HTML_ARCHIVE_READ_HPP
 
     // C system header files
 extern "C"
@@ -19,10 +19,10 @@ extern "C"
 #include "events.hpp"
 #include "web_user_interaction.hpp"
 
-class archive_read: public body_builder, public actor
+class html_archive_read: public body_builder, public actor
 {
 public:
-    archive_read(const std::string & archive_description);
+    html_archive_read(const std::string & archive_description);
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,

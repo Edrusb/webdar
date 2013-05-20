@@ -12,11 +12,11 @@ extern "C"
 
 
     //
-#include "archive_read.hpp"
+#include "html_archive_read.hpp"
 
 using namespace std;
 
-archive_read::archive_read(const string & archive_description):
+html_archive_read::html_archive_read(const string & archive_description):
     form("Update"),
     fs(archive_description),
     arch_path("Archive path",
@@ -47,13 +47,13 @@ archive_read::archive_read(const string & archive_description):
 }
 
 
-string archive_read::get_body_part(const chemin & path,
+string html_archive_read::get_body_part(const chemin & path,
 				   const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }
 
-void archive_read::on_event(const std::string & event_name)
+void html_archive_read::on_event(const std::string & event_name)
 {
     if(event_name != html_form_input::changed)
 	throw WEBDAR_BUG;

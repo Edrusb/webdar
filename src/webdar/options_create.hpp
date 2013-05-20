@@ -20,7 +20,7 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_datetime.hpp"
 #include "html_form.hpp"
-#include "archive_read.hpp"
+#include "html_archive_read.hpp"
 #include "html_hash_algo.hpp"
 
 class options_create : public body_builder , public actor
@@ -44,7 +44,7 @@ public:
 	/// whether an archive of reference has to be added to the libdar::archive_options_create object
     bool has_reference() { return archtype.get_selected_num() == 1; };
 	/// parameters required to build the archive of reference
-    const archive_read & get_reference() const { return reference; };
+    const html_archive_read & get_reference() const { return reference; };
 
 private:
     html_form form_archtype;
@@ -72,7 +72,7 @@ private:
     html_form_fieldset fs_crypto;
 
     html_form_radio archtype;    // fs_archtype member
-    archive_read reference;      // fs_archtype member
+    html_archive_read reference;      // fs_archtype member
     html_form_input allow_over;
     html_form_input warn_over;
     html_form_input info_details;

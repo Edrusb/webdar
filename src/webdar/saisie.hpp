@@ -22,7 +22,7 @@ extern "C"
 #include "options_read.hpp"
 #include "options_compare.hpp"
 #include "options_test.hpp"
-#include "archive_read.hpp"
+#include "html_archive_read.hpp"
 #include "html_archive_create.hpp"
 #include "html_button.hpp"
 #include "html_url_class.hpp"
@@ -104,7 +104,7 @@ private:
     html_div archive_show;   ///< contains all that is "shown"
     html_text archive_blank; ///< shows a blank place in place of archive_form
 	/// what is shown
-    archive_read archread;   ///< the archive to operate on (reading)
+    html_archive_read archread;   ///< the archive to operate on (reading)
     html_form_input show_operation_options; ///< whether operation options are shown or not
     html_form_fieldset show_archive_fs_options; //< around  show_operations_options
     html_form show_archive_form_options;    ///< around show_archive_fs_options
