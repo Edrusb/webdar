@@ -56,11 +56,12 @@ body_builder se construit par "reference" (event/actor)
 + ajouter un champ web_user_interface a la classe user_interface,
 + placer la class user_interface comme acteur sur boutons de chaque page
 
+? faire une classe abort_libdar, invoquant libdar::thread_cancel et fournissant un bouton "abort"
+> faire une class derivee de thread pour lancer les appels libdar (voire une classe par action, ou une meme classe avec plusieurs methods "run", run_create(..)etc.)
 - revoir l'implementation de menu pour utiliser des html_button
 - voir comment partager les proprietes CSS des boutons seuls et au sein d'un menu (methode sur class saisie  transmise a ses bouton et ses menus, invoquee depuis la class user_interface pour ses propres boutons en direct) ?
-- faire une classe abort_libdar, invoquant libdar::thread_cancel et fournissant un bouton "abort"
+
 - voir probleme d'initialisation de mutex lorsqu'on ferme une session depuis elle-meme
-- faire une class derivee de thread pour lancer les appels libdar (voire une classe par action, ou une meme classe avec plusieurs methods "run", run_create(..)etc.)
 - utiliser un user_interface * au lieu d'un respondeur * dans la classe session => les informations de session libdar, thread_id, etc. ne sont plus par l'objet session, l'objet session gere uniquement l'acces a l'objet user_interface. Celui-ci gere sa thread libdar et dispose d'un moyen HTML et d'une methode pour avorter une thread libdar.
 
 + la classe user_interface dispose d'un etat modifie entre autres par les evenements sur les boutons (saisie, create, test, etc.)
