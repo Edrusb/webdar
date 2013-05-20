@@ -1,5 +1,5 @@
-#ifndef OPTIONS_TEST_HPP
-#define OPTIONS_TEST_HPP
+#ifndef HTML_OPTIONS_TEST_HPP
+#define HTML_OPTIONS_TEST_HPP
 
     // C system header files
 extern "C"
@@ -16,10 +16,10 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_form_input.hpp"
 
-class options_test : public body_builder
+class html_options_test : public body_builder
 {
 public:
-    options_test();
+    html_options_test();
 
     libdar::archive_options_test get_options() const;
 

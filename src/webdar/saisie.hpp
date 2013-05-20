@@ -21,7 +21,7 @@ extern "C"
 #include "html_options_extract.hpp"
 #include "html_options_read.hpp"
 #include "html_options_compare.hpp"
-#include "options_test.hpp"
+#include "html_options_test.hpp"
 #include "html_archive_read.hpp"
 #include "html_archive_create.hpp"
 #include "html_button.hpp"
@@ -124,7 +124,7 @@ private:
     html_button go_compare;
 	//
     html_div div_test;
-    options_test test;
+    html_options_test test;
     html_button go_test;
 	//
     html_div div_list;

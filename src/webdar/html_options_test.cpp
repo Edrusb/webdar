@@ -12,11 +12,11 @@ extern "C"
 
 
     //
-#include "options_test.hpp"
+#include "html_options_test.hpp"
 
 using namespace std;
 
-options_test::options_test():
+html_options_test::html_options_test():
     form("Update options"),
     fs("Testing options"),
     info_details("Detailed informations",
@@ -48,7 +48,7 @@ options_test::options_test():
     adopt(&form);
 }
 
-libdar::archive_options_test options_test::get_options() const
+libdar::archive_options_test html_options_test::get_options() const
 {
     libdar::archive_options_test ret;
 
@@ -59,7 +59,7 @@ libdar::archive_options_test options_test::get_options() const
     return ret;
 }
 
-string options_test::get_body_part(const chemin & path,
+string html_options_test::get_body_part(const chemin & path,
 				   const request & req)
 {
     return get_body_part_from_all_children(path, req);
