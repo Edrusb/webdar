@@ -1,7 +1,8 @@
 #include "tokens.hpp"
 
 const char * WEBDAR_VERSION = "1.0.0";
-    //
+
+const char * EXTENSION = "dar";
 
 const char *HDR_CONTENT_LENGTH = "Content-Length";
 const char *HDR_IF_MODIFIED_SINCE = "If-Modified-Since";

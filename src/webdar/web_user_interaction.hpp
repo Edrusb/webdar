@@ -91,6 +91,9 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name);
 
+	/// clear logs
+    void clear();
+
 protected:
 	// inherited from libdar::user_interaction
     virtual void inherited_warning(const std::string & message);

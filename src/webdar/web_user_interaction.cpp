@@ -417,6 +417,24 @@ void web_user_interaction::on_event(const std::string & event_name)
 	// critical section ended
 }
 
+void web_user_interaction::clear()
+{
+    if(lib_data == NULL)
+	throw WEBDAR_BUG;
+
+    lib_data->control.lock();
+    try
+    {
+	lib_data->warnings.clear();
+    }
+    catch(...)
+    {
+	lib_data->control.unlock();
+	throw;
+    }
+    lib_data->control.unlock();
+}
+
 void web_user_interaction::inherited_warning(const std::string & message)
 {
     if(lib_data == NULL)

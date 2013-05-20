@@ -40,7 +40,7 @@ public:
     void set_byte_amount_label(const std::string & label) { byte_amount_lbl.clear(); byte_amount_lbl.add_text(0, label); unbuild(); };
 
 	/// the address of the object to be updated by libdar
-    libdar::statistics *get_libdar_statistics();
+    libdar::statistics *get_libdar_statistics() { return &stats; };
 
 	/// inherited from body_builder class
 	///

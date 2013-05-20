@@ -1,6 +1,7 @@
 #include "session.hpp"
 #include "webdar_tools.hpp"
 #include "user_interface.hpp"
+#include "archive_test.hpp"
 
 using namespace std;
 
@@ -14,9 +15,14 @@ const unsigned int SESSION_ID_WIDTH = 8;
 session::session()
 {
     libdar_running = false;
+    current_thread = NULL;
     session_ID = "";
+    tid = 0;
+
     wui.record_actor_on_event(this, user_interface::closing);
-    wui.record_actor_on_event(this, user_interface::end_libdar);
+    wui.record_actor_on_event(this, user_interface::ask_end_libdar);
+    wui.record_actor_on_event(this, user_interface::force_end_libdar);
+    wui.record_actor_on_event(this, user_interface::clean_ended_libdar);
     wui.record_actor_on_event(this, user_interface::start_restore);
     wui.record_actor_on_event(this, user_interface::start_compare);
     wui.record_actor_on_event(this, user_interface::start_test);
@@ -42,6 +48,16 @@ void session::check_caller() const
 answer session::give_answer(const request & req)
 {
     check_caller();
+    if(libdar_running)
+    {
+	if(current_thread == NULL)
+	    throw WEBDAR_BUG;
+	if(!current_thread->is_running())
+	{
+	    libdar_running = false;
+	    wui.libdar_has_finished();
+	}
+    }
     return wui.give_answer(req);
 }
 
@@ -49,8 +65,53 @@ void session::on_event(const std::string & event_name)
 {
     if(event_name == user_interface::closing)
 	close_session(get_session_ID());
-    else if(event_name == user_interface::end_libdar)
+    else if(event_name == user_interface::ask_end_libdar)
     {
+	if(libdar_running)
+	{
+	    if(current_thread != NULL)
+	    {
+		pthread_t libdar_tid;
+		if(current_thread->is_running(libdar_tid))
+		{
+		    libdar::thread_cancellation th;
+		    th.cancel(libdar_tid, false, 0);
+		}
+	    }
+	    else
+		throw WEBDAR_BUG;
+	}
+    }
+    else if(event_name == user_interface::force_end_libdar)
+    {
+	if(libdar_running)
+	{
+	    if(current_thread != NULL)
+	    {
+		pthread_t libdar_tid;
+		if(current_thread->is_running(libdar_tid))
+		{
+		    libdar::thread_cancellation th;
+		    th.cancel(libdar_tid, true, 0);
+		    sleep(1);
+		    if(current_thread->is_running())
+			current_thread->kill();
+		}
+	    }
+	    else
+		throw WEBDAR_BUG;
+	}
+    }
+    else if(event_name == user_interface::clean_ended_libdar)
+    {
+	if(libdar_running)
+	    throw WEBDAR_BUG;
+	if(current_thread == NULL)
+	    throw WEBDAR_BUG;
+	if(current_thread->is_running())
+	    throw WEBDAR_BUG;
+	current_thread->join();
+	current_thread = NULL;
     }
     else if(event_name == user_interface::start_restore)
     {
@@ -60,6 +121,30 @@ void session::on_event(const std::string & event_name)
     }
     else if(event_name == user_interface::start_test)
     {
+	if(libdar_running)
+	    throw WEBDAR_BUG;
+	if(current_thread != NULL)
+	    throw WEBDAR_BUG;
+
+	    // providing libdar::parameters
+	arch_test.set_user_interaction(wui.get_user_interaction());
+	arch_test.set_archive_path(wui.get_parametrage().get_archive_path());
+	arch_test.set_archive_basename(wui.get_parametrage().get_archive_basename());
+	arch_test.set_archive_options_read(wui.get_parametrage().get_read_options());
+	arch_test.set_archive_options_test(wui.get_parametrage().get_testing_options());
+	arch_test.set_progressive_report(wui.get_statistics().get_libdar_statistics());
+
+	    // resetting counters and logs
+	wui.get_user_interaction().clear();
+	wui.get_statistics().clear_counters();
+	wui.get_statistics().clear_labels();
+	wui.get_statistics().set_treated_label("item(s) treated");
+	wui.get_statistics().set_skipped_label("item(s) excluded by filters");
+	wui.get_statistics().set_errored_label("items(s) with error");
+
+	arch_test.run();
+	current_thread = & arch_test;
+	libdar_running = true;
     }
     else if(event_name == user_interface::start_create)
     {

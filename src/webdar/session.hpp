@@ -13,6 +13,7 @@ extern "C"
 #include "user_interface.hpp"
 #include "semaphore.hpp"
 #include "events.hpp"
+#include "archive_test.hpp"
 
     /// class session - holds information about a current user session
 
@@ -74,9 +75,12 @@ private:
 
     semaphore lock_wui;       //< required locking before accessing wui field
     user_interface wui;       //< object containing the current Web User Interface; is managed by the session object and should never be NULL
-    pthread_t tid;            //< holds the tid of the thread that acquired the object
-    bool libdar_running;      //< whether a libdar child thread is running
+    pthread_t tid;            //< tid of the thread that acquired lock on that object
     std::string session_ID;   //< session_ID info (duplicated info to avoid table lookup and mutex lock)
+    bool libdar_running;      //< whether a libdar child thread is running
+    thread *current_thread;   //< points to the running thread (either arch_test ....)
+    archive_test arch_test;   //< thread for testing archives
+
 
     void check_caller() const; //< test whether the caller has properly acquired the lock on this object
 

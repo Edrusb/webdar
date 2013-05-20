@@ -11,6 +11,9 @@ extern "C"
     // WEBDAR Version
 extern const char * WEBDAR_VERSION;
 
+    // DAR archive extension
+extern const char * EXTENSION;
+
     // the different answer codes
 const unsigned int STATUS_CODE_CONTINUE = 101;
 const unsigned int STATUS_CODE_SWITCHING_PROTOCOLS = 101;

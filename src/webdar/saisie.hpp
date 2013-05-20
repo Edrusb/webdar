@@ -92,7 +92,17 @@ public:
 	/* A IMPLEMENTER */
 
 private:
-    enum { st_idle, st_restore, st_compare, st_test, st_list, st_create, st_isolate, st_merge } status;
+    enum
+    {
+	st_idle,
+	st_restore,
+	st_compare,
+	st_test,
+	st_list,
+	st_create,
+	st_isolate,
+	st_merge
+    } status;
     html_menu choice;      ///< left main menu
     html_div right_pan;    ///< holds all that is beside main menu
 
