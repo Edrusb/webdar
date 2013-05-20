@@ -1,5 +1,5 @@
-#ifndef ARCHIVE_CREATE_HPP
-#define ARCHIVE_CREATE_HPP
+#ifndef HTML_ARCHIVE_CREATE_HPP
+#define HTML_ARCHIVE_CREATE_HPP
 
     // C system header files
 extern "C"
@@ -16,12 +16,12 @@ extern "C"
 #include "body_builder.hpp"
 #include "events.hpp"
 
-class archive_create: public body_builder, public actor
+class html_archive_create: public body_builder, public actor
 {
 public:
-    archive_create();
-    archive_create(const archive_create & ref);
-    const archive_create & operator = (const archive_create & ref) { throw WEBDAR_BUG; };
+    html_archive_create();
+    html_archive_create(const html_archive_create & ref);
+    const html_archive_create & operator = (const html_archive_create & ref) { throw WEBDAR_BUG; };
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,

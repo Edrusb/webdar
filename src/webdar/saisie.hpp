@@ -23,7 +23,7 @@ extern "C"
 #include "options_compare.hpp"
 #include "options_test.hpp"
 #include "archive_read.hpp"
-#include "archive_create.hpp"
+#include "html_archive_create.hpp"
 #include "html_button.hpp"
 #include "html_url_class.hpp"
 
@@ -132,7 +132,7 @@ private:
     html_button go_list;
 	//
     html_div div_create;
-    archive_create create;
+    html_archive_create create;
     html_button go_create;
 	//
     html_div div_isolate;
