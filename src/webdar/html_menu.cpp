@@ -13,13 +13,13 @@ extern "C"
 #include "exceptions.hpp"
 
     //
-#include "menu.hpp"
+#include "html_menu.hpp"
 
 using namespace std;
 
-const string menu::changed = "menu_changed";
+const string html_menu::changed = "html_menu_changed";
 
-menu::menu()
+html_menu::html_menu()
 {
     css tmp_set;
 
@@ -82,10 +82,10 @@ menu::menu()
     adopt(&url_normal);
     adopt(&url_selected);
 
-    register_name(changed); // add the "menu_changed" event to this object
+    register_name(changed); // add the "html_menu_changed" event to this object
 }
 
-menu::~menu()
+html_menu::~html_menu()
 {
     vector<boite *>::iterator it = item.begin();
 
@@ -98,7 +98,7 @@ menu::~menu()
     item.clear();
 }
 
-void menu::add_entry(const std::string & reference, const std::string & label)
+void html_menu::add_entry(const std::string & reference, const std::string & label)
 {
     chemin tmp = get_path();
     unsigned int i = 0;
@@ -134,7 +134,7 @@ void menu::add_entry(const std::string & reference, const std::string & label)
 	 set_current_mode(0);
 }
 
-void menu::set_current_mode(unsigned int mode)
+void html_menu::set_current_mode(unsigned int mode)
 {
     unsigned int size = item.size();
     bool has_changed = (mode != current_mode);
@@ -170,7 +170,7 @@ void menu::set_current_mode(unsigned int mode)
     }
 }
 
-string menu::get_current_label() const
+string html_menu::get_current_label() const
 {
     boite *box = NULL;
 
@@ -184,7 +184,7 @@ string menu::get_current_label() const
     return box->value;
 }
 
-void menu::set_current_label(const std::string & label)
+void html_menu::set_current_label(const std::string & label)
 {
     unsigned int i = 0;
 
@@ -199,10 +199,10 @@ void menu::set_current_label(const std::string & label)
 	    set_current_mode(i);
     }
     else
-	throw WEBDAR_BUG; // unknown label in this menu
+	throw WEBDAR_BUG; // unknown label in this html_menu
 }
 
-string menu::get_body_part(const chemin & path,
+string html_menu::get_body_part(const chemin & path,
 			   const request & req)
 {
 	// reading the requested path to determin
@@ -234,7 +234,7 @@ string menu::get_body_part(const chemin & path,
     return get_body_part_from_all_children(path, req);
 }
 
-void menu::path_has_changed()
+void html_menu::path_has_changed()
 {
     vector<boite *>::iterator it = item.begin();
 
@@ -254,7 +254,7 @@ void menu::path_has_changed()
 	set_current_mode(current_mode);
 }
 
-void menu::css_updated(bool inherit)
+void html_menu::css_updated(bool inherit)
 {
     global.css_inherit_from(*this, true, true);
 }

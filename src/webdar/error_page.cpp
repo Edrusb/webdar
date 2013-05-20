@@ -11,7 +11,7 @@ extern "C"
 #include "options_listing.hpp"
 #include "html_div.hpp"
 #include "tokens.hpp"
-#include "menu.hpp"
+#include "html_menu.hpp"
 
     //
 #include "error_page.hpp"

@@ -1,5 +1,5 @@
-#ifndef MENU_HPP
-#define MENU_HPP
+#ifndef HTML_MENU_HPP
+#define HTML_MENU_HPP
 
     // C system header files
 extern "C"
@@ -18,21 +18,21 @@ extern "C"
 #include "events.hpp"
 
 
-    /// class menu provides a menu of choices to dynamically
-    /// change a part of the user interface
+    /// class html_menu provides a menu of choices to dynamically
+    /// change another part of the html user interface
     /// upon change the event "changed" is generated
 
-class menu : public body_builder, protected events
+class html_menu : public body_builder, protected events
 {
 public:
 	/// the available event for this class
     static const std::string changed;
 
 	/// constructor
-    menu();
+    html_menu();
 
 	/// destructor
-    ~menu();
+    ~html_menu();
 
 	/// add an entry in the menu
 	///

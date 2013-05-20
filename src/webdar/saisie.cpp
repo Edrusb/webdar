@@ -308,7 +308,7 @@ string saisie::get_body_part(const chemin & path,
 
 void saisie::on_event(const std::string & event_name)
 {
-    if(event_name == menu::changed
+    if(event_name == html_menu::changed
        || event_name == html_form_input::changed
        || event_name == "")
     {

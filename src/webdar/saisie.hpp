@@ -12,7 +12,7 @@ extern "C"
 
     // webdar headers
 #include "html_page.hpp"
-#include "menu.hpp"
+#include "html_menu.hpp"
 #include "html_aiguille.hpp"
 #include "html_div.hpp"
 #include "options_listing.hpp"
@@ -93,7 +93,7 @@ public:
 
 private:
     enum { st_idle, st_restore, st_compare, st_test, st_list, st_create, st_isolate, st_merge } status;
-    menu choice;           ///< left main menu
+    html_menu choice;      ///< left main menu
     html_div right_pan;    ///< holds all that is beside main menu
 
 	/// right_pan zone
