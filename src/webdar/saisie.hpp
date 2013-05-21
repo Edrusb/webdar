@@ -94,15 +94,15 @@ public:
 private:
     enum
     {
-	st_idle,
-	st_restore,
-	st_compare,
-	st_test,
-	st_list,
-	st_create,
-	st_isolate,
-	st_merge
-    } status;
+	st_idle,    //< user did not click any action button, or action has completed
+	st_restore, //< user clicked on the restore button
+	st_compare, //< user clicked on the compare button
+	st_test,    //< user clicked on the test button
+	st_list,    //< user clicked on the list button
+	st_create,  //< user clicked on the create button
+	st_isolate, //< user clicked on the isolate button
+	st_merge    //< user clicked on the merge button
+    } status;       //< status is used to determine which field to user to provide information toward libdar
     html_menu choice;      ///< left main menu
     html_div right_pan;    ///< holds all that is beside main menu
 

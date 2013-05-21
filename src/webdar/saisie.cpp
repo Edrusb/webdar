@@ -349,7 +349,6 @@ void saisie::on_event(const std::string & event_name)
 	    || event_name == event_isolate
 	    || event_name == event_merge)
     {
-	act(event_name); // propagate the event to the subscribers
 	if(event_name == event_restore)
 	    status = st_restore;
 	else if(event_name == event_compare)
@@ -366,7 +365,7 @@ void saisie::on_event(const std::string & event_name)
 	    status = st_merge;
 	else
 	    throw WEBDAR_BUG;
-
+	act(event_name); // propagate the event to the subscribers
     }
     else
 	throw WEBDAR_BUG;
