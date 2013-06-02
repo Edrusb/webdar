@@ -55,8 +55,12 @@ body_builder se construit par "reference" (event/actor)
 + faire une classe progressive (libdar::statistics) report representation HTML de la classe libdar::statistics
 + ajouter un champ web_user_interface a la classe user_interface,
 + placer la class user_interface comme acteur sur boutons de chaque page
+x faire une classe abort_libdar, invoquant libdar::thread_cancel et fournissant un bouton "abort"
 
-? faire une classe abort_libdar, invoquant libdar::thread_cancel et fournissant un bouton "abort"
+>>> terminer les fonction de webdar_css_style.?pp : probleme eviter le duplication des url_class dans la code html genere ... methode ? a part ou tout revoir a base d'objet constant ? appelle depuis chaque html_page une seule fois ou, definition de ces methodes dans html_page directement ?!?
+>>>>> finir l'implementation de html_error
+>>>>>>>> finir l'implementation de html_libdar_running
+>>>>>>>>>>>> revoir l'implementation de html_menu a base de html_button et webdar_css_style
 > faire une class derivee de thread pour lancer les appels libdar (voire une classe par action, ou une meme classe avec plusieurs methods "run", run_create(..)etc.)
 - revoir l'implementation de menu pour utiliser des html_button
 - voir comment partager les proprietes CSS des boutons seuls et au sein d'un menu (methode sur class saisie  transmise a ses bouton et ses menus, invoquee depuis la class user_interface pour ses propres boutons en direct) ?

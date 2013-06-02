@@ -20,7 +20,6 @@ const string user_interface::closing = "user_interface_closing";
 const string user_interface::ask_end_libdar = "user_interface_ask_end_libdar";
 const string user_interface::force_end_libdar = "user_interface_force_end_libdar";
 const string user_interface::clean_ended_libdar = "user_interface_clean_ended_libdar";
-const string user_interface::close_libdar_screen = "user_interface_close_libdar_screen";
 const string user_interface::start_restore = "user_interface_start_restore";
 const string user_interface::start_compare = "user_interface_start_compare";
 const string user_interface::start_test = "user_interface_start_test";
@@ -28,15 +27,13 @@ const string user_interface::start_create = "user_interface_start_create";
 const string user_interface::start_isolate = "user_interface_start_isolate";
 const string user_interface::start_merge = "user_interface_start_merge";
 
-user_interface::user_interface():
-    ask_close("Stop libdar thread", ask_end_libdar),
-    force_close("Abord libdar thread", force_end_libdar),
-    finish("Finish", close_libdar_screen)
+user_interface::user_interface()
 {
     mode = config;
     mode_changed = false;
     close_requested = false;
 
+	/// messages receved from saisie object named parametrage
     parametrage.record_actor_on_event(this, saisie::event_closing);
     parametrage.record_actor_on_event(this, saisie::event_restore);
     parametrage.record_actor_on_event(this, saisie::event_compare);
@@ -46,23 +43,15 @@ user_interface::user_interface():
     parametrage.record_actor_on_event(this, saisie::event_isolate);
     parametrage.record_actor_on_event(this, saisie::event_merge);
 
-    ask_close.record_actor_on_event(this, ask_end_libdar);
-    force_close.record_actor_on_event(this, force_end_libdar);
-    finish.record_actor_on_event(this, close_libdar_screen);
+	/// messages received from html_libdar_running object named in_action
+    in_action.record_actor_on_event(this, html_libdar_running::ask_end_libdar);
+    in_action.record_actor_on_event(this, html_libdar_running::force_end_libdar);
+    in_action.record_actor_on_event(this, html_libdar_running::close_libdar_screen);
 
-    errors.css_color("0xFF0000");
-    errors.css_margin("1em");
-    errors.css_font_weight_bold();
-    errors.css_text_align(css::al_center);
+	/// messages received from html_error object named in_error;
+    in_error.record_actor_on_event(this, html_error::acknowledged);
 
-    run_div.adopt(&web_ui);
-    run_div.adopt(&stats);
-    run_div.adopt(&ask_close);
-    run_div.adopt(&force_close);
-    run_div.adopt(&errors);
-    run_div.adopt(&finish);
-
-
+	/// create the events that this object is willing to generate
     register_name(closing);
     register_name(ask_end_libdar);
     register_name(force_end_libdar);
@@ -85,36 +74,37 @@ answer user_interface::give_answer(const request & req)
     do
     {
 	mode_changed = false;
-	switch(mode)
+	try
 	{
-	case config:
-	    ret.add_body(parametrage.get_body_part(req.get_uri().get_path(), req));
-	    break;
-	case listing:
-	    throw exception_feature("libdar listing mode reached in user_interface");
-	case running:
-	case end_asked:
-	case end_forced:
-	case finished:
-	    ret.add_body(run_div.get_body_part(req.get_uri().get_path(), req));
-	    break;
-	case exceptions:
-	    try
+	    switch(mode)
 	    {
-		act(clean_ended_libdar);
+	    case config:
+		ret.add_body(parametrage.get_body_part(req.get_uri().get_path(), req));
+		break;
+	    case listing:
+		throw exception_feature("libdar listing mode reached in user_interface");
+	    case running:
+		ret.add_body(in_action.get_body_part(req.get_uri().get_path(), req));
+		break;
+	    case error:
+		ret.add_body(in_error.get_body_part(req.get_uri().get_path(), req));
+		break;
+	    default:
+		throw WEBDAR_BUG;
 	    }
-	    catch(libdar::Egeneric & e)
-	    {
-		errors.clear();
-		errors.set_visible(true);
-		errors.add_text(1, "LIBDAR error");
-		errors.add_paragraph();
-		errors.add_text(0, e.get_message());
-	    }
-	    mode = finished;
+	}
+	catch(exception_bug & e)
+	{
+	    throw;
+	}
+	catch(exception_base & e)
+	{
+	    if(mode == error)
+		throw; // cannot handle an exception in error mode
+	    return_mode = mode;
+	    mode = error;
 	    mode_changed = true;
-	default:
-	    throw WEBDAR_BUG;
+	    in_error.set_message(e.get_message());
 	}
     }
     while(mode_changed);
@@ -125,8 +115,6 @@ answer user_interface::give_answer(const request & req)
 void user_interface::on_event(const std::string & event_name)
 {
     if(event_name == saisie::event_closing)
-	act(closing);
-    else if(event_name == ask_end_libdar)
     {
 	switch(mode)
 	{
@@ -135,26 +123,14 @@ void user_interface::on_event(const std::string & event_name)
 	case listing:
 	    throw WEBDAR_BUG;
 	case running:
-	    mode = end_asked;
-	    act(ask_end_libdar);
-	    finish.set_visible(false);
-	    force_close.set_visible(true);
-	    ask_close.set_visible(false);
-	    break;
-	case end_asked:
-	    break;
-	case end_forced:
-	    throw WEBDAR_BUG;
-	case exceptions:
-	case finished:
+	case error:
+	    act(closing); // transmetting the event
 	    break;
 	default:
 	    throw WEBDAR_BUG;
 	}
-
-	mode_changed = true;
     }
-    else if(event_name == force_end_libdar)
+    else if(event_name == html_libdar_running::ask_end_libdar)
     {
 	switch(mode)
 	{
@@ -163,25 +139,30 @@ void user_interface::on_event(const std::string & event_name)
 	case listing:
 	    throw WEBDAR_BUG;
 	case running:
+	case error:
+	    act(ask_end_libdar);  // transmit the event
+	    break;
+	default:
 	    throw WEBDAR_BUG;
-	case end_asked:
-	    mode = end_forced;
+	}
+    }
+    else if(event_name == html_libdar_running::force_end_libdar)
+    {
+	switch(mode)
+	{
+	case config:
+	    throw WEBDAR_BUG;
+	case listing:
+	    throw WEBDAR_BUG;
+	case running:
+	case error:
 	    act(force_end_libdar);
-	    finish.set_visible(false);
-	    force_close.set_visible(false);
-	    ask_close.set_visible(false);
-	    break;
-	case end_forced:
-	case exceptions:
-	case finished:
 	    break;
 	default:
 	    throw WEBDAR_BUG;
 	}
-
-	mode_changed = true;
     }
-    else if(event_name == close_libdar_screen)
+    else if(event_name == html_libdar_running::close_libdar_screen)
     {
 	switch(mode)
 	{
@@ -190,17 +171,12 @@ void user_interface::on_event(const std::string & event_name)
 	case listing:
 	    throw WEBDAR_BUG;
 	case running:
-	    throw WEBDAR_BUG;
-	case end_asked:
-	    throw WEBDAR_BUG;
-	case end_forced:
-	    throw WEBDAR_BUG;
-	case exceptions:
-	    throw WEBDAR_BUG;
-	case finished:
 	    mode = config;
 	    mode_changed = true;
+	    act(clean_ended_libdar); // trigger exception rethrowing from the dead libdar thread
 	    break;
+	case error:
+	    throw WEBDAR_BUG;
 	default:
 	    throw WEBDAR_BUG;
 	}
@@ -216,10 +192,7 @@ void user_interface::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	mode = running;
 	mode_changed = true;
-	finish.set_visible(false);
-	force_close.set_visible(false);
-	ask_close.set_visible(true);
-	errors.set_visible(false);
+	in_action.clear();
 
 	if(event_name == saisie::event_restore)
 	    act(start_restore);
@@ -241,20 +214,34 @@ void user_interface::on_event(const std::string & event_name)
 	mode = listing;
 	mode_changed = true;
     }
+    else if(event_name == html_error::acknowledged)
+    {
+	mode = return_mode;
+	mode_changed = true;
+    }
     else
 	throw WEBDAR_BUG; // what's that event !?!
 }
 
 void user_interface::libdar_has_finished()
 {
-    mode = exceptions;
-    finish.set_visible(true);
-    force_close.set_visible(false);
-    ask_close.set_visible(false);
+    switch(mode)
+    {
+    case config:
+	throw WEBDAR_BUG;
+    case listing:
+	throw WEBDAR_BUG;
+    case running:
+	in_action.libdar_has_finished();
+	break;
+    case error:
+	throw WEBDAR_BUG;
+    }
 }
 
 void user_interface::prefix_has_changed()
 {
     parametrage.set_prefix(get_prefix());
-    run_div.set_prefix(get_prefix());
+    in_action.set_prefix(get_prefix());
+    in_error.set_prefix(get_prefix());
 }

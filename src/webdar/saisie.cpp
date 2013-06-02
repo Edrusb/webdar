@@ -419,7 +419,7 @@ const string & saisie::get_archive_basename() const
     }
 }
 
-const libdar::archive_options_read saisie::get_read_options() const
+const libdar::archive_options_read & saisie::get_read_options() const
 {
     if(status != st_restore
        && status != st_compare

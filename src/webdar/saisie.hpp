@@ -68,7 +68,7 @@ public:
     const std::string & get_archive_basename() const;
 
 	// reading options (available for listing, testing, diffing, extracting events)
-    const libdar::archive_options_read get_read_options() const;
+    const libdar::archive_options_read & get_read_options() const;
 
 	// extraction options
     const libdar::archive_options_extract get_extraction_options() const;

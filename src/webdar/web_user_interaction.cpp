@@ -435,6 +435,29 @@ void web_user_interaction::clear()
     lib_data->control.unlock();
 }
 
+bool web_user_interaction::can_refresh() const
+{
+    bool ret = false;
+
+    lib_data->control.lock();
+
+    try
+    {
+	ret = lib_data->pause2_pending
+	    || lib_data->get_string_pending
+	    || lib_data->get_secu_string_pending;
+    }
+    catch(...)
+    {
+	lib_data->control.unlock();
+	throw;
+    }
+    lib_data->control.unlock();
+
+
+    return ret;
+}
+
 void web_user_interaction::inherited_warning(const std::string & message)
 {
     if(lib_data == NULL)

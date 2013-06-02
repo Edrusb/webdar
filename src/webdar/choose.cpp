@@ -17,6 +17,7 @@ extern "C"
 #include "tokens.hpp"
 #include "html_div.hpp"
 #include "html_yes_no_box.hpp"
+
     //
 #include "choose.hpp"
 
@@ -24,7 +25,7 @@ using namespace std;
 
 map<string, choose::record *> choose::per_user;
 
-choose::choose(const std::string & user):
+choose::choose(const string & user):
     page("Choose a session"),
     table(5),
     nouvelle("/choose/new", "Create a new session"),
@@ -84,6 +85,7 @@ choose::choose(const std::string & user):
 answer choose::give_answer(const request & req)
 {
     answer ret;
+    string error_msg = "";
 
 	// update the form fields when request is a POST
 
@@ -95,7 +97,20 @@ answer choose::give_answer(const request & req)
 	    (void)confirm.get_body_part(req.get_uri().get_path(), req);
 
 	    if(confirmed.get_value()) // kill confirmed
-		kill_selected_sessions();
+	    {
+		try
+		{
+		    kill_selected_sessions();
+		}
+		catch(exception_bug & e)
+		{
+		    throw;
+		}
+		catch(exception_base & e)
+		{
+		    error_msg = string("Error met while killing a session: ") + e.get_message();
+		}
+	    }
 	    confirm_mode = false;
 	}
 	else
@@ -130,6 +145,16 @@ answer choose::give_answer(const request & req)
     {
 
 	regenerate_table_page();
+	if(error_msg != "")
+	{
+	    html_text tmp;
+
+	    tmp.add_text(1, error_msg);
+	    tmp.css_color("0xFF0000");
+	    tmp.css_text_align(css::al_center);
+	    tmp.css_font_weight_bold();
+	    table.adopt_static_html(tmp.get_body_part());
+	}
 	if(req.get_uri().get_path() == chemin("choose/new"))
 	    ret = create_new_session(req);
 	else
@@ -267,7 +292,7 @@ void choose::kill_selected_sessions() const
 }
 
 
-answer choose::give_answer_for(const std::string & user, const request & req)
+answer choose::give_answer_for(const string & user, const request & req)
 {
     answer ret;
 

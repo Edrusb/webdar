@@ -94,6 +94,10 @@ public:
 	/// clear logs
     void clear();
 
+	/// true if no input is requested from libdar, thus HTML refresh
+	/// can take place
+    bool can_refresh() const;
+
 protected:
 	// inherited from libdar::user_interaction
     virtual void inherited_warning(const std::string & message);

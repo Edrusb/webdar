@@ -96,37 +96,41 @@ html_options_read::html_options_read():
     on_event(html_crypto_algo::changed);
 }
 
-libdar::archive_options_read html_options_read::get_options() const
+const libdar::archive_options_read & html_options_read::get_options() const
 {
-    libdar::archive_options_read ret;
+    html_options_read *me = const_cast <html_options_read *>(this);
 
-    ret.set_crypto_algo(src_crypto_algo.get_value());
+    if(me == NULL)
+	throw WEBDAR_BUG;
+
+    me->opts.clear();
+    me->opts.set_crypto_algo(src_crypto_algo.get_value());
     if(src_crypto_algo.get_value() != libdar::crypto_none)
     {
-	ret.set_crypto_pass(libdar::secu_string(src_crypto_pass.get_value().c_str(), src_crypto_pass.get_value().size()));
-	ret.set_crypto_size(webdar_tools_convert_to_int(src_crypto_size.get_value()));
+	me->opts.set_crypto_pass(libdar::secu_string(src_crypto_pass.get_value().c_str(), src_crypto_pass.get_value().size()));
+	me->opts.set_crypto_size(webdar_tools_convert_to_int(src_crypto_size.get_value()));
     }
-    ret.set_execute(src_execute.get_value());
-    ret.set_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(src_slice_min_digits.get_value())));
-    ret.set_info_details(info_details.get_value_as_bool());
-    ret.set_lax(lax.get_value_as_bool());
-    ret.set_sequential_read(sequential_read.get_value_as_bool());
+    me->opts.set_execute(src_execute.get_value());
+    me->opts.set_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(src_slice_min_digits.get_value())));
+    me->opts.set_info_details(info_details.get_value_as_bool());
+    me->opts.set_lax(lax.get_value_as_bool());
+    me->opts.set_sequential_read(sequential_read.get_value_as_bool());
     if(src_use_external_catalogue.get_value_as_bool())
     {
-	ret.set_external_catalogue(ref_path.get_value(), ref_basename.get_value());
-	ret.set_ref_crypto_algo(ref_crypto_algo.get_value());
+	me->opts.set_external_catalogue(ref_path.get_value(), ref_basename.get_value());
+	me->opts.set_ref_crypto_algo(ref_crypto_algo.get_value());
 	if(ref_crypto_algo.get_value() != libdar::crypto_none)
 	{
-	    ret.set_ref_crypto_pass(libdar::secu_string(ref_crypto_pass.get_value().c_str(), ref_crypto_pass.get_value().size()));
-	    ret.set_ref_crypto_size(webdar_tools_convert_to_int(ref_crypto_size.get_value()));
+	    me->opts.set_ref_crypto_pass(libdar::secu_string(ref_crypto_pass.get_value().c_str(), ref_crypto_pass.get_value().size()));
+	    me->opts.set_ref_crypto_size(webdar_tools_convert_to_int(ref_crypto_size.get_value()));
 	}
-	ret.set_ref_execute(ref_execute.get_value());
-	ret.set_ref_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(ref_slice_min_digits.get_value())));
+	me->opts.set_ref_execute(ref_execute.get_value());
+	me->opts.set_ref_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(ref_slice_min_digits.get_value())));
     }
     else
-	ret.unset_external_catalogue();
+	me->opts.unset_external_catalogue();
 
-    return ret;
+    return opts;
 }
 
 void html_options_read::on_event(const std::string & event_name)

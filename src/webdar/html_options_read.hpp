@@ -25,7 +25,7 @@ class html_options_read : public body_builder, public actor
 public:
     html_options_read();
 
-    libdar::archive_options_read get_options() const;
+    const libdar::archive_options_read & get_options() const;
 
 	/// inherited from actor
     void on_event(const std::string & event_name);
@@ -60,6 +60,8 @@ private:
     html_form_input ref_execute;
     html_form_input ref_slice_min_digits;
 	// html_select ref_entrepot;
+
+    libdar::archive_options_read opts;
 };
 
 #endif
