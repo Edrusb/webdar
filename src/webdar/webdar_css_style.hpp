@@ -16,7 +16,4 @@ extern void webdar_style_normal_button(html_button & obj);
 extern void webdar_style_active_button(html_button & obj);
 extern void webdar_style_void_button(html_button & obj);
 
-
-
-
 #endif

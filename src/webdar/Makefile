@@ -1,13 +1,23 @@
 CFLAGS=-ggdb -pthread `pkg-config --cflags libdar64`
 CXXFLAGS=-ggdb -pthread `pkg-config --cflags libdar64`
+
+ifdef DEBUG
+LDFLAGS=-ggdb -lstdc++ -lpthread -lattr -lgcrypt -lgpg-error -llzo2 -lbz2 -lz -ldl
+LIBDAR_OBJ=../../../../DAR/dar/src/libdar/*.o
+else
 LDFLAGS=-ggdb -lstdc++ -pthread `pkg-config --libs libdar64`
+LIBDAR_OBJ=
+endif
+
+
 
 all: webdar
 
 clean:
 	rm -f *.o webdar
 
-webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o html_options_listing.o html_menu.o  html_aiguille.o saisie.o user_interface.o events.o reference.o html_url_class.o html_yes_no_box.o html_options_extract.o html_options_read.o html_crypto_algo.o html_comparison_fields.o html_options_compare.o html_options_test.o html_archive_read.o html_compression.o html_size_unit.o html_hash_algo.o html_datetime.o html_options_create.o html_archive_create.o web_user_interaction.o html_button.o html_statistics.o archive_test.o
+webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o html_options_listing.o html_menu.o  html_aiguille.o saisie.o user_interface.o events.o reference.o html_url_class.o html_yes_no_box.o html_options_extract.o html_options_read.o html_crypto_algo.o html_comparison_fields.o html_options_compare.o html_options_test.o html_archive_read.o html_compression.o html_size_unit.o html_hash_algo.o html_datetime.o html_options_create.o html_archive_create.o web_user_interaction.o html_button.o html_statistics.o archive_test.o webdar_css_style.o $(LIBDAR_OBJ)
+
 
 webdar.o : webdar.cpp exceptions.hpp central_report.hpp listener.hpp webdar_tools.hpp server.hpp authentication.hpp
 central_report.o : central_report.cpp central_report.hpp webdar_tools.hpp exceptions.hpp mutex.hpp
@@ -71,3 +81,4 @@ web_user_interaction.o: web_user_interaction.cpp web_user_interaction.hpp body_b
 html_button.o : html_button.cpp html_button.hpp body_builder.hpp events.hpp html_url_class.hpp html_url.hpp html_div.hpp
 html_statistics.o : html_statistics.cpp html_statistics.hpp body_builder.hpp html_table.hpp html_text.hpp
 archive_test.o : archive_test.cpp archive_test.hpp tokens.hpp
+webdar_css_style.o : webdar_css_style.cpp webdar_css_style.hpp mutex.hpp html_button.hpp tokens.hpp
