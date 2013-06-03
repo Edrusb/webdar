@@ -28,10 +28,6 @@ public:
 	/// inherited from actor class
     virtual void on_event(const std::string & event_name);
 
-	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req);
-
 private:
     html_div global;
     html_text the_error;

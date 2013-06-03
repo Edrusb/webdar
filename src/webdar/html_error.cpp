@@ -56,10 +56,3 @@ void html_error::on_event(const std::string & event_name)
 {
     act(acknowledged);
 }
-
-string html_error::get_body_part(const chemin & path,
-				 const request & req)
-{
-    return get_body_part_from_all_children(path, req);
-}
-
