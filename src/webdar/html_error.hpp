@@ -12,6 +12,9 @@ extern "C"
 
     // webdar headers
 #include "html_page.hpp"
+#include "events.hpp"
+#include "html_text.hpp"
+#include "html_button.hpp"
 
 class html_error : public html_page, public events, public actor
 {
@@ -24,6 +27,10 @@ public:
 
 	/// inherited from actor class
     virtual void on_event(const std::string & event_name);
+
+	/// inherited from body_builder
+    virtual std::string get_body_part(const chemin & path,
+				      const request & req);
 
 private:
     html_div global;

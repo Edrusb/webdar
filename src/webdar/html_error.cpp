@@ -15,8 +15,8 @@ extern "C"
 
 using namespace std;
 
-string html_error::acknowledged = "html_error_acknowledged";
-string html_error::close_event = "html_error_button_close";
+const string html_error::acknowledged = "html_error_acknowledged";
+const string html_error::close_event = "html_error_button_close";
 
 html_error::html_error():
     html_page("Error Page"),
@@ -32,7 +32,7 @@ html_error::html_error():
     global.css_border_color(css::bd_left, "0xFF0000");
     global.css_border_color(css::bd_bottom, "0xAA0000");
     global.css_border_color(css::bd_right, "0xAA0000");
-    global.css_border_style(css::bd::all, css::bd_double);
+    global.css_border_style(css::bd_all, css::bd_double);
 
     webdar_style_normal_button(close);
     close.css_float(fl_right);
@@ -43,16 +43,23 @@ html_error::html_error():
 
     close.record_actor_on_event(this, close_event);
 
-    register_name(acknoledged);
+    register_name(acknowledged);
 }
 
 void html_error::set_message(const std::string & msg)
 {
     the_error.clear();
-    the_error.add_text(msg);
+    the_error.add_text(1, msg);
 }
 
 void html_error::on_event(const std::string & event_name)
 {
-    act(acknoledged);
+    act(acknowledged);
 }
+
+string html_error::get_body_part(const chemin & path,
+				 const request & req)
+{
+    return get_body_part_from_all_children(path, req);
+}
+
