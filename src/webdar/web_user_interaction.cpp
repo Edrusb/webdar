@@ -289,7 +289,10 @@ string web_user_interaction::get_body_part(const chemin & path,
 	for(list<string>::iterator it = lib_data->warnings.begin();
 	    it != lib_data->warnings.end();
 	    ++it)
+	{
 	    html_data->warnings.add_text(0, *it);
+	    html_data->warnings.add_nl();
+	}
 
 	if(lib_data->pause2_pending && !lib_data->answered)
 	{

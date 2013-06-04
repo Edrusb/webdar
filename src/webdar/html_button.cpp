@@ -43,18 +43,22 @@ string html_button::get_body_part(const chemin & path,
     chemin target = req.get_uri().get_path();
     string choice;
 
-    if(!target.empty())
+    ack_visible();
+    if(get_visible())
     {
-	choice = target.back();
-	target.pop_back();
+	if(!target.empty())
+	{
+	    choice = target.back();
+	    target.pop_back();
+	}
+	else
+	    choice = "";
+
+	if(target == get_path() && choice == action)
+	    act(event_name);
+
+	return html_div::get_body_part(path, req);
     }
-    else
-	choice = "";
-
-    if(target == get_path() && choice == action)
-	act(event_name);
-
-    return html_div::get_body_part(path, req);
 }
 
 

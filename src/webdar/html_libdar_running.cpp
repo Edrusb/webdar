@@ -47,6 +47,12 @@ html_libdar_running::html_libdar_running():
     global.adopt(&force_close);
     global.adopt(&finish);
     adopt(&global);
+
+    register_name(ask_end_libdar);
+    register_name(force_end_libdar);
+    register_name(close_libdar_screen);
+
+    set_mode(normal);
 }
 
 string html_libdar_running::get_body_part(const chemin & path,
