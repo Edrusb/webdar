@@ -22,7 +22,7 @@ class body_builder : public css
 {
 public:
 	/// constructor
-    body_builder() { parent = NULL; order.clear(); children.clear(); revert_child.clear(); visible = true ; next_visible = true; no_CR = false; };
+    body_builder() { clear(); };
 
 	/// copy constructor allowed only if the object has no parent nor child
     body_builder(const body_builder & ref);
@@ -169,6 +169,9 @@ private:
 
 	/// inform children and all their descendant children that the path has changed calling their path_has_changed() method
     void recursive_path_has_changed();
+
+	/// (re)initialize fields to default sane values
+    void clear() { parent = NULL; order.clear(); children.clear(); revert_child.clear(); visible = true ; next_visible = true; no_CR = false; };
 };
 
 #endif

@@ -14,48 +14,6 @@ extern "C"
     //
 #include "web_user_interaction.hpp"
 
-web_user_interaction_libdar_data::web_user_interaction_libdar_data(unsigned int x_warn_size)
-{
-    instances = 1;
-    pause2_pending = false;
-    get_string_pending = false;
-    get_secu_string_pending = false;
-    warn_size = x_warn_size;
-	// acquiring the libdar pending semaphore for libdar thread get frozen waiting of the html thread to obtain an answer for the user
-    libdar_sem.lock();
-}
-
-web_user_interaction_libdar_data::~web_user_interaction_libdar_data()
-{
-    if(instances == 0)
-	libdar_sem.unlock();
-    else
-	throw WEBDAR_BUG;
-}
-
-web_user_interaction_html_data::web_user_interaction_html_data():
-    get_string("", html_form_input::text, "", 20),
-    inter("User interaction requested from libdar"),
-    form("Update"),
-    logs("Last logs"),
-    global("Interaction with libdar")
-{
-    pause2.add_choice("undefined", "please answer yes or no");
-    pause2.add_choice("no", "No");
-    pause2.add_choice("yes", "Yes");
-
-    inter.adopt(&pause2);
-    form.adopt(&inter);
-    form.adopt(&get_string);
-    global.adopt(&form);
-    logs.adopt(&warnings);
-    global.adopt(&logs);
-
-    inter.set_visible(false);
-    get_string.set_visible(false);
-    form.set_visible(false);
-};
-
 
 using namespace std;
 
@@ -556,4 +514,51 @@ void web_user_interaction::destroy()
     lib_data = NULL; // yes, in any case
     html_data = NULL; // yes, in any case
 }
+
+
+///////////// web_user_interaction_libdar_data methods //////////////////
+
+web_user_interaction_libdar_data::web_user_interaction_libdar_data(unsigned int x_warn_size)
+{
+    instances = 1;
+    pause2_pending = false;
+    get_string_pending = false;
+    get_secu_string_pending = false;
+    warn_size = x_warn_size;
+	// acquiring the libdar pending semaphore from libdar thread will freeze the thread waiting for the html thread to obtain an answer for the user
+    libdar_sem.lock();
+}
+
+web_user_interaction_libdar_data::~web_user_interaction_libdar_data()
+{
+    if(instances == 0)
+	libdar_sem.unlock();
+    else
+	throw WEBDAR_BUG;
+}
+
+///////////// web_user_interaction_html_data methods /////////////////////
+
+web_user_interaction_html_data::web_user_interaction_html_data():
+    get_string("", html_form_input::text, "", 20),
+    inter("User interaction requested from libdar"),
+    form("Update"),
+    logs("Last logs"),
+    global("Interaction with libdar")
+{
+    pause2.add_choice("undefined", "please answer yes or no");
+    pause2.add_choice("no", "No");
+    pause2.add_choice("yes", "Yes");
+
+    inter.adopt(&pause2);
+    form.adopt(&inter);
+    form.adopt(&get_string);
+    global.adopt(&form);
+    logs.adopt(&warnings);
+    global.adopt(&logs);
+
+    inter.set_visible(false);
+    get_string.set_visible(false);
+    form.set_visible(false);
+};
 

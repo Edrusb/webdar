@@ -20,8 +20,7 @@ const unsigned int NAME_WIDTH = 4;
 
 body_builder::body_builder(const body_builder & ref)
 {
-    if(parent != NULL || !order.empty() || ! children.empty() || ! revert_child.empty())
-	throw WEBDAR_BUG;
+    clear();
     if(ref.parent != NULL || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty())
 	throw WEBDAR_BUG;
     visible = ref.visible;
