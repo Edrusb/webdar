@@ -17,54 +17,64 @@ extern "C"
 
 using namespace std;
 
-web_user_interaction::web_user_interaction(unsigned int x_warn_size)
+web_user_interaction::web_user_interaction(unsigned int x_warn_size):
+    h_inter("User interaction requested from libdar"),
+    h_get_string("", html_form_input::text, "", 20),
+    h_form("Update"),
+    h_logs("Last logs"),
+    h_global("Interaction with libdar"),
+    lib_data(x_warn_size)
 {
-    lib_data = NULL;
-    html_data = NULL;
-    try
-    {
-	lib_data = new (nothrow) web_user_interaction_libdar_data(x_warn_size);
-	html_data = new (nothrow) web_user_interaction_html_data();
+    h_pause2.add_choice("undefined", "please answer yes or no");
+    h_pause2.add_choice("no", "No");
+    h_pause2.add_choice("yes", "Yes");
 
-	if(lib_data == NULL)
-	    throw exception_memory();
-	if(html_data == NULL)
-	    throw exception_memory();
+    h_inter.adopt(&h_pause2);
+    h_form.adopt(&h_inter);
+    h_form.adopt(&h_get_string);
+    h_global.adopt(&h_form);
+    h_logs.adopt(&h_warnings);
+    h_global.adopt(&h_logs);
+    adopt(&h_global);
 
-	adopt(&html_data->global);
+    h_inter.set_visible(false);
+    h_get_string.set_visible(false);
+    h_form.set_visible(false);
 
-	html_data->pause2.record_actor_on_event(this, html_form_radio::changed);
-	html_data->get_string.record_actor_on_event(this, html_form_input::changed);
-    }
-    catch(...)
-    {
-	if(lib_data != NULL)
-	    delete lib_data;
-	if(html_data != NULL)
-	    delete html_data;
-	throw;
-    }
+    h_pause2.record_actor_on_event(this, html_form_radio::changed);
+    h_get_string.record_actor_on_event(this, html_form_input::changed);
+}
+
+web_user_interaction::web_user_interaction(const web_user_interaction & ref):
+    h_inter(""),
+    h_get_string("", html_form_input::text, "", 1),
+    h_form(""),
+    h_logs(""),
+    h_global(""),
+    lib_data(1)
+{
+    throw WEBDAR_BUG;
 }
 
 void web_user_interaction::set_warning_list_size(unsigned int size)
 {
-    if(lib_data == NULL)
-	throw WEBDAR_BUG;
 
 	// critical section begins
-    lib_data->control.lock();
+	//
+    lib_data.control.lock();
     try
     {
-	lib_data->warn_size = size;
-	while(lib_data->warnings.size() > size)
-	    lib_data->warnings.pop_front();
+	lib_data.warn_size = size;
+	while(lib_data.warnings.size() > size)
+	    lib_data.warnings.pop_front();
     }
     catch(...)
     {
-	lib_data->control.unlock();
+	lib_data.control.unlock();
 	throw;
     }
-    lib_data->control.unlock();
+    lib_data.control.unlock();
+	//
 	// critical section ended
 }
 
@@ -72,45 +82,48 @@ bool web_user_interaction::pause2(const std::string & message)
 {
     bool ret;
 
-    if(lib_data == NULL)
-	throw WEBDAR_BUG;
-
 	// critical section begins
-    lib_data->control.lock();
+	//
+    lib_data.control.lock();
     try
     {
-	if(lib_data->pause2_pending || lib_data->get_string_pending || lib_data->get_secu_string_pending)
+	if(lib_data.pause2_pending || lib_data.get_string_pending || lib_data.get_secu_string_pending)
 	    throw WEBDAR_BUG; // already waiting for an answer!
-	lib_data->answered = false;
-	lib_data->pause2_msg = message;
-	lib_data->pause2_pending = true;
+	lib_data.answered = false;
+	lib_data.pause2_msg = message;
+	lib_data.pause2_pending = true;
     }
     catch(...)
     {
-	lib_data->control.unlock();
+	lib_data.control.unlock();
 	throw;
     }
-    lib_data->control.unlock();
+    lib_data.control.unlock();
+	//
 	// critical section ended
 
-    lib_data->libdar_sem.lock();
+	// waiting on this semaphor for the answer to be filled by the html thread
+    lib_data.libdar_sem.lock();
+	// the answer has been filled so we use it to return the info to libdar
 
 	// critical section begins
-    lib_data->control.lock();
+	//
+    lib_data.control.lock();
     try
     {
-	if(!lib_data->pause2_pending)
-	    throw WEBDAR_BUG; // answer already read!
-	lib_data->pause2_pending = false;
-	ret = lib_data->pause2_ans;
-	lib_data->pause2_msg = "";
+	if(!lib_data.pause2_pending)
+	    throw WEBDAR_BUG; // answer already read!?!
+	lib_data.pause2_pending = false;
+	ret = lib_data.pause2_ans;
+	lib_data.pause2_msg = "";
     }
     catch(...)
     {
-	lib_data->control.unlock();
+	lib_data.control.unlock();
 	throw;
     }
-    lib_data->control.unlock();
+    lib_data.control.unlock();
+	//
 	// critical section ended
 
     return ret;
@@ -120,47 +133,50 @@ string web_user_interaction::get_string(const std::string & message, bool echo)
 {
     string ret;
 
-    if(lib_data == NULL)
-	throw WEBDAR_BUG;
-
 	// critical section begins
-    lib_data->control.lock();
+	//
+    lib_data.control.lock();
     try
     {
-	if(lib_data->pause2_pending || lib_data->get_string_pending || lib_data->get_secu_string_pending)
+	if(lib_data.pause2_pending || lib_data.get_string_pending || lib_data.get_secu_string_pending)
 	    throw WEBDAR_BUG; // already waiting for an answer!
-	lib_data->answered = false;
-	lib_data->get_string_msg = message;
-	lib_data->get_string_echo = echo;
-	lib_data->get_string_pending = true;
+	lib_data.answered = false;
+	lib_data.get_string_msg = message;
+	lib_data.get_string_echo = echo;
+	lib_data.get_string_pending = true;
     }
     catch(...)
     {
-	lib_data->control.unlock();
+	lib_data.control.unlock();
 	throw;
     }
-    lib_data->control.unlock();
+    lib_data.control.unlock();
+	//
 	// critical section ended
 
-    lib_data->libdar_sem.lock();
+	// waiting on this semaphor for the answer to be filled by the html thread
+    lib_data.libdar_sem.lock();
+	// the answer has been filled so we use it to return the info to libdar
 
 	// critical section begins
-    lib_data->control.lock();
+	//
+    lib_data.control.lock();
     try
     {
-	if(!lib_data->get_string_pending)
+	if(!lib_data.get_string_pending)
 	    throw WEBDAR_BUG; // answer already read!
-	lib_data->get_string_pending = false;
-	ret = lib_data->get_string_ans;
-	lib_data->get_string_msg = "";
-	lib_data->get_string_ans = "";
+	lib_data.get_string_pending = false;
+	ret = lib_data.get_string_ans;
+	lib_data.get_string_msg = "";
+	lib_data.get_string_ans = "";
     }
     catch(...)
     {
-	lib_data->control.unlock();
+	lib_data.control.unlock();
 	throw;
     }
-    lib_data->control.unlock();
+    lib_data.control.unlock();
+	//
 	// critical section ended
 
     return ret;
@@ -170,47 +186,50 @@ libdar::secu_string web_user_interaction::get_secu_string(const std::string & me
 {
     libdar::secu_string ret;
 
-    if(lib_data == NULL)
-	throw WEBDAR_BUG;
-
 	// critical section begins
-    lib_data->control.lock();
+	//
+    lib_data.control.lock();
     try
     {
-	if(lib_data->pause2_pending || lib_data->get_string_pending || lib_data->get_secu_string_pending)
+	if(lib_data.pause2_pending || lib_data.get_string_pending || lib_data.get_secu_string_pending)
 	    throw WEBDAR_BUG; // already waiting for an answer!
-	lib_data->answered = false;
-	lib_data->get_secu_string_msg = message;
-	lib_data->get_secu_string_echo = echo;
-	lib_data->get_secu_string_pending = true;
+	lib_data.answered = false;
+	lib_data.get_secu_string_msg = message;
+	lib_data.get_secu_string_echo = echo;
+	lib_data.get_secu_string_pending = true;
     }
     catch(...)
     {
-	lib_data->control.unlock();
+	lib_data.control.unlock();
 	throw;
     }
-    lib_data->control.unlock();
+    lib_data.control.unlock();
+	//
 	// critical section ended
 
-    lib_data->libdar_sem.lock();
+	// waiting on this semaphor for the answer to be filled by the html thread
+    lib_data.libdar_sem.lock();
+	// the answer has been filled so we use it to return the info to libdar
 
 	// critical section begins
-    lib_data->control.lock();
+	//
+    lib_data.control.lock();
     try
     {
-	if(!lib_data->get_secu_string_pending)
+	if(!lib_data.get_secu_string_pending)
 	    throw WEBDAR_BUG; // answer already read!
-	lib_data->get_secu_string_pending = false;
-	ret = lib_data->get_secu_string_ans;
-	lib_data->get_string_msg = "";
-	lib_data->get_string_ans = "";
+	lib_data.get_secu_string_pending = false;
+	ret = lib_data.get_secu_string_ans;
+	lib_data.get_string_msg = "";
+	lib_data.get_string_ans = "";
     }
     catch(...)
     {
-	lib_data->control.unlock();
+	lib_data.control.unlock();
 	throw;
     }
-    lib_data->control.unlock();
+    lib_data.control.unlock();
+	//
 	// critical section ended
 
     return ret;
@@ -231,88 +250,93 @@ string web_user_interaction::get_body_part(const chemin & path,
 					   const request & req)
 {
     string ret;
-    bool clear_pause2 = false;
-    bool clear_get_string = false;
 
-    if(lib_data == NULL)
-	throw WEBDAR_BUG;
-    if(html_data == NULL)
-	throw WEBDAR_BUG;
+	// in the following we need to ignore on_event() calls to be able to
+	// se the html_interface without considering it as
+	// an interaction from the user
+    ignore_event = true;
 
-	// critical section begins
-    lib_data->control.lock();
     try
     {
-	html_data->warnings.clear();
-	for(list<string>::iterator it = lib_data->warnings.begin();
-	    it != lib_data->warnings.end();
-	    ++it)
+	    // critical section begins
+	    //
+	lib_data.control.lock();
+	try
 	{
-	    html_data->warnings.add_text(0, *it);
-	    html_data->warnings.add_nl();
-	}
-
-	if(lib_data->pause2_pending && !lib_data->answered)
-	{
-	    if(!html_data->inter.get_visible());
+	    h_warnings.clear();
+	    for(list<string>::iterator it = lib_data.warnings.begin();
+		it != lib_data.warnings.end();
+		++it)
 	    {
-		html_data->inter.set_visible(true);
-		html_data->inter.change_label(lib_data->pause2_msg);
-		clear_pause2 = true;
+		h_warnings.add_text(0, *it);
+		h_warnings.add_nl();
 	    }
-	}
 
-	if(lib_data->get_string_pending && !lib_data->answered)
-	{
-	    if(!html_data->get_string.get_visible())
+	    if(lib_data.pause2_pending && !lib_data.answered)
 	    {
-		html_data->get_string.set_visible(true);
-		html_data->get_string.change_label(lib_data->get_string_msg);
-		if(lib_data->get_string_echo)
-		    html_data->get_string.change_type(html_form_input::text);
-		else
-		    html_data->get_string.change_type(html_form_input::password);
-		clear_get_string = true;
+		if(!h_inter.get_visible());
+		{
+		    h_inter.set_visible(true);
+		    h_inter.change_label(lib_data.pause2_msg);
+		    h_pause2.set_selected(0);
+		}
 	    }
-	}
 
-	if(lib_data->get_secu_string_pending && !lib_data->answered)
-	{
-	    if(!html_data->get_string.get_visible())
+	    if(lib_data.get_string_pending && !lib_data.answered)
 	    {
-		html_data->get_string.set_visible(true);
-		html_data->get_string.change_label(lib_data->get_secu_string_msg);
-		if(lib_data->get_string_echo)
-		    html_data->get_string.change_type(html_form_input::text);
-		else
-		    html_data->get_string.change_type(html_form_input::password);
-		clear_get_string = true;
+		if(!h_get_string.get_visible())
+		{
+		    h_get_string.set_visible(true);
+		    h_get_string.change_label(lib_data.get_string_msg);
+		    if(lib_data.get_string_echo)
+			h_get_string.change_type(html_form_input::text);
+		    else
+			h_get_string.change_type(html_form_input::password);
+		    h_get_string.set_value("");
+		}
 	    }
-	}
 
-	if(html_data->get_string.get_visible() || html_data->inter.get_visible())
-	    html_data->form.set_visible(true);
-	else
-	    html_data->form.set_visible(false);
+	    if(lib_data.get_secu_string_pending && !lib_data.answered)
+	    {
+		if(!h_get_string.get_visible())
+		{
+		    h_get_string.set_visible(true);
+		    h_get_string.change_label(lib_data.get_secu_string_msg);
+		    if(lib_data.get_string_echo)
+			h_get_string.change_type(html_form_input::text);
+		    else
+			h_get_string.change_type(html_form_input::password);
+		    h_get_string.set_value("");
+		}
+	    }
+
+	    if(h_get_string.get_visible() || h_inter.get_visible())
+		h_form.set_visible(true);
+	    else
+		h_form.set_visible(false);
+	}
+	catch(...)
+	{
+	    lib_data.control.unlock();
+	    throw;
+	}
+	lib_data.control.unlock();
+	    //
+	    // critical section ended
     }
     catch(...)
     {
-	lib_data->control.unlock();
+	ignore_event = false;
 	throw;
     }
-    lib_data->control.unlock();
-	// critical section ended
+    ignore_event = false;
 
-	// these two actions must be done out of critical section because
-	// it triggers on_event() that need to access the critical section too
-    if(clear_pause2)
-	html_data->pause2.set_selected(0);
-    if(clear_get_string)
-	html_data->get_string.set_value("");
+	// now we return to the user the updated html interface
+	// any event is a user event and may need further display
 
-    html_data->rebuild_body_part = false;
+    rebuild_body_part = false;
     ret = get_body_part_from_all_children(path, req);
-    if(html_data->rebuild_body_part)
+    if(rebuild_body_part)
 	ret = get_body_part_from_all_children(path, req);
 
     return ret;
@@ -320,49 +344,47 @@ string web_user_interaction::get_body_part(const chemin & path,
 
 void web_user_interaction::on_event(const std::string & event_name)
 {
-    if(lib_data == NULL)
-	throw WEBDAR_BUG;
-    if(html_data == NULL)
-	throw WEBDAR_BUG;
+    if(ignore_event)
+	return;
 
 	// critical section begins
-    lib_data->control.lock();
+	//
+    lib_data.control.lock();
     try
     {
-
-	if(html_data->inter.get_visible())
+	if(h_inter.get_visible())
 	{
-	    if(lib_data->pause2_pending)
+	    if(lib_data.pause2_pending)
 	    {
-		lib_data->pause2_ans = (html_data->pause2.get_selected_num() == 2);
-		lib_data->answered = true;
-		lib_data->libdar_sem.unlock();
-		html_data->inter.set_visible(false);
-		html_data->rebuild_body_part = true;
+		lib_data.pause2_ans = (h_pause2.get_selected_num() == 2);
+		lib_data.answered = true;
+		lib_data.libdar_sem.unlock(); // releasing libdar thread
+		h_inter.set_visible(false);
+		rebuild_body_part = true;
 	    }
 	    else
 		throw WEBDAR_BUG; // inter is visible while no pause2() has been asked
 	}
 
-	if(html_data->get_string.get_visible())
+	if(h_get_string.get_visible())
 	{
-	    if(lib_data->get_string_pending)
+	    if(lib_data.get_string_pending)
 	    {
-		lib_data->get_string_ans = html_data->get_string.get_value();
-		lib_data->answered = true;
-		lib_data->libdar_sem.unlock();
-		html_data->get_string.set_visible(false);
-		html_data->rebuild_body_part = true;
+		lib_data.get_string_ans = h_get_string.get_value();
+		lib_data.answered = true;
+		lib_data.libdar_sem.unlock(); // releasing libdar thread
+		h_get_string.set_visible(false);
+		rebuild_body_part = true;
 	    }
 	    else
 	    {
-		if(lib_data->get_secu_string_pending)
+		if(lib_data.get_secu_string_pending)
 		{
-		    lib_data->get_secu_string_ans = libdar::secu_string(html_data->get_string.get_value().c_str(), html_data->get_string.get_value().size());
-		    lib_data->answered = true;
-		    lib_data->libdar_sem.unlock();
-		    html_data->get_string.set_visible(false);
-		    html_data->rebuild_body_part = true;
+		    lib_data.get_secu_string_ans = libdar::secu_string(h_get_string.get_value().c_str(), h_get_string.get_value().size());
+		    lib_data.answered = true;
+		    lib_data.libdar_sem.unlock(); // releasing libdar thread
+		    h_get_string.set_visible(false);
+		    rebuild_body_part = true;
 		}
 		else
 		    throw WEBDAR_BUG;
@@ -371,49 +393,50 @@ void web_user_interaction::on_event(const std::string & event_name)
     }
     catch(...)
     {
-	lib_data->control.unlock();
+	lib_data.control.unlock();
 	throw;
     }
-    lib_data->control.unlock();
+    lib_data.control.unlock();
+	//
 	// critical section ended
 }
 
 void web_user_interaction::clear()
 {
-    if(lib_data == NULL)
-	throw WEBDAR_BUG;
-
-    lib_data->control.lock();
+    lib_data.control.lock();
     try
     {
-	lib_data->warnings.clear();
+	lib_data.warnings.clear();
     }
     catch(...)
     {
-	lib_data->control.unlock();
+	lib_data.control.unlock();
 	throw;
     }
-    lib_data->control.unlock();
+    lib_data.control.unlock();
 }
 
 bool web_user_interaction::can_refresh() const
 {
     bool ret = false;
+    web_user_interaction *me = const_cast<web_user_interaction *>(this);
 
-    lib_data->control.lock();
+    if(me == NULL)
+	throw WEBDAR_BUG;
+    me->lib_data.control.lock();
 
     try
     {
-	ret = lib_data->pause2_pending
-	    || lib_data->get_string_pending
-	    || lib_data->get_secu_string_pending;
+	ret = !lib_data.pause2_pending
+	    && !lib_data.get_string_pending
+	    && !lib_data.get_secu_string_pending;
     }
     catch(...)
     {
-	lib_data->control.unlock();
+	me->lib_data.control.unlock();
 	throw;
     }
-    lib_data->control.unlock();
+    me->lib_data.control.unlock();
 
 
     return ret;
@@ -421,98 +444,47 @@ bool web_user_interaction::can_refresh() const
 
 void web_user_interaction::inherited_warning(const std::string & message)
 {
-    if(lib_data == NULL)
-	throw WEBDAR_BUG;
-
     	// critical section begins
-    lib_data->control.lock();
+	//
+    lib_data.control.lock();
     try
     {
-	lib_data->warnings.push_back(message);
-	if(lib_data->warnings.size() >= lib_data->warn_size)
-	    lib_data->warnings.pop_front();
+	lib_data.warnings.push_back(message);
+	while(lib_data.warnings.size() >= lib_data.warn_size)
+	    lib_data.warnings.pop_front();
     }
     catch(...)
     {
-	lib_data->control.unlock();
+	lib_data.control.unlock();
 	throw;
     }
-    lib_data->control.unlock();
+    lib_data.control.unlock();
+	//
 	// critical section ended
-}
-
-void web_user_interaction::copy_from(const web_user_interaction & ref)
-{
-    bool error = false;
-
-    if(ref.lib_data == NULL)
-	throw WEBDAR_BUG;
-    if(ref.html_data == NULL)
-	throw WEBDAR_BUG;
-
-    lib_data = const_cast<web_user_interaction_libdar_data *>(ref.lib_data);
-    if(lib_data == NULL)
-	throw WEBDAR_BUG;
-    html_data = const_cast<web_user_interaction_html_data *>(ref.html_data);
-    if(html_data == NULL)
-	throw WEBDAR_BUG;
-
-	// critical section begins
-    lib_data->control.lock();
-    try
-    {
-	++(lib_data->instances);
-	if(lib_data->instances < 2)
-	    error = true;
-    }
-    catch(...)
-    {
-	lib_data->control.unlock();
-	throw;
-    }
-    lib_data->control.unlock();
-	// critical section ended
-
-    if(error)
-	throw WEBDAR_BUG;
 }
 
 void web_user_interaction::destroy()
 {
-    bool destruction = false;
-
-    if(lib_data == NULL)
-	throw WEBDAR_BUG;
-    if(html_data == NULL)
-	throw WEBDAR_BUG;
-
 	// critical section begins
-    lib_data->control.lock();
+	//
+    lib_data.control.lock();
     try
     {
-	--(lib_data->instances);
-	if(lib_data->instances == 0)
+	--(lib_data.instances);
+	if(lib_data.instances == 0)
 	{
-	    destruction = true;
-	    if(lib_data->pause2_pending || lib_data->get_string_pending || lib_data->get_secu_string_pending)
-		throw WEBDAR_BUG;
+	    if(lib_data.pause2_pending || lib_data.get_string_pending || lib_data.get_secu_string_pending)
+		throw WEBDAR_BUG; // libdar is pending for an answer!
 	}
     }
     catch(...)
     {
-	lib_data->control.unlock();
+	lib_data.control.unlock();
 	throw;
     }
-    lib_data->control.unlock();
+    lib_data.control.unlock();
+	//
 	// critical section ended
-
-    if(destruction)
-    {
-	delete lib_data;
-	delete html_data;
-    }
-    lib_data = NULL; // yes, in any case
-    html_data = NULL; // yes, in any case
 }
 
 
@@ -536,29 +508,3 @@ web_user_interaction_libdar_data::~web_user_interaction_libdar_data()
     else
 	throw WEBDAR_BUG;
 }
-
-///////////// web_user_interaction_html_data methods /////////////////////
-
-web_user_interaction_html_data::web_user_interaction_html_data():
-    get_string("", html_form_input::text, "", 20),
-    inter("User interaction requested from libdar"),
-    form("Update"),
-    logs("Last logs"),
-    global("Interaction with libdar")
-{
-    pause2.add_choice("undefined", "please answer yes or no");
-    pause2.add_choice("no", "No");
-    pause2.add_choice("yes", "Yes");
-
-    inter.adopt(&pause2);
-    form.adopt(&inter);
-    form.adopt(&get_string);
-    global.adopt(&form);
-    logs.adopt(&warnings);
-    global.adopt(&logs);
-
-    inter.set_visible(false);
-    get_string.set_visible(false);
-    form.set_visible(false);
-};
-

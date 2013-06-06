@@ -20,53 +20,6 @@ extern "C"
 #include "events.hpp"
 #include "semaphore.hpp"
 
-    // forward declaration of two structures defined below in this file
-struct web_user_interaction_libdar_data;
-struct web_user_interaction_html_data;
-
-class web_user_interaction: public libdar::user_interaction, public body_builder, public actor
-{
-public:
-    web_user_interaction(unsigned int x_warn_size = 10);
-    web_user_interaction(const web_user_interaction & ref) { copy_from(ref); };
-    const web_user_interaction & operator = (const web_user_interaction & ref) { destroy(); copy_from(ref); };
-    ~web_user_interaction() { destroy(); };
-
-	/// change the number of last warnings to display
-    void set_warning_list_size(unsigned int size);
-
-	/// inherited from libdar::user_interaction, these are called by the libdar thread
-    virtual bool pause2(const std::string & message);
-    virtual std::string get_string(const std::string & message, bool echo);
-    virtual libdar::secu_string get_secu_string(const std::string & message, bool echo);
-    virtual libdar::user_interaction *clone() const;
-
-	/// inherited from body_builder, called by the webdar thread
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req);
-
-	/// inherited from actor
-    virtual void on_event(const std::string & event_name);
-
-	/// clear logs
-    void clear();
-
-	/// true if no input is requested from libdar, thus HTML refresh
-	/// can take place
-    bool can_refresh() const;
-
-protected:
-	// inherited from libdar::user_interaction
-    virtual void inherited_warning(const std::string & message);
-
-private:
-    web_user_interaction_libdar_data *lib_data;
-    web_user_interaction_html_data *html_data;
-
-    void copy_from(const web_user_interaction & ref);
-    void destroy();
-};
-
 struct web_user_interaction_libdar_data
 {
     mutex control;          //< control access to any value this object has
@@ -99,20 +52,60 @@ struct web_user_interaction_libdar_data
     ~web_user_interaction_libdar_data();
 };
 
-struct web_user_interaction_html_data
+
+class web_user_interaction: public libdar::user_interaction, public body_builder, public actor
 {
-    html_form_radio pause2;
-    html_form_fieldset inter;
-    html_form_input get_string;
-    html_form form;
-    html_text warnings;
-    html_form_fieldset logs;
-    html_form_fieldset global;
+public:
+    web_user_interaction(unsigned int x_warn_size = 30);
+    web_user_interaction(const web_user_interaction & ref);
+    const web_user_interaction & operator = (const web_user_interaction & ref) { throw WEBDAR_BUG; };
+    ~web_user_interaction() { destroy(); };
+
+	/// change the number of last warnings to display
+    void set_warning_list_size(unsigned int size);
+
+	/// inherited from libdar::user_interaction, these are called by the libdar thread
+    virtual bool pause2(const std::string & message);
+    virtual std::string get_string(const std::string & message, bool echo);
+    virtual libdar::secu_string get_secu_string(const std::string & message, bool echo);
+    virtual libdar::user_interaction *clone() const;
+
+	/// inherited from body_builder, called by the webdar thread
+    virtual std::string get_body_part(const chemin & path,
+				      const request & req);
+
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name);
+
+	/// clear logs
+    void clear();
+
+	/// true if no input is requested from libdar, thus HTML refresh
+	/// can take place
+    bool can_refresh() const;
+
+protected:
+	// inherited from libdar::user_interaction
+    virtual void inherited_warning(const std::string & message);
+
+private:
+	// fields for exchange with libdar thread
+    web_user_interaction_libdar_data lib_data;
+
+	// body_builder fields
+
+    html_form_radio h_pause2;
+    html_form_fieldset h_inter;
+    html_form_input h_get_string;
+    html_form h_form;
+    html_text h_warnings;
+    html_form_fieldset h_logs;
+    html_form_fieldset h_global;
     bool rebuild_body_part;
+    bool ignore_event;
 
-    web_user_interaction_html_data();
+    void destroy();
 };
-
 
 
 #endif
