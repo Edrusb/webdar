@@ -53,6 +53,10 @@ html_libdar_running::html_libdar_running():
     register_name(close_libdar_screen);
 
     set_mode(normal);
+
+    ask_close.record_actor_on_event(this, ask_end_libdar);
+    force_close.record_actor_on_event(this, force_end_libdar);
+    finish.record_actor_on_event(this, close_libdar_screen);
 }
 
 string html_libdar_running::get_body_part(const chemin & path,

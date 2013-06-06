@@ -17,7 +17,7 @@ extern "C"
 #include "html_statistics.hpp"
 #include "html_button.hpp"
 
-class html_libdar_running : public html_page, public events
+class html_libdar_running : public html_page, public events, public actor
 {
 public:
     static const std::string ask_end_libdar;      //< ask_close button has been pressed
@@ -40,6 +40,9 @@ public:
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
 				      const request & req);
+
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) { act(event_name); }; // propagate the event from inner buttons
 
 private:
     enum mode_type
