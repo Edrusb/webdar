@@ -13,7 +13,7 @@ extern "C"
 #include "html_page.hpp"
 #include "events.hpp"
 #include "html_div.hpp"
-#include "web_user_interaction.hpp"
+#include "html_web_user_interaction.hpp"
 #include "html_statistics.hpp"
 #include "html_button.hpp"
 
@@ -34,7 +34,7 @@ public:
     void libdar_has_finished() { set_mode(finished); set_title("Libdar thread has ended"); };
 
 	/// provide objects for libdar execution
-    web_user_interaction & get_user_interaction() { return web_ui; };
+    web_user_interaction & get_user_interaction() { return web_ui.get_user_interaction(); };
     html_statistics & get_statistics() { return stats; };
 
 	/// inherited from body_builder
@@ -55,7 +55,7 @@ private:
 
     mode_type mode;
     html_div global;
-    web_user_interaction web_ui;
+    html_web_user_interaction web_ui;
     html_statistics stats;
     html_button ask_close;
     html_button force_close;

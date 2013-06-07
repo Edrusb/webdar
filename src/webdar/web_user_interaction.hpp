@@ -8,104 +8,104 @@ extern "C"
 }
 
     // C++ system header files
+#include <string>
+#include <list>
 #include <dar/libdar.hpp>
 
     // webdar headers
-#include "body_builder.hpp"
-#include "html_form_input.hpp"
-#include "html_form.hpp"
-#include "html_form_radio.hpp"
-#include "html_form_fieldset.hpp"
-#include "html_text.hpp"
-#include "events.hpp"
 #include "semaphore.hpp"
-
-struct web_user_interaction_libdar_data
-{
-    mutex control;          //< control access to any value this object has
-    unsigned int instances; //< number of reference existing toward this object, this object data get destroyed when this number drops to zero
-    semaphore libdar_sem;   //< libdar thread wait on it for an answer
-    bool answered;          //< true if the pending pause2(), get_string() or get_secu_string() has been answered, so the question has not to be shown twice
-
-	// pause2() fields
-    bool pause2_pending;    //< true if a pause2() is pending for a response
-    std::string pause2_msg; //< the request to answser to
-    bool pause2_ans;        //< the answer to the request
-
-	// get_string() fields
-    bool get_string_pending;//< true if a get_string() is pending for a response
-    std::string get_string_msg;
-    bool get_string_echo;
-    std::string get_string_ans;
-
-	// get_secu_string() fields
-    bool get_secu_string_pending; //< true if a get_secu_string() is pending for a response
-    std::string get_secu_string_msg;
-    bool get_secu_string_echo;
-    libdar::secu_string get_secu_string_ans;
-
-	// libdar warnings (= logs)
-    std::list<std::string> warnings;
-    unsigned warn_size;
-
-    web_user_interaction_libdar_data(unsigned int x_warn_size);
-    ~web_user_interaction_libdar_data();
-};
+#include "mutex.hpp"
 
 
-class web_user_interaction: public libdar::user_interaction, public body_builder, public actor
+class web_user_interaction : public libdar::user_interaction
 {
 public:
-    web_user_interaction(unsigned int x_warn_size = 30);
-    web_user_interaction(const web_user_interaction & ref);
-    const web_user_interaction & operator = (const web_user_interaction & ref) { throw WEBDAR_BUG; };
-    ~web_user_interaction() { destroy(); };
+    web_user_interaction(unsigned int x_warn_size = 10);
+    web_user_interaction(const web_user_interaction & ref) { copy_from(ref); };
+    const web_user_interaction & operator = (const web_user_interaction & ref) { detruit(); copy_from(ref); return *this; };
+    ~web_user_interaction() { detruit(); };
 
 	/// change the number of last warnings to display
     void set_warning_list_size(unsigned int size);
 
-	/// inherited from libdar::user_interaction, these are called by the libdar thread
+	/// clear logs
+    void clear();
+
+	// inherited from libdar::user_interaction, these are called by the libdar thread
     virtual bool pause2(const std::string & message);
     virtual std::string get_string(const std::string & message, bool echo);
     virtual libdar::secu_string get_secu_string(const std::string & message, bool echo);
     virtual libdar::user_interaction *clone() const;
 
-	/// inherited from body_builder, called by the webdar thread
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req);
+	/// obtain a copy of the current log buffer
+    std::list<std::string> get_warnings();
 
-	/// inherited from actor
-    virtual void on_event(const std::string & event_name);
+	/// wether libdar is pending for pause2 answer
+    bool pending_pause2(std::string & msg) const;
 
-	/// clear logs
-    void clear();
+	/// wether libdar is pending for get_string answer
+    bool pending_get_string(std::string & msg, bool & echo) const;
 
-	/// true if no input is requested from libdar, thus HTML refresh
-	/// can take place
-    bool can_refresh() const;
+	/// wether libdar is pending for a get_secu_string answer
+    bool pending_get_secu_string(std::string & msg, bool & echo) const;
+
+	/// provide the answer to libdar for pause2() request
+    void set_pause2_answer(bool val);
+
+	/// provide the answer to libdar for get_string() request
+    void set_get_string_answer(const std::string & val);
+
+    	/// provide the answer to libdar for get_secu_string() request
+    void set_get_secu_string_answer(const libdar::secu_string & val);
+
+	/// whether libdar is waiting for an answer
+    bool has_libdar_pending() const;
 
 protected:
-	// inherited from libdar::user_interaction
-    virtual void inherited_warning(const std::string & message);
+	/// inherited from libdar
+    void inherited_warning(const std::string & message);
 
 private:
-	// fields for exchange with libdar thread
-    web_user_interaction_libdar_data lib_data;
+    struct shared_data
+    {
+	mutex control;          //< control access to any value this object has
+	unsigned int instances; //< number of reference existing toward this struct object, this object data get destroyed when this number drops to zero
+	semaphore libdar_sem;   //< libdar thread wait on it for an answer
+	bool answered;          //< true if the pending pause2(), get_string() or get_secu_string() has been answered, so the question has not to be shown twice
 
-	// body_builder fields
+	    // pause2() fields
+	bool pause2_pending;    //< true if a pause2() is pending for a response
+	std::string pause2_msg; //< the request to answser to
+	bool pause2_ans;        //< the answer to the request
 
-    html_form_radio h_pause2;
-    html_form_fieldset h_inter;
-    html_form_input h_get_string;
-    html_form h_form;
-    html_text h_warnings;
-    html_form_fieldset h_logs;
-    html_form_fieldset h_global;
-    bool rebuild_body_part;
-    bool ignore_event;
+	    // get_string() fields
+	bool get_string_pending;//< true if a get_string() is pending for a response
+	std::string get_string_msg;
+	bool get_string_echo;
+	std::string get_string_ans;
 
-    void destroy();
+	    // get_secu_string() fields
+	bool get_secu_string_pending; //< true if a get_secu_string() is pending for a response
+	std::string get_secu_string_msg;
+	bool get_secu_string_echo;
+	libdar::secu_string get_secu_string_ans;
+
+	    // libdar warnings (= logs)
+	std::list<std::string> warnings;
+	unsigned warn_size;
+
+	shared_data(unsigned int size);
+	~shared_data();
+	void incr();
+	bool decr_and_can_delete(); // if true is returned the object can be deleted
+    };
+
+    shared_data *data;
+
+    void check_data() const;
+    void copy_from(const web_user_interaction & ref);
+    void detruit();
 };
 
-
 #endif
+

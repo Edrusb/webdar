@@ -17,7 +17,6 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_options_read.hpp"
 #include "events.hpp"
-#include "web_user_interaction.hpp"
 
 class html_archive_read: public body_builder, public actor
 {

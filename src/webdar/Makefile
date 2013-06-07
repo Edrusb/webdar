@@ -16,7 +16,7 @@ all: webdar
 clean:
 	rm -f *.o webdar
 
-webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o html_options_listing.o html_menu.o  html_aiguille.o saisie.o user_interface.o events.o reference.o html_url_class.o html_yes_no_box.o html_options_extract.o html_options_read.o html_crypto_algo.o html_comparison_fields.o html_options_compare.o html_options_test.o html_archive_read.o html_compression.o html_size_unit.o html_hash_algo.o html_datetime.o html_options_create.o html_archive_create.o web_user_interaction.o html_button.o html_statistics.o archive_test.o webdar_css_style.o html_error.o html_libdar_running.o $(LIBDAR_OBJ)
+webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o html_options_listing.o html_menu.o  html_aiguille.o saisie.o user_interface.o events.o reference.o html_url_class.o html_yes_no_box.o html_options_extract.o html_options_read.o html_crypto_algo.o html_comparison_fields.o html_options_compare.o html_options_test.o html_archive_read.o html_compression.o html_size_unit.o html_hash_algo.o html_datetime.o html_options_create.o html_archive_create.o web_user_interaction.o html_web_user_interaction.o html_button.o html_statistics.o archive_test.o webdar_css_style.o html_error.o html_libdar_running.o $(LIBDAR_OBJ)
 
 
 webdar.o : webdar.cpp exceptions.hpp central_report.hpp listener.hpp webdar_tools.hpp server.hpp authentication.hpp
@@ -77,7 +77,8 @@ html_hash_algo.o : html_hash_algo.cpp html_hash_algo.hpp html_form_select.hpp
 html_datetime.o : html_datetime.cpp html_datetime.hpp html_form_input.hpp html_form_select.hpp body_builder.hpp
 options_create.o : html_options_create.cpp html_options_create.hpp body_builder.hpp html_compression.hpp html_crypto_algo.hpp html_form_input.hpp html_comparison_fields.hpp html_size_unit.hpp html_form_fieldset.hpp html_datetime.hpp html_form.hpp html_archive_read.hpp html_hash_algo.hpp
 html_archive_create.o : html_archive_create.cpp html_archive_create.hpp body_builder.hpp html_form.hpp html_form_input.hpp html_options_create.hpp
-web_user_interaction.o: web_user_interaction.cpp web_user_interaction.hpp body_builder.hpp html_form_input.hpp html_form.hpp html_form_radio.hpp html_form_fieldset.hpp html_text.hpp events.hpp semaphore.hpp
+web_user_interaction.o: web_user_interaction.cpp web_user_interaction.hpp semaphore.hpp mutex.hpp
+html_web_user_interaction.o : html_web_user_interaction.cpp html_web_user_interaction.hpp body_builder.hpp html_form_input.hpp html_form.hpp html_form_radio.hpp html_form_fieldset.hpp html_text.hpp events.hpp
 html_button.o : html_button.cpp html_button.hpp body_builder.hpp events.hpp html_url_class.hpp html_url.hpp html_div.hpp
 html_statistics.o : html_statistics.cpp html_statistics.hpp body_builder.hpp html_table.hpp html_text.hpp
 archive_test.o : archive_test.cpp archive_test.hpp tokens.hpp
