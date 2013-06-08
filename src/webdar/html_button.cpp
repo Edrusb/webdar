@@ -42,6 +42,7 @@ string html_button::get_body_part(const chemin & path,
 {
     chemin target = req.get_uri().get_path();
     string choice;
+    string ret = "";
 
     ack_visible();
     if(get_visible())
@@ -57,8 +58,10 @@ string html_button::get_body_part(const chemin & path,
 	if(target == get_path() && choice == action)
 	    act(event_name);
 
-	return html_div::get_body_part(path, req);
+	ret = html_div::get_body_part(path, req);
     }
+
+    return ret;
 }
 
 

@@ -62,7 +62,7 @@ html_libdar_running::html_libdar_running():
 string html_libdar_running::get_body_part(const chemin & path,
 					  const request & req)
 {
-    if(web_ui.can_refresh())
+    if(web_ui.can_refresh() && mode != finished)
 	set_refresh_redirection(1, req.get_uri().get_path().display(false));
     else
 	set_refresh_redirection(0, ""); // disable refresh
@@ -107,4 +107,6 @@ void html_libdar_running::set_mode(mode_type m)
     default:
 	throw WEBDAR_BUG;
     }
+
+    mode = m;
 }

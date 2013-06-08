@@ -115,7 +115,17 @@ void session::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	if(current_thread->is_running())
 	    throw WEBDAR_BUG;
-	current_thread->join(); // may throw re-exception that were generated in this dead thread
+
+	libdar_running = false;
+	try
+	{
+	    current_thread->join(); // may throw re-exception that were generated in this dead thread
+	}
+	catch(...)
+	{
+	    current_thread = NULL;
+	    throw;
+	}
 	current_thread = NULL;
     }
     else if(event_name == user_interface::start_restore)

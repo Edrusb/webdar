@@ -119,10 +119,11 @@ void user_interface::on_event(const std::string & event_name)
 	switch(mode)
 	{
 	case config:
-	    throw WEBDAR_BUG;
 	case listing:
-	    throw WEBDAR_BUG;
+	    act(closing); // transmetting the event
+	    break;
 	case running:
+	    throw WEBDAR_BUG;
 	case error:
 	    act(closing); // transmetting the event
 	    break;
@@ -156,7 +157,7 @@ void user_interface::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	case running:
 	case error:
-	    act(force_end_libdar);
+	    act(force_end_libdar);// transmit the event
 	    break;
 	default:
 	    throw WEBDAR_BUG;
@@ -171,9 +172,18 @@ void user_interface::on_event(const std::string & event_name)
 	case listing:
 	    throw WEBDAR_BUG;
 	case running:
-	    mode = config;
+	    try
+	    {
+		act(clean_ended_libdar); // trigger exception rethrowing from the dead libdar thread
+	    }
+	    catch(...)
+	    {
+		mode_changed = true;
+		mode = config;
+		throw;
+	    }
 	    mode_changed = true;
-	    act(clean_ended_libdar); // trigger exception rethrowing from the dead libdar thread
+	    mode = config;
 	    break;
 	case error:
 	    throw WEBDAR_BUG;
@@ -235,6 +245,8 @@ void user_interface::libdar_has_finished()
 	in_action.libdar_has_finished();
 	break;
     case error:
+	throw WEBDAR_BUG;
+    default:
 	throw WEBDAR_BUG;
     }
 }
