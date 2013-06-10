@@ -168,7 +168,7 @@ string html_options_read::get_body_part(const chemin & path,
 {
     string ret;
 
-    if(get_visible())
+    if(get_next_visible() || get_visible())
 	ret = get_body_part_from_all_children(path, req);
 
     if(!get_next_visible())

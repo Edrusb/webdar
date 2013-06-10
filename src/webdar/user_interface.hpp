@@ -70,6 +70,7 @@ private:
     mode_type return_mode; //< mode in which to return from error status
     bool close_requested;  //< whether session close has been asked
     bool mode_changed;     //< whether mode has changed
+    bool libdar_has_ended; //< when set to true (in running mode) the acti(clean_ended_libdar) has to be sent to throw and catch exception from libdar
 
     saisie parametrage;            //< page issued in mode == config
     html_libdar_running in_action; //< page issued when a libdar thread is running (mode == running)

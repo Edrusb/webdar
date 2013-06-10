@@ -42,7 +42,7 @@ public:
 				      const request & req);
 
 	/// inherited from actor
-    virtual void on_event(const std::string & event_name) { act(event_name); }; // propagate the event from inner buttons
+    virtual void on_event(const std::string & event_name);
 
 private:
     enum mode_type
@@ -60,6 +60,7 @@ private:
     html_button ask_close;
     html_button force_close;
     html_button finish;
+    bool visibility_has_changed; //< true whether a html component had its visibility changed
 
     void set_mode(mode_type m);
 };

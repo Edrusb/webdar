@@ -24,7 +24,7 @@ extern "C"
 class html_web_user_interaction: public body_builder, public actor
 {
 public:
-    html_web_user_interaction(unsigned int x_warn_size = 30);
+    html_web_user_interaction(unsigned int x_warn_size = 25);
     html_web_user_interaction(const html_web_user_interaction & ref);
     const html_web_user_interaction & operator = (const html_web_user_interaction & ref) { throw WEBDAR_BUG; };
 
@@ -59,8 +59,9 @@ private:
     html_text h_warnings;
     html_form_fieldset h_logs;
     html_form_fieldset h_global;
-    bool rebuild_body_part;
-    bool ignore_event;
+    bool rebuild_body_part; //< set to true if changes occured while building body part, needing a whole rebuild
+    bool ignore_event;      //< if true the on_event() method does not take action
+    bool just_set;          //< true when the control have just been activated and no answer has been provided by the user
 };
 
 

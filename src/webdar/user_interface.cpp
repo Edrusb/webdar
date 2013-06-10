@@ -32,6 +32,7 @@ user_interface::user_interface()
     mode = config;
     mode_changed = false;
     close_requested = false;
+    libdar_has_ended = false;
 
 	/// messages receved from saisie object named parametrage
     parametrage.record_actor_on_event(this, saisie::event_closing);
@@ -84,6 +85,11 @@ answer user_interface::give_answer(const request & req)
 	    case listing:
 		throw exception_feature("libdar listing mode reached in user_interface");
 	    case running:
+		if(libdar_has_ended)
+		{
+		    libdar_has_ended = false;
+		    act(clean_ended_libdar); // trigger exception rethrowing from the dead libdar thread
+		}
 		ret.add_body(in_action.get_body_part(req.get_uri().get_path(), req));
 		break;
 	    case error:
@@ -172,16 +178,6 @@ void user_interface::on_event(const std::string & event_name)
 	case listing:
 	    throw WEBDAR_BUG;
 	case running:
-	    try
-	    {
-		act(clean_ended_libdar); // trigger exception rethrowing from the dead libdar thread
-	    }
-	    catch(...)
-	    {
-		mode_changed = true;
-		mode = config;
-		throw;
-	    }
 	    mode_changed = true;
 	    mode = config;
 	    break;
@@ -202,6 +198,7 @@ void user_interface::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	mode = running;
 	mode_changed = true;
+	libdar_has_ended = false;
 	in_action.clear();
 
 	if(event_name == saisie::event_restore)
@@ -242,6 +239,7 @@ void user_interface::libdar_has_finished()
     case listing:
 	throw WEBDAR_BUG;
     case running:
+	libdar_has_ended = true;
 	in_action.libdar_has_finished();
 	break;
     case error:
