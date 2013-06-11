@@ -94,7 +94,11 @@ string webdar_tools_generate_random_string(unsigned int size)
 
     for(unsigned int i = 0; i < size; ++i)
     {
-	x = rand() % 62;
+	if(i == 0)
+	    x = (rand() % 52) + 10;
+	else
+	    x = rand() % 62;
+
 	if(x < 10)
 	    ret += char(x + 48); // digits 0 - 9
 	else

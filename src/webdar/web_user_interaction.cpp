@@ -54,7 +54,7 @@ void web_user_interaction::clear()
     data->control.lock();
     try
     {
-	data->warnings.clear();
+	data->clear();
     }
     catch(...)
     {
@@ -494,12 +494,10 @@ void web_user_interaction::detruit()
 web_user_interaction::shared_data::shared_data(unsigned int x_warn_size)
 {
     instances = 1;
-    pause2_pending = false;
-    get_string_pending = false;
-    get_secu_string_pending = false;
     warn_size = x_warn_size;
-	// acquiring the libdar pending semaphore from libdar thread will freeze the thread waiting for the html thread to obtain an answer for the user
-    libdar_sem.lock();
+    if(warn_size == 0)
+	throw WEBDAR_BUG;
+    clear();
 }
 
 web_user_interaction::shared_data::~shared_data()
@@ -512,6 +510,17 @@ web_user_interaction::shared_data::~shared_data()
     }
     else
 	throw WEBDAR_BUG;
+}
+
+void web_user_interaction::shared_data::clear()
+{
+    libdar_sem.reset();
+    libdar_sem.lock(); // to have libdar thread waiting on it
+    answered = false;
+    pause2_pending = false;
+    get_string_pending = false;
+    get_secu_string_pending = false;
+    warnings.clear();
 }
 
 void web_user_interaction::shared_data::incr()
@@ -547,7 +556,7 @@ bool web_user_interaction::shared_data::decr_and_can_delete()
 	if(instances == 0)
 	    throw WEBDAR_BUG;
 	--instances;
-	ret = instances == 0;
+	ret = (instances == 0);
     }
     catch(...)
     {

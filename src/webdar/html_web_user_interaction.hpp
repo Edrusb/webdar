@@ -38,12 +38,12 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name);
 
-	/// clear logs
-    void clear() { lib_data.clear(); };
+	/// clear logs and reset html interface
+    void clear();
 
 	/// true if no input is requested from libdar, thus HTML refresh
 	/// can take place
-    bool can_refresh() const { return !lib_data.has_libdar_pending(); };
+    bool can_refresh() const { return !h_form.get_visible(); };
 
     web_user_interaction & get_user_interaction() { return lib_data; };
 
@@ -62,6 +62,8 @@ private:
     bool rebuild_body_part; //< set to true if changes occured while building body part, needing a whole rebuild
     bool ignore_event;      //< if true the on_event() method does not take action
     bool just_set;          //< true when the control have just been activated and no answer has been provided by the user
+
+    void adjust_visibility();
 };
 
 

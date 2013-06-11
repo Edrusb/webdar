@@ -121,6 +121,12 @@ void session::on_event(const std::string & event_name)
 	{
 	    current_thread->join(); // may throw re-exception that were generated in this dead thread
 	}
+	catch(exception_base & e)
+	{
+	    current_thread = NULL;
+	    e.change_message(string("Error reported from libdar: ") + e.get_message());
+	    throw;
+	}
 	catch(...)
 	{
 	    current_thread = NULL;

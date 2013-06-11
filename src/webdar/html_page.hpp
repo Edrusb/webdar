@@ -34,6 +34,11 @@ public:
     virtual std::string get_body_part(const chemin & path,
 				      const request & req);
 
+protected:
+    std::string get_body_part_given_the_body(const chemin & path,
+					     const request & req,
+					     const std::string & body);
+
 private:
     std::string x_title;
     std::string redirect;

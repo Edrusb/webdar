@@ -63,19 +63,19 @@ html_libdar_running::html_libdar_running():
 string html_libdar_running::get_body_part(const chemin & path,
 					  const request & req)
 {
-    string ret;
+    string body;
+
+    visibility_has_changed = false;
+    body = get_body_part_from_children_as_a_block(path, req);
+    if(visibility_has_changed)
+	body = get_body_part_from_children_as_a_block(path, req);
 
     if(web_ui.can_refresh() && mode != finished)
 	set_refresh_redirection(1, req.get_uri().get_path().display(false));
     else
 	set_refresh_redirection(0, ""); // disable refresh
 
-    visibility_has_changed = false;
-    ret = html_page::get_body_part(path, req);
-    if(visibility_has_changed)
-	ret = html_page::get_body_part(path, req);
-
-    return ret;
+    return get_body_part_given_the_body(path, req, body);
 }
 
 void html_libdar_running::on_event(const std::string & event_name)
@@ -129,9 +129,6 @@ void html_libdar_running::set_mode(mode_type m)
 	set_title("Webdar - Libdar end asked");
 	break;
     case end_forced:
-	ask_close.set_visible(false);
-	force_close.set_visible(false);
-	finish.set_visible(false);
 	set_title("Webdar - Libdar Kill request sent");
 	break;
     case finished:

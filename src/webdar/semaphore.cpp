@@ -32,9 +32,40 @@ void semaphore::lock()
 void semaphore::unlock()
 {
     val_mutex.lock();
-    ++value;
+    try
+    {
+	if(value == 1)
+	    throw WEBDAR_BUG;
+	++value;
+    }
+    catch(...)
+    {
+	val_mutex.unlock();
+	throw;
+    }
     val_mutex.unlock();
     semaph.unlock();
 }
+
+void semaphore::reset()
+{
+    val_mutex.lock();
+    try
+    {
+	while(value < 1)
+	{
+	    semaph.unlock();
+	    ++value;
+	}
+    }
+    catch(...)
+    {
+	val_mutex.unlock();
+	throw;
+    }
+    val_mutex.unlock();
+}
+
+
 
 

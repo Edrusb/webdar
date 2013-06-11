@@ -35,6 +35,9 @@ public:
 	/// \note a single thread suspended on this semaphore is then awaken
     void unlock();
 
+	/// reset to initial state releasing any thread that could wait on us
+    void reset();
+
 private:
     int value;       //< this is the semaphore value
     mutex val_mutex; //< this controls modification to value

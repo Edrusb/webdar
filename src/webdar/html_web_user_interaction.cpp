@@ -88,7 +88,7 @@ string html_web_user_interaction::get_body_part(const chemin & path,
 
 	if(lib_data.pending_pause2(msg))
 	{
-	    if(!h_inter.get_visible());
+	    if(!h_inter.get_next_visible())
 	    {
 		h_inter.set_visible(true);
 		h_inter.change_label(msg);
@@ -99,7 +99,7 @@ string html_web_user_interaction::get_body_part(const chemin & path,
 
 	if(lib_data.pending_get_string(msg, echo))
 	{
-	    if(!h_get_string.get_visible())
+	    if(!h_get_string.get_next_visible())
 	    {
 		h_get_string.set_visible(true);
 		h_get_string.change_label(msg);
@@ -114,7 +114,7 @@ string html_web_user_interaction::get_body_part(const chemin & path,
 
 	if(lib_data.pending_get_secu_string(msg, echo))
 	{
-	    if(!h_get_string.get_visible())
+	    if(!h_get_string.get_next_visible())
 	    {
 		h_get_string.set_visible(true);
 		h_get_string.change_label(msg);
@@ -134,13 +134,18 @@ string html_web_user_interaction::get_body_part(const chemin & path,
     }
     ignore_event = false;
 
+
 	// now we return to the user the updated html interface
 	// any event is a user event and may need further display
 
     rebuild_body_part = false;
+    adjust_visibility();
     ret = get_body_part_from_all_children(path, req);
     if(rebuild_body_part)
+    {
+	adjust_visibility();
 	ret = get_body_part_from_all_children(path, req);
+    }
 
     return ret;
 }
@@ -151,9 +156,13 @@ void html_web_user_interaction::on_event(const std::string & event_name)
     {
 	if(h_inter.get_visible() && !just_set)
 	{
-	    lib_data.set_pause2_answer(h_pause2.get_selected_num() == 2);
-	    h_inter.set_visible(false);
-	    rebuild_body_part = true;
+	    if(h_pause2.get_selected_num() != 0)
+	    {
+		lib_data.set_pause2_answer(h_pause2.get_selected_num() == 2);
+		h_inter.set_visible(false);
+		rebuild_body_part = true;
+	    }
+		// else we do nothing here
 	}
 
 	if(h_get_string.get_visible() && !just_set)
@@ -179,8 +188,19 @@ void html_web_user_interaction::on_event(const std::string & event_name)
 	    }
 	}
     }
+}
 
-    if(h_get_string.get_visible() || h_inter.get_visible())
+void html_web_user_interaction::clear()
+{
+    lib_data.clear();
+    h_inter.set_visible(false);
+    h_get_string.set_visible(false);
+    adjust_visibility();
+}
+
+void html_web_user_interaction::adjust_visibility()
+{
+    if(h_get_string.get_next_visible() || h_inter.get_next_visible() || just_set)
 	h_form.set_visible(true);
     else
 	h_form.set_visible(false);

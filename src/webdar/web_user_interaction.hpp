@@ -28,7 +28,7 @@ public:
 	/// change the number of last warnings to display
     void set_warning_list_size(unsigned int size);
 
-	/// clear logs
+	/// clear logs and reset the object
     void clear();
 
 	// inherited from libdar::user_interaction, these are called by the libdar thread
@@ -96,6 +96,7 @@ private:
 
 	shared_data(unsigned int size);
 	~shared_data();
+	void clear(); // reset fields to default values
 	void incr();
 	bool decr_and_can_delete(); // if true is returned the object can be deleted
     };

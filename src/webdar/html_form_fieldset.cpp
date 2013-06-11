@@ -18,11 +18,11 @@ using namespace std;
 
 
 string html_form_fieldset::get_body_part(const chemin & path,
-		     const request & req)
+					 const request & req)
 {
     string ret = "";
 
-    if(get_visible())
+    if(get_next_visible() || get_visible())
     {
 	ret += "<fieldset " + css_get_string() + ">\n";
 	ret += "<legend>" + x_label + "</legend>\n";

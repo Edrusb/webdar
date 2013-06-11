@@ -73,6 +73,9 @@ public:
 	/// is the one that is pending for acknoledgment.
     bool get_visible() const { return visible; };
 
+	/// what the future but still non acknoledged visible status
+    bool get_next_visible() const { return next_visible; };
+
 	/// ask the object to provide a part of the body to answer the request
 	///
 	/// \param[in] path is the full path, but the path.index points to the asked object name
@@ -145,9 +148,6 @@ protected:
 
 	/// true if it has been requested no to add Carriage Return after the HTML object
     bool get_no_CR() const { return no_CR; };
-
-	/// what the still non acknoledged visible status
-    bool get_next_visible() const { return next_visible; };
 
 	/// acknoledge the new visible status
     void ack_visible() { visible = next_visible; };
