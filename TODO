@@ -91,6 +91,7 @@ x faire une classe abort_libdar, invoquant libdar::thread_cancel et fournissant 
 - bouton et page d'aide contextuelle (dans encart flotant a gauche dans "selection")
 - implementer l'entrepot FTP
 
+- ajouter une option en CLI pour ne pas avoir d'authentification du tout
 - pour les sessions non authentifiees, il faut limiter la duree de la connexion a un temps court
 - finir la gestion des signaux et masks (avec les informations de sessions ouvertes etc.)
 - ajouter la gestion des signaux au sein des threads

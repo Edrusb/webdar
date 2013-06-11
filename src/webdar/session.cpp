@@ -18,11 +18,11 @@ session::session()
     current_thread = NULL;
     session_ID = "";
     tid = 0;
-    loyally_killed = false;
 
     wui.record_actor_on_event(this, user_interface::closing);
     wui.record_actor_on_event(this, user_interface::ask_end_libdar);
     wui.record_actor_on_event(this, user_interface::force_end_libdar);
+    wui.record_actor_on_event(this, user_interface::kill_libdar_thread);
     wui.record_actor_on_event(this, user_interface::clean_ended_libdar);
     wui.record_actor_on_event(this, user_interface::start_restore);
     wui.record_actor_on_event(this, user_interface::start_compare);
@@ -90,17 +90,25 @@ void session::on_event(const std::string & event_name)
 		pthread_t libdar_tid;
 		if(current_thread->is_running(libdar_tid))
 		{
-		    if(!loyally_killed)
-		    {
-			libdar::thread_cancellation th;
-			th.cancel(libdar_tid, true, 0);
-			loyally_killed = true;
-		    }
-		    else
-		    {
-			if(current_thread->is_running())
-			    current_thread->kill();
-		    }
+		    libdar::thread_cancellation th;
+		    th.cancel(libdar_tid, true, 0);
+		}
+	    }
+	    else
+		throw WEBDAR_BUG;
+	}
+    }
+    else if(event_name == user_interface::kill_libdar_thread)
+    {
+	if(libdar_running)
+	{
+	    if(current_thread != NULL)
+	    {
+		pthread_t libdar_tid;
+		if(current_thread->is_running(libdar_tid))
+		{
+		    if(current_thread->is_running())
+			current_thread->kill();
 		}
 	    }
 	    else
@@ -136,11 +144,11 @@ void session::on_event(const std::string & event_name)
     }
     else if(event_name == user_interface::start_restore)
     {
-	loyally_killed = false;
+
     }
     else if(event_name == user_interface::start_compare)
     {
-	loyally_killed = false;
+
     }
     else if(event_name == user_interface::start_test)
     {
@@ -148,8 +156,6 @@ void session::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	if(current_thread != NULL)
 	    throw WEBDAR_BUG;
-
-	loyally_killed = false;
 
 	    // providing libdar::parameters
 	arch_test.set_user_interaction(wui.get_user_interaction());
@@ -173,15 +179,14 @@ void session::on_event(const std::string & event_name)
     }
     else if(event_name == user_interface::start_create)
     {
-	loyally_killed = false;
     }
     else if(event_name == user_interface::start_isolate)
     {
-	loyally_killed = false;
+
     }
     else if(event_name == user_interface::start_merge)
     {
-	loyally_killed = false;
+
     }
     else
 	throw WEBDAR_BUG; // what's that event !?!

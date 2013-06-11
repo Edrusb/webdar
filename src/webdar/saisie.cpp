@@ -314,7 +314,7 @@ void saisie::on_event(const std::string & event_name)
     {
 	// menu "choice" changed
 
-	set_title(string("WEBDAR - ") + choice.get_current_label());
+	set_title(string("Webdar - ") + choice.get_current_label());
 	if(choice.get_current_label() == "restore"
 	   || choice.get_current_label() == "compare"
 	   || choice.get_current_label() == "test"

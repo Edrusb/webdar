@@ -19,6 +19,7 @@ using namespace std;
 const string user_interface::closing = "user_interface_closing";
 const string user_interface::ask_end_libdar = "user_interface_ask_end_libdar";
 const string user_interface::force_end_libdar = "user_interface_force_end_libdar";
+const string user_interface::kill_libdar_thread = "user_interface_kill_libdar_thread";
 const string user_interface::clean_ended_libdar = "user_interface_clean_ended_libdar";
 const string user_interface::start_restore = "user_interface_start_restore";
 const string user_interface::start_compare = "user_interface_start_compare";
@@ -47,6 +48,7 @@ user_interface::user_interface()
 	/// messages received from html_libdar_running object named in_action
     in_action.record_actor_on_event(this, html_libdar_running::ask_end_libdar);
     in_action.record_actor_on_event(this, html_libdar_running::force_end_libdar);
+    in_action.record_actor_on_event(this, html_libdar_running::kill_libdar_thread);
     in_action.record_actor_on_event(this, html_libdar_running::close_libdar_screen);
 
 	/// messages received from html_error object named in_error;
@@ -56,6 +58,7 @@ user_interface::user_interface()
     register_name(closing);
     register_name(ask_end_libdar);
     register_name(force_end_libdar);
+    register_name(kill_libdar_thread);
     register_name(clean_ended_libdar);
     register_name(start_restore);
     register_name(start_compare);
@@ -164,6 +167,22 @@ void user_interface::on_event(const std::string & event_name)
 	case running:
 	case error:
 	    act(force_end_libdar);// transmit the event
+	    break;
+	default:
+	    throw WEBDAR_BUG;
+	}
+    }
+    else if(event_name == html_libdar_running::kill_libdar_thread)
+    {
+	switch(mode)
+	{
+	case config:
+	    throw WEBDAR_BUG;
+	case listing:
+	    throw WEBDAR_BUG;
+	case running:
+	case error:
+	    act(kill_libdar_thread);// transmit the event
 	    break;
 	default:
 	    throw WEBDAR_BUG;

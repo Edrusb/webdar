@@ -20,9 +20,11 @@ extern "C"
 class html_libdar_running : public html_page, public events, public actor
 {
 public:
-    static const std::string ask_end_libdar;      //< ask_close button has been pressed
-    static const std::string force_end_libdar;    //< force_close button has been pressed
+    static const std::string ask_end_libdar;      //< ask_close button has been pressed (graceful ending requested)
+    static const std::string force_end_libdar;    //< force_close button has been pressed (immediate ending requested)
+    static const std::string kill_libdar_thread;  //< kill_close button has been pressed (kill thread requested)
     static const std::string close_libdar_screen; //< finish button has been pressed
+
 
 	/// constructor
     html_libdar_running();
@@ -31,7 +33,7 @@ public:
     void clear();
 
 	/// be informed of the end of libdar thread
-    void libdar_has_finished() { set_mode(finished); set_title("Libdar thread has ended"); };
+    void libdar_has_finished() { set_mode(finished); set_title("Webdar - Libdhas ended"); };
 
 	/// provide objects for libdar execution
     web_user_interaction & get_user_interaction() { return web_ui.get_user_interaction(); };
@@ -49,7 +51,8 @@ private:
     {
 	normal,        //< should display web_user_interface, progressive_report and ask_close button
 	end_asked,     //< should display web_user_interface, progressive_report and force_close button
-	end_forced,    //< should display web_user_interface, progressive_report (no button)
+	end_forced,    //< should display web_user_interface, progressive_report and kill_close button
+	kill_forced,   //< should display web_user_interface, progressive_report (no button)
 	finished       //< should display web_user_interface, progressive_report, close button
     };
 
@@ -59,6 +62,7 @@ private:
     html_statistics stats;
     html_button ask_close;
     html_button force_close;
+    html_button kill_close;
     html_button finish;
     bool visibility_has_changed; //< true whether a html component had its visibility changed
 
@@ -67,3 +71,4 @@ private:
 
 
 #endif
+

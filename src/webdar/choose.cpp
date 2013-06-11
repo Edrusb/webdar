@@ -150,7 +150,7 @@ answer choose::give_answer(const request & req)
 	    html_text tmp;
 
 	    tmp.add_text(1, error_msg);
-	    tmp.css_color("0xFF0000");
+	    tmp.css_color("#FF0000");
 	    tmp.css_text_align(css::al_center);
 	    tmp.css_font_weight_bold();
 	    table.adopt_static_html(tmp.get_body_part());

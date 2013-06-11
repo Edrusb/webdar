@@ -80,7 +80,6 @@ private:
     bool libdar_running;      //< whether a libdar child thread is running
     thread *current_thread;   //< points to the running thread (either arch_test ....)
     archive_test arch_test;   //< thread for testing archives
-    bool loyally_killed;       //< whether libdar thread has been killed by loyal libdar provided mean
 
 
     void check_caller() const; //< test whether the caller has properly acquired the lock on this object

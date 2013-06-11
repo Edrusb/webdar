@@ -16,7 +16,7 @@ extern "C"
 
 using namespace std;
 
-string html_form::get_body_part(const chemin  & path,
+string html_form::get_body_part(const chemin & path,
 				const request & req)
 {
     string ret = "";
