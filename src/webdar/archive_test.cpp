@@ -16,6 +16,17 @@ extern "C"
 
 using namespace std;
 
+void archive_test::set_archive_path(const std::string & val)
+{
+    try
+    {
+	archpath = libdar::path(val, true);
+    }
+    catch(libdar::Egeneric & e)
+    {
+	throw exception_libcall(e);
+    }
+}
 
 void archive_test::inherited_run()
 {

@@ -21,7 +21,7 @@ public:
     archive_test(): archpath("/") { progressive_report = NULL; };
 
     void set_user_interaction(web_user_interaction & ref) { ui = ref; };
-    void set_archive_path(const std::string & val) { archpath = libdar::path(val, true); };
+    void set_archive_path(const std::string & val);
     void set_archive_basename(const std::string & val) { basename = val; };
     void set_archive_options_read(const libdar::archive_options_read & val) { read_opt = val; };
     void set_archive_options_test(const libdar::archive_options_test & val) { test_opt = val; };

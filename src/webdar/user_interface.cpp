@@ -220,20 +220,33 @@ void user_interface::on_event(const std::string & event_name)
 	libdar_has_ended = false;
 	in_action.clear();
 
-	if(event_name == saisie::event_restore)
-	    act(start_restore);
-	else if(event_name == saisie::event_compare)
-	    act(start_compare);
-	else if(event_name == saisie::event_test)
-	    act(start_test);
-	else if(event_name == saisie::event_create)
-	    act(start_create);
-	else if(event_name == saisie::event_isolate)
-	    act(start_isolate);
-	else if(event_name == saisie::event_merge)
-	    act(start_merge);
-	else
-	    throw WEBDAR_BUG;
+	try
+	{
+	    if(event_name == saisie::event_restore)
+		act(start_restore);
+	    else if(event_name == saisie::event_compare)
+		act(start_compare);
+	    else if(event_name == saisie::event_test)
+		act(start_test);
+	    else if(event_name == saisie::event_create)
+		act(start_create);
+	    else if(event_name == saisie::event_isolate)
+		act(start_isolate);
+	    else if(event_name == saisie::event_merge)
+		act(start_merge);
+	    else
+		throw WEBDAR_BUG;
+	}
+	catch(exception_bug & e)
+	{
+	    throw;
+	}
+	catch(...)
+	{
+	    mode = config;
+	    mode_changed = true;
+	    throw;
+	}
     }
     else if(event_name == saisie::event_list)
     {
