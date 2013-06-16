@@ -16,6 +16,7 @@ extern "C"
 #include "archive_test.hpp"
 #include "archive_restore.hpp"
 #include "archive_compare.hpp"
+#include "archive_create.hpp"
 
     /// class session - holds information about a current user session
 
@@ -81,9 +82,10 @@ private:
     std::string session_ID;   //< session_ID info (duplicated info to avoid table lookup and mutex lock)
     bool libdar_running;      //< whether a libdar child thread is running
     thread *current_thread;   //< points to the running thread (either arch_test ....)
-    archive_test arch_test;   //< thread for testing archives
-    archive_restore arch_rest;//< thread for extracting archives
-    archive_compare arch_diff;//< thread for comparing archives
+    archive_test arch_test;   //< holds thread created for testing archives
+    archive_restore arch_rest;//< holds thread created for extracting archives
+    archive_compare arch_diff;//< holds thread created for comparing archives
+    archive_create arch_create; //< holds thread created for archive creation
 
 
     void check_caller() const; //< test whether the caller has properly acquired the lock on this object

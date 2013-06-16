@@ -347,10 +347,8 @@ const string & saisie::get_archive_basename() const
     case st_test:
     case st_list:
 	return archread.get_archive_basename();
-	break;
     case st_create:
 	return create.get_archive_basename();
-	break;
     case st_isolate:
 	throw exception_feature("isolation operation");
     case st_merge:
@@ -369,6 +367,31 @@ const libdar::archive_options_read & saisie::get_read_options() const
 	throw WEBDAR_BUG;
 
     return archread.get_read_options();
+}
+
+const string & saisie::get_fs_root() const
+{
+    switch(status)
+    {
+    case st_idle:
+	throw WEBDAR_BUG;
+    case st_restore:
+	return extract_fs_root.get_value();
+    case st_compare:
+	return diff_fs_root.get_value();
+    case st_test:
+	throw WEBDAR_BUG;
+    case st_list:
+	throw WEBDAR_BUG;
+    case st_create:
+	return create.get_fs_root();
+    case st_isolate:
+	throw WEBDAR_BUG;
+    case st_merge:
+	throw WEBDAR_BUG;
+    default:
+	throw WEBDAR_BUG;
+    }
 }
 
 const libdar::archive_options_extract saisie::get_extraction_options() const

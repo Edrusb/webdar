@@ -68,12 +68,14 @@ public:
     const std::string & get_archive_basename() const;
     const libdar::archive_options_read & get_read_options() const;
 
+	// common parameter to diff/create/restore
+    const std::string & get_fs_root() const;
+
+
 	// extraction parameters
-    const std::string & get_extract_fs_root() const { return extract_fs_root.get_value(); };
     const libdar::archive_options_extract get_extraction_options() const;
 
 	// comparison parameters
-    const std::string & get_diff_fs_root() const { return diff_fs_root.get_value(); };
     const libdar::archive_options_diff get_comparison_options() const;
 
 	// testing options

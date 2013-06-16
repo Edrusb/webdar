@@ -32,6 +32,7 @@ public:
 
     const std::string & get_archive_path() const { return sauv_path.get_value(); };
     const std::string & get_archive_basename() const { return basename.get_value(); };
+    const std::string & get_fs_root() const { return fs_root.get_value(); };
     const html_options_create & get_options_create() const { return options; };
 
 private:

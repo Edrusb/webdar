@@ -165,7 +165,7 @@ void session::on_event(const std::string & event_name)
 	arch_rest.set_archive_path(wui.get_parametrage().get_archive_path());
 	arch_rest.set_archive_basename(wui.get_parametrage().get_archive_basename());
 	arch_rest.set_archive_options_read(wui.get_parametrage().get_read_options());
-	arch_rest.set_fs_root(wui.get_parametrage().get_extract_fs_root());
+	arch_rest.set_fs_root(wui.get_parametrage().get_fs_root());
 	arch_rest.set_archive_options_restore(wui.get_parametrage().get_extraction_options());
 	arch_rest.set_progressive_report(wui.get_statistics().get_libdar_statistics());
 
@@ -200,7 +200,7 @@ void session::on_event(const std::string & event_name)
 	arch_diff.set_archive_path(wui.get_parametrage().get_archive_path());
 	arch_diff.set_archive_basename(wui.get_parametrage().get_archive_basename());
 	arch_diff.set_archive_options_read(wui.get_parametrage().get_read_options());
-	arch_diff.set_fs_root(wui.get_parametrage().get_diff_fs_root());
+	arch_diff.set_fs_root(wui.get_parametrage().get_fs_root());
 	arch_diff.set_archive_options_compare(wui.get_parametrage().get_comparison_options());
 	arch_diff.set_progressive_report(wui.get_statistics().get_libdar_statistics());
 
@@ -249,6 +249,40 @@ void session::on_event(const std::string & event_name)
     }
     else if(event_name == user_interface::start_create)
     {
+	if(libdar_running)
+	    throw WEBDAR_BUG;
+	if(current_thread != NULL)
+	    throw WEBDAR_BUG;
+
+	    // providing libdar::parameters
+	arch_create.set_user_interaction(wui.get_user_interaction());
+	arch_create.set_archive_path(wui.get_parametrage().get_archive_path());
+	arch_create.set_archive_basename(wui.get_parametrage().get_archive_basename());
+	arch_create.set_archive_extension(EXTENSION);
+	if(wui.get_parametrage().get_creating_options().has_reference())
+	    arch_create.set_archive_options_reference(
+		wui.get_parametrage().get_creating_options().get_reference().get_archive_path(),
+		wui.get_parametrage().get_creating_options().get_reference().get_archive_basename(),
+		EXTENSION,
+		wui.get_parametrage().get_creating_options().get_reference().get_read_options());
+	else
+	    arch_create.clear_archive_options_reference();
+	arch_create.set_fs_root(wui.get_parametrage().get_fs_root());
+	arch_create.set_archive_options_create(wui.get_parametrage().get_creating_options().get_options());
+	arch_create.set_progressive_report(wui.get_statistics().get_libdar_statistics());
+
+	    // resetting counters and logs
+	wui.get_user_interaction().clear();
+	wui.get_statistics().clear_counters();
+	wui.get_statistics().clear_labels();
+	wui.get_statistics().set_treated_label("item(s) treated");
+	wui.get_statistics().set_skipped_label("item(s) excluded by filters");
+	wui.get_statistics().set_errored_label("items(s) with error");
+
+	    // launching libdar in a separated thread
+	arch_create.run();
+	current_thread = & arch_create;
+	libdar_running = true;
     }
     else if(event_name == user_interface::start_isolate)
     {

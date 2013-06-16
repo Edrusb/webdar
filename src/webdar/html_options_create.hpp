@@ -42,7 +42,7 @@ public:
 	/// with the object built from this->get_reference().*
     libdar::archive_options_create get_options() const;
 	/// whether an archive of reference has to be added to the libdar::archive_options_create object
-    bool has_reference() { return archtype.get_selected_num() == 1; };
+    bool has_reference() const { return archtype.get_selected_num() == 1; };
 	/// parameters required to build the archive of reference
     const html_archive_read & get_reference() const { return reference; };
 

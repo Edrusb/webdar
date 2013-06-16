@@ -247,6 +247,18 @@ void *thread::run_obj(void *obj)
 	if(ret == NULL)
 	    throw;
     }
+    catch(libdar::Ebug & e)
+    {
+	exception_libcall *tmp = new (nothrow) exception_libcall(e);
+	ret = tmp;
+	if(ret == NULL)
+	{
+	    if(tmp != NULL)
+		delete tmp;
+	    throw;
+	}
+	tmp->change_message(e.dump_str());
+    }
     catch(libdar::Egeneric & e)
     {
 	ret = new (nothrow) exception_range(string("LIBDAR error: " + e.get_message()));
