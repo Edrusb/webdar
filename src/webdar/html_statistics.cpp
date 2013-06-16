@@ -29,6 +29,9 @@ html_statistics::html_statistics()
     deleted_lbl.css_text_align(al_right);
     ea_treated_lbl.css_text_align(al_right);
     byte_amount_lbl.css_text_align(al_right);
+    total_lbl.css_text_align(al_right);
+
+    total_lbl.css_font_weight_bold();
 
     treated_count.css_font_weight_bold();
     hard_links_count.css_font_weight_bold();
@@ -39,6 +42,7 @@ html_statistics::html_statistics()
     deleted_count.css_font_weight_bold();
     ea_treated_count.css_font_weight_bold();
     byte_amount_count.css_font_weight_bold();
+    total_count.css_font_weight_bold();
 }
 
 void html_statistics::clear_labels()
@@ -52,6 +56,7 @@ void html_statistics::clear_labels()
     deleted_lbl.clear();
     ea_treated_lbl.clear();
     byte_amount_lbl.clear();
+    total_lbl.clear();
 }
 
 string html_statistics::get_body_part(const chemin & path,
@@ -101,6 +106,11 @@ string html_statistics::get_body_part(const chemin & path,
     {
 	byte_amount_count.clear();
 	byte_amount_count.add_text(0, libdar::deci(stats.get_byte_amount()).human());
+    }
+    if(total_lbl.get_body_part() != "")
+    {
+	total_count.clear();
+	total_count.add_text(0, libdar::deci(stats.total()).human());
     }
 
     if(table == NULL)
@@ -163,6 +173,11 @@ void html_statistics::build()
 	{
 	    table->adopt_static_html(byte_amount_lbl.get_body_part());
 	    table->adopt(&byte_amount_count);
+	}
+	if(total_lbl.get_body_part() != "")
+	{
+	    table->adopt_static_html(total_lbl.get_body_part());
+	    table->adopt(&total_count);
 	}
 	adopt(table);
     }

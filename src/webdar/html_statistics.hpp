@@ -38,6 +38,7 @@ public:
     void set_deleted_label(const std::string & label) { deleted_lbl.clear(); deleted_lbl.add_text(0, label); unbuild(); };
     void set_ea_treated_label(const std::string & label) { ea_treated_lbl.clear(); ea_treated_lbl.add_text(0, label); unbuild(); };
     void set_byte_amount_label(const std::string & label) { byte_amount_lbl.clear(); byte_amount_lbl.add_text(0, label); unbuild(); };
+    void set_total_label(const std::string & label) { total_lbl.clear(); total_lbl.add_text(0, label); unbuild(); };
 
 	/// the address of the object to be updated by libdar
     libdar::statistics *get_libdar_statistics() { return &stats; };
@@ -63,6 +64,7 @@ private:
     html_text deleted_lbl;
     html_text ea_treated_lbl;
     html_text byte_amount_lbl;
+    html_text total_lbl;
 
     html_text treated_count;
     html_text hard_links_count;
@@ -73,6 +75,7 @@ private:
     html_text deleted_count;
     html_text ea_treated_count;
     html_text byte_amount_count;
+    html_text total_count;
 
 	/// build the html body_builder tree using only labelled field
     void build();
