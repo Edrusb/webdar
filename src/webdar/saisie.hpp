@@ -69,11 +69,11 @@ public:
     const libdar::archive_options_read & get_read_options() const;
 
 	// extraction parameters
-    const std::string get_fs_root() const { return fs_root.get_value(); };
+    const std::string & get_extract_fs_root() const { return extract_fs_root.get_value(); };
     const libdar::archive_options_extract get_extraction_options() const;
 
 	// comparison parameters
-	// get_fs_root() is to be used here to
+    const std::string & get_diff_fs_root() const { return diff_fs_root.get_value(); };
     const libdar::archive_options_diff get_comparison_options() const;
 
 	// testing options
@@ -122,13 +122,16 @@ private:
     html_div div_sep0;
 	//
     html_div div_extract;
-    html_form_fieldset fs_root_fs;
-    html_form_input fs_root;
-    html_form fs_root_form;
+    html_form_fieldset extract_fs_root_fs;
+    html_form_input extract_fs_root;
+    html_form extract_fs_root_form;
     html_options_extract extract;
     html_button go_extract;
 	//
     html_div div_compare;
+    html_form_fieldset diff_fs_root_fs;
+    html_form_input diff_fs_root;
+    html_form diff_fs_root_form;
     html_options_compare compare;
     html_button go_compare;
 	//

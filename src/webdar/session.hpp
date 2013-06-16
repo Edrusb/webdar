@@ -15,6 +15,7 @@ extern "C"
 #include "events.hpp"
 #include "archive_test.hpp"
 #include "archive_restore.hpp"
+#include "archive_compare.hpp"
 
     /// class session - holds information about a current user session
 
@@ -82,6 +83,7 @@ private:
     thread *current_thread;   //< points to the running thread (either arch_test ....)
     archive_test arch_test;   //< thread for testing archives
     archive_restore arch_rest;//< thread for extracting archives
+    archive_compare arch_diff;//< thread for comparing archives
 
 
     void check_caller() const; //< test whether the caller has properly acquired the lock on this object

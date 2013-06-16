@@ -40,9 +40,12 @@ saisie::saisie():
     go_create("Create", event_create),
     go_isolate("Isolate", event_isolate),
     go_merge("Merge", event_merge),
-    fs_root_fs("Restoration parameters"),
-    fs_root("Directory to take as root for restoration", html_form_input::text, "", 30),
-    fs_root_form("Update")
+    extract_fs_root_fs("Restoration parameters"),
+    extract_fs_root("Directory to take as root for restoration", html_form_input::text, "", 30),
+    extract_fs_root_form("Update"),
+    diff_fs_root_fs("Comparison parameters"),
+    diff_fs_root("Directory to compare the archive with", html_form_input::text, "", 30),
+    diff_fs_root_form("Update")
 {
     html_text text;
 
@@ -108,15 +111,18 @@ saisie::saisie():
     select.adopt(&div_sep0);
 
 	// configuration of the restore sub-page
-    div_extract.adopt(&fs_root_fs);
-    fs_root_fs.adopt(&fs_root_form);
-    fs_root_form.adopt(&fs_root);
     div_extract.adopt(&extract);
+    div_extract.adopt(&extract_fs_root_fs);
+    extract_fs_root_fs.adopt(&extract_fs_root_form);
+    extract_fs_root_form.adopt(&extract_fs_root);
     div_extract.adopt(&go_extract);
     select.adopt(&div_extract);
 
 	// comparison sub-page
     div_compare.adopt(&compare);
+    div_compare.adopt(&diff_fs_root_fs);
+    diff_fs_root_fs.adopt(&diff_fs_root_form);
+    diff_fs_root_form.adopt(&diff_fs_root);
     div_compare.adopt(&go_compare);
     select.adopt(&div_compare);
 
