@@ -1,6 +1,6 @@
 #include "tokens.hpp"
 
-const char * WEBDAR_VERSION = "1.0.0";
+const char * WEBDAR_VERSION = "0.0.1";
 
 const char * EXTENSION = "dar";
 

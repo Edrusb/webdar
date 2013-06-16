@@ -163,12 +163,6 @@ private:
 	//
     html_yes_no_box close;
 
-	// CSS attributes to buttons and menu
-    html_div box_off; //< used to assign CSS attributes: unselected item
-    html_div box_on;  //< used to assign CSS attributes: selected item
-    html_div box_void;//< used to assign CSS attributes: separators
-    html_url_class url_selected; //< links when box selected
-    html_url_class url_normal;   //< links when box no selected
 };
 
 #endif

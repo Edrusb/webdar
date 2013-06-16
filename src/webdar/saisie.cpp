@@ -9,6 +9,7 @@ extern "C"
 
     // webdar headers
 #include "exceptions.hpp"
+#include "webdar_css_style.hpp"
     //
 #include "saisie.hpp"
 
@@ -41,68 +42,16 @@ saisie::saisie():
     go_merge("Merge", event_merge)
 {
     html_text text;
-    css tmp_set;
-    css tmp_set_url;
 
     status = st_idle;
 
-	// Common aspects
-    box_off.css_border_style(css::bd_all, css::bd_solid, true);
-    box_off.css_border_width(css::bd_all, css::bd_medium, true);
-    box_off.css_width("8em", true, true);
-    box_off.css_padding("0.5em", true);
-    box_off.css_margin("0.2em", true);
-    box_off.css_text_align(al_center, true);
-
-	// copy common aspects to box_off and box_void
-    box_on.css_inherit_from(box_off);
-    box_void.css_inherit_from(box_off);
-    box_void.css_border_style(css::bd_all, css::bd_none);
-
-	// box_off and tmp_norm COLORS
-    tmp_set.css_clear_attributes();
-    tmp_set.css_color(COLOR_MENU_FRONT_OFF, true);
-    tmp_set.css_background_color(COLOR_MENU_BACK_OFF, true);
-    tmp_set.css_font_weight_bold(true);
-    tmp_set.css_font_style_italic(true);
-    tmp_set.css_text_decoration(css::dc_none, true);
-    box_off.css_inherit_from(tmp_set);
-    url_normal.set_style_link(tmp_set);
-    url_normal.set_style_visited(tmp_set);
-    box_off.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
-
-	// Link Hover and Active in box_off
-    tmp_set.css_color(COLOR_MENU_FRONT_HOVER_OFF, true);
-    tmp_set.css_text_decoration(dc_underline, true);
-    url_normal.set_style_hover(tmp_set);
-    tmp_set.css_color(COLOR_MENU_FRONT_ACTIVE_OFF, true);
-    url_normal.set_style_active(tmp_set);
-
-	// box_on and tmp_select COLORS
-    tmp_set.css_color(COLOR_MENU_FRONT_ON, true);
-    tmp_set.css_background_color(COLOR_MENU_BACK_ON, true);
-    tmp_set.css_font_weight_bold(true);
-    tmp_set.css_font_style_normal(true);
-    tmp_set.css_text_decoration(css::dc_none, true);
-    box_on.css_inherit_from(tmp_set);
-    url_selected.set_style_link(tmp_set);
-    url_selected.set_style_visited(tmp_set);
-    box_on.css_border_color(css::bd_all, COLOR_MENU_BORDER_ON, true);
-
-	// Link Hover and Active in box_on
-    tmp_set.css_color(COLOR_MENU_FRONT_HOVER_ON, true);
-    tmp_set.css_text_decoration(dc_underline, true);
-    url_selected.set_style_hover(tmp_set);
-    tmp_set.css_color(COLOR_MENU_FRONT_ACTIVE_ON, true);
-    url_selected.set_style_active(tmp_set);
-
-    go_extract.css_inherit_from(box_off);
-    go_compare.css_inherit_from(box_off);
-    go_test.css_inherit_from(box_off);
-    go_list.css_inherit_from(box_off);
-    go_create.css_inherit_from(box_off);
-    go_isolate.css_inherit_from(box_off);
-    go_merge.css_inherit_from(box_off);
+    webdar_style_normal_button(go_extract);
+    webdar_style_normal_button(go_compare);
+    webdar_style_normal_button(go_test);
+    webdar_style_normal_button(go_list);
+    webdar_style_normal_button(go_create);
+    webdar_style_normal_button(go_isolate);
+    webdar_style_normal_button(go_merge);
 
     go_extract.css_float(fl_right);
     go_compare.css_float(fl_right);
@@ -111,24 +60,6 @@ saisie::saisie():
     go_create.css_float(fl_right);
     go_isolate.css_float(fl_right);
     go_merge.css_float(fl_right);
-
-    go_extract.set_url_class(url_normal);
-    go_compare.set_url_class(url_normal);
-    go_test.set_url_class(url_normal);
-    go_list.set_url_class(url_normal);
-    go_create.set_url_class(url_normal);
-    go_isolate.set_url_class(url_normal);
-    go_merge.set_url_class(url_normal);
-
-    css tmp_set2;
-    tmp_set2.css_border_style(css::bd_all, css::bd_none);
-    go_extract.set_url_css(tmp_set2);
-    go_compare.set_url_css(tmp_set2);
-    go_test.set_url_css(tmp_set2);
-    go_list.set_url_css(tmp_set2);
-    go_create.set_url_css(tmp_set2);
-    go_isolate.set_url_css(tmp_set2);
-    go_merge.set_url_css(tmp_set2);
 
 	// configuration of "choice"
     choice.add_entry("about", "Main Page");
