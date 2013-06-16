@@ -1,7 +1,18 @@
-#include "session.hpp"
+    // C system header files
+extern "C"
+{
+
+}
+
+    // C++ system header files
+
+
+    // webdar headers
 #include "webdar_tools.hpp"
 #include "user_interface.hpp"
-#include "archive_test.hpp"
+
+    //
+#include "session.hpp"
 
 using namespace std;
 
@@ -144,7 +155,34 @@ void session::on_event(const std::string & event_name)
     }
     else if(event_name == user_interface::start_restore)
     {
+	if(libdar_running)
+	    throw WEBDAR_BUG;
+	if(current_thread != NULL)
+	    throw WEBDAR_BUG;
 
+	arch_rest.set_user_interaction(wui.get_user_interaction());
+	arch_rest.set_archive_path(wui.get_parametrage().get_archive_path());
+	arch_rest.set_archive_basename(wui.get_parametrage().get_archive_basename());
+	arch_rest.set_archive_options_read(wui.get_parametrage().get_read_options());
+	arch_rest.set_fs_root(wui.get_parametrage().get_fs_root());
+	arch_rest.set_archive_options_restore(wui.get_parametrage().get_extraction_options());
+
+
+	wui.get_user_interaction().clear();
+	wui.get_statistics().clear_counters();
+	wui.get_statistics().clear_labels();
+	wui.get_statistics().set_treated_label("item(s) restored");
+	wui.get_statistics().set_skipped_label("item(s) not restored (not saved in archive)");
+	wui.get_statistics().set_tooold_label("item(s) not restored (overwriting policy decision");
+	wui.get_statistics().set_errored_label("item(s) failed to restore (filesystem error)");
+	wui.get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
+	wui.get_statistics().set_hard_links_label("hard link(s) restored");
+	wui.get_statistics().set_ea_treated_label("inode(s) having their EA restored");
+	wui.get_statistics().set_total_label("inode(s) considered");
+
+	arch_rest.run();
+	current_thread = & arch_rest;
+	libdar_running = true;
     }
     else if(event_name == user_interface::start_compare)
     {

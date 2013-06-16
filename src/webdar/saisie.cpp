@@ -39,7 +39,10 @@ saisie::saisie():
     go_list("List", event_list),
     go_create("Create", event_create),
     go_isolate("Isolate", event_isolate),
-    go_merge("Merge", event_merge)
+    go_merge("Merge", event_merge),
+    fs_root_fs("Restoration parameters"),
+    fs_root("Directory to take as root for restoration", html_form_input::text, "", 30),
+    fs_root_form("Update")
 {
     html_text text;
 
@@ -105,6 +108,9 @@ saisie::saisie():
     select.adopt(&div_sep0);
 
 	// configuration of the restore sub-page
+    div_extract.adopt(&fs_root_fs);
+    fs_root_fs.adopt(&fs_root_form);
+    fs_root_form.adopt(&fs_root);
     div_extract.adopt(&extract);
     div_extract.adopt(&go_extract);
     select.adopt(&div_extract);

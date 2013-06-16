@@ -63,17 +63,17 @@ public:
 
 	// list of field available to run libdar
 
-	// archive to operate on
+	// reading parameters
     const std::string & get_archive_path() const;
     const std::string & get_archive_basename() const;
-
-	// reading options (available for listing, testing, diffing, extracting events)
     const libdar::archive_options_read & get_read_options() const;
 
-	// extraction options
+	// extraction parameters
+    const std::string get_fs_root() const { return fs_root.get_value(); };
     const libdar::archive_options_extract get_extraction_options() const;
 
-	// comparison options
+	// comparison parameters
+	// get_fs_root() is to be used here to
     const libdar::archive_options_diff get_comparison_options() const;
 
 	// testing options
@@ -122,6 +122,9 @@ private:
     html_div div_sep0;
 	//
     html_div div_extract;
+    html_form_fieldset fs_root_fs;
+    html_form_input fs_root;
+    html_form fs_root_form;
     html_options_extract extract;
     html_button go_extract;
 	//
