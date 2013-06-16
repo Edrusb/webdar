@@ -80,14 +80,12 @@ saisie::saisie():
     choice.css_float(css::fl_left);
     adopt(&choice);
 
-	// Configuring show_archive
+	// Configuring archive_show
     archive_show.adopt(&archread);
     show_archive_form_options.adopt(&show_operation_options);
     show_archive_fs_options.adopt(&show_archive_form_options);
     archive_show.adopt(&show_archive_fs_options);
-    show_archive.adopt(&archive_blank);
-    show_archive.adopt(&archive_show);
-    right_pan.adopt(&show_archive);
+    right_pan.adopt(&archive_show);
 
 	// configuration of the sub-pages brought by "select"
 
@@ -252,9 +250,9 @@ void saisie::on_event(const std::string & event_name)
 	   || choice.get_current_label() == "list"
 	   || choice.get_current_label() == "isolate"
 	   || choice.get_current_label() == "merge")
-	    show_archive.set_mode(1);
+	    archive_show.set_visible(true);
 	else
-	    show_archive.set_mode(0);
+	    archive_show.set_visible(false);
 	select.set_mode(choice.get_current_mode());
 
 	if(show_operation_options.get_value_as_bool())

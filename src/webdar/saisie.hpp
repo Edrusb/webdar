@@ -106,19 +106,15 @@ private:
     html_menu choice;      ///< left main menu
     html_div right_pan;    ///< holds all that is beside main menu
 
-	/// right_pan zone
-    html_aiguille show_archive;   ///< top middle zone hidden or show depending of choice's value
-    html_aiguille select;         ///< middle center zone, containing the different pages according to choice's value
-
-	/// show archive zone
-    html_div archive_show;   ///< contains all that is "shown"
-    html_text archive_blank; ///< shows a blank place in place of archive_form
-	/// what is shown
+	/// show archive zone (middle top)
+    html_div archive_show;   ///< global container that is either visible or not depending on "choice" value
     html_archive_read archread;   ///< the archive to operate on (reading)
     html_form_input show_operation_options; ///< whether operation options are shown or not
-    html_form_fieldset show_archive_fs_options; //< around  show_operations_options
     html_form show_archive_form_options;    ///< around show_archive_fs_options
+    html_form_fieldset show_archive_fs_options; //< around show_operations_options
 
+	/// right_pan zone
+    html_aiguille select;         ///< middle center zone, containing the different pages according to "choice" value
 
 	// the different sub pages contained by "select" and shown depending on choice's value
     html_div div_about;
