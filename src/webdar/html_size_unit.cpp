@@ -66,13 +66,10 @@ string html_size_unit::get_body_part(const chemin & path,
     do
     {
 	changed = false;
-	ret = get_visible() ? get_body_part_from_all_children(path, req) : "";
+	ret = get_next_visible() ? get_body_part_from_all_children(path, req) : "";
+	ack_visible();
     }
     while(changed);
-
-    if(!get_next_visible())
-	ret = "";
-    ack_visible();
 
     return ret;
 }

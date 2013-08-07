@@ -80,6 +80,8 @@ x voir comment partager les proprietes CSS des boutons seuls et au sein d'un men
 
 - implementer le parcours d'une archive ouverte (listing)
 
+-x-x-x-x-x-x-x-x-x-x- arret ici pour CCDE -x-x-x-x
+
 - implementer la construction de filtres
 - implementer la construction d'overwriting policy
 - ajouter les champs filtres aux classes d'options

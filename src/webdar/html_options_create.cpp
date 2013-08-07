@@ -381,7 +381,7 @@ void html_options_create::on_event(const std::string & event_name)
 	    first_slice_size_unit.set_visible(false);
 	}
     }
-    else
+    else // no slicing requested
     {
 	slice_size.set_visible(false);
 	slice_size_unit.set_visible(false);

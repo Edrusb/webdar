@@ -25,26 +25,34 @@ string html_form_select::get_body_part(const chemin & path, const request & req)
     const vector<record> & choices = get_choices();
     vector<record>::const_iterator it = choices.begin();
 
-	// for POST method only, extract used choice from the body of the request
-	// and update this object's fields;
+    if(get_visible())
+    {
+	    // for POST method only, extract used choice from the body of the request
+	    // and update this object's fields;
 
-    update_field_from_request(req);
+	update_field_from_request(req);
+    }
 
 	// for any request provide an updated HTML content in response
-
-    ret += "<label for=\"" + select_id + "\">" + x_label + "</label>\n";
-    ret += "<select name=\"" + select_id + "\" id=\"" + select_id + "\">\n";
-    while(it != get_choices().end())
+    if(get_next_visible())
     {
-	ret += "<option value=\"" + it->id + "\"";
-	if(it->id == get_selected_id())
-	    ret += " selected";
-	ret += ">" + it->label + "</option>\n";
-	++it;
+	ret += "<label for=\"" + select_id + "\">" + x_label + "</label>\n";
+	ret += "<select name=\"" + select_id + "\" id=\"" + select_id + "\">\n";
+	while(it != get_choices().end())
+	{
+	    ret += "<option value=\"" + it->id + "\"";
+	    if(it->id == get_selected_id())
+		ret += " selected";
+	    ret += ">" + it->label + "</option>\n";
+	    ++it;
+	}
+	ret += "</select>\n";
+	if(!get_no_CR())
+	    ret += "<br />\n";
     }
-    ret += "</select>\n";
-    if(!get_no_CR())
-	ret += "<br />\n";
+    else
+	ret = "";
+    ack_visible();
 
     return ret;
 };
