@@ -37,7 +37,7 @@ public:
 
 	/// informations available for libdar
 	///
-	/// \note if a reference is requested it implies openninng a archive
+	/// \note if a reference is requested it implies openninng an archive
 	/// and feeding the libdar::archive_options_create::set_reference(libdar::archive *)
 	/// with the object built from this->get_reference().*
     libdar::archive_options_create get_options() const;
