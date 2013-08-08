@@ -1,4 +1,4 @@
-    // C system header files
+   // C system header files
 extern "C"
 {
 
@@ -255,7 +255,10 @@ void user_interface::on_event(const std::string & event_name)
     }
     else if(event_name == html_error::acknowledged)
     {
-	mode = return_mode;
+	if(return_mode != listing)
+	    mode = return_mode;
+	else
+	    mode = config;
 	mode_changed = true;
     }
     else

@@ -39,7 +39,7 @@ private:
     central_report *rep;     //< just a pointer to an existing object, must not be deleted by "this"
     authentication *authsrc; //< object to consult for user authentications
     bool can_keep_session;   //< whether aonther object asked interacting with the session we use
-    session *locked_session; //< the current session we use (we have acquired it mutex)
+    session *locked_session; //< the current session we use (we have acquired its mutex)
 
 	/// static fields
     static mutex lock_counter;            //< manages access to all static fields
