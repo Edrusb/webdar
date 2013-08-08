@@ -21,7 +21,7 @@ html_comparison_fields::html_comparison_fields() : html_form_select("Comparison 
 {
     add_choice("all", "All fields");
     add_choice("ignore_owner", "Ignore ownership");
-    add_choice("mtime", "Ignore iwnership and permission");
+    add_choice("mtime", "Ignore ownership and permission");
     add_choice("inode_type", "ignore all but inode type");
     set_selected(0);
 }
