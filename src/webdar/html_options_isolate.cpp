@@ -216,6 +216,7 @@ libdar::archive_options_isolate html_options_isolate::get_options() const
     ret.set_slice_permission(slice_permission.get_value());
     ret.set_slice_user_ownership(slice_user_ownership.get_value());
     ret.set_slice_group_ownership(slice_group_ownership.get_value());
+    ret.set_sequential_marks(sequential_marks.get_value_as_bool());
     ret.set_user_comment(user_comment.get_value());
     ret.set_slice_min_digits(libdar::deci(slice_min_digits.get_value()).computer());
     ret.set_hash_algo(hash_algo.get_value());
