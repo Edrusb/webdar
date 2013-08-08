@@ -286,10 +286,42 @@ void session::on_event(const std::string & event_name)
     }
     else if(event_name == user_interface::start_isolate)
     {
+	if(libdar_running)
+	    throw WEBDAR_BUG;
+	if(current_thread != NULL)
+	    throw WEBDAR_BUG;
 
+
+	    // providing libdar::parameters
+	arch_isolate.set_user_interaction(wui.get_user_interaction());
+	arch_isolate.set_archive_path(wui.get_parametrage().get_archive_path());
+	arch_isolate.set_archive_basename(wui.get_parametrage().get_archive_basename());
+	arch_isolate.set_archive_extension(EXTENSION);
+	arch_isolate.set_archive_options_isolate(wui.get_parametrage().get_isolating_options());
+	arch_isolate.set_archive_reference(
+	    wui.get_parametrage().get_isolating_reference().get_archive_path(),
+	    wui.get_parametrage().get_isolating_reference().get_archive_basename(),
+	    EXTENSION,
+	    wui.get_parametrage().get_isolating_reference().get_read_options());
+
+	    // resetting counters and logs
+	wui.get_user_interaction().clear();
+	wui.get_statistics().clear_counters();
+	wui.get_statistics().clear_labels();
+
+	    // launching libdar in a separated thread
+	arch_isolate.run();
+	current_thread = & arch_isolate;
+	libdar_running = true;
     }
     else if(event_name == user_interface::start_merge)
     {
+	if(libdar_running)
+	    throw WEBDAR_BUG;
+	if(current_thread != NULL)
+	    throw WEBDAR_BUG;
+
+
 
     }
     else

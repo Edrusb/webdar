@@ -17,6 +17,7 @@ extern "C"
 #include "archive_restore.hpp"
 #include "archive_compare.hpp"
 #include "archive_create.hpp"
+#include "archive_isolate.hpp"
 
     /// class session - holds information about a current user session
 
@@ -86,6 +87,7 @@ private:
     archive_restore arch_rest;//< holds thread created for extracting archives
     archive_compare arch_diff;//< holds thread created for comparing archives
     archive_create arch_create; //< holds thread created for archive creation
+    archive_isolate arch_isolate; //< holds thread created for archive isolation
 
 
     void check_caller() const; //< test whether the caller has properly acquired the lock on this object

@@ -174,6 +174,7 @@ html_options_create::html_options_create():
     fs_archgen.adopt(&slice_min_digits);
     fs_archgen.adopt(&hash_algo);
     fs_archgen.adopt(&execute);
+    fs_archgen.adopt(&empty);
     form_archgen.adopt(&fs_archgen);
     adopt(&form_archgen);
 
@@ -281,7 +282,7 @@ libdar::archive_options_create html_options_create::get_options() const
     {
 	if(crypto_pass1.get_value() != crypto_pass2.get_value())
 	    throw exception_range("crypto password and its confirmation do not match");
-	ret.set_crypto_pass(crypto_algo.get_value());
+	ret.set_crypto_pass(libdar::secu_string(crypto_pass1.get_value().c_str(), crypto_pass1.get_value().size()));
 	ret.set_crypto_size(webdar_tools_convert_to_int(crypto_size.get_value()));
     }
     ret.set_nodump(nodump.get_value_as_bool());
@@ -304,6 +305,7 @@ libdar::archive_options_create html_options_create::get_options() const
     ret.set_hash_algo(hash_algo.get_value());
     ret.set_slice_min_digits(libdar::deci(slice_min_digits.get_value()).computer());
     ret.set_ignore_unknown_inode_type(ignore_unknown_inode_type.get_value_as_bool());
+    ret.set_execute(execute.get_value());
 
     return ret;
 }

@@ -24,6 +24,7 @@ extern "C"
 #include "html_options_test.hpp"
 #include "html_archive_read.hpp"
 #include "html_archive_create.hpp"
+#include "html_archive_isolate.hpp"
 #include "html_button.hpp"
 #include "html_url_class.hpp"
 
@@ -84,11 +85,12 @@ public:
 	// listing options
     const libdar::archive_options_listing get_listing_options() const;
 
-	// create options --- attention, given argument is not a libdar object but holds the information to create it completely
+	// create options --- WARNING! The returned object is not a libdar object but holds the information to create it completely
     const html_options_create & get_creating_options() const;
 
 	// isolate options
-	/* A IMPLEMENTER */
+    const libdar::archive_options_isolate get_isolating_options() const;
+    const html_archive_read & get_isolating_reference() const { return isolate.get_reference(); };
 
 	// merge options
 	/* A IMPLEMENTER */
@@ -150,6 +152,7 @@ private:
     html_button go_create;
 	//
     html_div div_isolate;
+    html_archive_isolate isolate;
     html_button go_isolate;
 	//
     html_div div_merge;
