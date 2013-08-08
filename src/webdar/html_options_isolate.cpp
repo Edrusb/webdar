@@ -54,6 +54,7 @@ html_options_isolate::html_options_isolate():
     libdar::archive_options_isolate defaults;
 
 	// removing Carriage Return for some components
+    compression.set_no_CR();
     slice_size.set_no_CR();
     first_slice_size.set_no_CR();
 
