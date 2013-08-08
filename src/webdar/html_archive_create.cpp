@@ -21,15 +21,16 @@ html_archive_create::html_archive_create():
     sauv_path("Directory to write archive into", html_form_input::text, "", 20),
     basename("Archive basename", html_form_input::text, "", 10),
     show_options("Show creation options", html_form_input::check, "", 1),
-    form("Update")
+    form("Update"),
+    fs("Archive to create")
 {
-    form.adopt(&fs_root);
-    form.adopt(&sauv_path);
-    form.adopt(&basename);
-    form.adopt(&show_options);
+    fs.adopt(&fs_root);
+    fs.adopt(&sauv_path);
+    fs.adopt(&basename);
+    fs.adopt(&show_options);
+    form.adopt(&fs);
     adopt(&form);
     adopt(&options);
-
 
     show_options.record_actor_on_event(this, html_form_input::changed);
 
@@ -41,7 +42,8 @@ html_archive_create::html_archive_create(const html_archive_create & ref):
     sauv_path("", html_form_input::text, "", 20),
     basename("", html_form_input::text, "", 10),
     show_options("", html_form_input::check, "", 1),
-    form("")
+    form(""),
+    fs("")
 {
     throw WEBDAR_BUG;
 }
