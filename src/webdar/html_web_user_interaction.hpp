@@ -54,6 +54,7 @@ private:
 	// body_builder fields
     html_form_radio h_pause2;
     html_form_fieldset h_inter;
+    html_text h_inter_text;
     html_form_input h_get_string;
     html_form h_form;
     html_text h_warnings;

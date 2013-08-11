@@ -29,6 +29,10 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     h_pause2.add_choice("no", "No");
     h_pause2.add_choice("yes", "Yes");
 
+    h_inter_text.css_font_weight_bold();
+    h_inter_text.css_color("blue");
+
+    h_inter.adopt(&h_inter_text);
     h_inter.adopt(&h_pause2);
     h_form.adopt(&h_inter);
     h_form.adopt(&h_get_string);
@@ -91,7 +95,8 @@ string html_web_user_interaction::get_body_part(const chemin & path,
 	    if(!h_inter.get_next_visible())
 	    {
 		h_inter.set_visible(true);
-		h_inter.change_label(msg);
+		h_inter_text.clear();
+		h_inter_text.add_text(0, msg);
 		h_pause2.set_selected(0);
 		just_set = true;
 	    }
