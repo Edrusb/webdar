@@ -17,23 +17,12 @@ extern "C"
 using namespace std;
 
 const string user_interface::closing = "user_interface_closing";
-const string user_interface::ask_end_libdar = "user_interface_ask_end_libdar";
-const string user_interface::force_end_libdar = "user_interface_force_end_libdar";
-const string user_interface::kill_libdar_thread = "user_interface_kill_libdar_thread";
-const string user_interface::clean_ended_libdar = "user_interface_clean_ended_libdar";
-const string user_interface::start_restore = "user_interface_start_restore";
-const string user_interface::start_compare = "user_interface_start_compare";
-const string user_interface::start_test = "user_interface_start_test";
-const string user_interface::start_create = "user_interface_start_create";
-const string user_interface::start_isolate = "user_interface_start_isolate";
-const string user_interface::start_merge = "user_interface_start_merge";
 
 user_interface::user_interface()
 {
     mode = config;
     mode_changed = false;
     close_requested = false;
-    libdar_has_ended = false;
 
 	/// messages receved from saisie object named parametrage
     parametrage.record_actor_on_event(this, saisie::event_closing);
@@ -54,18 +43,25 @@ user_interface::user_interface()
 	/// messages received from html_error object named in_error;
     in_error.record_actor_on_event(this, html_error::acknowledged);
 
+    libdar_running = false;
+    current_thread = NULL;
+
 	/// create the events that this object is willing to generate
     register_name(closing);
-    register_name(ask_end_libdar);
-    register_name(force_end_libdar);
-    register_name(kill_libdar_thread);
-    register_name(clean_ended_libdar);
-    register_name(start_restore);
-    register_name(start_compare);
-    register_name(start_test);
-    register_name(start_create);
-    register_name(start_isolate);
-    register_name(start_merge);
+}
+
+user_interface::~user_interface()
+{
+    if(libdar_running)
+    {
+	if(current_thread != NULL)
+	{
+	    if(current_thread->is_running())
+		current_thread->kill();
+	    current_thread->join(); // this later call may propagate exceptions
+	    current_thread = NULL;
+	}
+    }
 }
 
 answer user_interface::give_answer(const request & req)
@@ -88,10 +84,31 @@ answer user_interface::give_answer(const request & req)
 	    case listing:
 		throw exception_feature("libdar listing mode reached in user_interface");
 	    case running:
-		if(libdar_has_ended)
+		if(libdar_running)
 		{
-		    libdar_has_ended = false;
-		    act(clean_ended_libdar); // trigger exception rethrowing from the dead libdar thread
+		    if(current_thread == NULL)
+			throw WEBDAR_BUG;
+		    if(!current_thread->is_running())
+		    {
+			libdar_running = false;
+			in_action.libdar_has_finished();
+			try
+			{
+			    current_thread->join(); // may throw re-exception that were generated in this dead thread
+			}
+			catch(exception_base & e)
+			{
+			    current_thread = NULL;
+			    e.change_message(string("Error reported from libdar: ") + e.get_message());
+			    throw;
+			}
+			catch(...)
+			{
+			    current_thread = NULL;
+			    throw;
+			}
+			current_thread = NULL;
+		    }
 		}
 		ret.add_body(in_action.get_body_part(req.get_uri().get_path(), req));
 		break;
@@ -128,14 +145,14 @@ void user_interface::on_event(const std::string & event_name)
 	switch(mode)
 	{
 	case config:
-	case listing:
 	    act(closing); // transmetting the event
 	    break;
+	case listing:
+	    throw WEBDAR_BUG;
 	case running:
 	    throw WEBDAR_BUG;
 	case error:
-	    act(closing); // transmetting the event
-	    break;
+	    throw WEBDAR_BUG;
 	default:
 	    throw WEBDAR_BUG;
 	}
@@ -150,7 +167,20 @@ void user_interface::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	case running:
 	case error:
-	    act(ask_end_libdar);  // transmit the event
+	    if(libdar_running)
+	    {
+		if(current_thread != NULL)
+		{
+		    pthread_t libdar_tid;
+		    if(current_thread->is_running(libdar_tid))
+		    {
+			libdar::thread_cancellation th;
+			th.cancel(libdar_tid, false, 0);
+		    }
+		}
+		else
+		    throw WEBDAR_BUG;
+	    }
 	    break;
 	default:
 	    throw WEBDAR_BUG;
@@ -166,7 +196,20 @@ void user_interface::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	case running:
 	case error:
-	    act(force_end_libdar);// transmit the event
+	    if(libdar_running)
+	    {
+		if(current_thread != NULL)
+		{
+		    pthread_t libdar_tid;
+		    if(current_thread->is_running(libdar_tid))
+		    {
+			libdar::thread_cancellation th;
+			th.cancel(libdar_tid, true, 0);
+		    }
+		}
+		else
+		    throw WEBDAR_BUG;
+	    }
 	    break;
 	default:
 	    throw WEBDAR_BUG;
@@ -182,7 +225,20 @@ void user_interface::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	case running:
 	case error:
-	    act(kill_libdar_thread);// transmit the event
+	    if(libdar_running)
+	    {
+		if(current_thread != NULL)
+		{
+		    pthread_t libdar_tid;
+		    if(current_thread->is_running(libdar_tid))
+		    {
+			if(current_thread->is_running())
+			    current_thread->kill();
+		    }
+		}
+		else
+		    throw WEBDAR_BUG;
+	    }
 	    break;
 	default:
 	    throw WEBDAR_BUG;
@@ -217,23 +273,22 @@ void user_interface::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	mode = running;
 	mode_changed = true;
-	libdar_has_ended = false;
 	in_action.clear();
 
 	try
 	{
 	    if(event_name == saisie::event_restore)
-		act(start_restore);
+		go_restore();
 	    else if(event_name == saisie::event_compare)
-		act(start_compare);
+		go_diff();
 	    else if(event_name == saisie::event_test)
-		act(start_test);
+		go_test();
 	    else if(event_name == saisie::event_create)
-		act(start_create);
+		go_create();
 	    else if(event_name == saisie::event_isolate)
-		act(start_isolate);
+		go_isolate();
 	    else if(event_name == saisie::event_merge)
-		act(start_merge);
+		go_merge();
 	    else
 		throw WEBDAR_BUG;
 	}
@@ -265,28 +320,229 @@ void user_interface::on_event(const std::string & event_name)
 	throw WEBDAR_BUG; // what's that event !?!
 }
 
-void user_interface::libdar_has_finished()
-{
-    switch(mode)
-    {
-    case config:
-	throw WEBDAR_BUG;
-    case listing:
-	throw WEBDAR_BUG;
-    case running:
-	libdar_has_ended = true;
-	in_action.libdar_has_finished();
-	break;
-    case error:
-	throw WEBDAR_BUG;
-    default:
-	throw WEBDAR_BUG;
-    }
-}
 
 void user_interface::prefix_has_changed()
 {
     parametrage.set_prefix(get_prefix());
     in_action.set_prefix(get_prefix());
     in_error.set_prefix(get_prefix());
+}
+
+void user_interface::go_restore()
+{
+    if(libdar_running)
+	throw WEBDAR_BUG;
+    if(current_thread != NULL)
+	throw WEBDAR_BUG;
+
+	// providing libdar::parameters
+    arch_rest.set_user_interaction(get_user_interaction());
+    arch_rest.set_archive_path(get_parametrage().get_archive_path());
+    arch_rest.set_archive_basename(get_parametrage().get_archive_basename());
+    arch_rest.set_archive_options_read(get_parametrage().get_read_options());
+    arch_rest.set_fs_root(get_parametrage().get_fs_root());
+    arch_rest.set_archive_options_restore(get_parametrage().get_extraction_options());
+    arch_rest.set_progressive_report(get_statistics().get_libdar_statistics());
+
+
+	// restting counters and logs
+    get_user_interaction().clear();
+    get_statistics().clear_counters();
+    get_statistics().clear_labels();
+    get_statistics().set_treated_label("item(s) restored");
+    get_statistics().set_skipped_label("item(s) not restored (not saved in archive)");
+    get_statistics().set_tooold_label("item(s) not restored (overwriting policy decision)");
+    get_statistics().set_errored_label("item(s) failed to restore (filesystem error)");
+    get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
+    get_statistics().set_hard_links_label("hard link(s) restored");
+    get_statistics().set_ea_treated_label("item(s) having their EA restored");
+    get_statistics().set_total_label("item(s) considered");
+
+	// launching libdar in a separated thread
+    arch_rest.run();
+    current_thread = & arch_rest;
+    libdar_running = true;
+}
+
+void user_interface::go_diff()
+{
+    if(libdar_running)
+	throw WEBDAR_BUG;
+    if(current_thread != NULL)
+	throw WEBDAR_BUG;
+
+	// providing libdar::parameters
+    arch_diff.set_user_interaction(get_user_interaction());
+    arch_diff.set_archive_path(get_parametrage().get_archive_path());
+    arch_diff.set_archive_basename(get_parametrage().get_archive_basename());
+    arch_diff.set_archive_options_read(get_parametrage().get_read_options());
+    arch_diff.set_fs_root(get_parametrage().get_fs_root());
+    arch_diff.set_archive_options_compare(get_parametrage().get_comparison_options());
+    arch_diff.set_progressive_report(get_statistics().get_libdar_statistics());
+
+
+	// restting counters and logs
+    get_user_interaction().clear();
+    get_statistics().clear_counters();
+    get_statistics().clear_labels();
+    get_statistics().set_treated_label("item(s) identical");
+    get_statistics().set_errored_label("item(s) do not match those on filesystem");
+    get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
+    get_statistics().set_total_label("inode(s) considered");
+
+	// launching libdar in a separated thread
+    arch_diff.run();
+    current_thread = & arch_diff;
+    libdar_running = true;
+}
+
+
+void user_interface::go_test()
+{
+    if(libdar_running)
+	throw WEBDAR_BUG;
+    if(current_thread != NULL)
+	throw WEBDAR_BUG;
+
+	// providing libdar::parameters
+    arch_test.set_user_interaction(get_user_interaction());
+    arch_test.set_archive_path(get_parametrage().get_archive_path());
+    arch_test.set_archive_basename(get_parametrage().get_archive_basename());
+    arch_test.set_archive_options_read(get_parametrage().get_read_options());
+    arch_test.set_archive_options_test(get_parametrage().get_testing_options());
+    arch_test.set_progressive_report(get_statistics().get_libdar_statistics());
+
+	// resetting counters and logs
+    get_user_interaction().clear();
+    get_statistics().clear_counters();
+    get_statistics().clear_labels();
+    get_statistics().set_treated_label("item(s) treated");
+    get_statistics().set_skipped_label("item(s) excluded by filters");
+    get_statistics().set_errored_label("items(s) with error");
+
+	// launching libdar in a separated thread
+    arch_test.run();
+    current_thread = & arch_test;
+    libdar_running = true;
+}
+
+void user_interface::go_create()
+{
+    if(libdar_running)
+	throw WEBDAR_BUG;
+    if(current_thread != NULL)
+	throw WEBDAR_BUG;
+
+	// providing libdar::parameters
+    arch_create.set_user_interaction(get_user_interaction());
+    arch_create.set_archive_path(get_parametrage().get_archive_path());
+    arch_create.set_archive_basename(get_parametrage().get_archive_basename());
+    arch_create.set_archive_extension(EXTENSION);
+    if(get_parametrage().get_creating_options().has_reference())
+	arch_create.set_archive_options_reference(
+	    get_parametrage().get_creating_options().get_reference().get_archive_path(),
+	    get_parametrage().get_creating_options().get_reference().get_archive_basename(),
+	    EXTENSION,
+	    get_parametrage().get_creating_options().get_reference().get_read_options());
+    else
+	arch_create.clear_archive_options_reference();
+    arch_create.set_fs_root(get_parametrage().get_fs_root());
+    arch_create.set_archive_options_create(get_parametrage().get_creating_options().get_options());
+    arch_create.set_progressive_report(get_statistics().get_libdar_statistics());
+
+	// resetting counters and logs
+    get_user_interaction().clear();
+    get_statistics().clear_counters();
+    get_statistics().clear_labels();
+    get_statistics().set_treated_label("item(s) treated");
+    get_statistics().set_hard_links_label("hard link(s) treated");
+    get_statistics().set_tooold_label("item(s) modified while read for backup (dirty files)");
+    get_statistics().set_byte_amount_label("byte(s) wasted due to changing files at the time they were read");
+    get_statistics().set_skipped_label("item(s) not saved (no inode/file change)");
+    get_statistics().set_errored_label("items(s) with error (filesystem error)");
+    get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
+    get_statistics().set_deleted_label("item(s) recorded as deleted");
+    get_statistics().set_ea_treated_label("item(s) with Extended Attributes");
+
+	// launching libdar in a separated thread
+    arch_create.run();
+    current_thread = & arch_create;
+    libdar_running = true;
+}
+
+void user_interface::go_isolate()
+{
+    if(libdar_running)
+	throw WEBDAR_BUG;
+    if(current_thread != NULL)
+	throw WEBDAR_BUG;
+
+	// providing libdar::parameters
+
+    arch_isolate.set_user_interaction(get_user_interaction());
+    arch_isolate.set_archive_path(get_parametrage().get_archive_path());
+    arch_isolate.set_archive_basename(get_parametrage().get_archive_basename());
+    arch_isolate.set_archive_extension(EXTENSION);
+    arch_isolate.set_archive_options_isolate(get_parametrage().get_isolating_options());
+    arch_isolate.set_archive_reference(
+	get_parametrage().get_isolating_reference().get_archive_path(),
+	get_parametrage().get_isolating_reference().get_archive_basename(),
+	EXTENSION,
+	get_parametrage().get_isolating_reference().get_read_options());
+
+	// resetting counters and logs
+    get_user_interaction().clear();
+    get_statistics().clear_counters();
+    get_statistics().clear_labels();
+
+	// launching libdar in a separated thread
+    arch_isolate.run();
+    current_thread = & arch_isolate;
+    libdar_running = true;
+}
+
+void user_interface::go_merge()
+{
+    if(libdar_running)
+	throw WEBDAR_BUG;
+    if(current_thread != NULL)
+	throw WEBDAR_BUG;
+
+    arch_merge.set_user_interaction(get_user_interaction());
+    arch_merge.set_archive_path(get_parametrage().get_archive_path());
+    arch_merge.set_archive_basename(get_parametrage().get_archive_basename());
+    arch_merge.set_archive_extension(EXTENSION);
+    arch_merge.set_archive_options_merge(get_parametrage().get_merging_options().get_options());
+    arch_merge.set_archive_reference(
+	get_parametrage().get_merging_reference().get_archive_path(),
+	get_parametrage().get_merging_reference().get_archive_basename(),
+	EXTENSION,
+	get_parametrage().get_merging_reference().get_read_options());
+    if(get_parametrage().get_merging_options().has_auxilliary())
+    {
+	arch_merge.set_archive_options_auxilliary(
+	    get_parametrage().get_merging_options().get_auxilliary().get_archive_path(),
+	    get_parametrage().get_merging_options().get_auxilliary().get_archive_basename(),
+	    EXTENSION,
+	    get_parametrage().get_merging_options().get_auxilliary().get_read_options());
+    }
+    else
+	arch_merge.clear_archive_options_auxilliary();
+
+    arch_merge.set_progressive_report(get_statistics().get_libdar_statistics());
+
+	// resetting counters and logs
+    get_user_interaction().clear();
+    get_statistics().clear_counters();
+    get_statistics().clear_labels();
+    get_statistics().set_treated_label("item(s) treated");
+    get_statistics().set_hard_links_label("hard link(s) treated");
+    get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
+    get_statistics().set_deleted_label("item(s) recorded as deleted");
+    get_statistics().set_ea_treated_label("item(s) with Extended Attributes");
+    get_statistics().set_total_label("item(s) considered");
+
+    arch_merge.run();
+    current_thread = & arch_merge;
+    libdar_running = true;
 }
