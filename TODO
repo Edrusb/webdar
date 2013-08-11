@@ -62,13 +62,14 @@ x faire une classe abort_libdar, invoquant libdar::thread_cancel et fournissant 
 + finir l'implementation de html_libdar_running
 + capturer les exceptions lances par libdar lors du lancement de la thread (que se passe-t il quand on test avec des arguments vides pour l'archive ?)
 
-> faire une class derivee de thread pour lancer les appels libdar (voire une classe par action, ou une meme classe avec plusieurs methods "run", run_create(..)etc.)
-- pouvoir nommer les sessions
-- revoir l'implementation de menu pour utiliser des html_button
++ faire une class derivee de thread pour lancer les appels libdar (voire une classe par action, ou une meme classe avec plusieurs methods "run", run_create(..)etc.)
+- implementer le listing d'archive => methode listing / use_listing() de web_user_interaction ...
++ pouvoir nommer les sessions
+x revoir l'implementation de menu pour utiliser des html_button
 x voir comment partager les proprietes CSS des boutons seuls et au sein d'un menu (methode sur class saisie  transmise a ses bouton et ses menus, invoquee depuis la class user_interface pour ses propres boutons en direct) => on verra plus tard...
 
 + voir probleme d'initialisation de mutex lorsqu'on ferme une session depuis elle-meme
-- utiliser un user_interface * au lieu d'un respondeur * dans la classe session => les informations de session libdar, thread_id, etc. ne sont plus par l'objet session, l'objet session gere uniquement l'acces a l'objet user_interface. Celui-ci gere sa thread libdar et dispose d'un moyen HTML et d'une methode pour avorter une thread libdar.
++ utiliser un user_interface * au lieu d'un respondeur * dans la classe session => les informations de session libdar, thread_id, etc. ne sont plus par l'objet session, l'objet session gere uniquement l'acces a l'objet user_interface. Celui-ci gere sa thread libdar et dispose d'un moyen HTML et d'une methode pour avorter une thread libdar.
 
 + la classe user_interface dispose d'un etat modifie entre autres par les evenements sur les boutons (saisie, create, test, etc.)
 + ajouter un champ ou plusieurs champs html_progressive_report a la classe user_interface
@@ -79,6 +80,7 @@ x voir comment partager les proprietes CSS des boutons seuls et au sein d'un men
 - revoir la nomenclature des class, prefixer par html celles relative a l'interface graphique option_read, etc.
 
 - implementer le parcours d'une archive ouverte (listing)
+- add a semaphore to limit the maximum of concurrent libdar running thread, add a command-line switch to change the default value of 1
 
 -x-x-x-x-x-x-x-x-x-x- arret ici pour CCDE -x-x-x-x
 
