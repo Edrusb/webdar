@@ -26,8 +26,8 @@ using namespace std;
 map<string, choose::record *> choose::per_user;
 
 choose::choose(const string & user):
-    page("Choose a session"),
-    table(5),
+    page("Webdar - Choose a session"),
+    table(6),
     nouvelle("/choose/new", "Create a new session"),
     form("Kill the selected session"),
     confirm("Killing a session"),
@@ -47,7 +47,7 @@ choose::choose(const string & user):
     page.css_padding("1em");
     page.css_text_align(css::al_center);
 
-    tmp.add_text(3, string("Current sessions for user ") + owner);
+    tmp.add_text(3, string("Current sessions - we are identified as user ") + owner);
     tmp.css_padding("1em");
     tmp.css_background_color(COLOR_PADBACK);
     tmp.css_color(COLOR_PADFRONT);
@@ -181,7 +181,6 @@ answer choose::create_new_session(const request & req)
 
 void choose::regenerate_table_page()
 {
-    unsigned int count = 0;
     html_form_input *check = NULL;
 
 	// releasing old objects of the table
@@ -194,6 +193,7 @@ void choose::regenerate_table_page()
     sess = session::get_summary();
 
     table.adopt_static_html("Session ID");
+    table.adopt_static_html("owner");
     table.adopt_static_html("Locked");
     table.adopt_static_html("Running");
     table.adopt_static_html("Closing");
@@ -205,18 +205,26 @@ void choose::regenerate_table_page()
     {
 	if(it->owner == owner)
 	{
-	    ++count;
+	    string label = it->session_name;
+	    if(label == "")
+		label = it->session_ID;
 	    table.adopt_static_html(html_url(string("/") + it->session_ID,
-					      string("Session ") + webdar_tools_convert_to_string(count)).get_body_part());
-	    table.adopt_static_html(it->locked ? "locked" : "");
-	    table.adopt_static_html(it->libdar_running ? "running" : "");
-	    table.adopt_static_html(it->closing ? "closing" : "");
-	    check = new (nothrow) html_form_input("", html_form_input::check, "", 10);
-	    if(check == NULL)
-		throw exception_memory();
-	    boxes.push_back(check);
-	    table.adopt(check);
+					     label).get_body_part());
 	}
+	else
+	    table.adopt_static_html(it->session_ID);
+	table.adopt_static_html(it->owner);
+	table.adopt_static_html(it->locked ? "locked" : "");
+	table.adopt_static_html(it->libdar_running ? "running" : "");
+	table.adopt_static_html(it->closing ? "closing" : "");
+	check = new (nothrow) html_form_input("", html_form_input::check, "", 10);
+	if(check == NULL)
+	    throw exception_memory();
+	boxes.push_back(check);
+	if(it->owner != owner)
+	    check->set_enabled(false);
+	table.adopt(check);
+
     }
 }
 

@@ -61,5 +61,6 @@ extern std::string webdar_tools_generate_random_string(unsigned int size);
 extern std::string webdar_tools_get_session_ID_from_URI(const uri & url);
 extern std::string webdar_tools_to_canonical_case(const std::string & ch);
 extern std::string webdar_tools_decode_urlencoded(const std::string & ch);
+extern std::string webdar_tools_get_title(const std::string & sessname, const std::string & status);
 
 #endif

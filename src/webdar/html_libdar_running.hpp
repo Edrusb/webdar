@@ -33,7 +33,7 @@ public:
     void clear();
 
 	/// be informed of the end of libdar thread
-    void libdar_has_finished() { set_mode(finished); set_title("Webdar - Libdar has ended"); };
+    void libdar_has_finished() { set_mode(finished); set_title(webdar_tools_get_title(sessname, "Webdar - Libdar has ended")); };
 
 	/// provide objects for libdar execution
     web_user_interaction & get_user_interaction() { return web_ui.get_user_interaction(); };
@@ -46,6 +46,9 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name);
 
+	/// defines the name of the session
+    void set_session_name(const std::string & name) { sessname = name; };
+
 private:
     enum mode_type
     {
@@ -56,6 +59,7 @@ private:
 	finished       //< should display web_user_interface, progressive_report, close button
     };
 
+    std::string sessname;
     mode_type mode;
     html_div global;
     html_web_user_interaction web_ui;

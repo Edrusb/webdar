@@ -28,6 +28,9 @@ public:
 	/// inherited from actor class
     virtual void on_event(const std::string & event_name);
 
+	/// defines the name of the session
+    void set_session_name(const std::string & sessname);
+
 private:
     html_div global;
     html_text the_error;

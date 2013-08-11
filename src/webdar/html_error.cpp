@@ -17,9 +17,11 @@ using namespace std;
 
 const string html_error::acknowledged = "html_error_acknowledged";
 const string html_error::close_event = "html_error_button_close";
+const string fixed_title1 = "Webdar - ";
+const string fixed_title2 = "Libdar message";
 
 html_error::html_error():
-    html_page("Error Page"),
+    html_page(fixed_title1+fixed_title2),
     close("Close", close_event)
 {
     the_error.css_color("#FF0000");
@@ -53,4 +55,9 @@ void html_error::set_message(const std::string & msg)
 void html_error::on_event(const std::string & event_name)
 {
     act(acknowledged);
+}
+
+void html_error::set_session_name(const std::string & sessname)
+{
+    set_title(fixed_title1 + sessname + " - " + fixed_title2);
 }

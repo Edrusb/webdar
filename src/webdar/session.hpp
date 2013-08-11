@@ -49,7 +49,8 @@ public:
     struct session_summary
     {
 	std::string owner;        //< owner of the session
-	std::string session_ID;   //< session ID
+	std::string session_ID;   //< session ID: internal unique identifier for that session
+	std::string session_name; //< name given to that session by the user
 	bool locked;              //< whether the session is locked by a thread
 	bool libdar_running;      //< whether a libdar job is running
 	bool closing;             //< whether the session is pending for closure

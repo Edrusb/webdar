@@ -23,8 +23,15 @@ const string saisie::event_list    = "saisie_list";
 const string saisie::event_create  = "saisie_create";
 const string saisie::event_isolate = "saisie_isolate";
 const string saisie::event_merge   = "saisie_merge";
+const string saisie::changed_session_name = "saisie_changed_session_name";
 
 saisie::saisie():
+    session_name("Session name",
+		 html_form_input::text,
+		 "",
+		 20),
+    about_fs(""),
+    about_form("Change"),
     show_archive_form_options("Update"),
     show_archive_fs_options("Options details"),
     archread("Source archive"),
@@ -105,6 +112,9 @@ saisie::saisie():
     text.add_paragraph();
     text.add_text(0, "by Denis CORBIN");
     div_about.adopt_static_html(text.get_body_part());
+    about_fs.adopt(&session_name);
+    about_form.adopt(&about_fs);
+    div_about.adopt(&about_form);
     select.adopt(&div_about);
 
 	// separator
@@ -202,6 +212,11 @@ saisie::saisie():
     go_create.record_actor_on_event(this, event_create);
     go_isolate.record_actor_on_event(this, event_isolate);
     go_merge.record_actor_on_event(this, event_merge);
+
+    session_name.set_change_event_name(changed_session_name); // using the same event name as the we we will trigger upon session name change
+    session_name.record_actor_on_event(this, changed_session_name);
+
+	// other event to register
     register_name(event_restore);
     register_name(event_compare);
     register_name(event_test);
@@ -209,6 +224,7 @@ saisie::saisie():
     register_name(event_create);
     register_name(event_isolate);
     register_name(event_merge);
+    register_name(changed_session_name);
 }
 
 string saisie::get_body_part(const chemin & path,
@@ -230,7 +246,7 @@ string saisie::get_body_part(const chemin & path,
 	if(close.get_value())
 	{
 	    act(event_closing);
-	    set_title("Session closed");
+	    set_title(webdar_tools_get_title(get_session_name(), "Session closed"));
 	    set_refresh_redirection(0, "/");
 	    ret = html_page::get_body_part(path, req);
 	}
@@ -238,7 +254,7 @@ string saisie::get_body_part(const chemin & path,
     else
 	if(choice.get_current_label() == "sess")
 	{
-	    set_title("Redirection to all user sessions");
+	    set_title(webdar_tools_get_title(get_session_name(), "Redirection to all user sessions"));
 	    set_refresh_redirection(0, "/");
 	    ret = html_page::get_body_part(path, req);
 	    choice.set_current_mode(choice.get_previous_mode());
@@ -255,7 +271,7 @@ void saisie::on_event(const std::string & event_name)
     {
 	// menu "choice" changed
 
-	set_title(string("Webdar - ") + choice.get_current_label());
+	set_title(webdar_tools_get_title(get_session_name(), choice.get_current_label()));
 	if(choice.get_current_label() == "restore"
 	   || choice.get_current_label() == "compare"
 	   || choice.get_current_label() == "test"
@@ -305,6 +321,12 @@ void saisie::on_event(const std::string & event_name)
 	else
 	    throw WEBDAR_BUG;
 	act(event_name); // propagate the event to the subscribers
+    }
+    else if(event_name == changed_session_name)
+    {
+	set_title(webdar_tools_get_title(get_session_name(), choice.get_current_label()));
+	act(changed_session_name);
+	// propagating the event
     }
     else
 	throw WEBDAR_BUG;

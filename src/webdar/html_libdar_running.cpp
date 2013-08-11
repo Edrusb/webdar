@@ -26,6 +26,8 @@ html_libdar_running::html_libdar_running():
     kill_close("Kill libdar thread", kill_libdar_thread),
     finish("Close", close_libdar_screen)
 {
+    sessname = "";
+
     global.css_margin("1em");
     global.css_padding("1em");
     global.css_border_style(css::bd_all, css::bd_inset);
@@ -142,35 +144,35 @@ void html_libdar_running::set_mode(mode_type m)
 	force_close.set_visible(false);
 	kill_close.set_visible(false);
 	finish.set_visible(false);
-	set_title("Webdar - Libdar is running");
+	set_title(webdar_tools_get_title(sessname, "Libdar is running"));
 	break;
     case end_asked:
 	ask_close.set_visible(false);
 	force_close.set_visible(true);
 	kill_close.set_visible(false);
 	finish.set_visible(false);
-	set_title("Webdar - Libdar is gracefully ending");
+	set_title(webdar_tools_get_title(sessname, "Libdar is gracefully ending"));
 	break;
     case end_forced:
 	ask_close.set_visible(false);
 	force_close.set_visible(false);
 	kill_close.set_visible(true);
 	finish.set_visible(false);
-	set_title("Webdar - Libdar is immediately ending");
+	set_title(webdar_tools_get_title(sessname, "Libdar is immediately ending"));
 	break;
     case kill_forced:
 	ask_close.set_visible(false);
 	force_close.set_visible(false);
 	kill_close.set_visible(false);
 	finish.set_visible(false);
-	set_title("Webdar - Libdar thread is being killed");
+	set_title(webdar_tools_get_title(sessname, "Libdar thread is being killed"));
 	break;
     case finished:
 	ask_close.set_visible(false);
 	force_close.set_visible(false);
 	kill_close.set_visible(false);
 	finish.set_visible(true);
-	set_title("Webdar - Libdar has finished");
+	set_title(webdar_tools_get_title(sessname, "Libdar has finished"));
 	break;
     default:
 	throw WEBDAR_BUG;

@@ -20,6 +20,7 @@ const string user_interface::closing = "user_interface_closing";
 
 user_interface::user_interface()
 {
+    sessname = "";
     mode = config;
     mode_changed = false;
     close_requested = false;
@@ -33,6 +34,7 @@ user_interface::user_interface()
     parametrage.record_actor_on_event(this, saisie::event_create);
     parametrage.record_actor_on_event(this, saisie::event_isolate);
     parametrage.record_actor_on_event(this, saisie::event_merge);
+    parametrage.record_actor_on_event(this, saisie::changed_session_name);
 
 	/// messages received from html_libdar_running object named in_action
     in_action.record_actor_on_event(this, html_libdar_running::ask_end_libdar);
@@ -316,16 +318,78 @@ void user_interface::on_event(const std::string & event_name)
 	    mode = config;
 	mode_changed = true;
     }
+    else if(event_name == saisie::changed_session_name)
+	set_session_name(parametrage.get_session_name());
     else
 	throw WEBDAR_BUG; // what's that event !?!
 }
 
+string user_interface::get_session_name() const
+{
+    string ret;
+    user_interface *me = const_cast<user_interface *>(this);
+
+    me->mut_sessname.lock();
+    try
+    {
+	ret = sessname;
+    }
+    catch(...)
+    {
+	me->mut_sessname.unlock();
+	throw;
+    }
+    me->mut_sessname.unlock();
+
+    return ret;
+};
+
+
+void user_interface::set_session_name(const std::string & name)
+{
+    mut_sessname.lock();
+    try
+    {
+	sessname = name;
+    }
+    catch(...)
+    {
+	mut_sessname.unlock();
+	throw;
+    }
+    mut_sessname.unlock();
+
+	// no need to be protected by mutex for
+	// the following operation as they only
+	// concern private fields for that object
+	// that are not visible by any other thread
+    in_action.set_session_name(name);
+    in_error.set_session_name(name);
+	// note, parametrage is already set with the new session name
+	// the session name is filled by the user using the saisie class (parametrage)
+	// which update itslef and triggers the event "saisie::changed_session_name"
+	// for which the session object is registered and call this method to update
+	// other components
+}
 
 void user_interface::prefix_has_changed()
 {
     parametrage.set_prefix(get_prefix());
     in_action.set_prefix(get_prefix());
     in_error.set_prefix(get_prefix());
+
+	// by the way the prefix is also the session ID used as initial session name
+    if(parametrage.get_session_name() == "")
+    {
+	    // so if the session name has not been set
+	    // we set it to the prefix
+	parametrage.set_session_name(get_prefix().display(true));
+	    // this has the effect to put the default
+	    // value in the html_form_input field
+	    // but does not modify the title of pages for
+	    // the session.
+    }
+
 }
 
 void user_interface::go_restore()
@@ -546,3 +610,4 @@ void user_interface::go_merge()
     current_thread = & arch_merge;
     libdar_running = true;
 }
+

@@ -216,3 +216,14 @@ unsigned int webdar_tools_convert_hexa_to_int(const std::string & ref)
 
     return ret;
 }
+
+string webdar_tools_get_title(const std::string & sessname, const string & status)
+{
+    string ret = "Webdar - ";
+    if(sessname == "")
+	ret += status;
+    else
+	ret += sessname + " - " + status;
+
+    return ret;
+}

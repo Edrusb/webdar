@@ -18,7 +18,7 @@ extern "C"
 using namespace std;
 
 html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
-    h_inter("User interaction requested from libdar"),
+    h_inter(""),
     h_get_string("", html_form_input::text, "", 20),
     h_form("Update"),
     h_logs("Last logs"),

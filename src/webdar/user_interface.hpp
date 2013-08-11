@@ -24,6 +24,7 @@ extern "C"
 #include "archive_create.hpp"
 #include "archive_isolate.hpp"
 #include "archive_merge.hpp"
+#include "mutex.hpp"
 
 class user_interface : public responder, public events, public actor
 {
@@ -43,6 +44,13 @@ public:
 	/// tells whether libdar is running
     bool is_libdar_running() const { return libdar_running; };
 
+	/// provide the name of the session (given by the user);
+    std::string get_session_name() const;
+
+	/// set the session name (customizable by user)
+    void set_session_name(const std::string & name);
+
+
 protected:
 
 	/// inherited from responder
@@ -56,6 +64,9 @@ private:
 	running,       //< should display web_user_interface, progressive_report and cancellation button
 	error,         //< should display the error
     };
+
+    std::string sessname;  //< customized name of that session (empty string by default)
+    mutex mut_sessname;    //< drives the access to sessname, by set and get session name methods
     mode_type mode;        //< current mode
     mode_type return_mode; //< mode in which to return from error status
     bool close_requested;  //< whether session close has been asked

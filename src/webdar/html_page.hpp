@@ -24,6 +24,9 @@ public:
 	/// change page title
     void set_title(const std::string & title) { x_title = title; };
 
+	/// get current title
+    const std::string & set_title() const { return x_title; };
+
 	/// activate HTML redirection
 	///
 	/// \note if url is set to an empty string redirection is disabled

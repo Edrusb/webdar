@@ -41,6 +41,9 @@ public:
     virtual std::string get_body_part(const chemin & path,
 				      const request & req);
 
+	/// change the name of the event generated when this control changes
+    void set_change_event_name(const std::string & name);
+
 private:
     bool enabled;        //< whether the control is enabled or disabled
     std::string x_label; //< field text shown to the user
@@ -49,6 +52,8 @@ private:
     std::string x_size;  //< width of the field in number of characterds
     std::string x_min;   //< minimum value of the field (for type = number)
     std::string x_max;   //< maximum value of the field (for type = number)
+
+    std::string modif_change; //< name of the event "changed" to use, if set to an empty string default behavior is used
 
     static std::string string_for_type(input_type type);
 };

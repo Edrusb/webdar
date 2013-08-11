@@ -51,6 +51,7 @@ public:
     static const std::string event_create;
     static const std::string event_isolate;
     static const std::string event_merge;
+    static const std::string changed_session_name;
 
 	/// constructor
     saisie();
@@ -97,6 +98,14 @@ public:
     const html_options_merge & get_merging_options() const;
     const html_archive_read & get_merging_reference() const { return merge.get_reference(); };
 
+	/// defines the name of the session
+	///
+	/// \note this call does not trigger any event
+    void set_session_name(const std::string & name) { session_name.set_value(name); };
+
+	/// get the current session name
+    std::string get_session_name() const { return session_name.get_value(); };
+
 private:
     enum
     {
@@ -109,6 +118,7 @@ private:
 	st_isolate, //< user clicked on the isolate button
 	st_merge    //< user clicked on the merge button
     } status;       //< status is used to determine which field to user to provide information toward libdar
+
     html_menu choice;      ///< left main menu
     html_div right_pan;    ///< holds all that is beside main menu
 
@@ -124,6 +134,9 @@ private:
 
 	// the different sub pages contained by "select" and shown depending on choice's value
     html_div div_about;
+    html_form_input session_name;
+    html_form_fieldset about_fs;
+    html_form about_form;
 	//
     html_div div_sep0;
 	//
@@ -172,7 +185,6 @@ private:
     html_div div_sep2;
 	//
     html_yes_no_box close;
-
 };
 
 #endif

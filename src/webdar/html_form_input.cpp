@@ -29,6 +29,7 @@ html_form_input::html_form_input(const std::string & label,
     x_init = initial_value;
     x_size = webdar_tools_convert_to_string(size);
     x_min = x_max = "";
+    modif_change = "";
     enabled = true;
 
     register_name(changed);
@@ -49,7 +50,7 @@ string html_form_input::get_body_part(const chemin & path,
 	// first we extract informations from the returned form in
 	// the body of the request
 
-    if(req.get_method() == "POST" && path.empty() && get_visible())
+    if(req.get_method() == "POST" && path.empty() && get_visible() && enabled)
     {
 	string old = x_init;
 
@@ -64,7 +65,14 @@ string html_form_input::get_body_part(const chemin & path,
 	}
 
 	if(x_init != old)
+	{
 	    act(changed);
+	    if(modif_change != "")
+		act(modif_change);
+		// yes we have to trigger both events,
+		// the default, on which some objects might
+		// have registered and the modifed one too.
+	}
     }
 
 	// we can now return the up to date value of
@@ -100,6 +108,14 @@ string html_form_input::get_body_part(const chemin & path,
     ack_visible();
 
     return ret;
+}
+
+void html_form_input::set_change_event_name(const std::string & name)
+{
+    if(modif_change != "")
+	throw WEBDAR_BUG; // can only be used once, as unregistering an event name is not available
+    modif_change = name;
+    register_name(modif_change); // this is in addition to the default event name
 }
 
 string html_form_input::string_for_type(input_type type)
