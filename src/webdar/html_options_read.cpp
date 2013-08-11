@@ -19,7 +19,7 @@ using namespace std;
 html_options_read::html_options_read():
     form_src("Update Options"),
     fs_src("Archive Options"),
-    fs_ref("Auxilliary Archive Options"),
+    fs_ref("External catalog Options"),
     src_crypto_algo("Cipher"),
     src_crypto_pass("Passphrase", html_form_input::password, "", 30),
     src_crypto_size("Cipher block size", html_form_input::number, "0", 8),
@@ -28,7 +28,7 @@ html_options_read::html_options_read():
     info_details("Detailed information", html_form_input::check, "", 1),
     lax("Laxist check mode", html_form_input::check, "", 1),
     sequential_read("Sequential read", html_form_input::check, "", 1),
-    src_use_external_catalogue("Use auxilliary archive", html_form_input::check, "", 1),
+    src_use_external_catalogue("Use external catalog to open the archive", html_form_input::check, "", 1),
     form_ref("Update Options"),
     ref_path("Path", html_form_input::text, "", 30),
     ref_basename("Archive basename", html_form_input::text, "", 30),
@@ -54,12 +54,12 @@ html_options_read::html_options_read():
     {
 	ref_path.set_value(defaults.get_ref_path().display());
 	ref_basename.set_value(defaults.get_ref_basename());
-	ref_crypto_algo.set_value(defaults.get_ref_crypto_algo());
-	ref_crypto_pass.set_value("");
-	ref_crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_ref_crypto_size()));
-	ref_execute.set_value(defaults.get_ref_execute());
-	ref_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_ref_slice_min_digits()));
     }
+    ref_crypto_algo.set_value(defaults.get_ref_crypto_algo());
+    ref_crypto_pass.set_value("");
+    ref_crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_ref_crypto_size()));
+    ref_execute.set_value(defaults.get_ref_execute());
+    ref_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_ref_slice_min_digits()));
 
 	// constructing the view
     fs_src.adopt(&src_crypto_algo);

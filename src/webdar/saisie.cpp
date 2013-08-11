@@ -150,7 +150,7 @@ saisie::saisie():
     select.adopt(&div_isolate);
 
 	// merging sub-page
-    div_merge.adopt_static_html(text.get_body_part());
+    div_merge.adopt(&merge);
     div_merge.adopt(&go_merge);
     select.adopt(&div_merge);
 
@@ -259,8 +259,7 @@ void saisie::on_event(const std::string & event_name)
 	if(choice.get_current_label() == "restore"
 	   || choice.get_current_label() == "compare"
 	   || choice.get_current_label() == "test"
-	   || choice.get_current_label() == "list"
-	   || choice.get_current_label() == "merge")
+	   || choice.get_current_label() == "list")
 	    archive_show.set_visible(true);
 	else
 	    archive_show.set_visible(false);
@@ -330,7 +329,7 @@ const string & saisie::get_archive_path() const
 	return create.get_archive_path();
 	break;
     case st_merge:
-	throw exception_feature("merging operation");
+	return merge.get_archive_path();
     default:
 	throw WEBDAR_BUG;
     }
@@ -352,7 +351,7 @@ const string & saisie::get_archive_basename() const
     case st_create:
 	return create.get_archive_basename();
     case st_merge:
-	throw exception_feature("merging operation");
+	return merge.get_archive_basename();
     default:
 	throw WEBDAR_BUG;
     }
@@ -440,4 +439,12 @@ const libdar::archive_options_isolate saisie::get_isolating_options() const
 	throw WEBDAR_BUG;
 
     return isolate.get_options_isolate().get_options();
+}
+
+const html_options_merge & saisie::get_merging_options() const
+{
+    if(status != st_merge)
+	throw WEBDAR_BUG;
+
+    return merge.get_options_merge();
 }

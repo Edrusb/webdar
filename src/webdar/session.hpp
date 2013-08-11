@@ -18,6 +18,7 @@ extern "C"
 #include "archive_compare.hpp"
 #include "archive_create.hpp"
 #include "archive_isolate.hpp"
+#include "archive_merge.hpp"
 
     /// class session - holds information about a current user session
 
@@ -88,6 +89,7 @@ private:
     archive_compare arch_diff;//< holds thread created for comparing archives
     archive_create arch_create; //< holds thread created for archive creation
     archive_isolate arch_isolate; //< holds thread created for archive isolation
+    archive_merge arch_merge; //< holds thread created for archive merging
 
 
     void check_caller() const; //< test whether the caller has properly acquired the lock on this object

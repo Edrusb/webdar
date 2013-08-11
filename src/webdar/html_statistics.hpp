@@ -41,7 +41,7 @@ public:
     void set_total_label(const std::string & label) { total_lbl.clear(); total_lbl.add_text(0, label); unbuild(); };
 
 	/// the address of the object to be updated by libdar
-    libdar::statistics *get_libdar_statistics() { return &stats; };
+    libdar::statistics *get_libdar_statistics() { return & stats; };
 
 	/// inherited from body_builder class
 	///

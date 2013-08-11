@@ -25,6 +25,7 @@ extern "C"
 #include "html_archive_read.hpp"
 #include "html_archive_create.hpp"
 #include "html_archive_isolate.hpp"
+#include "html_archive_merge.hpp"
 #include "html_button.hpp"
 #include "html_url_class.hpp"
 
@@ -92,8 +93,9 @@ public:
     const libdar::archive_options_isolate get_isolating_options() const;
     const html_archive_read & get_isolating_reference() const { return isolate.get_reference(); };
 
-	// merge options
-	/* A IMPLEMENTER */
+	// merge options --- WARNING! here too the returned object is not a libda object
+    const html_options_merge & get_merging_options() const;
+    const html_archive_read & get_merging_reference() const { return merge.get_reference(); };
 
 private:
     enum
@@ -156,6 +158,7 @@ private:
     html_button go_isolate;
 	//
     html_div div_merge;
+    html_archive_merge merge;
     html_button go_merge;
 	//
     html_div div_sep1;

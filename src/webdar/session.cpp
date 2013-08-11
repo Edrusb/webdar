@@ -180,8 +180,8 @@ void session::on_event(const std::string & event_name)
 	wui.get_statistics().set_errored_label("item(s) failed to restore (filesystem error)");
 	wui.get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
 	wui.get_statistics().set_hard_links_label("hard link(s) restored");
-	wui.get_statistics().set_ea_treated_label("inode(s) having their EA restored");
-	wui.get_statistics().set_total_label("inode(s) considered");
+	wui.get_statistics().set_ea_treated_label("item(s) having their EA restored");
+	wui.get_statistics().set_total_label("item(s) considered");
 
 	    // launching libdar in a separated thread
 	arch_rest.run();
@@ -276,8 +276,16 @@ void session::on_event(const std::string & event_name)
 	wui.get_statistics().clear_counters();
 	wui.get_statistics().clear_labels();
 	wui.get_statistics().set_treated_label("item(s) treated");
-	wui.get_statistics().set_skipped_label("item(s) excluded by filters");
-	wui.get_statistics().set_errored_label("items(s) with error");
+	wui.get_statistics().set_hard_links_label("hard link(s) treated");
+	wui.get_statistics().set_tooold_label("item(s) modified while read for backup (dirty files)");
+	wui.get_statistics().set_byte_amount_label("byte(s) wasted due to changing files at the time they were read");
+	wui.get_statistics().set_skipped_label("item(s) not saved (no inode/file change)");
+	wui.get_statistics().set_errored_label("items(s) with error (filesystem error)");
+	wui.get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
+	wui.get_statistics().set_deleted_label("item(s) recorded as deleted");
+	wui.get_statistics().set_ea_treated_label("item(s) with Extended Attributes");
+
+
 
 	    // launching libdar in a separated thread
 	arch_create.run();
@@ -291,8 +299,8 @@ void session::on_event(const std::string & event_name)
 	if(current_thread != NULL)
 	    throw WEBDAR_BUG;
 
-
 	    // providing libdar::parameters
+
 	arch_isolate.set_user_interaction(wui.get_user_interaction());
 	arch_isolate.set_archive_path(wui.get_parametrage().get_archive_path());
 	arch_isolate.set_archive_basename(wui.get_parametrage().get_archive_basename());
@@ -321,8 +329,43 @@ void session::on_event(const std::string & event_name)
 	if(current_thread != NULL)
 	    throw WEBDAR_BUG;
 
+	arch_merge.set_user_interaction(wui.get_user_interaction());
+	arch_merge.set_archive_path(wui.get_parametrage().get_archive_path());
+	arch_merge.set_archive_basename(wui.get_parametrage().get_archive_basename());
+	arch_merge.set_archive_extension(EXTENSION);
+	arch_merge.set_archive_options_merge(wui.get_parametrage().get_merging_options().get_options());
+	arch_merge.set_archive_reference(
+	    wui.get_parametrage().get_merging_reference().get_archive_path(),
+	    wui.get_parametrage().get_merging_reference().get_archive_basename(),
+	    EXTENSION,
+	    wui.get_parametrage().get_merging_reference().get_read_options());
+	if(wui.get_parametrage().get_merging_options().has_auxilliary())
+	{
+	    arch_merge.set_archive_options_auxilliary(
+		wui.get_parametrage().get_merging_options().get_auxilliary().get_archive_path(),
+		wui.get_parametrage().get_merging_options().get_auxilliary().get_archive_basename(),
+		EXTENSION,
+		wui.get_parametrage().get_merging_options().get_auxilliary().get_read_options());
+	}
+	else
+	    arch_merge.clear_archive_options_auxilliary();
 
+	arch_merge.set_progressive_report(wui.get_statistics().get_libdar_statistics());
 
+	    // resetting counters and logs
+	wui.get_user_interaction().clear();
+	wui.get_statistics().clear_counters();
+	wui.get_statistics().clear_labels();
+	wui.get_statistics().set_treated_label("item(s) treated");
+	wui.get_statistics().set_hard_links_label("hard link(s) treated");
+	wui.get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
+	wui.get_statistics().set_deleted_label("item(s) recorded as deleted");
+	wui.get_statistics().set_ea_treated_label("item(s) with Extended Attributes");
+	wui.get_statistics().set_total_label("item(s) considered");
+
+	arch_merge.run();
+	current_thread = & arch_merge;
+	libdar_running = true;
     }
     else
 	throw WEBDAR_BUG; // what's that event !?!
