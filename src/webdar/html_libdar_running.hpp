@@ -33,7 +33,7 @@ public:
     void clear();
 
 	/// be informed of the end of libdar thread
-    void libdar_has_finished() { set_mode(finished); set_title("Webdar - Libdhas ended"); };
+    void libdar_has_finished() { set_mode(finished); set_title("Webdar - Libdar has ended"); };
 
 	/// provide objects for libdar execution
     web_user_interaction & get_user_interaction() { return web_ui.get_user_interaction(); };
