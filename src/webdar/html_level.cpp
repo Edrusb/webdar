@@ -52,6 +52,16 @@ void html_level::has_been_adopted(body_builder *obj)
     reset_read_next();
 }
 
+void html_level::has_been_foresaken(body_builder *obj)
+{
+    list<bundle>::iterator it = table.begin();
+    while(it != table.end() && it->obj != obj)
+	++it;
+
+    if(it != table.end())
+	table.erase(it);
+}
+
 bool html_level::read_next(bundle & bdl)
 {
     if(nxt != table.end())

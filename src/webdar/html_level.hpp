@@ -9,7 +9,7 @@ extern "C"
 
     // C++ system header files
 #include <string>
-#include <vector>
+#include <list>
 
     // webdar headers
 #include "body_builder.hpp"
@@ -31,12 +31,15 @@ public:
 	/// used in concurrency with body_builder::adopt()
     void adopt_static_html(const std::string & html);
 
-	/// clear all data
+	/// clear all adopted data
     void clear();
 
 protected:
 	/// inherited from body_builder
     virtual void has_been_adopted(body_builder *obj);
+
+	/// inherited from body_builder
+    virtual void has_been_foresaken(body_builder *obj);
 
     struct bundle
     {
@@ -55,8 +58,8 @@ protected:
 						       const request & req);
 
 private:
-    std::vector<bundle>::iterator nxt;
-    std::vector<bundle> table;
+    std::list<bundle>::iterator nxt;
+    std::list<bundle> table;
 };
 
 #endif
