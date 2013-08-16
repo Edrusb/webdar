@@ -16,7 +16,7 @@ all: webdar
 clean:
 	rm -f *.o webdar
 
-webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o html_options_listing.o html_menu.o  html_aiguille.o saisie.o user_interface.o events.o reference.o html_url_class.o html_yes_no_box.o html_options_extract.o html_options_read.o html_crypto_algo.o html_comparison_fields.o html_options_compare.o html_options_test.o html_archive_read.o html_compression.o html_size_unit.o html_hash_algo.o html_datetime.o html_options_create.o html_archive_create.o web_user_interaction.o html_web_user_interaction.o html_button.o html_statistics.o archive_test.o webdar_css_style.o html_error.o html_libdar_running.o archive_restore.o archive_compare.o archive_create.o html_options_isolate.o archive_isolate.o html_archive_isolate.o html_options_merge.o html_archive_merge.o archive_merge.o $(LIBDAR_OBJ)
+webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o html_menu.o  html_aiguille.o saisie.o user_interface.o events.o reference.o html_url_class.o html_yes_no_box.o html_options_extract.o html_options_read.o html_crypto_algo.o html_comparison_fields.o html_options_compare.o html_options_test.o html_archive_read.o html_compression.o html_size_unit.o html_hash_algo.o html_datetime.o html_options_create.o html_archive_create.o web_user_interaction.o html_web_user_interaction.o html_button.o html_statistics.o archive_test.o webdar_css_style.o html_error.o html_libdar_running.o archive_restore.o archive_compare.o archive_create.o html_options_isolate.o archive_isolate.o html_archive_isolate.o html_options_merge.o html_archive_merge.o archive_merge.o archive_init_list.o html_dir_tree.o html_listing_page.o $(LIBDAR_OBJ)
 
 
 webdar.o : webdar.cpp exceptions.hpp central_report.hpp listener.hpp webdar_tools.hpp server.hpp authentication.hpp
@@ -55,11 +55,10 @@ error_page.o : error_page.cpp error_page.hpp
 chemin.o : chemin.cpp chemin.hpp exceptions.hpp
 html_level.o : html_level.cpp html_level.hpp body_builder.hpp
 html_div.o : html_div.cpp html_div.hpp html_level.hpp
-html_options_listing.o : html_options_listing.cpp html_options_listing.hpp body_builder.hpp html_form.hpp html_form_input.hpp exceptions.hpp
 html_menu.o : html_menu.cpp html_menu.hpp body_builder.hpp html_div.hpp html_url.hpp html_text.hpp tokens.hpp exceptions.hpp
 html_url_class.o : html_url_class.cpp html_url_class.hpp body_builder.hpp
 html_aiguille.o : html_aiguille.cpp html_aiguille.hpp body_builder.hpp
-saisie.o : saisie.cpp saisie.hpp html_url.hpp html_div.hpp html_options_listing.hpp html_aiguille.hpp html_menu.hpp
+saisie.o : saisie.cpp saisie.hpp html_url.hpp html_div.hpp html_aiguille.hpp html_menu.hpp
 user_interface.o : user_interface.cpp user_interface.hpp saisie.hpp responder.hpp
 events.o : events.cpp events.hpp exceptions.hpp
 reference.o : reference.cpp reference.hpp exceptions.hpp
@@ -93,3 +92,6 @@ archive_isolate.o : archive_isolate.cpp archive_isolate.hpp thread.hpp html_opti
 html_archive_isolate.o : html_archive_isolate.cpp html_archive_isolate.hpp html_form_input.hpp html_options_isolate.hpp events.hpp html_archive_read.hpp
 html_options_merge.o : html_options_merge.cpp html_options_merge.hpp html_archive_read.hpp html_crypto_algo.hpp html_hash_algo.hpp html_size_unit.hpp html_compression.hpp html_form_input.hpp html_form_fieldset.hpp html_form.hpp body_builder.hpp
 html_archive_merge.o : html_archive_merge.cpp html_archive_merge.hpp html_form_input.hpp html_form_fieldset.hpp html_options_merge.hpp body_builder.hpp events.hpp
+archive_init_list.o : archive_init_list.cpp archive_init_list.hpp thread.hpp web_user_interaction.hpp
+html_dir_tree.o : html_dir_tree.cpp html_dir_tree.hpp html_div.hpp events.hpp chemin.hpp archive_init_list.hpp html_button.hpp
+html_listing_page.o : html_listing_page.cpp html_listing_page.hpp html_dir_tree.hpp html_button.hpp html_page.hpp html_div.hpp archive_init_list.hpp

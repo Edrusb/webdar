@@ -45,6 +45,9 @@ user_interface::user_interface()
 	/// messages received from html_error object named in_error;
     in_error.record_actor_on_event(this, html_error::acknowledged);
 
+	/// messages received from html_listring_page object named in_list
+    in_list.record_actor_on_event(this, html_listing_page::event_close);
+
     libdar_running = false;
     current_thread = NULL;
 
@@ -84,7 +87,9 @@ answer user_interface::give_answer(const request & req)
 		ret.add_body(parametrage.get_body_part(req.get_uri().get_path(), req));
 		break;
 	    case listing:
-		throw exception_feature("libdar listing mode reached in user_interface");
+		ret.add_body(in_list.get_body_part(req.get_uri().get_path(), req));
+		break;
+	    case listing_open:
 	    case running:
 		if(libdar_running)
 		{
@@ -93,7 +98,14 @@ answer user_interface::give_answer(const request & req)
 		    if(!current_thread->is_running())
 		    {
 			libdar_running = false;
-			in_action.libdar_has_finished();
+			if(mode == running)
+			    in_action.libdar_has_finished();
+			else
+			{
+			    mode = listing;
+			    mode_changed = true;
+			}
+
 			try
 			{
 			    current_thread->join(); // may throw re-exception that were generated in this dead thread
@@ -110,6 +122,9 @@ answer user_interface::give_answer(const request & req)
 			    throw;
 			}
 			current_thread = NULL;
+
+			if(mode == listing)
+			    in_list.set_source(&arch_init_list);
 		    }
 		}
 		ret.add_body(in_action.get_body_part(req.get_uri().get_path(), req));
@@ -149,6 +164,7 @@ void user_interface::on_event(const std::string & event_name)
 	case config:
 	    act(closing); // transmetting the event
 	    break;
+	case listing_open:
 	case listing:
 	    throw WEBDAR_BUG;
 	case running:
@@ -167,6 +183,7 @@ void user_interface::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	case listing:
 	    throw WEBDAR_BUG;
+	case listing_open:
 	case running:
 	case error:
 	    if(libdar_running)
@@ -196,6 +213,7 @@ void user_interface::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	case listing:
 	    throw WEBDAR_BUG;
+	case listing_open:
 	case running:
 	case error:
 	    if(libdar_running)
@@ -225,6 +243,7 @@ void user_interface::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	case listing:
 	    throw WEBDAR_BUG;
+	case listing_open:
 	case running:
 	case error:
 	    if(libdar_running)
@@ -252,6 +271,7 @@ void user_interface::on_event(const std::string & event_name)
 	{
 	case config:
 	    throw WEBDAR_BUG;
+	case listing_open:
 	case listing:
 	    throw WEBDAR_BUG;
 	case running:
@@ -269,13 +289,17 @@ void user_interface::on_event(const std::string & event_name)
 	    || event_name == saisie::event_test
 	    || event_name == saisie::event_create
 	    || event_name == saisie::event_isolate
+	    || event_name == saisie::event_list
 	    || event_name == saisie::event_merge)
     {
 	if(mode != config)
 	    throw WEBDAR_BUG;
-	mode = running;
-	mode_changed = true;
+	if(event_name != saisie::event_list)
+	    mode = running;
+	else
+	    mode = listing_open;
 	in_action.clear();
+	mode_changed = true;
 
 	try
 	{
@@ -291,6 +315,8 @@ void user_interface::on_event(const std::string & event_name)
 		go_isolate();
 	    else if(event_name == saisie::event_merge)
 		go_merge();
+	    else if(event_name == saisie::event_list)
+		go_init_list();
 	    else
 		throw WEBDAR_BUG;
 	}
@@ -305,11 +331,6 @@ void user_interface::on_event(const std::string & event_name)
 	    throw;
 	}
     }
-    else if(event_name == saisie::event_list)
-    {
-	mode = listing;
-	mode_changed = true;
-    }
     else if(event_name == html_error::acknowledged)
     {
 	if(return_mode != listing)
@@ -320,6 +341,17 @@ void user_interface::on_event(const std::string & event_name)
     }
     else if(event_name == saisie::changed_session_name)
 	set_session_name(parametrage.get_session_name());
+    else if(event_name == html_listing_page::event_close)
+    {
+	if(mode != listing)
+	    throw WEBDAR_BUG;
+	if(!arch_init_list.opened())
+	    throw WEBDAR_BUG;
+	in_list.clear();
+	arch_init_list.close_archive();
+	mode = config;
+	mode_changed = true;
+    }
     else
 	throw WEBDAR_BUG; // what's that event !?!
 }
@@ -365,6 +397,7 @@ void user_interface::set_session_name(const std::string & name)
 	// that are not visible by any other thread
     in_action.set_session_name(name);
     in_error.set_session_name(name);
+    in_list.set_session_name(name);
 	// note, parametrage is already set with the new session name
 	// the session name is filled by the user using the saisie class (parametrage)
 	// which update itslef and triggers the event "saisie::changed_session_name"
@@ -377,6 +410,7 @@ void user_interface::prefix_has_changed()
     parametrage.set_prefix(get_prefix());
     in_action.set_prefix(get_prefix());
     in_error.set_prefix(get_prefix());
+    in_list.set_prefix(get_prefix());
 
 	// by the way the prefix is also the session ID used as initial session name
     if(parametrage.get_session_name() == "")
@@ -608,6 +642,28 @@ void user_interface::go_merge()
 
     arch_merge.run();
     current_thread = & arch_merge;
+    libdar_running = true;
+}
+
+void user_interface::go_init_list()
+{
+    if(libdar_running)
+	throw WEBDAR_BUG;
+    if(current_thread != NULL)
+	throw WEBDAR_BUG;
+
+    arch_init_list.set_user_interaction(get_user_interaction());
+    arch_init_list.set_archive_path(get_parametrage().get_archive_path());
+    arch_init_list.set_archive_basename(get_parametrage().get_archive_basename());
+    arch_init_list.set_archive_options_read(get_parametrage().get_read_options());
+
+	// resetting counters and logs
+    get_user_interaction().clear();
+    get_statistics().clear_counters();
+    get_statistics().clear_labels();
+
+    arch_init_list.run();
+    current_thread = & arch_init_list;
     libdar_running = true;
 }
 

@@ -15,7 +15,6 @@ extern "C"
 #include "html_menu.hpp"
 #include "html_aiguille.hpp"
 #include "html_div.hpp"
-#include "html_options_listing.hpp"
 #include "events.hpp"
 #include "html_yes_no_box.hpp"
 #include "html_options_extract.hpp"
@@ -83,9 +82,6 @@ public:
 
 	// testing options
     const libdar::archive_options_test get_testing_options() const;
-
-	// listing options
-    const libdar::archive_options_listing get_listing_options() const;
 
 	// create options --- WARNING! The returned object is not a libdar object but holds the information to create it completely
     const html_options_create & get_creating_options() const;
@@ -159,7 +155,6 @@ private:
     html_button go_test;
 	//
     html_div div_list;
-    html_options_listing list;
     html_button go_list;
 	//
     html_div div_create;

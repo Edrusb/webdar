@@ -10,6 +10,7 @@ extern "C"
     // webdar headers
 #include "exceptions.hpp"
 #include "webdar_css_style.hpp"
+#include "html_text.hpp"
     //
 #include "saisie.hpp"
 
@@ -142,10 +143,6 @@ saisie::saisie():
     select.adopt(&div_test);
 
 	// listing sub-page
-    text.clear();
-    text.add_text(1,"NOT YET IMPLEMENTED");
-    div_list.adopt_static_html(text.get_body_part());
-    div_list.adopt(&list);
     div_list.adopt(&go_list);
     select.adopt(&div_list);
 
@@ -168,6 +165,8 @@ saisie::saisie():
     select.adopt(&div_sep1);
 
 	// filter sub-page
+    text.clear();
+    text.add_text(1,"NOT YET IMPLEMENTED");
     div_filters.adopt_static_html(text.get_body_part());
     select.adopt(&div_filters);
 
@@ -286,14 +285,12 @@ void saisie::on_event(const std::string & event_name)
 	    extract.set_visible(true);
 	    compare.set_visible(true);
 	    test.set_visible(true);
-	    list.set_visible(true);
 	}
 	else
 	{
 	    extract.set_visible(false);
 	    compare.set_visible(false);
 	    test.set_visible(false);
-	    list.set_visible(false);
 	}
     }
     else if(event_name == event_restore
@@ -437,14 +434,6 @@ const libdar::archive_options_test saisie::get_testing_options() const
 	throw WEBDAR_BUG;
 
     return test.get_options();
-}
-
-const libdar::archive_options_listing saisie::get_listing_options() const
-{
-    if(status != st_list)
-	throw WEBDAR_BUG;
-
-    return list.get_options();
 }
 
 const html_options_create & saisie::get_creating_options() const

@@ -17,6 +17,7 @@ extern "C"
 #include "events.hpp"
 #include "html_libdar_running.hpp"
 #include "html_error.hpp"
+#include "html_listing_page.hpp"
 #include "thread.hpp"
 #include "archive_test.hpp"
 #include "archive_restore.hpp"
@@ -24,6 +25,7 @@ extern "C"
 #include "archive_create.hpp"
 #include "archive_isolate.hpp"
 #include "archive_merge.hpp"
+#include "archive_init_list.hpp"
 #include "mutex.hpp"
 
 class user_interface : public responder, public events, public actor
@@ -60,6 +62,7 @@ private:
     enum mode_type
     {
 	config,        //< should display parameter selection
+	listing_open,  //< should display the web_user_interface, progressive_report an cancellation button
 	listing,       //< should display listing navigation window
 	running,       //< should display web_user_interface, progressive_report and cancellation button
 	error,         //< should display the error
@@ -75,6 +78,7 @@ private:
     saisie parametrage;            //< page issued in mode == config
     html_libdar_running in_action; //< page issued when a libdar thread is running (mode == running)
     html_error in_error;           //< page issued when an exception has been caught (mode == error)
+    html_listing_page in_list;     //< page issued when proceeding to archive listing
 
     bool libdar_running;      //< whether a libdar child thread is running
     thread *current_thread;   //< points to the running thread (either arch_test, arch_merge, ....)
@@ -84,6 +88,7 @@ private:
     archive_create arch_create; //< holds thread created for archive creation
     archive_isolate arch_isolate; //< holds thread created for archive isolation
     archive_merge arch_merge; //< holds thread created for archive merging
+    archive_init_list arch_init_list; //< holds thread created to open an archive for listing
 
 	/// available parameters for libdar execution
     const saisie & get_parametrage() const { return parametrage; };
@@ -100,6 +105,7 @@ private:
     void go_create();
     void go_isolate();
     void go_merge();
+    void go_init_list();
 };
 
 #endif
