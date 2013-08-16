@@ -18,6 +18,9 @@ extern "C"
 class html_text : public body_builder, public static_body_builder
 {
 public:
+    html_text() { txt = ""; };
+    html_text(unsigned int level, const std::string & text) { add_text(level, text); };
+
 	/// adding text
 	///
 	/// \param[in] level 1 for <h1> etc. and zero for normal text
