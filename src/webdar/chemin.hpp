@@ -43,6 +43,9 @@ public:
 	/// concatenate a path to this object
     void operator += (const chemin & ref);
 
+	/// concatenate a path with us another
+    chemin operator + (const chemin & ref) const { chemin ret = *this; ret += ref; return ret; };
+
 	/// add a member at the end of the path
     void push_back(const std::string & x);
 
