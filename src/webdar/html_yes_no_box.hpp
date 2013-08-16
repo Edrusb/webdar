@@ -15,6 +15,7 @@ extern "C"
 #include "body_builder.hpp"
 #include "html_form.hpp"
 #include "html_form_radio.hpp"
+#include "html_form_fieldset.hpp"
 
 class html_yes_no_box : public body_builder
 {
