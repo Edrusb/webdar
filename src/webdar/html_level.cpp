@@ -95,3 +95,9 @@ string html_level::get_body_part_from_children_as_a_block(const chemin & path,
 
     return ret;
 }
+
+string html_level::get_body_part(const chemin & path,
+				 const request & req)
+{
+    return get_body_part_from_children_as_a_block(path, req);
+}

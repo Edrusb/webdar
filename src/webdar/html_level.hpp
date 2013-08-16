@@ -56,6 +56,9 @@ protected:
 	/// \note to be used when all children body_part are needed as a single block of text
     std::string get_body_part_from_children_as_a_block(const chemin & path,
 						       const request & req);
+	/// inherited from body_builder
+    virtual std::string get_body_part(const chemin & path,
+				      const request & req);
 
 private:
     std::list<bundle>::iterator nxt;
