@@ -27,11 +27,12 @@ html_listing_page::html_listing_page():
     set_session_name("");
 
 	// set css properties
-    tree.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
-    tree.css_border_width(css::bd_all, css::bd_medium);
-    tree.css_border_style(css::bd_all, css::bd_double);
     tree.css_float(css::fl_left);
-    tree.css_width("30%", false);
+
+    title.css_float(css::fl_right);
+    title.css_width("65%", false);
+    title.css_font_weight_bold();
+    title.css_text_align(css::al_center);
 
     webdar_style_normal_button(close);
     close.css_float(css::fl_right);
@@ -47,10 +48,11 @@ html_listing_page::html_listing_page():
     bt_class.set_style_hover(tmp);
 
 	// the body_builder tree
-
-    adopt(&bt_class);
     adopt(&tree);
+    adopt(&title);
+    adopt(&focus);
     adopt(&close);
+    adopt(&bt_class);
 
 	//
     tree.set_css_classid(bt_class.get_class_id());
@@ -58,6 +60,10 @@ html_listing_page::html_listing_page():
 	// event binding
     register_name(event_close);
     close.record_actor_on_event(this, event_close);
+
+	// linking tree with focus
+    tree.set_drop_content(&focus);
+    tree.set_drop_path(&title);
 }
 
 void html_listing_page::on_event(const std::string & event_name)

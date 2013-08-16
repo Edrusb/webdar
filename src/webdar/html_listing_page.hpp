@@ -17,6 +17,7 @@ extern "C"
 #include "html_div.hpp"
 #include "archive_init_list.hpp"
 #include "html_url_class.hpp"
+#include "html_focus.hpp"
 
 class html_listing_page : public html_page, public actor, public events
 {
@@ -29,7 +30,7 @@ public:
     void set_session_name(const std::string & session_name);
 
 	/// mandatory call before calling get_body_part !!!
-    void set_source(const archive_init_list *ref) { tree.set_source(ref); };
+    void set_source(const archive_init_list *ref) { tree.set_source(ref); tree.go_expand(); tree.go_show(); };
 
 	/// clear informations about previously read archive
     void clear() { tree.clear(); };
@@ -44,6 +45,8 @@ protected:
 
 private:
     html_dir_tree tree;
+    html_div title;
+    html_focus focus;
     html_button close;
     html_url_class bt_class;
 };
