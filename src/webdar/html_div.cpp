@@ -25,7 +25,9 @@ string html_div::get_body_part(const chemin & path,
     if(get_visible() || get_next_visible())
     {
 	ret += get_body_part_from_children_as_a_block(path, req);
-	ret += "</div>\n";
+	ret += "\n</div>\n";
+	if(!get_no_CR())
+	    ret += "<br />\n";
     }
     ack_visible();
     if(!get_visible())
