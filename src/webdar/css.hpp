@@ -28,6 +28,7 @@ public:
 		   bool inherit=false);
     void css_background_color(const std::string & col,
 			      bool inherit=false);
+    void css_background_color() { bg_col.clear(); }; // unset previously set value
 
 	// background image
 
@@ -36,40 +37,56 @@ public:
 			      bool repeat_y,
 			      bool fixed,
 			      bool inherit=false);
-    void set_css_background_position(const std::string & x,
+    void css_background_image() { bg_img.clear(); };
+
+    void css_background_position(const std::string & x,
 				     const std::string & y,
 				     bool inherit=false);
+    void css_background_position() { img_pos.clear(); };
 
 	// position in the window
 
     void css_margin(const std::string & all,
 		    bool inherit=false);
+    void css_margin() { css_margin_top(); css_margin_right(); css_margin_bottom(); css_margin_left(); };
     void css_margin_top(const std::string & top,
 			bool inherit=false);
+    void css_margin_top() { margin_top.clear(); };
     void css_margin_right(const std::string & right,
 			  bool inherit=false);
+    void css_margin_right() { margin_right.clear(); };
     void css_margin_bottom(const std::string & bottom,
 			   bool inherit=false);
+    void css_margin_bottom() { margin_bottom.clear(); };
     void css_margin_left(const std::string & left,
 			 bool inherit=false);
+    void css_margin_left() { margin_left.clear(); };
     void css_height(const std::string & val,
 		    bool center,
 		    bool inherit=false);
+    void css_height() { height.clear(); };
     void css_width(const std::string & val,
 		   bool center,
 		   bool inherit=false);
+    void css_width() { width.clear(); };
     void css_z_index(unsigned int index,
 		     bool inherit=false);
+    void css_z_index() { z_index.clear(); };
     void css_position_absolute(bool val=true,
 			       bool inherit=false);
+    void css_position_absolute() { position_absolute.clear(); };
     void css_position_top(const std::string & top,
 			  bool inherit=false);
+    void css_position_top() { position_top.clear(); };
     void css_position_left(const std::string & left,
 			   bool inherit=false);
+    void css_position_left() { position_left.clear(); };
     void css_position_bottom(const std::string & bottom,
 			     bool inherit=false);
+    void css_position_bottom() { position_bottom.clear(); };
     void css_position_right(const std::string & right,
 			    bool inherit=false);
+    void css_position_right() { position_right.clear(); };
 
 	// floating
 
@@ -83,20 +100,27 @@ public:
 		      fc_none };
 
     void css_float(floating val, bool inherit=false);
+    void css_float() { float_pos.clear(); };
     void css_float_clear(floatclear val, bool inherit=false);
+    void css_float_clear() { float_clear.clear(); };
 
 	// padding
 
     void css_padding(const std::string & val,
 		     bool inherit=false);
+    void css_padding() { css_padding_top(); css_padding_right(); css_padding_bottom(); css_padding_left(); };
     void css_padding_top(const std::string & top,
 			 bool inherit=false);
+    void css_padding_top() { padding_top.clear(); };
     void css_padding_right(const std::string & right,
 			   bool inherit=false);
+    void css_padding_right() { padding_right.clear(); };
     void css_padding_bottom(const std::string & bottom,
 			    bool inherit=false);
+    void css_padding_bottom() { padding_bottom.clear(); };
     void css_padding_left(const std::string & left,
 			  bool inherit=false);
+    void css_padding_left() { padding_left.clear(); };
 
 	// text
 
@@ -112,10 +136,14 @@ public:
 
     void css_font_style_italic(bool inherit=false);
     void css_font_style_normal(bool inherit=false);
+    void css_font_style() { font_style.clear(); };
     void css_font_weight_bold(bool inherit=false);
     void css_font_weight_normal(bool inherit=false);
+    void css_font_weight() { font_weight.clear(); };
     void css_text_align(align val, bool inherit=false);
+    void css_text_align() { text_align.clear(); };
     void css_text_decoration(decoration val, bool inherit=false);
+    void css_text_decoration() { text_deco.clear(); };
 
 	// border
 
@@ -141,8 +169,11 @@ public:
 		    bd_none };
 
     void css_border_width(border which, bd_width val, bool inherit=false);
+    void css_border_width() { border_width.clear(); };
     void css_border_color(border which, const std::string & col, bool inherit=false);
+    void css_border_color() { border_color.clear(); };
     void css_border_style(border which, bd_style val, bool inherit=false);
+    void css_border_style() { border_style.clear(); };
 
 
 	/// inherit properties from the given reference

@@ -94,9 +94,9 @@ void css::css_background_image(const string & url,
     css_updated(inherit);
 }
 
-void css::set_css_background_position(const string & x,
-				      const string & y,
-				      bool inherit)
+void css::css_background_position(const string & x,
+				  const string & y,
+				  bool inherit)
 {
     if(x != "" && y != "") // yes both
     {
