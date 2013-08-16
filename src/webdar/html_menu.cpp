@@ -78,6 +78,8 @@ html_menu::html_menu()
 
     tmp_set.css_clear_attributes();
 
+    global.set_no_CR();
+
     adopt(&global);
     adopt(&url_normal);
     adopt(&url_selected);
@@ -125,6 +127,7 @@ void html_menu::add_entry(const std::string & reference, const std::string & lab
 	box->surround.css_inherit_from(box_off);
     else
 	box->surround.css_inherit_from(box_void);
+    box->surround.set_no_CR();
 
 	/// building the body_builder tree
     box->surround.adopt(&(box->inside));
