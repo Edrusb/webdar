@@ -30,7 +30,7 @@ const char *COLOR_PADFRONT = "rgb(200,200,255)";
 const char *COLOR_PADBORD = "back";
 const char *COLOR_MENU_FRONT_ON = "rgb(255, 255, 255)";
 const char *COLOR_MENU_BACK_ON = "rgb(200,150,150)";
-const char *COLOR_MENU_BORDER_ON= "rgb(255,0,0)";
+const char *COLOR_MENU_BORDER_ON = "rgb(255,0,0)";
 const char *COLOR_MENU_FRONT_OFF = "rgb(150,150,255)";
 const char *COLOR_MENU_BACK_OFF = "rgb(0,0,150)";
 const char *COLOR_MENU_BORDER_OFF = "rgb(0,0,100)";
@@ -38,7 +38,3 @@ const char *COLOR_MENU_FRONT_HOVER_ON = "purple";
 const char *COLOR_MENU_FRONT_HOVER_OFF = "white";
 const char *COLOR_MENU_FRONT_ACTIVE_ON = "red";
 const char *COLOR_MENU_FRONT_ACTIVE_OFF = "red";
-
-
-
-
