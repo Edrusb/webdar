@@ -246,6 +246,7 @@ void choose::release_boxes()
 void choose::regenerate_confirm_page()
 {
     html_text text;
+    string tmp;
 
     ctable.clear();
     text.clear();
@@ -272,9 +273,12 @@ void choose::regenerate_confirm_page()
 	if(boxes[i]->get_value() != "")
 	{
 	    text.clear();
+	    tmp = sess[i].session_name;
+	    if(tmp == "")
+		tmp = sess[i].session_ID;
 	    text.add_text(0,
 			  html_url(chemin(sess[i].session_ID).display(false),
-				   string("Session ") + webdar_tools_convert_to_string(i+1)).get_body_part());
+				   tmp).get_body_part());
 	    ctable.adopt_static_html(text.get_body_part());
 	}
     }
