@@ -129,7 +129,7 @@ protected:
     std::string get_body_part_from_all_children(const chemin & path,
 						const request & req);
 
-	/// For inherited class, called when the path has changed, tipically when this object has been adopted or foresaken
+	/// For inherited class, called when the path has changed, tipically when this object has been adopted or foresaken, or a parent did
     virtual void path_has_changed() {};
 
 	/// Be informed that a new child has been adopted
