@@ -88,6 +88,15 @@ public:
 			    bool inherit=false);
     void css_position_right() { position_right.clear(); };
 
+    enum overflowing { ov_visible,   // show even what exceed the parent dimensions
+		       ov_hidden,    //< do not show what exceeds the parent dimensions
+		       ov_scroll,    //< alsways add a scrollbar to see what's hidden
+		       ov_auto,      //< scrollbar shows only if necessary
+		       ov_inherit }; //< inherited from HTML parent
+
+    void css_overflow(overflowing val, bool inherit=false);
+    void css_overflow() { overflow.clear(); };
+
 	// floating
 
     enum floating { fl_left,
@@ -221,6 +230,7 @@ private:
     css_property position_left;
     css_property position_bottom;
     css_property position_right;
+    css_property overflow;
 
 	// floating properties
     css_property float_pos;

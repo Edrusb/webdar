@@ -37,6 +37,7 @@ void css::css_clear_attributes()
     position_left.clear();
     position_bottom.clear();
     position_right.clear();
+    overflow.clear();
     float_pos.clear();
     float_clear.clear();
     padding_top.clear();
@@ -223,6 +224,34 @@ void css::css_position_right(const string & right,
     css_updated(inherit);
 }
 
+void css::css_overflow(overflowing val, bool inherit)
+{
+    string arg = " overflow: ";
+
+    switch(val)
+    {
+    case ov_visible:
+	arg += "visible;";
+	break;
+    case ov_hidden:
+	arg += "hidden;";
+	break;
+    case ov_scroll:
+	arg += "scroll;";
+	break;
+    case ov_auto:
+	arg += "auto;";
+	break;
+    case ov_inherit:
+	arg += "inherit;";
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+    overflow.set_value(arg);
+    overflow.set_inheritance(inherit);
+    css_updated(inherit);
+}
 
 void css::css_float(floating val, bool inherit)
 {
@@ -520,6 +549,7 @@ void css::css_inherit_from(const css & ref, bool all, bool force)
     position_left.inherit_from(ref.position_left, all, force);
     position_bottom.inherit_from(ref.position_bottom, all, force);
     position_right.inherit_from(ref.position_right, all, force);
+    overflow.inherit_from(ref.overflow, all, force);
     float_pos.inherit_from(ref.float_pos, all, force);
     float_clear.inherit_from(ref.float_clear, all, force);
     padding_top.inherit_from(ref.padding_top, all, force);
@@ -573,6 +603,7 @@ string css::css_get_raw_string() const
 	ret += position_right.get_value();
     }
     ret += z_index.get_value();
+    ret += overflow.get_value();
     ret += float_pos.get_value();
     ret += float_clear.get_value();
     ret += padding_top.get_value();
