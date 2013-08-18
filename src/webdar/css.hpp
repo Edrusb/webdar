@@ -193,9 +193,9 @@ public:
 	/// inherit properties from the given reference
 	///
 	/// \param[in] ref from which to inherit properties
-	/// \param[in] all if true even properties with inheritance unset are taken into account
-	/// \param[in] force if false, only unset properties are inhertied, we do not erase existing properties
-	/// \note only unset properties are set to the value of the given reference
+	/// \param[in] all if true even properties of "ref" having inheritance unset are taken into account
+	/// \param[in] force if false, only unset properties of "this" are inhertied, we do not erase existing properties by those of "ref"
+	/// \note when both "all" and "force" are false only unset properties of "this" are set to the value of the given reference
 	/// and only inheritable properties of the references are copied
     void css_inherit_from(const css & ref, bool all=false, bool force=false);
 
