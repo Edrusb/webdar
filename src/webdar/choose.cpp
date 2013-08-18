@@ -35,6 +35,7 @@ choose::choose(const string & user):
     confirmed("Confirm destruction of sessions listed above?", false)
 {
     html_text tmp;
+    css tmpcss;
 
     owner = user;
     confirm_mode = false;
@@ -57,8 +58,18 @@ choose::choose(const string & user):
     tmp.css_border_color(css::bd_all, COLOR_PADBORD);
     page.adopt_static_html(tmp.get_body_part());
 
-    table.set_border(1);
+    tmpcss.css_border_width(css::bd_all, css::bd_thin, true);
+    tmpcss.css_border_style(css::bd_all, css::bd_solid, true);
+    tmpcss.css_border_color(css::bd_all, COLOR_TEXT, true);
+    table.css_inherit_from(tmpcss);
+    table.set_css_cells(tmpcss);
+    tmpcss.css_background_color(COLOR_MENU_BACK_OFF);
+    tmpcss.css_color(COLOR_MENU_FRONT_OFF);
+    tmpcss.css_font_style_italic();
+    table.set_css_cells_first_raw(tmpcss);
+    table.css_border_collapsed(true);
     table.css_width("90%", true);
+
     form.css_margin_top("1em", true);
 
     div.css_width("90%", true);
