@@ -44,6 +44,8 @@ html_dir_tree::html_dir_tree(const archive_init_list * ref, const std::string & 
 
 void html_dir_tree::init(const std::string & chemin)
 {
+    css tmpcss;
+
     my_path = chemin;
     src = NULL;
     info_read = false;
@@ -59,12 +61,11 @@ void html_dir_tree::init(const std::string & chemin)
 	name.change_label(my_path.back());
 
 	// setting css properties
-    css_padding("0.1em");
     set_no_CR();
 
     line.css_float(css::fl_left, true);
     line.css_float_clear(css::fc_both, true);
-    line.css_width(webdar_tools_convert_to_string(get_em_width_self_only())+"em", false);
+    line.css_width("100%", false);
 
     shrink.css_float(css::fl_left, true);
     shrink.css_float_clear(css::fc_both, true);
@@ -129,7 +130,16 @@ void html_dir_tree::init(const std::string & chemin)
     contents.css_border_width(css::bd_all, css::bd_thin);
     contents.css_border_style(css::bd_all, css::bd_dashed);
     contents.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
-    contents.css_width("65%", false);
+	// assigning style for all lines
+    tmpcss.css_clear_attributes();
+    tmpcss.css_border_width(css::bd_top, css::bd_thin);
+    tmpcss.css_border_style(css::bd_top, css::bd_dashed);
+    tmpcss.css_border_color(css::bd_top, COLOR_MENU_BORDER_OFF);
+    contents.set_css_cells(tmpcss);
+	// assigning modified style for header line
+    tmpcss.css_background_color(COLOR_MENU_BACK_OFF);
+    tmpcss.css_color(COLOR_MENU_FRONT_OFF);
+    contents.set_css_cells_first_raw(tmpcss);
 }
 
 void html_dir_tree::clear()
@@ -214,42 +224,6 @@ void html_dir_tree::go_hide()
     visibility_has_changed = true;
 }
 
-unsigned int html_dir_tree::get_em_width_self_only() const
-{
-    unsigned int ret = 0;
-    ret += 2 + 1 + 1; // size of the shrink/expand button + right margin + 1
-    ret += name.get_label().size();
-
-    return ret;
-}
-
-unsigned int html_dir_tree::get_em_width() const
-{
-    unsigned int ret = get_em_width_self_only();
-
-    if(shrink.get_visible()) // subdir are visible
-    {
-	unsigned int child = 0;
-	unsigned int tmp = 0;
-	vector<html_dir_tree *>::const_iterator it = subdirs.begin();
-	while(it != subdirs.end())
-	{
-	    if(*it == NULL)
-		throw WEBDAR_BUG;
-	    tmp = (*it)->get_em_width();
-	    if(child < tmp)
-		child = tmp;
-	    ++it;
-	}
-	child +=1 ; // shifted by 1em
-
-	if(ret < child)
-	    ret = child;
-    }
-
-    return ret;
-}
-
 void html_dir_tree::on_event(const std::string & event_name)
 {
     if(event_name == event_shrink)
@@ -279,7 +253,6 @@ string html_dir_tree::get_body_part(const chemin & path,
     do
     {
 	visibility_has_changed = false;
-	css_width(webdar_tools_convert_to_string(get_em_width())+"em", false);
 	ret = html_div::get_body_part(path, req);
     }
     while(visibility_has_changed);
@@ -334,20 +307,20 @@ void html_dir_tree::go_init_indent()
 		// Data
 	    if(it->has_data_present_in_the_archive())
 		if(it->is_dirty())
-		    contents.adopt_static_html("Dirty");
+		    contents.adopt_static_html("[Dirty]");
 		else
-		    contents.adopt_static_html("Saved");
+		    contents.adopt_static_html("[Saved]");
 	    else
-		contents.adopt_static_html("Not saved");
+		contents.adopt_static_html("[     ]");
 
 		// EA
 	    if(it->has_EA())
 		if(it->has_EA_saved_in_the_archive())
-		    contents.adopt_static_html("Saved");
+		    contents.adopt_static_html("[Saved]");
 		else
-		    contents.adopt_static_html("Not saved");
+		    contents.adopt_static_html("[     ]");
 	    else
-		contents.adopt_static_html("no EA");
+		contents.adopt_static_html("-------");
 
 		// compr
 	    contents.adopt_static_html(it->get_compression_ratio());

@@ -53,9 +53,6 @@ public:
 	/// show contents in the focus place
     void go_show() { on_event(event_click); };
 
-	/// return the expected number of "em" this object should have as width
-    unsigned int get_em_width() const;
-
 	/// inherited from actor
     virtual void on_event(const std::string & event_name);
 
@@ -91,7 +88,6 @@ private:
     void init(const std::string & chemin);
     void go_init_indent();
     void go_hide();
-    unsigned int get_em_width_self_only() const;
 };
 
 #endif

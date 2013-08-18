@@ -27,16 +27,37 @@ html_listing_page::html_listing_page():
     set_session_name("");
 
 	// set css properties
-    tree.css_float(css::fl_left);
+    css_height("100%",true); // applied to the html_page assign this CSS to the <body>
 
-    title.css_float(css::fl_right);
-    title.css_width("65%", false);
+    tree.css_float(css::fl_left);
+    tree.css_height("100%", false);
+    tree.css_width("32.6%", false);
+    tree.css_padding("0.2%");
+    tree.css_overflow(css::ov_scroll);
+    tree.css_margin_right("1%");
+
+
+    title.css_width("64%", false);
+    title.css_padding_top("1em");
+    title.css_padding_bottom("1em");
     title.css_font_weight_bold();
+    title.css_font_style_italic();
     title.css_text_align(css::al_center);
+    title.css_border_width(css::bd_all, css::bd_medium);
+    title.css_border_style(css::bd_all, css::bd_solid);
+    title.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
+    title.css_color(COLOR_MENU_FRONT_OFF);
+    title.css_background_color(COLOR_MENU_BACK_OFF);
+    title.css_position_type(css::pos_fixed);
+    title.css_position_top("1em");
+    title.css_position_right("1%");
 
     webdar_style_normal_button(close);
     close.css_float(css::fl_right);
     close.css_float_clear(css::fc_both);
+    close.css_position_type(css::pos_fixed);
+    close.css_position_bottom("1em");
+    close.css_position_right("1em");
 
     tmp.css_clear_attributes();
     tmp.css_color(COLOR_TEXT);
@@ -47,10 +68,13 @@ html_listing_page::html_listing_page():
     tmp.css_text_decoration(css::dc_underline);
     bt_class.set_style_hover(tmp);
 
+    focus.css_margin_top("5em");
+    focus.css_width("66%", false);
+
 	// the body_builder tree
     adopt(&tree);
-    adopt(&title);
     adopt(&focus);
+    adopt(&title);
     adopt(&close);
     adopt(&bt_class);
 
