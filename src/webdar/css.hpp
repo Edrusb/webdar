@@ -72,9 +72,14 @@ public:
     void css_z_index(unsigned int index,
 		     bool inherit=false);
     void css_z_index() { z_index.clear(); };
-    void css_position_absolute(bool val=true,
-			       bool inherit=false);
-    void css_position_absolute() { position_absolute.clear(); };
+
+    enum positionning { pos_absolute,  //< absolute in the document
+			pos_relative,  //< shifted relative to its expected position
+			pos_fixed };  //< fixed in the viewport
+
+    void css_position_type(positionning val,
+			   bool inherit=false);
+    void css_position_type() { position_type.clear(); };
     void css_position_top(const std::string & top,
 			  bool inherit=false);
     void css_position_top() { position_top.clear(); };
@@ -225,7 +230,7 @@ private:
     css_property height;
     css_property width;
     css_property z_index;
-    css_property position_absolute;
+    css_property position_type;
     css_property position_top;
     css_property position_left;
     css_property position_bottom;

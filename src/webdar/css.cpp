@@ -32,7 +32,7 @@ void css::css_clear_attributes()
     height.clear();
     width.clear();
     z_index.clear();
-    position_absolute.clear();
+    position_type.clear();
     position_top.clear();
     position_left.clear();
     position_bottom.clear();
@@ -180,14 +180,24 @@ void css::css_z_index(unsigned int index, bool inherit)
     css_updated(inherit);
 }
 
-void css::css_position_absolute(bool val,
-				bool inherit)
+void css::css_position_type(positionning val,
+			    bool inherit)
 {
-    if(val)
-	position_absolute.set_value(" position:absolute;");
-    else
-	position_absolute.set_value(" position:relative;");
-    position_absolute.set_inheritance(inherit);
+    switch(val)
+    {
+    case pos_absolute:
+	position_type.set_value(" position: absolute;");
+	break;
+    case pos_relative:
+	position_type.set_value(" position: relative;");
+	break;
+    case pos_fixed:
+	position_type.set_value(" position: fixed;");
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+    position_type.set_inheritance(inherit);
     css_updated(inherit);
 }
 
@@ -544,7 +554,7 @@ void css::css_inherit_from(const css & ref, bool all, bool force)
     height.inherit_from(ref.height, all, force);
     width.inherit_from(ref.width, all, force);
     z_index.inherit_from(ref.z_index, all, force);
-    position_absolute.inherit_from(ref.position_absolute, all, force);
+    position_type.inherit_from(ref.position_type, all, force);
     position_top.inherit_from(ref.position_top, all, force);
     position_left.inherit_from(ref.position_left, all, force);
     position_bottom.inherit_from(ref.position_bottom, all, force);
@@ -582,21 +592,21 @@ string css::css_get_raw_string() const
     ret += height.get_value();
     ret += width.get_value();
 
-    if(!position_top.is_unset() && position_absolute.is_unset())
-	const_cast<css *>(this)->css_position_absolute(true, position_top.get_inheritance());
-    if(!position_left.is_unset() && position_absolute.is_unset())
-	const_cast<css *>(this)->css_position_absolute(true, position_left.get_inheritance());
-    if(!position_bottom.is_unset() && position_absolute.is_unset())
-	const_cast<css *>(this)->css_position_absolute(true, position_bottom.get_inheritance());
-    if(!position_right.is_unset() && position_absolute.is_unset())
-	const_cast<css *>(this)->css_position_absolute(true, position_right.get_inheritance());
+    if(!position_top.is_unset() && position_type.is_unset())
+	const_cast<css *>(this)->css_position_type(pos_absolute, position_top.get_inheritance());
+    if(!position_left.is_unset() && position_type.is_unset())
+	const_cast<css *>(this)->css_position_type(pos_absolute, position_left.get_inheritance());
+    if(!position_bottom.is_unset() && position_type.is_unset())
+	const_cast<css *>(this)->css_position_type(pos_absolute, position_bottom.get_inheritance());
+    if(!position_right.is_unset() && position_type.is_unset())
+	const_cast<css *>(this)->css_position_type(pos_absolute, position_right.get_inheritance());
 
     if(!position_top.is_unset()
        || !position_left.is_unset()
        || !position_bottom.is_unset()
        || !position_right.is_unset())
     {
-	ret += position_absolute.get_value();
+	ret += position_type.get_value();
 	ret += position_top.get_value();
 	ret += position_left.get_value();
 	ret += position_bottom.get_value();
