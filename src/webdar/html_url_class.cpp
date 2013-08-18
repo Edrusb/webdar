@@ -33,7 +33,7 @@ string html_url_class::get_body_part(const chemin & path,
 	ret += "a." + class_name + ":hover {" + hover + "}\n";
 
     if(ret != "")
-	ret = "<style>\n" + ret + "</style>\n";
+	ret = "<style type=\"text/css\">\n" + ret + "</style>\n";
 
     return ret;
 }
