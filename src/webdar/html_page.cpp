@@ -43,7 +43,8 @@ string html_page::get_body_part_given_the_body(const chemin & path,
     string ret = "";
 
     ret += "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n";
-    ret += "<html>\n<head>\n<title>\n";
+    ret += "<html " + css_get_string();
+    ret += ">\n<head>\n<title>\n";
     ret += x_title + "\n";
     ret += "</title>\n";
     if(redirect != "")
