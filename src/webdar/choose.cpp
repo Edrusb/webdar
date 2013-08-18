@@ -195,7 +195,7 @@ void choose::regenerate_table_page()
     table.adopt_static_html("Session ID");
     table.adopt_static_html("owner");
     table.adopt_static_html("Locked");
-    table.adopt_static_html("Running");
+    table.adopt_static_html("Libdar");
     table.adopt_static_html("Closing");
     table.adopt_static_html("Kill Session");
 
@@ -214,9 +214,9 @@ void choose::regenerate_table_page()
 	else
 	    table.adopt_static_html(it->session_ID);
 	table.adopt_static_html(it->owner);
-	table.adopt_static_html(it->locked ? "locked" : "");
-	table.adopt_static_html(it->libdar_running ? "running" : "");
-	table.adopt_static_html(it->closing ? "closing" : "");
+	table.adopt_static_html(it->locked ? "locked" : " ");
+	table.adopt_static_html(it->libdar_running ? "running" : " ");
+	table.adopt_static_html(it->closing ? "closing" : " ");
 	check = new (nothrow) html_form_input("", html_form_input::check, "", 10);
 	if(check == NULL)
 	    throw exception_memory();
