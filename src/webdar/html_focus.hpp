@@ -18,6 +18,9 @@ extern "C"
     /// the html_focus is adopted as any body_builder object but does not show anything
     /// until a body_builder object is given_for_temporary_adoption(). Any previous object
     /// given that way are foresaken and replaced by the new one.
+    /// \note that css properties assigned to a html_focus get passed assigned to the under focus element,
+    /// if that element had already got css properties assigned, they are overwritten by the one set to html_focus
+    /// the css properties assigned to html_focus would not have any use else.
 
 class html_focus: public body_builder
 {

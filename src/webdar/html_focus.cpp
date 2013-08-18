@@ -17,10 +17,13 @@ using namespace std;
 
 void html_focus::given_for_temporary_adoption(body_builder *obj)
 {
+    if(obj == NULL)
+	throw WEBDAR_BUG;
     if(adopted != NULL)
 	foresake(adopted);
     adopted = obj;
     adopt(obj);
+    obj->css_inherit_from(*this, true, true);
 }
 
 string html_focus::get_body_part(const chemin & path,
