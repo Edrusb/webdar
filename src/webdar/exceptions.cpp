@@ -30,6 +30,12 @@ exception_system::exception_system(const std::string & context, int error_code) 
 	change_message(string(strerror(error_code)));
 }
 
+exception_libcall::exception_libcall(const libdar::Egeneric & e): exception_base(e.get_message())
+{
+    if(dynamic_cast<const libdar::Ebug *>(&e) != NULL)
+	change_message(e.dump_str());
+}
+
 void throw_as_most_derivated_class(exception_base *ebase)
 {
     exception_memory *emem = dynamic_cast<exception_memory *>(ebase);

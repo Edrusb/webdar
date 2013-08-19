@@ -132,7 +132,7 @@ protected:
 class exception_libcall : public exception_base
 {
 public:
-    exception_libcall(const libdar::Egeneric & e): exception_base(e.get_message()) {};
+    exception_libcall(const libdar::Egeneric & e);
 
 protected:
     virtual exception_base *clone() const { return cloner<exception_libcall>((void *)this); };
