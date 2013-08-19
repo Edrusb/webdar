@@ -1,3 +1,26 @@
+/*********************************************************************/
+// webdar - a web server and interface program to libdar
+// Copyright (C) 2013 Denis Corbin
+//
+// This file is part of Webdar
+//
+//  Webdar is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Webdar is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with Webdar.  If not, see <http://www.gnu.org/licenses/>
+//
+//----
+//  to contact the author: dar.linux@free.fr
+/*********************************************************************/
+
     // C system header files
 extern "C"
 {
@@ -11,6 +34,8 @@ extern "C"
 #include "exceptions.hpp"
 #include "webdar_css_style.hpp"
 #include "html_text.hpp"
+#include "tokens.hpp"
+
     //
 #include "saisie.hpp"
 
@@ -32,6 +57,7 @@ saisie::saisie():
 		 "",
 		 20),
     about_fs(""),
+    licensing(STATIC_PATH_LICENSING, "Webdar is released under the GNU Public License v3"),
     about_form("Change"),
     show_archive_form_options("Update"),
     show_archive_fs_options("Options details"),
@@ -113,6 +139,11 @@ saisie::saisie():
     text.add_paragraph();
     text.add_text(0, "by Denis CORBIN");
     div_about.adopt_static_html(text.get_body_part());
+    licensing.css_width("90%", true);
+    licensing.css_margin_bottom("1em");
+    licensing.css_margin_top("1em");
+    licensing.css_text_align(css::al_center);
+    div_about.adopt(&licensing);
     about_fs.adopt(&session_name);
     about_form.adopt(&about_fs);
     div_about.adopt(&about_form);

@@ -1,3 +1,26 @@
+/*********************************************************************/
+// webdar - a web server and interface program to libdar
+// Copyright (C) 2013 Denis Corbin
+//
+// This file is part of Webdar
+//
+//  Webdar is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Webdar is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with Webdar.  If not, see <http://www.gnu.org/licenses/>
+//
+//----
+//  to contact the author: dar.linux@free.fr
+/*********************************************************************/
+
 #include "tokens.hpp"
 
 const char * WEBDAR_VERSION = "0.0.1";
@@ -38,3 +61,6 @@ const char *COLOR_MENU_FRONT_HOVER_ON = "purple";
 const char *COLOR_MENU_FRONT_HOVER_OFF = "white";
 const char *COLOR_MENU_FRONT_ACTIVE_ON = "red";
 const char *COLOR_MENU_FRONT_ACTIVE_OFF = "red";
+
+extern const char *STATIC_PATH_ROOT = "static"; // its length should be strictly less than the lenght of session_ID, as defined SESSION_ID_WIDTH in session.cpp (8) to avoid collision with session_ID.
+const char *STATIC_PATH_LICENSING = "/static/licensing";
