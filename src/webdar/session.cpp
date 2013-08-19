@@ -39,7 +39,9 @@ extern "C"
 
 using namespace std;
 
-const unsigned int SESSION_ID_WIDTH = 8;
+const unsigned int INITIAL_SESSION_ID_WIDTH = 4;
+const unsigned int MAXIMUM_SESSION_ID_WIDTH = 20;
+const unsigned int MAX_COLLISION = 300;
 
 
     //////////////////////////
@@ -196,6 +198,8 @@ string session::create_new(const string & owner)
     table entry;
     string sessID;
     session *obj = new (nothrow) session();
+    unsigned int collision = 0;
+    unsigned id_width = INITIAL_SESSION_ID_WIDTH;
 
     if(obj == NULL)
 	throw exception_memory();
@@ -210,11 +214,18 @@ string session::create_new(const string & owner)
 		// looking whether the new session_ID is not already used
 	    do
 	    {
-		sessID = webdar_tools_generate_random_string(SESSION_ID_WIDTH);
-
+		sessID = webdar_tools_generate_random_string(id_width);
 		    // OK, this may lead to an endless loop if all sessions
 		    // are used so we count up to MAX_FAILURE and then
 		    // increase the session_ID length by one
+		++collision;
+		if(collision > MAX_COLLISION)
+		{
+		    collision = 0;
+		    ++id_width;
+		    if(id_width > MAXIMUM_SESSION_ID_WIDTH)
+			throw exception_range("Cannot allocate new session, namespace full");
+		}
 	    }
 	    while(running_session.find(sessID) != running_session.end());
 
