@@ -24,13 +24,13 @@
 CFLAGS=-ggdb -pthread `pkg-config --cflags libdar64`
 CXXFLAGS=-ggdb -pthread `pkg-config --cflags libdar64`
 
-ifdef DEBUG
-LDFLAGS=-ggdb -lstdc++ -lpthread -lattr -lgcrypt -lgpg-error -llzo2 -lbz2 -lz -ldl
-LIBDAR_OBJ=../../../../DAR/dar/src/libdar/*.o
-else
+
+#LDFLAGS=-ggdb -lstdc++ -lpthread -lattr -lgcrypt -lgpg-error -llzo2 -lbz2 -lz -ldl
+#LIBDAR_OBJ=../../../../DAR/dar/src/libdar/*.o
+
 LDFLAGS=-ggdb -lstdc++ -pthread `pkg-config --libs libdar64`
 LIBDAR_OBJ=
-endif
+
 
 
 
