@@ -22,4 +22,4 @@
 #  to contact the author: dar.linux@free.fr
 #######################################################################
 
-./static_object_builder STATIC_OBJ_LICENSING text ../../COPYING
+./static_object_builder STATIC_OBJ_LICENSING text ../COPYING
