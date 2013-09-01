@@ -62,6 +62,6 @@ const char *COLOR_MENU_FRONT_HOVER_OFF = "white";
 const char *COLOR_MENU_FRONT_ACTIVE_ON = "red";
 const char *COLOR_MENU_FRONT_ACTIVE_OFF = "red";
 
-const char *STATIC_PATH_ROOT = "st";
-// STATIC_PATH_ROOT's length should be strictly less than the lenght of session_ID, as defined INITIAL_SESSION_ID_WIDTH in session.cpp to avoid collision with session_ID.
-const char *STATIC_PATH_LICENSING = "/st/licensing";
+const char *STATIC_PATH_ID = "st";
+// STATIC_PATH_ID's length should be strictly less than the lenght of session_ID, as defined INITIAL_SESSION_ID_WIDTH in session.cpp to avoid collision with session_ID.
+const char *STATIC_OBJ_LICENSING = "licensing";

@@ -112,6 +112,6 @@ extern const char *COLOR_MENU_FRONT_ACTIVE_ON;
 extern const char *COLOR_MENU_FRONT_ACTIVE_OFF;
 
 extern const char *STATIC_PATH_ID;
-extern const char *STATIC_PATH_LICENSING;
+extern const char *STATIC_OBJ_LICENSING;
 
 #endif

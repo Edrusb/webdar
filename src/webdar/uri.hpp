@@ -58,7 +58,7 @@ public:
 	/// clear the uri (empty uri)
     void clear() { path.clear(); hostname = scheme = ""; };
 
-	/// obtain the URI scheme
+	/// obtain the URI scheme (http, https, ftp, etc.)
     const std::string & get_scheme() const { return scheme; };
 
 	/// obtain the URI host part

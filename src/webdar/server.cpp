@@ -39,6 +39,7 @@ extern "C"
 #include "error_page.hpp"
 #include "challenge.hpp"
 #include "choose.hpp"
+#include "static_object_library.hpp"
 
 using namespace std;
 
@@ -194,27 +195,54 @@ void server::inherited_run()
 			    // extract session info if any
 			session_ID = get_session_ID_from(req);
 
-			    // check validity of the request
-			if(!chal.is_an_authoritative_request(req, user))
-			    ans = chal.give_answer(req);
-			else
-			    if(!session::get_session_info(session_ID, info)
-			       || info.locked
-			       || info.owner != user)
-				ans = choose::give_answer_for(user, req);
-			    else
+			if(session_ID == STATIC_PATH_ID)
+			{
+			    try
 			    {
-				if(sess != NULL && sess->get_session_ID() != session_ID)
+				const static_object *obj = NULL;
+				chemin tmp = req.get_uri().get_path();
+
+				string objname = tmp.back();
+				tmp.pop_back();
+				if(tmp.front() != STATIC_PATH_ID)
 				    throw WEBDAR_BUG;
-				if(sess == NULL)
-				{
-				    sess = session::acquire_session(session_ID);
-				    if(sess == NULL)
-					throw WEBDAR_BUG;
-				}
-				    // obtaining the answer from the session
-				ans = sess->give_answer(req);
+				if(tmp.size() != 1)
+				    throw exception_range("local exception to trigger an answer with STATUS_CODE_NOT_FOUND");
+				obj = static_object_library::find_object(objname);
+				if(obj == NULL)
+				    throw WEBDAR_BUG;
+				ans = obj->give_answer();
 			    }
+			    catch(exception_range & e)
+			    {
+				ans.set_reason("unknown static object");
+				ans.set_status(STATUS_CODE_NOT_FOUND);
+			    }
+			}
+			else // not a path to a static object
+			{
+				// check validity of the request
+			    if(!chal.is_an_authoritative_request(req, user))
+				ans = chal.give_answer(req);
+			    else
+				if(!session::get_session_info(session_ID, info)
+				   || info.locked
+				   || info.owner != user)
+				    ans = choose::give_answer_for(user, req);
+				else
+				{
+				    if(sess != NULL && sess->get_session_ID() != session_ID)
+					throw WEBDAR_BUG;
+				    if(sess == NULL)
+				    {
+					sess = session::acquire_session(session_ID);
+					if(sess == NULL)
+					    throw WEBDAR_BUG;
+				    }
+					// obtaining the answer from the session
+				    ans = sess->give_answer(req);
+				}
+			}
 
 			    // send back the anwser
 			src.send_answer(ans);

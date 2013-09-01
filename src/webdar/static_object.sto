@@ -1,0 +1,13 @@
+const char * licensing = "coucou les amis...";
+static_object_text *o_licensing = new (nothrow) static_object_text(licensing);
+if(o_licensing == NULL)
+    throw exception_memory();
+try
+{
+    add_object_to_library(STATIC_OBJ_LICENSING, o_licensing);
+}
+catch(...)
+{
+    delete o_licensing;
+    o_licensing = NULL;
+}

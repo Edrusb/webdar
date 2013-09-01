@@ -50,6 +50,7 @@ extern "C"
 #include "authentication.hpp"
 #include "base64.hpp"
 #include "choose.hpp"
+#include "static_object_library.hpp"
 
 #define WEBDAR_EXIT_OK 0
 #define WEBDAR_EXIT_SYNTAX 1
@@ -168,78 +169,90 @@ int main(int argc, char *argv[], char **env)
 	    listener *tmp = NULL;
 	    pthread_t unused_arg;
 
-	    libdar_init();
-	    server::set_max_server(10);
-
+	    static_object_library::init();
 	    try
 	    {
 
-		    /////////////////////////////////////////////////
-		    // creating and launching all threads
+		libdar_init();
+		server::set_max_server(10);
 
-		while(it != ecoute.end())
+		try
 		{
-		    if(it->interface == "")
-			tmp = new (nothrow) listener(creport, &auth,  it->port);
-		    else
-			tmp = new (nothrow) listener(creport, &auth, it->interface, it->port);
-		    if(tmp == NULL)
-			throw exception_memory();
-		    else
+
+			/////////////////////////////////////////////////
+			// creating and launching all threads
+
+		    while(it != ecoute.end())
 		    {
-			taches.push_back(tmp);
-			tmp->run();
-		    }
-		    ++it;
-		}
-		creport->report(debug, "all listener threads have been launched, main thread waiting for all of them to complete");
-
-		    /////////////////////////////////////////////////
-		    // looping while not all thread have ended
-
-		while(!taches.empty())
-		{
-		    if(taches.back() == NULL)
-			taches.pop_back();
-		    else
-			if(!taches.back()->is_running(unused_arg))
-			{
-			    taches.back()->join();
-			    delete taches.back();
-			    taches.back() = NULL;
-			}
+			if(it->interface == "")
+			    tmp = new (nothrow) listener(creport, &auth,  it->port);
 			else
-			    taches.back()->join();
+			    tmp = new (nothrow) listener(creport, &auth, it->interface, it->port);
+			if(tmp == NULL)
+			    throw exception_memory();
+			else
+			{
+			    taches.push_back(tmp);
+			    tmp->run();
+			}
+			++it;
+		    }
+		    creport->report(debug, "all listener threads have been launched, main thread waiting for all of them to complete");
+
+			/////////////////////////////////////////////////
+			// looping while not all thread have ended
+
+		    while(!taches.empty())
+		    {
+			if(taches.back() == NULL)
+			    taches.pop_back();
+			else
+			    if(!taches.back()->is_running(unused_arg))
+			    {
+				taches.back()->join();
+				delete taches.back();
+				taches.back() = NULL;
+			    }
+			    else
+				taches.back()->join();
+		    }
+
+		    creport->report(info, "all listener threads have ended, waiting for existing sessions to end");
+
+			/////////////////////////////////////////////////
+			// killing remaining server threads
+
+		    server::kill_all_servers();
+
+		    creport->report(info, "all server threads have ended");
+
+		    choose::cleanup_memory();
 		}
+		catch(...)
+		{
+		    vector<listener *>::iterator ta = taches.begin();
 
-		creport->report(info, "all listener threads have ended, waiting for existing sessions to end");
-
-		    /////////////////////////////////////////////////
-		    // killing remaining server threads
-
-		server::kill_all_servers();
-
-		creport->report(info, "all server threads have ended");
-
-		choose::cleanup_memory();
+		    while(ta != taches.end())
+		    {
+			if(*ta != NULL)
+			{
+			    delete *ta;
+			    *ta = NULL;
+			    ++ta;
+			}
+		    }
+		    taches.clear();
+		    libdar_end();
+		    throw;
+		}
+		libdar_end();
 	    }
 	    catch(...)
 	    {
-		vector<listener *>::iterator ta = taches.begin();
-
-		while(ta != taches.end())
-		{
-		    if(*ta != NULL)
-		    {
-			delete *ta;
-			*ta = NULL;
-			++ta;
-		    }
-		}
-		taches.clear();
+		static_object_library::release();
 		throw;
 	    }
-	    libdar_end();
+	    static_object_library::release();
 	}
 	catch(...)
 	{

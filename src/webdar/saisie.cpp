@@ -57,7 +57,7 @@ saisie::saisie():
 		 "",
 		 20),
     about_fs(""),
-    licensing(STATIC_PATH_LICENSING, "Webdar is released under the GNU Public License v3"),
+    licensing((chemin(STATIC_PATH_ID) + chemin(STATIC_OBJ_LICENSING)).display(false), "Webdar is released under the GNU Public License v3"),
     about_form("Change"),
     show_archive_form_options("Update"),
     show_archive_fs_options("Options details"),
