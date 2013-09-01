@@ -1,0 +1,73 @@
+/*********************************************************************/
+// webdar - a web server and interface program to libdar
+// Copyright (C) 2013 Denis Corbin
+//
+// This file is part of Webdar
+//
+//  Webdar is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Webdar is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with Webdar.  If not, see <http://www.gnu.org/licenses/>
+//
+//----
+//  to contact the author: dar.linux@free.fr
+/*********************************************************************/
+
+#ifndef SERVER_HPP
+#define SERVER_HPP
+
+    // C++ system header files
+#include <list>
+
+    // webdar headers
+#include "parser.hpp"
+#include "thread.hpp"
+#include "central_report.hpp"
+#include "mutex.hpp"
+#include "session.hpp"
+#include "authentication.hpp"
+
+
+class server: public thread
+{
+public:
+	// constructor & Destructor are intentionally set as private methods
+
+    static bool run_new_server(central_report *log, authentication *auth, connexion *source);
+    static void set_max_server(unsigned int val) { max_server = val; };
+    static void kill_server(pthread_t tid);
+    static void kill_all_servers();
+    static void throw_a_pending_exception();
+
+	/// used by another server to ask this object to release the session it uses
+    void release_session() { can_keep_session = false; }; // no need of mutex here, several concurrent call will lead to the same result.
+
+protected:
+    void inherited_run();
+
+private:
+    server(central_report *log, authentication *auth, connexion *source);
+    server(const server & ref): src(ref.src) { throw WEBDAR_BUG; };
+    const server & operator = (const server & ref) { throw WEBDAR_BUG; };
+
+    parser src;              //< this object manages the given connexion in constructor
+    central_report *rep;     //< just a pointer to an existing object, must not be deleted by "this"
+    authentication *authsrc; //< object to consult for user authentications
+    bool can_keep_session;   //< whether aonther object asked interacting with the session we use
+    session *locked_session; //< the current session we use (we have acquired its mutex)
+
+	/// static fields
+    static mutex lock_counter;            //< manages access to all static fields
+    static unsigned int max_server;       //< max allowed number of concurrent thread
+    static std::list<server *> instances; //< list of existing server objects
+};
+
+#endif

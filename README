@@ -1,0 +1,23 @@
+
+	W E B D A R
+
+"Being able to backup is good. Being able to restore is essential."
+
+       ---
+
+Several document are lying around this README file:
+
+COPYING is the GPLv3 license under which webdar is released
+INSTALL will tell you how to compile and install libdar
+doc/WHY_WEBDAR will tell you about webdar "business model"
+doc/webdar.txt which describes expected features for webdar
+
+
+NOTE ABOUT RELEASE 0.0.1:
+only a few set of feature are implemented, you can do all operation you are
+used to do with dar, kdar, darGUI or other software manipulating dar archives
+but with webdar release 0.0.1 you cannot filter files, nor define an
+overwriting policy. See the TODO file for the feature that will be implemented
+for release 1.0.0 and next releases.
+
+

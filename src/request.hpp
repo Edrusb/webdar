@@ -1,0 +1,187 @@
+/*********************************************************************/
+// webdar - a web server and interface program to libdar
+// Copyright (C) 2013 Denis Corbin
+//
+// This file is part of Webdar
+//
+//  Webdar is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Webdar is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with Webdar.  If not, see <http://www.gnu.org/licenses/>
+//
+//----
+//  to contact the author: dar.linux@free.fr
+/*********************************************************************/
+
+#ifndef REQUEST_HPP
+#define REQUEST_HPP
+
+    // C++ system header files
+#include <string>
+#include <map>
+
+    // webdar headers
+#include "uri.hpp"
+#include "webdar_tools.hpp"
+#include "exceptions.hpp"
+#include "tokens.hpp"
+#include "central_report.hpp"
+#include "connexion.hpp"
+
+
+class request
+{
+public:
+	/// The constructor
+    request(central_report *log) { clear(); clog = log; };
+
+	/// clear all fields of the request
+    void clear();
+
+	/// try reading just enough data in order to determine the uri of the next request
+	///
+	/// \note this method only fills the method and URI fields if data is available for that,
+	/// in which case only, true is returned. get_method() and get_uri() can then be invoked
+	/// to obtain the fields value.
+    bool try_reading(connexion & input);
+
+	/// read the next request from input connexion
+	///
+	/// \note this method fills the internal fields (request line, header and body)
+	/// \note may throw exceptions of type exception_range and exception_input.
+	/// the first mean that the request could not be read completely, the caller
+	/// must either not catch this type of exception, or reply by a bad-request answer
+    	/// and close the connexion even in HTTP/1.1 because be could not completely read the request.
+	/// Upon exception_input, the request could be read entirely, connexion can be maintained.
+	/// The request code is to send in the answer is provided by this exception class.
+    void read(connexion & input);
+
+
+	/// obtains the method of the read request
+    const std::string & get_method() const { if(status < method_read) throw WEBDAR_BUG; return cached_method; };
+
+	/// manually change the method of the request
+    void change_method(const std::string & val) { if(status < method_read) throw WEBDAR_BUG; cached_method = val; };
+
+	/// obtains the URI of the read request
+    const uri & get_uri() const { if(status < uri_read) throw WEBDAR_BUG; return coordinates; };
+
+	/// obtains the MAJOR version string of the read request
+    int get_maj_version() const { if(status != completed) throw WEBDAR_BUG; return maj_vers; };
+
+	/// obtains the MINOR version string of the read request
+    int get_min_version() const { if(status != completed) throw WEBDAR_BUG; return min_vers; };
+
+	/// obtain the body of the read request
+    const std::string & get_body() const { if(status != completed) throw WEBDAR_BUG; return body; };
+
+	/// obtain the body splitted in as list of attribute-value pair
+	///
+	/// \note this call can be used to analyse POST request's body in response to a form
+	/// \note this call should only be used when the Content-Type is
+	/// application/x-www-form-urlencoded, if not an exception is thrown
+    std::map<std::string,std::string> get_body_form() const;
+
+	/// manually add a cookie to the request (should be used exceptionnaly)
+	///
+	/// \note the semantic of a const method might sound strange here
+	/// as we do modify the request object. Well, nothing's perfect... improvment
+	/// may take place here, yes.
+    bool add_cookie(const std::string & key, const std::string & value) const;
+
+	/// lookup for a cookie
+    bool find_cookie(const std::string & key, std::string & value) const;
+
+	/// raw request header header access
+    bool find_attribute(const std::string & key, std::string & value) const;
+
+private:
+    enum { init, method_read, uri_read, reading_all, completed } status;
+    std::string cached_method;    //< method already read from the next request
+    std::string cached_uri;       //< uri already read from the next request
+    uri coordinates;              //< uri spit in fields
+    unsigned int maj_vers;        //< HTTP major version of the last request received
+    unsigned int min_vers;        //< HTTP minor version of the last request received
+    std::map<std::string, std::string> attributes; //< request headers
+    std::map<std::string, std::string> cookies;    //< request cookies
+    std::string body;             //< request body if any
+    central_report *clog;         //< central report logging
+
+	/// try reading the method and uri from the connexion
+    bool read_method_uri(connexion & input, bool blocking);
+
+	// feed cookies fields from attributes and remove cookies from attributes
+    void extract_cookies();
+
+	/// split the string argument in two intergers to fields maj_vers and min_vers
+    void set_version(const std::string & version);
+
+    void add_attribute(const std::string & key, const std::string & value) { attributes.insert(std::pair<std::string, std::string>(webdar_tools_to_canonical_case(key), value)); };
+
+    void drop_attribute(const std::string & key);
+
+	/// true if next to read is end of line chars (CR LF)
+    static bool is_empty_line(connexion & input);
+
+	/// returns what remains on the current lines
+    static std::string up_to_eol(connexion & input);
+
+	/// returns what remains up to no data available on the socket
+    static std::string up_to_eof(connexion & input);
+
+	/// skips the current line up to the next given argument.
+	///
+	/// \note Stops at end of line if the provided char is not found
+    static void skip_over(connexion & input, char a);
+
+    static std::string up_to_length(connexion & input, unsigned int length);
+
+	/// drops all data up to and including the next end of line (CR LF).
+    static void skip_line(connexion & input);
+
+	/// returns what remains on lines up to a real EOL (not LWS)
+
+	/// \note LWS is a CR+LF followed by any number of space or tab.
+	/// LWS allow a argument to be split over several lines. The spaces and tabs
+	/// following a CR+LF are not part of the argument.
+	/// this structure is used in header HTTP messages (RFC 1945)
+    static std::string up_to_eol_with_LWS(connexion & input);
+
+	/// reads the next token from the socket
+	/// \param[in] initial defines whether we can skip space to reach the token start
+	/// \param[in] blocking defines whether the reading is blocking or not
+	/// \param[out] token stores the token read
+	/// \return true if a complete token could be read on the current line, false
+	/// (in non blocking mode) if there is not enough data to define whether to token is
+	/// complete or not.
+	/// \note a token what defines the RFC 1945 at paragraph 2.2 "Basic Rules"
+	/// \note the reading of a token does fails if no more token are available on the current
+	/// line (CR, LF or CRLF met), true is returned in that case and token is set to an
+	/// empty string
+    static bool get_token(connexion & input, bool initial, bool blocking, std::string & token);
+
+
+	/// read the next word from the socket
+
+	/// \param[in] initial defines whether we can skip space to reach the word start
+	/// \param[in] blocking defines whether the reading is blocking or not
+	/// \param[out] word stores the read word
+	/// \return true if a complete word could be read on the current line, false
+	/// (in non blocking mode) if there is not enough data to define wheter the word is
+	/// complete or not.
+	/// \note a word is composed of token and the following characters '/' ':' '=' '@' '?'
+	/// \note the reading of a word fails if end of line is met, in that case true is returned
+	/// and word is set to an empty string
+    static bool get_word(connexion & input, bool initial, bool blocking, std::string & word);
+
+};
+
+#endif

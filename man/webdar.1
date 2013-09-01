@@ -1,0 +1,94 @@
+.TH WEBDAR 1 "August 6th, 2012"
+.UC 8
+.SH NAME
+webdar \- web interface to libdar
+.SH SYNOPSIS
+webdar -l [<network interface>:]port [,[<network interface>:]port [,...] ] [-v] [-b <facility>]
+.P
+webdar -h
+.P
+webdar -V
+
+.SH DESCRIPTION
+.B webdar
+is a web server providing a way to manipulate dar archive from a remote host over the network thanks to a classical web browser. Over managing dar archive it also provides the ability to interface with a remote FTP server where to store or fetch dar archive slices.
+.P
+You can find more help information using a web browser pointing it on the interface and port you specified using -l option of webdar.
+.P
+Note that by default webdar is not a daemon, it uses stderr/stdout to report error messages.
+
+.SH OPTIONS
+.TP 20
+-l, --listen [<network interface>:]port [, ...]
+this is a mandatory option, that defines on which port and interface of the host to listen for incoming requests. Network interface can be an hostname, IPv4 or IPv6 address. IPv6 address have to be surrounded by squared brackets (`[' and `]'). Note that you will need to quote the argument when using IPv6 address format for the '[' and ']' not to be interpreted by the shell.
+.P
+Example : -l "localhost:8080,[::1]:8082,127.0.0.1:8083"
+.P
+In the previous example, webdar will listen on hostname 'localhost' port 8080, IPv6 address ::1 port 8082, and IPv4 address 127.0.0.1 on port 8083.
+.TP 20
+-v, --verbose
+set webdar to be verbose
+.TP 20
+-b, --background <facility>
+set webdar as a daemon, <facility> is the syslog facility used to report the error messages that without this option are reported on stdout/stderr.
+
+.TP 20
+-h, --help
+shows a very light help information
+.TP 20
+-V, --version
+shows webdar version
+
+.SH SIGNALS
+Signals are classified in two types:
+.TP 10
+type 1
+lead webdar to properly terminate the current libdar operation and let the user acknoledge the end of the program (all running session must acknowledge or end for the program to stop).
+.TP 10
+type 2
+lead webdar to abort as soon as possible without user confirmation
+.P
+.B
+Type 1
+signals are INT, HUP, USR1, USR2
+.P
+.B
+Type 2
+signals are TERM, ABRT, QUIT, ILL
+
+.SH EXIT CODE
+.B webdar returns with the following exit code:
+.TP 10
+0
+Normal terminaison as requested from a web session
+.TP 10
+1
+Syntaxical error on command-line
+.TP 10
+2
+Error due to a webdar bug
+.TP 10
+3
+Error due to a libdar self reported bug
+.TP 10
+4
+Terminaison upon signal reception of type 1
+.TP 10
+5
+Terminaison upon signal reception of type 2
+.TP 10
+6
+Lack of ressource to be able to provide the expected service
+
+.SH SEE ALSO
+dar(1)
+
+.SH KNOWN BUGS
+see <URL>
+
+.SH AUTHOR
+.nf
+http://webdar.sourceforge.net/
+Denis Corbin
+France
+Europe

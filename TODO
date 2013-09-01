@@ -1,0 +1,58 @@
+Here is the task to do to get ready for release 1.0.0
+========================================================
+- have compliance with HTTP/1.1, this work is mainly at the server class layer
+  where a answer has to be added field and updated version depending on the
+  corresponding request. See RFC in the RFC subdirectory
+- provide html interface for class libdar::entrepot in order to let the user
+  select a directory on the local filesystem or a existing file on the local
+  filesystem, this could be launched beside html_form_input fields of the class
+  saisie as an alternative to fill them clicking on a button-like element beside
+  these fields. Maybe abstracting the html_tree class could avoid code
+  duplication for that task.
+- add a semaphore to control the number of running lindar task (listing task
+  not being concerned by this).
+- add html interface for building filters
+- add filter features to the many place it is used in libdar (file filtering,
+  compression filtering, etc.)
+- add html interface for the overwriting policy (similar to the filter html
+  interface in the way of doing)
+- add help area on the right to provide information on the action and role of
+  the libdar options available on the displayed page
+- implement the entrepot_ftp class descendant from libdar::entrepot. As well as
+  the fichier_ftp descendant from libdar::fichier
+- add html interface to configure the entrepot_ftp object
+- define a library of entrepot, libdar::entrepot_local always being available
+  beside user defined entrepot_ftp objects
+- provide option selectable field beside each slice path to one of the
+  available entrepot of the library entrepot
+- add licencing exhibition from command-line (in addition as the already done
+  static object displayed using web interface)
+- add libdar information display on the about pages
+- define a webdar logo and favicon small image, using povray
+- define building tools to add these two pictures as static object
+- make use of automake autoconf for portability and for
+  configuration/compilation/installation processes
+- make use of doxygen to build webdar code documentation
+
+to be tested/reviewed before release 1.0.0
+===========================================
+- build an archive with more than 2M entry in a given directory, check the
+  archive listing and time performance (should be long,...)
+- review class menu implementation to make use of html_button instead of its
+  self made construction
+- check that all libdar parameters are now configuration through webdar
+- review html_form_input to use libdar::secu_string when password are used
+- check the way webdar behaves upon signal reception when a libdar session is
+  running or not
+- review -v option to provide the exact type of priority to log or not to log
+- review the use of sterror (not thread safe), either use errno (thread safe!)
+  or strerror_r
+
+for future releases (after 1.0.0)
+==================================
+- implement HTTPS (requiring a ceriticat from file given on webdar command-line)
+- implement authentication method using the system users (define a command-line
+  switch to select this mode or the original using random temporary password)
+- implement daemon mode, in which report goes to syslog and process detach
+  itslelf from controlling tty
+- implement save/backup of webdar configuration throw web interface

@@ -1,0 +1,48 @@
+Currently, webdar is still a work in progress,
+
+REQUIREMENTS
+
+you need having libdar from current development (future dar release 2.5.0)
+compiled and installed with "--enable-mode=64 --prefix=/usr" passed to
+dar's ./configure. You can also have installed it under /usr/local in place
+of /usr, in that case you need to edit the Makefile and add:
+
+-I/usr/local/include/dar to CXXFLAGS
+and -L/usr/local/lib to LDFLAGS
+
+INSTALLATION
+
+you can compile webdar by issuing 'make':
+
+    make
+
+to install webdar type (as root):
+
+   make install
+
+(or make install-strip for a smaller binary)
+
+It will be installed under /usr/local
+you can specify another place using the the PREFIX
+variable:
+
+   make PREFIX=/usr install
+
+Last if you want to build a package you can use
+the DESTDIR variable in addition, and no more need root
+priviledge:
+
+   make DESTDIR=/tmp PREFIX=/usr install
+
+If you want to uninstall webdar you can use the
+'uninstall' target, with or without DESTDIR and PREFIX:
+
+   make uninstall
+   make DESTDIR=/tmp uninstall
+   make DESTDIR=/tmp PREFIX=/usr uninstall
+
+
+What's next? Read the man page:
+
+       man webdar
+
