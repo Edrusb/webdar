@@ -1,20 +1,28 @@
 Currently, webdar is still a work in progress,
 
-you can compile it my issuing 'make' in the
-src subdirectory:
+you can compile it my issuing 'make'
 
-    cd src
     make
 
-you will get a webdar binary ready to be run
+to install webdar type as root:
 
-   see the man page for the few switchs you
-   will need,
+   make install
 
-   cd ../man
-   man ./webdar.1
+It will be installed under /usr/local
+you can specify another place using the the PREFIX
+variable:
 
-when webdar will be close to be at release 1.0.0
-autoconf, and automake will be used to provide
-portability and installation process of binary
-man page and documentation, patience...
+   make PREFIX=/usr install
+
+Last if you want to build a package you can use
+the DESTDIR variable in addition and no need root
+priviledge:
+
+   make DESTDIR=/tmp PREFIX=/usr install
+
+If you want to uninstall webdar you can use the
+'uninstall' target, with or without DESTDIR and PREFIX:
+
+   make uninstall
+   make DESTDIR=/tmp uninstall
+   make DESTDIR=/tmp PREFIX=/usr uninstall
