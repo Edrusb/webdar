@@ -1,127 +1,58 @@
-+ faire que les listener objects utilisent un pointeur sur central object pour logger les infos
-+ faire des parser bouchon pour pouvoir compiler et tester cette partie (webdar+ central_report + listener)
-+ revoir les entetes HPP avec #ifndef
-+ revoir l'ordre des include
-+ ne plus se baser sur libdar::U_I virer autant que possible les reference et ne pas inclure de using namespace libdar
-+ implementer connexion::read & write
-+ tester l'implementation actuelle de parser (hello word)
-+ keepalive dans session TCP
-+ finir l'implementation de la classe parser (implementer une class server qui retourne les infos sur la requete recue)
-+ finir l'implementation de la class parser pour la gestion du protocole HTTP (requetes / cookies & Co).
-+ definir la structure de donnee session
-+ remplacer de session par un semaphore; faire une class C++ pour enrober les semaphores
-+ gerer les cookies dans les class requests et answer
-+ implementation de server inherited_run()
-+ terminer l'implementation de parser, si possible mettre des outils dans webdar_tools pour la manipulation de chaines de caractere
-+ implementer une classe authentification par login (a trouver pour le differencier des utilisateur unix)/mot de passe en CLI
-+ faire l'implementation de la classe server / en fonction de la requete sollicite un object html ou cree une nouvelle session
-+ definir la hierarchie de class pour l'authentification : travail a initier depuis la class server faute de cookie dans la requete
-+ implementer la classe chemin (avec sa notion d'index)
-+ revoir la classe uri pour qu'elle utilise la classe chemin
-+ finir implementation des classes derivees de body_builder (html_*)
-+ pouvoir tuer des session depuis chooser =>>> implementation en cours
-+ tester avec un formulaire input lambda dans la page d'erreur
-+ savoir decoder un post de formulaire -> request (en parallele de get_body get_fiels (si content type est ok)
-+ savoir transformer une path en nom de champ (pour les object html)
-+ revoir les classes html* a l'aune de la class body_builder; ces classes doivent analyser les retour de formulaire et fournir des methodes pour acceder aux valeurs des champs (method POST)
-+ ces objects doit pouvoir gerer les methods GET/HEAD et POST les autres method doivent etre rejetes
-+ ajouter une class de decodage des POST en retour de formulaire (scinder champ / valeurs) (RFC "URL")
-+ ajouter des primitives css pour l'alignement du text, bold, italic, surligne etc.
-+ revoir events.hpp et faire deriver event_trigger et event_action de la classe reference
-+ revoir menu pour qu'il derive d'un events
-+ revoir "saisie" pour qu'il derive d'un actor, et lui associer les evenements de menu pour
-+   affecter les object show_archive et aiguille, simplifier le get_body_part() qui doit sauter meme
-+ faire deriver saisie d'un events et gui de actor pour implementer la fin de session
-+ simplifier body_builder, laisser la gestion des objets a leurs classe parent, l'arborescence
-body_builder se construit par "reference" (event/actor)
-+ revoir chooser pour utiliser html_yes_no_box
-+ implementer dans saisie la page restore
-+ cadre autour des parametres propre a l'ouverture d'une archive en lecture / en ecriture
-+ ajouter un item "entrepot/repositories" et separer les actions par de "main page" et de "filters"
-+ implementer les classes GUI a partir des primitives HTML_*
-+ user_interface doit fournir des libdar::options et proposer un evenement pour chaque action
-+ utiliser archive_read dans saisie a la place des champs eparpilles
-+ finir l'implementation de options_read et archive_read
-+ faire l'implementation de html_hash_algo
-+ faire l'implementation de html_datetime
-+ finir l'implementation de options_create
-+ ajouter les champs non optionnels pour la creation d'archive
-+ resoudre probleme de deadlock lors de l'initialisation des champs -> acteur/event
-+ implementer une class derivee de libdar::user_interaction : web_user_interaction
-+ finir l'implementation de archive_read avec la class web_user_interaction
+Here is the task to do to get ready for release 1.0.0
+========================================================
+- have compliance with HTTP/1.1, this work is mainly at the server class layer
+  where a answer has to be added field and updated version depending on the
+  corresponding request. See RFC in the RFC subdirectory
+- provide html interface for class libdar::entrepot in order to let the user
+  select a directory on the local filesystem or a existing file on the local
+  filesystem, this could be launched beside html_form_input fields of the class
+  saisie as an alternative to fill them clicking on a button-like element beside
+  these fields. Maybe abstracting the html_tree class could avoid code
+  duplication for that task.
+- add a semaphore to control the number of running lindar task (listing task
+  not being concerned by this).
+- add html interface for building filters
+- add filter features to the many place it is used in libdar (file filtering,
+  compression filtering, etc.)
+- add html interface for the overwriting policy (similar to the filter html
+  interface in the way of doing)
+- add help area on the right to provide information on the action and role of
+  the libdar options available on the displayed page
+- implement the entrepot_ftp class descendant from libdar::entrepot. As well as
+  the fichier_ftp descendant from libdar::fichier
+- add html interface to configure the entrepot_ftp object
+- define a library of entrepot, libdar::entrepot_local always being available
+  beside user defined entrepot_ftp objects
+- provide option selectable field beside each slice path to one of the
+  available entrepot of the library entrepot
+- add licencing exhibition from command-line (in addition as the already done
+  static object displayed using web interface)
+- add libdar information display on the about pages
+- define a webdar logo and favicon small image, using povray
+- define building tools to add these two pictures as static object
+- make use of automake autoconf for portability and for
+  configuration/compilation/installation processes
+- make use of doxygen to build webdar code documentation
 
-+ implementer classe html_bouton issue de body_builder et events, l'evenement genere est fourni via le constucteur
-+ ajouter un bouton a chaque page (backup, test, etc.)
-+ faire une classe progressive (libdar::statistics) report representation HTML de la classe libdar::statistics
-+ ajouter un champ web_user_interface a la classe user_interface,
-+ placer la class user_interface comme acteur sur boutons de chaque page
-x faire une classe abort_libdar, invoquant libdar::thread_cancel et fournissant un bouton "abort"
+to be tested/reviewed before release 1.0.0
+===========================================
+- build an archive with more than 2M entry in a given directory, check the
+  archive listing and time performance (should be long,...)
+- review class menu implementation to make use of html_button instead of its
+  self made construction
+- check that all libdar parameters are now configuration through webdar
+- review html_form_input to use libdar::secu_string when password are used
+- check the way webdar behaves upon signal reception when a libdar session is
+  running or not
+- review -v option to provide the exact type of priority to log or not to log
+- review the use of sterror (not thread safe), either use errno (thread safe!)
+  or strerror_r
 
-+ terminer les fonction de webdar_css_style.?pp : probleme eviter le duplication des url_class dans la code html genere ... methode ? a part ou tout revoir a base d'objet constant ? appelle depuis chaque html_page une seule fois ou, definition de ces methodes dans html_page directement ?!?
-+ finir l'implementation de html_error
-+ finir l'implementation de html_libdar_running
-+ capturer les exceptions lances par libdar lors du lancement de la thread (que se passe-t il quand on test avec des arguments vides pour l'archive ?)
-
-+ faire une class derivee de thread pour lancer les appels libdar (voire une classe par action, ou une meme classe avec plusieurs methods "run", run_create(..)etc.)
-- implementer le listing d'archive => methode listing / use_listing() de web_user_interaction ...
-- implementer le parcours d'une archive ouverte (listing)
-- tester la lecture d'une archive qui possede plus de 2 million d'entree dans un repertoire (saturation des l'arborescence body_builder)
-+ pouvoir nommer les sessions
-- revoir l'implementation de menu pour utiliser des html_button, avec une url_class globale au menu!
-- voir comment partager les proprietes CSS des boutons seuls et au sein d'un menu (methode sur class saisie  transmise a ses bouton et ses menus, invoquee depuis la class user_interface pour ses propres boutons en direct)
-- refondre la class html_tree/html_listing_page pour l'utiliser en parcours d'une filesystem/repository (interface generique vers libdar et repository)
-
-+ voir probleme d'initialisation de mutex lorsqu'on ferme une session depuis elle-meme
-+ utiliser un user_interface * au lieu d'un respondeur * dans la classe session => les informations de session libdar, thread_id, etc. ne sont plus par l'objet session, l'objet session gere uniquement l'acces a l'objet user_interface. Celui-ci gere sa thread libdar et dispose d'un moyen HTML et d'une methode pour avorter une thread libdar.
-
-+ la classe user_interface dispose d'un etat modifie entre autres par les evenements sur les boutons (saisie, create, test, etc.)
-+ ajouter un champ ou plusieurs champs html_progressive_report a la classe user_interface
-
-+ ajouter le support CSS des superpositions (css_z_index + css_position_absolute + css_position_top/right/bottom/left)
-- ajouter un controle sur les valeurs des methodes dans les requetes afin de valider les champs avant de les soumettre a libdar (coherence de mots de passe, range des valeurs, chaine reprensant des nombres, etc.) => gestion via des exceptions => page speciale avec bouton retour ou CSS en premier plan.
-- implementer les pages isolation et merging
-- revoir la nomenclature des class, prefixer par html celles relative a l'interface graphique option_read, etc.
-
-- add a semaphore to limit the maximum of concurrent libdar running thread, add a command-line switch to change the default value of 1
-
--x-x-x-x-x-x-x-x-x-x- arret ici pour CCDE -x-x-x-x
-
-- implementer la construction de filtres
-- implementer la construction d'overwriting policy
-- ajouter les champs filtres aux classes d'options
-- ajouter les champs overwriting aux classes d'options
-- implementer la construction de repositories
-- creer un controle pour parcourir un repository afin de selectionner un repertoire ou un fichier (et qui retourne le chemin de l'object selectionne par l'utilisateur).
-
-- revoir html_form_input pour utiliser des libdar::secu_string au lieu des string
-
-- bouton et page d'aide contextuelle (dans encart flotant a gauche dans "selection")
-- implementer l'entrepot FTP
-
-- ajouter une option en CLI pour ne pas avoir d'authentification du tout
-- pour les sessions non authentifiees, il faut limiter la duree de la connexion a un temps court
-- finir la gestion des signaux et masks (avec les informations de sessions ouvertes etc.)
-- ajouter la gestion des signaux au sein des threads
-- prendre en compte les signaux qui peuvent etre retournes par une socket
-- revoir la conformite de la classe parser aux vue des RFC HTTP:
-  - en 0.9 savoir quelle erreur reporter systematiquement
-  - en 1.0 et 1.1 appliquer les RFC
-
-- revoir -v pour lui fournir le niveau exact (debug/info/etc.) a prendre en compte pour les logs
-- implementer HTTPS comme une classe derivee de connexion
-- implementer class authentification par user du systeme
-- implementer le mode daemon / syslog (qui interdit l'authentification par CLI)
-- pouvoir saisir des nom et convertir les IP en nom si possible (peer IP)
-+ revoir sterrror_r dans exception_system (strerror n'est pas thread safe, mais errno l'est !!!)
-- revoir toutes les allocations dynamiques en "new (nothrow)"
-- ajouter des #ifdef dans les includes
-
-- ajouter la licence en CLI -L et http, entetes des fichiers avec GPLv3
-- portabilite avec automake / autoconf
-- internationalisation avec gettext
-- ajouter des images dans l'interface WEB
-- fournir une icone pour les requetes favicon.ico
-
-- implementer class entreport / FTP
-- modifier les #ifndef/#define des includes de libdar pour ajouter LIBDAR_ a la macro
-
+for future releases (after 1.0.0)
+==================================
+- implement HTTPS (requiring a ceriticat from file given on webdar command-line)
+- implement authentication method using the system users (define a command-line
+  switch to select this mode or the original using random temporary password)
+- implement daemon mode, in which report goes to syslog and process detach
+  itslelf from controlling tty
+- implement save/backup of webdar configuration throw web interface
