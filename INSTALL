@@ -8,6 +8,8 @@ to install webdar type as root:
 
    make install
 
+(or make install-strip for a smaller binary)
+
 It will be installed under /usr/local
 you can specify another place using the the PREFIX
 variable:

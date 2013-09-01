@@ -21,14 +21,14 @@
 #/  to contact the author: dar.linux@free.fr
 #*********************************************************************/
 
-CFLAGS=-ggdb -pthread `pkg-config --cflags libdar64`
-CXXFLAGS=-ggdb -pthread `pkg-config --cflags libdar64`
+CFLAGS=-ggdb -pthread `pkg-config --cflags libdar64` -static
+CXXFLAGS=-ggdb -pthread `pkg-config --cflags libdar64` -static
 
 
 #LDFLAGS=-ggdb -lstdc++ -lpthread -lattr -lgcrypt -lgpg-error -llzo2 -lbz2 -lz -ldl
 #LIBDAR_OBJ=../../../../DAR/dar/src/libdar/*.o
 
-LDFLAGS=-ggdb -lstdc++ -pthread `pkg-config --libs libdar64`
+LDFLAGS=-ggdb -lstdc++ -pthread `pkg-config --libs libdar64` -all-static
 LIBDAR_OBJ=
 
 all: webdar

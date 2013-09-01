@@ -16,6 +16,9 @@ install:
 	cp src/webdar ${DESTDIR}${PREFIX}/bin
 	cp man/webdar.1 ${DESTDIR}${PREFIX}/share/man/man1
 
+install-strip: install
+	strip ${DESTDIR}${PREFIX}/bin/webdar
+
 uninstall:
 	rm ${DESTDIR}${PREFIX}/bin/webdar
 	rm ${DESTDIR}${PREFIX}/share/man/man1/webdar.1
