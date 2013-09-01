@@ -48,8 +48,8 @@ public:
 	///
 	/// \param[in] level 1 for <h1> etc. and zero for normal text
     void add_text(unsigned int level, const std::string & text);
-    void add_nl() { txt += "<br />"; };
-    void add_paragraph() { txt += "<p />"; };
+    html_text & add_nl() { txt += "<br />"; return *this; };
+    html_text & add_paragraph() { txt += "<p />"; return *this; };
 
     void clear() { txt = ""; };
 

@@ -31,92 +31,15 @@ CXXFLAGS=-ggdb -pthread `pkg-config --cflags libdar64`
 LDFLAGS=-ggdb -lstdc++ -pthread `pkg-config --libs libdar64`
 LIBDAR_OBJ=
 
-#static_objects.sto: static_objects.desc static_object_creator
-#	static_object_creator < $<  > $@
-
 all: webdar
 
 clean:
-	rm -f *.o webdar
+	rm -f *.o webdar static_object_builder static_object.sto
 
 webdar: webdar.o central_report.o connexion.o exceptions.o listener.o thread.o parser.o webdar_tools.o server.o mutex.o semaphore.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o body_builder.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o html_menu.o  html_aiguille.o saisie.o user_interface.o events.o reference.o html_url_class.o html_yes_no_box.o html_options_extract.o html_options_read.o html_crypto_algo.o html_comparison_fields.o html_options_compare.o html_options_test.o html_archive_read.o html_compression.o html_size_unit.o html_hash_algo.o html_datetime.o html_options_create.o html_archive_create.o web_user_interaction.o html_web_user_interaction.o html_button.o html_statistics.o archive_test.o webdar_css_style.o html_error.o html_libdar_running.o archive_restore.o archive_compare.o archive_create.o html_options_isolate.o archive_isolate.o html_archive_isolate.o html_options_merge.o html_archive_merge.o archive_merge.o archive_init_list.o html_dir_tree.o html_listing_page.o html_focus.o static_object.o static_object_library.o $(LIBDAR_OBJ)
 
+static_object_library.o : static_object_library.cpp static_object.sto
 
-webdar.o : webdar.cpp exceptions.hpp central_report.hpp listener.hpp webdar_tools.hpp server.hpp authentication.hpp
-central_report.o : central_report.cpp central_report.hpp webdar_tools.hpp exceptions.hpp mutex.hpp
-connexion.o : connexion.cpp connexion.hpp exceptions.hpp
-exceptions.o : exceptions.cpp exceptions.hpp
-listener.o : listener.cpp listener.hpp connexion.hpp server.hpp webdar_tools.hpp central_report.hpp thread.hpp exceptions.hpp authentication.hpp
-thread.o : thread.cpp thread.hpp exceptions.hpp mutex.hpp
-parser.o : parser.cpp parser.hpp webdar_tools.hpp exceptions.hpp connexion.hpp responder.hpp central_report.hpp date.hpp
-webdar_tools.o : webdar_tools.cpp webdar_tools.hpp exceptions.hpp uri.hpp
-server.o : server.cpp server.hpp exceptions.hpp central_report.hpp responder.hpp server.hpp webdar_tools.hpp cookies.hpp error_page.hpp
-mutex.o : mutex.cpp mutex.hpp exceptions.hpp
-semaphore.o : semaphore.cpp semaphore.hpp mutex.hpp exceptions.hpp
-uri.o : uri.cpp uri.hpp
-session.o : session.cpp session.hpp cookies.hpp webdar_tools.hpp responder.hpp semaphore.hpp
-date.o : date.cpp date.hpp exceptions.hpp webdar_tools.hpp
-tokens.o : tokens.cpp tokens.hpp
-request.o : request.cpp request.hpp exceptions.hpp webdar_tools.hpp tokens.hpp
-answer.o : answer.cpp answer.hpp exceptions.hpp webdar_tools.hpp uri.hpp tokens.hpp
-base64.o : base64.cpp base64.hpp exceptions.hpp
-challenge.o : challenge.cpp challenge.hpp base64.hpp responder.hpp authentication.hpp cookies.hpp
-choose.o : choose.cpp choose.hpp session.hpp responder.hpp
-css.o : css.cpp css.hpp css_property.hpp
-css_property.o : css_property.cpp css_property.hpp
-body_builder: body_builder.cpp body_builder.hpp
-html_text.o : html_text.cpp html_text.hpp body_builder.hpp
-html_page.o : html_page.cpp html_page.hpp body_builder.hpp
-html_table.o : html_table.cpp html_table.hpp body_builder.hpp
-html_image.o : html_image.cpp html_image.hpp body_builder.hpp
-html_url.o : html_url.cpp html_url.hpp body_builder.hpp
-html_form.o : html_form.cpp html_form.hpp body_builder.hpp
-html_form_input.o : html_form_input.cpp html_form_input.hpp body_builder.hpp
-html_form_radio.o : html_form_radio.cpp html_form_radio.hpp body_builder.hpp
-html_form_fieldset.o : html_form_fieldset.cpp html_form_fieldset.hpp body_builder.hpp
-error_page.o : error_page.cpp error_page.hpp
-chemin.o : chemin.cpp chemin.hpp exceptions.hpp
-html_level.o : html_level.cpp html_level.hpp body_builder.hpp
-html_div.o : html_div.cpp html_div.hpp html_level.hpp
-html_menu.o : html_menu.cpp html_menu.hpp body_builder.hpp html_div.hpp html_url.hpp html_text.hpp tokens.hpp exceptions.hpp
-html_url_class.o : html_url_class.cpp html_url_class.hpp body_builder.hpp
-html_aiguille.o : html_aiguille.cpp html_aiguille.hpp body_builder.hpp
-saisie.o : saisie.cpp saisie.hpp html_url.hpp html_div.hpp html_aiguille.hpp html_menu.hpp
-user_interface.o : user_interface.cpp user_interface.hpp saisie.hpp responder.hpp
-events.o : events.cpp events.hpp exceptions.hpp
-reference.o : reference.cpp reference.hpp exceptions.hpp
-html_yes_no_box.o : html_yes_no_box.cpp html_yes_no_box.hpp exceptions.hpp html_form.hpp html_form_fieldset.hpp html_form_radio.hpp body_builder.hpp
-html_options_extract.o : html_options_extract.cpp html_options_extract.hpp html_form.hpp html_form_fieldset.hpp html_form_input.hpp html_form_select.hpp
-html_options_read.o : html_options_read.cpp html_options_read.hpp body_builder.hpp html_div.hpp html_form.hpp html_form_fieldset.hpp html_form_select.hpp html_form_input.hpp
-html_crypto_algo.o : html_crypto_algo.cpp html_crypto_algo.hpp html_form_select.hpp body_builder.hpp
-html_comparison_fields.o : html_comparison_fields.cpp html_comparison_fields.hpp html_form_select.hpp
-html_options_compare.o : html_options_compare.cpp html_options_compare.hpp body_builder.hpp html_form_input.hpp html_form_fieldset.hpp html_form.hpp html_comparison_fields.hpp
-html_options_test.o : html_options_test.cpp html_options_test.hpp body_builder.hpp html_form.hpp html_form_fieldset.hpp html_form_input.hpp
-html_archive_read.o : html_archive_read.cpp html_archive_read.cpp body_builder.hpp html_div.hpp html_form.hpp html_form_fieldset.hpp html_form_select.hpp html_form_input.hpp html_crypto_algo.hpp events.hpp
-html_compression.o : html_compression.cpp html_compression.hpp html_form_select.hpp
-html_size_unit.o : html_size_unit.cpp html_size_unit.hpp html_form_select.hpp
-html_hash_algo.o : html_hash_algo.cpp html_hash_algo.hpp html_form_select.hpp
-html_datetime.o : html_datetime.cpp html_datetime.hpp html_form_input.hpp html_form_select.hpp body_builder.hpp
-options_create.o : html_options_create.cpp html_options_create.hpp body_builder.hpp html_compression.hpp html_crypto_algo.hpp html_form_input.hpp html_comparison_fields.hpp html_size_unit.hpp html_form_fieldset.hpp html_datetime.hpp html_form.hpp html_archive_read.hpp html_hash_algo.hpp
-html_archive_create.o : html_archive_create.cpp html_archive_create.hpp body_builder.hpp html_form.hpp html_form_input.hpp html_options_create.hpp
-web_user_interaction.o: web_user_interaction.cpp web_user_interaction.hpp semaphore.hpp mutex.hpp
-html_web_user_interaction.o : html_web_user_interaction.cpp html_web_user_interaction.hpp body_builder.hpp html_form_input.hpp html_form.hpp html_form_radio.hpp html_form_fieldset.hpp html_text.hpp events.hpp
-html_button.o : html_button.cpp html_button.hpp body_builder.hpp events.hpp html_url_class.hpp html_url.hpp html_div.hpp
-html_statistics.o : html_statistics.cpp html_statistics.hpp body_builder.hpp html_table.hpp html_text.hpp
-archive_test.o : archive_test.cpp archive_test.hpp tokens.hpp
-webdar_css_style.o : webdar_css_style.cpp webdar_css_style.hpp mutex.hpp html_button.hpp tokens.hpp
-html_error.o : html_error.cpp html_error.hpp webdar_css_style.hpp events.hpp html_page.hpp html_text.hpp html_button.hpp
-html_libdar_running.o : html_libdar_running.cpp html_libdar_running.hpp webdar_css_style.hpp html_page.hpp events.hpp html_div.hpp web_user_interaction.hpp html_statistics.hpp html_button.hpp
-archive_restore.o : archive_restore.cpp archive_restore.hpp web_user_interaction.hpp thread.hpp
-archive_compare.o : archive_compare.cpp archive_compare.hpp web_user_interaction.hpp thread.hpp
-archive_create.o : archive_create.cpp archive_create.hpp web_user_interaction.hpp thread.hpp
-html_options_isolate.o: html_options_isolate.cpp html_options_isolate.hpp body_builder.hpp html_form.hpp html_form_fieldset.hpp html_form_input.hpp html_compression.hpp html_size_unit.hpp
-archive_isolate.o : archive_isolate.cpp archive_isolate.hpp thread.hpp html_options_isolate.hpp
-html_archive_isolate.o : html_archive_isolate.cpp html_archive_isolate.hpp html_form_input.hpp html_options_isolate.hpp events.hpp html_archive_read.hpp
-html_options_merge.o : html_options_merge.cpp html_options_merge.hpp html_archive_read.hpp html_crypto_algo.hpp html_hash_algo.hpp html_size_unit.hpp html_compression.hpp html_form_input.hpp html_form_fieldset.hpp html_form.hpp body_builder.hpp
-html_archive_merge.o : html_archive_merge.cpp html_archive_merge.hpp html_form_input.hpp html_form_fieldset.hpp html_options_merge.hpp body_builder.hpp events.hpp
-archive_init_list.o : archive_init_list.cpp archive_init_list.hpp thread.hpp web_user_interaction.hpp
-html_dir_tree.o : html_dir_tree.cpp html_dir_tree.hpp html_div.hpp events.hpp chemin.hpp archive_init_list.hpp html_button.hpp
-html_listing_page.o : html_listing_page.cpp html_listing_page.hpp html_dir_tree.hpp html_button.hpp html_page.hpp html_div.hpp archive_init_list.hpp
-static_object.o : static_object.cpp static_object.hpp answer.hpp
-static_object_library.o : static_object_library.cpp static_object_library.hpp static_object.hpp tokens.hpp static_object.sto
+# C++ generated code:
+static_object.sto: static_object_batch static_object_builder
+	./static_object_batch > static_object.sto
