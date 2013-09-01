@@ -43,3 +43,6 @@ static_object_library.o : static_object_library.cpp static_object.sto
 # C++ generated code:
 static_object.sto: static_object_batch static_object_builder
 	./static_object_batch > static_object.sto
+
+static_object_builder: static_object_builder.o
+
