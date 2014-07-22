@@ -22,13 +22,14 @@
 #*********************************************************************/
 
 CFLAGS=-ggdb -pthread `pkg-config --cflags libdar64` -static
-CXXFLAGS=-ggdb -pthread `pkg-config --cflags libdar64` -static
+CXXFLAGS=-ggdb -pthread `pkg-config --cflags libdar64` -static -D_FILE_OFFSET_BITS=64
+
 
 
 #LDFLAGS=-ggdb -lstdc++ -lpthread -lattr -lgcrypt -lgpg-error -llzo2 -lbz2 -lz -ldl
 #LIBDAR_OBJ=../../../../DAR/dar/src/libdar/*.o
 
-LDFLAGS=-ggdb -lstdc++ -pthread `pkg-config --libs libdar64` -all-static
+LDFLAGS=-ggdb -lstdc++ -pthread `pkg-config --libs libdar64`
 LIBDAR_OBJ=
 
 all: webdar
