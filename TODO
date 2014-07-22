@@ -33,6 +33,7 @@ Here is the task to do to get ready for release 1.0.0
 - make use of automake autoconf for portability and for
   configuration/compilation/installation processes
 - make use of doxygen to build webdar code documentation
+- implement save/backup of webdar configuration through web interface
 
 to be tested/reviewed before release 1.0.0
 ===========================================
@@ -55,4 +56,5 @@ for future releases (after 1.0.0)
   switch to select this mode or the original using random temporary password)
 - implement daemon mode, in which report goes to syslog and process detach
   itslelf from controlling tty
-- implement save/backup of webdar configuration throw web interface
+- implement scheduling to run/enqueue task at given time and period
+
