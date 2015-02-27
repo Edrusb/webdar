@@ -32,12 +32,12 @@ extern "C"
 
     // C++ system header files
 #include <dar/libdar.hpp>
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
-#include "thread.hpp"
 #include "web_user_interaction.hpp"
 
-class archive_restore : public thread
+class archive_restore : public libthreadar::thread
 {
 public:
     archive_restore();
@@ -51,7 +51,7 @@ public:
     void set_progressive_report(libdar::statistics *ptr) { progressive_report = ptr; };
 
 protected:
-	/// inherited from class thread
+	/// inherited from class libthreadar::thread
     virtual void inherited_run();
 
 private:

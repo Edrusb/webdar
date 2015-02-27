@@ -31,7 +31,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
 #include "responder.hpp"
@@ -41,7 +41,6 @@ extern "C"
 #include "html_libdar_running.hpp"
 #include "html_error.hpp"
 #include "html_listing_page.hpp"
-#include "thread.hpp"
 #include "archive_test.hpp"
 #include "archive_restore.hpp"
 #include "archive_compare.hpp"
@@ -49,7 +48,6 @@ extern "C"
 #include "archive_isolate.hpp"
 #include "archive_merge.hpp"
 #include "archive_init_list.hpp"
-#include "mutex.hpp"
 
 class user_interface : public responder, public events, public actor
 {
@@ -92,7 +90,7 @@ private:
     };
 
     std::string sessname;  //< customized name of that session (empty string by default)
-    mutex mut_sessname;    //< drives the access to sessname, by set and get session name methods
+    libthreadar::mutex mut_sessname; //< drives the access to sessname, by set and get session name methods
     mode_type mode;        //< current mode
     mode_type return_mode; //< mode in which to return from error status
     bool close_requested;  //< whether session close has been asked
@@ -104,7 +102,7 @@ private:
     html_listing_page in_list;     //< page issued when proceeding to archive listing
 
     bool libdar_running;      //< whether a libdar child thread is running
-    thread *current_thread;   //< points to the running thread (either arch_test, arch_merge, ....)
+    libthreadar::thread *current_thread; //< points to the running thread (either arch_test, arch_merge, ....)
     archive_test arch_test;   //< holds thread created for testing archives
     archive_restore arch_rest;//< holds thread created for extracting archives
     archive_compare arch_diff;//< holds thread created for comparing archives

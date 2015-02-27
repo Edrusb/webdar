@@ -37,6 +37,9 @@ extern "C"
     // C++ system header files
 #include <new>
 
+    // libraries header files
+#include <libthreadar/libthreadar.hpp>
+
     // webdar headers
 #include "listener.hpp"
 #include "connexion.hpp"
@@ -263,7 +266,7 @@ void listener::inherited_run()
 	    {
 		throw;
 	    }
-	    catch(exception_thread & e)
+	    catch(libthreadar::exception_thread & e)
 	    {
 		throw;
 	    }

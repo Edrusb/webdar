@@ -24,9 +24,12 @@
 #ifndef LISTENER_HPP
 #define LISTENER_HPP
 
+    // C++ system header files
+#include <libthreadar/libthreadar.hpp>
+
+
     // webdar headers
 #include "central_report.hpp"
-#include "thread.hpp"
 #include "exceptions.hpp"
 #include "authentication.hpp"
 
@@ -38,7 +41,7 @@
     /// and a "parser" object
 
 
-class listener : public thread
+class listener : public libthreadar::thread
 {
 public:
     listener(central_report *log,  //< where to send reports
@@ -54,7 +57,7 @@ public:
     ~listener() { close(sockfd); };
 
 protected:
-	// inherited from thread;
+	// inherited from libthreadar::thread;
     void inherited_run();
 
 private:

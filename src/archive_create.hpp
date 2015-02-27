@@ -32,13 +32,13 @@ extern "C"
 
     // C++ system header files
 #include <dar/libdar.hpp>
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
-#include "thread.hpp"
 #include "web_user_interaction.hpp"
 #include "html_options_create.hpp"
 
-class archive_create : public thread
+class archive_create : public libthreadar::thread
 {
 public:
     archive_create(): archpath("/"), fs_root("/") { progressive_report = NULL; };
@@ -57,7 +57,7 @@ public:
     void set_progressive_report(libdar::statistics *ptr) { progressive_report = ptr; };
 
 protected:
-	/// inherited from class thread
+	/// inherited from class libthreadar::thread
     virtual void inherited_run();
 
 private:

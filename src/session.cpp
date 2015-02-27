@@ -28,7 +28,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
 #include "webdar_tools.hpp"
@@ -48,7 +48,7 @@ const unsigned int MAX_COLLISION = 300;
     //  object method implementation
     //
 
-session::session()
+session::session(): lock_wui(1)
 {
     session_ID = "";
     tid = 0;
@@ -89,7 +89,7 @@ void session::on_event(const std::string & event_name)
     //  class fields and methods implementation
     //
 
-mutex session::lock_running;
+libthreadar::mutex session::lock_running;
 map<string, session::table> session::running_session;
 
 unsigned int session::get_num_session()

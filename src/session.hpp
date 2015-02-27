@@ -31,10 +31,10 @@ extern "C"
 
     // C++ system header files
 #include <list>
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
 #include "user_interface.hpp"
-#include "semaphore.hpp"
 #include "events.hpp"
 
     /// class session - holds information about a current user session
@@ -96,7 +96,7 @@ private:
 	/// set session_ID
     void set_session_id(const std::string & sessid);
 
-    semaphore lock_wui;       //< required locking before accessing wui field
+    libthreadar::semaphore lock_wui; //< required locking before accessing wui field
     user_interface wui;       //< object containing the current Web User Interface; is managed by the session object and should never be NULL
     pthread_t tid;            //< tid of the thread that acquired lock on that object
     std::string session_ID;   //< session_ID info (duplicated info to avoid table lookup and mutex lock)
@@ -117,7 +117,7 @@ private:
 	void clear() { owner = ""; reference = NULL; ref_given = 0; closing = false; };
     };
 
-    static mutex lock_running;                               //< control access to runnng_session static table
+    static libthreadar::mutex lock_running;       //< control access to runnng_session static table
     static std::map<std::string, table> running_session;     //< list of existing sessions
     static session_summary publish(std::map<std::string, table>::iterator it);
 };

@@ -28,11 +28,10 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
 #include "tokens.hpp"
-#include "mutex.hpp"
 
     //
 #include "webdar_css_style.hpp"
@@ -40,7 +39,7 @@ extern "C"
 using namespace std;
 
 static bool initialized = false;
-static mutex init_lock;
+static libthreadar::mutex init_lock;
 static html_div box_off; //< used to assign CSS attributes: unselected item
 static html_div box_on;  //< used to assign CSS attributes: selected item
 static html_div box_void;//< used to assign CSS attributes: separators

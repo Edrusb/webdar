@@ -33,9 +33,9 @@ extern "C"
 
     // C++ system header files
 #include <string>
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
-#include "mutex.hpp"
 
     /// means by which webdar event get reported either to stdout or to syslog
 
@@ -54,7 +54,7 @@ protected:
 
 private:
     priority_t min;
-    static mutex access; //< caller must acquire mutex before reporting
+    static libthreadar::mutex access; //< caller must acquire mutex before reporting
 };
 
 
@@ -81,7 +81,7 @@ private:
 
 	// static fields
     static unsigned int num_obj; //< number of object created (only one is allowed as syslog routine is not re-entrant)
-    static mutex num_obj_mod;    //< controls the write access to num_obj
+    static libthreadar::mutex num_obj_mod;    //< controls the write access to num_obj
 
 };
 

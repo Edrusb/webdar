@@ -31,7 +31,7 @@ extern "C"
 
 
     // webdar headers
-
+#include "exceptions.hpp"
 
 
     //
@@ -514,7 +514,7 @@ void web_user_interaction::detruit()
 
 ///////////// shared_data methods //////////////////
 
-web_user_interaction::shared_data::shared_data(unsigned int x_warn_size)
+web_user_interaction::shared_data::shared_data(unsigned int x_warn_size) : libdar_sem(1)
 {
     instances = 1;
     warn_size = x_warn_size;

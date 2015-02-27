@@ -33,6 +33,7 @@ extern "C"
     // C++ system header files
 #include <string>
 #include <vector>
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
 #include "session.hpp"
@@ -93,7 +94,7 @@ private:
     struct record
     {
 	choose *obj;
-	mutex lock;
+	libthreadar::mutex lock;
 	record() { obj = NULL; };
 	~record() { if(obj != NULL) delete obj; };
     };

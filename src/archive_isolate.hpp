@@ -32,13 +32,13 @@ extern "C"
 
     // C++ system header files
 #include <dar/libdar.hpp>
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
-#include "thread.hpp"
 #include "web_user_interaction.hpp"
 #include "html_options_isolate.hpp"
 
-class archive_isolate : public thread
+class archive_isolate : public libthreadar::thread
 {
 public:
     archive_isolate(): archpath("/") { has_ref = false; };
@@ -55,7 +55,7 @@ public:
 			       const libdar::archive_options_read & readopt);
 
 protected:
-	/// inherited from class thread
+	/// inherited from class libthreadar::thread
     virtual void inherited_run();
 
 private:

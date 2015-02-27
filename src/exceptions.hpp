@@ -87,17 +87,6 @@ protected:
 };
 
 
-    /// exception used to report error met when manipulating threads
-
-class exception_thread : public exception_base
-{
-public:
-    exception_thread(const std::string & x_msg) : exception_base(x_msg) {};
-
-protected:
-    virtual exception_base *clone() const { return cloner<exception_thread>((void *)this); };
-};
-
     /// exception used to report operating system errors
 
 class exception_system : public exception_base

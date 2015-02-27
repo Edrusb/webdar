@@ -32,6 +32,7 @@ extern "C"
 
     // webdar headers
 #include "tokens.hpp"
+#include "exceptions.hpp"
 
     //
 #include "archive_restore.hpp"

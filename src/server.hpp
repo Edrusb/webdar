@@ -26,17 +26,16 @@
 
     // C++ system header files
 #include <list>
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
 #include "parser.hpp"
-#include "thread.hpp"
 #include "central_report.hpp"
-#include "mutex.hpp"
 #include "session.hpp"
 #include "authentication.hpp"
 
 
-class server: public thread
+class server: public libthreadar::thread
 {
 public:
 	// constructor & Destructor are intentionally set as private methods
@@ -65,9 +64,9 @@ private:
     session *locked_session; //< the current session we use (we have acquired its mutex)
 
 	/// static fields
-    static mutex lock_counter;            //< manages access to all static fields
-    static unsigned int max_server;       //< max allowed number of concurrent thread
-    static std::list<server *> instances; //< list of existing server objects
+    static libthreadar::mutex lock_counter; //< manages access to all static fields
+    static unsigned int max_server;         //< max allowed number of concurrent thread
+    static std::list<server *> instances;   //< list of existing server objects
 };
 
 #endif

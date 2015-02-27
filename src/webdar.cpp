@@ -39,6 +39,7 @@ extern "C"
 
     // libraries header files
 #include <dar/libdar.hpp>
+#include <libthreadar/libthreadar.hpp>
 
 
     // webdar headers
@@ -277,9 +278,9 @@ int main(int argc, char *argv[], char **env)
 	cerr << "Webdar met an internal condition flagged as a bug: please report the following output to maintainer: " << e.get_message() << endl;
 	ret = WEBDAR_EXIT_WEBDAR_BUG;
     }
-    catch(exception_thread & e)
+    catch(libthreadar::exception_thread & e)
     {
-	cerr << "Uncaught exception_thread reached program boundary! " << e.get_message() << endl;
+	cerr << "Uncaught exception_thread reached program boundary! " << e.get_message(": ") << endl;
 	ret = WEBDAR_EXIT_WEBDAR_BUG;
     }
     catch(exception_system & e)

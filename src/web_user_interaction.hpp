@@ -34,10 +34,9 @@ extern "C"
 #include <string>
 #include <list>
 #include <dar/libdar.hpp>
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
-#include "semaphore.hpp"
-#include "mutex.hpp"
 
 
 class web_user_interaction : public libdar::user_interaction
@@ -91,10 +90,10 @@ protected:
 private:
     struct shared_data
     {
-	mutex control;          //< control access to any value this object has
-	unsigned int instances; //< number of reference existing toward this struct object, this object data get destroyed when this number drops to zero
-	semaphore libdar_sem;   //< libdar thread wait on it for an answer
-	bool answered;          //< true if the pending pause2(), get_string() or get_secu_string() has been answered, so the question has not to be shown twice
+	libthreadar::mutex control;    //< control access to any value this object has
+	unsigned int instances;        //< number of reference existing toward this struct object, this object data get destroyed when this number drops to zero
+	libthreadar::semaphore libdar_sem;  //< libdar thread wait on it for an answer
+	bool answered;                 //< true if the pending pause2(), get_string() or get_secu_string() has been answered, so the question has not to be shown twice
 
 	    // pause2() fields
 	bool pause2_pending;    //< true if a pause2() is pending for a response

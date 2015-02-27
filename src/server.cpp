@@ -30,6 +30,10 @@ extern "C"
     // C++ system header files
 #include <new>
 
+    // libraries header files
+#include <libthreadar/libthreadar.hpp>
+
+
     // webdar headers
 #include "exceptions.hpp"
 #include "central_report.hpp"
@@ -45,7 +49,7 @@ using namespace std;
 
 static string get_session_ID_from(const request & req);
 
-mutex server::lock_counter;
+libthreadar::mutex server::lock_counter;
 unsigned int server::max_server = 0;
 list<server *> server::instances;
 

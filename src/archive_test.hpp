@@ -35,10 +35,9 @@ extern "C"
 #include <string>
 
     // webdar headers
-#include "thread.hpp"
 #include "web_user_interaction.hpp"
 
-class archive_test : public thread
+class archive_test : public libthreadar::thread
 {
 public:
     archive_test(): archpath("/") { progressive_report = NULL; };

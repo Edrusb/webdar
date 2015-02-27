@@ -33,12 +33,12 @@ extern "C"
     // C++ system header files
 #include <string>
 #include <dar/libdar.hpp>
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
-#include "thread.hpp"
 #include "web_user_interaction.hpp"
 
-class archive_init_list : public thread
+class archive_init_list : public libthreadar::thread
 {
 public:
     archive_init_list(): archpath("/") { ptr = NULL; };
@@ -67,7 +67,7 @@ public:
     void close_archive() { if(ptr != NULL) { delete ptr; ptr = NULL; } };
 
 protected:
-	/// inherited from class thread
+	/// inherited from class libthreadar::thread
     virtual void inherited_run();
 
 private:
