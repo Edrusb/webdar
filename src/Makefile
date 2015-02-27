@@ -22,7 +22,7 @@
 #*********************************************************************/
 
 CFLAGS=-ggdb -pthread `pkg-config --cflags libdar64` -static
-CXXFLAGS=-ggdb -pthread `pkg-config --cflags libdar64` -static -D_FILE_OFFSET_BITS=64
+CXXFLAGS=-ggdb -pthread `pkg-config --cflags libdar64` -static -D_FILE_OFFSET_BITS=64 -std=c++11
 
 
 

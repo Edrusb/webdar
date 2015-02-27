@@ -57,6 +57,8 @@ const reference & reference::operator = (const reference & ref)
     }
     else
 	throw WEBDAR_BUG;
+
+    return *this;
 }
 
 
@@ -115,6 +117,7 @@ bool reference::read_next_peer(reference * & peer)
     {
 	peer = *next_to_read;
 	++next_to_read;
+	return true;
     }
     else
 	return false;

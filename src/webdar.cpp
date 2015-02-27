@@ -128,10 +128,12 @@ int main(int argc, char *argv[], char **env)
 	    else
 		cout << "Adding hanlder for signal " << *sl_it << endl;
 	    if(sigaction(*sl_it, &sg, NULL) < 0)
+	    {
 		if(signal_name != NULL)
 		    throw exception_system(libdar::tools_printf("Cannot set signal handle for %s", strsignal(*sl_it)), errno);
 		else
 		    throw exception_system(libdar::tools_printf("Cannot set signal handle for %d", *sl_it), errno);
+	    }
 	    ++sl_it;
 	}
 

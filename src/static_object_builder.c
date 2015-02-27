@@ -177,7 +177,7 @@ int escape_and_copy_from_file_to_string(int fd, char *buffer, unsigned int alloc
 {
     int copied = 0;
     char tmp[BUFSIZE];
-    unsigned int lu = 0;
+    ssize_t lu = 0;
 
     do
     {

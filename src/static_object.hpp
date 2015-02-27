@@ -40,6 +40,7 @@ extern "C"
 class static_object
 {
 public:
+    virtual ~static_object() {};
 
     virtual answer give_answer() const = 0;
 };

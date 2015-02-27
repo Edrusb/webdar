@@ -90,12 +90,12 @@ public:
 	/// application/x-www-form-urlencoded, if not an exception is thrown
     std::map<std::string,std::string> get_body_form() const;
 
-	/// manually add a cookie to the request (should be used exceptionnaly)
+	/// manually add a cookie to the request (should be used exceptionally)
 	///
 	/// \note the semantic of a const method might sound strange here
 	/// as we do modify the request object. Well, nothing's perfect... improvment
 	/// may take place here, yes.
-    bool add_cookie(const std::string & key, const std::string & value) const;
+    void add_cookie(const std::string & key, const std::string & value) const;
 
 	/// lookup for a cookie
     bool find_cookie(const std::string & key, std::string & value) const;

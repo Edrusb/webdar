@@ -117,7 +117,7 @@ char connexion::read_test_second(bool blocking)
 }
 
 
-bool connexion::write(const char *a, unsigned int size)
+void connexion::write(const char *a, unsigned int size)
 {
     if(size + last_unwrote < out_buf_size)
     {
@@ -130,7 +130,6 @@ bool connexion::write(const char *a, unsigned int size)
 	(void)atomic_write(a, size);
     }
 }
-
 
 void connexion::flush_write()
 {
@@ -245,7 +244,7 @@ bool connexion::atomic_write(const char *a, unsigned int size)
 {
     bool ret = true;
     unsigned int wrote = 0;
-    unsigned int tmp;
+    ssize_t tmp;
 
     if(etat != connected)
 	throw WEBDAR_BUG;

@@ -65,6 +65,8 @@ const body_builder & body_builder::operator = (const body_builder & ref)
     visible = ref.visible;
     next_visible = ref.next_visible;
     no_CR = ref.no_CR;
+
+    return *this;
 }
 
 void body_builder::set_prefix(const chemin & prefix)

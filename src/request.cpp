@@ -190,7 +190,7 @@ map<string,string> request::get_body_form() const
     return ret;
 }
 
-bool request::add_cookie(const std::string & key, const std::string & value) const
+void request::add_cookie(const std::string & key, const std::string & value) const
 {
     const_cast<request *>(this)->cookies[key] = value;
 }

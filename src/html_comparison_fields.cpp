@@ -49,37 +49,37 @@ html_comparison_fields::html_comparison_fields() : html_form_select("Comparison 
     set_selected(0);
 }
 
-libdar::inode::comparison_fields html_comparison_fields::get_value() const
+libdar::cat_inode::comparison_fields html_comparison_fields::get_value() const
 {
     switch(get_selected_num())
     {
     case 0:
-	return libdar::inode::cf_all;
+	return libdar::cat_inode::cf_all;
     case 1:
-	return libdar::inode::cf_ignore_owner;
+	return libdar::cat_inode::cf_ignore_owner;
     case 2:
-	return libdar::inode::cf_mtime;
+	return libdar::cat_inode::cf_mtime;
     case 3:
-	return libdar::inode::cf_inode_type;
+	return libdar::cat_inode::cf_inode_type;
     default:
 	throw WEBDAR_BUG;
     }
 }
 
-void html_comparison_fields::set_value(libdar::inode::comparison_fields val)
+void html_comparison_fields::set_value(libdar::cat_inode::comparison_fields val)
 {
     switch(val)
     {
-    case libdar::inode::cf_all:
+    case libdar::cat_inode::cf_all:
 	set_selected(0);
 	break;
-    case libdar::inode::cf_ignore_owner:
+    case libdar::cat_inode::cf_ignore_owner:
 	set_selected(1);
 	break;
-    case libdar::inode::cf_mtime:
+    case libdar::cat_inode::cf_mtime:
 	set_selected(2);
 	break;
-    case libdar::inode::cf_inode_type:
+    case libdar::cat_inode::cf_inode_type:
 	set_selected(3);
 	break;
     default:

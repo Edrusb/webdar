@@ -56,9 +56,7 @@ private:
     std::string msg;
 };
 
-class exception_memory;
 
-template<class T> exception_base *cloner(void * const ptr) { exception_base *ret = new (std::nothrow) T(*(reinterpret_cast<T const *>(ptr))); if(ret == NULL) throw exception_memory(); return ret; };
 
     ///  exception used to report memory allocation failures
 
@@ -68,8 +66,12 @@ public:
     exception_memory() : exception_base("lack of memory") {};
 
 protected:
-    virtual exception_base *clone() const { return cloner<exception_memory>((void *)this); };
+    virtual exception_base *clone() const;
 };
+
+template<class T> exception_base *cloner(void * const ptr) { exception_base *ret = new (std::nothrow) T(*(reinterpret_cast<T const *>(ptr))); if(ret == NULL) throw exception_memory(); return ret; };
+
+inline exception_base * exception_memory::clone() const { return cloner<exception_memory>((void *)this); };
 
     /// exception used to report webdar internal bugs
 

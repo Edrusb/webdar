@@ -57,7 +57,7 @@ public:
 
     const std::string & get_archive_path() const { return arch_path.get_value(); };
     const std::string & get_archive_basename() const { return archive.get_value(); };
-    const libdar::archive_options_read & get_read_options() const { opt_read.get_options(); };
+    const libdar::archive_options_read & get_read_options() const { return opt_read.get_options(); };
 
 private:
     html_form form;

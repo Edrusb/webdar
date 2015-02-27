@@ -73,8 +73,7 @@ public:
 
 	/// param[in] a data to write
 	/// param[in] size amount of byte to write
-	/// \return true upon success of false if connexion is broken
-    virtual bool write(const char *a, unsigned int size);
+    virtual void write(const char *a, unsigned int size);
 
 	/// flush pending writings
     virtual void flush_write();

@@ -66,6 +66,8 @@ string base64::decode() const
 
     for(unsigned int i = 0; i < num; ++i, res += 4)
 	ret += convert(ch[res], ch[res+1], ch[res+2], ch[res+3]);
+
+    return ret;
 }
 
 string base64::convert(char a, char b, char c, char d)
