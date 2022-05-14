@@ -47,7 +47,7 @@ int webdar_tools_convert_to_int(const string & ref)
     buf.str(ref);
     buf >> ret;
     if(buf.rdstate() != ios_base::goodbit && buf.rdstate() != ios_base::eofbit)
-	throw exception_range(libdar::tools_printf("Cannot convert %S to integer", &ref));
+	throw exception_range(std::string("Cannot convert ") + ref + std::string(" to integer"));
 
     return ret;
 }

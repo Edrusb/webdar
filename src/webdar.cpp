@@ -131,9 +131,9 @@ int main(int argc, char *argv[], char **env)
 	    if(sigaction(*sl_it, &sg, NULL) < 0)
 	    {
 		if(signal_name != NULL)
-		    throw exception_system(libdar::tools_printf("Cannot set signal handle for %s", strsignal(*sl_it)), errno);
+		    throw exception_system(std::string("Cannot set signal handle for ") + std::string(strsignal(*sl_it)), errno);
 		else
-		    throw exception_system(libdar::tools_printf("Cannot set signal handle for %d", *sl_it), errno);
+		    throw exception_system(std::string("Cannot set signal handle for ") + std::to_string(*sl_it), errno);
 	    }
 	    ++sl_it;
 	}
@@ -372,7 +372,7 @@ static void parse_cmd(int argc, char *argv[],
 	if(argc < 1 || argv[0] == NULL)
 	    throw WEBDAR_BUG;
 	else
-	    throw exception_range(libdar::tools_printf("Usage: %s -l <IP:port> [-v] [-b]\n", argv[0]));
+	    throw exception_range(std::string("Usage: ") + std::string(argv[0]) + std::string(" -l <IP:port> [-v] [-b]\n"));
     }
 
     if(background)

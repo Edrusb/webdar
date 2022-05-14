@@ -80,7 +80,7 @@ inline exception_base * exception_memory::clone() const { return cloner<exceptio
 class exception_bug : public exception_base
 {
 public:
-    exception_bug(const std::string & file, int line) : exception_base(libdar::tools_printf("WEBDAR: BUG MET IN File %S line %d", &file, line)) {};
+    exception_bug(const std::string & file, int line) : exception_base(std::string("WEBDAR: BUG MET IN File ") + file + std::string(" line ") + std::to_string(line)) {};
 
 protected:
     virtual exception_base *clone() const { return cloner<exception_bug>((void *)this); };
