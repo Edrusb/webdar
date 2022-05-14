@@ -137,13 +137,13 @@ libdar::archive_options_extract html_options_extract::get_options() const
     ret.set_info_details(info_details.get_value_as_bool());
     ret.set_flat(flat.get_value_as_bool());
     if(what_to_check.get_selected_id() == "all")
-	ret.set_what_to_check(libdar::cat_inode::cf_all);
+	ret.set_what_to_check(libdar::comparison_fields::all);
     else if(what_to_check.get_selected_id() == "ignore_owner")
-	ret.set_what_to_check(libdar::cat_inode::cf_ignore_owner);
+	ret.set_what_to_check(libdar::comparison_fields::ignore_owner);
     else if(what_to_check.get_selected_id() == "mtime")
-	ret.set_what_to_check(libdar::cat_inode::cf_mtime);
+	ret.set_what_to_check(libdar::comparison_fields::mtime);
     else if(what_to_check.get_selected_id() == "inode_type")
-	ret.set_what_to_check(libdar::cat_inode::cf_inode_type);
+	ret.set_what_to_check(libdar::comparison_fields::inode_type);
     else
 	throw WEBDAR_BUG;
     ret.set_warn_remove_no_match(warn_remove_no_match.get_value_as_bool());
