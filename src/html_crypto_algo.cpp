@@ -60,19 +60,19 @@ libdar::crypto_algo html_crypto_algo::get_value() const
     switch(get_selected_num())
     {
     case 0:
-	return libdar::crypto_none;
+	return libdar::crypto_algo::none;
     case 1:
-	return libdar::crypto_scrambling;
+	return libdar::crypto_algo::scrambling;
     case 2:
-	return libdar::crypto_blowfish;
+	return libdar::crypto_algo::blowfish;
     case 3:
-	return libdar::crypto_aes256;
+	return libdar::crypto_algo::aes256;
     case 4:
-	return libdar::crypto_twofish256;
+	return libdar::crypto_algo::twofish256;
     case 5:
-	return libdar::crypto_serpent256;
+	return libdar::crypto_algo::serpent256;
     case 6:
-	return libdar::crypto_camellia256;
+	return libdar::crypto_algo::camellia256;
     default:
 	throw WEBDAR_BUG;
     }
@@ -82,25 +82,25 @@ void html_crypto_algo::set_value(libdar::crypto_algo val)
 {
     switch(val)
     {
-    case libdar::crypto_none:
+    case libdar::crypto_algo::none:
 	set_selected(0);
 	break;
-    case libdar::crypto_scrambling:
+    case libdar::crypto_algo::scrambling:
 	set_selected(1);
 	break;
-    case libdar::crypto_blowfish:
+    case libdar::crypto_algo::blowfish:
 	set_selected(2);
 	break;
-    case libdar::crypto_aes256:
+    case libdar::crypto_algo::aes256:
 	set_selected(3);
 	break;
-    case libdar::crypto_twofish256:
+    case libdar::crypto_algo::twofish256:
 	set_selected(4);
 	break;
-    case libdar::crypto_serpent256:
+    case libdar::crypto_algo::serpent256:
 	set_selected(5);
 	break;
-    case libdar::crypto_camellia256:
+    case libdar::crypto_algo::camellia256:
 	set_selected(6);
 	break;
     default:

@@ -128,7 +128,7 @@ const libdar::archive_options_read & html_options_read::get_options() const
 
     me->opts.clear();
     me->opts.set_crypto_algo(src_crypto_algo.get_value());
-    if(src_crypto_algo.get_value() != libdar::crypto_none)
+    if(src_crypto_algo.get_value() != libdar::crypto_algo::none)
     {
 	me->opts.set_crypto_pass(libdar::secu_string(src_crypto_pass.get_value().c_str(), src_crypto_pass.get_value().size()));
 	me->opts.set_crypto_size(webdar_tools_convert_to_int(src_crypto_size.get_value()));
@@ -142,7 +142,7 @@ const libdar::archive_options_read & html_options_read::get_options() const
     {
 	me->opts.set_external_catalogue(ref_path.get_value(), ref_basename.get_value());
 	me->opts.set_ref_crypto_algo(ref_crypto_algo.get_value());
-	if(ref_crypto_algo.get_value() != libdar::crypto_none)
+	if(ref_crypto_algo.get_value() != libdar::crypto_algo::none)
 	{
 	    me->opts.set_ref_crypto_pass(libdar::secu_string(ref_crypto_pass.get_value().c_str(), ref_crypto_pass.get_value().size()));
 	    me->opts.set_ref_crypto_size(webdar_tools_convert_to_int(ref_crypto_size.get_value()));
@@ -158,7 +158,7 @@ const libdar::archive_options_read & html_options_read::get_options() const
 
 void html_options_read::on_event(const std::string & event_name)
 {
-    if(src_crypto_algo.get_value() == 0)
+    if(src_crypto_algo.get_value() == libdar::crypto_algo::none)
     {
 	src_crypto_pass.set_visible(false);
 	src_crypto_size.set_visible(false);
@@ -169,7 +169,7 @@ void html_options_read::on_event(const std::string & event_name)
 	src_crypto_size.set_visible(true);
     }
 
-    if(ref_crypto_algo.get_value() == 0)
+    if(ref_crypto_algo.get_value() == libdar::crypto_algo::none)
     {
 	ref_crypto_pass.set_visible(false);
 	ref_crypto_size.set_visible(false);

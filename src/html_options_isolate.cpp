@@ -208,17 +208,17 @@ void html_options_isolate::on_event(const std::string & event_name)
 
     switch(crypto_algo.get_value())
     {
-    case libdar::crypto_none:
+    case libdar::crypto_algo::none:
 	crypto_pass1.set_visible(false);
 	crypto_pass2.set_visible(false);
 	crypto_size.set_visible(false);
 	break;
-    case libdar::crypto_scrambling:
-    case libdar::crypto_blowfish:
-    case libdar::crypto_aes256:
-    case libdar::crypto_twofish256:
-    case libdar::crypto_serpent256:
-    case libdar::crypto_camellia256:
+    case libdar::crypto_algo::scrambling:
+    case libdar::crypto_algo::blowfish:
+    case libdar::crypto_algo::aes256:
+    case libdar::crypto_algo::twofish256:
+    case libdar::crypto_algo::serpent256:
+    case libdar::crypto_algo::camellia256:
 	crypto_pass1.set_visible(true);
 	crypto_pass2.set_visible(true);
 	crypto_size.set_visible(true);
@@ -261,7 +261,7 @@ libdar::archive_options_isolate html_options_isolate::get_options() const
     }
 
     ret.set_crypto_algo(crypto_algo.get_value());
-    if(crypto_algo.get_value() != libdar::crypto_none)
+    if(crypto_algo.get_value() != libdar::crypto_algo::none)
     {
 	if(crypto_pass1.get_value() != crypto_pass2.get_value())
 	    throw exception_range("crypto password and its confirmation do not match");
