@@ -63,6 +63,8 @@ void events::record_actor_on_event(actor *ptr, const string & name)
     if(ptr == NULL)
 	throw WEBDAR_BUG;
 
+	// shouldn't we first check the ptr actor is not already
+	// registered on this object, before adding it to the list?
     it->second.push_back(ptr);
     try
     {
