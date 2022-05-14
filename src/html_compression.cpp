@@ -57,13 +57,13 @@ libdar::compression html_compression::get_value() const
     switch(get_selected_num())
     {
     case 0:
-	return libdar::none;
+	return libdar::compression::none;
     case 1:
-	return libdar::gzip;
+	return libdar::compression::gzip;
     case 2:
-	return libdar::bzip2;
+	return libdar::compression::bzip2;
     case 3:
-	return libdar::lzo;
+	return libdar::compression::lzo;
     default:
 	throw WEBDAR_BUG;
     }
@@ -73,16 +73,16 @@ void html_compression::set_value(libdar::compression val)
 {
     switch(val)
     {
-    case libdar::none:
+    case libdar::compression::none:
 	set_selected(0);
 	break;
-    case libdar::gzip:
+    case libdar::compression::gzip:
 	set_selected(1);
 	break;
-    case libdar::bzip2:
+    case libdar::compression::bzip2:
 	set_selected(2);
 	break;
-    case libdar::lzo:
+    case libdar::compression::lzo:
 	set_selected(3);
 	break;
     default:

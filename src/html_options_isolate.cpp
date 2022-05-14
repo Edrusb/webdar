@@ -169,12 +169,12 @@ void html_options_isolate::on_event(const std::string & event_name)
 {
     switch(compression.get_value())
     {
-    case libdar::none:
+    case libdar::compression::none:
 	compression_level.set_visible(false);
 	break;
-    case libdar::gzip:
-    case libdar::bzip2:
-    case libdar::lzo:
+    case libdar::compression::gzip:
+    case libdar::compression::bzip2:
+    case libdar::compression::lzo:
 	compression_level.set_visible(true);
 	break;
     default:

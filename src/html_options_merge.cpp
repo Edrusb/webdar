@@ -222,14 +222,14 @@ void html_options_merge::on_event(const std::string & event_name)
 	compression.set_visible(true);
 	switch(compression.get_value())
 	{
-	case libdar::none:
+	case libdar::compression::none:
 	    compression_level.set_visible(false);
 	    min_compr_size.set_visible(false);
 	    min_compr_size_unit.set_visible(false);
 	    break;
-	case libdar::gzip:
-	case libdar::bzip2:
-	case libdar::lzo:
+	case libdar::compression::gzip:
+	case libdar::compression::bzip2:
+	case libdar::compression::lzo:
 	    compression_level.set_visible(true);
 	    min_compr_size.set_visible(true);
 	    min_compr_size_unit.set_visible(true);
