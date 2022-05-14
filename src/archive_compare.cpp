@@ -75,16 +75,15 @@ void archive_compare::inherited_run()
 {
     try
     {
-	libdar::archive arch = libdar::archive(ui,
-					       archpath,
-					       basename,
-					       EXTENSION,
-					       read_opt);
+	libdar::archive arch(ui,
+			     archpath,
+			     basename,
+			     EXTENSION,
+			     read_opt);
 
-	libdar::statistics final = arch.op_diff(ui,
-						   fs_root,
-						   diff_opt,
-						   progressive_report);
+	libdar::statistics final = arch.op_diff(fs_root,
+						diff_opt,
+						progressive_report);
     }
     catch(libdar::Egeneric & e)
     {
