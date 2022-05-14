@@ -513,7 +513,7 @@ web_user_interaction::shared_data::shared_data(unsigned int x_warn_size) : libda
     clear();
 }
 
-web_user_interaction::shared_data::~shared_data()
+web_user_interaction::shared_data::~shared_data() noexcept(false)
 {
     if(instances == 0)
     {

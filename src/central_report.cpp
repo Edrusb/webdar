@@ -90,7 +90,7 @@ central_report_syslog::central_report_syslog(priority_t min_logged, const std::s
     num_obj_mod.unlock();
 }
 
-central_report_syslog::~central_report_syslog()
+central_report_syslog::~central_report_syslog() noexcept(false)
 {
     num_obj_mod.lock();
     try
