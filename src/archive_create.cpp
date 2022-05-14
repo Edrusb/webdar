@@ -77,52 +77,39 @@ void archive_create::inherited_run()
 {
     try
     {
-	libdar::archive *ref = NULL;
+	shared_ptr<libdar::archive> ref = NULL;
 
-	try
+	    // in case of differential / incremental backup
+	    // we must open the archive of reference
+	    // and obtain an libdar::archive object to
+	    // be added to the options passed to the create
+	    // constructor
+
+	if(has_ref)
 	{
-		// in case of differential / incremental backup
-		// we must open the archive of reference
-		// and obtain an libdar::archive object to
-		// be added to the options passed to the create
-		// constructor
-
-	    if(has_ref)
-	    {
-		ref = new (nothrow) libdar::archive(ui,
-						    libdar::path(ref_path),
-						    ref_basename,
-						    ref_extension,
-						    ref_opt);
-		if(ref == NULL)
-		    throw exception_memory();
-		opt.set_reference(ref);
-	    }
-
-		// now we can create the archive
-
-	    libdar::archive target = libdar::archive(ui,
-						     fs_root,
-						     archpath,
-						     basename,
-						     extension,
-						     opt,
-						     progressive_report);
-
-		// as the object being local to the local block
-		// it will be destroyed automatically (and the archive
-		// will be closed) once we will have exit this local block
+	    ref = make_shared<libdar::archive>(ui,
+					       libdar::path(ref_path),
+					       ref_basename,
+					       ref_extension,
+					       ref_opt);
+	    if(!ref)
+		throw exception_memory();
+	    opt.set_reference(ref);
 	}
-	catch(...)
-	{
-	    if(ref != NULL)
-		delete ref;
-	    opt.set_reference(NULL);
-	    throw;
-	}
-	if(ref != NULL)
-	    delete ref;
-	opt.set_reference(NULL);
+
+	    // now we can create the archive
+
+	libdar::archive target(ui,
+			       fs_root,
+			       archpath,
+			       basename,
+			       extension,
+			       opt,
+			       progressive_report);
+
+	    // as the object being local to the local block
+	    // it will be destroyed automatically (and the archive
+	    // will be closed) once we will have exit this local block
     }
     catch(libdar::Egeneric & e)
     {
