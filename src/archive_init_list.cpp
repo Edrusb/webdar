@@ -83,7 +83,7 @@ void archive_init_list::inherited_run()
 	try
 	{
 		// this is necessary before calling  get_children_in_table
-	    ptr->init_catalogue(ui);
+	    ptr->init_catalogue();
 	}
 	catch(...)
 	{
