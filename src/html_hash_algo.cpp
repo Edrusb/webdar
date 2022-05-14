@@ -57,11 +57,11 @@ libdar::hash_algo html_hash_algo::get_value() const
     switch(get_selected_num())
     {
     case 0:
-	return libdar::hash_none;
+	return libdar::hash_algo::none;
     case 1:
-	return libdar::hash_md5;
+	return libdar::hash_algo::md5;
     case 2:
-	return libdar::hash_sha1;
+	return libdar::hash_algo::sha1;
     default:
 	throw WEBDAR_BUG;
     }
@@ -71,13 +71,13 @@ void html_hash_algo::set_value(libdar::hash_algo val)
 {
     switch(val)
     {
-    case libdar::hash_none:
+    case libdar::hash_algo::none:
 	set_selected(0);
 	break;
-    case libdar::hash_md5:
+    case libdar::hash_algo::md5:
 	set_selected(1);
 	break;
-    case libdar::hash_sha1:
+    case libdar::hash_algo::sha1:
 	set_selected(2);
 	break;
     default:
