@@ -77,74 +77,59 @@ void archive_merge::inherited_run()
 {
     try
     {
-	libdar::archive *ref = NULL;
-	libdar::archive *aux = NULL;
+	shared_ptr<libdar::archive> ref = NULL;
+	shared_ptr<libdar::archive> aux = NULL;
 
-	try
+	    // we must open the archive of reference
+	    // and obtain an libdar::archive object to
+	    // be added to the options passed to the merge
+	    // constructor
+
+	if(!has_ref)
+	    throw WEBDAR_BUG; // ref is mandatory for merging
+
+	ui->message("--- Opening the archive of reference...");
+	ref = make_shared<libdar::archive>(ui,
+					   libdar::path(ref_path),
+					   ref_basename,
+					   ref_extension,
+					   ref_opt);
+	if(!ref)
+	    throw exception_memory();
+
+	ui->message("--- The archive of reference is now opened");
+	if(has_aux)
 	{
-		// we must open the archive of reference
-		// and obtain an libdar::archive object to
-		// be added to the options passed to the merge
-		// constructor
-
-	    if(!has_ref)
-		throw WEBDAR_BUG; // ref is mandatory for merging
-	    else
-	    {
-		ui.warning("--- Opening the archive of reference...");
-		ref = new (nothrow) libdar::archive(ui,
-						    libdar::path(ref_path),
-						    ref_basename,
-						    ref_extension,
-						    ref_opt);
-		if(ref == NULL)
-		    throw exception_memory();
-		ui.warning("--- The archive of reference is now opened");
-		if(has_aux)
-		{
-		    ui.warning("--- Opening the auxilliary archive of reference...");
-		    aux = new (nothrow) libdar::archive(ui,
-							libdar::path(aux_path),
-							aux_basename,
-							aux_extension,
-							aux_opt);
-		    if(aux == NULL)
-			throw exception_memory();
-		    opt.set_auxilliary_ref(aux);
-		    ui.warning("--- The auxilliary archive of reference is now opened");
-		}
-		else
-		    opt.set_auxilliary_ref(NULL);
-	    }
-
-		// now we can merge the archive
-
-	    ui.warning("--- Proceeding to the merging operation...");
-	    libdar::archive target = libdar::archive(ui,
-						     archpath,
-						     ref,
-						     basename,
-						     extension,
-						     opt,
-						     progressive_report);
-
-		// as the object being local to the local block
-		// it will be destroyed automatically (and the archive
-		// will be closed) once we will have exit this local block
-	    ui.warning("--- Merging operation completed");
+	    ui->message("--- Opening the auxilliary archive of reference...");
+	    aux = make_shared<libdar::archive>(ui,
+					       libdar::path(aux_path),
+					       aux_basename,
+					       aux_extension,
+					       aux_opt);
+	    if(!aux)
+		throw exception_memory();
+	    opt.set_auxiliary_ref(aux);
+	    ui->message("--- The auxilliary archive of reference is now opened");
 	}
-	catch(...)
-	{
-	    if(ref != NULL)
-		delete ref;
-	    if(aux != NULL)
-		delete aux;
-	    throw;
-	}
-	if(ref != NULL)
-	    delete ref;
-	if(aux != NULL)
-	    delete aux;
+	else
+	    opt.set_auxiliary_ref(NULL);
+
+	    // now we can merge the archive
+
+	ui->message("--- Proceeding to the merging operation...");
+	libdar::archive(ui,
+			archpath,
+			ref,
+			basename,
+			extension,
+			opt,
+			progressive_report);
+
+	    // as the object being local to the local block
+	    // it will be destroyed automatically (and the archive
+	    // will be closed) once we will have exit this local block
+
+	ui->message("--- Merging operation completed");
     }
     catch(libdar::Egeneric & e)
     {
