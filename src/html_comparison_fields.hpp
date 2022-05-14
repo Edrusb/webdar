@@ -43,8 +43,8 @@ class html_comparison_fields : public html_form_select
 public:
     html_comparison_fields();
 
-    libdar::cat_inode::comparison_fields get_value() const;
-    void set_value(libdar::cat_inode::comparison_fields val);
+    libdar::comparison_fields get_value() const;
+    void set_value(libdar::comparison_fields val);
 };
 
 
