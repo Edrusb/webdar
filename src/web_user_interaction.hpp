@@ -53,17 +53,11 @@ public:
 	/// clear logs and reset the object
     void clear();
 
-	// inherited from libdar::user_interaction, these are called by the libdar thread
-    virtual bool pause2(const std::string & message);
-    virtual std::string get_string(const std::string & message, bool echo);
-    virtual libdar::secu_string get_secu_string(const std::string & message, bool echo);
-    virtual libdar::user_interaction *clone() const;
-
 	/// obtain a copy of the current log buffer
     std::list<std::string> get_warnings();
 
-	/// wether libdar is pending for pause2 answer
-    bool pending_pause2(std::string & msg) const;
+	/// wether libdar is pending for pause answer
+    bool pending_pause(std::string & msg) const;
 
 	/// wether libdar is pending for get_string answer
     bool pending_get_string(std::string & msg, bool & echo) const;
@@ -71,8 +65,8 @@ public:
 	/// wether libdar is pending for a get_secu_string answer
     bool pending_get_secu_string(std::string & msg, bool & echo) const;
 
-	/// provide the answer to libdar for pause2() request
-    void set_pause2_answer(bool val);
+	/// provide the answer to libdar for pause() request
+    void set_pause_answer(bool val);
 
 	/// provide the answer to libdar for get_string() request
     void set_get_string_answer(const std::string & val);
@@ -84,8 +78,13 @@ public:
     bool has_libdar_pending() const;
 
 protected:
-	/// inherited from libdar
-    void inherited_warning(const std::string & message);
+
+	// inherited from libdar::user_interaction
+
+    virtual void inherited_message(const std::string & message) override;
+    virtual bool inherited_pause(const std::string & message) override;
+    virtual std::string inherited_get_string(const std::string & message, bool echo) override;
+    virtual libdar::secu_string inherited_get_secu_string(const std::string & message, bool echo) override;
 
 private:
     struct shared_data
@@ -93,12 +92,12 @@ private:
 	libthreadar::mutex control;    //< control access to any value this object has
 	unsigned int instances;        //< number of reference existing toward this struct object, this object data get destroyed when this number drops to zero
 	libthreadar::semaphore libdar_sem;  //< libdar thread wait on it for an answer
-	bool answered;                 //< true if the pending pause2(), get_string() or get_secu_string() has been answered, so the question has not to be shown twice
+	bool answered;                 //< true if the pending pause(), get_string() or get_secu_string() has been answered, so the question has not to be shown twice
 
-	    // pause2() fields
-	bool pause2_pending;    //< true if a pause2() is pending for a response
-	std::string pause2_msg; //< the request to answser to
-	bool pause2_ans;        //< the answer to the request
+	    // pause() fields
+	bool pause_pending;    //< true if a pause() is pending for a response
+	std::string pause_msg; //< the request to answser to
+	bool pause_ans;        //< the answer to the request
 
 	    // get_string() fields
 	bool get_string_pending;//< true if a get_string() is pending for a response
@@ -117,7 +116,7 @@ private:
 	unsigned warn_size;
 
 	shared_data(unsigned int size);
-	~shared_data();
+	~shared_data() noexcept(false);
 	void clear(); // reset fields to default values
 	void incr();
 	bool decr_and_can_delete(); // if true is returned the object can be deleted
