@@ -43,7 +43,7 @@ class archive_isolate : public libthreadar::thread
 public:
     archive_isolate(): archpath("/") { has_ref = false; };
 
-    void set_user_interaction(web_user_interaction & ref) { ui = ref; };
+    void set_user_interaction(web_user_interaction & ref) { ui = std::make_shared<web_user_interaction>(ref); };
     void set_archive_path(const std::string & val);
     void set_archive_basename(const std::string & val) { basename = val; };
     void set_archive_extension(const std::string & val) { extension = val; };
@@ -59,7 +59,7 @@ protected:
     virtual void inherited_run();
 
 private:
-    web_user_interaction ui;
+    std::shared_ptr<web_user_interaction> ui;
     libdar::path archpath;
     std::string basename;
     std::string extension;

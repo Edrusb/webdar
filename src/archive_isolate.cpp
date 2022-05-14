@@ -65,49 +65,43 @@ void archive_isolate::inherited_run()
 {
     try
     {
-	libdar::archive *ref = NULL;
+
+	    // we must open the archive of reference
+	    // and obtain an libdar::archive object to
+	    // be added to the options passed to the isolate
+	    // constructor
+
+	if(!has_ref)
+	    throw WEBDAR_BUG;
+
+	libdar::archive* ref = new libdar::archive(ui,
+						   libdar::path(ref_path),
+						   ref_basename,
+						   ref_extension,
+						   ref_opt);
+	if(ref == nullptr)
+	    throw exception_memory();
 
 	try
 	{
-		// we must open the archive of reference
-		// and obtain an libdar::archive object to
-		// be added to the options passed to the isolate
-		// constructor
 
-	    if(!has_ref)
-		throw WEBDAR_BUG;
-	    else
-	    {
-		ref = new (nothrow) libdar::archive(ui,
-						    libdar::path(ref_path),
-						    ref_basename,
-						    ref_extension,
-						    ref_opt);
-		if(ref == NULL)
-		    throw exception_memory();
-	    }
+	    // now we can isolate the archive
 
-		// now we can isolate the archive
+	    ref->op_isolate(archpath,
+			    basename,
+			    extension,
+			    opt);
 
-	    libdar::archive target = libdar::archive(ui,
-						     archpath,
-						     ref,
-						     basename,
-						     extension,
-						     opt);
-
-		// as the object being local to the local block
+		// as the ref object being local to the local block
 		// it will be destroyed automatically (and the archive
 		// will be closed) once we will have exit this local block
 	}
 	catch(...)
 	{
-	    if(ref != NULL)
-		delete ref;
+	    delete ref;
 	    throw;
 	}
-	if(ref != NULL)
-	    delete ref;
+	delete ref;
     }
     catch(libdar::Egeneric & e)
     {
