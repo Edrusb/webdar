@@ -79,7 +79,7 @@ public:
 
 protected:
 	/// inherited from class reference
-    void broken_peering_from(reference *obj);
+    virtual void broken_peering_from(reference *obj) override;
 
 	/// add a new event for actors to register against
     void register_name(const std::string & name);
