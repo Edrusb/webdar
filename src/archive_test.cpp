@@ -55,14 +55,13 @@ void archive_test::inherited_run()
 {
     try
     {
-	libdar::archive arch = libdar::archive(ui,
-					       archpath,
-					       basename,
-					       EXTENSION,
-					       read_opt);
+	libdar::archive arch(ui,
+			     archpath,
+			     basename,
+			     EXTENSION,
+			     read_opt);
 
-	libdar::statistics final = arch.op_test(ui,
-						test_opt,
+	libdar::statistics final = arch.op_test(test_opt,
 						progressive_report);
     }
     catch(libdar::Egeneric & e)

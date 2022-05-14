@@ -42,7 +42,7 @@ class archive_test : public libthreadar::thread
 public:
     archive_test(): archpath("/") { progressive_report = NULL; };
 
-    void set_user_interaction(web_user_interaction & ref) { ui = ref; };
+    void set_user_interaction(web_user_interaction & ref) { ui = std::make_shared<web_user_interaction>(ref); };
     void set_archive_path(const std::string & val);
     void set_archive_basename(const std::string & val) { basename = val; };
     void set_archive_options_read(const libdar::archive_options_read & val) { read_opt = val; };
@@ -54,7 +54,7 @@ protected:
     virtual void inherited_run();
 
 private:
-    web_user_interaction ui;
+    std::shared_ptr<web_user_interaction> ui;
     libdar::path archpath;
     std::string basename;
     libdar::archive_options_read read_opt;
