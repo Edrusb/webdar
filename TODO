@@ -2,14 +2,17 @@ Here is the task to do to get ready for release 1.0.0
 ========================================================
 - have compliance with HTTP/1.1, this work is mainly at the server class layer
   where a answer has to be added field and updated version depending on the
-  corresponding request. See RFC in the RFC subdirectory
+  corresponding request. See RFC in the RFC subdirectory => Mongoose
+- manage CSS out of HTML, object use css classes and give use only available
+  classes. A static catalog of CSS class defines and exposes the list of classes
+  only the requested classes get included in the HTML header.
 - provide html interface for class libdar::entrepot in order to let the user
   select a directory on the local filesystem or a existing file on the local
   filesystem, this could be launched beside html_form_input fields of the class
   saisie as an alternative to fill them clicking on a button-like element beside
   these fields. Maybe abstracting the html_tree class could avoid code
   duplication for that task.
-- add a semaphore to control the number of running lindar task (listing task
+- add a semaphore to control the number of running libdar task (listing task
   not being concerned by this).
 - add html interface for building filters
 - add filter features to the many place it is used in libdar (file filtering,
