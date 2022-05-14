@@ -1,5 +1,6 @@
 Here is the task to do to get ready for release 1.0.0
 ========================================================
+- review all classes, virtual/override, move constructor & Co
 - have compliance with HTTP/1.1, this work is mainly at the server class layer
   where a answer has to be added field and updated version depending on the
   corresponding request. See RFC in the RFC subdirectory => Mongoose
