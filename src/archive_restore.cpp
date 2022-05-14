@@ -75,14 +75,13 @@ void archive_restore::inherited_run()
 {
     try
     {
-	libdar::archive arch = libdar::archive(ui,
-					       archpath,
-					       basename,
-					       EXTENSION,
-					       read_opt);
+	libdar::archive arch(ui,
+			     archpath,
+			     basename,
+			     EXTENSION,
+			     read_opt);
 
-	libdar::statistics final = arch.op_extract(ui,
-						   fs_root,
+	libdar::statistics final = arch.op_extract(fs_root,
 						   extract_opt,
 						   progressive_report);
     }
