@@ -48,6 +48,13 @@ extern "C"
 class events : virtual public reference
 {
 public:
+    events() = default;
+    events(const events & ref) = default;
+    events(events && ref) noexcept(false) = default;
+    events & operator = (const events & ref) = default;
+    events & operator = (events && ref) noexcept(false);
+    ~events() = default;
+
 	/// record an actor for an given event
     void record_actor_on_event(actor *ptr, const std::string & name);
 

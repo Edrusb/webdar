@@ -39,6 +39,13 @@ extern "C"
 
 using namespace std;
 
+events & events::operator = (events && ref) noexcept(false)
+{
+    static_cast<reference>(*this) = std::move(static_cast<reference>(ref));
+    carte = std::move(ref.carte); // invoking the move assignment for std::map
+
+    return *this;
+}
 
 void events::register_name(const string & name)
 {
