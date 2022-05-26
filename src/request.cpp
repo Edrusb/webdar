@@ -591,7 +591,7 @@ bool request::get_word(connexion & input, bool initial, bool blocking, string & 
 		    initial = false;
 		    loop = true;
 		    break;
-		defaut:
+		default:
 		    break; // nothing to do, as loop is already false
 		}
 	    }
