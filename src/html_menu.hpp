@@ -91,7 +91,7 @@ public:
     virtual std::string get_body_part(const chemin & path,
 				      const request & req) override;
 
-	/// modified wrapper for inherited methods from events
+	/// modified wrapper from class events for our inherited classes
     void record_actor_on_event(actor *ptr) { events::record_actor_on_event(ptr, changed); };
 
 

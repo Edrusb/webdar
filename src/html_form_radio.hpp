@@ -40,7 +40,7 @@ extern "C"
 class html_form_radio : public body_builder, public events
 {
 public:
-    static const std::string changed;
+    static const std::string changed; /// common event name for all object of this class
 
     html_form_radio() { selected = 0; register_name(changed); };
     html_form_radio(const html_form_radio & ref) = default;

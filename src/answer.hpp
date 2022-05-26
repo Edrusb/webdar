@@ -75,9 +75,12 @@ public:
 
 	/// adds the  body to the answer [optional]
 	///
-	/// \note also set Content-Length accordingly
+	/// \note this also set Content-Length accordingly
     void add_body(const std::string & key);
+
+	/// get the current body of the answer
     const std::string get_body() const { return body; };
+
 	/// removes the body keeping header untouched (Content-Lenght in particular)
     void drop_body_keep_header() { body = ""; };
 
@@ -137,7 +140,6 @@ private:
 	/// \param[out] value value of that attribute
 	/// \return true if a next attribute has been else, key and value are not set
     bool read_next_attribute(std::string & key, std::string & value) const;
-
 
     void copy_from(const answer & ref);
 

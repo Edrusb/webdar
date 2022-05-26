@@ -41,7 +41,7 @@ extern "C"
 class html_compression : public html_form_select
 {
 public:
-    static const std::string changed;
+    static const std::string changed;  /// common event name for all object of this class
 
     html_compression(const std::string & title);
     html_compression(const html_compression & ref) = default;

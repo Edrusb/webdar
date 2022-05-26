@@ -202,7 +202,7 @@ answer choose::create_new_session(const request & req)
 {
     answer ret;
 
-    html_page page = html_page("redirection to newly created session page");
+    html_page page("redirection to newly created session page");
     string session_ID = session::create_new(owner);
 
     page.set_refresh_redirection(0, session_ID);

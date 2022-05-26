@@ -39,7 +39,7 @@ extern "C"
 class html_form_select : public html_form_radio, public actor
 {
 public:
-    static const std::string changed;
+    static const std::string changed;  /// common event name for all object of this class
 
     html_form_select(const std::string & label) { x_label = label; register_name(changed); record_actor_on_event(this, html_form_radio::changed); };
     html_form_select(const html_form_select & ref) = default;

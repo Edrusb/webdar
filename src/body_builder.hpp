@@ -75,7 +75,7 @@ public:
 	///
 	/// this call is not mandatory, but let a body_builder the possibility to rely on a set of
 	/// body_builder protected routines that will build the body part recursively from the children
-	/// adpted this way.
+	/// adopted this way.
 	/// \note this call semantic is that the adopted object becomes a child of the body_builder.
 	/// The adopted child stays managed by its real parent, the adoption relationship builds a tree
 	/// of dependant objects using one another to provide a body_part (see get_body_part() method).
@@ -125,6 +125,9 @@ public:
     void set_no_CR() { no_CR = true; };
 
 protected:
+
+	/// inherited from class css
+	/// virtual void css_updated(bool inherited) override;
 
 	/// return the path of 'this' according to its descent in the body_builder tree of adopted children
     chemin get_path() const;

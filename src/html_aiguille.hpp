@@ -36,6 +36,12 @@ extern "C"
     // webdar headers
 #include "body_builder.hpp"
 
+    /// class html_aiguille behave as only one of its adopted children
+
+    /// the set_mode() method which child is used (or is active)
+    /// the argument is the number of the child starting at zero in the
+    /// they have been adopted
+
 class html_aiguille : public body_builder
 {
 public:
