@@ -74,7 +74,7 @@ static void parse_cmd(int argc, char *argv[],
 static void add_item_to_list(const char *optarg, vector<interface_port> & ecoute);
 static void close_all_listeners(int sig);
 static void libdar_init();
-void libdar_end();
+static void libdar_end();
 
     // yes, this will point to a global object, this class handle concurrent access,
     // no problem in this multi-threaded program.
@@ -468,7 +468,7 @@ static void close_all_listeners(int sig)
     }
 }
 
-void libdar_init()
+static void libdar_init()
 {
     libdar::U_I maj, med, min;
 
@@ -479,7 +479,7 @@ void libdar_init()
 			     "we are linking against a wrong libdar");
 }
 
-void libdar_end()
+static void libdar_end()
 {
     libdar::close_and_clean();
 }
