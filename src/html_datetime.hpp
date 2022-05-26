@@ -43,6 +43,11 @@ class html_datetime : public body_builder
 {
 public:
     html_datetime(const std::string & title);
+    html_datetime(const html_datetime & ref) = default;
+    html_datetime(html_datetime && ref) noexcept = default;
+    html_datetime & operator = (const html_datetime & ref) = default;
+    html_datetime & operator = (html_datetime && ref) noexcept = default;
+    ~html_datetime() = default;
 
     libdar::infinint get_value() const;
     void set_value(libdar::infinint val);

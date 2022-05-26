@@ -40,6 +40,11 @@ class html_form_fieldset : public body_builder
 {
 public:
     html_form_fieldset(const std::string & label) { x_label = label; };
+    html_form_fieldset(const html_form_fieldset & ref) = default;
+    html_form_fieldset(html_form_fieldset && ref) noexcept = default;
+    html_form_fieldset & operator = (const html_form_fieldset & ref) = default;
+    html_form_fieldset & operator = (html_form_fieldset && ref) noexcept = default;
+    ~html_form_fieldset() = default;
 
     void change_label(const std::string & label) { x_label = label; };
 	/// clear and destroy previously added objects

@@ -40,6 +40,13 @@ extern "C"
 class html_url_class : public body_builder
 {
 public:
+    html_url_class() = default;
+    html_url_class(const html_url_class & ref) = default;
+    html_url_class(html_url_class && ref) noexcept = default;
+    html_url_class & operator = (const html_url_class & ref) = default;
+    html_url_class & operator = (html_url_class && ref) noexcept = default;
+    ~html_url_class() = default;
+
     std::string get_class_id() const { return std::string(" class=\"") + get_path().namify() + "\""; };
 
     void set_style_link(const css & ref) { link = ref.css_get_raw_string(); };

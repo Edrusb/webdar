@@ -50,6 +50,11 @@ class html_options_create : public body_builder , public actor
 {
 public:
     html_options_create();
+    html_options_create(const html_options_create & ref) = default;
+    html_options_create(html_options_create && ref) noexcept = default;
+    html_options_create & operator = (const html_options_create & ref) = default;
+    html_options_create & operator = (html_options_create && ref) noexcept = default;
+    ~html_options_create() = default;
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,

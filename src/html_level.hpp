@@ -48,8 +48,11 @@ class html_level : public body_builder
 {
 public:
     html_level();
-    html_level(const html_level & ref) { throw WEBDAR_BUG; };
-    const html_level & operator = (const html_level & ref) { throw WEBDAR_BUG; };
+    html_level(const html_level & ref) = delete;
+    html_level(html_level && ref) noexcept = delete;
+    html_level & operator = (const html_level & ref) = delete;
+    html_level & operator = (html_level && ref) noexcept = delete;
+    ~html_level() = default;
 
 	/// used in concurrency with body_builder::adopt()
     void adopt_static_html(const std::string & html);

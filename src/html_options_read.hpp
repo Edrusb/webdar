@@ -47,6 +47,11 @@ class html_options_read : public body_builder, public actor
 {
 public:
     html_options_read();
+    html_options_read(const html_options_read & ref) = default;
+    html_options_read(html_options_read && ref) noexcept = default;
+    html_options_read & operator = (const html_options_read & ref) = default;
+    html_options_read & operator = (html_options_read && ref) noexcept = default;
+    ~html_options_read() = default;
 
     const libdar::archive_options_read & get_options() const;
 

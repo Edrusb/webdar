@@ -60,23 +60,11 @@ html_archive_create::html_archive_create():
     on_event("");
 }
 
-html_archive_create::html_archive_create(const html_archive_create & ref):
-    fs_root("", html_form_input::text, "", 20),
-    sauv_path("", html_form_input::text, "", 20),
-    basename("", html_form_input::text, "", 10),
-    show_options("", html_form_input::check, "", 1),
-    form(""),
-    fs("")
-{
-    throw WEBDAR_BUG;
-}
-
 string html_archive_create::get_body_part(const chemin & path,
 				     const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }
-
 
 void html_archive_create::on_event(const std::string & event_name)
 {

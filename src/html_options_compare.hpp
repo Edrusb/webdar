@@ -44,6 +44,11 @@ class html_options_compare : public body_builder
 {
 public:
     html_options_compare();
+    html_options_compare(const html_options_compare & ref) = default;
+    html_options_compare(html_options_compare && ref) noexcept = default;
+    html_options_compare & operator = (const html_options_compare & ref) = default;
+    html_options_compare & operator = (html_options_compare && ref) noexcept = default;
+    ~html_options_compare() = default;
 
     libdar::archive_options_diff get_options() const;
 

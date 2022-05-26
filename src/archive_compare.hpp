@@ -42,6 +42,11 @@ class archive_compare : public libthreadar::thread
 {
 public:
     archive_compare();
+    archive_compare(const archive_compare & ref) = default;
+    archive_compare(archive_compare && ref) noexcept = default;
+    archive_compare & operator = (const archive_compare & ref) = default;
+    archive_compare & operator = (archive_compare && ref) noexcept = default;
+    ~archive_compare() = default;
 
     void set_user_interaction(web_user_interaction & ref) { ui = std::make_shared<web_user_interaction>(ref); };
     void set_archive_path(const std::string & val);

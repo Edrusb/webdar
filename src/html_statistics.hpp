@@ -44,8 +44,10 @@ class html_statistics : public body_builder
 {
 public:
     html_statistics();
-    html_statistics(const html_statistics & ref) { throw WEBDAR_BUG; };
-    const html_statistics operator = (const html_statistics & ref) { throw WEBDAR_BUG; };
+    html_statistics(const html_statistics & ref) = delete;
+    html_statistics(html_statistics && ref) noexcept = delete;
+    html_statistics operator = (const html_statistics & ref) = delete;
+    html_statistics operator = (html_statistics && ref) noexcept = delete;
     ~html_statistics() { unbuild(); };
 
     void clear_counters() { stats.clear(); };

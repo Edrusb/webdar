@@ -51,6 +51,11 @@ public:
 
 	/// constructor
     html_libdar_running();
+    html_libdar_running(const html_libdar_running & ref) = default;
+    html_libdar_running(html_libdar_running && ref) noexcept = default;
+    html_libdar_running & operator = (const html_libdar_running & ref) = default;
+    html_libdar_running & operator = (html_libdar_running && ref) noexcept = default;
+    ~html_libdar_running() = default;
 
 	/// clear logs and reset counters
     void clear();

@@ -42,6 +42,11 @@ class archive_merge : public libthreadar::thread
 {
 public:
     archive_merge(): archpath("/") { progressive_report = NULL; };
+    archive_merge(const archive_merge & ref) = default;
+    archive_merge(archive_merge && ref) noexcept = default;
+    archive_merge & operator = (const archive_merge & ref) = default;
+    archive_merge & operator = (archive_merge && ref) noexcept = default;
+    ~archive_merge() = default;
 
     void set_user_interaction(web_user_interaction & ref) { ui = std::make_shared<web_user_interaction>(ref); };
     void set_archive_path(const std::string & val);

@@ -50,12 +50,15 @@ public:
     void release_session() { can_keep_session = false; }; // no need of mutex here, several concurrent call will lead to the same result.
 
 protected:
-    void inherited_run();
+    virtual void inherited_run() override;
 
 private:
     server(central_report *log, authentication *auth, connexion *source);
-    server(const server & ref): src(ref.src) { throw WEBDAR_BUG; };
-    const server & operator = (const server & ref) { throw WEBDAR_BUG; };
+    server(const server & ref) = delete;
+    server(server && ref) noexcept = delete;
+    server & operator = (const server & ref) = delete;
+    server & operator = (server && ref) noexcept = delete;
+    ~server() = default;
 
     parser src;              //< this object manages the given connexion in constructor
     central_report *rep;     //< just a pointer to an existing object, must not be deleted by "this"

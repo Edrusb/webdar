@@ -60,17 +60,6 @@ html_archive_merge::html_archive_merge():
     on_event("");
 }
 
-html_archive_merge::html_archive_merge(const html_archive_merge & ref):
-    form(""),
-    fs(""),
-    sauv_path("", html_form_input::text, "", 20),
-    basename("", html_form_input::text, "", 10),
-    show_options("", html_form_input::check, "", 1),
-    reference("")
-{
-    throw WEBDAR_BUG;
-}
-
 string html_archive_merge::get_body_part(const chemin & path,
 				     const request & req)
 {

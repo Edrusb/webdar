@@ -41,6 +41,11 @@ class archive_test : public libthreadar::thread
 {
 public:
     archive_test(): archpath("/") { progressive_report = NULL; };
+    archive_test(const archive_test & ref) = default;
+    archive_test(archive_test && ref) noexcept = default;
+    archive_test & operator = (const archive_test & ref) = default;
+    archive_test & operator = (archive_test && ref) noexcept = default;
+    ~archive_test() = default;
 
     void set_user_interaction(web_user_interaction & ref) { ui = std::make_shared<web_user_interaction>(ref); };
     void set_archive_path(const std::string & val);

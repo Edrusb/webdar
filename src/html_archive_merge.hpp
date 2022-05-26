@@ -44,8 +44,12 @@ class html_archive_merge: public body_builder, public actor
 {
 public:
     html_archive_merge();
-    html_archive_merge(const html_archive_merge & ref);
-    const html_archive_merge & operator = (const html_archive_merge & ref) { throw WEBDAR_BUG; };
+    html_archive_merge(const html_archive_merge & ref) = delete;
+    html_archive_merge(html_archive_merge && ref) noexcept = delete;
+    html_archive_merge & operator = (const html_archive_merge & ref) = delete;
+    html_archive_merge & operator = (html_archive_merge && ref) noexcept = delete;
+    ~html_archive_merge() = default;
+
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,

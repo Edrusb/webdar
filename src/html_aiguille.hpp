@@ -40,6 +40,11 @@ class html_aiguille : public body_builder
 {
 public:
     html_aiguille() { mode = 0; };
+    html_aiguille(const html_aiguille & ref) = default;
+    html_aiguille(html_aiguille && ref) noexcept = default;
+    html_aiguille & operator = (const html_aiguille & ref) = default;
+    html_aiguille & operator = (html_aiguille && ref) noexcept = default;
+    ~html_aiguille() = default;
 
     void set_mode(unsigned int m);
 

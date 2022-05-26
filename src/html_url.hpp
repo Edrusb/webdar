@@ -40,6 +40,11 @@ class html_url : public body_builder, public static_body_builder
 {
 public:
     html_url(const std::string & url, const std::string & label) { x_url = url; x_label = label; };
+    html_url(const html_url & ref) = default;
+    html_url(html_url && ref) noexcept = default;
+    html_url & operator = (const html_url & ref) = default;
+    html_url & operator = (html_url && ref) noexcept = default;
+    ~html_url() = default;
 
     void change_url(const std::string & newurl) { x_url = newurl; };
     void change_label(const std::string & newlabel) { x_label = newlabel; };

@@ -76,18 +76,6 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     just_set = false;
 }
 
-html_web_user_interaction::html_web_user_interaction(const html_web_user_interaction & ref):
-    h_inter(""),
-    h_get_string("", html_form_input::text, "", 1),
-    h_form(""),
-    h_logs(""),
-    h_global(""),
-    lib_data(1)
-{
-    throw WEBDAR_BUG;
-}
-
-
 string html_web_user_interaction::get_body_part(const chemin & path,
 					   const request & req)
 {

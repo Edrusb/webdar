@@ -40,7 +40,9 @@ class reference
 public:
     reference() { reset(); }; // default constructor
     reference(const reference & ref); // copy constructor
-    const reference & operator = (const reference & ref); // assignment operator
+    reference(reference && ref) noexcept(false); // move constructor
+    reference & operator = (const reference & ref); // assignment operator
+    reference & operator = (reference && ref) noexcept(false); // move assignment operator
     virtual ~reference() { shut_all_peerings(); };
 
 	/// method used to create a relation between two objects
@@ -83,6 +85,7 @@ protected:
 private:
     std::set<reference *>::iterator next_to_read;
     std::set<reference *> peers;
+    bool already_moved;
 
     void reset();
     void shut_all_peerings();

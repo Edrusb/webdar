@@ -45,6 +45,11 @@ public:
     static const std::string acknowledged;
 
     html_error();
+    html_error(const html_error & ref) = default;
+    html_error(html_error && ref) noexcept = default;
+    html_error & operator = (const html_error & ref) = default;
+    html_error & operator = (html_error && ref) noexcept = default;
+    ~html_error() = default;
 
     void set_message(const std::string & msg);
 

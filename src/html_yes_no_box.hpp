@@ -44,6 +44,11 @@ class html_yes_no_box : public body_builder
 {
 public:
     html_yes_no_box(const std::string & message, bool default_value);
+    html_yes_no_box(const html_yes_no_box & ref) = default;
+    html_yes_no_box(html_yes_no_box && ref) noexcept = default;
+    html_yes_no_box & operator = (const html_yes_no_box & ref) = default;
+    html_yes_no_box & operator = (html_yes_no_box && ref) noexcept = default;
+    ~html_yes_no_box() = default;
 
     bool get_value() const { return rd.get_selected_num() != 0; };
 

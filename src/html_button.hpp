@@ -43,6 +43,10 @@ class html_button : public html_div, public events
 {
 public:
     html_button(const std::string & label, const std::string & x_event_name);
+    html_button(const html_button & ref) = delete;
+    html_button(html_button && ref) noexcept = delete;
+    html_button & operator = (const html_button & ref) = delete;
+    html_button & operator = (html_button && ref) noexcept = delete;
     ~html_button() { if(url_class != NULL) { foresake(url_class); delete url_class; } };
 
     void set_url_classid(const std::string & classid) { inside.set_class(classid); };

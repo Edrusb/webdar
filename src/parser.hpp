@@ -42,11 +42,10 @@ public:
 	/// however it must survive this parser object.
     parser(connexion *input, central_report *log);
 
-	/// avoid copy construction
-    parser(const parser & ref): req(ref.clog) { throw WEBDAR_BUG; };
-
-	/// avoid assignment
-    const parser & operator = (const parser & ref) { throw WEBDAR_BUG; };
+    parser(const parser & ref) = delete;
+    parser(parser && ref) noexcept = delete;
+    parser & operator = (const parser & ref) = delete;
+    parser & operator = (parser && ref) noexcept = delete;
 
 	/// destructor
     ~parser() { close(); };

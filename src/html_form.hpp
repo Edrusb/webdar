@@ -41,6 +41,11 @@ class html_form : public body_builder
 {
 public:
     html_form(const std::string & validate_msg = "send") { go_mesg = validate_msg; };
+    html_form(const html_form & ref) = default;
+    html_form(html_form && ref) noexcept = default;
+    html_form & operator = (const html_form & ref) = default;
+    html_form & operator = (html_form && ref) noexcept = default;
+    ~html_form() = default;
 
 	/// inherited methods from body_builder
 

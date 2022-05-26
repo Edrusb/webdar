@@ -48,8 +48,10 @@ class html_dir_tree: public html_div, public actor
 public:
     html_dir_tree(const std::string & chemin); // minimal constructeur, must use set_source() ASAP
     html_dir_tree(const archive_init_list * ref, const std::string & chemin);
-    html_dir_tree(const html_dir_tree & ref):shrink("",""),expand("",""),name("",""), nosubdir("",""), contents(1) { throw WEBDAR_BUG; };
-    const html_dir_tree & operator = (const html_dir_tree & ref) { throw WEBDAR_BUG; };
+    html_dir_tree(const html_dir_tree & ref) = delete;
+    html_dir_tree(html_dir_tree && ref) noexcept = delete;
+    html_dir_tree & operator = (const html_dir_tree & ref) = delete;
+    html_dir_tree & operator = (html_dir_tree && ref) noexcept = delete;
     ~html_dir_tree() { clear(); };
 
 	/// clear information learnt from a previously opened archive

@@ -42,6 +42,11 @@ class html_comparison_fields : public html_form_select
 {
 public:
     html_comparison_fields();
+    html_comparison_fields(const html_comparison_fields & ref) = default;
+    html_comparison_fields(html_comparison_fields && ref) noexcept = default;
+    html_comparison_fields & operator = (const html_comparison_fields & ref) = default;
+    html_comparison_fields & operator = (html_comparison_fields && ref) noexcept = default;
+    ~html_comparison_fields() = default;
 
     libdar::comparison_fields get_value() const;
     void set_value(libdar::comparison_fields val);

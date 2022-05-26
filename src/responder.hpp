@@ -43,6 +43,11 @@
 class responder
 {
 public:
+    responder() = default;
+    responder(const responder & ref) = default;
+    responder(responder && ref) noexcept = default;
+    responder & operator = (const responder & ref) = default;
+    responder & operator = (responder && ref) noexcept = default;
     virtual ~responder() {};
 
 	/// used for body_builder object for they have a proper prefix in path

@@ -40,6 +40,11 @@ class base64
 {
 public:
     base64(const std::string & str);
+    base64(const base64 & ref) = default;
+    base64(base64 && ref) noexcept = default;
+    base64 & operator = (const base64 & ref) = default;
+    base64 & operator = (base64 && ref) noexcept = default;
+    ~base64() = default;
 
     std::string decode() const;
     std::string encode() const { throw exception_feature("base64::encode"); }

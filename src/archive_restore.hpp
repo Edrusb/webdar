@@ -41,6 +41,11 @@ class archive_restore : public libthreadar::thread
 {
 public:
     archive_restore();
+    archive_restore(const archive_restore & ref) = default;
+    archive_restore(archive_restore && ref) noexcept = default;
+    archive_restore & operator = (const archive_restore & ref) = default;
+    archive_restore & operator = (archive_restore && ref) noexcept = default;
+    ~archive_restore() = default;
 
     void set_user_interaction(web_user_interaction & ref) { ui = std::make_shared<web_user_interaction>(ref); };
     void set_archive_path(const std::string & val);

@@ -43,6 +43,12 @@ public:
     static const std::string changed;
 
     html_form_radio() { selected = 0; register_name(changed); };
+    html_form_radio(const html_form_radio & ref) = default;
+    html_form_radio(html_form_radio && ref) noexcept = default;
+    html_form_radio & operator = (const html_form_radio & ref) = default;
+    html_form_radio & operator = (html_form_radio && ref) noexcept = default;
+    ~html_form_radio() = default;
+
     void add_choice(const std::string & id, const std::string & label);
     void clear() { choices.clear(); selected = 0; };
 

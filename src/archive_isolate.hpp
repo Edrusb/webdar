@@ -42,6 +42,11 @@ class archive_isolate : public libthreadar::thread
 {
 public:
     archive_isolate(): archpath("/") { has_ref = false; };
+    archive_isolate(const archive_isolate & ref) = default;
+    archive_isolate(archive_isolate && ref) noexcept = default;
+    archive_isolate & operator = (const archive_isolate & ref) = default;
+    archive_isolate & operator = (archive_isolate && ref) noexcept = default;
+    ~archive_isolate() = default;
 
     void set_user_interaction(web_user_interaction & ref) { ui = std::make_shared<web_user_interaction>(ref); };
     void set_archive_path(const std::string & val);

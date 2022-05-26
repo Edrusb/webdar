@@ -38,6 +38,11 @@ extern "C"
 class authentication
 {
 public:
+    authentication() = default;
+    authentication(const authentication & ref) = default;
+    authentication(authentication && ref) noexcept = default;
+    authentication & operator = (const authentication & ref) = default;
+    authentication & operator = (authentication && ref) noexcept = default;
     virtual ~authentication() {};
 
     virtual bool valid_credentials(const std::string & username, const std::string & credential) const = 0;
@@ -55,6 +60,11 @@ class authentication_cli : public authentication
 {
 public:
     authentication_cli(const std::string & username, const std::string & password) { user = username; pass = password; };
+    authentication_cli(const authentication_cli & ref) = default;
+    authentication_cli(authentication_cli && ref) noexcept = default;
+    authentication_cli & operator = (const authentication_cli & ref) = default;
+    authentication_cli & operator = (authentication_cli && ref) noexcept = default;
+    ~authentication_cli() = default;
 
     virtual bool valid_credentials(const std::string & username, const std::string & credential) const override { return username == user && credential == pass; }; // no need of mutex for this class
 

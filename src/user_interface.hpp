@@ -56,6 +56,10 @@ public:
     static const std::string closing;      //< signal end of user session
 
     user_interface();
+    user_interface(const user_interface & ref) = delete;
+    user_interface(user_interface && ref) noexcept = delete;
+    user_interface & operator = (const user_interface & ref) = delete;
+    user_interface & operator = (user_interface && ref) noexcept = delete;
     ~user_interface();
 
 	/// inherited from responder

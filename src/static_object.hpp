@@ -40,6 +40,11 @@ extern "C"
 class static_object
 {
 public:
+    static_object() = default;
+    static_object(const static_object & ref) = default;
+    static_object(static_object && ref) noexcept = default;
+    static_object & operator = (const static_object & ref) = default;
+    static_object & operator = (static_object && ref) noexcept = default;
     virtual ~static_object() {};
 
     virtual answer give_answer() const = 0;
@@ -52,6 +57,11 @@ class static_object_text : public static_object
 {
 public:
     static_object_text(const char *text) { data = text; };
+    static_object_text(const static_object_text & ref) = default;
+    static_object_text(static_object_text && ref) noexcept = default;
+    static_object_text & operator = (const static_object_text & ref) = default;
+    static_object_text & operator = (static_object_text && ref) noexcept = default;
+    ~static_object_text() = default;
 
 	/// inherited from static_object
     virtual answer give_answer() const;

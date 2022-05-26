@@ -41,6 +41,16 @@ extern "C"
 class static_object_library
 {
 public:
+
+	/// no object of that class get ever created
+
+    static_object_library() = delete;
+    static_object_library(const static_object_library & ref) = delete;
+    static_object_library(static_object_library && ref) noexcept = delete;
+    static_object_library & operator = (const static_object_library & ref) = delete;
+    static_object_library & operator = (static_object_library && ref) noexcept = delete;
+    ~static_object_library() = delete;
+
 	/// initialize the library once and for all
     static void init();
 

@@ -43,8 +43,11 @@ class html_archive_isolate: public body_builder, public actor
 {
 public:
     html_archive_isolate();
-    html_archive_isolate(const html_archive_isolate & ref);
-    const html_archive_isolate & operator = (const html_archive_isolate & ref) { throw WEBDAR_BUG; };
+    html_archive_isolate(const html_archive_isolate & ref) = delete;
+    html_archive_isolate(html_archive_isolate && ref) noexcept = delete;
+    html_archive_isolate & operator = (const html_archive_isolate & ref) = delete;
+    html_archive_isolate & operator = (html_archive_isolate && ref) noexcept = delete;
+    ~html_archive_isolate() = default;
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,

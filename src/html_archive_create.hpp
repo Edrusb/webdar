@@ -45,7 +45,10 @@ class html_archive_create: public body_builder, public actor
 public:
     html_archive_create();
     html_archive_create(const html_archive_create & ref);
-    const html_archive_create & operator = (const html_archive_create & ref) { throw WEBDAR_BUG; };
+    html_archive_create(html_archive_create && ref) noexcept = delete;
+    html_archive_create & operator = (const html_archive_create & ref) = delete;
+    html_archive_create & operator = (html_archive_create && ref) noexcept = delete;
+    ~html_archive_create() = default;
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,

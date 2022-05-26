@@ -38,6 +38,11 @@ extern "C"
 class static_body_builder
 {
 public:
+    static_body_builder() = default;
+    static_body_builder(const static_body_builder & ref) = default;
+    static_body_builder(static_body_builder && ref) noexcept = default;
+    static_body_builder & operator = (const static_body_builder & ref) = default;
+    static_body_builder & operator = (static_body_builder && ref) noexcept = default;
     virtual ~static_body_builder() {};
 
     virtual std::string get_body_part() const = 0;

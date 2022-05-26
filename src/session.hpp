@@ -92,6 +92,11 @@ public:
 private:
 	/// constructor
     session();
+    session(const session & ref) = delete;
+    session(session && ref) = delete;
+    session & operator = (const session & ref) = delete;
+    session & operator = (session && ref) = delete;
+    ~session() = default;
 
 	/// set session_ID
     void set_session_id(const std::string & sessid);

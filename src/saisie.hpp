@@ -77,6 +77,11 @@ public:
 
 	/// constructor
     saisie();
+    saisie(const saisie & ref) = default;
+    saisie(saisie && ref) noexcept = default;
+    saisie & operator = (const saisie & ref) = default;
+    saisie & operator = (saisie && ref) noexcept = default;
+    ~saisie() = default;
 
 	/// inherited from html_page
     virtual std::string get_body_part(const chemin & path,

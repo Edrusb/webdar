@@ -47,6 +47,11 @@ public:
 	/// constructors
     uri() { clear(); };
     uri(const std::string & res) { read(res); };
+    uri(const uri & ref) = default;
+    uri(uri && ref) noexcept = default;
+    uri & operator = (const uri & ref) = default;
+    uri & operator = (uri && ref) noexcept = default;
+    ~uri() = default;
 
 	// default copy constructor is fine
 	// default assignment operator is fine too

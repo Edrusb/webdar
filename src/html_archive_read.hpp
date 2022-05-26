@@ -45,6 +45,11 @@ class html_archive_read: public body_builder, public actor
 {
 public:
     html_archive_read(const std::string & archive_description);
+    html_archive_read(const html_archive_read & ref) = delete;
+    html_archive_read(html_archive_read && ref) noexcept = delete;
+    html_archive_read & operator = (const html_archive_read & ref) = delete;
+    html_archive_read & operator = (html_archive_read && ref) noexcept = delete;
+    ~html_archive_read() = default;
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,

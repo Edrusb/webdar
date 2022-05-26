@@ -48,9 +48,18 @@ reference::reference(const reference & ref)
 	throw WEBDAR_BUG; // cannot copy-construct an object already linked with another one
 }
 
-const reference & reference::operator = (const reference & ref)
+reference::reference(reference && ref) noexcept(false)
 {
     if(ref.is_empty())
+	reset();
+    else
+	throw WEBDAR_BUG; // cannot copy-construct an object already linked with another one
+}
+
+
+reference & reference::operator = (const reference & ref)
+{
+     if(ref.is_empty())
     {
 	shut_all_peerings();
 	reset();
@@ -61,6 +70,23 @@ const reference & reference::operator = (const reference & ref)
     return *this;
 }
 
+reference & reference::operator = (reference && ref) noexcept(false)
+{
+    if(ref.already_moved)
+	return *this;
+	// avoiding copying from an already moved object
+	// class reference can is virtually multi-inherited
+    if(ref.is_empty())
+    {
+	shut_all_peerings();
+	reset();
+	ref.already_moved = true; // not really useful as we don't use the value of ref...
+    }
+    else
+	throw WEBDAR_BUG;
+
+    return *this;
+}
 
 void reference::peer_with(reference *obj)
 {
@@ -128,6 +154,7 @@ void reference::reset()
 {
     peers.clear();
     next_to_read = peers.begin();
+    already_moved = false;
 }
 
 

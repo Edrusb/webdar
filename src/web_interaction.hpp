@@ -34,6 +34,10 @@ class web_interaction : public user_interaction, public req_ans
 {
 public:
     web_interaction(unsigned int num_line_buffer); //< max number of line of output to buffer
+    web_interaction(const web_interaction & ref) = delete;
+    web_interaction(web_interaction && ref) noexcept = delete;
+    web_interaction & operator = (const web_interaction & ref) = delete;
+    web_interaction & operator = (web_interaction && ref) noexcept = delete;
     ~web_interaction();
 
 	// inherited from user_interaction

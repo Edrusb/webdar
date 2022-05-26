@@ -44,6 +44,11 @@ public:
     static const std::string changed;
 
     html_compression(const std::string & title);
+    html_compression(const html_compression & ref) = default;
+    html_compression(html_compression && ref) noexcept = default;
+    html_compression & operator = (const html_compression & ref) = default;
+    html_compression & operator = (html_compression && ref) noexcept = default;
+    ~html_compression() = default;
 
     libdar::compression get_value() const;
     void set_value(libdar::compression val);

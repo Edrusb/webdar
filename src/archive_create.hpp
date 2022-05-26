@@ -42,6 +42,12 @@ class archive_create : public libthreadar::thread
 {
 public:
     archive_create(): archpath("/"), fs_root("/") { progressive_report = NULL; };
+    archive_create(const archive_create & ref) = default;
+    archive_create(archive_create && ref) noexcept = default;
+    archive_create & operator = (const archive_create & ref) = default;
+    archive_create & operator = (archive_create && ref) noexcept = default;
+    ~archive_create() = default;
+
 
     void set_user_interaction(web_user_interaction & ref) { ui = std::make_shared<web_user_interaction>(ref); };
     void set_archive_path(const std::string & val);

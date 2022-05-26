@@ -42,6 +42,11 @@ class request
 public:
 	/// The constructor
     request(central_report *log) { clear(); clog = log; };
+    request(const request & ref) = default;
+    request(request && ref) noexcept = default;
+    request & operator = (const request & ref) = default;
+    request & operator = (request && ref) noexcept = default;
+    ~request() = default;
 
 	/// clear all fields of the request
     void clear();

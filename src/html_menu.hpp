@@ -53,6 +53,10 @@ public:
 
 	/// constructor
     html_menu();
+    html_menu(const html_menu & ref) = default;
+    html_menu(html_menu && ref) noexcept = default;
+    html_menu & operator = (const html_menu & ref) = default;
+    html_menu & operator = (html_menu && ref) noexcept = default;
 
 	/// destructor
     ~html_menu();

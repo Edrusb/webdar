@@ -44,7 +44,14 @@ extern "C"
 class html_div : public html_level
 {
 public:
+    html_div() = default;
+    html_div(const html_div & ref) = default;
+    html_div(html_div && ref) noexcept = default;
+    html_div & operator = (const html_div & ref) = default;
+    html_div & operator = (html_div && ref) noexcept = default;
+    ~html_div() = default;
 
+	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
 				      const request & req);
 

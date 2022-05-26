@@ -42,6 +42,11 @@ public:
     static const std::string changed;
 
     html_form_select(const std::string & label) { x_label = label; register_name(changed); record_actor_on_event(this, html_form_radio::changed); };
+    html_form_select(const html_form_select & ref) = default;
+    html_form_select(html_form_select && ref) noexcept = default;
+    html_form_select & operator = (const html_form_select & ref) = default;
+    html_form_select & operator = (html_form_select && ref) noexcept = default;
+    ~html_form_select() = default;
 
     void change_label(const std::string & label) { x_label = label; };
 

@@ -43,8 +43,10 @@ class html_table: public html_level
 {
 public:
     html_table(unsigned int width);
-    html_table(const html_table & ref) { throw WEBDAR_BUG; };
-    const html_table & operator = (const html_table & ref) { throw WEBDAR_BUG; };
+    html_table(const html_table & ref)  = delete;
+    html_table(html_table && ref) noexcept = delete;
+    const html_table & operator = (const html_table & ref) = delete;
+    html_table & operator = (html_table && ref) noexcept = delete;
     ~html_table() { clear(); };
 
 	/// whether border are collapsed or separated (collasped by default)

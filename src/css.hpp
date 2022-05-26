@@ -41,6 +41,10 @@ class css
 public:
 
     css() { css_clear_attributes(); };
+    css(const css & ref) = default;
+    css(css && ref) noexcept = default;
+    css & operator = (const css & ref) = default;
+    css & operator = (css && ref) noexcept = default;
     virtual ~css() {};
 
     void css_clear_attributes();

@@ -48,8 +48,11 @@ class html_web_user_interaction: public body_builder, public actor
 {
 public:
     html_web_user_interaction(unsigned int x_warn_size = 25);
-    html_web_user_interaction(const html_web_user_interaction & ref);
-    const html_web_user_interaction & operator = (const html_web_user_interaction & ref) { throw WEBDAR_BUG; };
+    html_web_user_interaction(const html_web_user_interaction & ref) = delete;
+    html_web_user_interaction(html_web_user_interaction && ref) noexcept = delete;
+    html_web_user_interaction & operator = (const html_web_user_interaction & ref) = delete;
+    html_web_user_interaction & operator = (html_web_user_interaction && ref) noexcept = delete;
+    ~html_web_user_interaction() = default;
 
 	/// change the number of last warnings to display
     void set_warning_list_size(unsigned int size) { lib_data.set_warning_list_size(size); };

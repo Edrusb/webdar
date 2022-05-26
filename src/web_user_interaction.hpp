@@ -44,7 +44,9 @@ class web_user_interaction : public libdar::user_interaction
 public:
     web_user_interaction(unsigned int x_warn_size = 10);
     web_user_interaction(const web_user_interaction & ref) { copy_from(ref); };
-    const web_user_interaction & operator = (const web_user_interaction & ref) { detruit(); copy_from(ref); return *this; };
+    web_user_interaction(web_user_interaction && ref) noexcept = delete;
+    web_user_interaction & operator = (const web_user_interaction & ref) { detruit(); copy_from(ref); return *this; };
+    web_user_interaction & operator = (web_user_interaction && ref) noexcept = delete;
     ~web_user_interaction() { detruit(); };
 
 	/// change the number of last warnings to display

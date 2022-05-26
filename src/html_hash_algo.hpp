@@ -42,6 +42,11 @@ public:
     static const std::string changed;
 
     html_hash_algo(const std::string & title);
+    html_hash_algo(const html_hash_algo & ref) = default;
+    html_hash_algo(html_hash_algo && ref) noexcept = default;
+    html_hash_algo & operator = (const html_hash_algo & ref) = default;
+    html_hash_algo & operator = (html_hash_algo && ref) noexcept = default;
+    ~html_hash_algo() = default;
 
     libdar::hash_algo get_value() const;
     void set_value(libdar::hash_algo val);

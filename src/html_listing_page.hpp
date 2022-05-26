@@ -48,6 +48,12 @@ public:
     static const std::string event_close;
 
     html_listing_page();
+    html_listing_page(const html_listing_page & ref) = default;
+    html_listing_page(html_listing_page && ref) noexcept = default;
+    html_listing_page & operator = (const html_listing_page & ref) = default;
+    html_listing_page & operator = (html_listing_page && ref) noexcept = default;
+    ~html_listing_page() = default;
+
 
 	/// set title of the listing page given the session name
     void set_session_name(const std::string & session_name);

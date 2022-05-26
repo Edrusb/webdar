@@ -51,7 +51,7 @@ body_builder::body_builder(const body_builder & ref)
     no_CR = ref.no_CR;
 }
 
-const body_builder & body_builder::operator = (const body_builder & ref)
+body_builder & body_builder::operator = (const body_builder & ref)
 {
     css *me = this;
     const css *you = & ref;

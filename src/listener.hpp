@@ -51,9 +51,10 @@ public:
 	     authentication *auth,   //< where to request for authentications
 	     const std::string & ip, //< interface to listen on
 	     unsigned int port);     //< port to listen on
-    listener(const listener & ref) { throw WEBDAR_BUG; }; //< forbidding copy construction
-    const listener & operator = (const listener & ref) { throw WEBDAR_BUG; }; //< forbidding assignment
-
+    listener(const listener & ref) = delete;
+    listener(listener && ref) noexcept = delete;
+    listener & operator = (const listener & ref) = delete;
+    listener & operator = (listener && ref) noexcept = delete;
     ~listener() { close(sockfd); };
 
 protected:

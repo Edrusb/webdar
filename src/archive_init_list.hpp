@@ -42,8 +42,10 @@ class archive_init_list : public libthreadar::thread
 {
 public:
     archive_init_list(): archpath("/") { ptr = NULL; };
-    archive_init_list(const archive_init_list & ref): archpath(ref.archpath) { throw WEBDAR_BUG; };
-    const archive_init_list & operator = (const archive_init_list & ref) { throw WEBDAR_BUG; };
+    archive_init_list(const archive_init_list & ref) = delete;
+    archive_init_list(archive_init_list && ref) noexcept = delete;
+    archive_init_list & operator = (const archive_init_list & ref) = delete;
+    archive_init_list & operator = (archive_init_list && ref) noexcept = delete;
     ~archive_init_list() { close_archive(); };
 
 

@@ -47,6 +47,11 @@ class html_options_isolate : public body_builder, public actor
 {
 public:
     html_options_isolate();
+    html_options_isolate(const html_options_isolate & ref) = default;
+    html_options_isolate(html_options_isolate && ref) noexcept = default;
+    html_options_isolate & operator = (const html_options_isolate & ref) = default;
+    html_options_isolate & operator = (html_options_isolate && ref) noexcept = default;
+    ~html_options_isolate() = default;
 
 	/// inherited from bdy_builder
     virtual std::string get_body_part(const chemin & path,

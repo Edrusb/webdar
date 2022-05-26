@@ -50,8 +50,14 @@ public:
 	/// copy constructor allowed only if the object has no parent nor child
     body_builder(const body_builder & ref);
 
+	/// move constructor
+    body_builder(body_builder && ref) noexcept = default;
+
 	/// assignment operator copy constructor allowed only if the object has no parent nor child
-    const body_builder & operator = (const body_builder & ref);
+    body_builder & operator = (const body_builder & ref);
+
+	/// move operator
+    body_builder & operator = (body_builder && ref) noexcept = default;
 
 	/// the (virtual) destructor
     virtual ~body_builder() { orphan_all_children(); unrecord_from_parent(); };
