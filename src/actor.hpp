@@ -52,8 +52,14 @@ extern "C"
 class actor : virtual public reference
 {
 public:
+    actor() = default;
+    actor(const actor & ref) = default;
+    actor(actor && ref) noexcept(false) = default;
+    actor & operator = (const actor & ref) = default;
+    actor & operator = (actor && ref) noexcept(false);
     virtual ~actor() {};
 
+	/// implementation in inherited class of the action triggered by the event given in argument
     virtual void on_event(const std::string & event_name) = 0;
 };
 
