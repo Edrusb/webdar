@@ -89,7 +89,6 @@ int main(int argc, char *argv[], char **env)
     bool background;
     int facility;
     int ret = WEBDAR_EXIT_OK;
-    bool quit = false;
     priority_t min;
     string fixed_user = "admin";
     string fixed_pass;

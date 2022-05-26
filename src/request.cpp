@@ -330,8 +330,6 @@ bool request::is_empty_line(connexion & input)
 string request::up_to_eol(connexion & input)
 {
     string ret;
-    bool loop = true;
-    char a;
 
     if(&input == NULL)
 	throw WEBDAR_BUG;

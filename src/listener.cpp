@@ -77,7 +77,6 @@ listener::listener(central_report *log, authentication *auth, const std::string 
 
 void listener::init(central_report *log, authentication *auth, const std::string & ip, unsigned int port)
 {
-    int tmp = 0;
     sigset_t sigs;
 
     l_ip = ip;
