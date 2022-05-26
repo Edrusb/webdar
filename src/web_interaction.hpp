@@ -41,8 +41,8 @@ public:
     ~web_interaction();
 
 	// inherited from user_interaction
-    virtual bool pause2();
-    virtual std::string get_string(const std::string & message, bool echo);
+    virtual bool pause2() override;
+    virtual std::string get_string(const std::string & message, bool echo) override;
     virtual void listing(const std::string & flag,
 			 const std::string & perm,
 			 const std::string & uid,
@@ -51,9 +51,9 @@ public:
 			 const std::string & date,
 			 const std::string & filename,
 			 bool is_dir,
-			 bool has_children);
+			 bool has_children) override;
 
-    virtual web_interaction *clone() const;
+    virtual web_interaction *clone() const override;
 
 
 	// interface for the web
@@ -62,7 +62,7 @@ public:
 	// and a field for user interaction.
 
 protected:
-    virtual void inherited_warning(const std::string & message);
+    virtual void inherited_warning(const std::string & message) override;
 
 private:
     mutex pending_libdar; //< used to suspend libdar thread, waiting for user answer

@@ -88,8 +88,8 @@ public:
     void set_current_label(const std::string & label);
 
 	/// inherited from body_builder
-    std::string get_body_part(const chemin & path,
-			      const request & req);
+    virtual std::string get_body_part(const chemin & path,
+				      const request & req) override;
 
 	/// modified wrapper for inherited methods from events
     void record_actor_on_event(actor *ptr) { events::record_actor_on_event(ptr, changed); };
@@ -97,10 +97,10 @@ public:
 
 protected:
 	/// inherited from body_builder
-    void path_has_changed();
+    virtual void path_has_changed() override;
 
 	/// inherited from css (grand-parent class)
-    void css_updated(bool inherit);
+    virtual void css_updated(bool inherit) override;
 
 private:
     struct boite

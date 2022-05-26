@@ -73,7 +73,7 @@ public:
 	/// \note always fields that got a label (using a set_*_label() method)
 	/// are displayed.
     virtual std::string get_body_part(const chemin & path,
-				      const request & req);
+				      const request & req) override;
 
 private:
     libdar::statistics stats;

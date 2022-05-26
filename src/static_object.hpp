@@ -64,7 +64,7 @@ public:
     ~static_object_text() = default;
 
 	/// inherited from static_object
-    virtual answer give_answer() const;
+    virtual answer give_answer() const override;
 
 private:
     const char *data;

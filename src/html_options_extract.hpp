@@ -53,8 +53,8 @@ public:
     libdar::archive_options_extract get_options() const;
 
 	/// inherited from body_builder
-    std::string get_body_part(const chemin & path,
-			      const request & req);
+    virtual std::string get_body_part(const chemin & path,
+				      const request & req) override;
 private:
     html_form form;
     html_form_fieldset fs;

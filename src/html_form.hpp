@@ -48,9 +48,8 @@ public:
     ~html_form() = default;
 
 	/// inherited methods from body_builder
-
     virtual std::string get_body_part(const chemin & path,
-				      const request & req);
+				      const request & req) override;
 
 private:
     std::string go_mesg;

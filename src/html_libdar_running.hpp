@@ -69,10 +69,10 @@ public:
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
-				      const request & req);
+				      const request & req) override;
 
 	/// inherited from actor
-    virtual void on_event(const std::string & event_name);
+    virtual void on_event(const std::string & event_name) override;
 
 	/// defines the name of the session
     void set_session_name(const std::string & name) { sessname = name; };

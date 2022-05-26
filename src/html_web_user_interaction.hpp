@@ -59,10 +59,10 @@ public:
 
 	/// inherited from body_builder, called by the webdar thread
     virtual std::string get_body_part(const chemin & path,
-				      const request & req);
+				      const request & req) override;
 
 	/// inherited from actor
-    virtual void on_event(const std::string & event_name);
+    virtual void on_event(const std::string & event_name) override;
 
 	/// clear logs and reset html interface
     void clear();

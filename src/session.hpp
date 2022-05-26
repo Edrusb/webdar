@@ -55,14 +55,16 @@ public:
 	// constructor of the class are left private intentionnaly
 	// this class provides a global table of session one can create, lookup or destroy objects in/from this table
 
-    answer give_answer(const request & req);
+	/// inherited from responder
+    virtual answer give_answer(const request & req) override;
+
     bool has_waiting_threads() const { return lock_wui.waiting_thread(); };
     bool has_working_server() const { return lock_wui.working_thread(); };
     std::string get_session_ID() const { return session_ID; };
 
 
 	/// inherited from actor parent class
-    virtual void on_event(const std::string & event_name);
+    virtual void on_event(const std::string & event_name) override;
 
 
 	//////////////////////////

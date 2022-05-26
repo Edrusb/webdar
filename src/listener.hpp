@@ -59,7 +59,7 @@ public:
 
 protected:
 	// inherited from libthreadar::thread;
-    void inherited_run();
+    virtual void inherited_run() override;
 
 private:
     central_report *rep; //< where to report events

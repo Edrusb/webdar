@@ -63,10 +63,10 @@ public:
     ~user_interface();
 
 	/// inherited from responder
-    virtual answer give_answer(const request & req);
+    virtual answer give_answer(const request & req) override;
 
 	/// inherited from actor
-    virtual void on_event(const std::string & event_name);
+    virtual void on_event(const std::string & event_name) override;
 
 	/// tells whether libdar is running
     bool is_libdar_running() const { return libdar_running; };
@@ -81,7 +81,7 @@ public:
 protected:
 
 	/// inherited from responder
-    virtual void prefix_has_changed();
+    virtual void prefix_has_changed() override;
 
 private:
     enum mode_type

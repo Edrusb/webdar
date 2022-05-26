@@ -48,15 +48,18 @@ public:
 
     void set_mode(unsigned int m);
 
-	// inherited from body_builder
-    void has_been_adopted(body_builder *obj);
-
-    std::string get_body_part(const chemin & path,
-			      const request & req);
+	/// inherited from body_builder
+    virtual std::string get_body_part(const chemin & path,
+				      const request & req) override;
 
 protected:
+
 	/// inherited from css grand-parent
-        virtual void css_updated(bool inherited);
+    virtual void css_updated(bool inherited) override;
+
+    	/// inherited from body_builder
+    virtual void has_been_adopted(body_builder *obj) override;
+
 
 private:
     unsigned int mode;

@@ -51,7 +51,7 @@ public:
     void clear() { orphan_all_children(); };
 
     virtual std::string get_body_part(const chemin & path,
-				      const request & req);
+				      const request & req) override;
 
 private:
     std::string x_label;

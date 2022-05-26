@@ -67,7 +67,7 @@ public:
 	/// assign to all cells
 
     virtual std::string get_body_part(const chemin & path,
-				      const request & req);
+				      const request & req) override;
 
 private:
     unsigned int dim_x;

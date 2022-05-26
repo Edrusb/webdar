@@ -53,10 +53,10 @@ public:
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
-				      const request & req);
+				      const request & req) override;
 
-	/// inherited from on_event
-    virtual void on_event(const std::string & event_name);
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
 
     const std::string & get_archive_path() const { return sauv_path.get_value(); };
     const std::string & get_archive_basename() const { return basename.get_value(); };

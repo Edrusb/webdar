@@ -63,8 +63,9 @@ public:
     void set_progressive_report(libdar::statistics *ptr) { progressive_report = ptr; };
 
 protected:
+
 	/// inherited from class libthreadar::thread
-    virtual void inherited_run();
+    virtual void inherited_run() override;
 
 private:
     std::shared_ptr<web_user_interaction> ui;

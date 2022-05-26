@@ -53,8 +53,8 @@ public:
 
     void set_message(const std::string & msg);
 
-	/// inherited from actor class
-    virtual void on_event(const std::string & event_name);
+	/// inherited from class actor
+    virtual void on_event(const std::string & event_name) override;
 
 	/// defines the name of the session
     void set_session_name(const std::string & sessname);

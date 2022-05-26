@@ -61,7 +61,7 @@ public:
 
 protected:
 	/// inherited from class libthreadar::thread
-    virtual void inherited_run();
+    virtual void inherited_run() override;
 
 private:
     std::shared_ptr<web_user_interaction> ui;

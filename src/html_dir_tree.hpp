@@ -79,11 +79,11 @@ public:
     void go_show() { on_event(event_click); };
 
 	/// inherited from actor
-    virtual void on_event(const std::string & event_name);
+    virtual void on_event(const std::string & event_name) override;
 
 	/// inherite from html_div
     virtual std::string get_body_part(const chemin & path,
-				      const request & req);
+				      const request & req) override;
 
 
 private:

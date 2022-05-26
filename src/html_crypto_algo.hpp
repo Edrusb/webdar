@@ -55,7 +55,7 @@ public:
     void set_value(libdar::crypto_algo val);
 
 	/// actor inheritance
-    virtual void on_event(const std::string & event_name);
+    virtual void on_event(const std::string & event_name) override;
 };
 
 #endif

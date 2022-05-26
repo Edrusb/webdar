@@ -55,11 +55,14 @@ public:
     void change_label(const std::string & label) { inside.change_label(label); };
     std::string get_label() const { return inside.get_label(); };
 
-	// inherited from body_builder
+	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
-				      const request & req);
+				      const request & req) override;
 
-    virtual void path_has_changed();
+protected:
+
+    	/// inherited from body_builder
+    virtual void path_has_changed() override;
 
 private:
     html_url inside;

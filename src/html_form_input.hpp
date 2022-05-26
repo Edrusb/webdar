@@ -67,7 +67,7 @@ public:
     void set_enabled(bool val) { enabled = val; };
 
     virtual std::string get_body_part(const chemin & path,
-				      const request & req);
+				      const request & req) override;
 
 	/// change the name of the event generated when this control changes
     void set_change_event_name(const std::string & name);

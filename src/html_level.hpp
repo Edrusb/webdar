@@ -62,10 +62,10 @@ public:
 
 protected:
 	/// inherited from body_builder
-    virtual void has_been_adopted(body_builder *obj);
+    virtual void has_been_adopted(body_builder *obj) override;
 
 	/// inherited from body_builder
-    virtual void has_been_foresaken(body_builder *obj);
+    virtual void has_been_foresaken(body_builder *obj) override;
 
     struct bundle
     {
@@ -84,7 +84,7 @@ protected:
 						       const request & req);
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
-				      const request & req);
+				      const request & req) override;
 
 private:
     std::list<bundle>::iterator nxt;

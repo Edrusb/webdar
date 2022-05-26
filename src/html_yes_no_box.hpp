@@ -56,12 +56,12 @@ public:
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
-				      const request & req)
+				      const request & req) override
     { return get_body_part_from_all_children(path, req); };
 
 protected:
 	/// inherited from ancestor class css
-    void css_updated(bool inherited);
+    virtual void css_updated(bool inherited) override;
 
 private:
     html_form form;

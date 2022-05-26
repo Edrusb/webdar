@@ -53,10 +53,10 @@ public:
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
-				      const request & req);
+				      const request & req) override;
 
-	/// inherited from events
-    virtual void on_event(const std::string & event_name);
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
 
 	// available fields for libdar
 

@@ -55,8 +55,8 @@ public:
     void set_style_hover(const css & ref) { hover = ref.css_get_raw_string(); };
 
 	/// inherited from body_builder
-    std::string get_body_part(const chemin & path,
-			      const request & req);
+    virtual std::string get_body_part(const chemin & path,
+				      const request & req) override;
 
 private:
     std::string link;

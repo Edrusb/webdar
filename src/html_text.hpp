@@ -60,10 +60,10 @@ public:
 
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
-				      const request & req) { return get_body_part(); };
+				      const request & req) override { return get_body_part(); };
 
 	/// inherited from static_body_builder
-    virtual std::string get_body_part() const { return txt; };
+    virtual std::string get_body_part() const override { return txt; };
 
 private:
     std::string txt;

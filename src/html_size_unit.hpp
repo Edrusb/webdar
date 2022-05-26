@@ -50,10 +50,10 @@ public:
 
 	/// body_builder indirect inheritance
     virtual std::string get_body_part(const chemin & path,
-				      const request & req);
+				      const request & req) override;
 
 	/// actor inheritance
-    virtual void on_event(const std::string & event_name);
+    virtual void on_event(const std::string & event_name) override;
 
 private:
     html_form_select unit;

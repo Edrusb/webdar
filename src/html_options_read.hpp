@@ -56,11 +56,11 @@ public:
     const libdar::archive_options_read & get_options() const;
 
 	/// inherited from actor
-    void on_event(const std::string & event_name);
+    virtual void on_event(const std::string & event_name) override;
 
 	/// inherited from body_builder
-    std::string get_body_part(const chemin & path,
-			      const request & req);
+    virtual std::string get_body_part(const chemin & path,
+				      const request & req) override;
 
 private:
 	// construction fields
