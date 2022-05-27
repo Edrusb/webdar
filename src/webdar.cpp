@@ -170,7 +170,6 @@ int main(int argc, char *argv[], char **env)
 	{
 	    vector<interface_port>::iterator it = ecoute.begin();
 	    listener *tmp = nullptr;
-	    pthread_t unused_arg;
 
 	    static_object_library::init();
 	    try
@@ -210,7 +209,7 @@ int main(int argc, char *argv[], char **env)
 			if(taches.back() == nullptr)
 			    taches.pop_back();
 			else
-			    if(!taches.back()->is_running(unused_arg))
+			    if(!taches.back()->is_running())
 			    {
 				taches.back()->join();
 				delete taches.back();
