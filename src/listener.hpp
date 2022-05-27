@@ -36,9 +36,10 @@
 
     /// class listener
     ///
-    /// listen to the defined TCP port for new connexions
+    /// listen to the defined TCP port for new connexions.
     /// Upon new connexion, it builds a connexion objects
-    /// and a "parser" object
+    /// and assign it to a new server object that will
+    /// manage incoming request on this connexion accordingly
 
 
 class listener : public libthreadar::thread
