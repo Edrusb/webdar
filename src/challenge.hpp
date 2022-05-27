@@ -32,7 +32,6 @@ extern "C"
 
     // C++ system header files
 
-
     // webdar headers
 #include "responder.hpp"
 #include "authentication.hpp"
@@ -50,8 +49,10 @@ public:
 	/// returns whether the request is authoritative
 	///
 	/// \param[in] req the request to analyse
-	/// \param[out] user the authenticated user
+	/// \param[out] user the authenticated user for this request
 	/// \return true when the request is authoritative and the set "user" to the name of the authenticated user
+	/// \note the authoritativity is checked by the presence of the base64 encoded login/password
+	/// in the HDR_AUTHORIZATION attribute found in the request
     bool is_an_authoritative_request(const request & req, std::string & user);
 
 	/// to be used to answer a non authoritative request
