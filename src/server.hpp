@@ -34,6 +34,12 @@
 #include "session.hpp"
 #include "authentication.hpp"
 
+    /// thread object that read request from the provided connexion send then to the
+    /// appropriated session managing authentication and send back the answer to the session
+
+    /// \note relies on a parser object to split byte flow into structured requests, challenge object
+    /// for authentication validation and request, and session class to find and interrogate
+    /// the proper session
 
 class server: public libthreadar::thread
 {
