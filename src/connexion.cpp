@@ -70,9 +70,9 @@ connexion::connexion(int fd, const string & peerip, unsigned int peerport)
     catch(...)
     {
 	if(buffer != nullptr)
-	    delete buffer;
+	    delete [] buffer;
 	if(out_buf != nullptr)
-	    delete out_buf;
+	    delete [] out_buf;
 	throw;
     }
 }
@@ -81,9 +81,9 @@ connexion::~connexion()
 {
     fermeture();
     if(buffer != nullptr)
-	delete buffer;
+	delete [] buffer;
     if(out_buf != nullptr)
-	delete out_buf;
+	delete [] out_buf;
 }
 
 char connexion::read_one(bool blocking)
