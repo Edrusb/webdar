@@ -45,6 +45,10 @@ class central_report
 {
 public:
     central_report(priority_t min_logged): min(min_logged) {};
+    central_report(const central_report & ref) = delete;
+    central_report(central_report && ref) noexcept = delete;
+    central_report & operator = (const central_report & ref) = delete;
+    central_report & operator = (central_report && ref) noexcept = delete;
     virtual ~central_report() noexcept(false) {};
 
     void report(priority_t priority, const std::string & message);
