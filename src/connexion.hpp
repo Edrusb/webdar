@@ -35,6 +35,7 @@
     /// this class provide read/write access to a TCP connexion
     /// it may support future evolution by mean of inherited class
     /// that will provide for example ssl ciphering for example
+
 class connexion
 {
 public:

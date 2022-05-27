@@ -203,7 +203,8 @@ unsigned int connexion::atomic_read(char *a, unsigned int size, bool blocking)
 
 void connexion::fill_buffer(bool blocking)
 {
-    if(data_size < buffer_size) // there is some room to receive more data in the buffer
+    if(data_size < buffer_size
+       || already_read == data_size) // there is some room to receive more data in the buffer
     {
 	if(get_status() == connexion::connected)
 	{
@@ -216,8 +217,13 @@ void connexion::fill_buffer(bool blocking)
 		if(data_size > buffer_size)
 		    throw WEBDAR_BUG;
 		if(already_read > 0)
+		{
 		    (void)memmove(buffer, buffer + already_read, data_size - already_read);
+		    data_size -= already_read;
+		    already_read = 0;
+		}
 	    }
+
 	    try
 	    {
 		data_size += atomic_read(buffer + data_size, buffer_size - data_size, blocking);
