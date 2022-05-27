@@ -175,7 +175,7 @@ unsigned int count_char_to_escape(int fd)
 
 int escape_and_copy_from_file_to_string(int fd, char *buffer, unsigned int allocated)
 {
-    int copied = 0;
+    unsigned int copied = 0;
     char tmp[BUFSIZE];
     ssize_t lu = 0;
 

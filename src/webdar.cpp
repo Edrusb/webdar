@@ -361,7 +361,7 @@ static void parse_cmd(int argc, char *argv[],
     if(optind < argc)
     {
 	cerr << "Unknown options passed to " << argv[0] << ": ";
-	for(unsigned int i = optind; i < argc; ++i)
+	for(int i = optind; i < argc; ++i)
 	    cerr << argv[i];
 	cerr << endl;
     }

@@ -106,7 +106,7 @@ void webdar_tools_init_randomization()
 
     if(pas == 0)
 	pas = 10;
-    for(unsigned int i = getpid() ; i > pas ; i -= pas)
+    for(int i = getpid() ; i > pas ; i -= pas)
 	(void)rand();
 }
 
