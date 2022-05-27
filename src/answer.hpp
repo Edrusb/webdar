@@ -128,7 +128,9 @@ private:
     unsigned int min_vers;
     std::map<std::string, std::string> attributes;
     std::string body;
-    std::map<std::string, std::string>::const_iterator next_read;
+
+	/// used to sequentially read the map of attributes
+    mutable std::map<std::string, std::string>::const_iterator next_read;
 
 
 	/// reset the read_next_attribute to the beginning of the list

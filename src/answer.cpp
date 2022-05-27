@@ -137,23 +137,16 @@ bool answer::find_attribute(const string & key, string & value) const
 
 void answer::reset_read_next_attribute() const
 {
-    answer *me = const_cast<answer *>(this);
-    if(me == nullptr)
-	throw WEBDAR_BUG;
-    me->next_read = attributes.begin();
+    next_read = attributes.begin();
 }
 
 bool answer::read_next_attribute(std::string & key, std::string & value) const
 {
-    answer *me = const_cast<answer *>(this);
-    if(me == nullptr)
-	throw WEBDAR_BUG;
-
     if(next_read != attributes.end())
     {
 	key = next_read->first;
 	value = next_read->second;
-	++(me->next_read);
+	++next_read;
 	return true;
     }
     else
@@ -170,5 +163,3 @@ void answer::copy_from(const answer & ref)
     body = ref.body;
     next_read = attributes.begin();
 }
-
-
