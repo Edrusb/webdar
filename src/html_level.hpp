@@ -69,9 +69,9 @@ protected:
 
     struct bundle
     {
-	body_builder *obj;       //< if set to NULL, using static_text instead
-	std::string static_text; //< used if obj is NULL
-	bundle() { obj = NULL; };
+	body_builder *obj;       //< if set to nullptr, using static_text instead
+	std::string static_text; //< used if obj is nullptr
+	bundle() { obj = nullptr; };
     };
 
     void reset_read_next() { nxt = table.begin(); };

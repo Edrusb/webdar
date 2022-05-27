@@ -44,7 +44,7 @@ archive_compare::archive_compare():
     archpath("/"),
     fs_root("/")
 {
-    progressive_report = NULL;
+    progressive_report = nullptr;
 }
 
 void archive_compare::set_archive_path(const std::string & val)

@@ -47,7 +47,7 @@ public:
     html_button(html_button && ref) noexcept = delete;
     html_button & operator = (const html_button & ref) = delete;
     html_button & operator = (html_button && ref) noexcept = delete;
-    ~html_button() { if(url_class != NULL) { foresake(url_class); delete url_class; } };
+    ~html_button() { if(url_class != nullptr) { foresake(url_class); delete url_class; } };
 
     void set_url_classid(const std::string & classid) { inside.set_class(classid); };
     void set_url_class(const html_url_class & val);

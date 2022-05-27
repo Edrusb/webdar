@@ -41,7 +41,7 @@ using namespace std;
 
 html_statistics::html_statistics()
 {
-    table = NULL;
+    table = nullptr;
 
     treated_lbl.css_text_align(al_right);
     hard_links_lbl.css_text_align(al_right);
@@ -136,7 +136,7 @@ string html_statistics::get_body_part(const chemin & path,
 	total_count.add_text(0, libdar::deci(stats.total()).human());
     }
 
-    if(table == NULL)
+    if(table == nullptr)
 	build();
 
     return get_body_part_from_all_children(path, req);
@@ -145,10 +145,10 @@ string html_statistics::get_body_part(const chemin & path,
 
 void html_statistics::build()
 {
-    if(table != NULL)
+    if(table != nullptr)
 	throw WEBDAR_BUG; // table is already built
     table = new (nothrow) html_table(2);
-    if(table == NULL)
+    if(table == nullptr)
 	throw WEBDAR_BUG;
     try
     {
@@ -206,10 +206,10 @@ void html_statistics::build()
     }
     catch(...)
     {
-	if(table != NULL)
+	if(table != nullptr)
 	{
 	    delete table;
-	    table = NULL;
+	    table = nullptr;
 	}
 	throw;
     }
@@ -217,9 +217,9 @@ void html_statistics::build()
 
 void html_statistics::unbuild()
 {
-    if(table != NULL)
+    if(table != nullptr)
     {
 	delete table;
-	table = NULL;
+	table = nullptr;
     }
 }

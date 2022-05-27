@@ -44,7 +44,7 @@ const unsigned int NAME_WIDTH = 4;
 body_builder::body_builder(const body_builder & ref)
 {
     clear();
-    if(ref.parent != NULL || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty())
+    if(ref.parent != nullptr || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty())
 	throw WEBDAR_BUG;
     visible = ref.visible;
     next_visible = ref.next_visible;
@@ -56,9 +56,9 @@ body_builder & body_builder::operator = (const body_builder & ref)
     css *me = this;
     const css *you = & ref;
 
-    if(parent != NULL || !order.empty() || !children.empty() || !revert_child.empty())
+    if(parent != nullptr || !order.empty() || !children.empty() || !revert_child.empty())
 	throw WEBDAR_BUG;
-    if(ref.parent != NULL || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty())
+    if(ref.parent != nullptr || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty())
 	throw WEBDAR_BUG;
 
     *me = *you; // copying the ancestor class fields
@@ -71,7 +71,7 @@ body_builder & body_builder::operator = (const body_builder & ref)
 
 void body_builder::set_prefix(const chemin & prefix)
 {
-    if(parent != NULL)
+    if(parent != nullptr)
 	throw WEBDAR_BUG;
     x_prefix = prefix;
     recursive_path_has_changed();
@@ -79,7 +79,7 @@ void body_builder::set_prefix(const chemin & prefix)
 
 void body_builder::adopt(body_builder *obj)
 {
-    if(obj == NULL)
+    if(obj == nullptr)
 	throw WEBDAR_BUG;
 
     string new_name;
@@ -89,7 +89,7 @@ void body_builder::adopt(body_builder *obj)
     if(rit != revert_child.end())
 	throw WEBDAR_BUG; // object already recorded
 
-    if(obj->parent != NULL)
+    if(obj->parent != nullptr)
 	throw WEBDAR_BUG; // object already recorded in another parent
 
     do
@@ -109,7 +109,7 @@ void body_builder::adopt(body_builder *obj)
 
 void body_builder::foresake(body_builder *obj)
 {
-    if(obj == NULL)
+    if(obj == nullptr)
 	throw WEBDAR_BUG;
 
     map<body_builder *, string>::iterator rit = revert_child.find(obj);
@@ -131,9 +131,9 @@ void body_builder::foresake(body_builder *obj)
 	order.erase(ot);
 
 	    // unrecording us as its parent
-	if(obj->parent == NULL)
+	if(obj->parent == nullptr)
 	    throw WEBDAR_BUG;
-	obj->parent = NULL;
+	obj->parent = nullptr;
     }
     else
 	throw WEBDAR_BUG; // object known in the ordered list but unknown by the revert_child map
@@ -146,7 +146,7 @@ chemin body_builder::get_path() const
     chemin ret;
     std::map<body_builder *, string>::const_iterator it;
 
-    if(parent != NULL)
+    if(parent != nullptr)
     {
 	it = parent->revert_child.find(const_cast<body_builder *>(this));
 	if(it == parent->revert_child.end())
@@ -163,7 +163,7 @@ chemin body_builder::get_path() const
 
 string body_builder::get_recorded_name() const
 {
-    if(parent != NULL)
+    if(parent != nullptr)
     {
 	map<body_builder *, string>::const_iterator it = parent->revert_child.find(const_cast<body_builder *>(this));
 	if(it == parent->revert_child.end())
@@ -222,7 +222,7 @@ string body_builder::get_body_part_from_all_children(const chemin & path,
 
 	while(it != order.end())
 	{
-	    if(*it == NULL)
+	    if(*it == nullptr)
 		throw WEBDAR_BUG;
 	    ret += (*it)->get_body_part(sub_path, req);
 	    ++it;
@@ -238,13 +238,13 @@ string body_builder::get_body_part_from_all_children(const chemin & path,
 
 void body_builder::orphan_all_children()
 {
-    body_builder *obj = NULL;
+    body_builder *obj = nullptr;
 
     map<string, body_builder *>::iterator it = children.begin();
     while(it != children.end())
     {
 	obj = it->second;
-	if(obj == NULL)
+	if(obj == nullptr)
 	    throw WEBDAR_BUG;
 	try
 	{
@@ -273,7 +273,7 @@ void body_builder::orphan_all_children()
 
 void body_builder::unrecord_from_parent()
 {
-    if(parent != NULL)
+    if(parent != nullptr)
 	parent->foresake(this);
 }
 
@@ -284,7 +284,7 @@ void body_builder::recursive_path_has_changed()
     path_has_changed();
     while(it != order.end())
     {
-	if((*it) == NULL)
+	if((*it) == nullptr)
 	    throw WEBDAR_BUG;
 	(*it)->recursive_path_has_changed();
 	++it;

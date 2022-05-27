@@ -120,7 +120,7 @@ void central_report_syslog::inherited_report(priority_t priority, const std::str
 
 static const char *priority2string(priority_t prio)
 {
-    const char *ret = NULL;
+    const char *ret = nullptr;
 
     switch(prio)
     {
@@ -146,7 +146,7 @@ static const char *priority2string(priority_t prio)
 	throw WEBDAR_BUG;
     }
 
-    if(ret == NULL)
+    if(ret == nullptr)
 	throw WEBDAR_BUG;
     return ret;
 }

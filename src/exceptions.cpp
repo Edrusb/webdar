@@ -55,7 +55,7 @@ exception_system::exception_system(const std::string & context, int error_code) 
 
 exception_libcall::exception_libcall(const libdar::Egeneric & e): exception_base(e.get_message())
 {
-    if(dynamic_cast<const libdar::Ebug *>(&e) != NULL)
+    if(dynamic_cast<const libdar::Ebug *>(&e) != nullptr)
 	change_message(e.dump_str());
 }
 
@@ -69,19 +69,19 @@ void throw_as_most_derivated_class(exception_base *ebase)
     exception_feature *feature = dynamic_cast<exception_feature *>(ebase);
     exception_libcall *libcall = dynamic_cast<exception_libcall *>(ebase);
 
-    if(emem != NULL)
+    if(emem != nullptr)
 	throw *emem;
-    if(ebug != NULL)
+    if(ebug != nullptr)
 	throw *ebug;
-    if(esys != NULL)
+    if(esys != nullptr)
 	throw *esys;
-    if(erange != NULL)
+    if(erange != nullptr)
 	throw *erange;
-    if(input != NULL)
+    if(input != nullptr)
 	throw *input;
-    if(feature != NULL)
+    if(feature != nullptr)
 	throw *feature;
-    if(libcall != NULL)
+    if(libcall != nullptr)
 	throw *libcall;
 
     throw WEBDAR_BUG; // unknown exception

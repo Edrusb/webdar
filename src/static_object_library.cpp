@@ -68,17 +68,17 @@ void static_object_library::release()
 
     while(it != library.end())
     {
-	if(it->second == NULL)
+	if(it->second == nullptr)
 	    throw WEBDAR_BUG;
 
 	try
 	{
 	    delete it->second;
-	    it->second = NULL;
+	    it->second = nullptr;
 	}
 	catch(...)
 	{
-	    it->second = NULL;
+	    it->second = nullptr;
 	    throw;
 	}
 	++it;

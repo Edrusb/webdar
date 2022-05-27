@@ -86,7 +86,7 @@ void listener::init(central_report *log, authentication *auth, const std::string
     set_signal_mask(sigs);
 
     sockfd = -1;
-    if(log == NULL)
+    if(log == nullptr)
 	throw WEBDAR_BUG;
     rep = log;
     src = auth;
@@ -164,14 +164,14 @@ void listener::set_sockfd(int domain)
 void listener::inherited_run()
 {
     int ret = 0;
-    struct sockaddr *addr = NULL;
+    struct sockaddr *addr = nullptr;
     socklen_t addrlen = 0;
     socklen_t addrlen_ref = 0;
     struct sockaddr_in sin;
     struct sockaddr_in6 sin6;
     string ip;
     unsigned int port;
-    connexion *con = NULL;
+    connexion *con = nullptr;
 
     rep->report(debug, "listener object: started in its own thread");
 
@@ -282,7 +282,7 @@ void listener::inherited_run()
 
 	rep->report(debug, "listener object: creating a new \"connexion\" object");
 	con = new (nothrow) connexion(ret, ip, port);
-	if(con == NULL)
+	if(con == nullptr)
 	    throw exception_memory();
 	else
 	{
@@ -293,17 +293,17 @@ void listener::inherited_run()
 		{
 		    rep->report(warning, "failed to create a new server maximum connection reached");
 		    delete con;
-		    con = NULL;
+		    con = nullptr;
 		}
 		else // object now managed by the new server object
-		    con = NULL;
+		    con = nullptr;
 	    }
 	    catch(...)
 	    {
-		if(con != NULL)
+		if(con != nullptr)
 		{
 		    delete con;
-		    con = NULL;
+		    con = nullptr;
 		}
 		throw;
 	    }
@@ -356,7 +356,7 @@ static string network_IPv4_to_string(const struct in_addr & ip)
     char buffer[BUFSZ];
     const char *ptr = inet_ntop(AF_INET, &ip, buffer, BUFSZ);
 
-    if(ptr == NULL)
+    if(ptr == nullptr)
 	throw exception_system("error converting IPv4 address to its textual representation", errno);
     else
 	ret = *ptr;
@@ -371,7 +371,7 @@ static string network_IPv6_to_string(const struct in6_addr & ip)
     char buffer[BUFSZ];
     const char * ptr = inet_ntop(AF_INET6, &ip, buffer, BUFSZ);
 
-    if(ptr == NULL)
+    if(ptr == nullptr)
 	throw exception_system("error converting IPv4 address to its textual representation", errno);
     else
 	ret = *ptr;

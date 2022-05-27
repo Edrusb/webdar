@@ -72,7 +72,7 @@ bool server::run_new_server(central_report *log, authentication *auth, connexion
 	    sigset_t sigs;
 	    server *tmp = new (nothrow) server(log, auth, source);
 
-	    if(tmp == NULL)
+	    if(tmp == nullptr)
 		throw exception_memory();
 	    instances.push_back(tmp);
 
@@ -105,10 +105,10 @@ void server::kill_all_servers()
 	list<server *>::iterator it = instances.begin();
 	while(it != instances.end())
 	{
-	    if(*it != NULL)
+	    if(*it != nullptr)
 	    {
 		delete (*it);
-		(*it) = NULL;
+		(*it) = nullptr;
 	    }
 	    it = instances.erase(it);
 	}
@@ -135,7 +135,7 @@ void server::throw_a_pending_exception()
 
 	while(it != instances.end())
 	{
-	    if(*it == NULL)
+	    if(*it == nullptr)
 		it = instances.erase(it);
 	    else
 	    {
@@ -143,7 +143,7 @@ void server::throw_a_pending_exception()
 		{
 		    (*it)->join(); // necessary to throw exception generated from within the thread
 		    delete (*it);
-		    (*it) = NULL;
+		    (*it) = nullptr;
 		    it = instances.erase(it);
 		}
 	    else
@@ -161,10 +161,10 @@ void server::throw_a_pending_exception()
 
 server::server(central_report *log, authentication *auth, connexion *source) : src(source, log)
 {
-    if(log == NULL)
+    if(log == nullptr)
 	throw WEBDAR_BUG;
     rep = log;
-    if(auth == NULL)
+    if(auth == nullptr)
 	throw WEBDAR_BUG;
     authsrc = auth;
     can_keep_session = true;
@@ -175,7 +175,7 @@ void server::inherited_run()
     answer ans;
     string session_ID = "";
     uri url;
-    session *sess = NULL;
+    session *sess = nullptr;
     challenge chal = authsrc;
     session::session_summary info;
     string user;
@@ -187,7 +187,7 @@ void server::inherited_run()
 	{
 	    try
 	    {
-		while(sess == NULL ||
+		while(sess == nullptr ||
 		      (src.get_next_request_uri(url)
 		       && webdar_tools_get_session_ID_from_URI(url) == sess->get_session_ID()))
 		{
@@ -203,7 +203,7 @@ void server::inherited_run()
 			{
 			    try
 			    {
-				const static_object *obj = NULL;
+				const static_object *obj = nullptr;
 				chemin tmp = req.get_uri().get_path();
 
 				string objname = tmp.back();
@@ -213,7 +213,7 @@ void server::inherited_run()
 				if(tmp.size() != 1)
 				    throw exception_range("local exception to trigger an answer with STATUS_CODE_NOT_FOUND");
 				obj = static_object_library::find_object(objname);
-				if(obj == NULL)
+				if(obj == nullptr)
 				    throw WEBDAR_BUG;
 				ans = obj->give_answer();
 			    }
@@ -235,12 +235,12 @@ void server::inherited_run()
 				    ans = choose::give_answer_for(user, req);
 				else
 				{
-				    if(sess != NULL && sess->get_session_ID() != session_ID)
+				    if(sess != nullptr && sess->get_session_ID() != session_ID)
 					throw WEBDAR_BUG;
-				    if(sess == NULL)
+				    if(sess == nullptr)
 				    {
 					sess = session::acquire_session(session_ID);
-					if(sess == NULL)
+					if(sess == nullptr)
 					    throw WEBDAR_BUG;
 				    }
 					// obtaining the answer from the session
@@ -260,19 +260,19 @@ void server::inherited_run()
 		} // end of the while loop
 
 		    // release the lock for the current session
-		if(sess != NULL)
+		if(sess != nullptr)
 		{
 		    session::release_session(sess);
-		    sess = NULL;
+		    sess = nullptr;
 		}
 	    }
 	    catch(...)
 	    {
 		    // release the lock for the current session
-		if(sess != NULL)
+		if(sess != nullptr)
 		{
 		    session::release_session(sess);
-		    sess = NULL;
+		    sess = nullptr;
 		}
 		src.close();
 		throw;

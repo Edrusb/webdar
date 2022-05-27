@@ -138,7 +138,7 @@ bool answer::find_attribute(const string & key, string & value) const
 void answer::reset_read_next_attribute() const
 {
     answer *me = const_cast<answer *>(this);
-    if(me == NULL)
+    if(me == nullptr)
 	throw WEBDAR_BUG;
     me->next_read = attributes.begin();
 }
@@ -146,7 +146,7 @@ void answer::reset_read_next_attribute() const
 bool answer::read_next_attribute(std::string & key, std::string & value) const
 {
     answer *me = const_cast<answer *>(this);
-    if(me == NULL)
+    if(me == nullptr)
 	throw WEBDAR_BUG;
 
     if(next_read != attributes.end())

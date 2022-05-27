@@ -203,7 +203,7 @@ private:
     void recursive_path_has_changed();
 
 	/// (re)initialize fields to default sane values
-    void clear() { parent = NULL; order.clear(); children.clear(); revert_child.clear(); visible = true ; next_visible = true; no_CR = false; };
+    void clear() { parent = nullptr; order.clear(); children.clear(); revert_child.clear(); visible = true ; next_visible = true; no_CR = false; };
 };
 
 #endif

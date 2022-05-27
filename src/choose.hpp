@@ -95,8 +95,8 @@ private:
     {
 	choose *obj;
 	libthreadar::mutex lock;
-	record() { obj = NULL; };
-	~record() { if(obj != NULL) delete obj; };
+	record() { obj = nullptr; };
+	~record() { if(obj != nullptr) delete obj; };
     };
 
     static std::map<std::string, record *> per_user;

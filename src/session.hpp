@@ -104,7 +104,7 @@ private:
     void set_session_id(const std::string & sessid);
 
     libthreadar::semaphore lock_wui; //< required locking before accessing wui field
-    user_interface wui;       //< object containing the current Web User Interface; is managed by the session object and should never be NULL
+    user_interface wui;       //< object containing the current Web User Interface; is managed by the session object and should never be nullptr
     pthread_t tid;            //< tid of the thread that acquired lock on that object
     std::string session_ID;   //< session_ID info (duplicated info to avoid table lookup and mutex lock)
 
@@ -121,7 +121,7 @@ private:
 	session *reference;     //< object reference
 	unsigned int ref_given; //< number of time the reference to that object has been given
 	bool closing;           //< if true the reference must not be given any longer
-	void clear() { owner = ""; reference = NULL; ref_given = 0; closing = false; };
+	void clear() { owner = ""; reference = nullptr; ref_given = 0; closing = false; };
     };
 
     static libthreadar::mutex lock_running;       //< control access to runnng_session static table

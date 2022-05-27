@@ -44,7 +44,7 @@ const string html_button::action = "click";
 html_button::html_button(const std::string & label, const std::string & x_event_name):
     inside("", label)
 {
-    url_class = NULL;
+    url_class = nullptr;
     adopt(&inside);
     path_has_changed(); // to set link value of "inside" field
 
@@ -54,15 +54,15 @@ html_button::html_button(const std::string & label, const std::string & x_event_
 
 void html_button::set_url_class(const html_url_class & val)
 {
-    if(url_class != NULL)
+    if(url_class != nullptr)
     {
 	foresake(url_class);
 	delete url_class;
-	url_class = NULL;
+	url_class = nullptr;
     }
 
     url_class = new html_url_class(val);
-    if(url_class == NULL)
+    if(url_class == nullptr)
 	throw exception_memory();
     adopt(url_class);
     inside.set_class(url_class->get_class_id());
@@ -102,6 +102,6 @@ void html_button::path_has_changed()
 
     tmp.push_back(action);
     inside.change_url(tmp.display());
-    if(url_class != NULL)
+    if(url_class != nullptr)
 	inside.set_class(url_class->get_class_id());
 }

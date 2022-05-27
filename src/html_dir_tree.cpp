@@ -70,13 +70,13 @@ void html_dir_tree::init(const std::string & chemin)
     css tmpcss;
 
     my_path = chemin;
-    src = NULL;
+    src = nullptr;
     info_read = false;
     has_sub = true; // until checked it has or has not
     last_classid = "";
     visibility_has_changed = false;
-    focus_place = NULL;
-    focus_title = NULL;
+    focus_place = nullptr;
+    focus_title = nullptr;
 
     if(chemin == "")
 	name.change_label("&lt;ROOT&gt;");
@@ -171,22 +171,22 @@ void html_dir_tree::clear()
 
     while(it != subdirs.end())
     {
-	if(*it != NULL)
+	if(*it != nullptr)
 	{
 	    delete *it;
-	    *it = NULL;
+	    *it = nullptr;
 	}
 	++it;
     }
     subdirs.clear();
-    src = NULL;
+    src = nullptr;
     info_read = false;
     has_sub = true;
 }
 
 void html_dir_tree::set_source(const archive_init_list *ref)
 {
-    if(ref == NULL)
+    if(ref == nullptr)
 	throw WEBDAR_BUG;
     src = ref;
     if(!src->has_subdirectory(my_path.display(true)))
@@ -207,7 +207,7 @@ void html_dir_tree::set_css_classid(const std::string & classid)
     for(vector<html_dir_tree *>::iterator it = subdirs.begin();
 	it != subdirs.end();
 	++it)
-	if(*it == NULL)
+	if(*it == nullptr)
 	    throw WEBDAR_BUG;
 	else
 	    (*it)->set_css_classid(classid);
@@ -255,9 +255,9 @@ void html_dir_tree::on_event(const std::string & event_name)
 	go_expand();
     else if(event_name == event_click)
     {
-	if(focus_place != NULL)
+	if(focus_place != nullptr)
 	    focus_place->given_for_temporary_adoption(&contents);
-	if(focus_title != NULL)
+	if(focus_title != nullptr)
 	{
 	    focus_title->clear();
 	    focus_title->adopt_static_html(my_path.display(false));
@@ -289,7 +289,7 @@ void html_dir_tree::go_init_indent()
     {
 	info_read = true;
 
-	if(src == NULL)
+	if(src == nullptr)
 	    throw WEBDAR_BUG;
 
 	vector<libdar::list_entry> tmp = src->get_children_in_table(my_path.display(true));
@@ -301,16 +301,16 @@ void html_dir_tree::go_init_indent()
 	    {
 		html_dir_tree *tmp_sub = new (nothrow) html_dir_tree(src, (my_path + chemin(it->get_name())).display(true));
 
-		if(tmp_sub == NULL)
+		if(tmp_sub == nullptr)
 		    throw exception_memory();
 
 		try
 		{
 		    if(last_classid != "")
 			tmp_sub->set_css_classid(last_classid);
-		    if(focus_place != NULL)
+		    if(focus_place != nullptr)
 			tmp_sub->set_drop_content(focus_place);
-		    if(focus_title != NULL)
+		    if(focus_title != nullptr)
 			tmp_sub->set_drop_path(focus_title);
 		    subdirs.push_back(tmp_sub);
 		}

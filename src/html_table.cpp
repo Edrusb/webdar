@@ -91,7 +91,7 @@ string html_table::get_body_part(const chemin & path,
 	    ret += "\"";
 	}
 	ret += ">\n";
-	if(bdl.obj != NULL)
+	if(bdl.obj != nullptr)
 	    ret += bdl.obj->get_body_part(sub_path, req);
 	else
 	    ret += bdl.static_text;

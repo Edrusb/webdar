@@ -116,7 +116,7 @@ html_menu::~html_menu()
 
     while(it != item.end())
     {
-	if(*it != NULL)
+	if(*it != nullptr)
 	    delete (*it);
 	++it;
     }
@@ -128,9 +128,9 @@ void html_menu::add_entry(const std::string & reference, const std::string & lab
     chemin tmp = get_path();
     unsigned int i = 0;
     unsigned int s = item.size();
-    boite *box = NULL;
+    boite *box = nullptr;
 
-    while(i < s && item[i] != NULL && item[i]->value != reference)
+    while(i < s && item[i] != nullptr && item[i]->value != reference)
 	++i;
 
     if(i < s)
@@ -139,7 +139,7 @@ void html_menu::add_entry(const std::string & reference, const std::string & lab
     tmp.push_back(reference);
 
     box = new (nothrow) boite(tmp.display(), label);
-    if(box == NULL)
+    if(box == nullptr)
 	throw exception_memory();
     item.push_back(box);
 
@@ -170,10 +170,10 @@ void html_menu::set_current_mode(unsigned int mode)
     if(current_mode >= size)
     	throw WEBDAR_BUG;
 
-    if(item[current_mode] == NULL)
+    if(item[current_mode] == nullptr)
 	throw WEBDAR_BUG;
 
-    if(item[mode] == NULL)
+    if(item[mode] == nullptr)
 	throw WEBDAR_BUG;
 
 	/// all is fine, we can go on modifying the objects
@@ -198,13 +198,13 @@ void html_menu::set_current_mode(unsigned int mode)
 
 string html_menu::get_current_label() const
 {
-    boite *box = NULL;
+    boite *box = nullptr;
 
     if(current_mode >= item.size())
 	throw WEBDAR_BUG;
 
     box = item[current_mode];
-    if(box == NULL)
+    if(box == nullptr)
 	throw WEBDAR_BUG;
 
     return box->value;
@@ -214,12 +214,12 @@ void html_menu::set_current_label(const std::string & label)
 {
     unsigned int i = 0;
 
-    while(i < item.size() && item[i] != NULL && item[i]->value != label)
+    while(i < item.size() && item[i] != nullptr && item[i]->value != label)
 	++i;
 
     if(i < item.size())
     {
-	if(item[i] == NULL)
+	if(item[i] == nullptr)
 	    throw WEBDAR_BUG;
 	else
 	    set_current_mode(i);
@@ -251,7 +251,7 @@ string html_menu::get_body_part(const chemin & path,
 	    // and which we ignore if empty
 	unsigned int i = 0;
 	unsigned int size = item.size();
-	while(i < size && item[i] != NULL && item[i]->value != choice)
+	while(i < size && item[i] != nullptr && item[i]->value != choice)
 	    ++i;
 	if(i < size)
 	    set_current_mode(i);
@@ -268,7 +268,7 @@ void html_menu::path_has_changed()
     {
 	chemin chem = get_path();
 
-	if(*it == NULL)
+	if(*it == nullptr)
 	    throw WEBDAR_BUG;
 	chem.push_back((*it)->value);
 	(*it)->inside.change_url(chem.display(false));

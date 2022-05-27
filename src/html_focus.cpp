@@ -40,9 +40,9 @@ using namespace std;
 
 void html_focus::given_for_temporary_adoption(body_builder *obj)
 {
-    if(obj == NULL)
+    if(obj == nullptr)
 	throw WEBDAR_BUG;
-    if(adopted != NULL)
+    if(adopted != nullptr)
 	foresake(adopted);
     adopted = obj;
     adopt(obj);

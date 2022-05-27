@@ -51,7 +51,7 @@ public:
     ~parser() { close(); };
 
 	/// provides visibility on the connection status
-    connexion::status get_status() const { if(source == NULL) return connexion::not_connected; return source->get_status(); };
+    connexion::status get_status() const { if(source == nullptr) return connexion::not_connected; return source->get_status(); };
 
 	/// get the next request URI
 	///
@@ -74,7 +74,7 @@ private:
     connexion *source;         //< the connexion to the client
     request req;               //< value of the last request
 
-    void valid_source() const { if(source == NULL || source->get_status() != connexion::connected) throw exception_range("socket disconnected"); };
+    void valid_source() const { if(source == nullptr || source->get_status() != connexion::connected) throw exception_range("socket disconnected"); };
     void checks_main(const request & req, answer & ans);
     void checks_webdar(const request & req, answer & ans);
     void checks_rfc1945(const request & req, answer & ans);

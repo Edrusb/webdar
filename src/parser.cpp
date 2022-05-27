@@ -31,10 +31,10 @@ using namespace std;
 
 parser::parser(connexion *input, central_report *log): req(log)
 {
-    if(input == NULL)
+    if(input == nullptr)
 	throw WEBDAR_BUG;
 
-    if(log == NULL)
+    if(log == nullptr)
 	throw WEBDAR_BUG;
 
     if(input->get_status() != connexion::connected)
@@ -47,10 +47,10 @@ parser::parser(connexion *input, central_report *log): req(log)
 
 void parser::close()
 {
-    if(source != NULL)
+    if(source != nullptr)
     {
 	delete source;
-	source = NULL;
+	source = nullptr;
     }
 }
 
@@ -94,10 +94,10 @@ const request & parser::get_request()
     }
     catch(exception_base & e)
     {
-	if(source != NULL)
+	if(source != nullptr)
 	{
 	    delete source;
-	    source = NULL;
+	    source = nullptr;
 	}
 	throw;
     }
@@ -128,10 +128,10 @@ void parser::send_answer(answer & ans)
     }
     catch(exception_base & e)
     {
-	if(source != NULL)
+	if(source != nullptr)
 	{
 	    delete source;
-	    source = NULL;
+	    source = nullptr;
 	}
 	answered = true;
 	    // no throw

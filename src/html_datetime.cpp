@@ -227,7 +227,7 @@ void html_datetime::set_value(libdar::infinint val)
 	throw WEBDAR_BUG; // value given from libdar is not possible to be represented by this implementation
 
     ret = localtime_r(&tmp, &splitted);
-    if(ret == NULL)
+    if(ret == nullptr)
 	throw WEBDAR_BUG; // system failed representing this date in splitted fields
     update_from(splitted);
 }

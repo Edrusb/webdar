@@ -106,7 +106,7 @@ html_options_create::html_options_create():
     alter_atime.add_choice("atime", "Data last access time (atime)");
     alter_atime.add_choice("ctime", "Inode last change time (ctime)");
     compression_level.set_range(1, 9);
-    if(defaults.get_reference() != NULL)
+    if(defaults.get_reference() != nullptr)
 	throw WEBDAR_BUG; // not able to fill html form with an existing archive
     else
 	if(defaults.get_snapshot())

@@ -43,7 +43,7 @@ using namespace std;
 web_user_interaction::web_user_interaction(unsigned int x_warn_size)
 {
     data = new (nothrow) shared_data(x_warn_size);
-    if(data == NULL)
+    if(data == nullptr)
 	throw exception_memory();
 }
 
@@ -480,7 +480,7 @@ libdar::secu_string web_user_interaction::inherited_get_secu_string(const string
 
 void web_user_interaction::check_data() const
 {
-    if(data == NULL)
+    if(data == nullptr)
 	throw WEBDAR_BUG;
 }
 
@@ -497,7 +497,7 @@ void web_user_interaction::detruit()
     check_data();
     if(data->decr_and_can_delete())
 	delete data;
-    data = NULL; // in any case
+    data = nullptr; // in any case
 }
 
 

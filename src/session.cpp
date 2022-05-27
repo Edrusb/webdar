@@ -148,7 +148,7 @@ vector<session::session_summary> session::get_summary()
 	it = running_session.begin();
 	while(it != running_session.end())
 	{
-	    if(it->second.reference == NULL)
+	    if(it->second.reference == nullptr)
 		throw WEBDAR_BUG;
 	    tmp = publish(it);
 	    ret.push_back(tmp);
@@ -201,7 +201,7 @@ string session::create_new(const string & owner)
     unsigned int collision = 0;
     unsigned id_width = INITIAL_SESSION_ID_WIDTH;
 
-    if(obj == NULL)
+    if(obj == nullptr)
 	throw exception_memory();
 
     try
@@ -244,7 +244,7 @@ string session::create_new(const string & owner)
     }
     catch(...)
     {
-	if(obj != NULL)
+	if(obj != nullptr)
 	    delete obj;
 	throw;
     }
@@ -254,7 +254,7 @@ string session::create_new(const string & owner)
 
 session *session::acquire_session(const std::string & session_ID)
 {
-    session *ret = NULL;
+    session *ret = nullptr;
     map<string,table>::iterator it;
 
     lock_running.lock();
@@ -264,7 +264,7 @@ session *session::acquire_session(const std::string & session_ID)
 	it = running_session.find(session_ID);
 	if(it != running_session.end() && !(it->second.closing))
 	{
-	    if(it->second.reference == NULL)
+	    if(it->second.reference == nullptr)
 		throw WEBDAR_BUG;
 	    ret = it->second.reference;
 	    ++(it->second.ref_given);
@@ -277,7 +277,7 @@ session *session::acquire_session(const std::string & session_ID)
     }
     lock_running.unlock();
 
-    if(ret != NULL)
+    if(ret != nullptr)
     {
 	ret->lock_wui.lock(); // eventually waiting for another thread to release the mutex
 	ret->tid = pthread_self();
@@ -291,7 +291,7 @@ void session::release_session(session *sess)
 {
     map<string,table>::iterator it;
 
-    if(sess == NULL)
+    if(sess == nullptr)
 	throw WEBDAR_BUG;
 
     lock_running.lock();
@@ -312,7 +312,7 @@ void session::release_session(session *sess)
 	sess->lock_wui.unlock();
 	if(it->second.ref_given == 0 && it->second.closing)
 	{
-	    if(it->second.reference == NULL)
+	    if(it->second.reference == nullptr)
 		throw WEBDAR_BUG;
 	    if(it->second.reference->has_working_server())
 		throw WEBDAR_BUG;
@@ -345,7 +345,7 @@ bool session::close_session(const string & session_ID)
 		it->second.closing = true;
 		if(it->second.ref_given == 0)
 		{
-		    if(it->second.reference != NULL)
+		    if(it->second.reference != nullptr)
 		    {
 			try
 			{
@@ -385,7 +385,7 @@ session::session_summary session::publish(std::map<std::string, table>::iterator
 {
     session_summary ret;
 
-    if(it->second.reference == NULL)
+    if(it->second.reference == nullptr)
 	throw WEBDAR_BUG;
     ret.clear();
     ret.owner = it->second.owner;

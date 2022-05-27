@@ -77,8 +77,8 @@ void archive_merge::inherited_run()
 {
     try
     {
-	shared_ptr<libdar::archive> ref = NULL;
-	shared_ptr<libdar::archive> aux = NULL;
+	shared_ptr<libdar::archive> ref = nullptr;
+	shared_ptr<libdar::archive> aux = nullptr;
 
 	    // we must open the archive of reference
 	    // and obtain an libdar::archive object to
@@ -112,7 +112,7 @@ void archive_merge::inherited_run()
 	    ui->message("--- The auxilliary archive of reference is now opened");
 	}
 	else
-	    opt.set_auxiliary_ref(NULL);
+	    opt.set_auxiliary_ref(nullptr);
 
 	    // now we can merge the archive
 

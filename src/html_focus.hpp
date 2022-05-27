@@ -48,7 +48,7 @@ extern "C"
 class html_focus: public body_builder
 {
 public:
-    html_focus() { adopted = NULL; };
+    html_focus() { adopted = nullptr; };
     html_focus(const html_focus & ref) = default;
     html_focus(html_focus && ref) noexcept = default;
     html_focus & operator = (const html_focus & ref) = default;
@@ -66,7 +66,7 @@ public:
 				      const request & req) override;
 
 protected:
-    virtual void has_been_foresaken(body_builder *obj) override { if(obj == adopted) adopted = NULL; };
+    virtual void has_been_foresaken(body_builder *obj) override { if(obj == adopted) adopted = nullptr; };
 
 private:
     body_builder *adopted; //< the object thas has been temporarily adopted

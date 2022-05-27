@@ -79,7 +79,7 @@ static void libdar_end();
     // yes, this will point to a global object, this class handle concurrent access,
     // no problem in this multi-threaded program.
     // it is necessary to have this global for signal handler able to report what they do
-static central_report *creport = NULL;
+static central_report *creport = nullptr;
 static vector<listener *> taches;
 
 int main(int argc, char *argv[], char **env)
@@ -123,13 +123,13 @@ int main(int argc, char *argv[], char **env)
 	while(sl_it != signals_list.end())
 	{
 	    const char *signal_name = strsignal(*sl_it);
-	    if(signal_name != NULL)
+	    if(signal_name != nullptr)
 		cout << "Adding hanlder for signal " << strsignal(*sl_it) << endl;
 	    else
 		cout << "Adding hanlder for signal " << *sl_it << endl;
-	    if(sigaction(*sl_it, &sg, NULL) < 0)
+	    if(sigaction(*sl_it, &sg, nullptr) < 0)
 	    {
-		if(signal_name != NULL)
+		if(signal_name != nullptr)
 		    throw exception_system(std::string("Cannot set signal handle for ") + std::string(strsignal(*sl_it)), errno);
 		else
 		    throw exception_system(std::string("Cannot set signal handle for ") + std::to_string(*sl_it), errno);
@@ -158,7 +158,7 @@ int main(int argc, char *argv[], char **env)
 	else
 	    creport = new (nothrow) central_report_stdout(min);
 
-	if(creport == NULL)
+	if(creport == nullptr)
 	    throw exception_memory();
 	creport->report(debug, "central report object has been created");
 	creport->report(warning, string("HTTP access using the following username/password:\n\t") + fixed_user + " / " + fixed_pass);
@@ -169,7 +169,7 @@ int main(int argc, char *argv[], char **env)
 	try
 	{
 	    vector<interface_port>::iterator it = ecoute.begin();
-	    listener *tmp = NULL;
+	    listener *tmp = nullptr;
 	    pthread_t unused_arg;
 
 	    static_object_library::init();
@@ -191,7 +191,7 @@ int main(int argc, char *argv[], char **env)
 			    tmp = new (nothrow) listener(creport, &auth,  it->port);
 			else
 			    tmp = new (nothrow) listener(creport, &auth, it->interface, it->port);
-			if(tmp == NULL)
+			if(tmp == nullptr)
 			    throw exception_memory();
 			else
 			{
@@ -207,14 +207,14 @@ int main(int argc, char *argv[], char **env)
 
 		    while(!taches.empty())
 		    {
-			if(taches.back() == NULL)
+			if(taches.back() == nullptr)
 			    taches.pop_back();
 			else
 			    if(!taches.back()->is_running(unused_arg))
 			    {
 				taches.back()->join();
 				delete taches.back();
-				taches.back() = NULL;
+				taches.back() = nullptr;
 			    }
 			    else
 				taches.back()->join();
@@ -237,10 +237,10 @@ int main(int argc, char *argv[], char **env)
 
 		    while(ta != taches.end())
 		    {
-			if(*ta != NULL)
+			if(*ta != nullptr)
 			{
 			    delete *ta;
-			    *ta = NULL;
+			    *ta = nullptr;
 			    ++ta;
 			}
 		    }
@@ -259,10 +259,10 @@ int main(int argc, char *argv[], char **env)
 	}
 	catch(...)
 	{
-	    if(creport == NULL)
+	    if(creport == nullptr)
 		throw WEBDAR_BUG;
 	    delete creport;
-	    creport = NULL;
+	    creport = nullptr;
 	    libdar_end();
 	    throw;
 	}
@@ -343,7 +343,7 @@ static void parse_cmd(int argc, char *argv[],
 	    verbose = true;
 	    break;
 	case 'l':
-	    if(optarg == NULL)
+	    if(optarg == nullptr)
 		throw exception_range("-l option needs an argument");
 	    add_item_to_list(optarg, ecoute);
 	    break;
@@ -368,7 +368,7 @@ static void parse_cmd(int argc, char *argv[],
 
     if(ecoute.size() < 1)
     {
-	if(argc < 1 || argv[0] == NULL)
+	if(argc < 1 || argv[0] == nullptr)
 	    throw WEBDAR_BUG;
 	else
 	    throw exception_range(std::string("Usage: ") + std::string(argv[0]) + std::string(" -l <IP:port> [-v] [-b]\n"));
@@ -456,7 +456,7 @@ static void close_all_listeners(int sig)
 	    it != taches.end();
 	    ++it)
 	{
-	    if(*it == NULL)
+	    if(*it == nullptr)
 		throw WEBDAR_BUG;
 	    else
 		(*it)->kill();

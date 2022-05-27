@@ -90,7 +90,7 @@ reference & reference::operator = (reference && ref) noexcept(false)
 
 void reference::peer_with(reference *obj)
 {
-    if(obj == NULL)
+    if(obj == nullptr)
 	throw WEBDAR_BUG;
 
     if(is_peer(obj))
@@ -115,7 +115,7 @@ void reference::peer_with(reference *obj)
 
 void reference::break_peer_with(reference *obj)
 {
-    if(obj == NULL)
+    if(obj == nullptr)
 	throw WEBDAR_BUG;
 
     if(is_peer(obj))
@@ -162,7 +162,7 @@ void reference::shut_all_peerings()
 {
     while(peers.begin() != peers.end())
     {
-	if(*(peers.begin()) == NULL)
+	if(*(peers.begin()) == nullptr)
 	    throw WEBDAR_BUG;
 	break_peer_with(*(peers.begin()));
     }

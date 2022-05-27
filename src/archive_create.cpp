@@ -77,7 +77,7 @@ void archive_create::inherited_run()
 {
     try
     {
-	shared_ptr<libdar::archive> ref = NULL;
+	shared_ptr<libdar::archive> ref = nullptr;
 
 	    // in case of differential / incremental backup
 	    // we must open the archive of reference

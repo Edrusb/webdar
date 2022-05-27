@@ -41,7 +41,7 @@ extern "C"
 class archive_init_list : public libthreadar::thread
 {
 public:
-    archive_init_list(): archpath("/") { ptr = NULL; };
+    archive_init_list(): archpath("/") { ptr = nullptr; };
     archive_init_list(const archive_init_list & ref) = delete;
     archive_init_list(archive_init_list && ref) noexcept = delete;
     archive_init_list & operator = (const archive_init_list & ref) = delete;
@@ -59,14 +59,14 @@ public:
 	/// once the thread has been ran and has finished, we end up with an opened archive
 	///
 	/// \return true if the archive is available false if a failure occured and no archive available
-    bool opened() const { return ptr != NULL; };
+    bool opened() const { return ptr != nullptr; };
 
 	/// obtains contents from the opened archive in the calling thread
     const std::vector<libdar::list_entry> get_children_in_table(const std::string & dir) const;
     bool has_subdirectory(const std::string & dir) const;
 
 	/// close the opened archive run in the calling thread
-    void close_archive() { if(ptr != NULL) { delete ptr; ptr = NULL; } };
+    void close_archive() { if(ptr != nullptr) { delete ptr; ptr = nullptr; } };
 
 protected:
 
@@ -78,7 +78,7 @@ private:
     libdar::path archpath;
     std::string basename;
     libdar::archive_options_read read_opt;
-    libdar::archive *ptr; //< allocated archive object or NULL if none allocated
+    libdar::archive *ptr; //< allocated archive object or nullptr if none allocated
 
 };
 

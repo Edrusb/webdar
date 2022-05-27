@@ -123,7 +123,7 @@ const libdar::archive_options_read & html_options_read::get_options() const
 {
     html_options_read *me = const_cast <html_options_read *>(this);
 
-    if(me == NULL)
+    if(me == nullptr)
 	throw WEBDAR_BUG;
 
     me->opts.clear();

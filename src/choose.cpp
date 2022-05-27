@@ -154,10 +154,10 @@ answer choose::give_answer(const request & req)
 		// updating form fields
 	    (void)page.get_body_part(req.get_uri().get_path(), req);
 
-	    while(itb != boxes.end() && (*itb) != NULL && (*itb)->get_value() == "")
+	    while(itb != boxes.end() && (*itb) != nullptr && (*itb)->get_value() == "")
 		++itb;
 
-	    if(itb != boxes.end() && (*itb) == NULL)
+	    if(itb != boxes.end() && (*itb) == nullptr)
 		throw WEBDAR_BUG;
 
 	    if(itb != boxes.end()) // at least one box has been checked
@@ -215,7 +215,7 @@ answer choose::create_new_session(const request & req)
 
 void choose::regenerate_table_page()
 {
-    html_form_input *check = NULL;
+    html_form_input *check = nullptr;
 
 	// releasing old objects of the table
 
@@ -252,7 +252,7 @@ void choose::regenerate_table_page()
 	table.adopt_static_html(it->libdar_running ? "running" : " ");
 	table.adopt_static_html(it->closing ? "closing" : " ");
 	check = new (nothrow) html_form_input("", html_form_input::check, "", 10);
-	if(check == NULL)
+	if(check == nullptr)
 	    throw exception_memory();
 	boxes.push_back(check);
 	if(it->owner != owner)
@@ -268,10 +268,10 @@ void choose::release_boxes()
 	it != boxes.end();
 	++it)
     {
-	if(*it != NULL)
+	if(*it != nullptr)
 	{
 	    delete (*it);
-	    *it = NULL;
+	    *it = nullptr;
 	}
     }
     boxes.clear();
@@ -302,7 +302,7 @@ void choose::regenerate_confirm_page()
 	throw WEBDAR_BUG;
     for(unsigned int i = 0; i < boxes.size(); ++i)
     {
-	if(boxes[i] == NULL)
+	if(boxes[i] == nullptr)
 	    throw WEBDAR_BUG;
 	if(boxes[i]->get_value() != "")
 	{
@@ -330,7 +330,7 @@ void choose::kill_selected_sessions() const
 	i < boxes.size();
 	++i)
     {
-	if(boxes[i] == NULL)
+	if(boxes[i] == nullptr)
 	    throw WEBDAR_BUG;
 	if(boxes[i]->get_value() != "") // session to be killed
 	    (void)session::close_session(sess[i].session_ID);
@@ -350,13 +350,13 @@ answer choose::give_answer_for(const string & user, const request & req)
 	    // creating one and recording it in per_user table
 
 	record *tmp = new (nothrow) record();
-	if(tmp == NULL)
+	if(tmp == nullptr)
 	    throw exception_memory();
 
 	try
 	{
 	    tmp->obj = new (nothrow) choose(user);
-	    if(tmp->obj == NULL)
+	    if(tmp->obj == nullptr)
 		throw exception_memory();
 	    ret = tmp->obj->create_new_session(req);
 
@@ -374,13 +374,13 @@ answer choose::give_answer_for(const string & user, const request & req)
     }
     else // chooser already exists
     {
-	if(it->second == NULL)
+	if(it->second == nullptr)
 	    throw WEBDAR_BUG;
 
 	it->second->lock.lock();
 	try
 	{
-	    if(it->second->obj == NULL)
+	    if(it->second->obj == nullptr)
 		throw WEBDAR_BUG;
 
 	    ret = it->second->obj->give_answer(req);
@@ -407,7 +407,7 @@ void choose::cleanup_memory()
 
 	while(it != per_user.end())
 	{
-	    if(it->second != NULL)
+	    if(it->second != nullptr)
 		delete it->second;
 	    ++it;
 	}

@@ -44,7 +44,7 @@ archive_restore::archive_restore():
     archpath("/"),
     fs_root("/")
 {
-    progressive_report = NULL;
+    progressive_report = nullptr;
 }
 
 void archive_restore::set_archive_path(const std::string & val)

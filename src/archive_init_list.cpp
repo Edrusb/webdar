@@ -53,21 +53,21 @@ void archive_init_list::set_archive_path(const std::string & val)
 
 const vector<libdar::list_entry> archive_init_list::get_children_in_table(const std::string & dir) const
 {
-    if(ptr == NULL)
+    if(ptr == nullptr)
 	throw WEBDAR_BUG;
     return ptr->get_children_in_table(dir);
 }
 
 bool archive_init_list::has_subdirectory(const std::string & dir) const
 {
-    if(ptr == NULL)
+    if(ptr == nullptr)
 	throw WEBDAR_BUG;
     return ptr->has_subdirectory(dir);
 }
 
 void archive_init_list::inherited_run()
 {
-    if(ptr != NULL)
+    if(ptr != nullptr)
 	throw WEBDAR_BUG;
 
     try
@@ -77,7 +77,7 @@ void archive_init_list::inherited_run()
 					    basename,
 					    EXTENSION,
 					    read_opt);
-	if(ptr == NULL)
+	if(ptr == nullptr)
 	    throw exception_memory();
 
 	try
@@ -88,13 +88,13 @@ void archive_init_list::inherited_run()
 	catch(...)
 	{
 	    delete ptr;
-	    ptr = NULL;
+	    ptr = nullptr;
 	    throw;
 	}
     }
     catch(libdar::Egeneric & e)
     {
-	if(ptr != NULL)
+	if(ptr != nullptr)
 	    throw WEBDAR_BUG;
 	throw exception_libcall(e);
     }

@@ -46,7 +46,7 @@ date::date()
     (void)time(&tmp);
     if(tmp == ((time_t) -1))
 	throw exception_system("Error met while trying to get current time", errno);
-    if(gmtime_r(&tmp, &val) == NULL)
+    if(gmtime_r(&tmp, &val) == nullptr)
 	throw exception_system("Error met while trying to brake down time", errno);
 }
 
@@ -55,9 +55,9 @@ date::date(const string & when)
     val.tm_sec = val.tm_min = val.tm_hour = 0;
     val.tm_mday = val.tm_mon = val.tm_year = 0;
     val.tm_wday = val.tm_yday = val.tm_isdst = 0;
-    if(strptime(when.c_str(), "%a, %d %b %Y %H:%M:%S GMT", &val) == NULL)
-	if(strptime(when.c_str(), "%A, %d-%b-%y %H:%M:%S GMT", &val) == NULL)
-	    if(strptime(when.c_str(), "%a %b %d %H:%M:%S %Y", &val) == NULL)
+    if(strptime(when.c_str(), "%a, %d %b %Y %H:%M:%S GMT", &val) == nullptr)
+	if(strptime(when.c_str(), "%A, %d-%b-%y %H:%M:%S GMT", &val) == nullptr)
+	    if(strptime(when.c_str(), "%a %b %d %H:%M:%S %Y", &val) == nullptr)
 		throw exception_range("Badly formated date");
 }
 

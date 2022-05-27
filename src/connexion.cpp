@@ -50,28 +50,28 @@ connexion::connexion(int fd, const string & peerip, unsigned int peerport)
     ip = peerip;
     port = peerport;
     buffer_size = BUFFER_SIZE;
-    buffer = NULL;
+    buffer = nullptr;
     already_read = 0;
     data_size = 0;
     out_buf_size = BUFFER_SIZE;
-    out_buf = NULL;
+    out_buf = nullptr;
     last_unwrote = 0;
 
     try
     {
 	buffer = new (nothrow) char[buffer_size];
-	if(buffer == NULL)
+	if(buffer == nullptr)
 	    throw exception_memory();
 
 	out_buf = new (nothrow) char[out_buf_size];
-	if(out_buf == NULL)
+	if(out_buf == nullptr)
 	    throw exception_memory();
     }
     catch(...)
     {
-	if(buffer != NULL)
+	if(buffer != nullptr)
 	    delete buffer;
-	if(out_buf != NULL)
+	if(out_buf != nullptr)
 	    delete out_buf;
 	throw;
     }
@@ -80,9 +80,9 @@ connexion::connexion(int fd, const string & peerip, unsigned int peerport)
 connexion::~connexion()
 {
     fermeture();
-    if(buffer != NULL)
+    if(buffer != nullptr)
 	delete buffer;
-    if(out_buf != NULL)
+    if(out_buf != nullptr)
 	delete out_buf;
 }
 

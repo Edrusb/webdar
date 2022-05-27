@@ -72,7 +72,7 @@ user_interface::user_interface()
     in_list.record_actor_on_event(this, html_listing_page::event_close);
 
     libdar_running = false;
-    current_thread = NULL;
+    current_thread = nullptr;
 
 	/// create the events that this object is willing to generate
     register_name(closing);
@@ -82,12 +82,12 @@ user_interface::~user_interface()
 {
     if(libdar_running)
     {
-	if(current_thread != NULL)
+	if(current_thread != nullptr)
 	{
 	    if(current_thread->is_running())
 		current_thread->kill();
 	    current_thread->join(); // this later call may propagate exceptions
-	    current_thread = NULL;
+	    current_thread = nullptr;
 	}
     }
 }
@@ -116,7 +116,7 @@ answer user_interface::give_answer(const request & req)
 	    case running:
 		if(libdar_running)
 		{
-		    if(current_thread == NULL)
+		    if(current_thread == nullptr)
 			throw WEBDAR_BUG;
 		    if(!current_thread->is_running())
 		    {
@@ -135,16 +135,16 @@ answer user_interface::give_answer(const request & req)
 			}
 			catch(exception_base & e)
 			{
-			    current_thread = NULL;
+			    current_thread = nullptr;
 			    e.change_message(string("Error reported from libdar: ") + e.get_message());
 			    throw;
 			}
 			catch(...)
 			{
-			    current_thread = NULL;
+			    current_thread = nullptr;
 			    throw;
 			}
-			current_thread = NULL;
+			current_thread = nullptr;
 
 			if(mode == listing)
 			    in_list.set_source(&arch_init_list);
@@ -211,7 +211,7 @@ void user_interface::on_event(const std::string & event_name)
 	case error:
 	    if(libdar_running)
 	    {
-		if(current_thread != NULL)
+		if(current_thread != nullptr)
 		{
 		    pthread_t libdar_tid;
 		    if(current_thread->is_running(libdar_tid))
@@ -241,7 +241,7 @@ void user_interface::on_event(const std::string & event_name)
 	case error:
 	    if(libdar_running)
 	    {
-		if(current_thread != NULL)
+		if(current_thread != nullptr)
 		{
 		    pthread_t libdar_tid;
 		    if(current_thread->is_running(libdar_tid))
@@ -271,7 +271,7 @@ void user_interface::on_event(const std::string & event_name)
 	case error:
 	    if(libdar_running)
 	    {
-		if(current_thread != NULL)
+		if(current_thread != nullptr)
 		{
 		    pthread_t libdar_tid;
 		    if(current_thread->is_running(libdar_tid))
@@ -453,7 +453,7 @@ void user_interface::go_restore()
 {
     if(libdar_running)
 	throw WEBDAR_BUG;
-    if(current_thread != NULL)
+    if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
 	// providing libdar::parameters
@@ -489,7 +489,7 @@ void user_interface::go_diff()
 {
     if(libdar_running)
 	throw WEBDAR_BUG;
-    if(current_thread != NULL)
+    if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
 	// providing libdar::parameters
@@ -522,7 +522,7 @@ void user_interface::go_test()
 {
     if(libdar_running)
 	throw WEBDAR_BUG;
-    if(current_thread != NULL)
+    if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
 	// providing libdar::parameters
@@ -551,7 +551,7 @@ void user_interface::go_create()
 {
     if(libdar_running)
 	throw WEBDAR_BUG;
-    if(current_thread != NULL)
+    if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
 	// providing libdar::parameters
@@ -595,7 +595,7 @@ void user_interface::go_isolate()
 {
     if(libdar_running)
 	throw WEBDAR_BUG;
-    if(current_thread != NULL)
+    if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
 	// providing libdar::parameters
@@ -626,7 +626,7 @@ void user_interface::go_merge()
 {
     if(libdar_running)
 	throw WEBDAR_BUG;
-    if(current_thread != NULL)
+    if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
     arch_merge.set_user_interaction(get_user_interaction());
@@ -672,7 +672,7 @@ void user_interface::go_init_list()
 {
     if(libdar_running)
 	throw WEBDAR_BUG;
-    if(current_thread != NULL)
+    if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
     arch_init_list.set_user_interaction(get_user_interaction());

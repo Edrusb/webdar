@@ -40,7 +40,7 @@ extern "C"
 class archive_test : public libthreadar::thread
 {
 public:
-    archive_test(): archpath("/") { progressive_report = NULL; };
+    archive_test(): archpath("/") { progressive_report = nullptr; };
     archive_test(const archive_test & ref) = default;
     archive_test(archive_test && ref) noexcept = default;
     archive_test & operator = (const archive_test & ref) = default;

@@ -67,7 +67,7 @@ void events::record_actor_on_event(actor *ptr, const string & name)
     if(it == carte.end())
 	throw WEBDAR_BUG; // unknown event !
 
-    if(ptr == NULL)
+    if(ptr == nullptr)
 	throw WEBDAR_BUG;
 
 	// shouldn't we first check the ptr actor is not already
@@ -96,7 +96,7 @@ void events::act(const std::string & name)
 
     for(ptr = it->second.begin(); ptr != it->second.end(); ++ptr)
     {
-	if(*ptr == NULL)
+	if(*ptr == nullptr)
 	    throw WEBDAR_BUG;
 	(*ptr)->on_event(name);
     }
@@ -112,7 +112,7 @@ void events::broken_peering_from(reference *obj)
 	list<actor *>::iterator ptr = it->second.begin();
 	while(ptr != it->second.end())
 	{
-	    if(*ptr == NULL)
+	    if(*ptr == nullptr)
 		throw WEBDAR_BUG;
 	    if(*ptr == obj)
 		ptr = it->second.erase(ptr);

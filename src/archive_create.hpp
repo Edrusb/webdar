@@ -41,7 +41,7 @@ extern "C"
 class archive_create : public libthreadar::thread
 {
 public:
-    archive_create(): archpath("/"), fs_root("/") { progressive_report = NULL; };
+    archive_create(): archpath("/"), fs_root("/") { progressive_report = nullptr; };
     archive_create(const archive_create & ref) = default;
     archive_create(archive_create && ref) noexcept = default;
     archive_create & operator = (const archive_create & ref) = default;

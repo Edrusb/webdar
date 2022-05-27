@@ -49,7 +49,7 @@ void html_aiguille::set_mode(unsigned int m)
 
 void html_aiguille::has_been_adopted(body_builder *obj)
 {
-    if(obj == NULL)
+    if(obj == nullptr)
 	throw WEBDAR_BUG;
     obj->css_inherit_from(*this, true, false);
 }
@@ -59,7 +59,7 @@ string html_aiguille::get_body_part(const chemin & path,
 {
     if(mode < size())
     {
-	if((*this)[mode] == NULL)
+	if((*this)[mode] == nullptr)
 	    throw WEBDAR_BUG;
 	else
 	{
@@ -83,7 +83,7 @@ void html_aiguille::css_updated(bool inherited)
 
     for(unsigned int i = 0; i < s; ++i)
     {
-	if((*this)[i] == NULL)
+	if((*this)[i] == nullptr)
 	    throw WEBDAR_BUG;
 	(*this)[i]->css_inherit_from(*this, true, false);
     }

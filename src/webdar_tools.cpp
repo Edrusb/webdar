@@ -102,7 +102,7 @@ string webdar_tools_remove_leading_spaces(const string & input)
 void webdar_tools_init_randomization()
 {
     int pas = getpid() % getppid();
-    srand(time(NULL));
+    srand(time(nullptr));
 
     if(pas == 0)
 	pas = 10;

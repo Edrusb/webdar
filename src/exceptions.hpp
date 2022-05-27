@@ -69,7 +69,7 @@ protected:
     virtual exception_base *clone() const;
 };
 
-template<class T> exception_base *cloner(void * const ptr) { exception_base *ret = new (std::nothrow) T(*(reinterpret_cast<T const *>(ptr))); if(ret == NULL) throw exception_memory(); return ret; };
+template<class T> exception_base *cloner(void * const ptr) { exception_base *ret = new (std::nothrow) T(*(reinterpret_cast<T const *>(ptr))); if(ret == nullptr) throw exception_memory(); return ret; };
 
 inline exception_base * exception_memory::clone() const { return cloner<exception_memory>((void *)this); };
 

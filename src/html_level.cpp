@@ -50,7 +50,7 @@ void html_level::adopt_static_html(const std::string & html)
 {
     bundle tmp;
 
-    tmp.obj = NULL;
+    tmp.obj = nullptr;
     tmp.static_text = html;
 
     table.push_back(tmp);
@@ -68,7 +68,7 @@ void html_level::has_been_adopted(body_builder *obj)
 {
     bundle tmp;
 
-    if(obj == NULL)
+    if(obj == nullptr)
 	throw WEBDAR_BUG;
     tmp.obj = obj;
     table.push_back(tmp);
@@ -110,7 +110,7 @@ string html_level::get_body_part_from_children_as_a_block(const chemin & path,
     reset_read_next();
     while(read_next(bdl))
     {
-	if(bdl.obj != NULL)
+	if(bdl.obj != nullptr)
 	    ret += bdl.obj->get_body_part(sub_path, req);
 	else
 	    ret += bdl.static_text;
