@@ -41,6 +41,8 @@ extern "C"
 #include "html_form.hpp"
 #include "html_div.hpp"
 
+    /// responds a error message to the user as defined by auxilliary methods
+
 class error_page : public responder
 {
 public:
