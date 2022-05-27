@@ -47,8 +47,8 @@ const string html_dir_tree::event_click = "html_dir_tree_click";
 html_dir_tree::html_dir_tree(const std::string & chemin):
     shrink("-", event_shrink),
     expand("+", event_expand),
-    name("", event_click),
     nosubdir(" ",""),
+    name("", event_click),
     contents(10)
 {
     init(chemin);
@@ -57,8 +57,8 @@ html_dir_tree::html_dir_tree(const std::string & chemin):
 html_dir_tree::html_dir_tree(const archive_init_list * ref, const std::string & chemin):
     shrink("-", event_shrink),
     expand("+", event_expand),
-    name("", event_click),
     nosubdir(" ",""),
+    name("", event_click),
     contents(10)
 {
     init(chemin);

@@ -41,12 +41,12 @@ extern "C"
 using namespace std;
 
 html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
+    lib_data(x_warn_size),
     h_inter(""),
     h_get_string("", html_form_input::text, "", 20),
     h_form("Update"),
     h_logs("Last logs"),
-    h_global("Interaction with libdar"),
-    lib_data(x_warn_size)
+    h_global("Interaction with libdar")
 {
     h_pause.add_choice("undefined", "please answer yes or no");
     h_pause.add_choice("no", "No");

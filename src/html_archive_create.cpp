@@ -40,12 +40,12 @@ extern "C"
 using namespace std;
 
 html_archive_create::html_archive_create():
+    form("Update"),
+    fs("Archive to create"),
     fs_root("Directory to take as root for the backup", html_form_input::text, "", 20),
     sauv_path("Where to create the archive", html_form_input::text, "", 20),
     basename("Archive basename", html_form_input::text, "", 10),
-    show_options("Show creation options", html_form_input::check, "", 1),
-    form("Update"),
-    fs("Archive to create")
+    show_options("Show creation options", html_form_input::check, "", 1)
 {
     fs.adopt(&fs_root);
     fs.adopt(&sauv_path);
