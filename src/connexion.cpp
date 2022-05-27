@@ -127,7 +127,7 @@ void connexion::write(const char *a, unsigned int size)
     else
     {
 	flush_write();
-	(void)atomic_write(a, size);
+	atomic_write(a, size);
     }
 }
 
@@ -135,7 +135,7 @@ void connexion::flush_write()
 {
     if(last_unwrote > 0)
     {
-	(void)atomic_write(out_buf, last_unwrote);
+	atomic_write(out_buf, last_unwrote);
 	last_unwrote = 0;
     }
 }
@@ -246,9 +246,8 @@ void connexion::fill_buffer(bool blocking)
     }
 }
 
-bool connexion::atomic_write(const char *a, unsigned int size)
+void connexion::atomic_write(const char *a, unsigned int size)
 {
-    bool ret = true;
     unsigned int wrote = 0;
     ssize_t tmp;
 
@@ -265,7 +264,7 @@ bool connexion::atomic_write(const char *a, unsigned int size)
 	    case EPIPE:
 		    // the connection is broken / closed by the other end
 		fermeture();
-		ret = false;
+		throw exception_system("Error met while sending data: ", errno);
 		break;
 	    case EINTR:
 		break;
@@ -276,7 +275,5 @@ bool connexion::atomic_write(const char *a, unsigned int size)
 	else
 	    wrote += tmp;
     }
-
-    return ret;
 }
 

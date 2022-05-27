@@ -113,7 +113,8 @@ private:
 	/// manages to get (read) data in buffer and set relative variables acordingly
     void fill_buffer(bool blocking);
 
-    bool atomic_write(const char *a, unsigned int size);
+	/// write out the given buffer to the socket
+    void atomic_write(const char *a, unsigned int size);
 
 };
 
