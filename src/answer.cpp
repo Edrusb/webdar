@@ -70,7 +70,7 @@ void answer::add_body(const std::string & key)
 
 bool answer::is_valid() const
 {
-    return status < 600 && status > 99;
+    return status < 600 && status > 99 && maj_vers > 0 && min_vers > 0;
 }
 
 void answer::write(connexion & output)
