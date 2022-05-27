@@ -42,7 +42,7 @@ extern "C"
 
     /// class answer provides easy means to set an HTTP answer and means to sent it back to a connexion object
 
-    /// \note the main consumers of class answer are body_builder class and its inherited classes
+    /// \note the main consumers of class answer are responder class and its inherited classes
 
 class answer
 {
