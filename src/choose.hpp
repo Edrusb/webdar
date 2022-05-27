@@ -49,6 +49,12 @@ extern "C"
 #include "html_form_radio.hpp"
 #include "html_yes_no_box.hpp"
 
+    /// display current existing user sessions and let user kill or change of session
+
+    ///  \note chooser object is a per user and list all sessions owned by that user
+    ///  but the creation if chooser object is managed by the class chooser, which exposes
+    ///  the static method give_answer_for() for that purpose
+
 class choose : public responder
 {
 public:
@@ -61,16 +67,20 @@ private:
 
 	// constructor
     choose(const std::string & user);
+    choose(const choose & ref) = delete;
+    choose(choose && ref) noexcept = delete;
+    choose & operator = (const choose & ref) = delete;
+    choose & operator = (choose && ref) noexcept = delete;
     ~choose() { release_boxes(); };
 
-	// inherited from responder
-    answer give_answer(const request & req);
+	// inherited from responder, but made private
+    virtual answer give_answer(const request & req) override;
 
 
-    std::string owner;       //< list only sessions for that owner
-    bool confirm_mode;       //< whether we display session list or kill confirmation
+    std::string owner;       ///< list only sessions for that owner
+    bool confirm_mode;       ///< whether we display session list or kill confirmation
 	/// listing session page and associated objects
-    html_page page;         //< page root for session listing
+    html_page page;          ///< page root for session listing
     html_table table;
     html_url nouvelle;
     html_form form;
@@ -79,7 +89,7 @@ private:
     std::vector<session::session_summary> sess; //< list of sessions in page
 
 	/// confirmation page and associated objects
-    html_page confirm;      //< page root for kill confirmation
+    html_page confirm;       ///< page root for kill confirmation
     html_table ctable;
     html_yes_no_box confirmed;
 
@@ -89,16 +99,24 @@ private:
     void regenerate_confirm_page();
     void kill_selected_sessions() const;
 
-	// class structure
+	/// class level structure holding a chooser for each user
 
     struct record
     {
 	choose *obj;
 	libthreadar::mutex lock;
+
 	record() { obj = nullptr; };
+	record(const record & ref) = delete;
+	record(record && ref) noexcept = delete;
+	record & operator = (const record & ref) = delete;
+	record & operator = (record && ref) noexcept = delete;
 	~record() { if(obj != nullptr) delete obj; };
     };
 
+	/// the list of chooser and associated attributes
+
+	/// maps username to a record structure (which contained the chooser)
     static std::map<std::string, record *> per_user;
 };
 

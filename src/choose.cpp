@@ -361,6 +361,7 @@ answer choose::give_answer_for(const string & user, const request & req)
 	    ret = tmp->obj->create_new_session(req);
 
 	    per_user[user] = tmp;
+		// tmp is now managed/owned by the per_user map
 	}
 	catch(...)
 	{
