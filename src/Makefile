@@ -22,8 +22,8 @@
 #*********************************************************************/
 
 CC=g++
-CFLAGS=-ggdb -static
-CXXFLAGS=-ggdb -static `pkg-config --cflags libdar64` `pkg-config --cflags libthreadar` -static -D_FILE_OFFSET_BITS=64 -std=c++11
+CFLAGS=-ggdb -static -Wall
+CXXFLAGS=-ggdb -static -Wall `pkg-config --cflags libdar64` `pkg-config --cflags libthreadar` -static -D_FILE_OFFSET_BITS=64 -std=c++11
 
 
 
