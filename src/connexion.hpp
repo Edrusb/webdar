@@ -49,8 +49,10 @@ public:
     connexion(int fd, const std::string & peerip, unsigned int peerport);
 
 	/// forbidding copy constuctor and assignment operator
-    connexion(const connexion & ref) { throw WEBDAR_BUG; };
-    const connexion & operator = (const connexion & ref) { throw WEBDAR_BUG; };
+    connexion(const connexion & ref) = delete;
+    connexion(connexion && ref) noexcept = delete;
+    connexion & operator = (const connexion & ref) = delete;
+    connexion & operator = (connexion && ref) noexcept = delete;
 
 	/// destructor is virtual to permit further evolution by mean of inherited classes
     virtual ~connexion();

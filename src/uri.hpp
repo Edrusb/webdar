@@ -53,10 +53,6 @@ public:
     uri & operator = (uri && ref) noexcept = default;
     ~uri() = default;
 
-	// default copy constructor is fine
-	// default assignment operator is fine too
-	// no need of destructor here
-
 	/// convert an uri from a string
     void read(const std::string & res);
 
