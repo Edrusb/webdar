@@ -48,9 +48,6 @@ void request::read(connexion & input)
     string key;
     string val, valorig;
 
-    if(&input == NULL)
-	throw WEBDAR_BUG;
-
 	///////////////////////////////////////////
 	// reading the first line of the request
 	//
@@ -310,8 +307,6 @@ bool request::is_empty_line(connexion & input)
 
     try
     {
-	if(&input == NULL)
-	    throw WEBDAR_BUG;
 	ret = (input.read_test_first(true) == '\r') && (input.read_test_second(true) == '\n');
     }
     catch(exception_bug & e)
@@ -330,9 +325,6 @@ bool request::is_empty_line(connexion & input)
 string request::up_to_eol(connexion & input)
 {
     string ret;
-
-    if(&input == NULL)
-	throw WEBDAR_BUG;
 
     try
     {
@@ -355,9 +347,6 @@ string request::up_to_eof(connexion & input)
 {
     string ret;
 
-    if(&input == NULL)
-	throw WEBDAR_BUG;
-
     try
     {
 	while(true)
@@ -377,9 +366,6 @@ string request::up_to_eof(connexion & input)
 
 void request::skip_over(connexion & input, char a)
 {
-    if(&input == NULL)
-	throw WEBDAR_BUG;
-
     try
     {
 	while(input.read_one(true) != a)
@@ -400,9 +386,6 @@ string request::up_to_length(connexion & input, unsigned int length)
 {
     string ret;
 
-    if(&input == NULL)
-	throw WEBDAR_BUG;
-
 	/// TO BE IMPROVED ADDING A READ CALL WITH INPUT BUFFER TO CONNEXION CLASS
     while(length > 0)
     {
@@ -418,8 +401,6 @@ void request::skip_line(connexion & input)
     bool loop = true;
     char a;
 
-    if(&input == NULL)
-	throw WEBDAR_BUG;
     try
     {
 	while(loop)
@@ -449,9 +430,6 @@ string request::up_to_eol_with_LWS(connexion & input)
 {
     string ret;
     bool loop = false;
-
-    if(&input == NULL)
-	throw WEBDAR_BUG;
 
     try
     {
@@ -489,9 +467,6 @@ bool request::get_token(connexion & input, bool initial, bool blocking, string &
     bool loop = true;
     char a;
     token = "";
-
-    if(&input == NULL)
-	throw WEBDAR_BUG;
 
     try
     {
@@ -543,9 +518,6 @@ bool request::get_word(connexion & input, bool initial, bool blocking, string & 
     char ctmp;
     bool loop = false;
     bool ret = false;
-
-    if(&input == NULL)
-	throw WEBDAR_BUG;
 
     word = "";
 
