@@ -31,7 +31,7 @@ using namespace std;
 void request::clear()
 {
     status = init;
-    cached_method = cached_uri = "";
+    cached_method = "";
     coordinates.clear();
     attributes.clear();
     body = "";
@@ -253,6 +253,7 @@ void request::extract_cookies()
 bool request::read_method_uri(connexion & input, bool blocking)
 {
     string tmp;
+    string cached_uri;
 
     if(status > uri_read)
 	throw WEBDAR_BUG;

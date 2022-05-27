@@ -111,7 +111,6 @@ public:
 private:
     enum { init, method_read, uri_read, reading_all, completed } status;
     std::string cached_method;    //< method already read from the next request
-    std::string cached_uri;       //< uri already read from the next request
     uri coordinates;              //< uri spit in fields
     unsigned int maj_vers;        //< HTTP major version of the last request received
     unsigned int min_vers;        //< HTTP minor version of the last request received
