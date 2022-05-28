@@ -42,7 +42,7 @@ class request
 {
 public:
 	/// The constructor
-    request(std::shared_ptr<central_report> log) { clear(); if(log) clog = log; else throw WEBDAR_BUG; };
+    request(const std::shared_ptr<central_report> & log) { clear(); if(log) clog = log; else throw WEBDAR_BUG; };
     request(const request & ref) = default;
     request(request && ref) noexcept = default;
     request & operator = (const request & ref) = default;
