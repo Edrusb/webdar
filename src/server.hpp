@@ -46,7 +46,7 @@ class server: public libthreadar::thread
 public:
 	// constructor & Destructor are intentionally set as private methods
 
-    static bool run_new_server(std::shared_ptr<central_report> log, authentication *auth, connexion *source);
+    static bool run_new_server(std::shared_ptr<central_report> log, authentication *auth, std::unique_ptr<connexion> & source);
     static void set_max_server(unsigned int val) { max_server = val; };
     static void kill_server(pthread_t tid);
     static void kill_all_servers();
@@ -59,7 +59,7 @@ protected:
     virtual void inherited_run() override;
 
 private:
-    server(std::shared_ptr<central_report> log, authentication *auth, connexion *source);
+    server(std::shared_ptr<central_report> log, authentication *auth, std::unique_ptr<connexion> & source);
     server(const server & ref) = delete;
     server(server && ref) noexcept = delete;
     server & operator = (const server & ref) = delete;

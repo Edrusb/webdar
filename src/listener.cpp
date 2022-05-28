@@ -171,7 +171,7 @@ void listener::inherited_run()
     struct sockaddr_in6 sin6;
     string ip;
     unsigned int port;
-    connexion *con = nullptr;
+    unique_ptr<connexion> con;
 
     rep->report(debug, "listener object: started in its own thread");
 
@@ -281,31 +281,24 @@ void listener::inherited_run()
 	while(loop);
 
 	rep->report(debug, "listener object: creating a new \"connexion\" object");
-	con = new (nothrow) connexion(ret, ip, port);
-	if(con == nullptr)
+	con.reset(new (nothrow) connexion(ret, ip, port));
+	if(!con)
 	    throw exception_memory();
 	else
 	{
-	    try
+	    rep->report(debug, "listener object: creating a server thread to answer requests received from the new connection");
+	    if(!server::run_new_server(rep, src, con))
 	    {
-		rep->report(debug, "listener object: creating a server thread to answer requests received from the new connection");
-		if(!server::run_new_server(rep, src, con))
-		{
-		    rep->report(warning, "failed to create a new server maximum connection reached");
-		    delete con;
-		    con = nullptr;
-		}
-		else // object now managed by the new server object
-		    con = nullptr;
+		rep->report(warning, "failed to create a new server maximum connection reached");
+		con.reset();
 	    }
-	    catch(...)
+	    else
 	    {
-		if(con != nullptr)
-		{
-		    delete con;
-		    con = nullptr;
-		}
-		throw;
+		if(con)
+		    throw WEBDAR_BUG;
+		    // con should have passed
+		    // the connexion pointed to
+		    // object to the server object/class
 	    }
 	}
     }

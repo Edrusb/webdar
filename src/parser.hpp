@@ -24,6 +24,10 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
+    // C++ system header files
+#include <memory>
+
+    // webdar headers
 #include "exceptions.hpp"
 #include "connexion.hpp"
 #include "central_report.hpp"
@@ -38,9 +42,10 @@ public:
 	/// \param[in] input is the connexion to read data from
 	/// \param[in] log where to log messages
 	/// \note the connexion object passed to this becomes under the responsibility
-	/// of this parser object and will be deleted when necessary. The log object is out of the responsibility of this object
-	/// however it must survive this parser object.
-    parser(connexion *input, std::shared_ptr<central_report> log);
+	/// of this parser object and will be deleted when necessary. (where from the unique_ptr since C++11 webdar code update)
+	/// The log object is out of the responsibility of this object
+	/// however it must survive this parser object (where from the shared_ptr since C++11 webdar code update)
+    parser(std::unique_ptr<connexion> & input, std::shared_ptr<central_report> log);
 
     parser(const parser & ref) = delete;
     parser(parser && ref) noexcept = delete;
@@ -51,7 +56,7 @@ public:
     ~parser() { close(); };
 
 	/// provides visibility on the connection status
-    connexion::status get_status() const { if(source == nullptr) return connexion::not_connected; return source->get_status(); };
+    connexion::status get_status() const { if(!source) return connexion::not_connected; return source->get_status(); };
 
 	/// get the next request URI
 	///
@@ -70,10 +75,10 @@ public:
 
 private:
     bool answered;             //< whether last request was answered or not
-    connexion *source;         //< the connexion to the client
+    std::unique_ptr<connexion> source; //< the connexion to the client
     request req;               //< value of the last request
 
-    void valid_source() const { if(source == nullptr || source->get_status() != connexion::connected) throw exception_range("socket disconnected"); };
+    void valid_source() const { if(!source || source->get_status() != connexion::connected) throw exception_range("socket disconnected"); };
     void checks_main(const request & req, answer & ans);
     void checks_webdar(const request & req, answer & ans);
     void checks_rfc1945(const request & req, answer & ans);

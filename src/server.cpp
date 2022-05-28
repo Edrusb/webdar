@@ -53,7 +53,7 @@ libthreadar::mutex server::lock_counter;
 unsigned int server::max_server = 0;
 list<server *> server::instances;
 
-bool server::run_new_server(shared_ptr<central_report> log, authentication *auth, connexion *source)
+bool server::run_new_server(shared_ptr<central_report> log, authentication *auth, unique_ptr<connexion> & source)
 {
     bool ret = false;
 
@@ -159,7 +159,7 @@ void server::throw_a_pending_exception()
     lock_counter.unlock();
 }
 
-server::server(shared_ptr<central_report> log, authentication *auth, connexion *source) : src(source, log)
+server::server(shared_ptr<central_report> log, authentication *auth, unique_ptr<connexion> & source) : src(source, log)
 {
     if(!log)
 	throw WEBDAR_BUG;

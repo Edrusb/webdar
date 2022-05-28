@@ -29,9 +29,9 @@
 using namespace std;
 
 
-parser::parser(connexion *input, shared_ptr<central_report> log): req(log)
+parser::parser(unique_ptr<connexion> & input, shared_ptr<central_report> log): req(log)
 {
-    if(input == nullptr)
+    if(!input)
 	throw WEBDAR_BUG;
 
     if(log == nullptr)
@@ -41,16 +41,13 @@ parser::parser(connexion *input, shared_ptr<central_report> log): req(log)
 	throw exception_range("connection is already closed cannot read from it");
 
     answered = true;
-    source = input;
+    source = std::move(input);
 }
 
 void parser::close()
 {
-    if(source != nullptr)
-    {
-	delete source;
-	source = nullptr;
-    }
+    source.reset();
+	// this should invoke the destructor on the pointed to connexion object
 }
 
 bool parser::get_next_request_uri(uri & url)
@@ -93,11 +90,7 @@ const request & parser::get_request()
     }
     catch(exception_base & e)
     {
-	if(source != nullptr)
-	{
-	    delete source;
-	    source = nullptr;
-	}
+	source.reset();
 	throw;
     }
 
@@ -127,11 +120,7 @@ void parser::send_answer(answer & ans)
     }
     catch(exception_base & e)
     {
-	if(source != nullptr)
-	{
-	    delete source;
-	    source = nullptr;
-	}
+	source.reset();
 	answered = true;
 	    // no throw
     }
