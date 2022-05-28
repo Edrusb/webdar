@@ -45,7 +45,8 @@ public:
 	/// of this parser object and will be deleted when necessary. (where from the unique_ptr since C++11 webdar code update)
 	/// The log object is out of the responsibility of this object
 	/// however it must survive this parser object (where from the shared_ptr since C++11 webdar code update)
-    parser(std::unique_ptr<connexion> & input, std::shared_ptr<central_report> log);
+    parser(std::unique_ptr<connexion> & input,
+	   const std::shared_ptr<central_report> & log);
 
     parser(const parser & ref) = delete;
     parser(parser && ref) noexcept = delete;

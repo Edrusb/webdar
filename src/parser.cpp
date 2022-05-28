@@ -29,7 +29,8 @@
 using namespace std;
 
 
-parser::parser(unique_ptr<connexion> & input, shared_ptr<central_report> log): req(log)
+parser::parser(unique_ptr<connexion> & input,
+	       const shared_ptr<central_report> & log): req(log)
 {
     if(!input)
 	throw WEBDAR_BUG;
