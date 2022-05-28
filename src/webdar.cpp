@@ -249,10 +249,8 @@ int main(int argc, char *argv[], char **env)
 			}
 		    }
 		    taches.clear();
-		    libdar_end();
 		    throw;
 		}
-		libdar_end();
 	    }
 	    catch(...)
 	    {
@@ -267,6 +265,8 @@ int main(int argc, char *argv[], char **env)
 	    libdar_end();
 	    throw;
 	}
+	creport.reset();
+	libdar_end();
     }
     catch(exception_memory & e)
     {
