@@ -34,7 +34,7 @@ parser::parser(unique_ptr<connexion> & input, shared_ptr<central_report> log): r
     if(!input)
 	throw WEBDAR_BUG;
 
-    if(log == nullptr)
+    if(!log)
 	throw WEBDAR_BUG;
 
     if(input->get_status() != connexion::connected)
