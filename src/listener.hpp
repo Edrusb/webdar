@@ -26,7 +26,7 @@
 
     // C++ system header files
 #include <libthreadar/libthreadar.hpp>
-
+#include <memory>
 
     // webdar headers
 #include "central_report.hpp"
@@ -45,10 +45,10 @@
 class listener : public libthreadar::thread
 {
 public:
-    listener(central_report *log,  //< where to send reports
+    listener(std::shared_ptr<central_report> log,  //< where to send reports
 	     authentication *auth, //< where to request for authentications
 	     unsigned int port);   //< listen on localhost IPv4 or IPv6
-    listener(central_report *log,    //< where to send reports
+    listener(std::shared_ptr<central_report> log,    //< where to send reports
 	     authentication *auth,   //< where to request for authentications
 	     const std::string & ip, //< interface to listen on
 	     unsigned int port);     //< port to listen on
@@ -63,7 +63,7 @@ protected:
     virtual void inherited_run() override;
 
 private:
-    central_report *rep; //< where to report events
+    std::shared_ptr<central_report> rep; //< where to report events
     authentication *src; //< where to validate authentications
     int sockfd;          //< socket descriptor
     int famille;         //< domain familly of the socket
@@ -71,7 +71,7 @@ private:
     std::string l_port;  //< listening port
 
     void set_sockfd(int domain);
-    void init(central_report *log,
+    void init(std::shared_ptr<central_report> log,
 	      authentication *auth,
 	      const std::string & ip,
 	      unsigned int port);

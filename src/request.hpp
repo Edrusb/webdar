@@ -27,6 +27,7 @@
     // C++ system header files
 #include <string>
 #include <map>
+#include <memory>
 
     // webdar headers
 #include "uri.hpp"
@@ -41,7 +42,7 @@ class request
 {
 public:
 	/// The constructor
-    request(central_report *log) { clear(); clog = log; };
+    request(std::shared_ptr<central_report> log) { clear(); if(log) clog = log; else throw WEBDAR_BUG; };
     request(const request & ref) = default;
     request(request && ref) noexcept = default;
     request & operator = (const request & ref) = default;
@@ -117,7 +118,7 @@ private:
     std::map<std::string, std::string> attributes; //< request headers
     std::map<std::string, std::string> cookies;    //< request cookies
     std::string body;             //< request body if any
-    central_report *clog;         //< central report logging
+    std::shared_ptr<central_report> clog; //< central report logging
 
 	/// try reading the method and uri from the connexion
     bool read_method_uri(connexion & input, bool blocking);

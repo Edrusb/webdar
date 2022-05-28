@@ -40,7 +40,7 @@ public:
 	/// \note the connexion object passed to this becomes under the responsibility
 	/// of this parser object and will be deleted when necessary. The log object is out of the responsibility of this object
 	/// however it must survive this parser object.
-    parser(connexion *input, central_report *log);
+    parser(connexion *input, std::shared_ptr<central_report> log);
 
     parser(const parser & ref) = delete;
     parser(parser && ref) noexcept = delete;

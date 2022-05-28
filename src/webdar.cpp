@@ -35,7 +35,7 @@ extern "C"
 #include <vector>
 #include <new>
 #include <set>
-
+#include <memory>
 
     // libraries header files
 #include <dar/libdar.hpp>
@@ -79,7 +79,7 @@ static void libdar_end();
     // yes, this will point to a global object, this class handle concurrent access,
     // no problem in this multi-threaded program.
     // it is necessary to have this global for signal handler able to report what they do
-static central_report *creport = nullptr;
+static shared_ptr<central_report> creport;
 static vector<listener *> taches;
 
 int main(int argc, char *argv[], char **env)
@@ -150,16 +150,21 @@ int main(int argc, char *argv[], char **env)
 	else
 	    min = info;
 
-	if(background)
-	{
-	    creport = new (nothrow) central_report_syslog(min, "webdar", facility);
-	    throw exception_feature("background as a daemon");
-	}
-	else
-	    creport = new (nothrow) central_report_stdout(min);
+	central_report* tmp = nullptr;
 
-	if(creport == nullptr)
+	if(background)
+	    tmp = new (nothrow) central_report_syslog(min, "webdar", facility);
+	else
+	    tmp = new (nothrow) central_report_stdout(min);
+
+	if(tmp == nullptr)
 	    throw exception_memory();
+	else
+	    creport.reset(tmp); // tmp is now managed by the shared_ptr
+
+	if(background)
+	    throw exception_feature("background as a daemon");
+
 	creport->report(debug, "central report object has been created");
 	creport->report(warning, string("HTTP access using the following username/password:\n\t") + fixed_user + " / " + fixed_pass);
 
@@ -258,10 +263,7 @@ int main(int argc, char *argv[], char **env)
 	}
 	catch(...)
 	{
-	    if(creport == nullptr)
-		throw WEBDAR_BUG;
-	    delete creport;
-	    creport = nullptr;
+	    creport.reset();
 	    libdar_end();
 	    throw;
 	}
