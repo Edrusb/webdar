@@ -254,11 +254,21 @@ void choose::regenerate_table_page()
 	check = new (nothrow) html_form_input("", html_form_input::check, "", 10);
 	if(check == nullptr)
 	    throw exception_memory();
-	boxes.push_back(check);
+	try
+	{
+	    boxes.push_back(check);
+	}
+	catch(...)
+	{
+		// we assume the check pointed to object
+		// could not be passed under the responsibility
+		// of the boxes
+	    delete check;
+	    throw;
+	}
 	if(it->owner != owner)
 	    check->set_enabled(false);
 	table.adopt(check);
-
     }
 }
 
