@@ -69,7 +69,6 @@ public:
     void close();
 
 private:
-    central_report *clog;      //< central report logging
     bool answered;             //< whether last request was answered or not
     connexion *source;         //< the connexion to the client
     request req;               //< value of the last request

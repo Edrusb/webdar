@@ -40,7 +40,6 @@ parser::parser(connexion *input, shared_ptr<central_report> log): req(log)
     if(input->get_status() != connexion::connected)
 	throw exception_range("connection is already closed cannot read from it");
 
-    clog = log;
     answered = true;
     source = input;
 }
