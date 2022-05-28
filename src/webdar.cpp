@@ -98,7 +98,12 @@ int main(int argc, char *argv[], char **env)
 	webdar_tools_init_randomization();
 //	fixed_pass = "";
 	fixed_pass = webdar_tools_generate_random_string(10);
-	authentication_cli auth = authentication_cli(fixed_user, fixed_pass);
+	shared_ptr<authentication_cli> auth(new (nothrow) authentication_cli(fixed_user, fixed_pass));
+
+	if(!auth)
+	    throw exception_memory();
+	    // not using std::make_share above in order
+	    // to through an exception from the class tree of exception_base
 
 	    /////////////////////////////////////////////////
 	    // set signal handlers for type 1 and type 2
@@ -192,9 +197,9 @@ int main(int argc, char *argv[], char **env)
 		    while(it != ecoute.end())
 		    {
 			if(it->interface == "")
-			    tmp = new (nothrow) listener(creport, &auth,  it->port);
+			    tmp = new (nothrow) listener(creport, auth,  it->port);
 			else
-			    tmp = new (nothrow) listener(creport, &auth, it->interface, it->port);
+			    tmp = new (nothrow) listener(creport, auth, it->interface, it->port);
 			if(tmp == nullptr)
 			    throw exception_memory();
 			else

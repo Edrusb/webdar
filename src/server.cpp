@@ -53,7 +53,9 @@ libthreadar::mutex server::lock_counter;
 unsigned int server::max_server = 0;
 list<server *> server::instances;
 
-bool server::run_new_server(shared_ptr<central_report> log, authentication *auth, unique_ptr<connexion> & source)
+bool server::run_new_server(const shared_ptr<central_report> & log,
+			    const shared_ptr<const authentication> & auth,
+			    unique_ptr<connexion> & source)
 {
     bool ret = false;
 
@@ -159,12 +161,14 @@ void server::throw_a_pending_exception()
     lock_counter.unlock();
 }
 
-server::server(shared_ptr<central_report> log, authentication *auth, unique_ptr<connexion> & source) : src(source, log)
+server::server(const shared_ptr<central_report> & log,
+	       const shared_ptr<const authentication> & auth,
+	       unique_ptr<connexion> & source) : src(source, log)
 {
     if(!log)
 	throw WEBDAR_BUG;
     rep = log;
-    if(auth == nullptr)
+    if(!auth)
 	throw WEBDAR_BUG;
     authsrc = auth;
     can_keep_session = true;
@@ -176,7 +180,7 @@ void server::inherited_run()
     string session_ID = "";
     uri url;
     session *sess = nullptr;
-    challenge chal = authsrc;
+    challenge chal(authsrc);
     session::session_summary info;
     string user;
 

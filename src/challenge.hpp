@@ -44,7 +44,7 @@ public:
 	///
 	/// \param[in] base points to the authentication base
 	/// \note the base argument must survive this challenge object and is
-    challenge(const authentication *base) { if(base == nullptr) throw WEBDAR_BUG; database = base; };
+    challenge(const std::shared_ptr<const authentication> & base) { if(!base) throw WEBDAR_BUG; database = base; };
 
 	/// returns whether the request is authoritative
 	///
@@ -59,7 +59,7 @@ public:
     answer give_answer(const request & req);
 
 private:
-    const authentication *database;
+    std::shared_ptr<const authentication> database;
 
 };
 

@@ -46,10 +46,10 @@ class listener : public libthreadar::thread
 {
 public:
     listener(std::shared_ptr<central_report> log,  //< where to send reports
-	     authentication *auth, //< where to request for authentications
+	     const std::shared_ptr<const authentication> & auth, //< where to request for authentications
 	     unsigned int port);   //< listen on localhost IPv4 or IPv6
     listener(std::shared_ptr<central_report> log,    //< where to send reports
-	     authentication *auth,   //< where to request for authentications
+	     const std::shared_ptr<const authentication> & auth,   //< where to request for authentications
 	     const std::string & ip, //< interface to listen on
 	     unsigned int port);     //< port to listen on
     listener(const listener & ref) = delete;
@@ -64,7 +64,7 @@ protected:
 
 private:
     std::shared_ptr<central_report> rep; //< where to report events
-    authentication *src; //< where to validate authentications
+    std::shared_ptr<const authentication> src; //< where to validate authentications
     int sockfd;          //< socket descriptor
     int famille;         //< domain familly of the socket
     std::string l_ip;    //< listening IP address
@@ -72,7 +72,7 @@ private:
 
     void set_sockfd(int domain);
     void init(std::shared_ptr<central_report> log,
-	      authentication *auth,
+	      const std::shared_ptr<const authentication> & auth,
 	      const std::string & ip,
 	      unsigned int port);
 };

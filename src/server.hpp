@@ -46,7 +46,9 @@ class server: public libthreadar::thread
 public:
 	// constructor & Destructor are intentionally set as private methods
 
-    static bool run_new_server(std::shared_ptr<central_report> log, authentication *auth, std::unique_ptr<connexion> & source);
+    static bool run_new_server(const std::shared_ptr<central_report> & log,
+			       const std::shared_ptr<const authentication> & auth,
+			       std::unique_ptr<connexion> & source);
     static void set_max_server(unsigned int val) { max_server = val; };
     static void kill_server(pthread_t tid);
     static void kill_all_servers();
@@ -59,7 +61,9 @@ protected:
     virtual void inherited_run() override;
 
 private:
-    server(std::shared_ptr<central_report> log, authentication *auth, std::unique_ptr<connexion> & source);
+    server(const std::shared_ptr<central_report> & log,
+	   const std::shared_ptr<const authentication> & auth,
+	   std::unique_ptr<connexion> & source);
     server(const server & ref) = delete;
     server(server && ref) noexcept = delete;
     server & operator = (const server & ref) = delete;
@@ -68,7 +72,7 @@ private:
 
     parser src;              //< this object manages the given connexion in constructor
     std::shared_ptr<central_report> rep; //< where do logs should go
-    authentication *authsrc; //< object to consult for user authentications
+    std::shared_ptr<const authentication> authsrc; //< object to consult for user authentications
     bool can_keep_session;   //< whether aonther object asked interacting with the session we use
     session *locked_session; //< the current session we use (we have acquired its mutex)
 

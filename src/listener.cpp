@@ -53,7 +53,9 @@ static struct in6_addr string_to_network_IPv6(const std::string & ip);
 static string network_IPv4_to_string(const struct in_addr & ip);
 static string network_IPv6_to_string(const struct in6_addr & ip);
 
-listener::listener(shared_ptr<central_report> log, authentication *auth, unsigned int port)
+listener::listener(shared_ptr<central_report> log,
+		   const shared_ptr<const authentication> & auth,
+		   unsigned int port)
 {
     try
     {
@@ -70,12 +72,18 @@ listener::listener(shared_ptr<central_report> log, authentication *auth, unsigne
     }
 }
 
-listener::listener(shared_ptr<central_report> log, authentication *auth, const std::string & ip, unsigned int port)
+listener::listener(shared_ptr<central_report> log,
+		   const shared_ptr<const authentication> & auth,
+		   const std::string & ip,
+		   unsigned int port)
 {
     init(log, auth, ip, port);
 }
 
-void listener::init(shared_ptr<central_report> log, authentication *auth, const std::string & ip, unsigned int port)
+void listener::init(shared_ptr<central_report> log,
+		    const shared_ptr<const authentication> & auth,
+		    const std::string & ip,
+		    unsigned int port)
 {
     sigset_t sigs;
 
