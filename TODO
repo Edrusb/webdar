@@ -1,27 +1,38 @@
 Here is the task to do to get ready for release 1.0.0
 ========================================================
-- review all classes, virtual/override, move constructor & Co
++ review all classes, virtual/override, move constructor & Co
 - have compliance with HTTP/1.1, this work is mainly at the server class layer
   where a answer has to be added field and updated version depending on the
-  corresponding request. See RFC in the RFC subdirectory => Mongoose
+  corresponding request. See RFC in the RFC subdirectory
+- check how to avoid muliple field validation (update buttons), and have the
+  global action button to imply all fields update (more natural GUI interaction)
+- add viewport and associated fiels in the return HTML pages to be readable on
+  mobiles
 - manage CSS out of HTML, object use css classes and give use only available
   classes. A static catalog of CSS class defines and exposes the list of classes
-  only the requested classes get included in the HTML header.
+  only the requested classes get included in the HTML header. => not sure to be
+  a good idea
 - provide html interface for class libdar::entrepot in order to let the user
   select a directory on the local filesystem or a existing file on the local
   filesystem, this could be launched beside html_form_input fields of the class
   saisie as an alternative to fill them clicking on a button-like element beside
   these fields. Maybe abstracting the html_tree class could avoid code
   duplication for that task.
+- add a way to navigate in directory repo tree when defining/reading an backup
+- add a way to navigate in the local dir for looking for the root filesystem
 - add a semaphore to control the number of running libdar task (listing task
   not being concerned by this).
 - add html interface for building filters
+- have a base of filters with prepolated default an no-compress
 - add filter features to the many place it is used in libdar (file filtering,
-  compression filtering, etc.)
+  compression filtering, etc.) take the name from the base of filters
 - add html interface for the overwriting policy (similar to the filter html
   interface in the way of doing)
+- add a base of overwriting policies with prepopulated defaults ones
 - add help area on the right to provide information on the action and role of
   the libdar options available on the displayed page
+- provide a base of options sets (for the different operations, prepopulated
+  with the defaults sets)
 - implement the entrepot_ftp class descendant from libdar::entrepot. As well as
   the fichier_ftp descendant from libdar::fichier
 - add html interface to configure the entrepot_ftp object
@@ -36,6 +47,12 @@ Here is the task to do to get ready for release 1.0.0
 - define building tools to add these two pictures as static object
 - make use of automake autoconf for portability and for
   configuration/compilation/installation processes
+- add the ability to store and load filters, overwriting policies, options sets,
+  in a DCF file ($HOME/.webdar by default) as many user target with name
+  of the form webdar-<type>-<user provided label>
+- add the ability to export a command as CLI for dar using with DCF as name and
+  cron label to provide user management of dar command lines.
+- option to test that cron works (sending an email or what makes sense)
 - make use of doxygen to build webdar code documentation
 - implement save/backup of webdar configuration through web interface
 
@@ -44,8 +61,8 @@ to be tested/reviewed before release 1.0.0
 - build an archive with more than 2M entry in a given directory, check the
   archive listing and time performance (should be long,...)
 - review class menu implementation to make use of html_button instead of its
-  self made construction
-- check that all libdar parameters are now configuration through webdar
+  self made construction => why???
+- check that all libdar parameters are now configurable through webdar
 - review html_form_input to use libdar::secu_string when password are used
 - check the way webdar behaves upon signal reception when a libdar session is
   running or not
