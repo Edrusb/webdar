@@ -59,12 +59,13 @@ protected:
     	/// inherited from proto_connexion
     virtual unsigned int read_impl(char *a, unsigned int size, bool blocking) override;
 
-    	/// close the connexion
-    void fermeture();
 
 private:
 
     int filedesc; ///< file descriptor to operate on
+
+	/// close the connexion
+    void fermeture();
 
 };
 
