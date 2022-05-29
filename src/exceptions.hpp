@@ -152,6 +152,19 @@ protected:
     virtual exception_base *clone() const { return cloner<exception_libcall>((void *)this); };
 };
 
+class exception_openssl : public exception_base
+{
+public:
+    exception_openssl();
+
+protected:
+    virtual exception_base *clone() const { return cloner<exception_openssl>((void *)this); };
+
+private:
+    static constexpr unsigned int ERR_BUF_LEN = 1024;
+
+    static std::string get_ssl_error();
+};
 
 extern void throw_as_most_derivated_class(exception_base *ebase);
 

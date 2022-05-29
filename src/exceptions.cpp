@@ -24,7 +24,7 @@
     // C system header files
 extern "C"
 {
-
+#include <openssl/err.h>
 }
 
     // C++ system header files
@@ -58,6 +58,30 @@ exception_libcall::exception_libcall(const libdar::Egeneric & e): exception_base
     if(dynamic_cast<const libdar::Ebug *>(&e) != nullptr)
 	change_message(e.dump_str());
 }
+
+exception_openssl::exception_openssl(): exception_base(get_ssl_error()) {};
+
+string exception_openssl::get_ssl_error()
+{
+    string ret;
+    unsigned long code;
+    char err_buf[ERR_BUF_LEN];
+
+    while((code = ERR_get_error()) > 0)
+    {
+	if(!ret.empty())
+	    ret += "\n";
+	ERR_error_string_n(code, err_buf, ERR_BUF_LEN);
+	err_buf[ERR_BUF_LEN - 1] = '\0'; // just in case
+	ret += string(err_buf);
+    }
+
+    if(ret.empty())
+	ret = "cannot get error reason from openssl";
+
+    return ret;
+}
+
 
 void throw_as_most_derivated_class(exception_base *ebase)
 {
