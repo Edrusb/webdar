@@ -28,6 +28,8 @@ extern "C"
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
+#include <signal.h>
+#include <time.h>
 }
 
     // C++ system header files
@@ -88,6 +90,10 @@ static void libdar_end();
 static shared_ptr<central_report> creport;
 static vector<listener *> taches;
 
+static void signal_handler(int x);
+static string reminder_msg;
+static time_t last_trigger;
+
 int main(int argc, char *argv[], char **env)
 {
     vector<interface_port> ecoute;
@@ -101,6 +107,8 @@ int main(int argc, char *argv[], char **env)
     string certificate;
     string privateK;
     unique_ptr<ssl_context> cipher(nullptr);
+
+    last_trigger = time(nullptr) - 1;
 
     try
     {
@@ -119,12 +127,6 @@ int main(int argc, char *argv[], char **env)
 
 	set<int> signals_list;
 	set<int>::iterator sl_it;
-	struct sigaction sg;
-
-	sg.sa_handler = close_all_listeners;
-	if(sigemptyset(&sg.sa_mask) < 0)
-	    throw exception_system("Cannot define the set of blocked signals", errno);
-	sg.sa_flags = SA_RESETHAND;
 
 	signals_list.insert(SIGHUP);
 	signals_list.insert(SIGINT);
@@ -132,8 +134,8 @@ int main(int argc, char *argv[], char **env)
 	signals_list.insert(SIGTERM);
 	signals_list.insert(SIGUSR1);
 	signals_list.insert(SIGUSR2);
-	sl_it = signals_list.begin();
 
+	sl_it = signals_list.begin();
 	while(sl_it != signals_list.end())
 	{
 	    const char *signal_name = strsignal(*sl_it);
@@ -141,7 +143,7 @@ int main(int argc, char *argv[], char **env)
 		cout << "Adding hanlder for signal " << strsignal(*sl_it) << endl;
 	    else
 		cout << "Adding hanlder for signal " << *sl_it << endl;
-	    if(sigaction(*sl_it, &sg, nullptr) < 0)
+	    if(signal(*sl_it, signal_handler) == SIG_ERR)
 	    {
 		if(signal_name != nullptr)
 		    throw exception_system(std::string("Cannot set signal handle for ") + std::string(strsignal(*sl_it)), errno);
@@ -186,7 +188,6 @@ int main(int argc, char *argv[], char **env)
 	    throw exception_feature("background as a daemon");
 
 	creport->report(debug, "central report object has been created");
-	creport->report(warning, string("HTTP access using the following username/password:\n\t") + fixed_user + " / " + fixed_pass);
 
 	    /////////////////////////////////////////////////
 	    // creating SSL_context object
@@ -196,7 +197,9 @@ int main(int argc, char *argv[], char **env)
 	    cipher.reset(new (nothrow) ssl_context(certificate, privateK));
 	    if(!cipher)
 		throw exception_memory();
+	    creport->report(info, "SSL context has been created");
 	}
+
 
 	    /////////////////////////////////////////////////
 
@@ -218,6 +221,8 @@ int main(int argc, char *argv[], char **env)
 			/////////////////////////////////////////////////
 			// creating and launching all threads
 
+		    reminder_msg = string ("\n\n\tYou can now point your browser at:\n");
+
 		    while(it != ecoute.end())
 		    {
 			if(it->interface == "")
@@ -231,9 +236,21 @@ int main(int argc, char *argv[], char **env)
 			    taches.push_back(tmp);
 			    tmp->run();
 			}
+
+			reminder_msg += string("\t\t")
+			    + (cipher ? "https://" : "http://")
+			    + (it->interface = "" ? "127.0.0.1" : it->interface)
+			    + string(":") + to_string(it->port) + string("\n");
+
 			++it;
 		    }
 		    creport->report(debug, "all listener threads have been launched, main thread waiting for all of them to complete");
+
+		    reminder_msg += string("\tand use the following to authenticate:\n")
+			+ string("\t\tuser name = ") + fixed_user + "\n"
+			+ string("\t\tpassword  = ") + fixed_pass + "\n\n";
+
+		    creport->report(warning, reminder_msg);
 
 			/////////////////////////////////////////////////
 			// looping while not all thread have ended
@@ -528,4 +545,22 @@ static void libdar_init()
 static void libdar_end()
 {
     libdar::close_and_clean();
+}
+
+static void signal_handler(int x)
+{
+    static const int delta = 2;
+
+    time_t now = time(nullptr);
+
+    signal(x, signal_handler);
+    if(now - last_trigger < delta)
+	close_all_listeners(x);
+    else
+    {
+	creport->report(warning, reminder_msg);
+	creport->report(warning, string("\n\n\t\tfor real action instead of displaying this reminder message, hit twice this key combinaison in less than ")
+			+to_string(delta)+string(" second(s)\n\n"));
+	last_trigger = now;
+    }
 }
