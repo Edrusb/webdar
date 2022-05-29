@@ -189,17 +189,6 @@ int main(int argc, char *argv[], char **env)
 
 	creport->report(debug, "central report object has been created");
 
-	    /////////////////////////////////////////////////
-	    // creating SSL_context object
-
-	if(! certificate.empty() && ! privateK.empty())
-	{
-	    cipher.reset(new (nothrow) ssl_context(certificate, privateK));
-	    if(!cipher)
-		throw exception_memory();
-	    creport->report(info, "SSL context has been created");
-	}
-
 
 	    /////////////////////////////////////////////////
 
@@ -225,6 +214,19 @@ int main(int argc, char *argv[], char **env)
 
 		    while(it != ecoute.end())
 		    {
+			if(! certificate.empty() && ! privateK.empty())
+			{
+			    cipher.reset(new (nothrow) ssl_context(certificate, privateK));
+			    if(!cipher)
+				throw exception_memory();
+			    creport->report(info, "A new SSL context has been created");
+			}
+
+			reminder_msg += string("\t\t")
+			    + (cipher ? "https://" : "http://")
+			    + (it->interface = "" ? "127.0.0.1" : it->interface)
+			    + string(":") + to_string(it->port) + string("\n");
+
 			if(it->interface == "")
 			    tmp = new (nothrow) listener(creport, auth, cipher, it->port);
 			else
@@ -237,13 +239,12 @@ int main(int argc, char *argv[], char **env)
 			    tmp->run();
 			}
 
-			reminder_msg += string("\t\t")
-			    + (cipher ? "https://" : "http://")
-			    + (it->interface = "" ? "127.0.0.1" : it->interface)
-			    + string(":") + to_string(it->port) + string("\n");
+			if(cipher)
+			    throw WEBDAR_BUG;
 
 			++it;
 		    }
+
 		    creport->report(debug, "all listener threads have been launched, main thread waiting for all of them to complete");
 
 		    reminder_msg += string("\tand use the following to authenticate:\n")
