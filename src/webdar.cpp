@@ -180,6 +180,7 @@ int main(int argc, char *argv[], char **env)
 	{
 	    vector<interface_port>::iterator it = ecoute.begin();
 	    listener *tmp = nullptr;
+	    unique_ptr<ssl_context> cipher(nullptr);
 
 	    static_object_library::init();
 	    try
@@ -197,9 +198,9 @@ int main(int argc, char *argv[], char **env)
 		    while(it != ecoute.end())
 		    {
 			if(it->interface == "")
-			    tmp = new (nothrow) listener(creport, auth,  it->port);
+			    tmp = new (nothrow) listener(creport, auth, cipher, it->port);
 			else
-			    tmp = new (nothrow) listener(creport, auth, it->interface, it->port);
+			    tmp = new (nothrow) listener(creport, auth, cipher, it->interface, it->port);
 			if(tmp == nullptr)
 			    throw exception_memory();
 			else

@@ -32,7 +32,7 @@
 #include "central_report.hpp"
 #include "exceptions.hpp"
 #include "authentication.hpp"
-
+#include "ssl_context.hpp"
 
     /// class listener
     ///
@@ -47,11 +47,15 @@ class listener : public libthreadar::thread
 public:
     listener(const std::shared_ptr<central_report> & log,        //< where to send reports
 	     const std::shared_ptr<const authentication> & auth, //< where to request for authentications
-	     unsigned int port);   //< listen on localhost IPv4 or IPv6
+	     std::unique_ptr<ssl_context> & ciphering,           //< if emtpy use http, else https with the provided context
+	     unsigned int port                                   //< listen on localhost IPv4 or IPv6
+	);
     listener(const std::shared_ptr<central_report> & log,        //< where to send reports
 	     const std::shared_ptr<const authentication> & auth, //< where to request for authentications
-	     const std::string & ip, //< interface to listen on
-	     unsigned int port);     //< port to listen on
+	     std::unique_ptr<ssl_context> & ciphering,           //< if emtpy use http, else https with the provided context
+	     const std::string & ip,                             //< interface to listen on
+	     unsigned int port                                   //< port to listen on
+	);
     listener(const listener & ref) = delete;
     listener(listener && ref) noexcept = delete;
     listener & operator = (const listener & ref) = delete;
@@ -63,16 +67,18 @@ protected:
     virtual void inherited_run() override;
 
 private:
-    std::shared_ptr<central_report> rep; //< where to report events
-    std::shared_ptr<const authentication> src; //< where to validate authentications
-    int sockfd;          //< socket descriptor
-    int famille;         //< domain familly of the socket
-    std::string l_ip;    //< listening IP address
-    std::string l_port;  //< listening port
+    std::shared_ptr<central_report> rep;       ///< where to report events
+    std::shared_ptr<const authentication> src; ///< where to validate authentications
+    int sockfd;                                ///< socket descriptor
+    int famille;                               ///< domain familly of the socket
+    std::string l_ip;                          ///< listening IP address
+    std::string l_port;                        ///< listening port
+    std::unique_ptr<ssl_context> ssl_ctx;      ///< ciphering context
 
     void set_sockfd(int domain);
     void init(const std::shared_ptr<central_report> & log,
 	      const std::shared_ptr<const authentication> & auth,
+	      std::unique_ptr<ssl_context> & ciphering,
 	      const std::string & ip,
 	      unsigned int port);
 };

@@ -45,6 +45,7 @@ extern "C"
 #include "connexion.hpp"
 #include "server.hpp"
 #include "webdar_tools.hpp"
+#include "ssl_connexion.hpp"
 
 using namespace std;
 
@@ -55,11 +56,12 @@ static string network_IPv6_to_string(const struct in6_addr & ip);
 
 listener::listener(const shared_ptr<central_report> & log,
 		   const shared_ptr<const authentication> & auth,
+		   unique_ptr<ssl_context> & ciphering,
 		   unsigned int port)
 {
     try
     {
-	init(log, auth, "::1", port);
+	init(log, auth, ciphering, "::1", port);
     }
     catch(exception_bug & e)
     {
@@ -67,21 +69,23 @@ listener::listener(const shared_ptr<central_report> & log,
     }
     catch(...)
     {
-	init(log, auth, "127.0.0.1", port);
+	init(log, auth, ciphering, "127.0.0.1", port);
 	    // no throw;
     }
 }
 
 listener::listener(const shared_ptr<central_report> & log,
 		   const shared_ptr<const authentication> & auth,
+		   std::unique_ptr<ssl_context> & ciphering,
 		   const std::string & ip,
 		   unsigned int port)
 {
-    init(log, auth, ip, port);
+    init(log, auth, ciphering, ip, port);
 }
 
 void listener::init(const shared_ptr<central_report> & log,
 		    const shared_ptr<const authentication> & auth,
+		    std::unique_ptr<ssl_context> & ciphering,
 		    const std::string & ip,
 		    unsigned int port)
 {
@@ -98,6 +102,7 @@ void listener::init(const shared_ptr<central_report> & log,
 	throw WEBDAR_BUG;
     rep = log;
     src = auth;
+    ssl_ctx = std::move(ciphering);
 
     try
     {
@@ -288,8 +293,17 @@ void listener::inherited_run()
 	}
 	while(loop);
 
-	rep->report(debug, "listener object: creating a new \"connexion\" object");
-	con.reset(new (nothrow) connexion(ret, ip, port));
+	if(ssl_ctx)
+	{
+	    rep->report(debug, "listener object: creating a new \"ssl_connexion\" object");
+	    con.reset(new (nothrow) ssl_connexion(ret, ssl_ctx->get_context(), ip, port));
+	}
+	else
+	{
+	    rep->report(debug, "listener object: creating a new \"connexion\" object");
+	    con.reset(new (nothrow) connexion(ret, ip, port));
+	}
+
 	if(!con)
 	    throw exception_memory();
 	else
