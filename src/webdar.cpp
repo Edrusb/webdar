@@ -70,7 +70,13 @@ struct interface_port
 };
 
 static void parse_cmd(int argc, char *argv[],
-		      vector<interface_port> & ecoute, bool & verbose, bool & background, int & facility);
+		      vector<interface_port> & ecoute,
+		      bool & verbose,
+		      bool & background,
+		      int & facility,
+		      string & certificate,
+		      string & privateK);
+
 static void add_item_to_list(const char *optarg, vector<interface_port> & ecoute);
 static void close_all_listeners(int sig);
 static void libdar_init();
@@ -92,6 +98,9 @@ int main(int argc, char *argv[], char **env)
     priority_t min;
     string fixed_user = "admin";
     string fixed_pass;
+    string certificate;
+    string privateK;
+    unique_ptr<ssl_context> cipher(nullptr);
 
     try
     {
@@ -145,7 +154,13 @@ int main(int argc, char *argv[], char **env)
 
 	    /////////////////////////////////////////////////
 	    // analysing command-line arguments
-	parse_cmd(argc, argv, ecoute, verbose, background, facility);
+	parse_cmd(argc, argv,
+		  ecoute,
+		  verbose,
+		  background,
+		  facility,
+		  certificate,
+		  privateK);
 
 
 	    /////////////////////////////////////////////////
@@ -173,6 +188,15 @@ int main(int argc, char *argv[], char **env)
 	creport->report(debug, "central report object has been created");
 	creport->report(warning, string("HTTP access using the following username/password:\n\t") + fixed_user + " / " + fixed_pass);
 
+	    /////////////////////////////////////////////////
+	    // creating SSL_context object
+
+	if(! certificate.empty() && ! privateK.empty())
+	{
+	    cipher.reset(new (nothrow) ssl_context(certificate, privateK));
+	    if(!cipher)
+		throw exception_memory();
+	}
 
 	    /////////////////////////////////////////////////
 
@@ -180,7 +204,6 @@ int main(int argc, char *argv[], char **env)
 	{
 	    vector<interface_port>::iterator it = ecoute.begin();
 	    listener *tmp = nullptr;
-	    unique_ptr<ssl_context> cipher(nullptr);
 
 	    static_object_library::init();
 	    try
@@ -331,7 +354,12 @@ int main(int argc, char *argv[], char **env)
 }
 
 static void parse_cmd(int argc, char *argv[],
-		      vector<interface_port> & ecoute, bool & verbose, bool & background, int & facility)
+		      vector<interface_port> & ecoute,
+		      bool & verbose,
+		      bool & background,
+		      int & facility,
+		      string & certificate,
+		      string & privateK)
 {
     int lu;
 	// prevents getopt to show a message when unknown option is met
@@ -342,7 +370,7 @@ static void parse_cmd(int argc, char *argv[],
     facility = LOG_USER;
     ecoute.clear();
 
-    while((lu = getopt(argc, argv, "vl:b" )) != -1)
+    while((lu = getopt(argc, argv, "vl:bC:K:" )) != -1)
     {
 	switch(lu)
 	{
@@ -356,6 +384,16 @@ static void parse_cmd(int argc, char *argv[],
 	    break;
 	case 'b':
 	    background = true;
+	    break;
+	case 'C':
+	    certificate = optarg;
+	    if(certificate.empty())
+		throw exception_range("-C option needs a filename");
+	    break;
+	case 'K':
+	    privateK = optarg;
+	    if(privateK.empty())
+		throw exception_range("-K option needs a filename");
 	    break;
 	case '?':
 	    cerr << "Ignoring Unknown argument given on command line: " << lu << endl;
@@ -378,7 +416,9 @@ static void parse_cmd(int argc, char *argv[],
 	if(argc < 1 || argv[0] == nullptr)
 	    throw WEBDAR_BUG;
 	else
-	    throw exception_range(std::string("Usage: ") + std::string(argv[0]) + std::string(" -l <IP:port> [-v] [-b]\n"));
+	    throw exception_range(std::string("Usage: ")
+				  + std::string(argv[0])
+				  + std::string(" -l <IP:port> [-v] [-b] [-C <certificate file> -K <private key file>]\n"));
     }
 
     if(background)
