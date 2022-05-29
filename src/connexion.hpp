@@ -29,23 +29,15 @@
 
     // webdar headers
 #include "exceptions.hpp"
+#include "proto_connexion.hpp"
 
-    /// class connexion - holds TCP sessions from clients
+    /// provides read/write implementation of a socket object
 
-    /// this class provide read/write access to a TCP connexion
-    /// and converts from block reading/writing to arbitrary byte amount
-    /// reading/writing.
-    /// \note it may support future evolution by mean of inherited class
-    /// that will provide for example ssl ciphering for example
+    /// \note used for http connections (non ssl/tls connections)
 
-class connexion
+class connexion : public proto_connexion
 {
 public:
-    enum status
-    {
-	connected,    //< both read and write are allowed
-	not_connected //< session is closed both directions
-    };
 
 	/// constructor: create a new object based on a existing socket filedescriptor
     connexion(int fd, const std::string & peerip, unsigned int peerport);
@@ -56,67 +48,24 @@ public:
     connexion & operator = (const connexion & ref) = delete;
     connexion & operator = (connexion && ref) noexcept = delete;
 
-	/// destructor is virtual to permit further evolution by mean of inherited classes
-    virtual ~connexion();
+	/// destructor
+    ~connexion();
 
-    status get_status() const { return etat; };
-    const std::string & get_ip() const { return ip; };
-    unsigned int get_port() const { return port; };
+protected:
 
-	/// extracts one byte form the buffer / exception thrown if not available
-    char read_one(bool blocking);
+	/// inherited from proto_connexion
+    virtual void write_impl(const char *a, unsigned int size) override;
 
-	/// gives the next char to be read, but do not remove it from the
-	/// reading buffer / throw exception if not available
-    char read_test_first(bool blocking);
+    	/// inherited from proto_connexion
+    virtual unsigned int read_impl(char *a, unsigned int size, bool blocking) override;
 
-	/// gives the second next char to be read, but do not remove it
-	/// from the reading buffer / throw exception if not available
-    char read_test_second(bool blocking);
-
-	/// write data to the socket
-
-	/// param[in] a data to write
-	/// param[in] size amount of byte to write
-    virtual void write(const char *a, unsigned int size);
-
-	/// flush pending writings
-    virtual void flush_write();
 
 private:
-    status etat;       //< connexion status
-    int filedesc;      //< socket file descriptor
-    std::string ip;    //< IP of the peer host
-    unsigned int port; //< port of the peer port
 
-	// buffer management for reading
-    unsigned buffer_size;      //< size of the buffer
-    char *buffer;              //< temporary area used for parsing, reading data FROM network
-    unsigned int already_read; //< amount of data already read
-    unsigned int data_size;    //< total of data in buffer, already read or not
-
-	// output buffer
-    unsigned out_buf_size;     //< allocated space for the output buffer (out_buf)
-    char *out_buf;             //< temporary areas used to gather bytes for writing
-    unsigned int last_unwrote; //< amount of byte pending for writing
-
+    int filedesc; ///< file descriptor to operate on
 
 	/// close the connexion
     void fermeture();
-
-	/// read data from the socket
-
-	/// \param[in] a where to store read data
-	/// \param[in] size width of the buffer pointed to by a
-	/// \param[in] blocking whether reading is blocking or not
-    unsigned int atomic_read(char *a, unsigned int size, bool blocking);
-
-
-	/// manages to get (read) data in buffer and set relative variables acordingly
-    void fill_buffer(bool blocking);
-
-	/// write out the given buffer to the socket
-    void atomic_write(const char *a, unsigned int size);
 
 };
 
