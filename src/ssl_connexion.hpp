@@ -48,11 +48,11 @@ public:
 	/// constructor: create a new object based on a existing socket filedescriptor
     ssl_connexion(int fd, SSL_CTX & ctx, const std::string & peerip, unsigned int peerport);
 
-	/// forbidding copy constuctor and assignment operator
+	/// copy is forbidden, move is allowed
     ssl_connexion(const ssl_connexion & ref) = delete;
-    ssl_connexion(ssl_connexion && ref) noexcept = delete;
+    ssl_connexion(ssl_connexion && ref) noexcept = default;
     ssl_connexion & operator = (const ssl_connexion & ref) = delete;
-    ssl_connexion & operator = (ssl_connexion && ref) noexcept = delete;
+    ssl_connexion & operator = (ssl_connexion && ref) noexcept = default;
 
 	/// destructor
     ~ssl_connexion();
