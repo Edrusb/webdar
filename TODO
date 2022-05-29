@@ -4,6 +4,7 @@ Here is the task to do to get ready for release 1.0.0
 - have compliance with HTTP/1.1, this work is mainly at the server class layer
   where a answer has to be added field and updated version depending on the
   corresponding request. See RFC in the RFC subdirectory
+- add stop condition for a listener and thus webdar process (GUI choice, CTRL-C)
 - check how to avoid muliple field validation (update buttons), and have the
   global action button to imply all fields update (more natural GUI interaction)
 - add viewport and associated fiels in the return HTML pages to be readable on
