@@ -51,13 +51,13 @@ public:
     ssl_context(const std::string & certificate, const std::string & privatekey);
 
 	/// forbidding copy, allowing move
-    ssl_context(const ssl_context & ref) = delete;
+    ssl_context(const ssl_context & ref) { copy_from(ref); };
     ssl_context(ssl_context && ref) noexcept = default;
-    ssl_context & operator = (const ssl_context & ref) = delete;
+    ssl_context & operator = (const ssl_context & ref) { drop(); copy_from(ref); return *this; };
     ssl_context & operator = (ssl_context && ref) noexcept = default;
 
 	/// destructor
-    ~ssl_context() { SSL_CTX_free(ctx); };
+    ~ssl_context() { drop(); };
 
     SSL_CTX & get_context() { return *ctx; };
 
@@ -68,6 +68,8 @@ private:
     static bool initialized;
     static void go_init_openssl();
 
+    void copy_from(const ssl_context & ref) { ctx = ref.ctx ; SSL_CTX_up_ref(ctx); };
+    void drop() { SSL_CTX_free(ctx); ctx = nullptr; };
 };
 
 #endif
