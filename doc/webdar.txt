@@ -63,7 +63,6 @@ ARCHITECTURE:
 
 POSSIBLE EVOLUTIONS:
       Room should be done for future evolutions:
-       - support for SSL between browser and webdar
        - support for other network protocols than FTP like FTP/SSL, etc.
          (using libcurl for example)
        - support for daemon mode and user priviledge management (with a
