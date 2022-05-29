@@ -50,11 +50,11 @@ public:
 	/// constructor
     ssl_context(const std::string & certificate, const std::string & privatekey);
 
-	/// forbidding copy constuctor and assignment operator
+	/// forbidding copy, allowing move
     ssl_context(const ssl_context & ref) = delete;
-    ssl_context(ssl_context && ref) noexcept = delete;
+    ssl_context(ssl_context && ref) noexcept = default;
     ssl_context & operator = (const ssl_context & ref) = delete;
-    ssl_context & operator = (ssl_context && ref) noexcept = delete;
+    ssl_context & operator = (ssl_context && ref) noexcept = default;
 
 	/// destructor
     ~ssl_context() { SSL_CTX_free(ctx); };
