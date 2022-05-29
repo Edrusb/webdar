@@ -73,7 +73,7 @@ to be tested/reviewed before release 1.0.0
 
 for future releases (after 1.0.0)
 ==================================
-- implement HTTPS (requiring a ceriticat from file given on webdar command-line)
++ implement HTTPS (requiring a ceriticat from file given on webdar command-line)
 - implement authentication method using the system users (define a command-line
   switch to select this mode or the original using random temporary password)
 - implement daemon mode, in which report goes to syslog and process detach
