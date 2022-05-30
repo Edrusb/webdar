@@ -222,7 +222,7 @@ public:
 
     void clear_html_classes() { html_class.clear(); };
     void add_html_class(const std::string & classname, bool inherit=false);
-    std::deque<std::string> get_html_classes() const;
+    std::deque<std::string> get_html_class_list() const;
 
 
 	/// inherit css properties and html classes from the given reference

@@ -683,7 +683,7 @@ void css::add_html_class(const string & classname, bool inherit)
     html_class[classname] = inherit;
 }
 
-deque<string> css::get_html_classes() const
+deque<string> css::get_html_class_list() const
 {
     deque<string> ret;
     map<string, bool>::const_iterator it = html_class.begin();
