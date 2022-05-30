@@ -39,7 +39,7 @@ extern "C"
 #include "request.hpp"
 #include "css.hpp"
 #include "chemin.hpp"
-
+#include "css_library.hpp"
 
 class body_builder : public css
 {
@@ -138,6 +138,30 @@ protected:
     std::string get_recorded_name() const;
 
 
+	/// let objects of inherited class to store a css_library that will be accessible from childrens
+
+	/// \note a child object, directly or indirectly (grand child, aso) will be
+	/// able to access and populate this css_library using the lookup_css_library() method
+    void store_css_library();
+
+	/// lookup toward registered parent body_builder object for the closest stored css_library
+
+	/// \note if neither the present object nor any of its parent stores an css_library,
+	/// the call unique_ptr is false (points to nullptr), else it points to the found css_library
+    std::unique_ptr<css_library> & lookup_css_library();
+
+	/// return the class specification to be inserted inline beside css style
+
+	/// \note this call also validate that the html_class exist in the css_library
+    std::string get_html_classes() const;
+
+	/// replace css properties by a class of given name
+
+	/// \param[in] classname, is the name of the css class to use
+	/// \param[in,out] the class will have all css parameters of ref and ref css properties
+	/// will be replaced by a css reference to the given class
+    void move_css_properties_to_html_class(const std::string & classname);
+
 	/// let a parent obtain the body part from one of its children given its official name and seen the path of the request
 	///
 	/// \param[in] path, this is the path exactly as received from the get_body_part call:
@@ -194,7 +218,7 @@ private:
     std::vector<body_builder *> order;
     std::map<std::string, body_builder *> children;
     std::map<body_builder *, std::string> revert_child;
-
+    std::unique_ptr<css_library> library;
 
 	/// unrecord 'this' from its parent as a adopted child
     void unrecord_from_parent();

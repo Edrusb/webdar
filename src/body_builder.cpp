@@ -175,6 +175,69 @@ string body_builder::get_recorded_name() const
 }
 
 
+void body_builder::store_css_library()
+{
+    if(library)
+	throw exception_range("A css_library is already stored for that body_builder object");
+    else
+	library.reset(new (nothrow) css_library());
+
+    if(!library)
+	throw exception_memory();
+}
+
+unique_ptr<css_library> & body_builder::lookup_css_library()
+{
+    if(library || parent == nullptr)
+	return library;
+    else return parent->lookup_css_library();
+}
+
+string body_builder::get_html_classes() const
+{
+    string ret = "";
+    deque<string> html_c = get_html_class_list();
+    deque<string>::iterator it = html_c.begin();
+    unique_ptr<css_library> & csslib = const_cast<body_builder*>(this)->lookup_css_library();
+    css tmp;
+
+    if(! html_c.empty() && !csslib)
+	throw exception_range("Cannot use class without css_library");
+
+    while(it != html_c.end())
+    {
+	if(csslib->get_value(*it, tmp))
+	{
+	    if(ret != "")
+		ret += " ";
+	    ret += *it;
+	}
+	else
+	    throw exception_range(string("Unknown html class referred: ") + *it);
+
+	++it;
+    }
+
+    if(! ret.empty())
+	ret = string("class=\"") + ret + string("\"");
+
+    return ret;
+}
+
+void body_builder::move_css_properties_to_html_class(const string & classname)
+{
+    css pure_css(*this);
+
+    unique_ptr<css_library> & csslib = lookup_css_library();
+
+    if(csslib)
+	csslib->add(classname, pure_css);
+    else
+	throw exception_range("Cannot cast css property to class without css_library");
+
+    css_clear_attributes();
+    add_html_class(classname);
+}
 
 string body_builder::get_body_part_from_target_child(const chemin & path,
 						     const request & req)
