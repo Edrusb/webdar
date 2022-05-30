@@ -32,6 +32,8 @@ extern "C"
 
     // C++ system header files
 #include <string>
+#include <deque>
+#include <map>
 
     // webdar headers
 #include "css_property.hpp"
@@ -216,8 +218,14 @@ public:
     void css_border_style(border which, bd_style val, bool inherit=false);
     void css_border_style() { border_style.clear(); };
 
+	// HTML classes
 
-	/// inherit properties from the given reference
+    void clear_html_classes() { html_class.clear(); };
+    void add_html_class(const std::string & classname, bool inherit=false);
+    std::deque<std::string> get_html_classes() const;
+
+
+	/// inherit css properties and html classes from the given reference
 	///
 	/// \param[in] ref from which to inherit properties
 	/// \param[in] all if true even properties of "ref" having inheritance unset are taken into account
@@ -284,6 +292,11 @@ private:
     css_property border_width;
     css_property border_color;
     css_property border_style;
+
+	// html_class properties
+
+	/// maps classname (string) to its inherit (bool) property
+    std::map<std::string, bool> html_class;
 
     std::string border_to_string(border val);
 };

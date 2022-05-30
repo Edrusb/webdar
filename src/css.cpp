@@ -597,6 +597,20 @@ void css::css_inherit_from(const css & ref, bool all, bool force)
     border_color.inherit_from(ref.border_color, all, force);
     border_style.inherit_from(ref.border_style, all, force);
 
+    map<string, bool>::const_iterator refit = ref.html_class.begin();
+    map<string, bool>::iterator it;
+
+    while(refit != ref.html_class.end())
+    {
+	it = html_class.find(refit->first);
+
+	if(force || (it == html_class.end() && refit->second))
+	{
+	    html_class[refit->first] = refit->second;
+	}
+	++refit;
+    }
+
     css_updated(true);
 }
 
@@ -664,6 +678,24 @@ string css::css_get_string() const
     return ret;
 }
 
+void css::add_html_class(const string & classname, bool inherit)
+{
+    html_class[classname] = inherit;
+}
+
+deque<string> css::get_html_classes() const
+{
+    deque<string> ret;
+    map<string, bool>::const_iterator it = html_class.begin();
+
+    while(it != html_class.end())
+    {
+	ret.push_back(it->first);
+	++it;
+    }
+
+    return ret;
+}
 
 string css::border_to_string(border val)
 {
