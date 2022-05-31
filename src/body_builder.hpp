@@ -105,6 +105,13 @@ public:
 	/// what the future but still non acknoledged visible status
     bool get_next_visible() const { return next_visible; };
 
+    	/// replace css properties by a class of given name
+
+	/// \param[in] classname, is the name of the css class to use
+	/// \param[in,out] the class will have all css parameters of ref and ref css properties
+	/// will be replaced by a css reference to the given class
+    void move_css_properties_to_html_class(const std::string & classname);
+
 	/// ask the object to provide a part of the body to answer the request
 	///
 	/// \param[in] path is the full path, but the path.index points to the asked object name
@@ -154,13 +161,6 @@ protected:
 
 	/// \note this call also validate that the html_class exist in the css_library
     std::string get_html_classes() const;
-
-	/// replace css properties by a class of given name
-
-	/// \param[in] classname, is the name of the css class to use
-	/// \param[in,out] the class will have all css parameters of ref and ref css properties
-	/// will be replaced by a css reference to the given class
-    void move_css_properties_to_html_class(const std::string & classname);
 
 	/// let a parent obtain the body part from one of its children given its official name and seen the path of the request
 	///
