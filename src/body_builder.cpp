@@ -233,7 +233,7 @@ void body_builder::move_css_properties_to_html_class(const string & classname)
     if(csslib)
 	csslib->add(classname, pure_css);
     else
-	throw exception_range("Cannot cast css property to class without css_library");
+	throw exception_range("Cannot store css property as html class without css_library");
 
     css_clear_attributes();
     add_html_class(classname);
