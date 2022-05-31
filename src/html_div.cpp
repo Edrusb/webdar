@@ -43,7 +43,7 @@ using namespace std;
 string html_div::get_body_part(const chemin & path,
 			       const request & req)
 {
-    string ret = "<div " + css_get_string() + ">\n";
+    string ret = "<div " + css_get_string() + " " + get_html_classes() + ">\n";
 
     if(get_visible() || get_next_visible())
     {
