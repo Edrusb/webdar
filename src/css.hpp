@@ -49,7 +49,11 @@ public:
     css & operator = (css && ref) noexcept = default;
     virtual ~css() {};
 
+	/// set css attributes to their default
     void css_clear_attributes();
+
+	/// clear all html classes
+    void clear_html_classes() { html_class.clear(); };
 
 	// colors
 
@@ -220,8 +224,10 @@ public:
 
 	// HTML classes
 
-    void clear_html_classes() { html_class.clear(); };
+	/// all css attributes contained in class will be applicable to the object as if it had those attributes
     void add_html_class(const std::string & classname, bool inherit=false);
+
+	/// get the list of html classes this object has
     std::deque<std::string> get_html_class_list() const;
 
 
