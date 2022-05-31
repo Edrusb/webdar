@@ -42,7 +42,7 @@ extern "C"
 class html_page : public html_level
 {
 public:
-    html_page(const std::string & title = "") { x_title = title; };
+    html_page(const std::string & title = "") { x_title = title; store_css_library(); };
     html_page(const html_page & ref) = default;
     html_page(html_page && ref) noexcept = default;
     html_page & operator = (const html_page & ref) = default;

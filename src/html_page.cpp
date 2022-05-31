@@ -64,14 +64,29 @@ string html_page::get_body_part_given_the_body(const chemin & path,
 					       const std::string & body)
 {
     string ret = "";
+    unique_ptr<css_library> & csslib = lookup_css_library();
+
+    if(!csslib)
+	throw WEBDAR_BUG;
 
     ret += "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n";
     ret += "<html " + css_get_string();
     ret += ">\n<head>\n<title>\n";
     ret += x_title + "\n";
     ret += "</title>\n";
+    ret += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n";
+    ret += "<meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"content-type\">\n";
+
+    if(csslib->size() > 0)
+    {
+	ret += "<style>\n";
+	ret += csslib->generate_internal_css() + "\n";
+	ret += "</style>\n";
+    }
+
     if(redirect != "")
 	ret += redirect + "\n";
+
     ret += "</head>\n<body ";
     ret += css_get_string() + ">\n";
     ret += body;
