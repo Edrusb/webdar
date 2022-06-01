@@ -74,6 +74,13 @@ void css::css_clear_attributes()
     border_width.clear();
     border_color.clear();
     border_style.clear();
+
+    map<string, css_property>::iterator it = custom_css.begin();
+    while(it != custom_css.end())
+    {
+	it->second.clear();
+	++it;
+    }
 }
 
 void css::css_color(const string & col,
@@ -597,6 +604,27 @@ void css::css_inherit_from(const css & ref, bool all, bool force)
     border_color.inherit_from(ref.border_color, all, force);
     border_style.inherit_from(ref.border_style, all, force);
 
+	// custom css inheritance
+
+    map<string, css_property>::const_iterator crefit = ref.custom_css.begin();
+    map<string, css_property>::iterator cit;
+
+    while(crefit != ref.custom_css.end())
+    {
+	cit = custom_css.find(crefit->first);
+	if(cit != custom_css.end())
+	    cit->second.inherit_from(crefit->second, all, force);
+	else
+	{
+	    if(crefit->second.get_inheritance() || all)
+		custom_css[crefit->first] = crefit->second;
+	}
+	++crefit;
+    }
+
+
+	// html classes inheritance
+
     map<string, bool>::const_iterator refit = ref.html_class.begin();
     map<string, bool>::iterator it;
 
@@ -665,6 +693,14 @@ string css::css_get_raw_string() const
     ret += border_color.get_value();
     ret += border_style.get_value();
 
+    map<string, css_property>::const_iterator it = custom_css.begin();
+
+    while(it != custom_css.end())
+    {
+	ret += it->second.get_value();
+	++it;
+    }
+
     return ret;
 }
 
@@ -676,6 +712,38 @@ string css::css_get_string() const
 	ret = "style=\"" + ret + "\"";
 
     return ret;
+}
+
+void css::declare_custom_css(const string & label)
+{
+    map<string, css_property>::iterator it = custom_css.find(label);
+
+    if(it != custom_css.end())
+	throw exception_range(string("custom_css already declared for this css object: ") + label);
+
+    custom_css[label] = css_property();
+}
+
+void css::set_custom_css(const string & label, const string & val, bool inherit)
+{
+    map<string, css_property>::iterator it = custom_css.find(label);
+
+    if(it == custom_css.end())
+	throw exception_range(string("cannot set an undeclared custom css: ") + label);
+
+    it->second.set_value(val);
+    it->second.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
+void css::clear_custom_css(const string & label)
+{
+    map<string, css_property>::iterator it = custom_css.find(label);
+
+    if(it == custom_css.end())
+	throw exception_range(string("cannot set an undeclared custom css: ") + label);
+
+    it->second.clear();
 }
 
 void css::add_html_class(const string & classname, bool inherit)

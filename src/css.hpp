@@ -47,7 +47,7 @@ public:
     css(css && ref) noexcept = default;
     css & operator = (const css & ref) = default;
     css & operator = (css && ref) noexcept = default;
-    virtual ~css() {};
+    virtual ~css() = default;
 
 	/// set css attributes to their default
     void css_clear_attributes();
@@ -253,6 +253,22 @@ protected:
 	// \param[in] inherit is set to true if the modified property has inheritance set
     virtual void css_updated(bool inherited) {};
 
+    	/// custom css properties, method available for inherited classes
+
+	/// \note storing css properties par this css parent class
+	/// lead them to be integrated in the css_get_string/css_get_raw_string methods
+	/// they also can be abstracted to html class by body builder derived class
+
+	/// note, that this provided label must not have already been declared previously on that css
+    void declare_custom_css(const std::string & label);
+
+	/// set value to a previously declared custom css
+    void set_custom_css(const std::string & label, const std::string & val, bool inherit=false);
+
+	/// unset value of a previously declared custom css
+    void clear_custom_css(const std::string & label);
+
+
 private:
 
 	// colors properties
@@ -298,6 +314,9 @@ private:
     css_property border_width;
     css_property border_color;
     css_property border_style;
+
+	// custom css
+    std::map<std::string, css_property> custom_css;
 
 	// html_class properties
 
