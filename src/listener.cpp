@@ -184,7 +184,7 @@ void listener::inherited_run()
     struct sockaddr_in6 sin6;
     string ip;
     unsigned int port;
-    unique_ptr<connexion> con;
+    unique_ptr<proto_connexion> con;
 
     rep->report(debug, "listener object: started in its own thread");
 

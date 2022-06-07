@@ -36,10 +36,10 @@
 
     /// class listener
     ///
-    /// listen to the defined TCP port for new connexions.
-    /// Upon new connexion, it builds connexion objects
+    /// listen to the defined TCP port for new proto_connexions.
+    /// Upon new proto_connexion, it builds proto_connexion objects
     /// and assign it to a new server object that will
-    /// manage incoming request on this connexion accordingly
+    /// manage incoming request on this proto_connexion accordingly
 
 
 class listener : public libthreadar::thread

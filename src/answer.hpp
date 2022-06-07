@@ -38,9 +38,9 @@ extern "C"
 #include "uri.hpp"
 #include "webdar_tools.hpp"
 #include "exceptions.hpp"
-#include "connexion.hpp"
+#include "proto_connexion.hpp"
 
-    /// class answer provides easy means to set an HTTP answer and means to sent it back to a connexion object
+    /// class answer provides easy means to set an HTTP answer and means to sent it back to a proto_connexion object
 
     /// \note the main consumers of class answer are responder class and its inherited classes
 
@@ -119,7 +119,7 @@ public:
     bool find_attribute(const std::string & key, std::string & value) const;
 
 	/// send the answer
-    void write(connexion & output);
+    void write(proto_connexion & output);
 
 private:
     unsigned int status;
