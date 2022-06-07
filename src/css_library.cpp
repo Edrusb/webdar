@@ -49,6 +49,13 @@ void css_library::add(const string & name, const css & value)
 	throw exception_range(string("label ") + name + string(" already present in this css_library\n"));
 }
 
+bool css_library::class_exists(const std::string & name) const
+{
+    css stored_value;
+
+    return get_value(name, stored_value);
+}
+
 bool css_library::get_value(const string & name, css & stored_value) const
 {
     map<string, css>::const_iterator it = content.find(name);

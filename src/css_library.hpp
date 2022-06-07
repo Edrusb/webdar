@@ -48,6 +48,7 @@ public:
     ~css_library() = default;
 
     void add(const std::string & name, const css & value);
+    bool class_exists(const std::string & name) const;
     bool get_value(const std::string & name, css & stored_value) const;
     void del(const std::string & name);
     unsigned int size() const { return content.size(); };
