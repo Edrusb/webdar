@@ -64,13 +64,17 @@ string html_page::get_body_part_given_the_body(const chemin & path,
 					       const std::string & body)
 {
     string ret = "";
+    string aux;
     unique_ptr<css_library> & csslib = lookup_css_library();
 
     if(!csslib)
 	throw WEBDAR_BUG;
 
     ret += "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n";
-    ret += "<html " + css_get_string();
+    ret += "<html";
+    aux = css_get_string();
+    if(! aux.empty())
+	ret += " " + aux;
     ret += ">\n<head>\n<title>\n";
     ret += x_title + "\n";
     ret += "</title>\n";
@@ -78,17 +82,22 @@ string html_page::get_body_part_given_the_body(const chemin & path,
     ret += "<meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"content-type\">\n";
 
     if(csslib->size() > 0)
-    {
-	ret += "<style>\n";
-	ret += csslib->generate_internal_css() + "\n";
-	ret += "</style>\n";
-    }
+	ret += csslib->generate_internal_css();
 
     if(redirect != "")
 	ret += redirect + "\n";
 
-    ret += "</head>\n<body ";
-    ret += css_get_string() + ">\n";
+    ret += "</head>\n<body";
+
+    aux = css_get_string();
+    if(! aux.empty())
+	ret += " " + aux;
+
+    aux = get_html_classes();
+    if(! aux.empty())
+	ret += " " + aux;
+
+    ret += ">\n";
     ret += body;
     ret += "</body>\n</html>\n";
 
