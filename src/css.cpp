@@ -748,7 +748,12 @@ void css::clear_custom_css(const string & label)
 
 void css::add_html_class(const string & classname, bool inherit)
 {
-    html_class[classname] = inherit;
+    map<string, bool>::iterator it = html_class.find(classname);
+
+    if(it == html_class.end())
+	html_class[classname] = inherit;
+    else
+	throw exception_range(string("class already assigned: ") + classname);
 }
 
 deque<string> css::get_html_class_list() const
