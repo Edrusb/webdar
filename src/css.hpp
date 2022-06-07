@@ -227,6 +227,9 @@ public:
 	/// all css attributes contained in class will be applicable to the object as if it had those attributes
     void add_html_class(const std::string & classname, bool inherit=false);
 
+	/// remove an already assigned class to this object
+    void remove_html_class(const std::string & classname);
+
 	/// get the list of html classes this object has
     std::deque<std::string> get_html_class_list() const;
 

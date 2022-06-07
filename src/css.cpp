@@ -756,6 +756,18 @@ void css::add_html_class(const string & classname, bool inherit)
 	throw exception_range(string("class already assigned: ") + classname);
 }
 
+void css::remove_html_class(const string & classname)
+{
+    map<string, bool>::iterator it = html_class.find(classname);
+
+    if(it != html_class.end())
+	html_class.erase(it);
+    else
+	throw exception_range(string("cannot remove unassigned class: ") + classname);
+}
+
+
+
 deque<string> css::get_html_class_list() const
 {
     deque<string> ret;
