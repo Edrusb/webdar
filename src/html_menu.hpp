@@ -99,6 +99,9 @@ protected:
 	/// inherited from body_builder
     virtual void path_has_changed() override;
 
+    	/// inherited from body_builder
+    virtual void has_been_adopted_by(body_builder *obj) override;
+
 	/// inherited from css (grand-parent class)
     virtual void css_updated(bool inherit) override;
 
@@ -123,6 +126,11 @@ private:
     html_url_class url_selected; //< links when box selected
     html_url_class url_normal;   //< links when box no selected
 
+    static const std::string box_off_class;
+    static const std::string box_on_class;
+    static const std::string box_void_class;
+    static const std::string url_selected_class;
+    static const std::string url_normal_class;
 };
 
 #endif

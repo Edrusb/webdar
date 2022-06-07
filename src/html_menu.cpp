@@ -42,6 +42,12 @@ using namespace std;
 
 const string html_menu::changed = "html_menu_changed";
 
+const string html_menu::box_off_class = "html_menu_box_off";
+const string html_menu::box_on_class = "html_menu_box_on";
+const string html_menu::box_void_class = "html_menu_box_void";
+const string html_menu::url_selected_class = "url_selected";
+const string html_menu::url_normal_class = "url_normal";
+
 html_menu::html_menu()
 {
     css tmp_set;
@@ -144,12 +150,12 @@ void html_menu::add_entry(const std::string & reference, const std::string & lab
     item.push_back(box);
 
     box->value = reference;
-    box->inside.css_border_style(css::bd_all, css::bd_none);
+//    box->inside.css_border_style(css::bd_all, css::bd_none);
     box->inside.set_class(url_normal.get_class_id());
     if(label != "")
-	box->surround.css_inherit_from(box_off);
+	box->surround.add_html_class(box_off_class);
     else
-	box->surround.css_inherit_from(box_void);
+	box->surround.add_html_class(box_void_class);
     box->surround.set_no_CR();
 
 	/// building the body_builder tree
@@ -179,14 +185,19 @@ void html_menu::set_current_mode(unsigned int mode)
 	/// all is fine, we can go on modifying the objects
 
     if(item[current_mode]->inside.get_label() == "")
-	item[current_mode]->surround.css_inherit_from(box_void, false, true);
+    {
+	item[current_mode]->surround.clear_html_classes();
+	item[current_mode]->surround.add_html_class(box_void_class, true);
+    }
     else
     {
-	item[current_mode]->surround.css_inherit_from(box_off, false, true);
+	item[current_mode]->surround.clear_html_classes();
+	item[current_mode]->surround.add_html_class(box_off_class, true);
 	item[current_mode]->inside.set_class(url_normal.get_class_id());
     }
 
-    item[mode]->surround.css_inherit_from(box_on, false, true);
+    item[mode]->surround.clear_html_classes();
+    item[mode]->surround.add_html_class(box_on_class, true);
     item[mode]->inside.set_class(url_selected.get_class_id());
     if(has_changed)
     {
@@ -278,6 +289,23 @@ void html_menu::path_has_changed()
 
     if(item.size() > 0)
 	set_current_mode(current_mode);
+}
+
+void html_menu::has_been_adopted_by(body_builder *obj)
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+
+    	// optimizing HTML code by avoiding duplicating CSS replacing it by HTML classes
+
+    if(csslib && ! csslib->class_exists(box_on_class))
+    {
+	csslib->add(box_on_class, box_on);
+	csslib->add(box_off_class, box_off);
+	csslib->add(box_void_class, box_void);
+	box_on.css_clear_attributes();
+	box_off.css_clear_attributes();
+	box_void.css_clear_attributes();
+    }
 }
 
 void html_menu::css_updated(bool inherit)
