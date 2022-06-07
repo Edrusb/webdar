@@ -29,15 +29,19 @@ CXXFLAGS=-ggdb -static -Wall `pkg-config --cflags openssl` `pkg-config --cflags 
 LDFLAGS=-ggdb -lstdc++ `pkg-config --libs openssl` `pkg-config --libs libdar64` `pkg-config --libs libthreadar`
 LIBDAR_OBJ=
 
-OBJ=webdar.o central_report.o proto_connexion.o connexion.o ssl_connexion.o ssl_context.o exceptions.o listener.o parser.o webdar_tools.o server.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o css_library.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o html_menu.o  html_aiguille.o saisie.o user_interface.o events.o actor.o reference.o html_url_class.o html_yes_no_box.o html_options_extract.o html_options_read.o html_crypto_algo.o html_comparison_fields.o html_options_compare.o html_options_test.o html_archive_read.o html_compression.o html_size_unit.o html_hash_algo.o html_datetime.o html_options_create.o html_archive_create.o web_user_interaction.o html_web_user_interaction.o html_button.o html_statistics.o archive_test.o webdar_css_style.o html_error.o html_libdar_running.o archive_restore.o archive_compare.o archive_create.o html_options_isolate.o archive_isolate.o html_archive_isolate.o html_options_merge.o html_archive_merge.o archive_merge.o archive_init_list.o html_dir_tree.o html_listing_page.o html_focus.o static_object.o static_object_library.o $(LIBDAR_OBJ)
+OBJ=central_report.o proto_connexion.o connexion.o ssl_connexion.o ssl_context.o exceptions.o listener.o parser.o webdar_tools.o server.o uri.o session.o date.o request.o answer.o tokens.o base64.o challenge.o choose.o css.o css_library.o html_text.o html_page.o html_table.o html_image.o html_url.o error_page.o html_form.o html_form_fieldset.o html_form_input.o html_form_radio.o html_form_select.o body_builder.o chemin.o css_property.o html_level.o html_div.o html_menu.o  html_aiguille.o saisie.o user_interface.o events.o actor.o reference.o html_url_class.o html_yes_no_box.o html_options_extract.o html_options_read.o html_crypto_algo.o html_comparison_fields.o html_options_compare.o html_options_test.o html_archive_read.o html_compression.o html_size_unit.o html_hash_algo.o html_datetime.o html_options_create.o html_archive_create.o web_user_interaction.o html_web_user_interaction.o html_button.o html_statistics.o archive_test.o webdar_css_style.o html_error.o html_libdar_running.o archive_restore.o archive_compare.o archive_create.o html_options_isolate.o archive_isolate.o html_archive_isolate.o html_options_merge.o html_archive_merge.o archive_merge.o archive_init_list.o html_dir_tree.o html_listing_page.o html_focus.o static_object.o static_object_library.o pipe_connexion.o $(LIBDAR_OBJ)
 
-all: webdar
+all: webdar test_webdar
 
 clean:
 	rm -f *.o webdar static_object_builder static_object.sto
 
-webdar: $(OBJ)
-	$(CXX) $(OBJ) $(LDFLAGS) -o $@
+webdar: $(OBJ) webdar.o
+	$(CXX) webdar.o $(OBJ) $(LDFLAGS) -o $@
+
+test_webdar: $(OBJ) test_webdar.o
+	$(CXX) $(OBJ) test_webdar.o $(LDFLAGS) -o $@
+
 
 actor.o : actor.cpp actor.hpp
 answer.o : answer.cpp answer.hpp
@@ -125,6 +129,9 @@ user_interface.o : user_interface.cpp user_interface.hpp
 webdar_css_style.o : webdar_css_style.cpp webdar_css_style.hpp
 webdar_tools.o : webdar_tools.cpp webdar_tools.hpp
 web_user_interaction.o : web_user_interaction.cpp web_user_interaction.hpp
+webdar.o: webdar.cpp
+test_webdar.o : test_webdar.cpp
+pipe_connexion.o : pipe_connexion.cpp pipe_connexion.hpp
 
 static_object_library.o : static_object_library.cpp static_object.sto
 
