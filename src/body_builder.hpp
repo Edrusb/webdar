@@ -194,6 +194,12 @@ protected:
 	/// Be informed that a child has been foresaken
     virtual void has_been_foresaken(body_builder *obj) {};
 
+	/// Be informed we have been adopted by obj the parent
+    virtual void has_been_adopted_by(body_builder *obj) {};
+
+	/// Be informed we have been foresaken by obj, our former parent
+    virtual void has_been_foresaken_by(body_builder *obj) {};
+
 	/// access to adopted childs
     unsigned int size() const { return order.size(); };
 

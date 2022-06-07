@@ -102,9 +102,10 @@ void body_builder::adopt(body_builder *obj)
     order.push_back(obj);
     children[new_name] = obj;
     revert_child[obj] = new_name;
+    has_been_adopted(obj);
     obj->parent = this;
     obj->recursive_path_has_changed();
-    has_been_adopted(obj);
+    obj->has_been_adopted_by(this);
 }
 
 void body_builder::foresake(body_builder *obj)
@@ -117,6 +118,10 @@ void body_builder::foresake(body_builder *obj)
 
     if(ot == order.end()) // object not found in the ordered list
 	throw WEBDAR_BUG;
+
+    obj->recursive_path_has_changed();
+    obj->has_been_foresaken_by(this);
+    has_been_foresaken(obj);
 
     if(rit != revert_child.end())
     {
@@ -137,8 +142,6 @@ void body_builder::foresake(body_builder *obj)
     }
     else
 	throw WEBDAR_BUG; // object known in the ordered list but unknown by the revert_child map
-    obj->recursive_path_has_changed();
-    has_been_foresaken(obj);
 }
 
 chemin body_builder::get_path() const
