@@ -29,6 +29,7 @@
 #include <dar/libdar.hpp>
 #include <libthreadar/libthreadar.hpp>
 
+#include "html_page.hpp"
 #include "html_menu.hpp"
 #include "pipe_connexion.hpp"
 
@@ -55,13 +56,15 @@ int main(int argc, char *argv[])
 	request req(rep);
 	req.read(cnx);
 
+	html_page page("mon titre");
 	html_menu menu;
+	page.adopt(&menu);
 	menu.add_entry("action 1", "coucou");
 	menu.add_entry("action 2", "coucou2");
 	menu.add_entry("","");
 	menu.add_entry("action 3", "coucou3");
 
-	cout << menu.get_body_part(chem, req) << endl;
+	cout << page.get_body_part(chem, req) << endl;
     }
     catch(exception_base & e)
     {
