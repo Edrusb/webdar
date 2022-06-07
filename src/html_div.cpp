@@ -43,12 +43,22 @@ using namespace std;
 string html_div::get_body_part(const chemin & path,
 			       const request & req)
 {
-    string ret = "<div " + css_get_string() + " " + get_html_classes() + ">\n";
+    string ret = css_get_string();
+
+    if(ret.empty())
+	ret = get_html_classes();
+    else
+	ret += " " + get_html_classes();
+
+    if(ret.empty())
+	ret = "<div>\n";
+    else
+	ret = "<div " +  ret + ">\n";
 
     if(get_visible() || get_next_visible())
     {
 	ret += get_body_part_from_children_as_a_block(path, req);
-	ret += "\n</div>\n";
+	ret += "</div>\n";
     }
     ack_visible();
     if(!get_visible())
