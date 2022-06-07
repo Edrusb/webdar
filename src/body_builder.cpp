@@ -229,12 +229,10 @@ string body_builder::get_html_classes() const
 
 void body_builder::move_css_properties_to_html_class(const string & classname)
 {
-    css pure_css(*this);
-
     unique_ptr<css_library> & csslib = lookup_css_library();
 
     if(csslib)
-	csslib->add(classname, pure_css);
+	csslib->add(classname, *this);
     else
 	throw exception_range("Cannot store css property as html class without css_library");
 
