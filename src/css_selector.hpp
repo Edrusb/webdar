@@ -49,6 +49,7 @@ public:
     ~css_selector() = default;
 };
 
+    // including C++ generated code for classes inherited from css_selector
 #include "css_selector_subtypes.hpp"
 
 #endif
