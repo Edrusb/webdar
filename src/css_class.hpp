@@ -57,6 +57,9 @@ public:
 	/// returns the css class definition
     std::string get_definition() const;
 
+protected:
+    virtual std::string convert_name(const std::string & name) const { return "." + name; };
+
 private:
     std::string class_name;
     std::string class_value;

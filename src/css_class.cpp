@@ -48,7 +48,7 @@ css_class::css_class(const std::string & name):
 
 string css_class::get_definition() const
 {
-    string ret = "."+class_name;
+    string ret = convert_name(class_name);
 
     if(class_value.empty())
 	throw WEBDAR_BUG;
