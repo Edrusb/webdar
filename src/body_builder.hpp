@@ -37,11 +37,10 @@ extern "C"
 
     // webdar headers
 #include "request.hpp"
-#include "css.hpp"
 #include "chemin.hpp"
 #include "css_library.hpp"
 
-class body_builder : public css
+class body_builder
 {
 public:
 	/// constructor
@@ -105,13 +104,6 @@ public:
 	/// what the future but still non acknoledged visible status
     bool get_next_visible() const { return next_visible; };
 
-    	/// replace css properties by a class of given name
-
-	/// \param[in] classname, is the name of the css class to use
-	/// \param[in,out] the class will have all css parameters of ref and ref css properties
-	/// will be replaced by a css reference to the given class
-    void move_css_properties_to_html_class(const std::string & classname);
-
 	/// ask the object to provide a part of the body to answer the request
 	///
 	/// \param[in] path is the full path, but the path.index points to the asked object name
@@ -157,11 +149,6 @@ protected:
 	/// the call unique_ptr is false (points to nullptr), else it points to the found css_library
     std::unique_ptr<css_library> & lookup_css_library();
 
-	/// return the list of html class to be inserted inline beside css style
-
-	/// \note this call also validate that the html_class exist in the css_library
-    std::string check_and_get_html_class_list_in_css() const;
-
 	/// let a parent obtain the body part from one of its children given its official name and seen the path of the request
 	///
 	/// \param[in] path, this is the path exactly as received from the get_body_part call:
@@ -185,24 +172,38 @@ protected:
     std::string get_body_part_from_all_children(const chemin & path,
 						const request & req);
 
-	/// For inherited class, called when the path has changed, tipically when this object has been adopted or foresaken, or a parent did
+	/// For inherited classes, called when the path has changed,
+
+	/// \note tipically this is when this object has been adopted or foresaken
     virtual void path_has_changed() {};
 
 	/// Be informed that a new child has been adopted
-    virtual void has_been_adopted(body_builder *obj) {};
+    virtual void has_adopted(body_builder *obj) {};
 
-	/// Be informed that a child has been foresaken
-    virtual void has_been_foresaken(body_builder *obj) {};
+	/// Be informed that a child is about to be foresaken
+    virtual void will_foresake(body_builder *obj) {};
 
-	/// Be informed we have been adopted by obj the parent
+	/// Be informed that we have been adopted by obj, our new parent
     virtual void has_been_adopted_by(body_builder *obj) {};
 
-	/// Be informed we have been foresaken by obj, our former parent
-    virtual void has_been_foresaken_by(body_builder *obj) {};
+	/// Be informed that we are about to be foresaken by obj, our soon former parent
+    virtual void will_be_foresaken_by(body_builder *obj) {};
+
+	/// run when a css_library becomes available
+
+	/// \note this triger is as soon as a css_library is available (locally added or added in a ancestor or due to adoption)
+	/// \node the returned css_class deque are recorded if not already existing in the available css_library
+	/// and the list of class name are stored for that object and available to inherited classes
+	/// thanks to the get_class_names() method
+    virtual std::deque<css_class> record_classes() { return std::deque<css_class>(); };
+
+	/// provide to inherited class the list of css_class names this object has recorded (and is expected to use)
+    const std::set<std::string> & get_class_names() const { return css_class_names; };
 
 	/// access to adopted childs
     unsigned int size() const { return order.size(); };
 
+	/// access to adopted childs
     body_builder *operator[] (unsigned int i) { return order[i]; };
 
 	/// orphan all adopted children
@@ -220,11 +221,12 @@ private:
     bool next_visible;
     chemin x_prefix;
     bool no_CR;
-    body_builder *parent;
-    std::vector<body_builder *> order;
-    std::map<std::string, body_builder *> children;
-    std::map<body_builder *, std::string> revert_child;
+    body_builder *parent;                               ///< our parent if we get adopted
+    std::vector<body_builder *> order;                  ///< children by order or adoption
+    std::map<std::string, body_builder *> children;     ///< children and their name
+    std::map<body_builder *, std::string> revert_child; ///< revert map to get name of a child
     std::unique_ptr<css_library> library;
+    std::set<std::string> css_class_names;
 
 	/// unrecord 'this' from its parent as a adopted child
     void unrecord_from_parent();
@@ -232,8 +234,14 @@ private:
 	/// inform children and all their descendant children that the path has changed calling their path_has_changed() method
     void recursive_path_has_changed();
 
+	/// ask inherited class to provide its css_classes
+    void ask_to_record_classes();
+
+	/// ask children and their descendants to record their classes
+    void recursive_ask_to_record_classes();
+
 	/// (re)initialize fields to default sane values
-    void clear() { parent = nullptr; order.clear(); children.clear(); revert_child.clear(); visible = true ; next_visible = true; no_CR = false; };
+    void clear();
 };
 
 #endif

@@ -53,18 +53,15 @@ body_builder::body_builder(const body_builder & ref)
 
 body_builder & body_builder::operator = (const body_builder & ref)
 {
-    css *me = this;
-    const css *you = & ref;
-
-    if(parent != nullptr || !order.empty() || !children.empty() || !revert_child.empty())
+    if(parent != nullptr || !order.empty() || !children.empty() || !revert_child.empty() || library)
 	throw WEBDAR_BUG;
-    if(ref.parent != nullptr || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty())
+    if(ref.parent != nullptr || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty() || ref.library)
 	throw WEBDAR_BUG;
 
-    *me = *you; // copying the ancestor class fields
     visible = ref.visible;
     next_visible = ref.next_visible;
     no_CR = ref.no_CR;
+    css_class_names.clear();
 
     return *this;
 }
@@ -82,15 +79,16 @@ void body_builder::adopt(body_builder *obj)
     if(obj == nullptr)
 	throw WEBDAR_BUG;
 
+    bool already_had_css_lib = obj->lookup_css_library().get() != nullptr;
     string new_name;
     map<string, body_builder *>::iterator it;
     map<body_builder *, string>::iterator rit = revert_child.find(obj);
 
     if(rit != revert_child.end())
-	throw WEBDAR_BUG; // object already recorded
+	throw WEBDAR_BUG; // object already recorded / adopted
 
     if(obj->parent != nullptr)
-	throw WEBDAR_BUG; // object already recorded in another parent
+	throw WEBDAR_BUG; // object already recorded by another parent
 
     do
     {
@@ -102,10 +100,15 @@ void body_builder::adopt(body_builder *obj)
     order.push_back(obj);
     children[new_name] = obj;
     revert_child[obj] = new_name;
-    has_been_adopted(obj);
     obj->parent = this;
     obj->recursive_path_has_changed();
+    has_adopted(obj);
     obj->has_been_adopted_by(this);
+
+	// if a css_library is available to the child thanks to the adoption
+	// we trigger all the child lineage to record its css_classes
+    if(! already_had_css_lib && obj->lookup_css_library())
+	obj->recursive_ask_to_record_classes();
 }
 
 void body_builder::foresake(body_builder *obj)
@@ -120,8 +123,8 @@ void body_builder::foresake(body_builder *obj)
 	throw WEBDAR_BUG;
 
     obj->recursive_path_has_changed();
-    obj->has_been_foresaken_by(this);
-    has_been_foresaken(obj);
+    obj->will_be_foresaken_by(this);
+    will_foresake(obj);
 
     if(rit != revert_child.end())
     {
@@ -187,6 +190,8 @@ void body_builder::store_css_library()
 
     if(!library)
 	throw exception_memory();
+
+    recursive_ask_to_record_classes();
 }
 
 unique_ptr<css_library> & body_builder::lookup_css_library()
@@ -194,50 +199,6 @@ unique_ptr<css_library> & body_builder::lookup_css_library()
     if(library || parent == nullptr)
 	return library;
     else return parent->lookup_css_library();
-}
-
-string body_builder::check_and_get_html_class_list_in_css() const
-{
-    string ret = "";
-    deque<string> html_c = get_html_class_list();
-    deque<string>::iterator it = html_c.begin();
-    unique_ptr<css_library> & csslib = const_cast<body_builder*>(this)->lookup_css_library();
-    string tmp;
-
-    if(! html_c.empty() && !csslib)
-	throw exception_range("Cannot use class without css_library");
-
-    while(it != html_c.end())
-    {
-	if(csslib->get_value(*it, tmp))
-	{
-	    if(ret != "")
-		ret += " ";
-	    ret += *it;
-	}
-	else
-	    throw exception_range(string("Unknown html class referred: ") + *it);
-
-	++it;
-    }
-
-    if(! ret.empty())
-	ret = string("class=\"") + ret + string("\"");
-
-    return ret;
-}
-
-void body_builder::move_css_properties_to_html_class(const string & classname)
-{
-    unique_ptr<css_library> & csslib = lookup_css_library();
-
-    if(csslib)
-	csslib->add(css_class(classname, *this));
-    else
-	throw exception_range("Cannot store css property as html class without css_library");
-
-    css_clear_attributes();
-    add_html_class(classname);
 }
 
 string body_builder::get_body_part_from_target_child(const chemin & path,
@@ -353,4 +314,53 @@ void body_builder::recursive_path_has_changed()
 	(*it)->recursive_path_has_changed();
 	++it;
     }
+}
+
+void body_builder::ask_to_record_classes()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    deque<css_class> vals = record_classes();
+    deque<css_class>::iterator it = vals.begin();
+
+    while(it != vals.end())
+    {
+	if(!csslib->class_exists(it->get_name()))
+	    csslib->add(*it);
+	css_class_names.insert(it->get_name());
+
+	++it;
+    }
+}
+
+void body_builder::recursive_ask_to_record_classes()
+{
+    std::vector<body_builder*>::iterator it = order.begin();
+
+    ask_to_record_classes(); ///< well-ordered charity always begins with oneself
+
+    while(it != order.end())
+    {
+	if((*it) == nullptr)
+	    throw WEBDAR_BUG;
+	(*it)->recursive_ask_to_record_classes();
+	++it;
+    }
+}
+
+
+void body_builder::clear()
+{
+    visible = true ;
+    next_visible = true;
+    no_CR = false;
+    parent = nullptr;
+    order.clear();
+    children.clear();
+    revert_child.clear();
+    library.reset();
+    css_class_names.clear();
 }
