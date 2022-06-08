@@ -39,26 +39,26 @@ extern "C"
 
 using namespace std;
 
-void css_library::add(const string & name, const css & value)
+void css_library::add(const string & name, const css_class & value)
 {
-    map<string, css>::iterator it = content.find(name);
+    map<string, string>::iterator it = content.find(name);
 
     if(it == content.end())
-	content[name] = value;
+	content[name] = value.get_definition();
     else
 	throw exception_range(string("label ") + name + string(" already present in this css_library\n"));
 }
 
 bool css_library::class_exists(const std::string & name) const
 {
-    css stored_value;
+    string stored_value;
 
     return get_value(name, stored_value);
 }
 
-bool css_library::get_value(const string & name, css & stored_value) const
+bool css_library::get_value(const string & name, string & stored_value) const
 {
-    map<string, css>::const_iterator it = content.find(name);
+    map<string, string>::const_iterator it = content.find(name);
 
     if(it == content.end())
 	return false;
@@ -71,7 +71,7 @@ bool css_library::get_value(const string & name, css & stored_value) const
 
 void css_library::del(const string & name)
 {
-    map<string, css>::const_iterator it = content.find(name);
+    map<string, string>::const_iterator it = content.find(name);
 
     if(it == content.end())
 	throw exception_range(string("label ") + name + string(" absent from this css_library, cannot delete it\n"));
@@ -83,12 +83,12 @@ string css_library::get_html_class_definitions() const
 {
     string ret = "";
 
-    map<string, css>::const_iterator it = content.begin();
+    map<string, string>::const_iterator it = content.begin();
 
     while(it != content.end())
     {
 	ret += string(".") + it->first + string(" {");
-	ret += it->second.css_get_raw_string();
+	ret += it->second;
 	ret += string(" }\n");
 
 	++it;

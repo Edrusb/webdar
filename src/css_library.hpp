@@ -34,7 +34,7 @@ extern "C"
 #include <string>
 
     // webdar headers
-#include "css.hpp"
+#include "css_class.hpp"
 
 class css_library
 {
@@ -47,16 +47,16 @@ public:
     css_library & operator = (css_library && ref) noexcept = default;
     ~css_library() = default;
 
-    void add(const std::string & name, const css & value);
+    void add(const std::string & name, const css_class & value);
     bool class_exists(const std::string & name) const;
-    bool get_value(const std::string & name, css & stored_value) const;
+    bool get_value(const std::string & name, std::string & stored_value) const;
     void del(const std::string & name);
     unsigned int size() const { return content.size(); };
 
     std::string get_html_class_definitions() const;
 
 private:
-    std::map<std::string, css> content;
+    std::map<std::string, std::string> content;
 
 };
 
