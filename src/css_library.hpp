@@ -47,7 +47,7 @@ public:
     css_library & operator = (css_library && ref) noexcept = default;
     ~css_library() = default;
 
-    void add(const std::string & name, const css_class & value);
+    void add(const css_class & value);
     bool class_exists(const std::string & name) const;
     bool get_value(const std::string & name, std::string & stored_value) const;
     void del(const std::string & name);

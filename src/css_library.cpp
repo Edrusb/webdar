@@ -39,14 +39,14 @@ extern "C"
 
 using namespace std;
 
-void css_library::add(const string & name, const css_class & value)
+void css_library::add(const css_class & value)
 {
-    map<string, string>::iterator it = content.find(name);
+    map<string, string>::iterator it = content.find(value.get_name());
 
     if(it == content.end())
-	content[name] = value.get_definition();
+	content[value.get_name()] = value.get_definition();
     else
-	throw exception_range(string("label ") + name + string(" already present in this css_library\n"));
+	throw exception_range(string("label ") + value.get_name() + string(" already present in this css_library\n"));
 }
 
 bool css_library::class_exists(const std::string & name) const
