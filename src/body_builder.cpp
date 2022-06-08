@@ -196,7 +196,7 @@ unique_ptr<css_library> & body_builder::lookup_css_library()
     else return parent->lookup_css_library();
 }
 
-string body_builder::get_html_classes() const
+string body_builder::check_and_get_html_class_list_in_css() const
 {
     string ret = "";
     deque<string> html_c = get_html_class_list();

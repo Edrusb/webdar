@@ -93,7 +93,7 @@ string html_page::get_body_part_given_the_body(const chemin & path,
     if(! aux.empty())
 	ret += " " + aux;
 
-    aux = get_html_classes();
+    aux = check_and_get_html_class_list_in_css();
     if(! aux.empty())
 	ret += " " + aux;
 

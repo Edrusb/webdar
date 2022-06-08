@@ -157,10 +157,10 @@ protected:
 	/// the call unique_ptr is false (points to nullptr), else it points to the found css_library
     std::unique_ptr<css_library> & lookup_css_library();
 
-	/// return the class specification to be inserted inline beside css style
+	/// return the list of html class to be inserted inline beside css style
 
 	/// \note this call also validate that the html_class exist in the css_library
-    std::string get_html_classes() const;
+    std::string check_and_get_html_class_list_in_css() const;
 
 	/// let a parent obtain the body part from one of its children given its official name and seen the path of the request
 	///

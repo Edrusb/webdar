@@ -46,9 +46,9 @@ string html_div::get_body_part(const chemin & path,
     string ret = css_get_string();
 
     if(ret.empty())
-	ret = get_html_classes();
+	ret = check_and_get_html_class_list_in_css();
     else
-	ret += " " + get_html_classes();
+	ret += " " +  check_and_get_html_class_list_in_css();
 
     if(ret.empty())
 	ret = "<div>\n";
