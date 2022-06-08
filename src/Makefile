@@ -34,7 +34,7 @@ OBJ=central_report.o proto_connexion.o connexion.o ssl_connexion.o ssl_context.o
 all: webdar test_webdar
 
 clean:
-	rm -f *.o webdar static_object_builder static_object.sto css_selector_subtypes.hpp
+	rm -f *.o webdar static_object_builder static_object.sto css_selector_subtypes.hpp test_webdar
 
 webdar: $(OBJ) webdar.o
 	$(CXX) webdar.o $(OBJ) $(LDFLAGS) -o $@
