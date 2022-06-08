@@ -82,7 +82,7 @@ string html_page::get_body_part_given_the_body(const chemin & path,
     ret += "<meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"content-type\">\n";
 
     if(csslib->size() > 0)
-	ret += csslib->generate_internal_css();
+	ret += "<style>\n" + csslib->get_html_class_definitions() + "</style>\n";
 
     if(redirect != "")
 	ret += redirect + "\n";

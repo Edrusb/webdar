@@ -79,9 +79,9 @@ void css_library::del(const string & name)
 	content.erase(it);
 }
 
-string css_library::generate_internal_css() const
+string css_library::get_html_class_definitions() const
 {
-    string ret = "<style>\n";
+    string ret = "";
 
     map<string, css>::const_iterator it = content.begin();
 
@@ -93,8 +93,6 @@ string css_library::generate_internal_css() const
 
 	++it;
     }
-
-    ret += "</style>\n";
 
     return ret;
 }

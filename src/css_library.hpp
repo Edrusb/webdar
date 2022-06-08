@@ -53,7 +53,7 @@ public:
     void del(const std::string & name);
     unsigned int size() const { return content.size(); };
 
-    std::string generate_internal_css() const;
+    std::string get_html_class_definitions() const;
 
 private:
     std::map<std::string, css> content;
