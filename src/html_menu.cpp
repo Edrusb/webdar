@@ -299,9 +299,9 @@ void html_menu::has_been_adopted_by(body_builder *obj)
 
     if(csslib && ! csslib->class_exists(box_on_class))
     {
-	csslib->add(box_on_class, box_on);
-	csslib->add(box_off_class, box_off);
-	csslib->add(box_void_class, box_void);
+	csslib->add(css_class(box_on_class, box_on));
+	csslib->add(css_class(box_off_class, box_off));
+	csslib->add(css_class(box_void_class, box_void));
 	box_on.css_clear_attributes();
 	box_off.css_clear_attributes();
 	box_void.css_clear_attributes();

@@ -202,7 +202,7 @@ string body_builder::check_and_get_html_class_list_in_css() const
     deque<string> html_c = get_html_class_list();
     deque<string>::iterator it = html_c.begin();
     unique_ptr<css_library> & csslib = const_cast<body_builder*>(this)->lookup_css_library();
-    css tmp;
+    string tmp;
 
     if(! html_c.empty() && !csslib)
 	throw exception_range("Cannot use class without css_library");
@@ -232,7 +232,7 @@ void body_builder::move_css_properties_to_html_class(const string & classname)
     unique_ptr<css_library> & csslib = lookup_css_library();
 
     if(csslib)
-	csslib->add(classname, *this);
+	csslib->add(css_class(classname, *this));
     else
 	throw exception_range("Cannot store css property as html class without css_library");
 
