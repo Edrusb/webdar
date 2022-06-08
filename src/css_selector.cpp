@@ -39,8 +39,8 @@ extern "C"
 
 using namespace std;
 
-css_selector::css_selector(const string & selector_name,
-			   const string & name):
+css_selector::css_selector(const string & name,
+			   const string & selector_name):
     css_class(name+":"+selector_name)
 {
 }
