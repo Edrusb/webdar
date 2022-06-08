@@ -49,6 +49,9 @@ public:
     css_class & operator = (css_class && ref) noexcept = default;
     virtual ~css_class() = default;
 
+	/// get the css_class name
+    const std::string & get_name() const { return class_name; };
+
 	/// defines the css_class value from a css object
     void set_value(const css & ref) { class_value = ref.css_get_raw_string(); };
 
