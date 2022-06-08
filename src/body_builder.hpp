@@ -80,7 +80,7 @@ public:
 	/// The adopted child stays managed by its real parent, the adoption relationship builds a tree
 	/// of dependant objects using one another to provide a body_part (see get_body_part() method).
 	/// this tree is automatically broken when an object is destroyed in the way that all recorded
-	/// children exists (the recorded address always points to real existing objects)
+	/// children exists (the recorded addresses always points to real existing objects)
     void adopt(body_builder *obj);
 
 	/// Common interface for class that have to ask other body_builder to provide their own body_part()
@@ -145,7 +145,7 @@ protected:
     std::string get_recorded_name() const;
 
 
-	/// let objects of inherited class to store a css_library that will be accessible from childrens
+	/// let objects of inherited class storing a css_library that will be accessible from its children
 
 	/// \note a child object, directly or indirectly (grand child, aso) will be
 	/// able to access and populate this css_library using the lookup_css_library() method
