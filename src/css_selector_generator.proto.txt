@@ -1,0 +1,6 @@
+class css_selector_NORM_NAME : public css_selector
+{
+public:
+    css_selector_NORM_NAME(const std::string & name): css_selector(name, "SELNAME") {};
+};
+
