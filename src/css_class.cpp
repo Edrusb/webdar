@@ -46,6 +46,14 @@ css_class::css_class(const std::string & name):
 	throw WEBDAR_BUG;
 }
 
+css_class::css_class(const std::string & name, const css & ref)
+{
+    if(name.empty())
+	throw WEBDAR_BUG;
+
+    set_value(ref);
+}
+
 string css_class::get_definition() const
 {
     string ret = convert_name(class_name);

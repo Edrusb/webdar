@@ -42,6 +42,7 @@ class css_class
 public:
 
     css_class(const std::string & name);
+    css_class(const std::string & name, const css & ref);
     css_class(const css_class & ref) = default;
     css_class(css_class && ref) noexcept = default;
     css_class & operator = (const css_class & ref) = default;
