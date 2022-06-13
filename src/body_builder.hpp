@@ -114,7 +114,13 @@ public:
     void clear_css_class() { css_class_names.clear(); };
 
     	/// provide the list of css_class names that this object has been set with
-    const std::set<std::string> & get_class_names() const { return css_class_names; };
+    const std::set<std::string> & get_class_names_as_a_set() const { return css_class_names; };
+
+
+	/// return the class_name as inlined css, suitable to be added in a html marker
+
+	/// \note the returned string if not empty is of the form: class="<classname> <classname>..."
+    std::string get_class_names() const;
 
 
 	/// ask the object to provide a part of the body to answer the request

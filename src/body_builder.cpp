@@ -165,6 +165,26 @@ void body_builder::remove_css_class(const std::string & name)
     css_class_names.erase(name);
 }
 
+string body_builder::get_class_names() const
+{
+    string ret;
+    set<string>::const_iterator it = css_class_names.begin();
+
+    while(it != css_class_names.end())
+    {
+	if(!ret.empty())
+	    ret += " ";
+	ret += *it;
+
+	++it;
+    }
+
+    if(!ret.empty())
+	ret = "class=\"" + ret + "\"";
+
+    return ret;
+}
+
 chemin body_builder::get_path() const
 {
     chemin ret;
