@@ -43,10 +43,7 @@ using namespace std;
 string html_url::get_body_part() const
 {
     string ret = "<a";
-    string aux = css_get_string();
-
-    if(! aux.empty())
-	ret += " " + aux;
+    string x_class = get_class_names();
 
     if(! x_class.empty())
 	ret += " " + x_class;

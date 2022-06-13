@@ -48,7 +48,6 @@ public:
 
     void change_url(const std::string & newurl) { x_url = newurl; };
     void change_label(const std::string & newlabel) { x_label = newlabel; };
-    void set_class(const std::string & classid) { x_class = classid; };
 
     const std::string & get_label() const { return x_label; };
     const std::string & get_url() const { return x_url; };
@@ -63,7 +62,6 @@ public:
 private:
     std::string x_url;
     std::string x_label;
-    std::string x_class;
 };
 
 
