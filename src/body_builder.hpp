@@ -104,6 +104,19 @@ public:
 	/// what the future but still non acknoledged visible status
     bool get_next_visible() const { return next_visible; };
 
+	/// set this object with a additional css_class
+    void add_css_class(const std::string & name);
+
+	/// remove the provided css_class name from the list of css_class names this object has been assigned to
+    void remove_css_class(const std::string & name);
+
+	/// clear the whole list of css_class names
+    void clear_css_class() { css_class_names.clear(); };
+
+    	/// provide the list of css_class names that this object has been set with
+    const std::set<std::string> & get_class_names() const { return css_class_names; };
+
+
 	/// ask the object to provide a part of the body to answer the request
 	///
 	/// \param[in] path is the full path, but the path.index points to the asked object name
@@ -137,7 +150,7 @@ protected:
     std::string get_recorded_name() const;
 
 
-	/// let objects of inherited class storing a css_library that will be accessible from its children
+	/// this creates a css_library accessible from adpated objects to hold html class definitions
 
 	/// \note a child object, directly or indirectly (grand child, aso) will be
 	/// able to access and populate this css_library using the lookup_css_library() method
@@ -189,16 +202,8 @@ protected:
 	/// Be informed that we are about to be foresaken by obj, our soon former parent
     virtual void will_be_foresaken_by(body_builder *obj) {};
 
-	/// run when a css_library becomes available
-
-	/// \note this triger is as soon as a css_library is available (locally added or added in a ancestor or due to adoption)
-	/// \node the returned css_class deque are recorded if not already existing in the available css_library
-	/// and the list of class name are stored for that object and available to inherited classes
-	/// thanks to the get_class_names() method
-    virtual std::deque<css_class> record_classes() { return std::deque<css_class>(); };
-
-	/// provide to inherited class the list of css_class names this object has recorded (and is expected to use)
-    const std::set<std::string> & get_class_names() const { return css_class_names; };
+	/// this is a trigger, ran when a css_library becomes available in a parent or "this"
+    virtual void new_css_library_available() {};
 
 	/// access to adopted childs
     unsigned int size() const { return order.size(); };
@@ -235,10 +240,7 @@ private:
     void recursive_path_has_changed();
 
 	/// ask inherited class to provide its css_classes
-    void ask_to_record_classes();
-
-	/// ask children and their descendants to record their classes
-    void recursive_ask_to_record_classes();
+    void recursive_new_css_library_available();
 
 	/// (re)initialize fields to default sane values
     void clear();

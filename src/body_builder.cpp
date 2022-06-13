@@ -49,6 +49,7 @@ body_builder::body_builder(const body_builder & ref)
     visible = ref.visible;
     next_visible = ref.next_visible;
     no_CR = ref.no_CR;
+    css_class_names = ref.css_class_names;
 }
 
 body_builder & body_builder::operator = (const body_builder & ref)
@@ -79,7 +80,7 @@ void body_builder::adopt(body_builder *obj)
     if(obj == nullptr)
 	throw WEBDAR_BUG;
 
-    bool already_had_css_lib = obj->lookup_css_library().get() != nullptr;
+    const css_library* ancient_css_library = obj->lookup_css_library().get();
     string new_name;
     map<string, body_builder *>::iterator it;
     map<body_builder *, string>::iterator rit = revert_child.find(obj);
@@ -107,8 +108,8 @@ void body_builder::adopt(body_builder *obj)
 
 	// if a css_library is available to the child thanks to the adoption
 	// we trigger all the child lineage to record its css_classes
-    if(! already_had_css_lib && obj->lookup_css_library())
-	obj->recursive_ask_to_record_classes();
+    if(obj->lookup_css_library().get() != ancient_css_library)
+	obj->recursive_new_css_library_available();
 }
 
 void body_builder::foresake(body_builder *obj)
@@ -122,7 +123,6 @@ void body_builder::foresake(body_builder *obj)
     if(ot == order.end()) // object not found in the ordered list
 	throw WEBDAR_BUG;
 
-    obj->recursive_path_has_changed();
     obj->will_be_foresaken_by(this);
     will_foresake(obj);
 
@@ -145,6 +145,24 @@ void body_builder::foresake(body_builder *obj)
     }
     else
 	throw WEBDAR_BUG; // object known in the ordered list but unknown by the revert_child map
+
+    obj->recursive_path_has_changed();
+}
+
+void body_builder::add_css_class(const std::string & name)
+{
+    if(css_class_names.find(name) != css_class_names.end())
+	throw exception_range(string("the css_class name to add is already present: ") + name);
+
+    css_class_names.insert(name);
+}
+
+void body_builder::remove_css_class(const std::string & name)
+{
+    if(css_class_names.find(name) == css_class_names.end())
+	throw exception_range(string("the css_class name to remove is not present in the list: ") + name);
+
+    css_class_names.erase(name);
 }
 
 chemin body_builder::get_path() const
@@ -191,8 +209,9 @@ void body_builder::store_css_library()
     if(!library)
 	throw exception_memory();
 
-    recursive_ask_to_record_classes();
+    recursive_new_css_library_available();
 }
+
 
 unique_ptr<css_library> & body_builder::lookup_css_library()
 {
@@ -200,6 +219,7 @@ unique_ptr<css_library> & body_builder::lookup_css_library()
 	return library;
     else return parent->lookup_css_library();
 }
+
 
 string body_builder::get_body_part_from_target_child(const chemin & path,
 						     const request & req)
@@ -284,7 +304,7 @@ void body_builder::orphan_all_children()
 	    // unrecord_child modifies the "children" map
 	    // so we set 'it' to a valid value setting it to begin()
 	    // but at each round, a item is removed from the children map
-	    // so ghd loop will end when the map will become empty
+	    // so the loop will end when the map will become empty
     }
 
     if(children.size() != 0)
@@ -316,41 +336,19 @@ void body_builder::recursive_path_has_changed()
     }
 }
 
-void body_builder::ask_to_record_classes()
+void body_builder::recursive_new_css_library_available()
 {
-    unique_ptr<css_library> & csslib = lookup_css_library();
+    vector<body_builder *>::iterator it = order.begin();
 
-    if(!csslib)
-	throw WEBDAR_BUG;
-
-    deque<css_class> vals = record_classes();
-    deque<css_class>::iterator it = vals.begin();
-
-    while(it != vals.end())
-    {
-	if(!csslib->class_exists(it->get_name()))
-	    csslib->add(*it);
-	css_class_names.insert(it->get_name());
-
-	++it;
-    }
-}
-
-void body_builder::recursive_ask_to_record_classes()
-{
-    std::vector<body_builder*>::iterator it = order.begin();
-
-    ask_to_record_classes(); ///< well-ordered charity always begins with oneself
-
+    new_css_library_available();
     while(it != order.end())
     {
 	if((*it) == nullptr)
 	    throw WEBDAR_BUG;
-	(*it)->recursive_ask_to_record_classes();
+	(*it)->recursive_new_css_library_available();
 	++it;
     }
 }
-
 
 void body_builder::clear()
 {
