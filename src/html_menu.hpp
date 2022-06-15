@@ -35,9 +35,8 @@ extern "C"
 
     // webdar headers
 #include "body_builder.hpp"
-#include "html_url.hpp"
+#include "html_button.hpp"
 #include "html_div.hpp"
-#include "html_url_class.hpp"
 #include "events.hpp"
 
 
@@ -45,7 +44,7 @@ extern "C"
     /// change another part of the html user interface
     /// upon change the event "changed" is generated
 
-class html_menu : public body_builder, protected events
+class html_menu : public html_div, protected events, protected actor
 {
 public:
 	/// the available event for this class
@@ -53,20 +52,21 @@ public:
 
 	/// constructor
     html_menu();
-    html_menu(const html_menu & ref) = default;
-    html_menu(html_menu && ref) noexcept = default;
-    html_menu & operator = (const html_menu & ref) = default;
-    html_menu & operator = (html_menu && ref) noexcept = default;
+    html_menu(const html_menu & ref) = delete;
+    html_menu(html_menu && ref) noexcept = delete;
+    html_menu & operator = (const html_menu & ref) = delete;
+    html_menu & operator = (html_menu && ref) noexcept = delete;
 
 	/// destructor
     ~html_menu();
 
 	/// add an entry in the menu
 	///
-	/// \param[in] reference must be a single word, letters only,
-	/// lower case and different from any other reference already give so far
 	/// \param[in] label is any text that will be showed to the user
-    void add_entry(const std::string & reference, const std::string & label);
+	/// \note first added entry will get the index (or mode) zero, next
+	/// added entry will have index 1, adding an empty string makes a non
+	/// selectable space between buttons.
+    void add_entry(const std::string & label);
 
 	/// returns the reference of the current mode
 	///
@@ -94,37 +94,19 @@ public:
 	/// modified wrapper from class events for our inherited classes
     void record_actor_on_event(actor *ptr) { events::record_actor_on_event(ptr, changed); };
 
+	/// inherited from class actor
+    virtual void on_event(const std::string & event_name);
 
 protected:
-	/// inherited from body_builder
-    virtual void path_has_changed() override;
 
-    	/// inherited from body_builder
-    virtual void has_been_adopted_by(body_builder *obj) override;
-
-	/// inherited from css (grand-parent class)
-    virtual void css_updated(bool inherit) override;
+	/// inherited from body_builder, used to defines the css_class/css_selectors used by this class
+    virtual void new_css_library_available() override;
 
 private:
-    struct boite
-    {
-	std::string value;
-	html_div surround;
-	html_url inside;
-	boite(const std::string & url, const std::string & label): inside(url, label) { value = ""; };
-    };
 
-    unsigned int current_mode; // which item is currently selected
-    unsigned int previous_mode; // which item was previously selected
-
-    html_div global;           // first level object containing all others
-    std::vector<boite *> item; // items for choices
-
-    html_div box_off; //< used to assign CSS attributes: unselected item
-    html_div box_on;  //< used to assign CSS attributes: selected item
-    html_div box_void;//< used to assign CSS attributes: separators
-    html_url_class url_selected; //< links when box selected
-    html_url_class url_normal;   //< links when box no selected
+    unsigned int current_mode;  ///< which item is currently selected
+    unsigned int previous_mode; ///< which item was previously selected
+    std::vector<html_button *> item;  ///< items for choices
 
     static const std::string box_off_class;
     static const std::string box_on_class;

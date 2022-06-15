@@ -34,6 +34,7 @@ extern "C"
 #include "html_text.hpp"
 #include "tokens.hpp"
 #include "exceptions.hpp"
+#include "css_selector.hpp"
 
     //
 #include "html_menu.hpp"
@@ -55,70 +56,12 @@ html_menu::html_menu()
     current_mode = 0;
     previous_mode = 0;
 
-	// Common aspects
-    box_off.css_border_style(css::bd_all, css::bd_solid, true);
-    box_off.css_border_width(css::bd_all, css::bd_medium, true);
-    box_off.css_width("8em", true, true);
-    box_off.css_padding("0.5em", true);
-    box_off.css_margin("0.2em", true);
-    box_off.css_text_align(al_center, true);
-
-	// copy common aspects to box_off and box_void
-    box_on.css_inherit_from(box_off);
-    box_void.css_inherit_from(box_off);
-    box_void.css_border_style(css::bd_all, css::bd_none);
-
-	// box_off and tmp_norm COLORS
-    tmp_set.css_clear_attributes();
-    tmp_set.css_color(COLOR_MENU_FRONT_OFF, true);
-    tmp_set.css_background_color(COLOR_MENU_BACK_OFF, true);
-    tmp_set.css_font_weight_bold(true);
-    tmp_set.css_font_style_italic(true);
-    tmp_set.css_text_decoration(css::dc_none, true);
-    box_off.css_inherit_from(tmp_set);
-    url_normal.set_style_link(tmp_set);
-    url_normal.set_style_visited(tmp_set);
-    box_off.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
-
-	// Link Hover and Active in box_off
-    tmp_set.css_color(COLOR_MENU_FRONT_HOVER_OFF, true);
-    tmp_set.css_text_decoration(dc_underline, true);
-    url_normal.set_style_hover(tmp_set);
-    tmp_set.css_color(COLOR_MENU_FRONT_ACTIVE_OFF, true);
-    url_normal.set_style_active(tmp_set);
-
-	// box_on and tmp_select COLORS
-    tmp_set.css_color(COLOR_MENU_FRONT_ON, true);
-    tmp_set.css_background_color(COLOR_MENU_BACK_ON, true);
-    tmp_set.css_font_weight_bold(true);
-    tmp_set.css_font_style_normal(true);
-    tmp_set.css_text_decoration(css::dc_none, true);
-    box_on.css_inherit_from(tmp_set);
-    url_selected.set_style_link(tmp_set);
-    url_selected.set_style_visited(tmp_set);
-    box_on.css_border_color(css::bd_all, COLOR_MENU_BORDER_ON, true);
-
-	// Link Hover and Active in box_on
-    tmp_set.css_color(COLOR_MENU_FRONT_HOVER_ON, true);
-    tmp_set.css_text_decoration(dc_underline, true);
-    url_selected.set_style_hover(tmp_set);
-    tmp_set.css_color(COLOR_MENU_FRONT_ACTIVE_ON, true);
-    url_selected.set_style_active(tmp_set);
-
-    tmp_set.css_clear_attributes();
-
-    global.set_no_CR();
-
-    adopt(&global);
-    adopt(&url_normal);
-    adopt(&url_selected);
-
     register_name(changed); // add the "html_menu_changed" event to this object
 }
 
 html_menu::~html_menu()
 {
-    vector<boite *>::iterator it = item.begin();
+    vector<html_button*>::iterator it = item.begin();
 
     while(it != item.end())
     {
@@ -129,38 +72,26 @@ html_menu::~html_menu()
     item.clear();
 }
 
-void html_menu::add_entry(const std::string & reference, const std::string & label)
+void html_menu::add_entry(const std::string & label)
 {
-    chemin tmp = get_path();
-    unsigned int i = 0;
-    unsigned int s = item.size();
-    boite *box = nullptr;
+    unsigned int num = item.size();
+    string event_name = std::to_string(num);
+    html_button *newone = new (nothrow) html_button(label, event_name);
 
-    while(i < s && item[i] != nullptr && item[i]->value != reference)
-	++i;
-
-    if(i < s)
-	throw WEBDAR_BUG; // duplicated reference
-
-    tmp.push_back(reference);
-
-    box = new (nothrow) boite(tmp.display(), label);
-    if(box == nullptr)
+    if(newone == nullptr)
 	throw exception_memory();
-    item.push_back(box);
+    item.push_back(newone);
 
-    box->value = reference;
-//    box->inside.css_border_style(css::bd_all, css::bd_none);
-    box->inside.set_class(url_normal.get_class_id());
+    newone->record_actor_on_event(this, event_name);
+
     if(label != "")
-	box->surround.add_html_class(box_off_class);
+	newone->add_css_class(box_off_class);
     else
-	box->surround.add_html_class(box_void_class);
-    box->surround.set_no_CR();
+	newone->add_css_class(box_void_class);
+    newone->url_add_css_class(url_normal_class);
 
 	/// building the body_builder tree
-    box->surround.adopt(&(box->inside));
-    global.adopt(&(box->surround));
+    adopt(newone);
 
     if(item.size() == 1)
 	 set_current_mode(0);
@@ -184,21 +115,25 @@ void html_menu::set_current_mode(unsigned int mode)
 
 	/// all is fine, we can go on modifying the objects
 
-    if(item[current_mode]->inside.get_label() == "")
+    item[current_mode]->url_clear_css_classes();
+    item[current_mode]->url_add_css_class(url_normal_class);
+    if(item[current_mode]->get_label() == "")
     {
-	item[current_mode]->surround.clear_html_classes();
-	item[current_mode]->surround.add_html_class(box_void_class, true);
+	item[current_mode]->clear_css_classes();
+	item[current_mode]->add_css_class(box_void_class);
     }
     else
     {
-	item[current_mode]->surround.clear_html_classes();
-	item[current_mode]->surround.add_html_class(box_off_class, true);
-	item[current_mode]->inside.set_class(url_normal.get_class_id());
+	item[current_mode]->clear_css_classes();
+	item[current_mode]->add_css_class(box_off_class);
     }
 
-    item[mode]->surround.clear_html_classes();
-    item[mode]->surround.add_html_class(box_on_class, true);
-    item[mode]->inside.set_class(url_selected.get_class_id());
+
+    item[mode]->url_clear_css_classes();
+    item[mode]->url_add_css_class(url_selected_class);
+    item[mode]->clear_css_classes();
+    item[mode]->add_css_class(box_on_class);
+
     if(has_changed)
     {
 	previous_mode = current_mode;
@@ -209,23 +144,23 @@ void html_menu::set_current_mode(unsigned int mode)
 
 string html_menu::get_current_label() const
 {
-    boite *box = nullptr;
+    const html_button* button = nullptr;
 
     if(current_mode >= item.size())
 	throw WEBDAR_BUG;
 
-    box = item[current_mode];
-    if(box == nullptr)
+    button = item[current_mode];
+    if(button == nullptr)
 	throw WEBDAR_BUG;
 
-    return box->value;
+    return button->get_label();
 }
 
 void html_menu::set_current_label(const std::string & label)
 {
     unsigned int i = 0;
 
-    while(i < item.size() && item[i] != nullptr && item[i]->value != label)
+    while(i < item.size() && item[i] != nullptr && item[i]->get_label() != label)
 	++i;
 
     if(i < item.size())
@@ -239,78 +174,130 @@ void html_menu::set_current_label(const std::string & label)
 	throw WEBDAR_BUG; // unknown label in this html_menu
 }
 
+void html_menu::on_event(const string & event_name)
+{
+	// we have registered on the event generated by each html_button
+	// the event_name is the string of the decimal index of the button
+
+    int num;
+
+    try
+    {
+	num = webdar_tools_convert_to_int(event_name);
+    }
+    catch(exception_range & e)
+    {
+	throw WEBDAR_BUG;
+	    // received an event we don't expect
+    }
+
+    set_current_mode(num);
+}
+
 string html_menu::get_body_part(const chemin & path,
 			   const request & req)
 {
-	// reading the requested path to determin
-	// whether a change of mode is required
-    chemin target = req.get_uri().get_path();
-    string choice;
-
-    if(!target.empty())
-    {
-	choice = target.back();
-	target.pop_back();
-    }
-    else
-	choice = "";
-
-    if(target == get_path() && choice != "")
-    {
-	    // the requested link is us
-	    // except the last part that we tailed out
-	    // and which we ignore if empty
-	unsigned int i = 0;
-	unsigned int size = item.size();
-	while(i < size && item[i] != nullptr && item[i]->value != choice)
-	    ++i;
-	if(i < size)
-	    set_current_mode(i);
-    }
-
     return get_body_part_from_all_children(path, req);
 }
 
-void html_menu::path_has_changed()
+void html_menu::new_css_library_available()
 {
-    vector<boite *>::iterator it = item.begin();
+    css_class cl_off(box_off_class);
+    css_class cl_on(box_on_class);
+    css_class cl_void(box_void_class);
+    css_selector_link sel_normal_link(url_normal_class);
+    css_selector_active sel_normal_active(url_normal_class);
+    css_selector_hover sel_normal_hover(url_normal_class);
+    css_selector_visited sel_normal_visited(url_normal_class);
+    css_selector_link sel_selected_link(url_selected_class);
+    css_selector_active sel_selected_active(url_selected_class);
+    css_selector_hover sel_selected_hover(url_selected_class);
+    css_selector_visited sel_selected_visited(url_selected_class);
 
-    while(it != item.end())
-    {
-	chemin chem = get_path();
+    css box_off;   ///< used to assign CSS attributes: unselected item
+    css box_on;    ///< used to assign CSS attributes: selected item
+    css box_void;  ///< used to assign CSS attributes: separators
 
-	if(*it == nullptr)
-	    throw WEBDAR_BUG;
-	chem.push_back((*it)->value);
-	(*it)->inside.change_url(chem.display(false));
-	(*it)->inside.set_class(url_normal.get_class_id());
-	++it;
-    }
+    css tmp_set;   ///< common setup for the several css
 
-    if(item.size() > 0)
-	set_current_mode(current_mode);
-}
+	// Common aspects
+    tmp_set.css_border_style(css::bd_all, css::bd_solid, true);
+    tmp_set.css_border_width(css::bd_all, css::bd_medium, true);
+    tmp_set.css_width("8em", true, true);
+    tmp_set.css_padding("0.5em", true);
+    tmp_set.css_margin("0.2em", true);
+    tmp_set.css_text_align(css::al_center, true);
 
-void html_menu::has_been_adopted_by(body_builder *obj)
-{
+	// copy common aspects to box_on, box_off and box_void
+    box_off.css_inherit_from(tmp_set);
+    box_on.css_inherit_from(tmp_set);
+    box_void.css_inherit_from(tmp_set);
+    box_void.css_border_style(css::bd_all, css::bd_none);
+
+	// box_off and tmp_norm COLORS
+    tmp_set.css_clear_attributes();
+    tmp_set.css_color(COLOR_MENU_FRONT_OFF, true);
+    tmp_set.css_background_color(COLOR_MENU_BACK_OFF, true);
+    tmp_set.css_font_weight_bold(true);
+    tmp_set.css_font_style_italic(true);
+    tmp_set.css_text_decoration(css::dc_none, true);
+
+    sel_normal_link.set_value(tmp_set);
+    sel_normal_visited.set_value(tmp_set);
+    box_off.css_inherit_from(tmp_set);
+    box_off.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
+
+	// Link Hover and Active in box_off
+    tmp_set.css_color(COLOR_MENU_FRONT_HOVER_OFF, true);
+    tmp_set.css_text_decoration(css::dc_underline, true);
+    sel_normal_hover.set_value(tmp_set);
+    tmp_set.css_color(COLOR_MENU_FRONT_ACTIVE_OFF, true);
+    sel_normal_active.set_value(tmp_set);
+
+	// box_on and tmp_select COLORS
+    tmp_set.css_color(COLOR_MENU_FRONT_ON, true);
+    tmp_set.css_background_color(COLOR_MENU_BACK_ON, true);
+    tmp_set.css_font_weight_bold(true);
+    tmp_set.css_font_style_normal(true);
+    tmp_set.css_text_decoration(css::dc_none, true);
+
+    sel_selected_link.set_value(tmp_set);
+    sel_selected_visited.set_value(tmp_set);
+    box_on.css_inherit_from(tmp_set);
+    box_on.css_border_color(css::bd_all, COLOR_MENU_BORDER_ON, true);
+
+	// Link Hover and Active in box_on
+    tmp_set.css_color(COLOR_MENU_FRONT_HOVER_ON, true);
+    tmp_set.css_text_decoration(css::dc_underline, true);
+    sel_selected_hover.set_value(tmp_set);
+    tmp_set.css_color(COLOR_MENU_FRONT_ACTIVE_ON, true);
+    sel_selected_active.set_value(tmp_set);
+
+	// the selectors are now set,
+	// setting the classes from the css boxes:
+
+    cl_off.set_value(box_off);
+    cl_on.set_value(box_on);
+    cl_void.set_value(box_void);
+
+	// recording those classes and selectors to the css_library
+
     unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
 
-    	// optimizing HTML code by avoiding duplicating CSS replacing it by HTML classes
-
-    if(csslib && ! csslib->class_exists(box_on_class))
-    {
-	csslib->add(css_class(box_on_class, box_on));
-	csslib->add(css_class(box_off_class, box_off));
-	csslib->add(css_class(box_void_class, box_void));
-	box_on.css_clear_attributes();
-	box_off.css_clear_attributes();
-	box_void.css_clear_attributes();
-    }
+    csslib->add(cl_off);
+    csslib->add(cl_on);
+    csslib->add(cl_void);
+    csslib->add(sel_normal_link);
+    csslib->add(sel_normal_active);
+    csslib->add(sel_normal_hover);
+    csslib->add(sel_normal_visited);
+    csslib->add(sel_selected_link);
+    csslib->add(sel_selected_active);
+    csslib->add(sel_selected_hover);
+    csslib->add(sel_selected_visited);
 }
 
-void html_menu::css_updated(bool inherit)
-{
-    global.css_inherit_from(*this, true, true);
-}
 
 
