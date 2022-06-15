@@ -38,9 +38,9 @@ extern "C"
 
     /// class html_aiguille behave as only one of its adopted children
 
-    /// the set_mode() method which child is used (or is active)
+    /// the set_mode() method defines which child is used (or is active)
     /// the argument is the number of the child starting at zero in the
-    /// they have been adopted
+    /// order they have been adopted
 
 class html_aiguille : public body_builder
 {
@@ -59,12 +59,6 @@ public:
 				      const request & req) override;
 
 protected:
-
-	/// inherited from css grand-parent
-    virtual void css_updated(bool inherited) override;
-
-    	/// inherited from body_builder
-    virtual void has_been_adopted(body_builder *obj) override;
 
 
 private:
