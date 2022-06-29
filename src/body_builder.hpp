@@ -99,6 +99,9 @@ public:
 	/// only once the object has acknoledged its new status thanks to the ack_visible() method.
 	/// The object can known the current visible status but also the next_visible() status, which
 	/// is the one that is pending for acknoledgment.
+	/// \note the use of visible acknowlegment is for complex body_builder to trigger
+	/// adopted body_builder objects they have for an event (faking the display) but finally
+	/// when outputing the body part to not return any html body if changing to invisible
     bool get_visible() const { return visible; };
 
 	/// what the future but still non acknoledged visible status
