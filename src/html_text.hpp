@@ -37,6 +37,14 @@ extern "C"
 #include "body_builder.hpp"
 #include "static_body_builder.hpp"
 
+    /// class html_text manage text and header in html document
+
+    /// \note this class allow user to add by step, at each addition
+    /// the level tells whether the given text to add is normal text (level 0)
+    /// or header text (1 for h1, 2 for h2, and so on)
+    /// some additional methods add new paragraph (<p/> markup)
+    /// or newline (<br />)
+    /// header markup (<h*>) receive the css_class assigned to this object
 
 class html_text : public body_builder, public static_body_builder
 {
