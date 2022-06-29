@@ -49,7 +49,6 @@ extern "C"
 #include "html_archive_isolate.hpp"
 #include "html_archive_merge.hpp"
 #include "html_button.hpp"
-#include "html_url_class.hpp"
 
     /// class saisie
     ///

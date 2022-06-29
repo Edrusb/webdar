@@ -39,7 +39,6 @@ extern "C"
 #include "html_button.hpp"
 #include "html_div.hpp"
 #include "archive_init_list.hpp"
-#include "html_url_class.hpp"
 #include "html_focus.hpp"
 
 class html_listing_page : public html_page, public actor, public events
