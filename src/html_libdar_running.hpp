@@ -77,6 +77,10 @@ public:
 	/// defines the name of the session
     void set_session_name(const std::string & name) { sessname = name; };
 
+protected:
+	// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 private:
     enum mode_type
     {
@@ -86,6 +90,21 @@ private:
 	kill_forced,   //< should display web_user_interface, progressive_report (no button)
 	finished       //< should display web_user_interface, progressive_report, close button
     };
+
+    static const std::string class_global;
+    static const std::string class_web;
+    static const std::string class_button;
+    static const std::string class_button_normal;
+    static const std::string class_button_normal_link;
+    static const std::string class_button_normal_active;
+    static const std::string class_button_normal_hover;
+    static const std::string class_button_normal_visited;
+    static const std::string class_button_selected;
+    static const std::string class_button_selected_link;
+    static const std::string class_button_selected_active;
+    static const std::string class_button_selected_hover;
+    static const std::string class_button_selected_visited;
+
 
     std::string sessname;
     mode_type mode;
@@ -99,6 +118,8 @@ private:
     bool visibility_has_changed; //< true whether a html component had its visibility changed
 
     void set_mode(mode_type m);
+    void assign_normal_classes(html_button & bt);
+    void assign_active_classes(html_button & bt);
 };
 
 

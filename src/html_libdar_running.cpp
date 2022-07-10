@@ -42,6 +42,20 @@ const string html_libdar_running::force_end_libdar = "html_libdar_running_force_
 const string html_libdar_running::kill_libdar_thread = "html_libdar_running_kill_libdar_thread";
 const string html_libdar_running::close_libdar_screen = "html_libdar_running_close_libdar_screen";
 
+const string html_libdar_running::class_global = "html_libdar_running_global";
+const string html_libdar_running::class_web = "html_libdar_running_web";
+const string html_libdar_running::class_button = "html_libdar_running_button";
+const string html_libdar_running::class_button_normal = "html_libdar_running_button_n";
+const string html_libdar_running::class_button_normal_link = "html_libdar_running_button_nl";
+const string html_libdar_running::class_button_normal_active = "html_libdar_running_button_na";
+const string html_libdar_running::class_button_normal_hover = "html_libdar_running_button_nh";
+const string html_libdar_running::class_button_normal_visited = "html_libdar_running_button_nv";
+const string html_libdar_running::class_button_selected = "html_libdar_running_button_s";
+const string html_libdar_running::class_button_selected_link = "html_libdar_running_button_sl";
+const string html_libdar_running::class_button_selected_active = "html_libdar_running_button_sa";
+const string html_libdar_running::class_button_selected_hover = "html_libdar_running_button_sh";
+const string html_libdar_running::class_button_selected_visited = "html_libdar_running_button_sv";
+
 html_libdar_running::html_libdar_running():
     html_page("THIS IS A BUG"),
     ask_close("Gracefully stop libdar", ask_end_libdar),
@@ -51,33 +65,15 @@ html_libdar_running::html_libdar_running():
 {
     sessname = "";
 
-    global.css_margin("1em");
-    global.css_padding("1em");
-    global.css_border_style(css::bd_all, css::bd_inset);
-    global.css_border_width(css::bd_all, css::bd_medium);
+    global.add_css_class(class_global);
 
-    web_ui.css_width("90%", true);
-    stats.css_width("90%", true);
+    web_ui.add_css_class(class_web);
+    stats.add_css_class(class_web);
 
-    webdar_style_normal_button(ask_close);
-    ask_close.css_float(css::fl_right);
-    ask_close.css_float_clear(css::fc_both);
-    ask_close.css_margin_right("1em");
-
-    webdar_style_active_button(force_close);
-    force_close.css_float(css::fl_right);
-    force_close.css_float_clear(css::fc_both);
-    force_close.css_margin_right("1em");
-
-    webdar_style_active_button(kill_close);
-    kill_close.css_float(css::fl_right);
-    kill_close.css_float_clear(css::fc_both);
-    kill_close.css_margin_right("1em");
-
-    webdar_style_normal_button(finish);
-    finish.css_float(css::fl_right);
-    finish.css_float_clear(css::fc_both);
-    finish.css_margin_right("1em");
+    assign_normal_classes(ask_close);
+    assign_active_classes(force_close);
+    assign_active_classes(kill_close);
+    assign_normal_classes(finish);
 
     global.adopt(&web_ui);
     global.adopt(&stats);
@@ -157,6 +153,120 @@ void html_libdar_running::clear()
     stats.clear_labels();
 }
 
+void html_libdar_running::new_css_library_available()
+{
+    css tmp;
+    css box_off, box_on;
+
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    if(! csslib->class_exists(class_global))
+    {
+	try
+	{
+	    tmp.css_clear_attributes();
+	    tmp.css_margin("1em");
+	    tmp.css_padding("1em");
+	    tmp.css_border_style(css::bd_all, css::bd_inset);
+	    tmp.css_border_width(css::bd_all, css::bd_medium);
+	    csslib->add(class_global, tmp);
+
+	    tmp.css_clear_attributes();
+	    tmp.css_width("90%", true);
+	    csslib->add(class_web, tmp);
+
+	    tmp.css_clear_attributes();
+	    tmp.css_float(css::fl_right);
+	    tmp.css_float_clear(css::fc_both);
+	    tmp.css_margin_right("1em");
+	    csslib->add(class_button, tmp);
+
+
+		// this part defines classes for
+		// html_buttons and their internal urls
+
+		// Common aspects
+	    box_off.css_clear_attributes();
+	    box_off.css_border_style(css::bd_all, css::bd_solid, true);
+	    box_off.css_border_width(css::bd_all, css::bd_medium, true);
+	    box_off.css_width("8em", true, true);
+	    box_off.css_padding("0.5em", true);
+	    box_off.css_margin("0.2em", true);
+	    box_off.css_text_align(css::al_center, true);
+
+		// copy common aspects to box_off and box_void
+	    box_on.css_inherit_from(box_off);
+
+		// box_off and tmp_norm COLORS
+	    tmp.css_clear_attributes();
+	    tmp.css_color(COLOR_MENU_FRONT_OFF, true);
+	    tmp.css_background_color(COLOR_MENU_BACK_OFF, true);
+	    tmp.css_font_weight_bold(true);
+	    tmp.css_font_style_italic(true);
+	    tmp.css_text_decoration(css::dc_none, true);
+
+		// complement to box_off
+	    box_off.css_inherit_from(tmp);
+
+		// link in box_off
+	    csslib->add(class_button_normal_link, tmp);
+	    csslib->add(class_button_normal_visited, tmp);
+
+	    box_off.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
+	    csslib->add(class_button_normal, box_off);
+
+		// Link Hover and Active in box_off
+	    tmp.css_color(COLOR_MENU_FRONT_HOVER_OFF, true);
+	    tmp.css_text_decoration(css::dc_underline, true);
+	    csslib->add(class_button_normal_hover, tmp);
+	    tmp.css_color(COLOR_MENU_FRONT_ACTIVE_OFF, true);
+	    csslib->add(class_button_normal_active, tmp);
+
+		// box_on and tmp_select COLORS
+	    tmp.css_color(COLOR_MENU_FRONT_ON, true);
+	    tmp.css_background_color(COLOR_MENU_BACK_ON, true);
+	    tmp.css_font_weight_bold(true);
+	    tmp.css_font_style_normal(true);
+	    tmp.css_text_decoration(css::dc_none, true);
+	    box_on.css_inherit_from(tmp);
+	    csslib->add(class_button_selected_link, tmp);
+	    csslib->add(class_button_selected_visited, tmp);
+	    box_on.css_border_color(css::bd_all, COLOR_MENU_BORDER_ON, true);
+	    csslib->add(class_button_selected, box_on);
+
+		// Link Hover and Active in box_on
+	    tmp.css_color(COLOR_MENU_FRONT_HOVER_ON, true);
+	    tmp.css_text_decoration(css::dc_underline, true);
+	    csslib->add(class_button_selected_hover, tmp);
+	    tmp.css_color(COLOR_MENU_FRONT_ACTIVE_ON, true);
+	    csslib->add(class_button_selected_active, tmp);
+	}
+	catch(exception_range & e)
+	{
+		// no class or all class should be
+		// present in csslib
+	    throw WEBDAR_BUG;
+	}
+    }
+    else
+    {
+	if(! csslib->class_exists(class_web)
+	   || ! csslib->class_exists(class_button)
+	   || ! csslib->class_exists(class_button_normal)
+	   || ! csslib->class_exists(class_button_normal_link)
+	   || ! csslib->class_exists(class_button_normal_active)
+	   || ! csslib->class_exists(class_button_normal_hover)
+	   || ! csslib->class_exists(class_button_normal_visited)
+	   || ! csslib->class_exists(class_button_selected)
+	   || ! csslib->class_exists(class_button_selected_link)
+	   || ! csslib->class_exists(class_button_selected_active)
+	   || ! csslib->class_exists(class_button_selected_hover)
+	   || ! csslib->class_exists(class_button_selected_visited))
+	    throw WEBDAR_BUG;
+    }
+}
 
 void html_libdar_running::set_mode(mode_type m)
 {
@@ -202,4 +312,27 @@ void html_libdar_running::set_mode(mode_type m)
     }
 
     mode = m;
+}
+
+void html_libdar_running::assign_normal_classes(html_button & bt)
+{
+    bt.clear_css_classes();
+    bt.add_css_class(class_button);
+    bt.add_css_class(class_button_normal);
+    bt.url_add_css_class(class_button_normal_link);
+    bt.url_add_css_class(class_button_normal_active);
+    bt.url_add_css_class(class_button_normal_hover);
+    bt.url_add_css_class(class_button_normal_visited);
+}
+
+
+void html_libdar_running::assign_active_classes(html_button & bt)
+{
+    bt.clear_css_classes();
+    bt.add_css_class(class_button);
+    bt.add_css_class(class_button_selected);
+    bt.url_add_css_class(class_button_selected_link);
+    bt.url_add_css_class(class_button_selected_active);
+    bt.url_add_css_class(class_button_selected_hover);
+    bt.url_add_css_class(class_button_selected_visited);
 }
