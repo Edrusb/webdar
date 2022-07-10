@@ -51,7 +51,7 @@ string html_image::get_body_part() const
 {
     string ret;
 
-    ret = "<img " + css_get_string() + " ";
+    ret = "<img " + get_css_classes() + " ";
     ret += "src=\"" + x_url + "\" alt=\"" + x_alt +"\" ";
     if(dim_x != "" && dim_y != "") // yes both
 	ret += "width=\"" + dim_x + "\" heigth=\"" + dim_y + "\" ";
