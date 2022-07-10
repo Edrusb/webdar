@@ -49,6 +49,13 @@ void css_library::add(const css_class & value)
 	throw exception_range(string("label ") + value.get_name() + string(" already present in this css_library\n"));
 }
 
+void css_library::add(const std::string & name, const css & value)
+{
+    css_class tmp(name);
+    tmp.set_value(value);
+    add(tmp);
+}
+
 bool css_library::class_exists(const std::string & name) const
 {
     string stored_value;
