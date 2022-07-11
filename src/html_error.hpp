@@ -42,7 +42,7 @@ extern "C"
 class html_error : public html_page, public events, public actor
 {
 public:
-    static const std::string acknowledged;
+    static constexpr char acknowledged[] = "html_error_acknowledged";
 
     html_error();
     html_error(const html_error & ref) = default;
@@ -59,12 +59,22 @@ public:
 	/// defines the name of the session
     void set_session_name(const std::string & sessname);
 
+protected:
+	// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 private:
     html_div global;
     html_text the_error;
     html_button close;
 
-    static const std::string close_event;
+	// css classes
+    static constexpr char class_message[] = "html_error_mesg";
+    static constexpr char class_global[] = "html_error_glb";
+    static constexpr char class_button[] = "html_error_btn";
+
+	// events
+    static constexpr char close_event[] = "html_error_button_close";
 };
 
 #endif
