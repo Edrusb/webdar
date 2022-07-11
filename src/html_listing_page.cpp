@@ -49,50 +49,16 @@ html_listing_page::html_listing_page():
 
     set_session_name("");
 
-	// set css properties
-    css_height("100%",true); // applied to the html_page assign this CSS to the <body>
-
-    tree.css_float(css::fl_left);
-    tree.css_height("100%", false);
-    tree.css_width("32.6%", false);
-    tree.css_padding("0.2%");
-    tree.css_overflow(css::ov_scroll);
-    tree.css_margin_right("1%");
-
-
-    title.css_width("64%", false);
-    title.css_padding_top("1em");
-    title.css_padding_bottom("1em");
-    title.css_font_weight_bold();
-    title.css_font_style_italic();
-    title.css_text_align(css::al_center);
-    title.css_border_width(css::bd_all, css::bd_medium);
-    title.css_border_style(css::bd_all, css::bd_solid);
-    title.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
-    title.css_color(COLOR_MENU_FRONT_OFF);
-    title.css_background_color(COLOR_MENU_BACK_OFF);
-    title.css_position_type(css::pos_fixed);
-    title.css_position_top("1em");
-    title.css_position_right("1%");
-
-    webdar_style_normal_button(close);
-    close.css_float(css::fl_right);
-    close.css_float_clear(css::fc_both);
-    close.css_position_type(css::pos_fixed);
-    close.css_position_bottom("1em");
-    close.css_position_right("1em");
-
-    tmp.css_clear_attributes();
-    tmp.css_color(COLOR_TEXT);
-    tmp.css_text_align(css::al_center);
-    tmp.css_text_decoration(css::dc_none);
-    bt_class.set_style_link(tmp);
-    bt_class.set_style_visited(tmp);
-    tmp.css_text_decoration(css::dc_underline);
-    bt_class.set_style_hover(tmp);
-
-    focus.css_margin_top("5em");
-    focus.css_width("66%", false);
+	// set css classes
+    add_css_class(class_global);
+    tree.add_css_class(class_tree);
+    title.add_css_class(class_title);
+    webdar_css_style::assign_normal_classes(close);
+    close.add_css_class(class_close);
+    bt_class.add_css_class(class_url_link);
+    bt_class.add_css_class(class_url_visited);
+    bt_class.add_css_class(class_url_hover);
+    focus.add_css_class(class_focus);
 
 	// the body_builder tree
     adopt(&tree);
@@ -129,4 +95,95 @@ void html_listing_page::set_session_name(const string & session_name)
 
     title += "Archive listing";
     set_title(title);
+}
+
+
+void html_listing_page::new_css_library_available()
+{
+    css tmp;
+    css_selector_link tmp_link(class_url_link);
+    css_selector_visited tmp_visited(class_url_visited);
+    css_selector_hover tmp_hover(class_url_hover);
+
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    if(! csslib->class_exists(class_global))
+    {
+	try
+	{
+	    tmp.css_clear_attributes();
+	    tmp.css_height("100%",true);
+	    csslib->add(class_global, tmp);
+
+	    tmp.css_clear_attributes();
+	    tmp.css_float(css::fl_left);
+	    tmp.css_height("100%", false);
+	    tmp.css_width("32.6%", false);
+	    tmp.css_padding("0.2%");
+	    tmp.css_overflow(css::ov_scroll);
+	    tmp.css_margin_right("1%");
+	    csslib->add(class_tree, tmp);
+
+	    tmp.css_clear_attributes();
+	    tmp.css_width("64%", false);
+	    tmp.css_padding_top("1em");
+	    tmp.css_padding_bottom("1em");
+	    tmp.css_font_weight_bold();
+	    tmp.css_font_style_italic();
+	    tmp.css_text_align(css::al_center);
+	    tmp.css_border_width(css::bd_all, css::bd_medium);
+	    tmp.css_border_style(css::bd_all, css::bd_solid);
+	    tmp.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
+	    tmp.css_color(COLOR_MENU_FRONT_OFF);
+	    tmp.css_background_color(COLOR_MENU_BACK_OFF);
+	    tmp.css_position_type(css::pos_fixed);
+	    tmp.css_position_top("1em");
+	    tmp.css_position_right("1%");
+	    csslib->add(class_title, tmp);
+
+	    tmp.css_clear_attributes();
+	    tmp.css_float(css::fl_right);
+	    tmp.css_float_clear(css::fc_both);
+	    tmp.css_position_type(css::pos_fixed);
+	    tmp.css_position_bottom("1em");
+	    tmp.css_position_right("1em");
+	    csslib->add(class_close, tmp);
+
+	    tmp.css_clear_attributes();
+	    tmp.css_color(COLOR_TEXT);
+	    tmp.css_text_align(css::al_center);
+	    tmp.css_text_decoration(css::dc_none);
+	    tmp_link.set_value(tmp);
+	    tmp_visisted.set_value(tmp);
+	    csslib->add(tmp_link);
+	    csslib->add(rmp_visited);
+	    tmp.css_text_decoration(css::dc_underline);
+	    tmp_hover.set_value(tmp);
+	    csslib->add(tmp_hover);
+
+	    tmp.css_clear_attributes();
+	    tmp.css_margin_top("5em");
+	    tmp.css_width("66%", false);
+	    csslib->add(class_focus, tmp);
+	}
+	catch(exception_range & e)
+	{
+	    throw WEBDAR_BUG;
+	}
+    }
+    else
+    {
+	if(! csslib->class_exists(class_tree)
+	   || ! csslib->class_exists(class_title)
+	   || ! csslib->class_exists(class_close)
+	   || ! csslib->class_exists(class_url_link)
+	   || ! csslib->class_exists(class_url_visited)
+	   || ! csslib->class_exists(class_url_hover)
+	   || ! csslib->class_exists(class_focus))
+	    throw WEBDAR_BUG;
+    }
+
+    webdar_css_style::update_library(*csslib.get());
 }
