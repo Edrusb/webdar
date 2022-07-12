@@ -36,6 +36,16 @@ extern "C"
     // webdar headers
 #include "css_property.hpp"
 
+    /// class css holds a set of properties that can be assigned to an HTML construction
+
+    ///. this class bring control to property name, the validity of their associated value
+    ///. it also brings an inheritance property than ease the transmission of property to
+    /// another css object for some 'inheritable' properties only
+    ///. two methods provide a resulting std::string of the current set of properties
+    ///  suitable to be added within markup "style=" directive
+    ///. last a protected method called css_updated() is left to inherited class for they
+    ///  be informed when a css property is set or modified.
+
 class css
 {
 public:

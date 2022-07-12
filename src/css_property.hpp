@@ -35,6 +35,15 @@ extern "C"
 
     // webdar headers
 
+    /// class css_property hold the value of a single css property
+
+    ///.  it does not only record the value but also the absence of value
+    /// when a property is not defined.
+    ///.  Last the css_property class add the notion of inheritance:
+    ///   A css_property is inheritable or not. The inheritance is used
+    ///   when calling inherit_from() method, this is a way to selectively
+    ///   copy a value from another css_property
+
 class css_property
 {
 public:
@@ -50,8 +59,8 @@ public:
 	/// copy the value from ref if unset and ref has inheritance set
 	///
 	/// \param[in] ref is the property to copy from
-	/// \param|in] any_inheritance, if false, copy is done only if ref has inheritance set
-	/// \param[in] even_if_set, if false, copy is not done if "this" is set
+	/// \param|in] any_inheritance, if false, copy is done only if ref has inheritance set, if set to true, copy is done in any case
+	/// \param[in] even_if_set, if false, copy is not done if "this" is set, if set to true, the current value is overwritten
     void inherit_from(const css_property & ref, bool any_inheritance=false, bool even_if_set=false);
 
 private:

@@ -36,6 +36,11 @@ extern "C"
     // webdar headers
 #include "body_builder.hpp"
 
+    /// class html_url_class introduce css definition in HTML body (<style> CSS </style>)
+
+    /// mainly used by class html_url to define the pseudo_class a:hover and the like,
+    /// this is referred from this object as a class_id which is defined
+    /// for each html_url_class object from its path (thus randomly but unique)
 
 class html_url_class : public body_builder
 {
