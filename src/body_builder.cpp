@@ -157,6 +157,15 @@ void body_builder::add_css_class(const std::string & name)
     css_class_names.insert(name);
 }
 
+void body_builder::add_css_class(const css_class_group & cg)
+{
+    string name;
+
+    cg.reset_read();
+    while(cg.read_next(name))
+	add_css_class(name);
+}
+
 void body_builder::remove_css_class(const std::string & name)
 {
     if(css_class_names.find(name) == css_class_names.end())
@@ -164,6 +173,16 @@ void body_builder::remove_css_class(const std::string & name)
 
     css_class_names.erase(name);
 }
+
+void body_builder::remove_css_class(const css_class_group & cg)
+{
+    string name;
+
+    cg.reset_read();
+    while(cg.read_next(name))
+	remove_css_class(name);
+}
+
 
 string body_builder::get_css_classes() const
 {

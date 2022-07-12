@@ -39,6 +39,7 @@ extern "C"
 #include "request.hpp"
 #include "chemin.hpp"
 #include "css_library.hpp"
+#include "css_class_group.hpp"
 
 class body_builder
 {
@@ -110,8 +111,14 @@ public:
 	/// set this object with a additional css_class
     void add_css_class(const std::string & name);
 
+	/// set this object with an additional set of css_classes
+    void add_css_class(const css_class_group & cg);
+
 	/// remove the provided css_class name from the list of css_class names this object has been assigned to
     void remove_css_class(const std::string & name);
+
+	/// remove the provided css_class_group from the list
+    void remove_css_class(const css_class_group & cg);
 
 	/// clear the whole list of css_class names
     void clear_css_classes() { css_class_names.clear(); };
