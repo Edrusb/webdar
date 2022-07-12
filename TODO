@@ -13,9 +13,13 @@ Here is the task to do to get ready for release 1.0.0
   classes. A static catalog of CSS class defines and exposes the list of classes
   only the requested classes get included in the HTML header. => not sure to be
   a good idea
->>> allow modifyin css_class name,
->>>> allow adding a name+css directly to a css_library
->>> provide a css_class_group to gather different selectors under the same umbrella
+>>>> review all static std::string -> static constexpr char name[] = "initialisateur";
+>>>>> terminer html_error vis a vis de html_dir_tree qui le compose
+>>>>>> migrer html_dir_tree et revoir sa classe set_css_classid()
+>>>>>>>> ajouter une class css_class_group (list of class name)
+- rename css_selector to css_pseudo_class
+
+
 - provide html interface for class libdar::entrepot in order to let the user
   select a directory on the local filesystem or a existing file on the local
   filesystem, this could be launched beside html_form_input fields of the class
