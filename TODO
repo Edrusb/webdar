@@ -1,7 +1,15 @@
 Here is the task to do to get ready for release 1.0.0
 ========================================================
 + review all classes, virtual/override, move constructor & Co
+> does css inheritance used outside of copy during component construction?
+> does it is applied from body_builder inheritance or adoption?
 >> change has_been_adopted / has_beed_foresaken (has_adopted / has_foresaken)
+>>> rename html_url_class to css_class, move it directly under css not inheriting
+>>> from body_builder (remove get_body_part and adoption stuff)
+>>> add more pseudo classes, each receive a css object as parameter
+>>>>> grab css_library for css branch, create a intermediate class that hold css_library
+>>>>> and inform inherited objects of its availablity (lookup and callback)
+>>>>> this class adds a new css property: a set of class names
 
 - have compliance with HTTP/1.1, this work is mainly at the server class layer
   where a answer has to be added field and updated version depending on the
