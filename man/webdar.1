@@ -3,7 +3,7 @@
 .SH NAME
 webdar \- web interface to libdar
 .SH SYNOPSIS
-webdar -l [<network interface>:]port [,[<network interface>:]port [,...] ] [-v] [-b <facility>]
+webdar -l [<network interface>:]port [,[<network interface>:]port [,...] ] [-v] [-b <facility>] [-C <certificate file> -K <private key file>]
 .P
 webdar -h
 .P
@@ -31,7 +31,12 @@ set webdar to be verbose
 .TP 20
 -b, --background <facility>
 set webdar as a daemon, <facility> is the syslog facility used to report the error messages that without this option are reported on stdout/stderr.
-
+.TP 20
+-C <certificate file>
+provide path to a file containing a certificate for the private key to use for SSL connections. Without -C and -K option, https sessions are not available
+.TP 20
+-K <private key file>
+provide the path to a file holding the private key, to use to encrypt ssl sessions, without -K option and provided private key, connection to webdar in https sessions is not available
 .TP 20
 -h, --help
 shows a very light help information
