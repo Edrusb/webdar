@@ -40,6 +40,7 @@ extern "C"
     ///
     /// actor links to events and get triggered upon certain events
     /// an actor object must register for one or more named event of a events object
+    /// (using the events::record_actor_on_event() method)
     /// (or of different events objects) to be triggered by a named event
     ///
     /// when a named event occurs the actor is triggered calling its on_event() method
