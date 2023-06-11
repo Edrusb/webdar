@@ -67,8 +67,6 @@ html_dir_tree::html_dir_tree(const archive_init_list * ref, const std::string & 
 
 void html_dir_tree::init(const std::string & chemin)
 {
-    css tmpcss;
-
     my_path = chemin;
     src = nullptr;
     info_read = false;
@@ -83,52 +81,22 @@ void html_dir_tree::init(const std::string & chemin)
     else
 	name.change_label(my_path.back());
 
-	// setting css properties
-    set_no_CR();
+        	// The body_builder tree
 
-    line.css_float(css::fl_left, true);
-    line.css_float_clear(css::fc_both, true);
-    line.css_width("100%", false);
-
-    shrink.css_float(css::fl_left, true);
-    shrink.css_float_clear(css::fc_both, true);
-    shrink.css_width("2em", false, true);
-    shrink.css_height("1em", false, true);
-    shrink.css_text_align(css::al_center, true);
-    shrink.css_margin_right("1em", true);
-    shrink.css_border_width(css::bd_all, css::bd_medium, true);
-    shrink.css_border_style(css::bd_all, css::bd_solid, true);
-
-    nosubdir.css_inherit_from(shrink); // propagate the just defined css value from shrink to nosubdir
-    nosubdir.css_border_color(css::bd_all, COLOR_BACK);
-    nosubdir.css_height("1em", false);
-
-    shrink.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
-
-    expand.css_inherit_from(shrink); // propagate all defined css value from shrink to expand
-
-    for_subdirs.css_float(css::fl_left);
-    for_subdirs.css_float_clear(css::fc_both);
-    for_subdirs.css_width("100%", false);
-    for_subdirs.css_border_width(css::bd_left, css::bd_thin);
-    for_subdirs.css_border_style(css::bd_left, css::bd_solid);
-    for_subdirs.css_border_color(css::bd_left, COLOR_MENU_BORDER_OFF);
-    for_subdirs.css_margin_left("1em");
-
-	// to have the name of the directory beside the shrink/expand button
-    line.set_no_CR();
-    nosubdir.set_no_CR();
-    shrink.set_no_CR();
-    expand.set_no_CR();
-    name.set_no_CR();
-
-	// The body_builder tree
     line.adopt(&nosubdir);
     line.adopt(&shrink);
     line.adopt(&expand);
     line.adopt(&name);
     adopt(&line);
     adopt(&for_subdirs);
+
+	// to have the name of the directory beside the shrink/expand button
+    set_no_CR();
+    line.set_no_CR();
+    nosubdir.set_no_CR();
+    shrink.set_no_CR();
+    expand.set_no_CR();
+    name.set_no_CR();
 
 	// binding to events
     shrink.record_actor_on_event(this, event_shrink);
@@ -149,20 +117,20 @@ void html_dir_tree::init(const std::string & chemin)
     contents.adopt_static_html(html_text(3, "GID").get_body_part());
     contents.adopt_static_html(html_text(3, "Size").get_body_part());
     contents.adopt_static_html(html_text(3, "Modifaction Date").get_body_part());
-    contents.css_text_align(css::al_center);
-    contents.css_border_width(css::bd_all, css::bd_thin);
-    contents.css_border_style(css::bd_all, css::bd_dashed);
-    contents.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
-	// assigning style for all lines
-    tmpcss.css_clear_attributes();
-    tmpcss.css_border_width(css::bd_top, css::bd_thin);
-    tmpcss.css_border_style(css::bd_top, css::bd_dashed);
-    tmpcss.css_border_color(css::bd_top, COLOR_MENU_BORDER_OFF);
-    contents.set_css_cells(tmpcss);
-	// assigning modified style for header line
-    tmpcss.css_background_color(COLOR_MENU_BACK_OFF);
-    tmpcss.css_color(COLOR_MENU_FRONT_OFF);
-    contents.set_css_cells_first_raw(tmpcss);
+
+	// assigning classes (definition are done
+
+    line.add_css_class(name_css_line);
+    shrink.add_css_class(name_css_common);
+    nosubdir.add_css_class(name_css_common);
+    nosubdir.add_css_class(name_css_nosub);
+    shrink.add_css_class(name_css_shrink);
+    expand.add_css_class(name_css_common);
+    expand.add_css_class(name_css_shrink);
+    for_subdirs.add_css_class(name_css_forsubdirs);
+    contents.add_css_class(name_css_contents);
+
+
 }
 
 void html_dir_tree::clear()
@@ -201,9 +169,9 @@ void html_dir_tree::set_source(const archive_init_list *ref)
 void html_dir_tree::set_css_classid(const std::string & classid)
 {
     last_classid = classid; // to be able to set future subdirectories
-    shrink.set_url_classid(classid);
-    expand.set_url_classid(classid);
-    name.set_url_classid(classid);
+    shrink.url_add_css_class(classid);
+    expand.url_add_css_class(classid);
+    name.url_add_css_class(classid);
     for(vector<html_dir_tree *>::iterator it = subdirs.begin();
 	it != subdirs.end();
 	++it)
@@ -369,4 +337,65 @@ void html_dir_tree::go_init_indent()
 	    ++it;
 	}
     }
+}
+
+void html_dir_tree::new_css_library_available()
+{
+    css tmpcss;
+
+	// setting css properties
+
+    tmpcss.css_float(css::fl_left, true);
+    tmpcss.css_float_clear(css::fc_both, true);
+    tmpcss.css_width("100%", false);
+    define_css_class_in_library(name_css_line, tmpcss);
+
+    tmpcss.css_clear_attributes();
+    tmpcss.css_float(css::fl_left, true);
+    tmpcss.css_float_clear(css::fc_both, true);
+    tmpcss.css_width("2em", false, true);
+    tmpcss.css_height("1em", false, true);
+    tmpcss.css_text_align(css::al_center, true);
+    tmpcss.css_margin_right("1em", true);
+    tmpcss.css_border_width(css::bd_all, css::bd_medium, true);
+    tmpcss.css_border_style(css::bd_all, css::bd_solid, true);
+    define_css_class_in_library(name_css_common, tmpcss);
+
+    tmpcss.css_clear_attributes();
+    tmpcss.css_border_color(css::bd_all, COLOR_BACK);
+    tmpcss.css_height("1em", false);
+    define_css_class_in_library(name_css_nosub, tmpcss);
+
+    tmpcss.css_clear_attributes();
+    tmpcss.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
+    define_css_class_in_library(name_css_shrink, tmpcss);
+
+    tmpcss.css_clear_attributes();
+    tmpcss.css_float(css::fl_left);
+    tmpcss.css_float_clear(css::fc_both);
+    tmpcss.css_width("100%", false);
+    tmpcss.css_border_width(css::bd_left, css::bd_thin);
+    tmpcss.css_border_style(css::bd_left, css::bd_solid);
+    tmpcss.css_border_color(css::bd_left, COLOR_MENU_BORDER_OFF);
+    tmpcss.css_margin_left("1em");
+    define_css_class_in_library(name_css_forsubdirs, tmpcss);
+
+    tmpcss.css_clear_attributes();
+    tmpcss.css_text_align(css::al_center);
+    tmpcss.css_border_width(css::bd_all, css::bd_thin);
+    tmpcss.css_border_style(css::bd_all, css::bd_dashed);
+    tmpcss.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
+    define_css_class_in_library(name_css_contents, tmpcss);
+
+	// assigning style for all lines
+    tmpcss.css_clear_attributes();
+    tmpcss.css_border_width(css::bd_top, css::bd_thin);
+    tmpcss.css_border_style(css::bd_top, css::bd_dashed);
+    tmpcss.css_border_color(css::bd_top, COLOR_MENU_BORDER_OFF);
+    contents.set_css_cells(tmpcss);
+
+	// assigning modified style for header line
+    tmpcss.css_background_color(COLOR_MENU_BACK_OFF);
+    tmpcss.css_color(COLOR_MENU_FRONT_OFF);
+    contents.set_css_cells_first_raw(tmpcss);
 }

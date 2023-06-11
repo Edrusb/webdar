@@ -85,11 +85,23 @@ public:
     virtual std::string get_body_part(const chemin & path,
 				      const request & req) override;
 
+protected:
+
+	// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 
 private:
     static const std::string event_shrink;
     static const std::string event_expand;
     static const std::string event_click;
+    static constexpr const char* name_css_line = "line";
+    static constexpr const char* name_css_common = "common";
+    static constexpr const char* name_css_shrink = "shrunk";
+    static constexpr const char* name_css_nosub = "nosubdir";
+    static constexpr const char* name_css_forsubdirs = "forsubdir";
+    static constexpr const char* name_css_contents = "contents";
+
 
     chemin my_path;
     const archive_init_list *src;
