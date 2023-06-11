@@ -119,10 +119,10 @@ public:
 	/// what the future but still non acknoledged visible status
     bool get_next_visible() const { return next_visible; };
 
-	/// set this object with a additional css_class
+	/// set this object with a additional css_class (assuming it is defined in a css_library available for this object)
     void add_css_class(const std::string & name);
 
-	/// set this object with an additional set of css_classes
+	/// set this object with an additional set of css_classes (assuming they are all defined in a css_library available for this object)
     void add_css_class(const css_class_group & cg);
 
 	/// remove the provided css_class name from the list of css_class names this object has been assigned to
@@ -143,6 +143,11 @@ public:
 	/// \note the returned string if not empty is of the form: class="<classname> <classname>..."
     std::string get_css_classes() const;
 
+	/// add a css definition on a css_library reachable by this object
+	/// \note so far this object does not use it, a call to add_css_class must be done
+	/// \note the provided css class name must not already exist (exception raised else)
+    void define_css_class_in_library(const css_class & csscl);
+    void define_css_class_in_library(const std::string & name, const css & cssdef);
 
 	/// ask the object to provide a part of the body to answer the request
 	///

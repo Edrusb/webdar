@@ -204,6 +204,21 @@ string body_builder::get_css_classes() const
     return ret;
 }
 
+void body_builder::define_css_class_in_library(const css_class & csscl)
+{
+    unique_ptr<css_library> & csslib = lookup_css_library(); // this is a reference to a unique_ptr
+
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    csslib->add(csscl);
+}
+
+void body_builder::define_css_class_in_library(const string & name, const css & cssdef)
+{
+    define_css_class_in_library(css_class(name, cssdef));
+}
+
 chemin body_builder::get_path() const
 {
     chemin ret;
