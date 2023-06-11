@@ -52,13 +52,25 @@ public:
     css_library & operator = (css_library && ref) noexcept = default;
     ~css_library() = default;
 
+	/// add a new class to the library (must not already exist in the library)
     void add(const css_class & value);
+
+	/// add a new class to the library but replace its definition by the provided one here
     void add(const std::string & name, const css & value);
+
+	/// check whether a class has a definition in this library object
     bool class_exists(const std::string & name) const;
+
+	/// obtain the definition of the given class
     bool get_value(const std::string & name, std::string & stored_value) const;
+
+	/// remove a class from the library
     void del(const std::string & name);
+
+	/// return the number of class in that library
     unsigned int size() const { return content.size(); };
 
+	/// provide a css definition of all classes of the library suitable for HTML headers or CSS files
     std::string get_html_class_definitions() const;
 
 private:
