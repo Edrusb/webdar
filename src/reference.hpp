@@ -85,7 +85,7 @@ protected:
 private:
     std::set<reference *>::iterator next_to_read;
     std::set<reference *> peers;
-    bool already_moved;
+    bool already_moved;    ///< review implementation, does not seems necessary
 
     void reset();
     void shut_all_peerings();
