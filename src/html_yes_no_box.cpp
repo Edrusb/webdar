@@ -52,13 +52,3 @@ html_yes_no_box::html_yes_no_box(const std::string & message, bool default_value
     form.adopt(&form_fs);
     adopt(&form);
 }
-
-void html_yes_no_box::css_updated(bool inherited)
-{
-    if(inherited)
-    {
-	form.css_inherit_from(*this, false, true);
-	form_fs.css_inherit_from(*this, false, true);
-	rd.css_inherit_from(*this, false, true);
-    }
-}
