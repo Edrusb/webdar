@@ -55,6 +55,10 @@ string html_image::get_body_part() const
     ret += "src=\"" + x_url + "\" alt=\"" + x_alt +"\" ";
     if(dim_x != "" && dim_y != "") // yes both
 	ret += "width=\"" + dim_x + "\" heigth=\"" + dim_y + "\" ";
+    ret += ">";
+
+    if(!get_no_CR())
+	ret += "\n";
 
     return ret;
 }
