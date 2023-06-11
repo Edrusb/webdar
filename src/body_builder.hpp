@@ -41,6 +41,17 @@ extern "C"
 #include "css_library.hpp"
 #include "css_class_group.hpp"
 
+    /// class body_builder pure virtual class ancestor of all HTML code producer classes
+
+    ///. defines a hierarchy of objects by mean of adoption (the parent adopts the childs)
+    /// and associate each child a random but unique subdirectory (used to setup the URI)
+    ///. the class also handle the CSS components associated to HTML objects or to child objects
+    /// by mean of a css_library (usually only present in the root object of the tree)
+    /// and accessible by any children to store class name+definition and refer to them when
+    /// needed.
+    ///. objects of this class also produce HTML code referring to what should be displayed on
+    /// on the browser (get_body_part())
+
 class body_builder
 {
 public:
@@ -154,9 +165,6 @@ public:
 
 protected:
 
-	/// inherited from class css
-	/// virtual void css_updated(bool inherited) override;
-
 	/// return the path of 'this' according to its descent in the body_builder tree of adopted children
     chemin get_path() const;
 
@@ -166,7 +174,7 @@ protected:
     std::string get_recorded_name() const;
 
 
-	/// this creates a css_library accessible from adpated objects to hold html class definitions
+	/// this creates a css_library accessible from adopted objects to hold html class definitions
 
 	/// \note a child object, directly or indirectly (grand child, aso) will be
 	/// able to access and populate this css_library using the lookup_css_library() method
@@ -175,7 +183,7 @@ protected:
 	/// lookup toward registered parent body_builder object for the closest stored css_library
 
 	/// \note if neither the present object nor any of its parent stores an css_library,
-	/// the call unique_ptr is false (points to nullptr), else it points to the found css_library
+	/// the returned unique_ptr is false (points to nullptr), else it points to the found css_library
     std::unique_ptr<css_library> & lookup_css_library();
 
 	/// let a parent obtain the body part from one of its children given its official name and seen the path of the request
@@ -219,6 +227,7 @@ protected:
     virtual void will_be_foresaken_by(body_builder *obj) {};
 
 	/// this is a trigger, ran when a css_library becomes available in a parent or "this"
+	/// \note this may also be triggered upon adoption by a object having acces to a css_library
     virtual void new_css_library_available() {};
 
 	/// access to adopted childs
@@ -238,16 +247,16 @@ protected:
 
 
 private:
-    bool visible;
-    bool next_visible;
-    chemin x_prefix;
-    bool no_CR;
+    bool visible;                                       ///< whether this object is visible or not
+    bool next_visible;                                  ///< whether this object will be visible once ack() by the inherited class implementation
+    chemin x_prefix;                                    ///< path of this object
+    bool no_CR;                                         ///< whether inherited class implementation should avoid adding a CR at end of HTML produced body part
     body_builder *parent;                               ///< our parent if we get adopted
     std::vector<body_builder *> order;                  ///< children by order or adoption
     std::map<std::string, body_builder *> children;     ///< children and their name
     std::map<body_builder *, std::string> revert_child; ///< revert map to get name of a child
-    std::unique_ptr<css_library> library;
-    std::set<std::string> css_class_names;
+    std::unique_ptr<css_library> library;               ///< css library if stored by this object (not when managed by a parent)
+    std::set<std::string> css_class_names;              ///< list of CSS class that apply to this object
 
 	/// unrecord 'this' from its parent as a adopted child
     void unrecord_from_parent();
