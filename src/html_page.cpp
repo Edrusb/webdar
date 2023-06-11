@@ -71,33 +71,24 @@ string html_page::get_body_part_given_the_body(const chemin & path,
 	throw WEBDAR_BUG;
 
     ret += "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n";
-    ret += "<html";
-    aux = css_get_string();
-    if(! aux.empty())
-	ret += " " + aux;
-    ret += ">\n<head>\n<title>\n";
+    ret += "<html>\n<head>\n";
+    if(csslib->size() > 0)
+	ret += "<style>\n" + csslib->get_html_class_definitions() + "</style>\n";
+    ret += "<title>\n";
     ret += x_title + "\n";
     ret += "</title>\n";
     ret += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n";
     ret += "<meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"content-type\">\n";
-
-    if(csslib->size() > 0)
-	ret += "<style>\n" + csslib->get_html_class_definitions() + "</style>\n";
 
     if(redirect != "")
 	ret += redirect + "\n";
 
     ret += "</head>\n<body";
 
-    aux = css_get_string();
+    aux = get_css_classes();
     if(! aux.empty())
-	ret += " " + aux;
+	ret += " " + aux + ">\n";
 
-    aux = check_and_get_html_class_list_in_css();
-    if(! aux.empty())
-	ret += " " + aux;
-
-    ret += ">\n";
     ret += body;
     ret += "</body>\n</html>\n";
 
