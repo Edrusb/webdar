@@ -36,6 +36,11 @@ extern "C"
     // webdar headers
 #include "css_class.hpp"
 
+    /// class css_library
+
+    /// holds a list of css classes (css name and its associated set of css properties (aka css object))
+    ///
+
 class css_library
 {
 public:
