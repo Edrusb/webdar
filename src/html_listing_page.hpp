@@ -67,7 +67,7 @@ public:
     virtual void on_event(const std::string & event_name) override;
 
 protected:
-	/// inherited from html_div/body_builder
+	/// inherited from body_builder
     virtual void path_has_changed() override { html_page::path_has_changed(); tree.set_css_classid(bt_class.get_class_id()); };
     virtual void new_css_library_available() override;
 
