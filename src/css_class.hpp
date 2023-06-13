@@ -32,6 +32,7 @@ extern "C"
 
     // C++ system header files
 #include <string>
+#include <map>
 
 
     // webdar headers
@@ -43,10 +44,30 @@ extern "C"
     /// in other words contains what HTML standard
     /// defines as a css class: a name associated
     /// to a list of CSS properties.
+    /// this class also include selectors like :hover and so on
 
 class css_class
 {
 public:
+
+	/// selector_type is ordered for :hover being defined after :link and :visited
+    enum selector_type
+    {
+	link,
+	active,
+	visited,
+	hover,
+	checked,
+	enabled,
+	disabled,
+	focus,
+	valid,
+	invalid,
+	in_range,
+	out_of_range,
+	read_only,
+	read_write
+    };
 
     css_class(const std::string & name);
     css_class(const std::string & name, const css & ref);
@@ -59,22 +80,27 @@ public:
 	/// get the css_class name
     const std::string & get_name() const { return class_name; };
 
-	/// defines the css_class value from a css object
+	/// defines or overwirte the css_class value from a css object
     void set_value(const css & ref) { class_value = ref.css_get_raw_string(); };
 
-	/// clear css_class value
+	/// defines the value for a given css_selector on that class
+    void set_selector(selector_type sel, const css & ref);
+
+	/// remove definition for the given selector type
+    void clear_selector(selector_type sel);
+
+	/// clear css_class value and all selector values
     void clear() { class_value = ""; };
 
 	/// returns the css class definition
     std::string get_definition() const;
 
-protected:
-    virtual std::string convert_name(const std::string & name) const { return "." + name; };
-
 private:
     std::string class_name;
     std::string class_value;
+    std::map<selector_type, std::string> selectors;
 
+    static std::string get_selector_name(selector_type sel);
 };
 
 #endif
