@@ -55,7 +55,7 @@ public:
 	/// add a new class to the library (must not already exist in the library)
     void add(const css_class & value);
 
-	/// add a new class to the library but replace its definition by the provided one here
+	/// add on-fly a new class to the library from its name and a css object
     void add(const std::string & name, const css & value);
 
 	/// check whether a class has a definition in this library object

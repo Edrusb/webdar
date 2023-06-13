@@ -94,10 +94,7 @@ string css_library::get_html_class_definitions() const
 
     while(it != content.end())
     {
-	ret += string(".") + it->first + string(" {");
 	ret += it->second;
-	ret += string(" }\n");
-
 	++it;
     }
 
