@@ -84,14 +84,14 @@ string css_class::get_definition() const
 	throw WEBDAR_BUG;
 
     if(!class_value.empty())
-	ret += "." + class_name + " { " + class_value + " }\n";
+	ret += "*." + class_name + " { " + class_value + " }\n";
 
     while(it != selectors.end())
     {
 	if(it->second.empty())
 	    throw WEBDAR_BUG;
 
-	ret += "." + class_name + ":" + get_selector_name(it->first) + " { " + it->second + " }\n";
+	ret += "*." + class_name + ":" + get_selector_name(it->first) + " { " + it->second + " }\n";
 	++it;
     }
 
