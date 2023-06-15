@@ -62,16 +62,16 @@ html_libdar_running::html_libdar_running():
     stats.add_css_class(class_web);
 
     ask_close.add_css_class(class_button);
-    webdar_css_style::assign_normal_classes(ask_close);
+    webdar_css_style::normal_button(ask_close);
 
     force_close.add_css_class(class_button);
-    webdar_css_style::assign_active_classes(force_close);
+    webdar_css_style::active_button(force_close);
 
     kill_close.add_css_class(class_button);
-    webdar_css_style::assign_active_classes(kill_close);
+    webdar_css_style::active_button(kill_close);
 
     finish.add_css_class(class_button);
-    webdar_css_style::assign_normal_classes(finish);
+    webdar_css_style::normal_button(finish);
 
     global.adopt(&web_ui);
     global.adopt(&stats);
