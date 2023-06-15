@@ -43,13 +43,13 @@ namespace webdar_css_style
     extern void update_library(css_library & ref);
 
 	/// apply to the given button the css_classe names defined by update_library to get a normal button style
-    extern void webdar_style_normal_button(html_button & obj);
+    extern void normal_button(html_button & obj);
 
     	/// apply to the given button the css_classe names defined by update_library to get an active button style
-    extern void webdar_style_active_button(html_button & obj);
+    extern void active_button(html_button & obj);
 
     	/// apply to the given button the css_classe names defined by update_library to get an void/invisible button style
-    extern void webdar_style_void_button(html_button & obj);
+    extern void void_button(html_button & obj);
 
 
 } // namespace end
