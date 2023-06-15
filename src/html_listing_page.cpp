@@ -45,30 +45,14 @@ html_listing_page::html_listing_page():
     tree(""),
     close("Close", event_close)
 {
-    css tmp;
 
     set_session_name("");
-
-	// set css classes
-    add_css_class(class_global);
-    tree.add_css_class(class_tree);
-    title.add_css_class(class_title);
-    webdar_css_style::assign_normal_classes(close);
-    close.add_css_class(class_close);
-    bt_class.add_css_class(class_url_link);
-    bt_class.add_css_class(class_url_visited);
-    bt_class.add_css_class(class_url_hover);
-    focus.add_css_class(class_focus);
 
 	// the body_builder tree
     adopt(&tree);
     adopt(&focus);
     adopt(&title);
     adopt(&close);
-    adopt(&bt_class);
-
-	//
-    tree.set_css_classid(bt_class.get_class_id());
 
 	// event binding
     register_name(event_close);
@@ -97,93 +81,83 @@ void html_listing_page::set_session_name(const string & session_name)
     set_title(title);
 }
 
-
 void html_listing_page::new_css_library_available()
 {
+    css_class page("html_listing_page");
+    css_class c_tree("html_listing_page_tree");
+    css_class c_title("html_listing_page_title");
+    css_class c_close("html_listing_page_close");
+    css_class c_focus("html_listing_page_focus");
     css tmp;
-    css_selector_link tmp_link(class_url_link);
-    css_selector_visited tmp_visited(class_url_visited);
-    css_selector_hover tmp_hover(class_url_hover);
-
     unique_ptr<css_library> & csslib = lookup_css_library();
+
     if(!csslib)
 	throw WEBDAR_BUG;
 
-    if(! csslib->class_exists(class_global))
-    {
-	try
-	{
-	    tmp.css_clear_attributes();
-	    tmp.css_height("100%",true);
-	    csslib->add(class_global, tmp);
+    	// set css properties
+    clear_css_classes();
+    tmp.css_height("100%",true); // applied to the html_page assign this CSS to the <body>
+    page.set_value(tmp);
+    add_css_class(page.get_name());
+    csslib->add(page);
 
-	    tmp.css_clear_attributes();
-	    tmp.css_float(css::fl_left);
-	    tmp.css_height("100%", false);
-	    tmp.css_width("32.6%", false);
-	    tmp.css_padding("0.2%");
-	    tmp.css_overflow(css::ov_scroll);
-	    tmp.css_margin_right("1%");
-	    csslib->add(class_tree, tmp);
+    tree.clear_css_classes();
+    tmp.css_clear_attributes();
+    tmp.css_float(css::fl_left);
+    tmp.css_height("100%", false);
+    tmp.css_width("32.6%", false);
+    tmp.css_padding("0.2%");
+    tmp.css_overflow(css::ov_scroll);
+    tmp.css_margin_right("1%");
+    c_tree.set_value(tmp);
+    tmp.css_clear_attributes();
+    tmp.css_color(COLOR_TEXT);
+    tmp.css_text_align(css::al_center);
+    tmp.css_text_decoration(css::dc_none);
+    c_tree.set_selector(css_class::link, tmp);
+    c_tree.set_selector(css_class::visited, tmp);
+    tmp.css_text_decoration(css::dc_underline);
+    c_tree.set_selector(css_class::hover, tmp);
+    tree.add_css_class(c_tree.get_name());
+    csslib->add(c_tree);
 
-	    tmp.css_clear_attributes();
-	    tmp.css_width("64%", false);
-	    tmp.css_padding_top("1em");
-	    tmp.css_padding_bottom("1em");
-	    tmp.css_font_weight_bold();
-	    tmp.css_font_style_italic();
-	    tmp.css_text_align(css::al_center);
-	    tmp.css_border_width(css::bd_all, css::bd_medium);
-	    tmp.css_border_style(css::bd_all, css::bd_solid);
-	    tmp.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
-	    tmp.css_color(COLOR_MENU_FRONT_OFF);
-	    tmp.css_background_color(COLOR_MENU_BACK_OFF);
-	    tmp.css_position_type(css::pos_fixed);
-	    tmp.css_position_top("1em");
-	    tmp.css_position_right("1%");
-	    csslib->add(class_title, tmp);
+    title.clear_css_classes();
+    tmp.css_clear_attributes();
+    tmp.css_width("64%", false);
+    tmp.css_padding_top("1em");
+    tmp.css_padding_bottom("1em");
+    tmp.css_font_weight_bold();
+    tmp.css_font_style_italic();
+    tmp.css_text_align(css::al_center);
+    tmp.css_border_width(css::bd_all, css::bd_medium);
+    tmp.css_border_style(css::bd_all, css::bd_solid);
+    tmp.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
+    tmp.css_color(COLOR_MENU_FRONT_OFF);
+    tmp.css_background_color(COLOR_MENU_BACK_OFF);
+    tmp.css_position_type(css::pos_fixed);
+    tmp.css_position_top("1em");
+    tmp.css_position_right("1%");
+    c_title.set_value(tmp);
+    title.add_css_class(c_title.get_name());
+    csslib->add(c_title);
 
-	    tmp.css_clear_attributes();
-	    tmp.css_float(css::fl_right);
-	    tmp.css_float_clear(css::fc_both);
-	    tmp.css_position_type(css::pos_fixed);
-	    tmp.css_position_bottom("1em");
-	    tmp.css_position_right("1em");
-	    csslib->add(class_close, tmp);
+    close.clear_css_classes();
+    webdar_css_style::normal_button(close);
+    tmp.css_clear_attributes();
+    tmp.css_float(css::fl_right);
+    tmp.css_float_clear(css::fc_both);
+    tmp.css_position_type(css::pos_fixed);
+    tmp.css_position_bottom("1em");
+    tmp.css_position_right("1em");
+    c_close.set_value(tmp);
+    close.add_css_class(c_close.get_name());
+    csslib->add(c_close);
 
-	    tmp.css_clear_attributes();
-	    tmp.css_color(COLOR_TEXT);
-	    tmp.css_text_align(css::al_center);
-	    tmp.css_text_decoration(css::dc_none);
-	    tmp_link.set_value(tmp);
-	    tmp_visisted.set_value(tmp);
-	    csslib->add(tmp_link);
-	    csslib->add(rmp_visited);
-	    tmp.css_text_decoration(css::dc_underline);
-	    tmp_hover.set_value(tmp);
-	    csslib->add(tmp_hover);
-
-	    tmp.css_clear_attributes();
-	    tmp.css_margin_top("5em");
-	    tmp.css_width("66%", false);
-	    csslib->add(class_focus, tmp);
-	}
-	catch(exception_range & e)
-	{
-	    throw WEBDAR_BUG;
-	}
-    }
-    else
-    {
-	if(! csslib->class_exists(class_tree)
-	   || ! csslib->class_exists(class_title)
-	   || ! csslib->class_exists(class_close)
-	   || ! csslib->class_exists(class_url_link)
-	   || ! csslib->class_exists(class_url_visited)
-	   || ! csslib->class_exists(class_url_hover)
-	   || ! csslib->class_exists(class_focus))
-	    throw WEBDAR_BUG;
-    }
-
-    webdar_css_style::update_library(*csslib.get());
+    focus.clear_css_classes();
+    tmp.css_clear_attributes();
+    tmp.css_margin_top("5em");
+    tmp.css_width("66%", false);
+    c_focus.set_value(tmp);
+    focus.add_css_class(c_focus.get_name());
+    csslib->add(c_focus);
 }

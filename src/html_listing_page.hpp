@@ -67,8 +67,7 @@ public:
     virtual void on_event(const std::string & event_name) override;
 
 protected:
-	/// inherited from body_builder
-    virtual void path_has_changed() override { html_page::path_has_changed(); tree.set_css_classid(bt_class.get_class_id()); };
+	/// inherited from html_div/body_builder
     virtual void new_css_library_available() override;
 
 
@@ -77,17 +76,6 @@ private:
     html_div title;
     html_focus focus;
     html_button close;
-    html_url_class bt_class;
-
-    static constexpr char class_global[] = "html_listing_page_cg";
-    static constexpr char class_tree[] = "html_listing_page_tree";
-    static constexpr char class_title[] = "html_listing_page_title";
-    static constexpr char class_close[] = "html_listing_page_close";
-    static constexpr char class_url_link[] = "html_listing_page_ul";
-    static constexpr char class_url_visited[] = "html_listing_page_uv";
-    static constexpr char class_url_hover[] = "html_listing_page_uh";
-    static constexpr char class_focus[] = "html_listing_page_focus";
-
 };
 
 
