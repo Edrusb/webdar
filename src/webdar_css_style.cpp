@@ -28,7 +28,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
 #include "tokens.hpp"
@@ -42,112 +42,135 @@ using namespace std;
 namespace webdar_css_style
 {
 
+
+    static bool initialized = false;
+
+    static libthreadar::mutex init_lock;
+    static css_class btn_off("btn_off");           ///< used to assign CSS attributes: unselected item
+    static css_class btn_on("btn_on");             ///< used to assign CSS attributes: selected item
+    static css_class btn_void("btn_void");         ///< used to assign CSS attributes: separators
+    static css_class url_selected("url_selected"); ///< links when button selected
+    static css_class url_normal("url_normal");     ///< links when button no selected
+    static css_class url_void("url_void");         ///< links when button is a void
+
+    static void init()
+    {
+        if(initialized)
+            return; // bypassing mutex as this field once true stays true forever
+
+        init_lock.lock();
+        try
+        {
+            if(!initialized)
+            {
+                css tmp_set;
+                css box_off, box_on, box_void;
+
+                    // Common aspects
+                box_off.css_border_style(css::bd_all, css::bd_solid, true);
+                box_off.css_border_width(css::bd_all, css::bd_medium, true);
+                box_off.css_width("8em", true, true);
+                box_off.css_padding("0.5em", true);
+                box_off.css_margin("0.2em", true);
+                box_off.css_text_align(css::al_center, true);
+
+                    // copy common aspects to box_off and box_void
+                box_on.css_inherit_from(box_off);
+                box_void.css_inherit_from(box_off);
+                box_void.css_border_style(css::bd_all, css::bd_none);
+
+                    // box_off and tmp_norm COLORS
+                tmp_set.css_clear_attributes();
+                tmp_set.css_color(COLOR_MENU_FRONT_OFF, true);
+                tmp_set.css_background_color(COLOR_MENU_BACK_OFF, true);
+                tmp_set.css_font_weight_bold(true);
+                tmp_set.css_font_style_italic(true);
+                tmp_set.css_text_decoration(css::dc_none, true);
+                box_off.css_inherit_from(tmp_set);
+                url_normal.set_selector(css_class::link, tmp_set);
+                url_normal.set_selector(css_class::visited, tmp_set);
+                box_off.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
+
+                    // Link Hover and Active in box_off
+                tmp_set.css_color(COLOR_MENU_FRONT_HOVER_OFF, true);
+                tmp_set.css_text_decoration(css::dc_underline, true);
+                url_normal.set_selector(css_class::hover, tmp_set);
+                tmp_set.css_color(COLOR_MENU_FRONT_ACTIVE_OFF, true);
+                url_normal.set_selector(css_class::active, tmp_set);
+
+                    // box_on and tmp_select COLORS
+                tmp_set.css_color(COLOR_MENU_FRONT_ON, true);
+                tmp_set.css_background_color(COLOR_MENU_BACK_ON, true);
+                tmp_set.css_font_weight_bold(true);
+                tmp_set.css_font_style_normal(true);
+                tmp_set.css_text_decoration(css::dc_none, true);
+                box_on.css_inherit_from(tmp_set);
+                url_selected.set_selector(css_class::link, tmp_set);
+                url_selected.set_selector(css_class::visited, tmp_set);
+                box_on.css_border_color(css::bd_all, COLOR_MENU_BORDER_ON, true);
+
+                    // Link Hover and Active in box_on
+                tmp_set.css_color(COLOR_MENU_FRONT_HOVER_ON, true);
+                tmp_set.css_text_decoration(css::dc_underline, true);
+                url_selected.set_selector(css_class::hover, tmp_set);
+                tmp_set.css_color(COLOR_MENU_FRONT_ACTIVE_ON, true);
+                url_selected.set_selector(css_class::active, tmp_set);
+
+                btn_off.set_value(box_off);
+                btn_on.set_value(box_on);
+                btn_void.set_value(box_void);
+
+                initialized = true;
+            }
+        }
+        catch(...)
+        {
+            init_lock.unlock();
+            throw;
+        }
+        init_lock.unlock();
+    }
+
     void update_library(css_library & csslib)
     {
-	css box_off, box_on, tmp;
-
-	if(! csslib.class_exists(class_button_normal))
-	{
-	    try
-	    {
-		    // this part defines classes for
-		    // html_buttons and their internal urls
-
-		    // Common aspects
-		box_off.css_clear_attributes();
-		box_off.css_border_style(css::bd_all, css::bd_solid, true);
-		box_off.css_border_width(css::bd_all, css::bd_medium, true);
-		box_off.css_width("8em", true, true);
-		box_off.css_padding("0.5em", true);
-		box_off.css_margin("0.2em", true);
-		box_off.css_text_align(css::al_center, true);
-
-		    // copy common aspects to box_off and box_void
-		box_on.css_inherit_from(box_off);
-
-		    // box_off and tmp_norm COLORS
-		tmp.css_clear_attributes();
-		tmp.css_color(COLOR_MENU_FRONT_OFF, true);
-		tmp.css_background_color(COLOR_MENU_BACK_OFF, true);
-		tmp.css_font_weight_bold(true);
-		tmp.css_font_style_italic(true);
-		tmp.css_text_decoration(css::dc_none, true);
-
-		    // complement to box_off
-		box_off.css_inherit_from(tmp);
-
-		    // link in box_off
-		csslib.add(class_button_normal_link, tmp);
-		csslib.add(class_button_normal_visited, tmp);
-
-		box_off.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
-		csslib.add(class_button_normal, box_off);
-
-		    // Link Hover and Active in box_off
-		tmp.css_color(COLOR_MENU_FRONT_HOVER_OFF, true);
-		tmp.css_text_decoration(css::dc_underline, true);
-		csslib.add(class_button_normal_hover, tmp);
-		tmp.css_color(COLOR_MENU_FRONT_ACTIVE_OFF, true);
-		csslib.add(class_button_normal_active, tmp);
-
-		    // box_on and tmp_select COLORS
-		tmp.css_color(COLOR_MENU_FRONT_ON, true);
-		tmp.css_background_color(COLOR_MENU_BACK_ON, true);
-		tmp.css_font_weight_bold(true);
-		tmp.css_font_style_normal(true);
-		tmp.css_text_decoration(css::dc_none, true);
-		box_on.css_inherit_from(tmp);
-		csslib.add(class_button_selected_link, tmp);
-		csslib.add(class_button_selected_visited, tmp);
-		box_on.css_border_color(css::bd_all, COLOR_MENU_BORDER_ON, true);
-		csslib.add(class_button_selected, box_on);
-
-		    // Link Hover and Active in box_on
-		tmp.css_color(COLOR_MENU_FRONT_HOVER_ON, true);
-		tmp.css_text_decoration(css::dc_underline, true);
-		csslib.add(class_button_selected_hover, tmp);
-		tmp.css_color(COLOR_MENU_FRONT_ACTIVE_ON, true);
-		csslib.add(class_button_selected_active, tmp);
-	    }
-	    catch(exception_range & e)
-	    {
-		throw WEBDAR_BUG;
-	    }
-	}
-	else
-	{
-	    if(! csslib.class_exists(class_button_normal)
-	       || ! csslib.class_exists(class_button_normal_link)
-	       || ! csslib.class_exists(class_button_normal_active)
-	       || ! csslib.class_exists(class_button_normal_hover)
-	       || ! csslib.class_exists(class_button_normal_visited)
-	       || ! csslib.class_exists(class_button_selected)
-	       || ! csslib.class_exists(class_button_selected_link)
-	       || ! csslib.class_exists(class_button_selected_active)
-	       || ! csslib.class_exists(class_button_selected_hover)
-	       || ! csslib.class_exists(class_button_selected_visited))
-		throw WEBDAR_BUG;
-	}
+	csslib.add(btn_on);
+	csslib.add(btn_off);
+	csslib.add(btn_void);
+	csslib.add(url_selected);
+	csslib.add(url_normal);
+	csslib.add(url_void);
     }
 
-
-    void assign_normal_classes(html_button & bt)
+    void webdar_style_normal_button(html_button & obj)
     {
-	bt.add_css_class(webdar_css_style::class_button_normal);
-	bt.url_add_css_class(webdar_css_style::class_button_normal_link);
-	bt.url_add_css_class(webdar_css_style::class_button_normal_active);
-	bt.url_add_css_class(webdar_css_style::class_button_normal_hover);
-	bt.url_add_css_class(webdar_css_style::class_button_normal_visited);
+        if(!initialized)
+            init();
+
+        obj.clear_css_classes();
+        obj.add_css_class(btn_off.get_name());
+        obj.url_clear_css_classes();
+        obj.url_add_css_class(url_normal.get_name());
     }
 
-
-    void assign_active_classes(html_button & bt)
+    void webdar_style_active_button(html_button & obj)
     {
-	bt.add_css_class(webdar_css_style::class_button_selected);
-	bt.url_add_css_class(webdar_css_style::class_button_selected_link);
-	bt.url_add_css_class(webdar_css_style::class_button_selected_active);
-	bt.url_add_css_class(webdar_css_style::class_button_selected_hover);
-	bt.url_add_css_class(webdar_css_style::class_button_selected_visited);
+        if(!initialized)
+            init();
+
+        obj.clear_css_classes();
+        obj.add_css_class(btn_on.get_name());
+        obj.url_clear_css_classes();
+        obj.url_add_css_class(url_selected.get_name());
     }
 
+    void webdar_style_void_button(html_button & obj)
+    {
+        if(!initialized)
+            init();
+
+        obj.clear_css_classes();
+        obj.add_css_class(btn_void.get_name());
+        obj.url_clear_css_classes();
+        obj.url_add_css_class(url_void.get_name());
+    }
 }

@@ -39,20 +39,18 @@ extern "C"
 
 namespace webdar_css_style
 {
-    const std::string class_button_normal = "webdar_css_style_btn_n";
-    const std::string class_button_normal_link = "webdar_css_style_btn_nl";
-    const std::string class_button_normal_active = "webdar_css_style_btn_na";
-    const std::string class_button_normal_hover = "webdar_css_style_btn_nh";
-    const std::string class_button_normal_visited = "webdar_css_style_btn_nv";
-    const std::string class_button_selected = "webdar_css_style_btn_s";
-    const std::string class_button_selected_link = "webdar_css_style_btn_sl";
-    const std::string class_button_selected_active = "webdar_css_style_btn_sa";
-    const std::string class_button_selected_hover = "webdar_css_style_btn_sh";
-    const std::string class_button_selected_visited = "webdar_css_style_btn_sv";
+	/// update a css_library with css_class definitions used by the three following routines
+    extern void update_library(css_library & ref);
 
-    void update_library(css_library & ref);
-    void assign_normal_classes(html_button & bt);
-    void assign_active_classes(html_button & bt);
+	/// apply to the given button the css_classe names defined by update_library to get a normal button style
+    extern void webdar_style_normal_button(html_button & obj);
+
+    	/// apply to the given button the css_classe names defined by update_library to get an active button style
+    extern void webdar_style_active_button(html_button & obj);
+
+    	/// apply to the given button the css_classe names defined by update_library to get an void/invisible button style
+    extern void webdar_style_void_button(html_button & obj);
+
 
 } // namespace end
 
