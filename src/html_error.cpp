@@ -50,7 +50,7 @@ html_error::html_error():
     the_error.add_css_class(class_message);
     global.add_css_class(class_global);
     close.add_css_class(class_button);
-    webdar_css_style::assign_normal_classes(close);
+    webdar_css_style::normal_button(close);
 
     global.adopt(&the_error);
     adopt(&global);
