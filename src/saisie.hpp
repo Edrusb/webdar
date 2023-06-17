@@ -129,6 +129,10 @@ public:
 	/// get the current session name
     std::string get_session_name() const { return session_name.get_value(); };
 
+protected:
+	// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 private:
     enum
     {
@@ -157,6 +161,7 @@ private:
 
 	// the different sub pages contained by "select" and shown depending on choice's value
     html_div div_about;
+    html_text text;
     html_div around_licensing;
     html_url licensing;
     html_form_input session_name;

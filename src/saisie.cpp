@@ -81,43 +81,33 @@ saisie::saisie():
     go_merge("Merge", event_merge),
     close("Do you really want to close this session?", false)
 {
-    html_text text;
-
     status = st_idle;
 
-    webdar_style_normal_button(go_extract);
-    webdar_style_normal_button(go_compare);
-    webdar_style_normal_button(go_test);
-    webdar_style_normal_button(go_list);
-    webdar_style_normal_button(go_create);
-    webdar_style_normal_button(go_isolate);
-    webdar_style_normal_button(go_merge);
+    webdar_css_style::normal_button(go_extract);
+    webdar_css_style::normal_button(go_compare);
+    webdar_css_style::normal_button(go_test);
+    webdar_css_style::normal_button(go_list);
+    webdar_css_style::normal_button(go_create);
+    webdar_css_style::normal_button(go_isolate);
+    webdar_css_style::normal_button(go_merge);
 
-    go_extract.css_float(fl_right);
-    go_compare.css_float(fl_right);
-    go_test.css_float(fl_right);
-    go_list.css_float(fl_right);
-    go_create.css_float(fl_right);
-    go_isolate.css_float(fl_right);
-    go_merge.css_float(fl_right);
 
 	// configuration of "choice"
-    choice.add_entry("about", "Main Page");
-    choice.add_entry("sep0", "");
-    choice.add_entry("restore", "Restoration");
-    choice.add_entry("compare", "Comparison");
-    choice.add_entry("test", "Testing");
-    choice.add_entry("list", "Listing");
-    choice.add_entry("create", "Creation");
-    choice.add_entry("isolate", "Isolation");
-    choice.add_entry("merge", "Merging");
-    choice.add_entry("sep1", "");
-    choice.add_entry("filters", "Filters");
-    choice.add_entry("repo", "Repositories");
-    choice.add_entry("sess", "Other Sessions");
-    choice.add_entry("sep2", "");
-    choice.add_entry("close", "Close Session");
-    choice.css_float(css::fl_left);
+    choice.add_entry("Main Page");
+    choice.add_entry("");
+    choice.add_entry("Restoration");
+    choice.add_entry("Comparison");
+    choice.add_entry("Testing");
+    choice.add_entry("Listing");
+    choice.add_entry("Creation");
+    choice.add_entry("Isolation");
+    choice.add_entry("Merging");
+    choice.add_entry("");
+    choice.add_entry("Filters");
+    choice.add_entry("Repositories");
+    choice.add_entry("Other Sessions");
+    choice.add_entry("");
+    choice.add_entry("Close Session");
     adopt(&choice);
 
 	// Configuring archive_show
@@ -131,19 +121,14 @@ saisie::saisie():
 
 	//  configuration of the about sub-page
     text.clear();
-    text.css_text_align(css::al_center, true);
-    text.css_margin("2em", true);
     text.add_text(1,"WEBDAR");
     text.add_paragraph();
     text.add_text(4,string("version ") + WEBDAR_VERSION);
     text.add_paragraph();
     text.add_text(0, "by Denis CORBIN");
-    div_about.adopt_static_html(text.get_body_part());
-    around_licensing.css_width("90%", true);
-    around_licensing.css_margin_bottom("1em");
-    around_licensing.css_margin_top("1em");
-    around_licensing.css_text_align(css::al_center);
-    div_about.adopt_static_html(html_text(0,"").add_paragraph().get_body_part());
+    text.add_text(0, "");
+    text.add_paragraph();
+    div_about.adopt(&text);
     around_licensing.adopt(&licensing);
     div_about.adopt(&around_licensing);
     div_about.adopt_static_html(html_text(0,"").add_paragraph().get_body_part());
@@ -224,7 +209,6 @@ saisie::saisie():
     select.adopt(&close);
 
 	/// configuration of "select"
-    select.css_margin_left("9.4em");
     select.set_mode(0);
     right_pan.adopt(&select);
     adopt(&right_pan);
@@ -492,4 +476,51 @@ const html_options_merge & saisie::get_merging_options() const
 	throw WEBDAR_BUG;
 
     return merge.get_options_merge();
+}
+
+void saisie::new_css_library_available()
+{
+    css tmp;
+    string css_class_right = "saisie_right";
+    string css_class_text = "saisie_text";
+    string css_class_margin = "saisie_marge";
+    string css_class_choice = "saisie_choice";
+    string css_class_license = "saisie_license";
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    tmp.css_float(css::fl_right);
+    csslib->add(css_class_right, tmp);
+    go_extract.add_css_class(css_class_right);
+    go_compare.add_css_class(css_class_right);
+    go_test.add_css_class(css_class_right);
+    go_list.add_css_class(css_class_right);
+    go_create.add_css_class(css_class_right);
+    go_isolate.add_css_class(css_class_right);
+    go_merge.add_css_class(css_class_right);
+
+    tmp.css_clear_attributes();
+    tmp.css_float(css::fl_left);
+    csslib->add(css_class_choice, tmp);
+    choice.add_css_class(css_class_choice);
+
+    tmp.css_clear_attributes();
+    tmp.css_width("90%", true);
+    tmp.css_margin_bottom("1em");
+    tmp.css_margin_top("1em");
+    tmp.css_text_align(css::al_center);
+    csslib->add(css_class_license, tmp);
+    around_licensing.add_css_class(css_class_license);
+
+    tmp.css_clear_attributes();
+    tmp.css_text_align(css::al_center, true);
+    tmp.css_margin("2em", true);
+    csslib->add(css_class_text, tmp);
+    text.add_css_class(css_class_text);
+
+    tmp.css_clear_attributes();
+    tmp.css_margin_left("9.4em");
+    csslib->add(css_class_margin, tmp);
+    select.add_css_class(css_class_margin);
 }
