@@ -133,12 +133,28 @@ namespace webdar_css_style
 
     void update_library(css_library & csslib)
     {
-	csslib.add(btn_on);
-	csslib.add(btn_off);
-	csslib.add(btn_void);
-	csslib.add(url_selected);
-	csslib.add(url_normal);
-	csslib.add(url_void);
+	if(!csslib.class_exists(btn_on.get_name()))
+	{
+	    csslib.add(btn_on);
+	    csslib.add(btn_off);
+	    csslib.add(btn_void);
+	    csslib.add(url_selected);
+	    csslib.add(url_normal);
+	    csslib.add(url_void);
+	}
+	else
+	{
+	    if(!csslib.class_exists(btn_off.get_name()))
+		throw WEBDAR_BUG;
+	    if(!csslib.class_exists(btn_void.get_name()))
+		throw WEBDAR_BUG;
+	    if(!csslib.class_exists(url_selected.get_name()))
+		throw WEBDAR_BUG;
+	    if(!csslib.class_exists(url_normal.get_name()))
+		throw WEBDAR_BUG;
+	    if(!csslib.class_exists(url_void.get_name()))
+		throw WEBDAR_BUG;
+	}
     }
 
     void webdar_style_normal_button(html_button & obj)
