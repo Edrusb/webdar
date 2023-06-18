@@ -34,7 +34,6 @@ extern "C"
 #include "html_text.hpp"
 #include "tokens.hpp"
 #include "exceptions.hpp"
-#include "css_selector.hpp"
 
     //
 #include "html_menu.hpp"
@@ -205,14 +204,8 @@ void html_menu::new_css_library_available()
     css_class cl_off(box_off_class);
     css_class cl_on(box_on_class);
     css_class cl_void(box_void_class);
-    css_selector_link sel_normal_link(url_normal_class);
-    css_selector_active sel_normal_active(url_normal_class);
-    css_selector_hover sel_normal_hover(url_normal_class);
-    css_selector_visited sel_normal_visited(url_normal_class);
-    css_selector_link sel_selected_link(url_selected_class);
-    css_selector_active sel_selected_active(url_selected_class);
-    css_selector_hover sel_selected_hover(url_selected_class);
-    css_selector_visited sel_selected_visited(url_selected_class);
+    css_class cl_url_sel(url_selected_class);
+    css_class cl_url_norm(url_normal_class);
 
     css box_off;   ///< used to assign CSS attributes: unselected item
     css box_on;    ///< used to assign CSS attributes: selected item
@@ -242,17 +235,17 @@ void html_menu::new_css_library_available()
     tmp_set.css_font_style_italic(true);
     tmp_set.css_text_decoration(css::dc_none, true);
 
-    sel_normal_link.set_value(tmp_set);
-    sel_normal_visited.set_value(tmp_set);
+    cl_url_norm.set_selector(css_class::link, tmp_set);
+    cl_url_norm.set_selector(css_class::visited, tmp_set);
     box_off.css_inherit_from(tmp_set);
     box_off.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
 
 	// Link Hover and Active in box_off
     tmp_set.css_color(COLOR_MENU_FRONT_HOVER_OFF, true);
     tmp_set.css_text_decoration(css::dc_underline, true);
-    sel_normal_hover.set_value(tmp_set);
+    cl_url_norm.set_selector(css_class::hover, tmp_set);
     tmp_set.css_color(COLOR_MENU_FRONT_ACTIVE_OFF, true);
-    sel_normal_active.set_value(tmp_set);
+    cl_url_norm.set_selector(css_class::active, tmp_set);
 
 	// box_on and tmp_select COLORS
     tmp_set.css_color(COLOR_MENU_FRONT_ON, true);
@@ -261,17 +254,17 @@ void html_menu::new_css_library_available()
     tmp_set.css_font_style_normal(true);
     tmp_set.css_text_decoration(css::dc_none, true);
 
-    sel_selected_link.set_value(tmp_set);
-    sel_selected_visited.set_value(tmp_set);
+    cl_url_sel.set_selector(css_class::link, tmp_set);
+    cl_url_sel.set_selector(css_class::visited, tmp_set);
     box_on.css_inherit_from(tmp_set);
     box_on.css_border_color(css::bd_all, COLOR_MENU_BORDER_ON, true);
 
 	// Link Hover and Active in box_on
     tmp_set.css_color(COLOR_MENU_FRONT_HOVER_ON, true);
     tmp_set.css_text_decoration(css::dc_underline, true);
-    sel_selected_hover.set_value(tmp_set);
+    cl_url_sel.set_selector(css_class::hover, tmp_set);
     tmp_set.css_color(COLOR_MENU_FRONT_ACTIVE_ON, true);
-    sel_selected_active.set_value(tmp_set);
+    cl_url_sel.set_selector(css_class::active, tmp_set);
 
 	// the selectors are now set,
 	// setting the classes from the css boxes:
@@ -289,14 +282,8 @@ void html_menu::new_css_library_available()
     csslib->add(cl_off);
     csslib->add(cl_on);
     csslib->add(cl_void);
-    csslib->add(sel_normal_link);
-    csslib->add(sel_normal_active);
-    csslib->add(sel_normal_hover);
-    csslib->add(sel_normal_visited);
-    csslib->add(sel_selected_link);
-    csslib->add(sel_selected_active);
-    csslib->add(sel_selected_hover);
-    csslib->add(sel_selected_visited);
+    csslib->add(cl_url_sel);
+    csslib->add(cl_url_norm);
 }
 
 
