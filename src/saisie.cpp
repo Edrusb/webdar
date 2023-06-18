@@ -33,7 +33,6 @@ extern "C"
     // webdar headers
 #include "exceptions.hpp"
 #include "webdar_css_style.hpp"
-#include "html_text.hpp"
 #include "tokens.hpp"
 
     //
