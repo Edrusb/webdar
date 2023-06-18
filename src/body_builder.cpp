@@ -183,6 +183,19 @@ void body_builder::remove_css_class(const css_class_group & cg)
 	remove_css_class(name);
 }
 
+css_class_group body_builder::get_css_class_group() const
+{
+    css_class_group ret;
+    set<string>::iterator it = css_class_names.begin();
+
+    while(it != css_class_names.end())
+    {
+	ret.add_css_class(*it);
+	++it;
+    }
+
+    return ret;
+}
 
 string body_builder::get_css_classes() const
 {

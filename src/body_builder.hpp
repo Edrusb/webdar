@@ -137,6 +137,9 @@ public:
     	/// provide the list of css_class names that this object has been set with
     const std::set<std::string> & get_css_classes_as_a_set() const { return css_class_names; };
 
+	/// provide the list of css_class names as a css_class_group
+    css_class_group get_css_class_group() const;
+
 
 	/// return the class_name as inlined css, suitable to be added in a html marker
 
