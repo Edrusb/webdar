@@ -118,6 +118,8 @@ private:
 
 	/// maps username to a record structure (which contained the chooser)
     static std::map<std::string, record *> per_user;
+    static const std::string css_class_error_msg;
+    static const std::string css_class_normal_text;
 };
 
 #endif
