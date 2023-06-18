@@ -59,10 +59,10 @@ int main(int argc, char *argv[])
 	html_page page("mon titre");
 	html_menu menu;
 	page.adopt(&menu);
-	menu.add_entry("action 1", "coucou");
-	menu.add_entry("action 2", "coucou2");
-	menu.add_entry("","");
-	menu.add_entry("action 3", "coucou3");
+	menu.add_entry("coucou");
+	menu.add_entry("coucou2");
+	menu.add_entry("");
+	menu.add_entry("coucou3");
 
 	cout << page.get_body_part(chem, req) << endl;
     }
