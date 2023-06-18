@@ -41,6 +41,12 @@ using namespace std;
 const string fixed_title1 = "Webdar - ";
 const string fixed_title2 = "Libdar message";
 
+const char* html_error::acknowledged = "html_error_acknowledged";
+const char* html_error::class_message = "html_error_mesg";
+const char* html_error::class_global = "html_error_glb";
+const char* html_error::class_button = "html_error_btn";
+const char* html_error::close_event = "html_error_button_close";
+
 html_error::html_error():
     html_page(fixed_title1+fixed_title2),
     close("Close", close_event)

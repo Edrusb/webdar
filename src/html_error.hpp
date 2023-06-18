@@ -39,10 +39,11 @@ extern "C"
 #include "html_text.hpp"
 #include "html_button.hpp"
 
+
 class html_error : public html_page, public events, public actor
 {
 public:
-    static constexpr char acknowledged[] = "html_error_acknowledged";
+    static const char* acknowledged;
 
     html_error();
     html_error(const html_error & ref) = default;
@@ -69,12 +70,12 @@ private:
     html_button close;
 
 	// css classes
-    static constexpr char class_message[] = "html_error_mesg";
-    static constexpr char class_global[] = "html_error_glb";
-    static constexpr char class_button[] = "html_error_btn";
+    static const char* class_message;
+    static const char* class_global;
+    static const char* class_button;
 
 	// events
-    static constexpr char close_event[] = "html_error_button_close";
+    static const char* close_event;
 };
 
 #endif
