@@ -64,6 +64,8 @@ choose::choose(const string & user):
     static const string css_class_page = "choose_page";
     static const string css_class_tmp_text = "choose_text";
     static const string css_class_table = "choose_table";
+    static const string css_class_table_cells = "choose_table_cells";
+    static const string css_class_table_title = "choose_table_title";
     static const string css_class_form = "choose_form";
     static const string css_class_div = "choose_div";
 
@@ -99,12 +101,14 @@ choose::choose(const string & user):
     tmpcss.css_border_width(css::bd_all, css::bd_thin, true);
     tmpcss.css_border_style(css::bd_all, css::bd_solid, true);
     tmpcss.css_border_color(css::bd_all, COLOR_TEXT, true);
-    table.set_css_cells(tmpcss);
+    page.define_css_class_in_library(css_class_table_cells, tmpcss);
+    table.set_css_class_cells(css_class_table_cells);
     tmpcss2.css_inherit_from(tmpcss);
     tmpcss.css_background_color(COLOR_MENU_BACK_OFF);
     tmpcss.css_color(COLOR_MENU_FRONT_OFF);
     tmpcss.css_font_style_italic();
-    table.set_css_cells_first_raw(tmpcss);
+    page.define_css_class_in_library(css_class_table_title, tmpcss);
+    table.set_css_class_first_row(css_class_table_title);
     table.css_border_collapsed(true);
     tmpcss2.css_width("90%", true);
     page.define_css_class_in_library(css_class_table, tmpcss2);
