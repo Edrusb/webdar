@@ -160,4 +160,6 @@ void html_listing_page::new_css_library_available()
     c_focus.set_value(tmp);
     focus.add_css_class(c_focus.get_name());
     csslib->add(c_focus);
+
+    webdar_css_style::update_library(*csslib);
 }

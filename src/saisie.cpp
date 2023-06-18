@@ -523,4 +523,6 @@ void saisie::new_css_library_available()
     tmp.css_margin_left("9.4em");
     csslib->add(css_class_margin, tmp);
     select.add_css_class(css_class_margin);
+
+    webdar_css_style::update_library(*csslib);
 }
