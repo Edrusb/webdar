@@ -157,7 +157,7 @@ namespace webdar_css_style
 	}
     }
 
-    void webdar_style_normal_button(html_button & obj)
+    void normal_button(html_button & obj)
     {
         if(!initialized)
             init();
@@ -168,7 +168,7 @@ namespace webdar_css_style
         obj.url_add_css_class(url_normal.get_name());
     }
 
-    void webdar_style_active_button(html_button & obj)
+    void active_button(html_button & obj)
     {
         if(!initialized)
             init();
@@ -179,7 +179,7 @@ namespace webdar_css_style
         obj.url_add_css_class(url_selected.get_name());
     }
 
-    void webdar_style_void_button(html_button & obj)
+    void void_button(html_button & obj)
     {
         if(!initialized)
             init();
@@ -189,4 +189,5 @@ namespace webdar_css_style
         obj.url_clear_css_classes();
         obj.url_add_css_class(url_void.get_name());
     }
-}
+
+}  // end of namespace
