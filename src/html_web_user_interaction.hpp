@@ -73,6 +73,10 @@ public:
 
     web_user_interaction & get_user_interaction() { return lib_data; };
 
+protected:
+	// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 private:
 	// fields for exchange with libdar thread
     web_user_interaction lib_data;

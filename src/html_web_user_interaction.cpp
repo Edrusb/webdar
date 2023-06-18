@@ -52,9 +52,6 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     h_pause.add_choice("no", "No");
     h_pause.add_choice("yes", "Yes");
 
-    h_inter_text.css_font_weight_bold();
-    h_inter_text.css_color("blue");
-
     h_inter.adopt(&h_inter_text);
     h_inter.adopt(&h_pause);
     h_form.adopt(&h_inter);
@@ -212,6 +209,22 @@ void html_web_user_interaction::clear()
     h_inter.set_visible(false);
     h_get_string.set_visible(false);
     adjust_visibility();
+}
+
+void html_web_user_interaction::new_css_library_available()
+{
+    static const string css_class_inter = "html_web_user_inter";
+
+    css tmp;
+
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    tmp.css_font_weight_bold();
+    tmp.css_color("blue");
+    define_css_class_in_library(css_class_inter, tmp);
+    h_inter_text.add_css_class(css_class_inter);
 }
 
 void html_web_user_interaction::adjust_visibility()
