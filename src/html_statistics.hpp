@@ -75,6 +75,11 @@ public:
     virtual std::string get_body_part(const chemin & path,
 				      const request & req) override;
 
+protected:
+	// inherited from body_builder
+    virtual void new_css_library_available() override;
+
+
 private:
     libdar::statistics stats;
 
