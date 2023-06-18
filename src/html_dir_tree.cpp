@@ -117,20 +117,6 @@ void html_dir_tree::init(const std::string & chemin)
     contents.adopt_static_html(html_text(3, "GID").get_body_part());
     contents.adopt_static_html(html_text(3, "Size").get_body_part());
     contents.adopt_static_html(html_text(3, "Modifaction Date").get_body_part());
-
-	// assigning classes (definition are done
-
-    line.add_css_class(name_css_line);
-    shrink.add_css_class(name_css_common);
-    nosubdir.add_css_class(name_css_common);
-    nosubdir.add_css_class(name_css_nosub);
-    shrink.add_css_class(name_css_shrink);
-    expand.add_css_class(name_css_common);
-    expand.add_css_class(name_css_shrink);
-    for_subdirs.add_css_class(name_css_forsubdirs);
-    contents.add_css_class(name_css_contents);
-
-
 }
 
 void html_dir_tree::clear()
@@ -341,6 +327,15 @@ void html_dir_tree::go_init_indent()
 
 void html_dir_tree::new_css_library_available()
 {
+    static constexpr const char* name_css_line = "line";
+    static constexpr const char* name_css_common = "common";
+    static constexpr const char* name_css_shrink = "shrunk";
+    static constexpr const char* name_css_nosub = "nosubdir";
+    static constexpr const char* name_css_forsubdirs = "forsubdir";
+    static constexpr const char* name_css_contents = "contents";
+    static constexpr const char* name_css_contents_cells = "contents_cells";
+    static constexpr const char* name_css_contents_title = "contents_title";
+
     css tmpcss;
 
 	// setting css properties
@@ -349,6 +344,7 @@ void html_dir_tree::new_css_library_available()
     tmpcss.css_float_clear(css::fc_both, true);
     tmpcss.css_width("100%", false);
     define_css_class_in_library(name_css_line, tmpcss);
+    line.add_css_class(name_css_line);
 
     tmpcss.css_clear_attributes();
     tmpcss.css_float(css::fl_left, true);
@@ -360,15 +356,21 @@ void html_dir_tree::new_css_library_available()
     tmpcss.css_border_width(css::bd_all, css::bd_medium, true);
     tmpcss.css_border_style(css::bd_all, css::bd_solid, true);
     define_css_class_in_library(name_css_common, tmpcss);
+    shrink.add_css_class(name_css_common);
+    nosubdir.add_css_class(name_css_common);
+    expand.add_css_class(name_css_common);
 
     tmpcss.css_clear_attributes();
     tmpcss.css_border_color(css::bd_all, COLOR_BACK);
     tmpcss.css_height("1em", false);
     define_css_class_in_library(name_css_nosub, tmpcss);
+    nosubdir.add_css_class(name_css_nosub);
 
     tmpcss.css_clear_attributes();
     tmpcss.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
     define_css_class_in_library(name_css_shrink, tmpcss);
+    shrink.add_css_class(name_css_shrink);
+    expand.add_css_class(name_css_shrink);
 
     tmpcss.css_clear_attributes();
     tmpcss.css_float(css::fl_left);
@@ -379,6 +381,7 @@ void html_dir_tree::new_css_library_available()
     tmpcss.css_border_color(css::bd_left, COLOR_MENU_BORDER_OFF);
     tmpcss.css_margin_left("1em");
     define_css_class_in_library(name_css_forsubdirs, tmpcss);
+    for_subdirs.add_css_class(name_css_forsubdirs);
 
     tmpcss.css_clear_attributes();
     tmpcss.css_text_align(css::al_center);
@@ -386,16 +389,20 @@ void html_dir_tree::new_css_library_available()
     tmpcss.css_border_style(css::bd_all, css::bd_dashed);
     tmpcss.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
     define_css_class_in_library(name_css_contents, tmpcss);
+    contents.add_css_class(name_css_contents);
 
 	// assigning style for all lines
     tmpcss.css_clear_attributes();
     tmpcss.css_border_width(css::bd_top, css::bd_thin);
     tmpcss.css_border_style(css::bd_top, css::bd_dashed);
     tmpcss.css_border_color(css::bd_top, COLOR_MENU_BORDER_OFF);
-    contents.set_css_cells(tmpcss);
+    define_css_class_in_library(name_css_contents_cells, tmpcss);
+    contents.set_css_class_cells(name_css_contents_cells);
+
 
 	// assigning modified style for header line
     tmpcss.css_background_color(COLOR_MENU_BACK_OFF);
     tmpcss.css_color(COLOR_MENU_FRONT_OFF);
-    contents.set_css_cells_first_raw(tmpcss);
+    define_css_class_in_library(name_css_contents_title, tmpcss);
+    contents.set_css_class_first_row(name_css_contents_title);
 }

@@ -95,12 +95,6 @@ private:
     static const std::string event_shrink;
     static const std::string event_expand;
     static const std::string event_click;
-    static constexpr const char* name_css_line = "line";
-    static constexpr const char* name_css_common = "common";
-    static constexpr const char* name_css_shrink = "shrunk";
-    static constexpr const char* name_css_nosub = "nosubdir";
-    static constexpr const char* name_css_forsubdirs = "forsubdir";
-    static constexpr const char* name_css_contents = "contents";
 
 
     chemin my_path;
