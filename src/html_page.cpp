@@ -87,7 +87,8 @@ string html_page::get_body_part_given_the_body(const chemin & path,
 
     aux = get_css_classes();
     if(! aux.empty())
-	ret += " " + aux + ">\n";
+	ret += " " + aux;
+    ret += ">\n";
 
     ret += body;
     ret += "</body>\n</html>\n";
