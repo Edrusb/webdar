@@ -51,6 +51,7 @@ css_class::css_class(const std::string & name, const css & ref)
     if(name.empty())
 	throw WEBDAR_BUG;
 
+    class_name = name;
     set_value(ref);
 }
 
