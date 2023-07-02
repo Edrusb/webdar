@@ -263,7 +263,7 @@ private:
     std::vector<body_builder *> order;                  ///< children by order or adoption
     std::map<std::string, body_builder *> children;     ///< children and their name
     std::map<body_builder *, std::string> revert_child; ///< revert map to get name of a child
-    std::unique_ptr<css_library> library;               ///< css library if stored by this object (not when managed by a parent)
+    std::unique_ptr<css_library> library;               ///< css library if stored by this object
     std::set<std::string> css_class_names;              ///< list of CSS class that apply to this object
 
 	/// unrecord 'this' from its parent as a adopted child
