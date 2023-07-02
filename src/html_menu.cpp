@@ -193,11 +193,13 @@ void html_menu::on_event(const string & event_name)
     set_current_mode(num);
 }
 
-string html_menu::get_body_part(const chemin & path,
+/*string html_menu::get_body_part(const chemin & path,
 			   const request & req)
 {
-    return get_body_part_from_all_children(path, req);
+
+    return html_div::get_body_part(path, req);
 }
+*/
 
 void html_menu::new_css_library_available()
 {
