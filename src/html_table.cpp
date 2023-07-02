@@ -69,7 +69,10 @@ string html_table::get_body_part(const chemin & path,
     if(sub_path.size() > 0)
 	sub_path.pop_front();
 
-    ret = "<table " + get_css_classes() + " " + table_css  + ">\n";
+    ret = "<table " + get_css_classes();
+    if(table_css != "")
+	ret += " " + table_css;
+    ret += ">\n";
 
     reset_read_next();
     while(read_next(bdl))
