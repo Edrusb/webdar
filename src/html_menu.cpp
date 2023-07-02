@@ -193,6 +193,14 @@ void html_menu::on_event(const string & event_name)
     set_current_mode(num);
 }
 
+/*string html_menu::get_body_part(const chemin & path,
+			   const request & req)
+{
+
+    return html_div::get_body_part(path, req);
+}
+*/
+
 void html_menu::new_css_library_available()
 {
     css_class cl_off(box_off_class);
