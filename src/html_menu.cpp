@@ -196,7 +196,36 @@ void html_menu::on_event(const string & event_name)
 string html_menu::get_body_part(const chemin & path,
 			   const request & req)
 {
-    return get_body_part_from_all_children(path, req);
+	// reading the requested path to determin
+	// whether a change of mode is required
+	// before starting providing an response
+	// from any component or subcomponent
+
+    chemin target = req.get_uri().get_path();
+
+    if(target.size() > 2)
+    {
+	target.pop_back();
+	target.pop_back();
+
+	if(target == get_path())
+	{
+		// the requested link is us
+
+	    unsigned int i = 0;
+	    unsigned int size = item.size();
+	    string target_s = req.get_uri().get_path().display();
+
+		// looking which button index it is:
+
+	    while(i < size && item[i] != nullptr && item[i]->get_url() != target_s)
+		++i;
+	    if(i < size)
+		set_current_mode(i);
+	}
+    }
+
+    return html_div::get_body_part(path, req);
 }
 
 void html_menu::new_css_library_available()
