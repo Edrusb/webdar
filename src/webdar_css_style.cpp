@@ -46,12 +46,12 @@ namespace webdar_css_style
     static bool initialized = false;
 
     static libthreadar::mutex init_lock;
-    static css_class btn_off("btn_off");           ///< used to assign CSS attributes: unselected item
-    static css_class btn_on("btn_on");             ///< used to assign CSS attributes: selected item
-    static css_class btn_void("btn_void");         ///< used to assign CSS attributes: separators
-    static css_class url_selected("url_selected"); ///< links when button selected
-    static css_class url_normal("url_normal");     ///< links when button no selected
-    static css_class url_void("url_void");         ///< links when button is a void
+    static css_class btn_off("wcs_btn_off");           ///< used to assign CSS attributes: unselected item
+    static css_class btn_on("wcs_btn_on");             ///< used to assign CSS attributes: selected item
+    static css_class btn_void("wcs_btn_void");         ///< used to assign CSS attributes: separators
+    static css_class url_selected("wcs_url_selected"); ///< links when button selected
+    static css_class url_normal("wcs_url_normal");     ///< links when button no selected
+    static css_class url_void("wcs_url_void");         ///< links when button is a void
 
     static void init()
     {
