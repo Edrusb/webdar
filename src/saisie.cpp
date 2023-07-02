@@ -241,6 +241,10 @@ saisie::saisie():
     register_name(event_isolate);
     register_name(event_merge);
     register_name(changed_session_name);
+
+	// manually calling the new_css_library_available()
+	// as it could not be called from html_page::html_page (constructor)
+    new_css_library_available();
 }
 
 string saisie::get_body_part(const chemin & path,

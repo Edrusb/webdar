@@ -70,6 +70,14 @@ protected:
 					     const request & req,
 					     const std::string & body);
 
+	/// \note: for inherited classes implementation, as the css_library is created
+	/// from the constructor of html_page class, the new_css_library_available()
+        /// overriden method will not be called as expected from the consequence of setting
+	/// a css_library. To solve this restriction
+	/// what seems the best solution is to manually call the
+	/// inherited class's new_css_library_available() from the inherited
+	/// class constructors.
+
 private:
     std::string x_title;
     std::string redirect;
