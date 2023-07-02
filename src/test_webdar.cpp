@@ -31,6 +31,9 @@
 
 #include "html_page.hpp"
 #include "html_menu.hpp"
+#include "html_table.hpp"
+#include "html_div.hpp"
+#include "css.hpp"
 #include "pipe_connexion.hpp"
 
 using namespace std;
@@ -58,11 +61,41 @@ int main(int argc, char *argv[])
 
 	html_page page("mon titre");
 	html_menu menu;
-	page.adopt(&menu);
+	html_div div;
+	html_table table(4);
+
+	page.adopt(&div);
+	div.adopt(&menu);
+	page.adopt(&table);
+
 	menu.add_entry("coucou");
 	menu.add_entry("coucou2");
 	menu.add_entry("");
 	menu.add_entry("coucou3");
+	menu.set_current_mode(1);
+	table.adopt_static_html("col1");
+	table.adopt_static_html("col2");
+	table.adopt_static_html("col3");
+	table.adopt_static_html("col4");
+	for(unsigned int i = 1; i < 5; ++i)
+	{
+	    ostringstream conv;
+	    conv << i;
+	    table.adopt_static_html(string("val ") + conv.str());
+	}
+
+	css cm;
+	string namem = "class_tutu";
+	cm.css_float(css::fl_left);
+	div.add_css_class(namem);
+	page.define_css_class_in_library(namem, cm);
+
+	css ct;
+	string namet = "class_toto";
+//	ct.css_width("30%", false);
+//	ct.css_float(css::fl_right);
+	table.add_css_class(namet);
+	page.define_css_class_in_library(namet, ct);
 
 	cout << page.get_body_part(chem, req) << endl;
     }
