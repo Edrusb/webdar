@@ -42,7 +42,7 @@ using namespace std;
 html_table::html_table(unsigned int width)
 {
     dim_x = width;
-    border_collapsed = true;
+    border_collapsed = "";
     cells_title_set = false;
     css_class_title = "";
     css_class_cells = "";
