@@ -82,7 +82,7 @@ string css_class::get_definition() const
     map<selector_type, string>::const_iterator it = selectors.begin();
 
     if(class_value.empty() && selectors.empty())
-	throw WEBDAR_BUG;
+	return "";
 
     if(!class_value.empty())
 	ret += "*." + class_name + " { " + class_value + " }\n";
