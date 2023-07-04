@@ -127,7 +127,7 @@ saisie::saisie():
     text.add_text(0, "by Denis CORBIN");
     text.add_text(0, "");
     text.add_paragraph();
-    div_about.adopt(&text);
+    around_licensing.adopt_static_html(text.get_body_part());
     around_licensing.adopt(&licensing);
     div_about.adopt(&around_licensing);
     div_about.adopt_static_html(html_text(0,"").add_paragraph().get_body_part());
