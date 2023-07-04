@@ -49,7 +49,6 @@ extern "C"
 #include "html_archive_isolate.hpp"
 #include "html_archive_merge.hpp"
 #include "html_button.hpp"
-#include "html_text.hpp"
 
 
     /// class saisie
@@ -215,6 +214,9 @@ private:
     html_div div_sep2;
 	//
     html_yes_no_box close;
+
+    static const std::string css_class_text;
+
 };
 
 #endif

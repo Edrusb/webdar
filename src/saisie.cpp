@@ -37,6 +37,7 @@ extern "C"
 
     //
 #include "saisie.hpp"
+#include "html_text.hpp"
 
 using namespace std;
 
@@ -49,6 +50,8 @@ const string saisie::event_create  = "saisie_create";
 const string saisie::event_isolate = "saisie_isolate";
 const string saisie::event_merge   = "saisie_merge";
 const string saisie::changed_session_name = "saisie_changed_session_name";
+
+const string saisie::css_class_text = "saisie_text";
 
 saisie::saisie():
     archread("Source archive"),
@@ -82,7 +85,6 @@ saisie::saisie():
 {
     status = st_idle;
     html_text text; // used to build static text content
-
 
     webdar_css_style::normal_button(go_extract);
     webdar_css_style::normal_button(go_compare);
@@ -129,6 +131,7 @@ saisie::saisie():
     text.add_text(0, "by Denis CORBIN");
     text.add_text(0, "");
     text.add_paragraph();
+    text.add_css_class(css_class_text);
     around_licensing.adopt_static_html(text.get_body_part());
     around_licensing.adopt(&licensing);
     div_about.adopt(&around_licensing);
@@ -486,9 +489,7 @@ const html_options_merge & saisie::get_merging_options() const
 void saisie::new_css_library_available()
 {
     css tmp;
-      html_text text; // used to build static text content
     string css_class_right = "saisie_right";
-    string css_class_text = "saisie_text";
     string css_class_margin = "saisie_marge";
     string css_class_choice = "saisie_choice";
     string css_class_license = "saisie_license";
@@ -523,7 +524,6 @@ void saisie::new_css_library_available()
     tmp.css_text_align(css::al_center, true);
     tmp.css_margin("2em", true);
     csslib->add(css_class_text, tmp);
-    text.add_css_class(css_class_text);
 
     tmp.css_clear_attributes();
     tmp.css_margin_left("9.4em");
