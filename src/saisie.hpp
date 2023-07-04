@@ -163,7 +163,6 @@ private:
 
 	// the different sub pages contained by "select" and shown depending on choice's value
     html_div div_about;
-    html_text text;
     html_div around_licensing;
     html_url licensing;
     html_form_input session_name;

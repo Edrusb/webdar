@@ -81,6 +81,8 @@ saisie::saisie():
     close("Do you really want to close this session?", false)
 {
     status = st_idle;
+    html_text text; // used to build static text content
+
 
     webdar_css_style::normal_button(go_extract);
     webdar_css_style::normal_button(go_compare);
@@ -484,6 +486,7 @@ const html_options_merge & saisie::get_merging_options() const
 void saisie::new_css_library_available()
 {
     css tmp;
+      html_text text; // used to build static text content
     string css_class_right = "saisie_right";
     string css_class_text = "saisie_text";
     string css_class_margin = "saisie_marge";
