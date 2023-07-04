@@ -297,10 +297,10 @@ void saisie::on_event(const std::string & event_name)
 	// menu "choice" changed
 
 	set_title(webdar_tools_get_title(get_session_name(), choice.get_current_label()));
-	if(choice.get_current_label() == "restore"
-	   || choice.get_current_label() == "compare"
-	   || choice.get_current_label() == "test"
-	   || choice.get_current_label() == "list")
+	if(choice.get_current_label() == "Restoration"
+	   || choice.get_current_label() == "Comparison"
+	   || choice.get_current_label() == "Testing"
+	   || choice.get_current_label() == "Listing")
 	    archive_show.set_visible(true);
 	else
 	    archive_show.set_visible(false);
