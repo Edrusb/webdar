@@ -114,12 +114,6 @@ void html_listing_page::new_css_library_available()
     c_tree.set_value(tmp);
     tmp.css_clear_attributes();
     tmp.css_color(COLOR_TEXT);
-    tmp.css_text_align(css::al_center);
-    tmp.css_text_decoration(css::dc_none);
-    c_tree.set_selector(css_class::link, tmp);
-    c_tree.set_selector(css_class::visited, tmp);
-    tmp.css_text_decoration(css::dc_underline);
-    c_tree.set_selector(css_class::hover, tmp);
     tree.add_css_class(c_tree.get_name());
     csslib->add(c_tree);
 
