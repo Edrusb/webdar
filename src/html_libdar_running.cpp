@@ -61,25 +61,25 @@ html_libdar_running::html_libdar_running():
     web_ui.add_css_class(class_web);
     stats.add_css_class(class_web);
 
-    ask_close.add_css_class(class_button);
     webdar_css_style::normal_button(ask_close);
+    ask_close.add_css_class(class_button);
 
-    force_close.add_css_class(class_button);
     webdar_css_style::active_button(force_close);
+    force_close.add_css_class(class_button);
 
-    kill_close.add_css_class(class_button);
     webdar_css_style::active_button(kill_close);
+    kill_close.add_css_class(class_button);
 
-    finish.add_css_class(class_button);
     webdar_css_style::normal_button(finish);
+    finish.add_css_class(class_button);
 
     global.adopt(&web_ui);
     global.adopt(&stats);
     adopt(&global);
-    adopt(&ask_close);
-    adopt(&force_close);
-    adopt(&kill_close);
-    adopt(&finish);
+    global.adopt(&ask_close);
+    global.adopt(&force_close);
+    global.adopt(&kill_close);
+    global.adopt(&finish);
 
     register_name(ask_end_libdar);
     register_name(force_end_libdar);
@@ -93,6 +93,8 @@ html_libdar_running::html_libdar_running():
     force_close.record_actor_on_event(this, force_end_libdar);
     kill_close.record_actor_on_event(this, kill_libdar_thread);
     finish.record_actor_on_event(this, close_libdar_screen);
+
+    new_css_library_available();
 }
 
 string html_libdar_running::get_body_part(const chemin & path,
@@ -166,8 +168,6 @@ void html_libdar_running::new_css_library_available()
 	    tmp.css_clear_attributes();
 	    tmp.css_margin("1em");
 	    tmp.css_padding("1em");
-	    tmp.css_border_style(css::bd_all, css::bd_inset);
-	    tmp.css_border_width(css::bd_all, css::bd_medium);
 	    csslib->add(class_global, tmp);
 
 	    tmp.css_clear_attributes();
