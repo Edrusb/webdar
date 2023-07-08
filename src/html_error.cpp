@@ -55,8 +55,8 @@ html_error::html_error():
 
     the_error.add_css_class(class_message);
     global.add_css_class(class_global);
-    close.add_css_class(class_button);
     webdar_css_style::normal_button(close);
+    close.add_css_class(class_button);
 
     global.adopt(&the_error);
     adopt(&global);
@@ -65,6 +65,8 @@ html_error::html_error():
     close.record_actor_on_event(this, close_event);
 
     register_name(acknowledged);
+
+    new_css_library_available();
 }
 
 void html_error::set_message(const std::string & msg)
