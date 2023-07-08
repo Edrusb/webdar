@@ -146,17 +146,17 @@ saisie::saisie():
 
 	// configuration of the restore sub-page
     div_extract.adopt(&extract);
-    div_extract.adopt(&extract_fs_root_fs);
-    extract_fs_root_fs.adopt(&extract_fs_root_form);
-    extract_fs_root_form.adopt(&extract_fs_root);
+    div_extract.adopt(&extract_fs_root_form);
+    extract_fs_root_form.adopt(&extract_fs_root_fs);
+    extract_fs_root_fs.adopt(&extract_fs_root);
     div_extract.adopt(&go_extract);
     select.adopt(&div_extract);
 
 	// comparison sub-page
     div_compare.adopt(&compare);
-    div_compare.adopt(&diff_fs_root_fs);
-    diff_fs_root_fs.adopt(&diff_fs_root_form);
-    diff_fs_root_form.adopt(&diff_fs_root);
+    div_compare.adopt(&diff_fs_root_form);
+    diff_fs_root_form.adopt(&diff_fs_root_fs);
+    diff_fs_root_fs.adopt(&diff_fs_root);
     div_compare.adopt(&go_compare);
     select.adopt(&div_compare);
 

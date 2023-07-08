@@ -144,7 +144,6 @@ void html_listing_page::new_css_library_available()
     csslib->add(c_title);
 
     close.clear_css_classes();
-    webdar_css_style::normal_button(close);
     tmp.css_clear_attributes();
     tmp.css_float(css::fl_right);
     tmp.css_float_clear(css::fc_both);
@@ -152,6 +151,7 @@ void html_listing_page::new_css_library_available()
     tmp.css_position_bottom("1em");
     tmp.css_position_right("1em");
     c_close.set_value(tmp);
+    webdar_css_style::normal_button(close);
     close.add_css_class(c_close.get_name());
     csslib->add(c_close);
 
