@@ -27,68 +27,80 @@ extern "C"
 #include <errno.h>
 #include <limits.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
+#include <unistd.h>
+#include <fcntl.h>
 }
 
     // webdar headers
 
-#include "connexion.hpp"
+#include "pipe_connexion.hpp"
 
 using namespace std;
 
-connexion::connexion(int fd, const string & peerip, unsigned int peerport):
+pipe_connexion::pipe_connexion(int read_fd, int write_fd, const std::string & peerip, unsigned int peerport):
     proto_connexion(peerip, peerport)
 {
-    filedesc = fd;
+    readfd = read_fd;
+    writefd = write_fd;
 }
 
-connexion::~connexion()
-{
-    fermeture();
-}
+pipe_connexion::~pipe_connexion() { fermeture(); };
 
-unsigned int connexion::read_impl(char *a, unsigned int size, bool blocking)
+unsigned int pipe_connexion::read_impl(char *a, unsigned int size, bool blocking)
 {
     bool loop = true;
     ssize_t lu = 0;
-    int flag = blocking ? 0 : MSG_DONTWAIT;
 
     if(get_status() != connected)
-        throw WEBDAR_BUG;
+	throw WEBDAR_BUG;
 
-    while(loop)
+    int flag = fcntl(readfd, F_GETFL);
+    if(blocking)
+	fcntl(readfd, F_SETFL, flag & ~O_NONBLOCK);
+    else
+	fcntl(readfd, F_SETFL, flag | O_NONBLOCK);
+
+    try
     {
-        loop = false;
-        lu = recv(filedesc, a, size, flag);
-        if(lu == 0)
-        {
-            fermeture();
-            throw exception_range("reached end of data on socket");
-        }
-        if(lu < 0)
-        {
-            switch(errno)
-            {
-            case EINTR:    // system call interrupted by a signal
-                loop = true;
-                break;
-            case EAGAIN:   // means no data avaiable in non-blocking mode
-                if(blocking)
-                    throw WEBDAR_BUG;
-                else
-                    lu = 0;
-                break;
-            default:
-                throw exception_system("Error met while receiving data: ", errno);
-            }
-        }
+	while(loop)
+	{
+	    loop = false;
+	    lu = read(readfd, a, size);
+	    if(lu == 0)
+	    {
+		fermeture();
+		throw exception_range("reached end of data on socket");
+	    }
+	    if(lu < 0)
+	    {
+		switch(errno)
+		{
+		case EINTR:    // system call interrupted by a signal
+		    loop = true;
+		    break;
+		case EAGAIN:   // means no data avaiable in non-blocking mode
+		    if(blocking)
+			throw WEBDAR_BUG;
+		    else
+			lu = 0;
+		    break;
+		default:
+		    throw exception_system("Error met while receiving data: ", errno);
+		}
+	    }
+	}
     }
+    catch(...)
+    {
+	fcntl(readfd, F_SETFL, flag);
+	throw;
+    }
+    fcntl(readfd, F_SETFL, flag);
 
     return (unsigned int)lu;
 }
 
-void connexion::write_impl(const char *a, unsigned int size)
+void pipe_connexion::write_impl(const char *a, unsigned int size)
 {
     unsigned int wrote = 0;
     ssize_t tmp;
@@ -98,7 +110,7 @@ void connexion::write_impl(const char *a, unsigned int size)
 
     while(wrote < size)
     {
-        tmp = send(filedesc, (void *)(a + wrote), size - wrote, MSG_NOSIGNAL);
+        tmp = ::write(writefd, (void *)(a + wrote), size - wrote);
         if(tmp < 0)
         {
             switch(errno)
@@ -120,22 +132,14 @@ void connexion::write_impl(const char *a, unsigned int size)
 }
 
 
-void connexion::fermeture()
+void pipe_connexion::fermeture()
 {
     if(get_status() == connected)
     {
-        int shuted;
-        int errnono;
+//        int errnono;
 
-        if(filedesc < 0)
-            throw WEBDAR_BUG;
-        shuted = shutdown(filedesc, SHUT_RDWR);
-        if(shuted != 0)
-            errnono = errno;
-        close(filedesc);
-        filedesc = -1;
+        close(readfd);
+	close(writefd);
         set_status(not_connected);
-        if(shuted != 0)
-            throw exception_system("failed shutting down the socket", errnono);
     }
 }

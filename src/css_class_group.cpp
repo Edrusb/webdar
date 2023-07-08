@@ -31,33 +31,52 @@ extern "C"
 
 
     // webdar headers
-
+#include "exceptions.hpp"
 
 
     //
-#include "html_url_class.hpp"
+#include "css_class_group.hpp"
 
 using namespace std;
 
-
-string html_url_class::get_body_part(const chemin & path,
-				     const request & req)
+void css_class_group::add_css_class(const string & name)
 {
-    string class_name = get_path().namify();
-    string ret = "";
+    if(content.find(name) != content.end())
+	throw exception_range(string("the css_class name to add is already present: ") + name);
 
-    if(link != "")
-	ret += "a." + class_name + ":link {" + link + "}\n";
-    if(visited != "")
-	ret += "a." + class_name + ":visited {" + visited + "}\n";
-    if(active != "")
-	ret += "a." + class_name + ":active {" + active + "}\n";
-    if(hover != "")
-	ret += "a." + class_name + ":hover {" + hover + "}\n";
+    content.insert(name);
+}
 
-    if(ret != "")
-	ret = "<style type=\"text/css\">\n" + ret + "</style>\n";
 
-    return ret;
+void css_class_group::remove_css_class(const string & name)
+{
+    if(content.find(name) == content.end())
+	throw exception_range(string("the css_class name to remove is not present in the list: ") + name);
+
+    content.erase(name);
+    reader = content.begin();
+}
+
+void css_class_group::clear_css_classes()
+{
+    content.clear();
+    reader = content.begin();
+}
+
+void css_class_group::reset_read() const
+{
+    reader = content.begin();
+}
+
+bool css_class_group::read_next(string & next_class) const
+{
+    if(reader == content.end())
+	return false;
+    else
+    {
+	next_class = *reader;
+	++reader;
+	return true;
+    }
 }
 

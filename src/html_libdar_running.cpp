@@ -32,6 +32,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
+
     //
 #include "html_libdar_running.hpp"
 
@@ -42,6 +43,10 @@ const string html_libdar_running::force_end_libdar = "html_libdar_running_force_
 const string html_libdar_running::kill_libdar_thread = "html_libdar_running_kill_libdar_thread";
 const string html_libdar_running::close_libdar_screen = "html_libdar_running_close_libdar_screen";
 
+const string html_libdar_running::class_global = "html_libdar_running_global";
+const string html_libdar_running::class_web = "html_libdar_running_web";
+const string html_libdar_running::class_button = "html_libdar_running_button";
+
 html_libdar_running::html_libdar_running():
     html_page("THIS IS A BUG"),
     ask_close("Gracefully stop libdar", ask_end_libdar),
@@ -51,41 +56,30 @@ html_libdar_running::html_libdar_running():
 {
     sessname = "";
 
-    global.css_margin("1em");
-    global.css_padding("1em");
-    global.css_border_style(css::bd_all, css::bd_inset);
-    global.css_border_width(css::bd_all, css::bd_medium);
+    global.add_css_class(class_global);
 
-    web_ui.css_width("90%", true);
-    stats.css_width("90%", true);
+    web_ui.add_css_class(class_web);
+    stats.add_css_class(class_web);
 
-    webdar_style_normal_button(ask_close);
-    ask_close.css_float(css::fl_right);
-    ask_close.css_float_clear(css::fc_both);
-    ask_close.css_margin_right("1em");
+    webdar_css_style::normal_button(ask_close);
+    ask_close.add_css_class(class_button);
 
-    webdar_style_active_button(force_close);
-    force_close.css_float(css::fl_right);
-    force_close.css_float_clear(css::fc_both);
-    force_close.css_margin_right("1em");
+    webdar_css_style::active_button(force_close);
+    force_close.add_css_class(class_button);
 
-    webdar_style_active_button(kill_close);
-    kill_close.css_float(css::fl_right);
-    kill_close.css_float_clear(css::fc_both);
-    kill_close.css_margin_right("1em");
+    webdar_css_style::active_button(kill_close);
+    kill_close.add_css_class(class_button);
 
-    webdar_style_normal_button(finish);
-    finish.css_float(css::fl_right);
-    finish.css_float_clear(css::fc_both);
-    finish.css_margin_right("1em");
+    webdar_css_style::normal_button(finish);
+    finish.add_css_class(class_button);
 
     global.adopt(&web_ui);
     global.adopt(&stats);
     adopt(&global);
-    adopt(&ask_close);
-    adopt(&force_close);
-    adopt(&kill_close);
-    adopt(&finish);
+    global.adopt(&ask_close);
+    global.adopt(&force_close);
+    global.adopt(&kill_close);
+    global.adopt(&finish);
 
     register_name(ask_end_libdar);
     register_name(force_end_libdar);
@@ -99,6 +93,8 @@ html_libdar_running::html_libdar_running():
     force_close.record_actor_on_event(this, force_end_libdar);
     kill_close.record_actor_on_event(this, kill_libdar_thread);
     finish.record_actor_on_event(this, close_libdar_screen);
+
+    new_css_library_available();
 }
 
 string html_libdar_running::get_body_part(const chemin & path,
@@ -157,6 +153,51 @@ void html_libdar_running::clear()
     stats.clear_labels();
 }
 
+void html_libdar_running::new_css_library_available()
+{
+    css tmp;
+
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    if(! csslib->class_exists(class_global))
+    {
+	try
+	{
+	    tmp.css_clear_attributes();
+	    tmp.css_margin("1em");
+	    tmp.css_padding("1em");
+	    csslib->add(class_global, tmp);
+
+	    tmp.css_clear_attributes();
+	    tmp.css_width("90%", true);
+	    csslib->add(class_web, tmp);
+
+	    tmp.css_clear_attributes();
+	    tmp.css_float(css::fl_right);
+	    tmp.css_float_clear(css::fc_both);
+	    tmp.css_margin_right("1em");
+	    csslib->add(class_button, tmp);
+
+	}
+	catch(exception_range & e)
+	{
+		// no class or all class should be
+		// present in csslib
+	    throw WEBDAR_BUG;
+	}
+    }
+    else
+    {
+	if(! csslib->class_exists(class_web)
+	   || ! csslib->class_exists(class_button))
+	    throw WEBDAR_BUG;
+    }
+
+    webdar_css_style::update_library(*csslib.get());
+
+}
 
 void html_libdar_running::set_mode(mode_type m)
 {

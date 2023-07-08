@@ -47,6 +47,8 @@ extern "C"
 using namespace std;
 
 map<string, choose::record *> choose::per_user;
+const string choose::css_class_error_msg = "choose_error_msg";
+const string choose::css_class_normal_text = "choose_normal_text";
 
 choose::choose(const string & user):
     page("Webdar - Choose a session"),
@@ -58,7 +60,14 @@ choose::choose(const string & user):
     confirmed("Confirm destruction of sessions listed above?", false)
 {
     html_text tmp;
-    css tmpcss;
+    css tmpcss, tmpcss2;
+    static const string css_class_page = "choose_page";
+    static const string css_class_tmp_text = "choose_text";
+    static const string css_class_table = "choose_table";
+    static const string css_class_table_cells = "choose_table_cells";
+    static const string css_class_table_title = "choose_table_title";
+    static const string css_class_form = "choose_form";
+    static const string css_class_div = "choose_div";
 
     owner = user;
     confirm_mode = false;
@@ -66,36 +75,65 @@ choose::choose(const string & user):
 
 	/// setup of session table page
 
-    page.css_background_color(COLOR_BACK);
-    page.css_color(COLOR_TEXT);
-    page.css_padding("1em");
-    page.css_text_align(css::al_center);
+    tmpcss.css_clear_attributes();
+    tmpcss.css_background_color(COLOR_BACK);
+    tmpcss.css_color(COLOR_TEXT);
+    tmpcss.css_padding("1em");
+    tmpcss.css_text_align(css::al_center);
+    page.define_css_class_in_library(css_class_page, tmpcss);
+    page.add_css_class(css_class_page);
 
+    tmpcss.css_clear_attributes();
     tmp.add_text(3, string("Current sessions - we are identified as user ") + owner);
-    tmp.css_padding("1em");
-    tmp.css_background_color(COLOR_PADBACK);
-    tmp.css_color(COLOR_PADFRONT);
-    tmp.css_font_weight_bold();
-    tmp.css_border_width(css::bd_all, css::bd_medium);
-    tmp.css_border_style(css::bd_all, css::bd_solid);
-    tmp.css_border_color(css::bd_all, COLOR_PADBORD);
+    tmpcss.css_padding("1em");
+    tmpcss.css_background_color(COLOR_PADBACK);
+    tmpcss.css_color(COLOR_PADFRONT);
+    tmpcss.css_font_weight_bold();
+    tmpcss.css_border_width(css::bd_all, css::bd_medium);
+    tmpcss.css_border_style(css::bd_all, css::bd_solid);
+    tmpcss.css_border_color(css::bd_all, COLOR_PADBORD);
+    page.define_css_class_in_library(css_class_tmp_text, tmpcss);
+    tmp.add_css_class(css_class_tmp_text);
     page.adopt_static_html(tmp.get_body_part());
 
+    tmpcss.css_clear_attributes();
+    tmpcss2.css_clear_attributes();
     tmpcss.css_border_width(css::bd_all, css::bd_thin, true);
     tmpcss.css_border_style(css::bd_all, css::bd_solid, true);
     tmpcss.css_border_color(css::bd_all, COLOR_TEXT, true);
-    table.css_inherit_from(tmpcss);
-    table.set_css_cells(tmpcss);
+    page.define_css_class_in_library(css_class_table_cells, tmpcss);
+    table.set_css_class_cells(css_class_table_cells);
+    tmpcss2.css_inherit_from(tmpcss);
     tmpcss.css_background_color(COLOR_MENU_BACK_OFF);
     tmpcss.css_color(COLOR_MENU_FRONT_OFF);
     tmpcss.css_font_style_italic();
-    table.set_css_cells_first_raw(tmpcss);
+    page.define_css_class_in_library(css_class_table_title, tmpcss);
+    table.set_css_class_first_row(css_class_table_title);
     table.css_border_collapsed(true);
-    table.css_width("90%", true);
+    tmpcss2.css_width("90%", true);
+    page.define_css_class_in_library(css_class_table, tmpcss2);
+    table.add_css_class(css_class_table);
 
-    form.css_margin_top("1em", true);
+    tmpcss.css_clear_attributes();
+    tmpcss.css_margin_top("1em", true);
+    page.define_css_class_in_library(css_class_form, tmpcss);
+    form.add_css_class(css_class_form);
 
-    div.css_width("90%", true);
+    tmpcss.css_clear_attributes();
+    tmpcss.css_width("90%", true);
+    page.define_css_class_in_library(css_class_div, tmpcss);
+    div.add_css_class(css_class_div);
+
+    	/// defining but not using yet the css_class_error_msg for html_page "page"
+
+    tmpcss.css_clear_attributes();
+    tmpcss.css_color("#FF0000");
+    tmpcss.css_text_align(css::al_center);
+    tmpcss.css_font_weight_bold();
+    page.define_css_class_in_library(css_class_error_msg, tmpcss);
+
+	// setting up genealogy of body_builder objects for object page
+
     div.adopt(&table);
     form.adopt(&div);
     page.adopt(&form);
@@ -105,11 +143,46 @@ choose::choose(const string & user):
 
 	/// confirmation page setup
 
-    confirm.css_background_color(COLOR_BACK);
-    confirm.css_color(COLOR_TEXT, true);
-    confirm.css_text_align(css::al_center);
-    ctable.css_width("90%", true);
-    confirmed.css_text_align(css::al_left, true);
+	// we reuse the css_class_name stored in page's csslib
+	// to the confirm page which has its own csslib
+	// css_class named definition do differ between html_pages
+	// "page" and "confirm"!
+
+    tmpcss.css_clear_attributes();
+    tmpcss.css_background_color(COLOR_BACK);
+    tmpcss.css_color(COLOR_TEXT, true);
+    tmpcss.css_text_align(css::al_center);
+    confirm.define_css_class_in_library(css_class_page, tmpcss);
+    confirm.add_css_class(css_class_page);
+
+    tmpcss.css_clear_attributes();
+    tmpcss.css_width("90%", true);
+    confirm.define_css_class_in_library(css_class_table, tmpcss);
+    ctable.add_css_class(css_class_table);
+
+    tmpcss.css_clear_attributes();
+    tmpcss.css_text_align(css::al_left, true);
+    confirm.define_css_class_in_library(css_class_form, tmpcss);
+    confirmed.add_css_class(css_class_form);
+
+	/// defining but not using yet the css_class_error_msg for html_page "confirm"
+
+    tmpcss.css_clear_attributes();
+    tmpcss.css_padding("1em");
+    tmpcss.css_background_color("red");
+    tmpcss.css_color(COLOR_PADFRONT);
+    tmpcss.css_font_weight_bold();
+    tmpcss.css_border_width(css::bd_all, css::bd_medium);
+    tmpcss.css_border_style(css::bd_all, css::bd_solid);
+    tmpcss.css_border_color(css::bd_all, COLOR_PADBORD);
+    confirm.define_css_class_in_library(css_class_error_msg, tmpcss);
+
+    tmpcss.css_clear_attributes();
+    tmpcss.css_padding_left("1em");
+    confirm.define_css_class_in_library(css_class_normal_text, tmpcss);
+
+
+	// setting up genealogy of body_builder objects for confirm object
 
     ctable.adopt(&confirmed);
     confirm.adopt(&ctable);
@@ -184,9 +257,7 @@ answer choose::give_answer(const request & req)
 	    html_text tmp;
 
 	    tmp.add_text(1, error_msg);
-	    tmp.css_color("#FF0000");
-	    tmp.css_text_align(css::al_center);
-	    tmp.css_font_weight_bold();
+	    tmp.add_css_class(css_class_error_msg);
 	    table.adopt_static_html(tmp.get_body_part());
 	}
 	if(req.get_uri().get_path() == chemin("choose/new"))
@@ -294,19 +365,12 @@ void choose::regenerate_confirm_page()
 
     ctable.clear();
     text.clear();
-    text.css_clear_attributes();
     text.add_text(3, "The following sessions are about to be destroyed");
-    text.css_padding("1em");
-    text.css_background_color("red");
-    text.css_color(COLOR_PADFRONT);
-    text.css_font_weight_bold();
-    text.css_border_width(css::bd_all, css::bd_medium);
-    text.css_border_style(css::bd_all, css::bd_solid);
-    text.css_border_color(css::bd_all, COLOR_PADBORD);
+    text.add_css_class(css_class_error_msg);
     ctable.adopt_static_html(text.get_body_part());
 
-    text.css_clear_attributes();
-    text.css_padding_left("1em");
+    text.clear_css_classes();
+    text.add_css_class(css_class_normal_text);
 
     if(boxes.size() != sess.size())
 	throw WEBDAR_BUG;

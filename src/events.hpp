@@ -69,6 +69,7 @@ protected:
     void act(const std::string & name);
 
 private:
+	/// maps for each event, the list of pending actors
     std::map< std::string , std::list<actor *> > carte;
 
 };

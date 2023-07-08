@@ -29,7 +29,7 @@
 using namespace std;
 
 
-parser::parser(unique_ptr<connexion> & input,
+parser::parser(unique_ptr<proto_connexion> & input,
 	       const shared_ptr<central_report> & log): req(log)
 {
     if(!input)
@@ -38,7 +38,7 @@ parser::parser(unique_ptr<connexion> & input,
     if(!log)
 	throw WEBDAR_BUG;
 
-    if(input->get_status() != connexion::connected)
+    if(input->get_status() != proto_connexion::connected)
 	throw exception_range("connection is already closed cannot read from it");
 
     answered = true;
@@ -48,7 +48,7 @@ parser::parser(unique_ptr<connexion> & input,
 void parser::close()
 {
     source.reset();
-	// this should invoke the destructor on the pointed to connexion object
+	// this should invoke the destructor on the pointed to proto_connexion object
 }
 
 bool parser::get_next_request_uri(uri & url)

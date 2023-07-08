@@ -34,7 +34,7 @@
 #include "session.hpp"
 #include "authentication.hpp"
 
-    /// thread object that read request from the provided connexion send then to the
+    /// thread object that read request from the provided proto_connexion send then to the
     /// appropriated session managing authentication and send back the answer to the session
 
     /// \note relies on a parser object to split byte flow into structured requests, challenge object
@@ -48,7 +48,7 @@ public:
 
     static bool run_new_server(const std::shared_ptr<central_report> & log,
 			       const std::shared_ptr<const authentication> & auth,
-			       std::unique_ptr<connexion> & source);
+			       std::unique_ptr<proto_connexion> & source);
     static void set_max_server(unsigned int val) { max_server = val; };
     static void kill_server(pthread_t tid);
     static void kill_all_servers();
@@ -63,14 +63,14 @@ protected:
 private:
     server(const std::shared_ptr<central_report> & log,
 	   const std::shared_ptr<const authentication> & auth,
-	   std::unique_ptr<connexion> & source);
+	   std::unique_ptr<proto_connexion> & source);
     server(const server & ref) = delete;
     server(server && ref) noexcept = delete;
     server & operator = (const server & ref) = delete;
     server & operator = (server && ref) noexcept = delete;
     ~server() = default;
 
-    parser src;              //< this object manages the given connexion in constructor
+    parser src;              //< this object manages the given proto_connexion in constructor
     std::shared_ptr<central_report> rep; //< where do logs should go
     std::shared_ptr<const authentication> authsrc; //< object to consult for user authentications
     bool can_keep_session;   //< whether aonther object asked interacting with the session we use

@@ -58,7 +58,7 @@ html_options_test::html_options_test():
     libdar::archive_options_test defaults;
 
 	// default values
-    info_details.set_value_as_bool(defaults.get_info_details());
+    info_details.set_value_as_bool(defaults.get_display_treated());
     empty.set_value_as_bool(defaults.get_empty());
     display_skipped.set_value_as_bool(defaults.get_display_skipped());
 
@@ -75,7 +75,7 @@ libdar::archive_options_test html_options_test::get_options() const
 {
     libdar::archive_options_test ret;
 
-    ret.set_info_details(info_details.get_value_as_bool());
+    ret.set_display_treated(info_details.get_value_as_bool(), false);
     ret.set_empty(empty.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
 

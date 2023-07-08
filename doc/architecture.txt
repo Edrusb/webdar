@@ -1,0 +1,155 @@
+class reference
+- class for which, objects can create peering relationship
+- method are provided to list peers and to establish and manage peerings
+- object destruction take care to dissaocitate peered objects
+- hook is provided for an object to be informed when a peering has been broken
+  this is only for inherited classes
+
+class actor : inherit from class reference
+- provide mean for these object to be notified of events (on_event()). An event is a string name
+  that the object has registered to on a given even object.
+
+class event : inherit from class reference
+- object of that class define one or more event name, that actor objects can subscribe to
+  (record_actor_on_event(event_name)
+- this class provide a protected method for inherited class act() that let generate an
+  event of the given name (the event must have been registered first for that and also for actor
+  to be able to subscribe to it).
+
+actor-event relation is mainly used for html_* object to trigger action upon user interaction
+through HTTP requests. An object can be both an actor and an event, an actor only or an event only
+
+
+=========
+
+class css
+- provide a way to define a set of attribute to assign to a html object (like a <div>)
+- has inheritance ability for field flagged as inheritable
+> can receive class name attribute ??? (why that in fact?)
+- provide raw string or <style>-embedded string to be used into html or css style-sheet
+
+class css_class
+- is the association of a name to a css (the value)
+- can provide the value as a string to be put in css style-sheet
+
+class css_selector : public css_class
+- is a specific implementation of for selector on classes (like the :hover CSS selectror)
+
+class css_select_* : public css_selector
+- a set of inherited class from css_selector that implement the :hover :active :checked and other selectors
+
+class css_library
+- gather a set of css_classes (i.e.: the association of a css definition and its name)
+- control and avoid duplicate (name unicity)
+- provide a dump of all class definition in a format suitable for CSS file
+
+class body_builder
+- parent class of all object that produce html code (the body of the HTML answer)
+  ->  body_builder::get_body_part()
+- objects have a visibile toggle and transition state that the inherited implementation
+  must ack for the new visibility status to be set. Only visible object should return
+  HTML code.
+* body_builder define a tree adoption feature that let a object adopt another
+  this adoption mecanism defines hierarchy in the way the html code is generated
+  (parent define which if their child express html and in which order it is returned
+   by the object itself)
+  this adoption tree does not link to object memory management responsibility,
+  but body_builder construction take care to disassociate objects when one (parent of
+  child) is destroyed.
+* in relation to the adoption each object has a path that is used to define what
+  object should receive a HTTP request. Adoption generate random but unique subdirectory
+  to the adpoted object
+* body_builder also provide a way to attach a css_library to an object and let any
+  child object be aware of this css_library for they can add new definitions or dump
+  the css_library definitions and eventually use it when returning their html code
+* an body_builder object can be assigned the name of one or more css_class
+* many hooks are available to inherited classes:
+  - hooks relative to adoption as parent as well as as child
+  - hooks relative to foresaking as parent as well as as child
+  - hooks when a new css_library is available  (to let the object drop their css class
+    definition there)
+  - hook triggered when path has changed (either due to adoption of path change from
+    a parent object, which may be done to parent adopted or manual path change, set_prefix())
+
+==========
+
+There is a lot of inherited classes from body_builder, but we can classify then in two types
+
+HTML basic classes, that stick to the HTML constructs like <div> <a> <html> <h*>...
+HTML generic construct provide generic object combination like alternative or concatenation
+HTML constructed class that are a composition of basic class to address a given complex interaction
+
+HTML basic classes
+     - html_dir : wraps all child generated HTML code into <div> </div> markups with eventually
+       the assigned css_class for that object
+     - html_form : implement the <form> HTML code, the content of the form is based on adopted children
+     - html_form_fieldset: implements the <fieldset> HTML code, the possible alternative are defined from
+       the adopted body builder objects
+     - html_form_input : implements the <input> HTML code adding label and controlling input type
+     - html_form_radio : implements <input type="radio"> code adding label and control on proposed alternatives
+     - html_form_select : (inherit from html_form_radio) provide drop down multichoice based on <select> HTML code
+     - html_image : implements the <img> HTML code
+     - html_page : create an HTML page layout <html><header><body>. This page holds a css_library that
+       adopted children can use to record their css class definitions. Those are dropped in the page <header> as
+       css <style>, with <title> and viewport. The <body> is the result of the children get_body_part that
+       is pointed to by the path of the request.
+     - html_text: wrapper around <h1> ... <h*> and <p/> HTML code
+     - html_url: implements the <a> HTML code
+     - static_object : ancestor of all  static objects (equivalent to body_builder but with generated body defined
+       at compilation time.
+     - static_object_library: hold static_objects associated with a label (read-only library and at global level)
+
+
+
+HTML generic construct
+     - html_aiguille , displays only one of its adopted children, it defines an integer "mode"
+            that correspond to the object to display in the order they have been adopted
+	    all child object have the same path, which is the path of the html_aiguille object
+     - html_button is the combination of an html_div and an html_url that provide button-like
+            feature and event triggered hook (when the button is clicked by the user)
+	    html_button is an event class that record an event "html_button::action"
+     - html_focus has only one adopted child, used to apply well defined css attributes to
+            an object "under focus", such adopted (unique) object can change over time the
+	    CSS display properties are kept ready to be applied to a new object
+     - html_level: mixes body_builder objects with static html contents (string) and provide
+            method to list such list of objects. Does not define any HTML output (get_body_part())
+	    this is left to the inherited class to define how to do that
+     - html_menu: set a list of html_button and associated labels with events. The "mode"
+            correspond the the item selected from the menu and can be changed by application of
+	    by the user through HTTP requests) The event upon mode change can be used to define
+	    which object get visibile somewhere else in the page for example.
+     - html_page: inherits from html_level displays html_level childs in table of defined dimensions
+     - html_yes_no_box: yes/no box with displayed message
+
+libdar related HTML constructed classes
+     - html_archive_create
+     - html_archive_isolate
+     - html_archive_merge
+     - html_archive_read
+     - html_comparison_fields : html_form_select
+     - html_compression : html_form_select
+     - html_crypto_algo : html_form_select
+     - html_datetime
+     - html_dir_tree : html_dir
+     - html_error
+     - html_hash_algo : html_form_select
+     - html_libdar_running : html_page
+     - html_listing_page : html_page
+     - html_options_compare
+     - html_options_create
+     - html_options_extract
+     - html_options_isolate
+     - html_options_merge
+     - html_options_read
+     - html_options_test
+     - html_size_unit
+     - html_statistics
+     - html_web_user_interaction
+
+libdar high level:
+     - user_interface
+     - web_user_interaction
+
+============
+class listener : listen on TCP socket and generate proto_connexions and server attached to that connection
+

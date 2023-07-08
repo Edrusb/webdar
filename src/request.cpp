@@ -37,13 +37,13 @@ void request::clear()
     body = "";
 }
 
-bool request::try_reading(connexion & input)
+bool request::try_reading(proto_connexion & input)
 {
     return read_method_uri(input, false);
 }
 
 
-void request::read(connexion & input)
+void request::read(proto_connexion & input)
 {
     string key;
     string val, valorig;
@@ -250,7 +250,7 @@ void request::extract_cookies()
     }
 }
 
-bool request::read_method_uri(connexion & input, bool blocking)
+bool request::read_method_uri(proto_connexion & input, bool blocking)
 {
     string tmp;
     string cached_uri;
@@ -302,7 +302,7 @@ void request::drop_attribute(const std::string & key)
 	attributes.erase(it);
 }
 
-bool request::is_empty_line(connexion & input)
+bool request::is_empty_line(proto_connexion & input)
 {
     bool ret;
 
@@ -323,7 +323,7 @@ bool request::is_empty_line(connexion & input)
     return ret;
 }
 
-string request::up_to_eol(connexion & input)
+string request::up_to_eol(proto_connexion & input)
 {
     string ret;
 
@@ -344,7 +344,7 @@ string request::up_to_eol(connexion & input)
     return ret;
 }
 
-string request::up_to_eof(connexion & input)
+string request::up_to_eof(proto_connexion & input)
 {
     string ret;
 
@@ -365,7 +365,7 @@ string request::up_to_eof(connexion & input)
     return ret;
 }
 
-void request::skip_over(connexion & input, char a)
+void request::skip_over(proto_connexion & input, char a)
 {
     try
     {
@@ -383,11 +383,11 @@ void request::skip_over(connexion & input, char a)
 }
 
 
-string request::up_to_length(connexion & input, unsigned int length)
+string request::up_to_length(proto_connexion & input, unsigned int length)
 {
     string ret;
 
-	/// TO BE IMPROVED ADDING A READ CALL WITH INPUT BUFFER TO CONNEXION CLASS
+	/// TO BE IMPROVED ADDING A READ CALL WITH INPUT BUFFER TO PROTO_CONNEXION CLASS
     while(length > 0)
     {
 	ret += input.read_one(true);
@@ -397,7 +397,7 @@ string request::up_to_length(connexion & input, unsigned int length)
     return ret;
 }
 
-void request::skip_line(connexion & input)
+void request::skip_line(proto_connexion & input)
 {
     bool loop = true;
     char a;
@@ -427,7 +427,7 @@ void request::skip_line(connexion & input)
     }
 }
 
-string request::up_to_eol_with_LWS(connexion & input)
+string request::up_to_eol_with_LWS(proto_connexion & input)
 {
     string ret;
     bool loop = false;
@@ -462,7 +462,7 @@ string request::up_to_eol_with_LWS(connexion & input)
 }
 
 
-bool request::get_token(connexion & input, bool initial, bool blocking, string & token)
+bool request::get_token(proto_connexion & input, bool initial, bool blocking, string & token)
 {
     bool ret = true;
     bool loop = true;
@@ -513,7 +513,7 @@ bool request::get_token(connexion & input, bool initial, bool blocking, string &
     return ret;
 }
 
-bool request::get_word(connexion & input, bool initial, bool blocking, string & word)
+bool request::get_word(proto_connexion & input, bool initial, bool blocking, string & word)
 {
     string tmp;
     char ctmp;

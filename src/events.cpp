@@ -55,7 +55,7 @@ void events::register_name(const string & name)
 	throw WEBDAR_BUG; // events already registered
     else
     {
-	list<actor *> tmp;
+	list<actor *> tmp; // we start with an empty list of actors...
 	carte[name] = tmp;
     }
 }

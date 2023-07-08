@@ -42,5 +42,15 @@ using namespace std;
 
 string html_url::get_body_part() const
 {
-    return string("<a ") + css_get_string() + x_class + " href=\"" + x_url + "\">" + x_label + "</a>\n";
+    string ret = "<a";
+    string x_class = get_css_classes();
+
+    if(! x_class.empty())
+	ret += " " + x_class;
+
+    ret += " href=\"" + x_url + "\">" + x_label + "</a>";
+    if(!get_no_CR())
+	ret += "\n";
+
+    return ret;
 }

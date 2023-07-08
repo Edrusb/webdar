@@ -57,7 +57,7 @@ public:
 	/// \note this method only fills the method and URI fields if data is available for that,
 	/// in which case only, true is returned. get_method() and get_uri() can then be invoked
 	/// to obtain the fields value.
-    bool try_reading(connexion & input);
+    bool try_reading(proto_connexion & input);
 
 	/// read the next request from input connexion
 	///
@@ -68,7 +68,7 @@ public:
     	/// and close the connexion even in HTTP/1.1 because be could not completely read the request.
 	/// Upon exception_input, the request could be read entirely, connexion can be maintained.
 	/// The request code is to send in the answer is provided by this exception class.
-    void read(connexion & input);
+    void read(proto_connexion & input);
 
 
 	/// obtains the method of the read request
@@ -121,7 +121,7 @@ private:
     std::shared_ptr<central_report> clog; //< central report logging
 
 	/// try reading the method and uri from the connexion
-    bool read_method_uri(connexion & input, bool blocking);
+    bool read_method_uri(proto_connexion & input, bool blocking);
 
 	// feed cookies fields from attributes and remove cookies from attributes
     void extract_cookies();
@@ -134,23 +134,23 @@ private:
     void drop_attribute(const std::string & key);
 
 	/// true if next to read is end of line chars (CR LF)
-    static bool is_empty_line(connexion & input);
+    static bool is_empty_line(proto_connexion & input);
 
 	/// returns what remains on the current lines
-    static std::string up_to_eol(connexion & input);
+    static std::string up_to_eol(proto_connexion & input);
 
 	/// returns what remains up to no data available on the socket
-    static std::string up_to_eof(connexion & input);
+    static std::string up_to_eof(proto_connexion & input);
 
 	/// skips the current line up to the next given argument.
 	///
 	/// \note Stops at end of line if the provided char is not found
-    static void skip_over(connexion & input, char a);
+    static void skip_over(proto_connexion & input, char a);
 
-    static std::string up_to_length(connexion & input, unsigned int length);
+    static std::string up_to_length(proto_connexion & input, unsigned int length);
 
 	/// drops all data up to and including the next end of line (CR LF).
-    static void skip_line(connexion & input);
+    static void skip_line(proto_connexion & input);
 
 	/// returns what remains on lines up to a real EOL (not LWS)
 
@@ -158,7 +158,7 @@ private:
 	/// LWS allow a argument to be split over several lines. The spaces and tabs
 	/// following a CR+LF are not part of the argument.
 	/// this structure is used in header HTTP messages (RFC 1945)
-    static std::string up_to_eol_with_LWS(connexion & input);
+    static std::string up_to_eol_with_LWS(proto_connexion & input);
 
 	/// reads the next token from the socket
 	/// \param[in] initial defines whether we can skip space to reach the token start
@@ -171,7 +171,7 @@ private:
 	/// \note the reading of a token does fails if no more token are available on the current
 	/// line (CR, LF or CRLF met), true is returned in that case and token is set to an
 	/// empty string
-    static bool get_token(connexion & input, bool initial, bool blocking, std::string & token);
+    static bool get_token(proto_connexion & input, bool initial, bool blocking, std::string & token);
 
 
 	/// read the next word from the socket
@@ -185,7 +185,7 @@ private:
 	/// \note a word is composed of token and the following characters '/' ':' '=' '@' '?'
 	/// \note the reading of a word fails if end of line is met, in that case true is returned
 	/// and word is set to an empty string
-    static bool get_word(connexion & input, bool initial, bool blocking, std::string & word);
+    static bool get_word(proto_connexion & input, bool initial, bool blocking, std::string & word);
 
 };
 

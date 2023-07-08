@@ -32,33 +32,31 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
-
+#include "css.hpp"
     //
 #include "html_error.hpp"
 
 using namespace std;
 
-const string html_error::acknowledged = "html_error_acknowledged";
-const string html_error::close_event = "html_error_button_close";
 const string fixed_title1 = "Webdar - ";
 const string fixed_title2 = "Libdar message";
+
+const char* html_error::acknowledged = "html_error_acknowledged";
+const char* html_error::class_message = "html_error_mesg";
+const char* html_error::class_global = "html_error_glb";
+const char* html_error::class_button = "html_error_btn";
+const char* html_error::close_event = "html_error_button_close";
 
 html_error::html_error():
     html_page(fixed_title1+fixed_title2),
     close("Close", close_event)
 {
-    the_error.css_color("#FF0000");
-    the_error.css_text_align(css::al_center);
-    the_error.css_font_weight_bold();
+    css tmp;
 
-    global.css_padding("1em");
-    global.css_margin("1em");
-    global.css_border_width(css::bd_all, css::bd_medium);
-    global.css_border_style(css::bd_all, css::bd_inset);
-
-    webdar_style_normal_button(close);
-    close.css_float(fl_right);
-    close.css_margin_right("1em");
+    the_error.add_css_class(class_message);
+    global.add_css_class(class_global);
+    webdar_css_style::normal_button(close);
+    close.add_css_class(class_button);
 
     global.adopt(&the_error);
     adopt(&global);
@@ -67,6 +65,8 @@ html_error::html_error():
     close.record_actor_on_event(this, close_event);
 
     register_name(acknowledged);
+
+    new_css_library_available();
 }
 
 void html_error::set_message(const std::string & msg)
@@ -83,4 +83,50 @@ void html_error::on_event(const std::string & event_name)
 void html_error::set_session_name(const std::string & sessname)
 {
     set_title(fixed_title1 + sessname + " - " + fixed_title2);
+}
+
+
+void html_error::new_css_library_available()
+{
+    css tmp;
+
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    if(! csslib->class_exists(class_message))
+    {
+	try
+	{
+	    tmp.css_clear_attributes();
+	    tmp.css_color("#FF0000");
+	    tmp.css_text_align(css::al_center);
+	    tmp.css_font_weight_bold();
+	    csslib->add(class_message, tmp);
+
+	    tmp.css_clear_attributes();
+	    tmp.css_padding("1em");
+	    tmp.css_margin("1em");
+	    tmp.css_border_width(css::bd_all, css::bd_medium);
+	    tmp.css_border_style(css::bd_all, css::bd_inset);
+	    csslib->add(class_global, tmp);
+
+	    tmp.css_clear_attributes();
+	    tmp.css_float(css::fl_right);
+	    tmp.css_margin_right("1em");
+	    csslib->add(class_button, tmp);
+	}
+	catch(exception_range & e)
+	{
+	    throw WEBDAR_BUG;
+	}
+    }
+    else
+    {
+	if(! csslib->class_exists(class_global)
+	   || ! csslib->class_exists(class_button))
+	    throw WEBDAR_BUG;
+    }
+
+    webdar_css_style::update_library(*csslib.get());
 }

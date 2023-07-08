@@ -42,7 +42,7 @@ extern "C"
 class html_page : public html_level
 {
 public:
-    html_page(const std::string & title = "") { x_title = title; };
+    html_page(const std::string & title = "") { x_title = title; store_css_library(); };
     html_page(const html_page & ref) = default;
     html_page(html_page && ref) noexcept = default;
     html_page & operator = (const html_page & ref) = default;
@@ -69,6 +69,14 @@ protected:
     std::string get_body_part_given_the_body(const chemin & path,
 					     const request & req,
 					     const std::string & body);
+
+	/// \note: for inherited classes implementation, as the css_library is created
+	/// from the constructor of html_page class, the new_css_library_available()
+        /// overriden method will not be called as expected from the consequence of setting
+	/// a css_library. To solve this restriction
+	/// what seems the best solution is to manually call the
+	/// inherited class's new_css_library_available() from the inherited
+	/// class constructors.
 
 private:
     std::string x_title;

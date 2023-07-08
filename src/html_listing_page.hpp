@@ -39,7 +39,6 @@ extern "C"
 #include "html_button.hpp"
 #include "html_div.hpp"
 #include "archive_init_list.hpp"
-#include "html_url_class.hpp"
 #include "html_focus.hpp"
 
 class html_listing_page : public html_page, public actor, public events
@@ -69,7 +68,7 @@ public:
 
 protected:
 	/// inherited from html_div/body_builder
-    virtual void path_has_changed() override { html_page::path_has_changed(); tree.set_css_classid(bt_class.get_class_id()); };
+    virtual void new_css_library_available() override;
 
 
 private:
@@ -77,7 +76,6 @@ private:
     html_div title;
     html_focus focus;
     html_button close;
-    html_url_class bt_class;
 };
 
 

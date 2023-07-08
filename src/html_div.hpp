@@ -38,8 +38,8 @@ extern "C"
 
     /// class html_div is the implementation of <div> </div>
     ///
-    /// use the body_builder::give() and html_level::give_static_html() to add
-    /// data into the <div> </div>. Apply css_*() methods to it
+    /// objects get enclosed in the <div> </div> if they are
+    /// adopted (from body_builder::adopt() method)
 
 class html_div : public html_level
 {

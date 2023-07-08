@@ -40,13 +40,22 @@ using namespace std;
 
 void html_focus::given_for_temporary_adoption(body_builder *obj)
 {
+    css_class_group csg;
+    string class_name;
+
     if(obj == nullptr)
 	throw WEBDAR_BUG;
     if(adopted != nullptr)
 	foresake(adopted);
     adopted = obj;
     adopt(obj);
-    obj->css_inherit_from(*this, true, true);
+    csg = get_css_class_group();
+    csg.reset_read();
+    while(csg.read_next(class_name))
+    {
+	if(! obj->has_css_class(class_name))
+	    obj->add_css_class(class_name);
+    }
 }
 
 string html_focus::get_body_part(const chemin & path,

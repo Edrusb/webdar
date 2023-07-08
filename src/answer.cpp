@@ -73,7 +73,7 @@ bool answer::is_valid() const
     return status < 600 && status > 99;
 }
 
-void answer::write(connexion & output)
+void answer::write(proto_connexion & output)
 {
     string key, val;
 

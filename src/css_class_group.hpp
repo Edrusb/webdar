@@ -21,8 +21,8 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
-#ifndef HTML_AIGUILLE_HPP
-#define HTML_AIGUILLE_HPP
+#ifndef CSS_CLASS_GROUP_HPP
+#define CSS_CLASS_GROUP_HPP
 
     // C system header files
 extern "C"
@@ -31,40 +31,44 @@ extern "C"
 }
 
     // C++ system header files
+#include <string>
 
 
     // webdar headers
-#include "body_builder.hpp"
 
-    /// class html_aiguille behave as only one of its adopted children
+    /// this is only a way to manipulate a list of existing class names
+    /// no class definition is done here just a list of names as a set
 
-    /// the set_mode() method defines which child is used (or is active)
-    /// the argument is the number of the child starting at zero in the
-    /// order they have been adopted
-
-class html_aiguille : public body_builder
+class css_class_group
 {
 public:
-    html_aiguille() { mode = 0; };
-    html_aiguille(const html_aiguille & ref) = default;
-    html_aiguille(html_aiguille && ref) noexcept = default;
-    html_aiguille & operator = (const html_aiguille & ref) = default;
-    html_aiguille & operator = (html_aiguille && ref) noexcept = default;
-    ~html_aiguille() = default;
 
-    void set_mode(unsigned int m);
+    css_class_group() { clear_css_classes(); };
+    css_class_group(const css_class_group & ref) = default;
+    css_class_group(css_class_group && ref) noexcept = default;
+    css_class_group & operator = (const css_class_group & ref) = default;
+    css_class_group & operator = (css_class_group && ref) noexcept = default;
+    ~css_class_group() = default;
 
-	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
+	/// add a class name to the list
+    void add_css_class(const std::string & name);
 
-protected:
+	/// remove a class from the list
+    void remove_css_class(const std::string & name);
 
+	/// remove all classes
+    void clear_css_classes();
+
+	/// restart reading from the first element
+    void reset_read() const;
+
+	/// read the next element or return false
+    bool read_next(std::string & next_class) const;
 
 private:
-    unsigned int mode;
+    std::set<std::string> content;
+    mutable std::set<std::string>::iterator reader;
 
 };
-
 
 #endif

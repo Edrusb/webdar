@@ -33,11 +33,11 @@ extern "C"
     // webdar headers
 #include "exceptions.hpp"
 #include "webdar_css_style.hpp"
-#include "html_text.hpp"
 #include "tokens.hpp"
 
     //
 #include "saisie.hpp"
+#include "html_text.hpp"
 
 using namespace std;
 
@@ -50,6 +50,8 @@ const string saisie::event_create  = "saisie_create";
 const string saisie::event_isolate = "saisie_isolate";
 const string saisie::event_merge   = "saisie_merge";
 const string saisie::changed_session_name = "saisie_changed_session_name";
+
+const string saisie::css_class_text = "saisie_text";
 
 saisie::saisie():
     archread("Source archive"),
@@ -81,43 +83,34 @@ saisie::saisie():
     go_merge("Merge", event_merge),
     close("Do you really want to close this session?", false)
 {
-    html_text text;
-
     status = st_idle;
+    html_text text; // used to build static text content
 
-    webdar_style_normal_button(go_extract);
-    webdar_style_normal_button(go_compare);
-    webdar_style_normal_button(go_test);
-    webdar_style_normal_button(go_list);
-    webdar_style_normal_button(go_create);
-    webdar_style_normal_button(go_isolate);
-    webdar_style_normal_button(go_merge);
+    webdar_css_style::normal_button(go_extract);
+    webdar_css_style::normal_button(go_compare);
+    webdar_css_style::normal_button(go_test);
+    webdar_css_style::normal_button(go_list);
+    webdar_css_style::normal_button(go_create);
+    webdar_css_style::normal_button(go_isolate);
+    webdar_css_style::normal_button(go_merge);
 
-    go_extract.css_float(fl_right);
-    go_compare.css_float(fl_right);
-    go_test.css_float(fl_right);
-    go_list.css_float(fl_right);
-    go_create.css_float(fl_right);
-    go_isolate.css_float(fl_right);
-    go_merge.css_float(fl_right);
 
 	// configuration of "choice"
-    choice.add_entry("about", "Main Page");
-    choice.add_entry("sep0", "");
-    choice.add_entry("restore", "Restoration");
-    choice.add_entry("compare", "Comparison");
-    choice.add_entry("test", "Testing");
-    choice.add_entry("list", "Listing");
-    choice.add_entry("create", "Creation");
-    choice.add_entry("isolate", "Isolation");
-    choice.add_entry("merge", "Merging");
-    choice.add_entry("sep1", "");
-    choice.add_entry("filters", "Filters");
-    choice.add_entry("repo", "Repositories");
-    choice.add_entry("sess", "Other Sessions");
-    choice.add_entry("sep2", "");
-    choice.add_entry("close", "Close Session");
-    choice.css_float(css::fl_left);
+    choice.add_entry("Main Page");
+    choice.add_entry("");
+    choice.add_entry("Restoration");
+    choice.add_entry("Comparison");
+    choice.add_entry("Testing");
+    choice.add_entry("Listing");
+    choice.add_entry("Creation");
+    choice.add_entry("Isolation");
+    choice.add_entry("Merging");
+    choice.add_entry("");
+    choice.add_entry("Filters");
+    choice.add_entry("Repositories");
+    choice.add_entry("Other Sessions");
+    choice.add_entry("");
+    choice.add_entry("Close Session");
     adopt(&choice);
 
 	// Configuring archive_show
@@ -131,19 +124,15 @@ saisie::saisie():
 
 	//  configuration of the about sub-page
     text.clear();
-    text.css_text_align(css::al_center, true);
-    text.css_margin("2em", true);
     text.add_text(1,"WEBDAR");
     text.add_paragraph();
     text.add_text(4,string("version ") + WEBDAR_VERSION);
     text.add_paragraph();
     text.add_text(0, "by Denis CORBIN");
-    div_about.adopt_static_html(text.get_body_part());
-    around_licensing.css_width("90%", true);
-    around_licensing.css_margin_bottom("1em");
-    around_licensing.css_margin_top("1em");
-    around_licensing.css_text_align(css::al_center);
-    div_about.adopt_static_html(html_text(0,"").add_paragraph().get_body_part());
+    text.add_text(0, "");
+    text.add_paragraph();
+    text.add_css_class(css_class_text);
+    around_licensing.adopt_static_html(text.get_body_part());
     around_licensing.adopt(&licensing);
     div_about.adopt(&around_licensing);
     div_about.adopt_static_html(html_text(0,"").add_paragraph().get_body_part());
@@ -157,17 +146,17 @@ saisie::saisie():
 
 	// configuration of the restore sub-page
     div_extract.adopt(&extract);
-    div_extract.adopt(&extract_fs_root_fs);
-    extract_fs_root_fs.adopt(&extract_fs_root_form);
-    extract_fs_root_form.adopt(&extract_fs_root);
+    div_extract.adopt(&extract_fs_root_form);
+    extract_fs_root_form.adopt(&extract_fs_root_fs);
+    extract_fs_root_fs.adopt(&extract_fs_root);
     div_extract.adopt(&go_extract);
     select.adopt(&div_extract);
 
 	// comparison sub-page
     div_compare.adopt(&compare);
-    div_compare.adopt(&diff_fs_root_fs);
-    diff_fs_root_fs.adopt(&diff_fs_root_form);
-    diff_fs_root_form.adopt(&diff_fs_root);
+    div_compare.adopt(&diff_fs_root_form);
+    diff_fs_root_form.adopt(&diff_fs_root_fs);
+    diff_fs_root_fs.adopt(&diff_fs_root);
     div_compare.adopt(&go_compare);
     select.adopt(&div_compare);
 
@@ -224,7 +213,6 @@ saisie::saisie():
     select.adopt(&close);
 
 	/// configuration of "select"
-    select.css_margin_left("9.4em");
     select.set_mode(0);
     right_pan.adopt(&select);
     adopt(&right_pan);
@@ -258,6 +246,10 @@ saisie::saisie():
     register_name(event_isolate);
     register_name(event_merge);
     register_name(changed_session_name);
+
+	// manually calling the new_css_library_available()
+	// as it could not be called from html_page::html_page (constructor)
+    new_css_library_available();
 }
 
 string saisie::get_body_part(const chemin & path,
@@ -274,7 +266,7 @@ string saisie::get_body_part(const chemin & path,
 	// now we can generate in return the whole HTML code for "this" object
     set_refresh_redirection(0,""); // clearing redirection that could have been set previously
     ret = html_page::get_body_part(path, req);
-    if(choice.get_current_label() == "close")
+    if(choice.get_current_label() == "Close Session")
     {
 	if(close.get_value())
 	{
@@ -285,7 +277,7 @@ string saisie::get_body_part(const chemin & path,
 	}
     }
     else
-	if(choice.get_current_label() == "sess")
+	if(choice.get_current_label() == "Other Sessions")
 	{
 	    set_title(webdar_tools_get_title(get_session_name(), "Redirection to all user sessions"));
 	    set_refresh_redirection(0, "/");
@@ -305,10 +297,10 @@ void saisie::on_event(const std::string & event_name)
 	// menu "choice" changed
 
 	set_title(webdar_tools_get_title(get_session_name(), choice.get_current_label()));
-	if(choice.get_current_label() == "restore"
-	   || choice.get_current_label() == "compare"
-	   || choice.get_current_label() == "test"
-	   || choice.get_current_label() == "list")
+	if(choice.get_current_label() == "Restoration"
+	   || choice.get_current_label() == "Comparison"
+	   || choice.get_current_label() == "Testing"
+	   || choice.get_current_label() == "Listing")
 	    archive_show.set_visible(true);
 	else
 	    archive_show.set_visible(false);
@@ -492,4 +484,58 @@ const html_options_merge & saisie::get_merging_options() const
 	throw WEBDAR_BUG;
 
     return merge.get_options_merge();
+}
+
+void saisie::new_css_library_available()
+{
+    css tmp;
+    string css_class_right = "saisie_right";
+    string css_class_margin = "saisie_marge";
+    string css_class_choice = "saisie_choice";
+    string css_class_license = "saisie_license";
+    string css_class_rightpan = "saisie_rightpan";
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    tmp.css_clear_attributes();
+    tmp.css_margin_left("9.4em");
+    csslib->add(css_class_rightpan, tmp);
+    right_pan.add_css_class(css_class_rightpan);
+
+    tmp.css_clear_attributes();
+    tmp.css_float(css::fl_right);
+    csslib->add(css_class_right, tmp);
+    go_extract.add_css_class(css_class_right);
+    go_compare.add_css_class(css_class_right);
+    go_test.add_css_class(css_class_right);
+    go_list.add_css_class(css_class_right);
+    go_create.add_css_class(css_class_right);
+    go_isolate.add_css_class(css_class_right);
+    go_merge.add_css_class(css_class_right);
+
+    tmp.css_clear_attributes();
+    tmp.css_float(css::fl_left);
+    csslib->add(css_class_choice, tmp);
+    choice.add_css_class(css_class_choice);
+
+    tmp.css_clear_attributes();
+    tmp.css_width("90%", true);
+    tmp.css_margin_bottom("1em");
+    tmp.css_margin_top("1em");
+    tmp.css_text_align(css::al_center);
+    csslib->add(css_class_license, tmp);
+    around_licensing.add_css_class(css_class_license);
+
+    tmp.css_clear_attributes();
+    tmp.css_text_align(css::al_center, true);
+    tmp.css_margin("2em", true);
+    csslib->add(css_class_text, tmp);
+
+    tmp.css_clear_attributes();
+    tmp.css_margin_left("9.4em");
+    csslib->add(css_class_margin, tmp);
+    select.add_css_class(css_class_margin);
+
+    webdar_css_style::update_library(*csslib);
 }

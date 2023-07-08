@@ -43,29 +43,6 @@ html_statistics::html_statistics()
 {
     table = nullptr;
 
-    treated_lbl.css_text_align(al_right);
-    hard_links_lbl.css_text_align(al_right);
-    skipped_lbl.css_text_align(al_right);
-    ignored_lbl.css_text_align(al_right);
-    tooold_lbl.css_text_align(al_right);
-    errored_lbl.css_text_align(al_right);
-    deleted_lbl.css_text_align(al_right);
-    ea_treated_lbl.css_text_align(al_right);
-    byte_amount_lbl.css_text_align(al_right);
-    total_lbl.css_text_align(al_right);
-
-    total_lbl.css_font_weight_bold();
-
-    treated_count.css_font_weight_bold();
-    hard_links_count.css_font_weight_bold();
-    skipped_count.css_font_weight_bold();
-    ignored_count.css_font_weight_bold();
-    tooold_count.css_font_weight_bold();
-    errored_count.css_font_weight_bold();
-    deleted_count.css_font_weight_bold();
-    ea_treated_count.css_font_weight_bold();
-    byte_amount_count.css_font_weight_bold();
-    total_count.css_font_weight_bold();
 }
 
 void html_statistics::clear_labels()
@@ -142,6 +119,47 @@ string html_statistics::get_body_part(const chemin & path,
     return get_body_part_from_all_children(path, req);
 }
 
+void html_statistics::new_css_library_available()
+{
+    static const string css_right_name = "html_stats_right";
+    static const string css_bold_name = "html_stats_bold";
+    css css_right;
+    css css_bold;
+
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    css_right.css_text_align(css::al_right);
+    css_bold.css_font_weight_bold();
+
+    csslib->add(css_right_name, css_right);
+    csslib->add(css_bold_name, css_bold);
+
+    treated_lbl.add_css_class(css_right_name);
+    hard_links_lbl.add_css_class(css_right_name);
+    skipped_lbl.add_css_class(css_right_name);
+    ignored_lbl.add_css_class(css_right_name);
+    tooold_lbl.add_css_class(css_right_name);
+    errored_lbl.add_css_class(css_right_name);
+    deleted_lbl.add_css_class(css_right_name);
+    ea_treated_lbl.add_css_class(css_right_name);
+    byte_amount_lbl.add_css_class(css_right_name);
+    total_lbl.add_css_class(css_right_name);
+
+    total_lbl.add_css_class(css_bold_name);
+
+    treated_count.add_css_class(css_bold_name);
+    hard_links_count.add_css_class(css_bold_name);
+    skipped_count.add_css_class(css_bold_name);
+    ignored_count.add_css_class(css_bold_name);
+    tooold_count.add_css_class(css_bold_name);
+    errored_count.add_css_class(css_bold_name);
+    deleted_count.add_css_class(css_bold_name);
+    ea_treated_count.add_css_class(css_bold_name);
+    byte_amount_count.add_css_class(css_bold_name);
+    total_count.add_css_class(css_bold_name);
+}
 
 void html_statistics::build()
 {

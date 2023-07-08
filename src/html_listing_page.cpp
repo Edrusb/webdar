@@ -45,64 +45,14 @@ html_listing_page::html_listing_page():
     tree(""),
     close("Close", event_close)
 {
-    css tmp;
 
     set_session_name("");
-
-	// set css properties
-    css_height("100%",true); // applied to the html_page assign this CSS to the <body>
-
-    tree.css_float(css::fl_left);
-    tree.css_height("100%", false);
-    tree.css_width("32.6%", false);
-    tree.css_padding("0.2%");
-    tree.css_overflow(css::ov_scroll);
-    tree.css_margin_right("1%");
-
-
-    title.css_width("64%", false);
-    title.css_padding_top("1em");
-    title.css_padding_bottom("1em");
-    title.css_font_weight_bold();
-    title.css_font_style_italic();
-    title.css_text_align(css::al_center);
-    title.css_border_width(css::bd_all, css::bd_medium);
-    title.css_border_style(css::bd_all, css::bd_solid);
-    title.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
-    title.css_color(COLOR_MENU_FRONT_OFF);
-    title.css_background_color(COLOR_MENU_BACK_OFF);
-    title.css_position_type(css::pos_fixed);
-    title.css_position_top("1em");
-    title.css_position_right("1%");
-
-    webdar_style_normal_button(close);
-    close.css_float(css::fl_right);
-    close.css_float_clear(css::fc_both);
-    close.css_position_type(css::pos_fixed);
-    close.css_position_bottom("1em");
-    close.css_position_right("1em");
-
-    tmp.css_clear_attributes();
-    tmp.css_color(COLOR_TEXT);
-    tmp.css_text_align(css::al_center);
-    tmp.css_text_decoration(css::dc_none);
-    bt_class.set_style_link(tmp);
-    bt_class.set_style_visited(tmp);
-    tmp.css_text_decoration(css::dc_underline);
-    bt_class.set_style_hover(tmp);
-
-    focus.css_margin_top("5em");
-    focus.css_width("66%", false);
 
 	// the body_builder tree
     adopt(&tree);
     adopt(&focus);
     adopt(&title);
     adopt(&close);
-    adopt(&bt_class);
-
-	//
-    tree.set_css_classid(bt_class.get_class_id());
 
 	// event binding
     register_name(event_close);
@@ -111,6 +61,8 @@ html_listing_page::html_listing_page():
 	// linking tree with focus
     tree.set_drop_content(&focus);
     tree.set_drop_path(&title);
+
+    new_css_library_available();
 }
 
 void html_listing_page::on_event(const std::string & event_name)
@@ -129,4 +81,81 @@ void html_listing_page::set_session_name(const string & session_name)
 
     title += "Archive listing";
     set_title(title);
+}
+
+void html_listing_page::new_css_library_available()
+{
+    css_class page("html_listing_page");
+    css_class c_tree("html_listing_page_tree");
+    css_class c_title("html_listing_page_title");
+    css_class c_close("html_listing_page_close");
+    css_class c_focus("html_listing_page_focus");
+    css tmp;
+    unique_ptr<css_library> & csslib = lookup_css_library();
+
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    	// set css properties
+    clear_css_classes();
+    tmp.css_height("100%",true); // applied to the html_page assign this CSS to the <body>
+    page.set_value(tmp);
+    add_css_class(page.get_name());
+    csslib->add(page);
+
+    tree.clear_css_classes();
+    tmp.css_clear_attributes();
+    tmp.css_float(css::fl_left);
+    tmp.css_height("100%", false);
+    tmp.css_width("32.6%", false);
+    tmp.css_padding("0.2%");
+    tmp.css_overflow(css::ov_scroll);
+    tmp.css_margin_right("1%");
+    c_tree.set_value(tmp);
+    tmp.css_clear_attributes();
+    tmp.css_color(COLOR_TEXT);
+    tree.add_css_class(c_tree.get_name());
+    csslib->add(c_tree);
+
+    title.clear_css_classes();
+    tmp.css_clear_attributes();
+    tmp.css_width("64%", false);
+    tmp.css_padding_top("1em");
+    tmp.css_padding_bottom("1em");
+    tmp.css_font_weight_bold();
+    tmp.css_font_style_italic();
+    tmp.css_text_align(css::al_center);
+    tmp.css_border_width(css::bd_all, css::bd_medium);
+    tmp.css_border_style(css::bd_all, css::bd_solid);
+    tmp.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
+    tmp.css_color(COLOR_MENU_FRONT_OFF);
+    tmp.css_background_color(COLOR_MENU_BACK_OFF);
+    tmp.css_position_type(css::pos_fixed);
+    tmp.css_position_top("1em");
+    tmp.css_position_right("1%");
+    c_title.set_value(tmp);
+    title.add_css_class(c_title.get_name());
+    csslib->add(c_title);
+
+    close.clear_css_classes();
+    tmp.css_clear_attributes();
+    tmp.css_float(css::fl_right);
+    tmp.css_float_clear(css::fc_both);
+    tmp.css_position_type(css::pos_fixed);
+    tmp.css_position_bottom("1em");
+    tmp.css_position_right("1em");
+    c_close.set_value(tmp);
+    webdar_css_style::normal_button(close);
+    close.add_css_class(c_close.get_name());
+    csslib->add(c_close);
+
+    focus.clear_css_classes();
+    tmp.css_clear_attributes();
+    tmp.css_margin_top("5em");
+    tmp.css_width("66%", false);
+    c_focus.set_value(tmp);
+    focus.add_css_class(c_focus.get_name());
+    csslib->add(c_focus);
+
+    webdar_css_style::update_library(*csslib);
 }

@@ -52,17 +52,17 @@ public:
 	/// whether border are collapsed or separated (collasped by default)
     void css_border_collapsed(bool mode);
 
-	/// define a specific css object for the _cells_ first raw
-    void set_css_cells_first_raw(const css & val) { cells_title_set = true; cells_title = val; };
+	/// define a specific css object for the _cells_ first row
+    void set_css_class_first_row(const std::string & val) { cells_title_set = true; css_class_title = val; };
 
-	/// clear apreviously assigned css object to the title raw
-    void set_css_cells_first_raw() { cells_title_set = false; cells_title.css_clear_attributes(); };
+	/// clear apreviously assigned css object to the title row
+    void set_css_class_first_row() { cells_title_set = false; css_class_title = ""; };
 
 	/// assigned to all celles except those of the first raw if set_css_cells_first_raw was set
-    void set_css_cells(const css & val) { cells = val; };
+    void set_css_class_cells(const std::string & val) { css_class_cells = val; };
 
 	/// clear apreviously assigned css object to the title raw
-    void set_css_cells() { cells.css_clear_attributes(); };
+    void set_css_class_cells() { css_class_cells = ""; };
 
 	/// assign to all cells
 
@@ -73,13 +73,8 @@ private:
     unsigned int dim_x;
     std::string border_collapsed;
     bool cells_title_set;
-    css cells_title;
-    css cells;
-
-    std::string get_class_id(bool title) const;
-    std::string build_style() const;
-
-
+    std::string css_class_title;
+    std::string css_class_cells;
 };
 
 #endif

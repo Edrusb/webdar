@@ -32,19 +32,16 @@ extern "C"
 
     // C++ system header files
 #include <string>
+#include <deque>
+#include <map>
 
     // webdar headers
 #include "css_property.hpp"
 
-    /// class css holds a set of properties that can be assigned to an HTML construction
-
-    ///. this class bring control to property name, the validity of their associated value
-    ///. it also brings an inheritance property than ease the transmission of property to
-    /// another css object for some 'inheritable' properties only
-    ///. two methods provide a resulting std::string of the current set of properties
-    ///  suitable to be added within markup "style=" directive
-    ///. last a protected method called css_updated() is left to inherited class for they
-    ///  be informed when a css property is set or modified.
+    /// class css
+    ///
+    /// contains a set of well-known css attributes and their values
+    /// provide methods to reset each of them to a well-known default value
 
 class css
 {
@@ -55,9 +52,13 @@ public:
     css(css && ref) noexcept = default;
     css & operator = (const css & ref) = default;
     css & operator = (css && ref) noexcept = default;
-    virtual ~css() {};
+    virtual ~css() = default;
 
+	/// set css attributes to their default
     void css_clear_attributes();
+
+	/// clear all html classes
+    void clear_html_classes() { html_class.clear(); };
 
 	// colors
 
@@ -226,8 +227,19 @@ public:
     void css_border_style(border which, bd_style val, bool inherit=false);
     void css_border_style() { border_style.clear(); };
 
+	// HTML classes
 
-	/// inherit properties from the given reference
+	/// all css attributes contained in class will be applicable to the object as if it had those attributes
+    void add_html_class(const std::string & classname, bool inherit=false);
+
+	/// remove an already assigned class to this object
+    void remove_html_class(const std::string & classname);
+
+	/// get the list of html classes this object has
+    std::deque<std::string> get_html_class_list() const;
+
+
+	/// inherit css properties and html classes from the given reference
 	///
 	/// \param[in] ref from which to inherit properties
 	/// \param[in] all if true even properties of "ref" having inheritance unset are taken into account
@@ -248,6 +260,22 @@ protected:
 	//
 	// \param[in] inherit is set to true if the modified property has inheritance set
     virtual void css_updated(bool inherited) {};
+
+    	/// custom css properties, method available for inherited classes
+
+	/// \note storing css properties par this css parent class
+	/// lead them to be integrated in the css_get_string/css_get_raw_string methods
+	/// they also can be abstracted to html class by body builder derived class
+
+	/// note, that this provided label must not have already been declared previously on that css
+    void declare_custom_css(const std::string & label);
+
+	/// set value to a previously declared custom css
+    void set_custom_css(const std::string & label, const std::string & val, bool inherit=false);
+
+	/// unset value of a previously declared custom css
+    void clear_custom_css(const std::string & label);
+
 
 private:
 
@@ -294,6 +322,14 @@ private:
     css_property border_width;
     css_property border_color;
     css_property border_style;
+
+	// custom css
+    std::map<std::string, css_property> custom_css;
+
+	// html_class properties
+
+	/// maps classname (string) to its inherit (bool) property
+    std::map<std::string, bool> html_class;
 
     std::string border_to_string(border val);
 };

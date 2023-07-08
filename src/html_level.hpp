@@ -62,10 +62,10 @@ public:
 
 protected:
 	/// inherited from body_builder
-    virtual void has_been_adopted(body_builder *obj) override;
+    virtual void has_adopted(body_builder *obj) override;
 
 	/// inherited from body_builder
-    virtual void has_been_foresaken(body_builder *obj) override;
+    virtual void will_foresake(body_builder *obj) override;
 
     struct bundle
     {
@@ -75,13 +75,14 @@ protected:
     };
 
     void reset_read_next() { nxt = table.begin(); };
-    bool read_next(bundle & bdl); //< return false if bdl could not be set
+    bool read_next(bundle & bdl); ///< return false if bdl could not be set (nor more entry to read)
 
 	/// this is an alternative of using read_next
 	///
 	/// \note to be used when all children body_part are needed as a single block of text
     std::string get_body_part_from_children_as_a_block(const chemin & path,
 						       const request & req);
+
 	/// inherited from body_builder
     virtual std::string get_body_part(const chemin & path,
 				      const request & req) override;

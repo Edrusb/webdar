@@ -48,6 +48,12 @@ public:
 	/// constucts an empty path
     chemin() { members.clear(); index = 0; };
     chemin(const std::string & path);
+    chemin(const chemin & ref) = default;
+    chemin(chemin && ref) noexcept = default;
+    chemin & operator = (const chemin & ref) = default;
+    chemin & operator = (chemin && ref) noexcept = default;
+    ~chemin() = default;
+
 
 	/// default copy constructor is OK
 

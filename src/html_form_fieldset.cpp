@@ -47,7 +47,7 @@ string html_form_fieldset::get_body_part(const chemin & path,
 
     if(get_next_visible() || get_visible())
     {
-	ret += "<fieldset " + css_get_string() + ">\n";
+	ret += "<fieldset " + get_css_classes() + ">\n";
 	ret += "<legend>" + x_label + "</legend>\n";
 	ret += get_body_part_from_all_children(path, req);
 	ret += "</fieldset>\n";

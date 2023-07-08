@@ -59,10 +59,6 @@ public:
 				      const request & req) override
     { return get_body_part_from_all_children(path, req); };
 
-protected:
-	/// inherited from ancestor class css
-    virtual void css_updated(bool inherited) override;
-
 private:
     html_form form;
     html_form_fieldset form_fs;

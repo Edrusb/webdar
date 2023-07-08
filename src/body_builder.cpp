@@ -45,26 +45,40 @@ body_builder::body_builder(const body_builder & ref)
 {
     clear();
     if(ref.parent != nullptr || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty())
-	throw WEBDAR_BUG;
+        throw WEBDAR_BUG;
     visible = ref.visible;
     next_visible = ref.next_visible;
     no_CR = ref.no_CR;
+    css_class_names = ref.css_class_names;
+    if(ref.library)
+    {
+        library.reset(new (nothrow) css_library(*(ref.library)));
+        if(!library)
+            throw exception_memory();
+    }
+    else
+        library.reset();
 }
 
 body_builder & body_builder::operator = (const body_builder & ref)
 {
-    css *me = this;
-    const css *you = & ref;
+    if(parent != nullptr || !order.empty() || !children.empty() || !revert_child.empty() || library)
+        throw WEBDAR_BUG;
+    if(ref.parent != nullptr || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty() || ref.library)
+        throw WEBDAR_BUG;
 
-    if(parent != nullptr || !order.empty() || !children.empty() || !revert_child.empty())
-	throw WEBDAR_BUG;
-    if(ref.parent != nullptr || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty())
-	throw WEBDAR_BUG;
-
-    *me = *you; // copying the ancestor class fields
     visible = ref.visible;
     next_visible = ref.next_visible;
     no_CR = ref.no_CR;
+    css_class_names = ref.css_class_names;
+    if(ref.library)
+    {
+        library.reset(new (nothrow) css_library(*(ref.library)));
+        if(!library)
+            throw exception_memory();
+    }
+    else
+        library.reset(); // drop possibly existing css_library
 
     return *this;
 }
@@ -72,7 +86,7 @@ body_builder & body_builder::operator = (const body_builder & ref)
 void body_builder::set_prefix(const chemin & prefix)
 {
     if(parent != nullptr)
-	throw WEBDAR_BUG;
+        throw WEBDAR_BUG;
     x_prefix = prefix;
     recursive_path_has_changed();
 }
@@ -80,22 +94,23 @@ void body_builder::set_prefix(const chemin & prefix)
 void body_builder::adopt(body_builder *obj)
 {
     if(obj == nullptr)
-	throw WEBDAR_BUG;
+        throw WEBDAR_BUG;
 
+    const css_library* ancient_css_library = obj->lookup_css_library().get();
     string new_name;
     map<string, body_builder *>::iterator it;
     map<body_builder *, string>::iterator rit = revert_child.find(obj);
 
     if(rit != revert_child.end())
-	throw WEBDAR_BUG; // object already recorded
+        throw WEBDAR_BUG; // object already recorded / adopted
 
     if(obj->parent != nullptr)
-	throw WEBDAR_BUG; // object already recorded in another parent
+        throw WEBDAR_BUG; // object already recorded by another parent
 
     do
     {
-	new_name = webdar_tools_generate_random_string(NAME_WIDTH);
-	it = children.find(new_name);
+        new_name = webdar_tools_generate_random_string(NAME_WIDTH);
+        it = children.find(new_name);
     }
     while(it != children.end());
 
@@ -104,41 +119,149 @@ void body_builder::adopt(body_builder *obj)
     revert_child[obj] = new_name;
     obj->parent = this;
     obj->recursive_path_has_changed();
-    has_been_adopted(obj);
+    has_adopted(obj);
+    obj->has_been_adopted_by(this);
+
+        // if a css_library is available to the child thanks to the adoption
+        // we trigger all the child lineage to record its css_classes
+    if(obj->lookup_css_library().get() != ancient_css_library)
+        obj->recursive_new_css_library_available();
 }
 
 void body_builder::foresake(body_builder *obj)
 {
     if(obj == nullptr)
-	throw WEBDAR_BUG;
+        throw WEBDAR_BUG;
 
     map<body_builder *, string>::iterator rit = revert_child.find(obj);
     vector<body_builder *>::iterator ot = find(order.begin(), order.end(), obj);
 
     if(ot == order.end()) // object not found in the ordered list
-	throw WEBDAR_BUG;
+        throw WEBDAR_BUG;
+
+    obj->will_be_foresaken_by(this);
+    will_foresake(obj);
 
     if(rit != revert_child.end())
     {
-	string name = rit->second;
-	map<string, body_builder *>::iterator it = children.find(name);
-	if(it == children.end()) // object known by both ordered list and rever_child map, but unknown by children map
-	    throw WEBDAR_BUG;
+        string name = rit->second;
+        map<string, body_builder *>::iterator it = children.find(name);
+        if(it == children.end()) // object known by both ordered list and rever_child map, but unknown by children map
+            throw WEBDAR_BUG;
 
-	    // removing the object from the three lists/maps
-	children.erase(it);
-	revert_child.erase(rit);
-	order.erase(ot);
+            // removing the object from the three lists/maps
+        children.erase(it);
+        revert_child.erase(rit);
+        order.erase(ot);
 
-	    // unrecording us as its parent
-	if(obj->parent == nullptr)
-	    throw WEBDAR_BUG;
-	obj->parent = nullptr;
+            // unrecording us as its parent
+        if(obj->parent == nullptr)
+            throw WEBDAR_BUG;
+        obj->parent = nullptr;
     }
     else
-	throw WEBDAR_BUG; // object known in the ordered list but unknown by the revert_child map
+        throw WEBDAR_BUG; // object known in the ordered list but unknown by the revert_child map
+
     obj->recursive_path_has_changed();
-    has_been_foresaken(obj);
+}
+
+void body_builder::add_css_class(const std::string & name)
+{
+    if(css_class_names.find(name) != css_class_names.end())
+        throw exception_range(string("the css_class name to add is already present: ") + name);
+
+    css_class_names.insert(name);
+}
+
+void body_builder::add_css_class(const css_class_group & cg)
+{
+    string name;
+
+    cg.reset_read();
+    while(cg.read_next(name))
+        add_css_class(name);
+}
+
+bool body_builder::has_css_class(const string & name) const
+{
+    return css_class_names.find(name) != css_class_names.end();
+}
+
+void body_builder::remove_css_class(const std::string & name)
+{
+    if(css_class_names.find(name) == css_class_names.end())
+        throw exception_range(string("the css_class name to remove is not present in the list: ") + name);
+
+    css_class_names.erase(name);
+}
+
+void body_builder::remove_css_class(const css_class_group & cg)
+{
+    string name;
+
+    cg.reset_read();
+    while(cg.read_next(name))
+        remove_css_class(name);
+}
+
+css_class_group body_builder::get_css_class_group() const
+{
+    css_class_group ret;
+    set<string>::iterator it = css_class_names.begin();
+
+    while(it != css_class_names.end())
+    {
+        ret.add_css_class(*it);
+        ++it;
+    }
+
+    return ret;
+}
+
+string body_builder::get_css_classes() const
+{
+    string ret;
+    set<string>::const_iterator it = css_class_names.begin();
+
+    while(it != css_class_names.end())
+    {
+        if(!ret.empty())
+            ret += " ";
+        ret += *it;
+
+        ++it;
+    }
+
+    if(!ret.empty())
+        ret = "class=\"" + ret + "\"";
+
+    return ret;
+}
+
+void body_builder::define_css_class_in_library(const css_class & csscl)
+{
+    unique_ptr<css_library> & csslib = lookup_css_library(); // this is a reference to a unique_ptr
+
+    if(!csslib)
+        throw WEBDAR_BUG;
+
+    csslib->add(csscl);
+}
+
+void body_builder::define_css_class_in_library(const string & name, const css & cssdef)
+{
+    define_css_class_in_library(css_class(name, cssdef));
+}
+
+
+bool body_builder::is_css_class_defined_in_library(const string & name) const
+{
+    unique_ptr<css_library> & csslib = lookup_css_library(); // this is a reference to a unique_ptr
+
+    if(!csslib)
+        return false;
+    else
+        return csslib->class_exists(name);
 }
 
 chemin body_builder::get_path() const
@@ -148,14 +271,14 @@ chemin body_builder::get_path() const
 
     if(parent != nullptr)
     {
-	it = parent->revert_child.find(const_cast<body_builder *>(this));
-	if(it == parent->revert_child.end())
-	    throw WEBDAR_BUG;
-	ret = parent->get_path();
-	ret.push_back(it->second); // adding the name of "this" to parent's path
+        it = parent->revert_child.find(const_cast<body_builder *>(this));
+        if(it == parent->revert_child.end())
+            throw WEBDAR_BUG;
+        ret = parent->get_path();
+        ret.push_back(it->second); // adding the name of "this" to parent's path
     }
     else // no parent, we are the root, so the path is given by prefix
-	ret = x_prefix;
+        ret = x_prefix;
 
     return ret;
 }
@@ -165,51 +288,72 @@ string body_builder::get_recorded_name() const
 {
     if(parent != nullptr)
     {
-	map<body_builder *, string>::const_iterator it = parent->revert_child.find(const_cast<body_builder *>(this));
-	if(it == parent->revert_child.end())
-	    throw WEBDAR_BUG;
-	return it->second;
+        map<body_builder *, string>::const_iterator it = parent->revert_child.find(const_cast<body_builder *>(this));
+        if(it == parent->revert_child.end())
+            throw WEBDAR_BUG;
+        return it->second;
     }
     else
-	return "";
+        return "";
 }
 
 
+void body_builder::store_css_library()
+{
+    if(library)
+        throw exception_range("A css_library is already stored for that body_builder object");
+    else
+        library.reset(new (nothrow) css_library());
+
+    if(!library)
+        throw exception_memory();
+
+    recursive_new_css_library_available();
+}
+
+
+unique_ptr<css_library> & body_builder::lookup_css_library() const
+{
+    if(library || parent == nullptr)
+        return const_cast<unique_ptr<css_library>&>(library);
+    else return parent->lookup_css_library();
+}
+
 
 string body_builder::get_body_part_from_target_child(const chemin & path,
-						     const request & req)
+                                                     const request & req)
 {
     string ret;
 
     if(path.empty())
-	throw WEBDAR_BUG; // invoked with an empty path
+        throw WEBDAR_BUG; // invoked with an empty path
 
     if(get_visible() || get_next_visible())
     {
-	string name = path.front();
-	map<string, body_builder *>::iterator it = children.find(name);
+        string name = path.front();
+        map<string, body_builder *>::iterator it = children.find(name);
 
-	if(it != children.end())
-	{
-	    chemin sub_path = path;
-	    sub_path.pop_front();
-	    ret = it->second->get_body_part(sub_path, req);
-	}
-	else
-	    throw exception_input("unkown URL requested", STATUS_CODE_NOT_FOUND);
+        if(it != children.end())
+        {
+            chemin sub_path = path;
+            sub_path.pop_front();
+            ret = it->second->get_body_part(sub_path, req);
+        }
+        else
+            throw exception_input("unkown URL requested", STATUS_CODE_NOT_FOUND);
     }
     else
-	ret = "";
+        ret = "";
 
     if(!get_next_visible())
-	ret = "";
+        ret = "";
     ack_visible();
 
     return ret;
 }
 
 string body_builder::get_body_part_from_all_children(const chemin & path,
-						     const request & req)
+                                                     const request & req)
 {
     string ret = "";
     chemin sub_path = path;
@@ -217,20 +361,20 @@ string body_builder::get_body_part_from_all_children(const chemin & path,
 
     if(get_visible() || get_next_visible())
     {
-	if(!sub_path.empty())
-	    sub_path.pop_front();
+        if(!sub_path.empty())
+            sub_path.pop_front();
 
-	while(it != order.end())
-	{
-	    if(*it == nullptr)
-		throw WEBDAR_BUG;
-	    ret += (*it)->get_body_part(sub_path, req);
-	    ++it;
-	}
+        while(it != order.end())
+        {
+            if(*it == nullptr)
+                throw WEBDAR_BUG;
+            ret += (*it)->get_body_part(sub_path, req);
+            ++it;
+        }
     }
 
     if(!get_next_visible())
-	ret = "";
+        ret = "";
     ack_visible();
 
     return ret;
@@ -243,38 +387,38 @@ void body_builder::orphan_all_children()
     map<string, body_builder *>::iterator it = children.begin();
     while(it != children.end())
     {
-	obj = it->second;
-	if(obj == nullptr)
-	    throw WEBDAR_BUG;
-	try
-	{
-	    foresake(obj);
-	}
-	catch(...)
-	{
-	    throw WEBDAR_BUG;
-	}
+        obj = it->second;
+        if(obj == nullptr)
+            throw WEBDAR_BUG;
+        try
+        {
+            foresake(obj);
+        }
+        catch(...)
+        {
+            throw WEBDAR_BUG;
+        }
 
-	it = children.begin();
-	    // unrecord_child modifies the "children" map
-	    // so we set 'it' to a valid value setting it to begin()
-	    // but at each round, a item is removed from the children map
-	    // so ghd loop will end when the map will become empty
+        it = children.begin();
+            // unrecord_child modifies the "children" map
+            // so we set 'it' to a valid value setting it to begin()
+            // but at each round, a item is removed from the children map
+            // so the loop will end when the map will become empty
     }
 
     if(children.size() != 0)
-	throw WEBDAR_BUG;
+        throw WEBDAR_BUG;
     if(order.size() != 0)
-	throw WEBDAR_BUG;
+        throw WEBDAR_BUG;
     if(revert_child.size() != 0)
-	throw WEBDAR_BUG;
+        throw WEBDAR_BUG;
 }
 
 
 void body_builder::unrecord_from_parent()
 {
     if(parent != nullptr)
-	parent->foresake(this);
+        parent->foresake(this);
 }
 
 void body_builder::recursive_path_has_changed()
@@ -284,9 +428,36 @@ void body_builder::recursive_path_has_changed()
     path_has_changed();
     while(it != order.end())
     {
-	if((*it) == nullptr)
-	    throw WEBDAR_BUG;
-	(*it)->recursive_path_has_changed();
-	++it;
+        if((*it) == nullptr)
+            throw WEBDAR_BUG;
+        (*it)->recursive_path_has_changed();
+        ++it;
     }
+}
+
+void body_builder::recursive_new_css_library_available()
+{
+    vector<body_builder *>::iterator it = order.begin();
+
+    new_css_library_available();
+    while(it != order.end())
+    {
+        if((*it) == nullptr)
+            throw WEBDAR_BUG;
+        (*it)->recursive_new_css_library_available();
+        ++it;
+    }
+}
+
+void body_builder::clear()
+{
+    visible = true ;
+    next_visible = true;
+    no_CR = false;
+    parent = nullptr;
+    order.clear();
+    children.clear();
+    revert_child.clear();
+    library.reset();
+    css_class_names.clear();
 }

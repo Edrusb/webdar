@@ -43,6 +43,7 @@ extern "C"
 class html_libdar_running : public html_page, public events, public actor
 {
 public:
+	// this class generates the following events:
     static const std::string ask_end_libdar;      //< ask_close button has been pressed (graceful ending requested)
     static const std::string force_end_libdar;    //< force_close button has been pressed (immediate ending requested)
     static const std::string kill_libdar_thread;  //< kill_close button has been pressed (kill thread requested)
@@ -77,6 +78,10 @@ public:
 	/// defines the name of the session
     void set_session_name(const std::string & name) { sessname = name; };
 
+protected:
+	// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 private:
     enum mode_type
     {
@@ -86,6 +91,10 @@ private:
 	kill_forced,   //< should display web_user_interface, progressive_report (no button)
 	finished       //< should display web_user_interface, progressive_report, close button
     };
+
+    static const std::string class_global;
+    static const std::string class_web;
+    static const std::string class_button;
 
     std::string sessname;
     mode_type mode;

@@ -55,7 +55,7 @@ list<server *> server::instances;
 
 bool server::run_new_server(const shared_ptr<central_report> & log,
 			    const shared_ptr<const authentication> & auth,
-			    unique_ptr<connexion> & source)
+			    unique_ptr<proto_connexion> & source)
 {
     bool ret = false;
 
@@ -163,7 +163,7 @@ void server::throw_a_pending_exception()
 
 server::server(const shared_ptr<central_report> & log,
 	       const shared_ptr<const authentication> & auth,
-	       unique_ptr<connexion> & source) : src(source, log)
+	       unique_ptr<proto_connexion> & source) : src(source, log)
 {
     if(!log)
 	throw WEBDAR_BUG;
@@ -187,7 +187,7 @@ void server::inherited_run()
 
     try
     {
-	while(src.get_status() == connexion::connected)
+	while(src.get_status() == proto_connexion::connected)
 	{
 	    try
 	    {

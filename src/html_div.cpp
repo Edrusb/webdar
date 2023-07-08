@@ -43,13 +43,21 @@ using namespace std;
 string html_div::get_body_part(const chemin & path,
 			       const request & req)
 {
-    string ret = "<div " + css_get_string() + ">\n";
+    string ret;
+    string cssdef = get_css_classes();
+    string sub = get_visible() || get_next_visible() ? get_body_part_from_children_as_a_block(path, req) : "";
 
-    if(get_visible() || get_next_visible())
-    {
-	ret += get_body_part_from_children_as_a_block(path, req);
-	ret += "\n</div>\n";
-    }
+    if(cssdef.empty())
+	if(sub.empty())
+	    ret = "";
+	else
+	    ret = "<div>\n" + sub + "</div>\n";
+    else // cssdef not empty
+	if(sub.empty())
+	    ret = "<div " + cssdef + ">" + "</div>\n";
+	else
+	    ret = "<div " + cssdef + ">\n" + sub + "</div>\n";
+
     ack_visible();
     if(!get_visible())
 	ret = "";

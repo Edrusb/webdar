@@ -49,13 +49,13 @@ extern "C"
 #include "html_archive_isolate.hpp"
 #include "html_archive_merge.hpp"
 #include "html_button.hpp"
-#include "html_url_class.hpp"
+
 
     /// class saisie
     ///
     /// defines the web "pages" when no operation is
     /// running in the current session.
-    /// .on the left a menu 'choices' that triggers 'this' to modify the middle and top areasfu:
+    /// .on the left a menu 'choices' that triggers 'this' to modify the middle and top area
     /// .on the top midle an html_aiguille 'show_archive' which
     /// contains two alternatives, nothing or the archive path
     /// .just below and beside the menu, an html_aiguille "select" that
@@ -129,6 +129,10 @@ public:
 
 	/// get the current session name
     std::string get_session_name() const { return session_name.get_value(); };
+
+protected:
+	// inherited from body_builder
+    virtual void new_css_library_available() override;
 
 private:
     enum
@@ -210,6 +214,9 @@ private:
     html_div div_sep2;
 	//
     html_yes_no_box close;
+
+    static const std::string css_class_text;
+
 };
 
 #endif

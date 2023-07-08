@@ -41,41 +41,59 @@ extern "C"
 using namespace std;
 
 error_page::error_page(unsigned int status_code,
-		       const std::string & reason):
+                       const std::string & reason):
     page(reason)
 {
-	// objects's fields
+    static const char* page_css_name = "page";
+    static const char* body_css_name = "body";
+    static const char* div_css_name = "div";
+    static const char* text_css_name = "text";
+    css mystyle;
+
+        // objects's fields
     status = status_code;
     msg = reason;
 
-	// setting css properties for each object
-
-    page.css_color(COLOR_TEXT);
-    page.css_background_color(COLOR_BACK);
-    page.css_padding("1em");
-
-    body.css_font_weight_bold();
-    body.css_color("White");
-    body.css_background_color("Red");
-    body.css_text_align(css::al_center);
-    body.css_padding("1em");
-    body.css_float(css::fl_left);
-    body.css_border_width(css::bd_all, css::bd_thick);
-    body.css_border_style(css::bd_all, css::bd_dashed);
-    body.css_border_color(css::bd_all, "rgb(100,0,0)");
-    body.css_width("6em", false);
-
-    div.css_margin_left("13em");
-
-    text.css_float(css::fl_left);
-    text.css_float_clear(css::fc_left);
-    text.css_margin_left("2em");
-
-	// building the body_builder tree
+        // building the body_builder tree
 
     div.adopt(&body);
     div.adopt(&text);
     page.adopt(&div);
+
+        // setting css properties for each object
+
+    mystyle.css_clear_attributes();
+    mystyle.css_color(COLOR_TEXT);
+    mystyle.css_background_color(COLOR_BACK);
+    mystyle.css_padding("1em");
+    page.define_css_class_in_library(page_css_name, mystyle);
+    page.add_css_class(page_css_name);
+
+    mystyle.css_clear_attributes();
+    mystyle.css_font_weight_bold();
+    mystyle.css_color("White");
+    mystyle.css_background_color("Red");
+    mystyle.css_text_align(css::al_center);
+    mystyle.css_padding("1em");
+    mystyle.css_float(css::fl_left);
+    mystyle.css_border_width(css::bd_all, css::bd_thick);
+    mystyle.css_border_style(css::bd_all, css::bd_dashed);
+    mystyle.css_border_color(css::bd_all, "rgb(100,0,0)");
+    mystyle.css_width("6em", false);
+    page.define_css_class_in_library(body_css_name, mystyle);
+    body.add_css_class(body_css_name);
+
+    mystyle.css_clear_attributes();
+    mystyle.css_margin_left("13em");
+    page.define_css_class_in_library(div_css_name, mystyle);
+    div.add_css_class(div_css_name);
+
+    mystyle.css_clear_attributes();
+    mystyle.css_float(css::fl_left);
+    mystyle.css_float_clear(css::fc_left);
+    mystyle.css_margin_left("2em");
+    page.define_css_class_in_library(text_css_name, mystyle);
+    text.add_css_class(text_css_name);
 }
 
 void error_page::set_message_body(const std::string & message)

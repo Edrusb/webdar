@@ -66,9 +66,6 @@ public:
 	/// where to write the path when under focus
     void set_drop_path(html_div *ref) { focus_title = ref; };
 
-	/// which URL class to use for embedded buttons
-    void set_css_classid(const std::string & classid);
-
 	/// shrink the directory
     void go_shrink();
 
@@ -85,17 +82,22 @@ public:
     virtual std::string get_body_part(const chemin & path,
 				      const request & req) override;
 
+protected:
+
+	// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 
 private:
     static const std::string event_shrink;
     static const std::string event_expand;
     static const std::string event_click;
 
+
     chemin my_path;
     const archive_init_list *src;
     bool info_read;
     bool has_sub;
-    std::string last_classid;
     bool visibility_has_changed; //< whether we need to rebuild the body_builder answer
     std::vector<html_dir_tree *> subdirs; //< subdirectories of the tree
 
