@@ -57,12 +57,12 @@ html_archive_read::html_archive_read(const string & archive_description):
 {
 
 	/// web components layout
-    form.adopt(&arch_path);
-    form.adopt(&archive);
-    form.adopt(&show_read_options);
-    fs.adopt(&form);
-    fs.adopt(&opt_read);
-    adopt(&fs);
+    fs.adopt(&arch_path);
+    fs.adopt(&archive);
+    fs.adopt(&show_read_options);
+    form.adopt(&fs);
+    form.adopt(&opt_read);
+    adopt(&form);
 
 	/// events
     show_read_options.record_actor_on_event(this, html_form_input::changed);
