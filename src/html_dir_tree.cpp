@@ -70,8 +70,7 @@ void html_dir_tree::init(const std::string & chemin)
     my_path = chemin;
     src = nullptr;
     info_read = false;
-    has_sub = true; // until checked it has or has not
-    last_classid = "";
+    has_sub = true; // until checked whether it has or not
     visibility_has_changed = false;
     focus_place = nullptr;
     focus_title = nullptr;
@@ -150,21 +149,6 @@ void html_dir_tree::set_source(const archive_init_list *ref)
 	nosubdir.set_visible(false);
 	visibility_has_changed = true;
     }
-}
-
-void html_dir_tree::set_css_classid(const std::string & classid)
-{
-    last_classid = classid; // to be able to set future subdirectories
-    shrink.url_add_css_class(classid);
-    expand.url_add_css_class(classid);
-    name.url_add_css_class(classid);
-    for(vector<html_dir_tree *>::iterator it = subdirs.begin();
-	it != subdirs.end();
-	++it)
-	if(*it == nullptr)
-	    throw WEBDAR_BUG;
-	else
-	    (*it)->set_css_classid(classid);
 }
 
 void html_dir_tree::go_shrink()
@@ -260,8 +244,6 @@ void html_dir_tree::go_init_indent()
 
 		try
 		{
-		    if(last_classid != "")
-			tmp_sub->set_css_classid(last_classid);
 		    if(focus_place != nullptr)
 			tmp_sub->set_drop_content(focus_place);
 		    if(focus_title != nullptr)
