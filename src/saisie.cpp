@@ -493,10 +493,17 @@ void saisie::new_css_library_available()
     string css_class_margin = "saisie_marge";
     string css_class_choice = "saisie_choice";
     string css_class_license = "saisie_license";
+    string css_class_rightpan = "saisie_rightpan";
     unique_ptr<css_library> & csslib = lookup_css_library();
     if(!csslib)
 	throw WEBDAR_BUG;
 
+    tmp.css_clear_attributes();
+    tmp.css_margin_left("9.4em");
+    csslib->add(css_class_rightpan, tmp);
+    right_pan.add_css_class(css_class_rightpan);
+
+    tmp.css_clear_attributes();
     tmp.css_float(css::fl_right);
     csslib->add(css_class_right, tmp);
     go_extract.add_css_class(css_class_right);
