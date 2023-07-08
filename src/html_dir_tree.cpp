@@ -309,82 +309,114 @@ void html_dir_tree::go_init_indent()
 
 void html_dir_tree::new_css_library_available()
 {
-    static constexpr const char* name_css_line = "line";
-    static constexpr const char* name_css_common = "common";
-    static constexpr const char* name_css_shrink = "shrunk";
-    static constexpr const char* name_css_nosub = "nosubdir";
-    static constexpr const char* name_css_forsubdirs = "forsubdir";
-    static constexpr const char* name_css_contents = "contents";
-    static constexpr const char* name_css_contents_cells = "contents_cells";
-    static constexpr const char* name_css_contents_title = "contents_title";
+    static constexpr const char* name_css_line = "html_dir_tree_line";
+    static constexpr const char* name_css_common = "html_dir_tree_common";
+    static constexpr const char* name_css_shrink = "html_dir_tree_shrunk";
+    static constexpr const char* name_css_nosub = "html_dir_tree_nosubdir";
+    static constexpr const char* name_css_name = "html_dir_tree_name";
+    static constexpr const char* name_css_forsubdirs = "html_dir_tree_forsubdir";
+    static constexpr const char* name_css_contents = "html_dir_tree_contents";
+    static constexpr const char* name_css_contents_cells = "html_dir_tree_contents_cells";
+    static constexpr const char* name_css_contents_title = "html_dir_tree_contents_title";
 
-    css tmpcss;
+    if(is_css_class_defined_in_library(name_css_line))
+    {
+	if(! is_css_class_defined_in_library(name_css_common)
+	   || ! is_css_class_defined_in_library(name_css_nosub)
+	   || ! is_css_class_defined_in_library(name_css_shrink)
+	   || ! is_css_class_defined_in_library(name_css_name)
+	   || ! is_css_class_defined_in_library(name_css_forsubdirs)
+	   || ! is_css_class_defined_in_library(name_css_contents)
+	   || ! is_css_class_defined_in_library(name_css_contents_cells)
+	   || ! is_css_class_defined_in_library(name_css_contents_title))
+	    throw WEBDAR_BUG;
+    }
+    else
+    {
 
-	// setting css properties
+	css tmpcss;
+	css_class tmpclass(name_css_name);
 
-    tmpcss.css_float(css::fl_left, true);
-    tmpcss.css_float_clear(css::fc_both, true);
-    tmpcss.css_width("100%", false);
-    define_css_class_in_library(name_css_line, tmpcss);
+	    // setting css properties
+
+	tmpcss.css_clear_attributes();
+	tmpcss.css_float(css::fl_left, true);
+	tmpcss.css_float_clear(css::fc_both, true);
+	tmpcss.css_width("100%", false);
+	define_css_class_in_library(name_css_line, tmpcss);
+
+	tmpcss.css_clear_attributes();
+	tmpcss.css_float(css::fl_left, true);
+	tmpcss.css_float_clear(css::fc_both, true);
+	tmpcss.css_width("2em", false, true);
+	tmpcss.css_height("1em", false, true);
+	tmpcss.css_text_align(css::al_center, true);
+	tmpcss.css_margin_right("1em", true);
+	tmpcss.css_border_width(css::bd_all, css::bd_medium, true);
+	tmpcss.css_border_style(css::bd_all, css::bd_solid, true);
+	define_css_class_in_library(name_css_common, tmpcss);
+
+	tmpcss.css_clear_attributes();
+	tmpcss.css_border_color(css::bd_all, COLOR_BACK);
+	tmpcss.css_height("1em", false);
+	define_css_class_in_library(name_css_nosub, tmpcss);
+
+	tmpcss.css_clear_attributes();
+	tmpcss.css_text_align(css::al_left);
+	tmpcss.css_text_decoration(css::dc_none);
+	tmpclass.set_value(tmpcss);
+	tmpclass.set_selector(css_class::link, tmpcss);
+	tmpclass.set_selector(css_class::active, tmpcss);
+	tmpclass.set_selector(css_class::visited, tmpcss);
+	tmpcss.css_text_decoration(css::dc_underline);
+	tmpclass.set_selector(css_class::hover, tmpcss);
+	define_css_class_in_library(tmpclass);
+
+	tmpcss.css_clear_attributes();
+	tmpcss.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
+	define_css_class_in_library(name_css_shrink, tmpcss);
+
+	tmpcss.css_clear_attributes();
+	tmpcss.css_float(css::fl_left);
+	tmpcss.css_float_clear(css::fc_both);
+	tmpcss.css_width("100%", false);
+	tmpcss.css_border_width(css::bd_left, css::bd_thin);
+	tmpcss.css_border_style(css::bd_left, css::bd_solid);
+	tmpcss.css_border_color(css::bd_left, COLOR_MENU_BORDER_OFF);
+	tmpcss.css_margin_left("1em");
+	define_css_class_in_library(name_css_forsubdirs, tmpcss);
+
+	tmpcss.css_clear_attributes();
+	tmpcss.css_text_align(css::al_center);
+	tmpcss.css_border_width(css::bd_all, css::bd_thin);
+	tmpcss.css_border_style(css::bd_all, css::bd_dashed);
+	tmpcss.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
+	define_css_class_in_library(name_css_contents, tmpcss);
+
+	    // assigning style for all lines
+	tmpcss.css_clear_attributes();
+	tmpcss.css_border_width(css::bd_top, css::bd_thin);
+	tmpcss.css_border_style(css::bd_top, css::bd_dashed);
+	tmpcss.css_border_color(css::bd_top, COLOR_MENU_BORDER_OFF);
+	define_css_class_in_library(name_css_contents_cells, tmpcss);
+
+
+	    // assigning modified style for header line
+	tmpcss.css_background_color(COLOR_MENU_BACK_OFF);
+	tmpcss.css_color(COLOR_MENU_FRONT_OFF);
+	define_css_class_in_library(name_css_contents_title, tmpcss);
+    }
+
     line.add_css_class(name_css_line);
-
-    tmpcss.css_clear_attributes();
-    tmpcss.css_float(css::fl_left, true);
-    tmpcss.css_float_clear(css::fc_both, true);
-    tmpcss.css_width("2em", false, true);
-    tmpcss.css_height("1em", false, true);
-    tmpcss.css_text_align(css::al_center, true);
-    tmpcss.css_margin_right("1em", true);
-    tmpcss.css_border_width(css::bd_all, css::bd_medium, true);
-    tmpcss.css_border_style(css::bd_all, css::bd_solid, true);
-    define_css_class_in_library(name_css_common, tmpcss);
     shrink.add_css_class(name_css_common);
     nosubdir.add_css_class(name_css_common);
     expand.add_css_class(name_css_common);
-
-    tmpcss.css_clear_attributes();
-    tmpcss.css_border_color(css::bd_all, COLOR_BACK);
-    tmpcss.css_height("1em", false);
-    define_css_class_in_library(name_css_nosub, tmpcss);
     nosubdir.add_css_class(name_css_nosub);
-
-    tmpcss.css_clear_attributes();
-    tmpcss.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
-    define_css_class_in_library(name_css_shrink, tmpcss);
+    name.url_add_css_class(name_css_name);
     shrink.add_css_class(name_css_shrink);
     expand.add_css_class(name_css_shrink);
-
-    tmpcss.css_clear_attributes();
-    tmpcss.css_float(css::fl_left);
-    tmpcss.css_float_clear(css::fc_both);
-    tmpcss.css_width("100%", false);
-    tmpcss.css_border_width(css::bd_left, css::bd_thin);
-    tmpcss.css_border_style(css::bd_left, css::bd_solid);
-    tmpcss.css_border_color(css::bd_left, COLOR_MENU_BORDER_OFF);
-    tmpcss.css_margin_left("1em");
-    define_css_class_in_library(name_css_forsubdirs, tmpcss);
     for_subdirs.add_css_class(name_css_forsubdirs);
-
-    tmpcss.css_clear_attributes();
-    tmpcss.css_text_align(css::al_center);
-    tmpcss.css_border_width(css::bd_all, css::bd_thin);
-    tmpcss.css_border_style(css::bd_all, css::bd_dashed);
-    tmpcss.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
-    define_css_class_in_library(name_css_contents, tmpcss);
     contents.add_css_class(name_css_contents);
-
-	// assigning style for all lines
-    tmpcss.css_clear_attributes();
-    tmpcss.css_border_width(css::bd_top, css::bd_thin);
-    tmpcss.css_border_style(css::bd_top, css::bd_dashed);
-    tmpcss.css_border_color(css::bd_top, COLOR_MENU_BORDER_OFF);
-    define_css_class_in_library(name_css_contents_cells, tmpcss);
     contents.set_css_class_cells(name_css_contents_cells);
-
-
-	// assigning modified style for header line
-    tmpcss.css_background_color(COLOR_MENU_BACK_OFF);
-    tmpcss.css_color(COLOR_MENU_FRONT_OFF);
-    define_css_class_in_library(name_css_contents_title, tmpcss);
     contents.set_css_class_first_row(name_css_contents_title);
 }
