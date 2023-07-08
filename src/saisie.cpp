@@ -266,7 +266,7 @@ string saisie::get_body_part(const chemin & path,
 	// now we can generate in return the whole HTML code for "this" object
     set_refresh_redirection(0,""); // clearing redirection that could have been set previously
     ret = html_page::get_body_part(path, req);
-    if(choice.get_current_label() == "close")
+    if(choice.get_current_label() == "Close Session")
     {
 	if(close.get_value())
 	{
@@ -277,7 +277,7 @@ string saisie::get_body_part(const chemin & path,
 	}
     }
     else
-	if(choice.get_current_label() == "sess")
+	if(choice.get_current_label() == "Other Sessions")
 	{
 	    set_title(webdar_tools_get_title(get_session_name(), "Redirection to all user sessions"));
 	    set_refresh_redirection(0, "/");
