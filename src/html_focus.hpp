@@ -66,7 +66,7 @@ public:
 				      const request & req) override;
 
 protected:
-    virtual void will_be_foresaken_by(body_builder *obj) override { if(obj == adopted) adopted = nullptr; };
+    virtual void will_foresake(body_builder *obj) override { if(obj == adopted) adopted = nullptr; };
 
 private:
     body_builder *adopted; //< the object thas has been temporarily adopted
