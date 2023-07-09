@@ -248,11 +248,8 @@ public:
 	/// and only inheritable properties of the references are copied
     void css_inherit_from(const css & ref, bool all=false, bool force=false);
 
-	/// returns the css raw css string
+	/// returns the css raw string
     std::string css_get_raw_string() const;
-
-	/// returns the css string as in-line CSS
-    std::string css_get_string() const;
 
 protected:
 

@@ -704,16 +704,6 @@ string css::css_get_raw_string() const
     return ret;
 }
 
-string css::css_get_string() const
-{
-    string ret = css_get_raw_string();
-
-    if(ret != "")
-	ret = "style=\"" + ret + "\"";
-
-    return ret;
-}
-
 void css::declare_custom_css(const string & label)
 {
     map<string, css_property>::iterator it = custom_css.find(label);
