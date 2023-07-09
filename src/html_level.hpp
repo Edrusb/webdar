@@ -77,7 +77,7 @@ protected:
     void reset_read_next() { nxt = table.begin(); };
     bool read_next(bundle & bdl); ///< return false if bdl could not be set (nor more entry to read)
 
-	/// this is an alternative of using read_next
+	/// this is an alternative of using read_next, it creates the body from both static and body_builder objects
 	///
 	/// \note to be used when all children body_part are needed as a single block of text
     std::string get_body_part_from_children_as_a_block(const chemin & path,

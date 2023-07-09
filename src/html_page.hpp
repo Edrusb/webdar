@@ -66,6 +66,7 @@ protected:
 						const request & req) override;
 
 
+	/// encapsulate the provided body into an complete html formatted page
     std::string get_body_part_given_the_body(const chemin & path,
 					     const request & req,
 					     const std::string & body);
