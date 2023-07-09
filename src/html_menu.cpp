@@ -50,8 +50,6 @@ const string html_menu::url_normal_class = "url_normal";
 
 html_menu::html_menu()
 {
-    css tmp_set;
-
     current_mode = 0;
     previous_mode = 0;
 
