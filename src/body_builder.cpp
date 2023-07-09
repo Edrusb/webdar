@@ -50,6 +50,7 @@ body_builder::body_builder(const body_builder & ref)
     next_visible = ref.next_visible;
     no_CR = ref.no_CR;
     css_class_names = ref.css_class_names;
+    library_asked = ref.library_asked;
     if(ref.library)
     {
         library.reset(new (nothrow) css_library(*(ref.library)));
@@ -71,6 +72,7 @@ body_builder & body_builder::operator = (const body_builder & ref)
     next_visible = ref.next_visible;
     no_CR = ref.no_CR;
     css_class_names = ref.css_class_names;
+    library_asked = ref.library_asked;
     if(ref.library)
     {
         library.reset(new (nothrow) css_library(*(ref.library)));
@@ -264,6 +266,13 @@ bool body_builder::is_css_class_defined_in_library(const string & name) const
         return csslib->class_exists(name);
 }
 
+string body_builder::get_body_part(const chemin & path,
+				   const request & req)
+{
+    create_css_lib_if_needed();
+    return inherited_get_body_part(path, req);
+}
+
 chemin body_builder::get_path() const
 {
     chemin ret;
@@ -297,23 +306,9 @@ string body_builder::get_recorded_name() const
         return "";
 }
 
-
-void body_builder::store_css_library()
-{
-    if(library)
-        throw exception_range("A css_library is already stored for that body_builder object");
-    else
-        library.reset(new (nothrow) css_library());
-
-    if(!library)
-        throw exception_memory();
-
-    recursive_new_css_library_available();
-}
-
-
 unique_ptr<css_library> & body_builder::lookup_css_library() const
 {
+    const_cast<body_builder*>(this)->create_css_lib_if_needed();
     if(library || parent == nullptr)
         return const_cast<unique_ptr<css_library>&>(library);
     else return parent->lookup_css_library();
@@ -325,6 +320,7 @@ string body_builder::get_body_part_from_target_child(const chemin & path,
 {
     string ret;
 
+    create_css_lib_if_needed();
     if(path.empty())
         throw WEBDAR_BUG; // invoked with an empty path
 
@@ -359,6 +355,7 @@ string body_builder::get_body_part_from_all_children(const chemin & path,
     chemin sub_path = path;
     vector<body_builder *>::iterator it = order.begin();
 
+    create_css_lib_if_needed();
     if(get_visible() || get_next_visible())
     {
         if(!sub_path.empty())
@@ -458,6 +455,25 @@ void body_builder::clear()
     order.clear();
     children.clear();
     revert_child.clear();
+    library_asked = false;
     library.reset();
     css_class_names.clear();
+}
+
+void body_builder::create_css_lib_if_needed()
+{
+    if(library_asked)
+    {
+	if(library)
+	    throw exception_range("A css_library is already stored for that body_builder object");
+
+	library.reset(new (nothrow) css_library());
+
+	if(!library)
+	    throw exception_memory();
+	else
+	    library_asked = false;
+
+	recursive_new_css_library_available();
+    }
 }

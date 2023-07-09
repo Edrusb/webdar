@@ -184,20 +184,27 @@ public:
         /// \param[in] req is the request to be answered, the uri's path part targets the
         ///   choice of child to use for the sub-response
         /// \return the body part to be send in the response (html code or other depending
-        ///   on the request)
+        ///  on the request) as defined by inherited_get_body_part()
         /// \note if path is an empty list only this object "body_builder" object can be
         /// used to answer, no child object can be invoked by mean of its name.
         /// \note when going down to the leaf of the tree, the path get shorter by removing
-        /// the first items one at each step. Empty path means the object itslef
+        /// the first items one at each step. Empty path means the object itself
         /// \note the inherited class should take the visible status in consideration when
         /// returning HTML from this call
-    virtual std::string get_body_part(const chemin & path,
-                                      const request & req) = 0;
+    std::string get_body_part(const chemin & path,
+			      const request & req);
 
         /// ask for the implementation not to add a new line after this control
     void set_no_CR() { no_CR = true; };
 
 protected:
+
+	/// implementation of get_body_part() method for inherited classes
+
+	/// \note this method defines what the class will return from the public method
+	/// body_builder::get_body_part() which also make some housekeeping at body_builder level
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) = 0;
 
         /// return the path of 'this' according to its descent in the body_builder tree of adopted children
     chemin get_path() const;
@@ -212,10 +219,12 @@ protected:
 
         /// \note a child object, directly or indirectly (grand child, aso) will be
         /// able to access and populate this css_library using the lookup_css_library() method
-    void store_css_library();
+	/// \note avoid calling store_css_library() from a class constructor, this would break inherited
+	/// class automatic be informed thanks to the new_css_library_available() method
+    void store_css_library() { library_asked = true; };
 
 	/// return true if this object has a css_library locally stored (not from a adopter object)
-    bool has_local_css_library() const { return bool(library); };
+    bool has_local_css_library() const { return library_asked || bool(library); };
 
         /// lookup toward registered parent body_builder object for the closest stored css_library
 
@@ -292,6 +301,9 @@ private:
     std::vector<body_builder *> order;                  ///< children by order or adoption
     std::map<std::string, body_builder *> children;     ///< children and their name
     std::map<body_builder *, std::string> revert_child; ///< revert map to get name of a child
+    bool library_asked;                                 ///< whether store_css_library() has been called,
+	                                                ///< this will trigger creation of css_library from get_body_part,
+	                                                ///< to allow store_css_library() being invoked from constructors of inherited classes
     std::unique_ptr<css_library> library;               ///< css library if stored by this object
     std::set<std::string> css_class_names;              ///< list of CSS class that apply to this object
 
@@ -306,6 +318,9 @@ private:
 
         /// (re)initialize fields to default sane values
     void clear();
+
+	/// create a css_library if it has been requested earlier
+    void create_css_lib_if_needed();
 };
 
 #endif
