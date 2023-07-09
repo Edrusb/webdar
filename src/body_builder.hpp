@@ -214,6 +214,9 @@ protected:
         /// able to access and populate this css_library using the lookup_css_library() method
     void store_css_library();
 
+	/// return true if this object has a css_library locally stored (not from a adopter object)
+    bool has_local_css_library() const { return bool(library); };
+
         /// lookup toward registered parent body_builder object for the closest stored css_library
 
         /// \note if neither the present object nor any of its parent stores an css_library,
