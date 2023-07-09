@@ -193,8 +193,8 @@ void html_menu::on_event(const string & event_name)
     set_current_mode(num);
 }
 
-string html_menu::get_body_part(const chemin & path,
-			   const request & req)
+string html_menu::inherited_get_body_part(const chemin & path,
+					  const request & req)
 {
 	// reading the requested path to determin
 	// whether a change of mode is required
@@ -225,7 +225,7 @@ string html_menu::get_body_part(const chemin & path,
 	}
     }
 
-    return html_div::get_body_part(path, req);
+    return html_div::inherited_get_body_part(path, req);
 }
 
 void html_menu::new_css_library_available()

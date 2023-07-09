@@ -232,8 +232,8 @@ void html_datetime::set_value(libdar::infinint val)
     update_from(splitted);
 }
 
-string html_datetime::get_body_part(const chemin & path,
-				    const request & req)
+string html_datetime::inherited_get_body_part(const chemin & path,
+					      const request & req)
 {
     string ret;
     bool err = false;

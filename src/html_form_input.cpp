@@ -64,8 +64,8 @@ void html_form_input::set_range(int min, int max)
     x_max = webdar_tools_convert_to_string(max);
 }
 
-string html_form_input::get_body_part(const chemin & path,
-				      const request & req)
+string html_form_input::inherited_get_body_part(const chemin & path,
+						const request & req)
 {
     string ret = "";
     string x_id = get_path().namify();

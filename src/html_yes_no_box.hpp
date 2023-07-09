@@ -54,9 +54,10 @@ public:
 
     void set_value(bool val) { rd.set_selected(val ? 1 : 0); };
 
+protected:
 	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override
     { return get_body_part_from_all_children(path, req); };
 
 private:

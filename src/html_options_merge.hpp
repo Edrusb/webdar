@@ -54,10 +54,6 @@ public:
     html_options_merge & operator = (html_options_merge && ref) noexcept = default;
     ~html_options_merge() = default;
 
-	/// inherited from bdy_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
-
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -69,6 +65,12 @@ public:
     libdar::archive_options_merge get_options() const;
     bool has_auxilliary() const { return has_aux.get_value_as_bool(); };
     const html_archive_read & get_auxilliary() const { return auxilliary; };
+
+protected:
+
+	/// inherited from bdy_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
 
 private:
     html_form form_archgen;

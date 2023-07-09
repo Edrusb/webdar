@@ -61,11 +61,12 @@ public:
 	/// \note object given stay under responsbility of the caller for memory management
     void given_for_temporary_adoption(body_builder *obj);
 
-	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
-
 protected:
+
+	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
+
     virtual void will_foresake(body_builder *obj) override { if(obj == adopted) adopted = nullptr; };
 
 private:

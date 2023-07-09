@@ -40,8 +40,8 @@ extern "C"
 using namespace std;
 
 
-string html_div::get_body_part(const chemin & path,
-			       const request & req)
+string html_div::inherited_get_body_part(const chemin & path,
+					 const request & req)
 {
     string ret;
     string cssdef = get_css_classes();

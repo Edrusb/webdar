@@ -51,10 +51,6 @@ public:
     html_archive_read & operator = (html_archive_read && ref) noexcept = delete;
     ~html_archive_read() = default;
 
-	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
-
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -63,6 +59,12 @@ public:
     const std::string & get_archive_path() const { return arch_path.get_value(); };
     const std::string & get_archive_basename() const { return archive.get_value(); };
     const libdar::archive_options_read & get_read_options() const { return opt_read.get_options(); };
+
+protected:
+	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
+
 
 private:
     html_form form;

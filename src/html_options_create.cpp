@@ -334,8 +334,8 @@ libdar::archive_options_create html_options_create::get_options() const
 }
 
 
-string html_options_create::get_body_part(const chemin & path,
-				     const request & req)
+string html_options_create::inherited_get_body_part(const chemin & path,
+						    const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }

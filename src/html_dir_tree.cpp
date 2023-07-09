@@ -206,15 +206,15 @@ void html_dir_tree::on_event(const std::string & event_name)
 	throw WEBDAR_BUG;
 }
 
-string html_dir_tree::get_body_part(const chemin & path,
-				   const request & req)
+string html_dir_tree::inherited_get_body_part(const chemin & path,
+					      const request & req)
 {
     string ret;
 
     do
     {
 	visibility_has_changed = false;
-	ret = html_div::get_body_part(path, req);
+	ret = html_div::inherited_get_body_part(path, req);
     }
     while(visibility_has_changed);
 

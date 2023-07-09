@@ -83,9 +83,10 @@ protected:
     std::string get_body_part_from_children_as_a_block(const chemin & path,
 						       const request & req);
 
+protected:
 	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
 
 private:
     std::list<bundle>::iterator nxt;

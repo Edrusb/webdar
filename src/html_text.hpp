@@ -66,12 +66,13 @@ public:
 
     void clear() { txt = ""; };
 
-	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override { return get_body_part(); };
-
 	/// inherited from static_body_builder
     virtual std::string get_body_part() const override { return txt; };
+
+protected:
+	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override { return get_body_part(); };
 
 private:
     std::string txt;

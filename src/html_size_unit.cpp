@@ -81,8 +81,8 @@ void html_size_unit::on_event(const std::string & event_name)
     changed = true;
 }
 
-string html_size_unit::get_body_part(const chemin & path,
-				     const request & req)
+string html_size_unit::inherited_get_body_part(const chemin & path,
+					       const request & req)
 {
     string ret;
 

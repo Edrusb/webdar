@@ -59,8 +59,8 @@ html_archive_isolate::html_archive_isolate():
     on_event("");
 }
 
-string html_archive_isolate::get_body_part(const chemin & path,
-				     const request & req)
+string html_archive_isolate::inherited_get_body_part(const chemin & path,
+						     const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }

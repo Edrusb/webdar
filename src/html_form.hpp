@@ -47,9 +47,10 @@ public:
     html_form & operator = (html_form && ref) noexcept = default;
     ~html_form() = default;
 
+protected:
 	/// inherited methods from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
 
 private:
     std::string go_mesg;

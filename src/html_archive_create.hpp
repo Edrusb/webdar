@@ -50,10 +50,6 @@ public:
     html_archive_create & operator = (html_archive_create && ref) noexcept = delete;
     ~html_archive_create() = default;
 
-	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
-
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -61,6 +57,11 @@ public:
     const std::string & get_archive_basename() const { return basename.get_value(); };
     const std::string & get_fs_root() const { return fs_root.get_value(); };
     const html_options_create & get_options_create() const { return options; };
+
+protected:
+    	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
 
 private:
     html_form form;

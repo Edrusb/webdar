@@ -56,11 +56,13 @@ public:
     const std::string & get_selected_id() const { return choices[selected].id; };
     unsigned int get_selected_num() const { return selected; };
 
-	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
 
 protected:
+
+	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
+
     struct record
     {
 	std::string id;

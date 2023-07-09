@@ -53,14 +53,16 @@ public:
     html_options_isolate & operator = (html_options_isolate && ref) noexcept = default;
     ~html_options_isolate() = default;
 
-	/// inherited from bdy_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
-
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
     libdar::archive_options_isolate get_options() const;
+
+protected:
+
+	/// inherited from bdy_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
 
 private:
     html_form form_archgen;

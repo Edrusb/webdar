@@ -200,8 +200,8 @@ html_options_merge::html_options_merge():
 }
 
 
-string html_options_merge::get_body_part(const chemin & path,
-					   const request & req)
+string html_options_merge::inherited_get_body_part(const chemin & path,
+						   const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }

@@ -107,8 +107,8 @@ libdar::archive_options_diff html_options_compare::get_options() const
 }
 
 
-string html_options_compare::get_body_part(const chemin & path,
-				      const request & req)
+string html_options_compare::inherited_get_body_part(const chemin & path,
+						     const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }

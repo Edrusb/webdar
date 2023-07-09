@@ -61,8 +61,6 @@ html_listing_page::html_listing_page():
 	// linking tree with focus
     tree.set_drop_content(&focus);
     tree.set_drop_path(&title);
-
-    new_css_library_available();
 }
 
 void html_listing_page::on_event(const std::string & event_name)

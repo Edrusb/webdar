@@ -60,8 +60,8 @@ html_archive_create::html_archive_create():
     on_event("");
 }
 
-string html_archive_create::get_body_part(const chemin & path,
-				     const request & req)
+string html_archive_create::inherited_get_body_part(const chemin & path,
+						    const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }

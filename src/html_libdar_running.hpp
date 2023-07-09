@@ -68,10 +68,6 @@ public:
     web_user_interaction & get_user_interaction() { return web_ui.get_user_interaction(); };
     html_statistics & get_statistics() { return stats; };
 
-	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
-
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -79,6 +75,10 @@ public:
     void set_session_name(const std::string & name) { sessname = name; };
 
 protected:
+	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
+
 	// inherited from body_builder
     virtual void new_css_library_available() override;
 

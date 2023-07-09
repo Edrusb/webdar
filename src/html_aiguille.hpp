@@ -54,11 +54,10 @@ public:
 
     void set_mode(unsigned int m);
 
-	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
-
 protected:
+	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
 
 
 private:

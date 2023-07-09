@@ -51,10 +51,6 @@ public:
     ~html_archive_merge() = default;
 
 
-	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
-
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -62,6 +58,13 @@ public:
     const std::string & get_archive_basename() const { return basename.get_value(); };
     const html_options_merge & get_options_merge() const { return options; };
     const html_archive_read & get_reference() const { return reference; };
+
+protected:
+
+	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
+
 
 private:
     html_form form;

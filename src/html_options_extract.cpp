@@ -164,8 +164,8 @@ libdar::archive_options_extract html_options_extract::get_options() const
 }
 
 
-std::string html_options_extract::get_body_part(const chemin & path,
-					   const request & req)
+std::string html_options_extract::inherited_get_body_part(const chemin & path,
+							  const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }

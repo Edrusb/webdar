@@ -64,10 +64,11 @@ public:
 	/// clear apreviously assigned css object to the title raw
     void set_css_class_cells() { css_class_cells = ""; };
 
-	/// assign to all cells
+protected:
 
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
+	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
 
 private:
     unsigned int dim_x;

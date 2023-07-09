@@ -52,9 +52,10 @@ public:
     libdar::infinint get_value() const;
     void set_value(libdar::infinint val);
 
+protected:
 	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
 
 private:
     html_form_input year;

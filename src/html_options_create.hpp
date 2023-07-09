@@ -56,10 +56,6 @@ public:
     html_options_create & operator = (html_options_create && ref) noexcept = default;
     ~html_options_create() = default;
 
-	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
-
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -73,6 +69,13 @@ public:
     bool has_reference() const { return archtype.get_selected_num() == 1; };
 	/// parameters required to build the archive of reference
     const html_archive_read & get_reference() const { return reference; };
+
+protected:
+
+	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
+
 
 private:
     html_form form_archtype;

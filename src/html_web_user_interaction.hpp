@@ -57,10 +57,6 @@ public:
 	/// change the number of last warnings to display
     void set_warning_list_size(unsigned int size) { lib_data.set_warning_list_size(size); };
 
-	/// inherited from body_builder, called by the webdar thread
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
-
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -74,6 +70,9 @@ public:
     web_user_interaction & get_user_interaction() { return lib_data; };
 
 protected:
+	/// inherited from body_builder, called by the webdar thread
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
 	// inherited from body_builder
     virtual void new_css_library_available() override;
 

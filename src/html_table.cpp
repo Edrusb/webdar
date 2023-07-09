@@ -53,8 +53,8 @@ void html_table::css_border_collapsed(bool mode)
     border_collapsed = string(" border-collapse: ") + (mode ? "collapse;" : "separate;");
 }
 
-string html_table::get_body_part(const chemin & path,
-				 const request & req)
+string html_table::inherited_get_body_part(const chemin & path,
+					   const request & req)
 {
     string ret = "";
     bundle bdl;

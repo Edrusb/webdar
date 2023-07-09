@@ -93,12 +93,10 @@ html_libdar_running::html_libdar_running():
     force_close.record_actor_on_event(this, force_end_libdar);
     kill_close.record_actor_on_event(this, kill_libdar_thread);
     finish.record_actor_on_event(this, close_libdar_screen);
-
-    new_css_library_available();
 }
 
-string html_libdar_running::get_body_part(const chemin & path,
-					  const request & req)
+string html_libdar_running::inherited_get_body_part(const chemin & path,
+						    const request & req)
 {
     string body;
 

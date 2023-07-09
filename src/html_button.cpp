@@ -51,8 +51,8 @@ html_button::html_button(const std::string & label, const std::string & x_event_
     register_name(event_name);
 }
 
-string html_button::get_body_part(const chemin & path,
-				  const request & req)
+string html_button::inherited_get_body_part(const chemin & path,
+					    const request & req)
 {
     chemin target = req.get_uri().get_path();
     string choice;
@@ -72,7 +72,7 @@ string html_button::get_body_part(const chemin & path,
 	if(target == get_path() && choice == action)
 	    act(event_name);
 
-	ret = html_div::get_body_part(path, req);
+	ret = html_div::inherited_get_body_part(path, req);
     }
 
     return ret;

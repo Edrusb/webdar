@@ -159,8 +159,8 @@ html_options_isolate::html_options_isolate():
 }
 
 
-string html_options_isolate::get_body_part(const chemin & path,
-					   const request & req)
+string html_options_isolate::inherited_get_body_part(const chemin & path,
+						     const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }

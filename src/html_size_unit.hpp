@@ -48,12 +48,14 @@ public:
 
     libdar::infinint get_value() const;
 
-	/// body_builder indirect inheritance
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
-
 	/// actor inheritance
     virtual void on_event(const std::string & event_name) override;
+
+protected:
+
+	/// body_builder indirect inheritance
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
 
 private:
     html_form_select unit;

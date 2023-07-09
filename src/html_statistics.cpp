@@ -59,8 +59,8 @@ void html_statistics::clear_labels()
     total_lbl.clear();
 }
 
-string html_statistics::get_body_part(const chemin & path,
-				      const request & req)
+string html_statistics::inherited_get_body_part(const chemin & path,
+						const request & req)
 {
     if(treated_lbl.get_body_part() != "")
     {

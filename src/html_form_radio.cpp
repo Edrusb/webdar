@@ -57,8 +57,8 @@ void html_form_radio::set_selected(unsigned int x)
 	selected = x;
 }
 
-string html_form_radio::get_body_part(const chemin & path,
-				      const request & req)
+string html_form_radio::inherited_get_body_part(const chemin & path,
+						const request & req)
 {
     string ret = "";
     string radio_id = get_path().namify();

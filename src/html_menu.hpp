@@ -87,10 +87,6 @@ public:
 	/// set the current selected mode
     void set_current_label(const std::string & label);
 
-	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
-
 	/// modified wrapper from class events for our inherited classes
     void record_actor_on_event(actor *ptr) { events::record_actor_on_event(ptr, changed); };
 
@@ -98,6 +94,9 @@ public:
     virtual void on_event(const std::string & event_name);
 
 protected:
+	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
 
 	/// inherited from body_builder, used to defines the css_class/css_selectors used by this class
     virtual void new_css_library_available() override;

@@ -65,8 +65,6 @@ html_error::html_error():
     close.record_actor_on_event(this, close_event);
 
     register_name(acknowledged);
-
-    new_css_library_available();
 }
 
 void html_error::set_message(const std::string & msg)

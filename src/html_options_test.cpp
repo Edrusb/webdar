@@ -82,8 +82,8 @@ libdar::archive_options_test html_options_test::get_options() const
     return ret;
 }
 
-string html_options_test::get_body_part(const chemin & path,
-				   const request & req)
+string html_options_test::inherited_get_body_part(const chemin & path,
+						  const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }

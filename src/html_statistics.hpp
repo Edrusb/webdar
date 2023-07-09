@@ -68,14 +68,15 @@ public:
 	/// the address of the object to be updated by libdar
     libdar::statistics *get_libdar_statistics() { return & stats; };
 
-	/// inherited from body_builder class
-	///
-	/// \note always fields that got a label (using a set_*_label() method)
-	/// are displayed.
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
 
 protected:
+	/// inherited from body_builder class
+	///
+	/// \note only fields that got a label (using a set_*_label() method)
+	/// are displayed.
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
+
 	// inherited from body_builder
     virtual void new_css_library_available() override;
 

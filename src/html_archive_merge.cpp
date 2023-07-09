@@ -60,8 +60,8 @@ html_archive_merge::html_archive_merge():
     on_event("");
 }
 
-string html_archive_merge::get_body_part(const chemin & path,
-				     const request & req)
+string html_archive_merge::inherited_get_body_part(const chemin & path,
+						   const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }

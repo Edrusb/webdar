@@ -73,8 +73,8 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     just_set = false;
 }
 
-string html_web_user_interaction::get_body_part(const chemin & path,
-					   const request & req)
+string html_web_user_interaction::inherited_get_body_part(const chemin & path,
+							  const request & req)
 {
     string ret;
 

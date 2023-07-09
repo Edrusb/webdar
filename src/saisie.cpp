@@ -246,14 +246,10 @@ saisie::saisie():
     register_name(event_isolate);
     register_name(event_merge);
     register_name(changed_session_name);
-
-	// manually calling the new_css_library_available()
-	// as it could not be called from html_page::html_page (constructor)
-    new_css_library_available();
 }
 
-string saisie::get_body_part(const chemin & path,
-			     const request & req)
+string saisie::inherited_get_body_part(const chemin & path,
+				       const request & req)
 {
     chemin sub_path = path;
     string ret;
@@ -265,7 +261,7 @@ string saisie::get_body_part(const chemin & path,
 
 	// now we can generate in return the whole HTML code for "this" object
     set_refresh_redirection(0,""); // clearing redirection that could have been set previously
-    ret = html_page::get_body_part(path, req);
+    ret = html_page::inherited_get_body_part(path, req);
     if(choice.get_current_label() == "Close Session")
     {
 	if(close.get_value())
@@ -273,7 +269,7 @@ string saisie::get_body_part(const chemin & path,
 	    act(event_closing);
 	    set_title(webdar_tools_get_title(get_session_name(), "Session closed"));
 	    set_refresh_redirection(0, "/");
-	    ret = html_page::get_body_part(path, req);
+	    ret = html_page::inherited_get_body_part(path, req);
 	}
     }
     else
@@ -281,7 +277,7 @@ string saisie::get_body_part(const chemin & path,
 	{
 	    set_title(webdar_tools_get_title(get_session_name(), "Redirection to all user sessions"));
 	    set_refresh_redirection(0, "/");
-	    ret = html_page::get_body_part(path, req);
+	    ret = html_page::inherited_get_body_part(path, req);
 	    choice.set_current_mode(choice.get_previous_mode());
 	}
 

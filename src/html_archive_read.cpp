@@ -70,8 +70,8 @@ html_archive_read::html_archive_read(const string & archive_description):
 }
 
 
-string html_archive_read::get_body_part(const chemin & path,
-				   const request & req)
+string html_archive_read::inherited_get_body_part(const chemin & path,
+						  const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }

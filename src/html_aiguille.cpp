@@ -47,8 +47,8 @@ void html_aiguille::set_mode(unsigned int m)
 	throw WEBDAR_BUG;
 }
 
-string html_aiguille::get_body_part(const chemin & path,
-				    const request & req)
+string html_aiguille::inherited_get_body_part(const chemin & path,
+					      const request & req)
 {
     if(mode < size())
     {

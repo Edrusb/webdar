@@ -186,8 +186,8 @@ void html_options_read::on_event(const std::string & event_name)
 	form_ref.set_visible(false);
 }
 
-string html_options_read::get_body_part(const chemin & path,
-					const request & req)
+string html_options_read::inherited_get_body_part(const chemin & path,
+						  const request & req)
 {
     string ret;
 

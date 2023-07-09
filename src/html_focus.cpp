@@ -58,8 +58,8 @@ void html_focus::given_for_temporary_adoption(body_builder *obj)
     }
 }
 
-string html_focus::get_body_part(const chemin & path,
-				 const request & req)
+string html_focus::inherited_get_body_part(const chemin & path,
+					   const request & req)
 {
     string ret;
 

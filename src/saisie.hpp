@@ -83,10 +83,6 @@ public:
     saisie & operator = (saisie && ref) noexcept = default;
     ~saisie() = default;
 
-	/// inherited from html_page
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
-
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -131,6 +127,10 @@ public:
     std::string get_session_name() const { return session_name.get_value(); };
 
 protected:
+	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
+
 	// inherited from body_builder
     virtual void new_css_library_available() override;
 
