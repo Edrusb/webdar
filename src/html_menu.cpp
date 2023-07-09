@@ -60,37 +60,28 @@ html_menu::html_menu()
 
 html_menu::~html_menu()
 {
-    vector<html_button*>::iterator it = item.begin();
-
-    while(it != item.end())
-    {
-	if(*it != nullptr)
-	    delete (*it);
-	++it;
-    }
     item.clear();
 }
 
-void html_menu::add_entry(const std::string & label)
+void html_menu::add_entry(const std::string & label, const std::string & tag)
 {
     unsigned int num = item.size();
     string event_name = std::to_string(num);
-    html_button *newone = new (nothrow) html_button(label, event_name);
 
-    if(newone == nullptr)
-	throw exception_memory();
-    item.push_back(newone);
+    item.push_back(cell(label, event_name, tag));
+    if(item.size() != num + 1)
+	throw WEBDAR_BUG;
 
-    newone->record_actor_on_event(this, event_name);
+    item.back().ibtn->record_actor_on_event(this, event_name);
 
     if(label != "")
-	newone->add_css_class(box_off_class);
+	item.back().ibtn->add_css_class(box_off_class);
     else
-	newone->add_css_class(box_void_class);
-    newone->url_add_css_class(url_normal_class);
+	item.back().ibtn->add_css_class(box_void_class);
+    item.back().ibtn->url_add_css_class(url_normal_class);
 
 	/// building the body_builder tree
-    adopt(newone);
+    adopt(item.back().ibtn);
 
     if(item.size() == 1)
 	 set_current_mode(0);
@@ -106,32 +97,32 @@ void html_menu::set_current_mode(unsigned int mode)
     if(current_mode >= size)
     	throw WEBDAR_BUG;
 
-    if(item[current_mode] == nullptr)
+    if(item[current_mode].ibtn == nullptr)
 	throw WEBDAR_BUG;
 
-    if(item[mode] == nullptr)
+    if(item[mode].ibtn == nullptr)
 	throw WEBDAR_BUG;
 
 	/// all is fine, we can go on modifying the objects
 
-    item[current_mode]->url_clear_css_classes();
-    item[current_mode]->url_add_css_class(url_normal_class);
-    if(item[current_mode]->get_label() == "")
+    item[current_mode].ibtn->url_clear_css_classes();
+    item[current_mode].ibtn->url_add_css_class(url_normal_class);
+    if(item[current_mode].ibtn->get_label() == "")
     {
-	item[current_mode]->clear_css_classes();
-	item[current_mode]->add_css_class(box_void_class);
+	item[current_mode].ibtn->clear_css_classes();
+	item[current_mode].ibtn->add_css_class(box_void_class);
     }
     else
     {
-	item[current_mode]->clear_css_classes();
-	item[current_mode]->add_css_class(box_off_class);
+	item[current_mode].ibtn->clear_css_classes();
+	item[current_mode].ibtn->add_css_class(box_off_class);
     }
 
 
-    item[mode]->url_clear_css_classes();
-    item[mode]->url_add_css_class(url_selected_class);
-    item[mode]->clear_css_classes();
-    item[mode]->add_css_class(box_on_class);
+    item[mode].ibtn->url_clear_css_classes();
+    item[mode].ibtn->url_add_css_class(url_selected_class);
+    item[mode].ibtn->clear_css_classes();
+    item[mode].ibtn->add_css_class(box_on_class);
 
     if(has_changed)
     {
@@ -141,36 +132,36 @@ void html_menu::set_current_mode(unsigned int mode)
     }
 }
 
-string html_menu::get_current_label() const
+string html_menu::get_current_tag() const
 {
-    const html_button* button = nullptr;
-
     if(current_mode >= item.size())
 	throw WEBDAR_BUG;
 
-    button = item[current_mode];
-    if(button == nullptr)
-	throw WEBDAR_BUG;
-
-    return button->get_label();
+    return item[current_mode].itag;
 }
 
-void html_menu::set_current_label(const std::string & label)
+void html_menu::set_current_tag(const std::string & tag)
 {
     unsigned int i = 0;
 
-    while(i < item.size() && item[i] != nullptr && item[i]->get_label() != label)
+    while(i < item.size() && item[i].itag != tag)
 	++i;
 
     if(i < item.size())
-    {
-	if(item[i] == nullptr)
-	    throw WEBDAR_BUG;
-	else
-	    set_current_mode(i);
-    }
+	set_current_mode(i);
     else
-	throw WEBDAR_BUG; // unknown label in this html_menu
+	throw WEBDAR_BUG; // unknown tag in this html_menu
+}
+
+string html_menu::get_current_label() const
+{
+    if(current_mode >= item.size())
+	throw WEBDAR_BUG;
+
+    if(item[current_mode].ibtn == nullptr)
+	throw WEBDAR_BUG;
+
+    return item[current_mode].ibtn->get_label();
 }
 
 void html_menu::on_event(const string & event_name)
@@ -218,7 +209,7 @@ string html_menu::inherited_get_body_part(const chemin & path,
 
 		// looking which button index it is:
 
-	    while(i < size && item[i] != nullptr && item[i]->get_url() != target_s)
+	    while(i < size && item[i].ibtn != nullptr && item[i].ibtn->get_url() != target_s)
 		++i;
 	    if(i < size)
 		set_current_mode(i);
@@ -314,6 +305,3 @@ void html_menu::new_css_library_available()
     csslib->add(cl_url_sel);
     csslib->add(cl_url_norm);
 }
-
-
-

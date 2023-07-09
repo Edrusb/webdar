@@ -217,6 +217,20 @@ private:
 
     static const std::string css_class_text;
 
+    static const std::string menu_main;
+    static const std::string menu_restore;
+    static const std::string menu_compare;
+    static const std::string menu_test;
+    static const std::string menu_list;
+    static const std::string menu_create;
+    static const std::string menu_isolate;
+    static const std::string menu_merge;
+    static const std::string menu_filters;
+    static const std::string menu_repos;
+    static const std::string menu_sessions;
+    static const std::string menu_close;
+
+
 };
 
 #endif

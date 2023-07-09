@@ -68,10 +68,10 @@ int main(int argc, char *argv[])
 	div.adopt(&menu);
 	page.adopt(&table);
 
-	menu.add_entry("coucou");
-	menu.add_entry("coucou2");
-	menu.add_entry("");
-	menu.add_entry("coucou3");
+	menu.add_entry("coucou", "coucou tag");
+	menu.add_entry("coucou2", "coucou2 tag");
+	menu.add_entry("", "");
+	menu.add_entry("coucou3", "coucou3 tag");
 	menu.set_current_mode(1);
 	table.adopt_static_html("col1");
 	table.adopt_static_html("col2");

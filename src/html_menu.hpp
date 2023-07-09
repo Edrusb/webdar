@@ -32,6 +32,7 @@ extern "C"
 
     // C++ system header files
 #include <map>
+#include <deque>
 
     // webdar headers
 #include "body_builder.hpp"
@@ -63,10 +64,11 @@ public:
 	/// add an entry in the menu
 	///
 	/// \param[in] label is any text that will be showed to the user
+	/// \param[in] tag is to programmatically change the selected item (not translatable as the label)
 	/// \note first added entry will get the index (or mode) zero, next
 	/// added entry will have index 1, adding an empty string makes a non
 	/// selectable space between buttons.
-    void add_entry(const std::string & label);
+    void add_entry(const std::string & label, const std::string & tag);
 
 	/// returns the reference of the current mode
 	///
@@ -81,11 +83,14 @@ public:
 	/// returns the reference of the previous mode (the mode that was selected before current mode)
     unsigned int get_previous_mode() const { return previous_mode; };
 
-	/// return the current selected message
-    std::string get_current_label() const;
+	/// return the tage of the currently selected item
+    std::string get_current_tag() const;
 
-	/// set the current selected mode
-    void set_current_label(const std::string & label);
+	/// set the current selected mode giving its tag
+    void set_current_tag(const std::string & tag);
+
+	/// get current label (what is shown to the user)
+    std::string get_current_label() const;
 
 	/// modified wrapper from class events for our inherited classes
     void record_actor_on_event(actor *ptr) { events::record_actor_on_event(ptr, changed); };
@@ -103,9 +108,35 @@ protected:
 
 private:
 
+    struct cell
+    {
+	std::string itag;  ///< used in implementation
+	html_button* ibtn; ///< object container the visible (translatable) name of the item
+
+	cell(const std::string & label, const std::string & event_name, const std::string & tag)
+	{
+	    ibtn = new (std::nothrow) html_button(label, event_name);
+	    if(ibtn == nullptr)
+		throw exception_memory();
+	    itag = tag;
+	};
+	cell(const cell &) = delete; // not implemented (not needed)
+	cell(cell && ref) noexcept { std::swap(ref.ibtn, ibtn); std::swap(ref.itag, itag); };
+	cell & operator = (const cell &) = delete; // not implemented (not needed)
+	cell & operator = (cell && ref) noexcept { std::swap(ref.ibtn, ibtn); std::swap(ref.itag, itag); return *this; };
+	~cell()
+	{
+	    if(ibtn != nullptr)
+	    {
+		delete ibtn;
+		ibtn = nullptr;
+	    }
+	};
+    };
+
     unsigned int current_mode;  ///< which item is currently selected
     unsigned int previous_mode; ///< which item was previously selected
-    std::vector<html_button *> item;  ///< items for choices
+    std::deque<cell> item;      ///< items for choices
 
     static const std::string box_off_class;
     static const std::string box_on_class;

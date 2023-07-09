@@ -53,6 +53,19 @@ const string saisie::changed_session_name = "saisie_changed_session_name";
 
 const string saisie::css_class_text = "saisie_text";
 
+const string saisie::menu_main = "main";
+const string saisie::menu_restore = "restore";
+const string saisie::menu_compare = "compare";
+const string saisie::menu_test = "test";
+const string saisie::menu_list = "list";
+const string saisie::menu_create = "create";
+const string saisie::menu_isolate = "isolate";
+const string saisie::menu_merge = "merge";
+const string saisie::menu_filters = "filters";
+const string saisie::menu_repos = "repos";
+const string saisie::menu_sessions = "sessions";
+const string saisie::menu_close = "close";
+
 saisie::saisie():
     archread("Source archive"),
     show_operation_options("Show operation options",
@@ -96,21 +109,21 @@ saisie::saisie():
 
 
 	// configuration of "choice"
-    choice.add_entry("Main Page");
-    choice.add_entry("");
-    choice.add_entry("Restoration");
-    choice.add_entry("Comparison");
-    choice.add_entry("Testing");
-    choice.add_entry("Listing");
-    choice.add_entry("Creation");
-    choice.add_entry("Isolation");
-    choice.add_entry("Merging");
-    choice.add_entry("");
-    choice.add_entry("Filters");
-    choice.add_entry("Repositories");
-    choice.add_entry("Other Sessions");
-    choice.add_entry("");
-    choice.add_entry("Close Session");
+    choice.add_entry("Main Page", menu_main);
+    choice.add_entry("", "");
+    choice.add_entry("Restoration", menu_restore);
+    choice.add_entry("Comparison", menu_compare);
+    choice.add_entry("Testing", menu_test);
+    choice.add_entry("Listing", menu_list);
+    choice.add_entry("Creation", menu_create);
+    choice.add_entry("Isolation", menu_isolate);
+    choice.add_entry("Merging", menu_merge);
+    choice.add_entry("", "");
+    choice.add_entry("Filters", menu_filters);
+    choice.add_entry("Repositories", menu_repos);
+    choice.add_entry("Other Sessions", menu_sessions);
+    choice.add_entry("", "");
+    choice.add_entry("Close Session", menu_close);
     adopt(&choice);
 
 	// Configuring archive_show
@@ -262,7 +275,7 @@ string saisie::inherited_get_body_part(const chemin & path,
 	// now we can generate in return the whole HTML code for "this" object
     set_refresh_redirection(0,""); // clearing redirection that could have been set previously
     ret = html_page::inherited_get_body_part(path, req);
-    if(choice.get_current_label() == "Close Session")
+    if(choice.get_current_tag() == menu_close)
     {
 	if(close.get_value())
 	{
@@ -273,7 +286,7 @@ string saisie::inherited_get_body_part(const chemin & path,
 	}
     }
     else
-	if(choice.get_current_label() == "Other Sessions")
+	if(choice.get_current_tag() == menu_sessions)
 	{
 	    set_title(webdar_tools_get_title(get_session_name(), "Redirection to all user sessions"));
 	    set_refresh_redirection(0, "/");
@@ -293,10 +306,10 @@ void saisie::on_event(const std::string & event_name)
 	// menu "choice" changed
 
 	set_title(webdar_tools_get_title(get_session_name(), choice.get_current_label()));
-	if(choice.get_current_label() == "Restoration"
-	   || choice.get_current_label() == "Comparison"
-	   || choice.get_current_label() == "Testing"
-	   || choice.get_current_label() == "Listing")
+	if(choice.get_current_tag() == menu_restore
+	   || choice.get_current_tag() == menu_compare
+	   || choice.get_current_tag() == menu_test
+	   || choice.get_current_tag() == menu_list)
 	    archive_show.set_visible(true);
 	else
 	    archive_show.set_visible(false);
