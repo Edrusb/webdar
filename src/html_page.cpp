@@ -53,8 +53,8 @@ void html_page::set_refresh_redirection(unsigned int seconds, const std::string 
 }
 
 
-string html_page::get_body_part(const chemin & path,
-				const request & req)
+string html_page::inherited_get_body_part(const chemin & path,
+					  const request & req)
 {
     return get_body_part_given_the_body(path, req, get_body_part_from_children_as_a_block(path, req));
 }
@@ -95,4 +95,3 @@ string html_page::get_body_part_given_the_body(const chemin & path,
 
     return ret;
 }
-

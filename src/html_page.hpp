@@ -60,23 +60,15 @@ public:
 	/// \note if url is set to an empty string redirection is disabled
     void set_refresh_redirection(unsigned int seconds, const std::string & url);
 
-
-	/// inherited from body_builder
-    virtual std::string get_body_part(const chemin & path,
-				      const request & req) override;
-
 protected:
+	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
+
+
     std::string get_body_part_given_the_body(const chemin & path,
 					     const request & req,
 					     const std::string & body);
-
-	/// \note: for inherited classes implementation, as the css_library is created
-	/// from the constructor of html_page class, the new_css_library_available()
-        /// overriden method will not be called as expected from the consequence of setting
-	/// a css_library. To solve this restriction
-	/// what seems the best solution is to manually call the
-	/// inherited class's new_css_library_available() from the inherited
-	/// class constructors.
 
 private:
     std::string x_title;
