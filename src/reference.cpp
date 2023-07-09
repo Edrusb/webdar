@@ -75,7 +75,7 @@ reference & reference::operator = (reference && ref) noexcept(false)
     if(ref.already_moved)
 	return *this;
 	// avoiding copying from an already moved object
-	// class reference can is virtually multi-inherited
+	// class reference is virtually multi-inherited
     if(ref.is_empty())
     {
 	shut_all_peerings();
