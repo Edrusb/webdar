@@ -99,6 +99,7 @@ void body_builder::adopt(body_builder *obj)
         throw WEBDAR_BUG;
 
     const css_library* ancient_css_library = obj->lookup_css_library().get();
+    const css_library* new_css_library = lookup_css_library().get();
     string new_name;
     map<string, body_builder *>::iterator it;
     map<body_builder *, string>::iterator rit = revert_child.find(obj);
@@ -126,7 +127,7 @@ void body_builder::adopt(body_builder *obj)
 
         // if a css_library is available to the child thanks to the adoption
         // we trigger all the child lineage to record its css_classes
-    if(obj->lookup_css_library().get() != ancient_css_library)
+    if(new_css_library != ancient_css_library)
         obj->recursive_new_css_library_available();
 }
 
