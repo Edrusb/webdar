@@ -75,7 +75,7 @@ choose::choose(const string & user):
 
 	/// setup of session table page
 
-    tmpcss.css_clear_attributes();
+    tmpcss.clear();
     tmpcss.css_background_color(COLOR_BACK);
     tmpcss.css_color(COLOR_TEXT);
     tmpcss.css_padding("1em");
@@ -83,7 +83,7 @@ choose::choose(const string & user):
     page.define_css_class_in_library(css_class_page, tmpcss);
     page.add_css_class(css_class_page);
 
-    tmpcss.css_clear_attributes();
+    tmpcss.clear();
     tmp.add_text(3, string("Current sessions - we are identified as user ") + owner);
     tmpcss.css_padding("1em");
     tmpcss.css_background_color(COLOR_PADBACK);
@@ -96,8 +96,8 @@ choose::choose(const string & user):
     tmp.add_css_class(css_class_tmp_text);
     page.adopt_static_html(tmp.get_body_part());
 
-    tmpcss.css_clear_attributes();
-    tmpcss2.css_clear_attributes();
+    tmpcss.clear();
+    tmpcss2.clear();
     tmpcss.css_border_width(css::bd_all, css::bd_thin, true);
     tmpcss.css_border_style(css::bd_all, css::bd_solid, true);
     tmpcss.css_border_color(css::bd_all, COLOR_TEXT, true);
@@ -114,19 +114,19 @@ choose::choose(const string & user):
     page.define_css_class_in_library(css_class_table, tmpcss2);
     table.add_css_class(css_class_table);
 
-    tmpcss.css_clear_attributes();
+    tmpcss.clear();
     tmpcss.css_margin_top("1em", true);
     page.define_css_class_in_library(css_class_form, tmpcss);
     form.add_css_class(css_class_form);
 
-    tmpcss.css_clear_attributes();
+    tmpcss.clear();
     tmpcss.css_width("90%", true);
     page.define_css_class_in_library(css_class_div, tmpcss);
     div.add_css_class(css_class_div);
 
     	/// defining but not using yet the css_class_error_msg for html_page "page"
 
-    tmpcss.css_clear_attributes();
+    tmpcss.clear();
     tmpcss.css_color("#FF0000");
     tmpcss.css_text_align(css::al_center);
     tmpcss.css_font_weight_bold();
@@ -148,26 +148,26 @@ choose::choose(const string & user):
 	// css_class named definition do differ between html_pages
 	// "page" and "confirm"!
 
-    tmpcss.css_clear_attributes();
+    tmpcss.clear();
     tmpcss.css_background_color(COLOR_BACK);
     tmpcss.css_color(COLOR_TEXT, true);
     tmpcss.css_text_align(css::al_center);
     confirm.define_css_class_in_library(css_class_page, tmpcss);
     confirm.add_css_class(css_class_page);
 
-    tmpcss.css_clear_attributes();
+    tmpcss.clear();
     tmpcss.css_width("90%", true);
     confirm.define_css_class_in_library(css_class_table, tmpcss);
     ctable.add_css_class(css_class_table);
 
-    tmpcss.css_clear_attributes();
+    tmpcss.clear();
     tmpcss.css_text_align(css::al_left, true);
     confirm.define_css_class_in_library(css_class_form, tmpcss);
     confirmed.add_css_class(css_class_form);
 
 	/// defining but not using yet the css_class_error_msg for html_page "confirm"
 
-    tmpcss.css_clear_attributes();
+    tmpcss.clear();
     tmpcss.css_padding("1em");
     tmpcss.css_background_color("red");
     tmpcss.css_color(COLOR_PADFRONT);
@@ -177,7 +177,7 @@ choose::choose(const string & user):
     tmpcss.css_border_color(css::bd_all, COLOR_PADBORD);
     confirm.define_css_class_in_library(css_class_error_msg, tmpcss);
 
-    tmpcss.css_clear_attributes();
+    tmpcss.clear();
     tmpcss.css_padding_left("1em");
     confirm.define_css_class_in_library(css_class_normal_text, tmpcss);
 

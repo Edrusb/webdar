@@ -96,20 +96,20 @@ void html_error::new_css_library_available()
     {
 	try
 	{
-	    tmp.css_clear_attributes();
+	    tmp.clear();
 	    tmp.css_color("#FF0000");
 	    tmp.css_text_align(css::al_center);
 	    tmp.css_font_weight_bold();
 	    csslib->add(class_message, tmp);
 
-	    tmp.css_clear_attributes();
+	    tmp.clear();
 	    tmp.css_padding("1em");
 	    tmp.css_margin("1em");
 	    tmp.css_border_width(css::bd_all, css::bd_medium);
 	    tmp.css_border_style(css::bd_all, css::bd_inset);
 	    csslib->add(class_global, tmp);
 
-	    tmp.css_clear_attributes();
+	    tmp.clear();
 	    tmp.css_float(css::fl_right);
 	    tmp.css_margin_right("1em");
 	    csslib->add(class_button, tmp);

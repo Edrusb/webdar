@@ -62,14 +62,14 @@ error_page::error_page(unsigned int status_code,
 
         // setting css properties for each object
 
-    mystyle.css_clear_attributes();
+    mystyle.clear();
     mystyle.css_color(COLOR_TEXT);
     mystyle.css_background_color(COLOR_BACK);
     mystyle.css_padding("1em");
     page.define_css_class_in_library(page_css_name, mystyle);
     page.add_css_class(page_css_name);
 
-    mystyle.css_clear_attributes();
+    mystyle.clear();
     mystyle.css_font_weight_bold();
     mystyle.css_color("White");
     mystyle.css_background_color("Red");
@@ -83,12 +83,12 @@ error_page::error_page(unsigned int status_code,
     page.define_css_class_in_library(body_css_name, mystyle);
     body.add_css_class(body_css_name);
 
-    mystyle.css_clear_attributes();
+    mystyle.clear();
     mystyle.css_margin_left("13em");
     page.define_css_class_in_library(div_css_name, mystyle);
     div.add_css_class(div_css_name);
 
-    mystyle.css_clear_attributes();
+    mystyle.clear();
     mystyle.css_float(css::fl_left);
     mystyle.css_float_clear(css::fc_left);
     mystyle.css_margin_left("2em");

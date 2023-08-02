@@ -42,7 +42,7 @@ using namespace std;
 
 
 
-void css::css_clear_attributes()
+void css::clear()
 {
     color.clear();
     bg_col.clear();

@@ -339,13 +339,13 @@ void html_dir_tree::new_css_library_available()
 
 	    // setting css properties
 
-	tmpcss.css_clear_attributes();
+	tmpcss.clear();
 	tmpcss.css_float(css::fl_left, true);
 	tmpcss.css_float_clear(css::fc_both, true);
 	tmpcss.css_width("100%", false);
 	define_css_class_in_library(name_css_line, tmpcss);
 
-	tmpcss.css_clear_attributes();
+	tmpcss.clear();
 	tmpcss.css_float(css::fl_left, true);
 	tmpcss.css_float_clear(css::fc_both, true);
 	tmpcss.css_width("2em", false, true);
@@ -356,12 +356,12 @@ void html_dir_tree::new_css_library_available()
 	tmpcss.css_border_style(css::bd_all, css::bd_solid, true);
 	define_css_class_in_library(name_css_common, tmpcss);
 
-	tmpcss.css_clear_attributes();
+	tmpcss.clear();
 	tmpcss.css_border_color(css::bd_all, COLOR_BACK);
 	tmpcss.css_height("1em", false);
 	define_css_class_in_library(name_css_nosub, tmpcss);
 
-	tmpcss.css_clear_attributes();
+	tmpcss.clear();
 	tmpcss.css_text_align(css::al_left);
 	tmpcss.css_text_decoration(css::dc_none);
 	tmpclass.set_value(tmpcss);
@@ -372,11 +372,11 @@ void html_dir_tree::new_css_library_available()
 	tmpclass.set_selector(css_class::hover, tmpcss);
 	define_css_class_in_library(tmpclass);
 
-	tmpcss.css_clear_attributes();
+	tmpcss.clear();
 	tmpcss.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
 	define_css_class_in_library(name_css_shrink, tmpcss);
 
-	tmpcss.css_clear_attributes();
+	tmpcss.clear();
 	tmpcss.css_float(css::fl_left);
 	tmpcss.css_float_clear(css::fc_both);
 	tmpcss.css_width("100%", false);
@@ -386,7 +386,7 @@ void html_dir_tree::new_css_library_available()
 	tmpcss.css_margin_left("1em");
 	define_css_class_in_library(name_css_forsubdirs, tmpcss);
 
-	tmpcss.css_clear_attributes();
+	tmpcss.clear();
 	tmpcss.css_text_align(css::al_center);
 	tmpcss.css_border_width(css::bd_all, css::bd_thin);
 	tmpcss.css_border_style(css::bd_all, css::bd_dashed);
@@ -394,7 +394,7 @@ void html_dir_tree::new_css_library_available()
 	define_css_class_in_library(name_css_contents, tmpcss);
 
 	    // assigning style for all lines
-	tmpcss.css_clear_attributes();
+	tmpcss.clear();
 	tmpcss.css_border_width(css::bd_top, css::bd_thin);
 	tmpcss.css_border_style(css::bd_top, css::bd_dashed);
 	tmpcss.css_border_color(css::bd_top, COLOR_MENU_BORDER_OFF);

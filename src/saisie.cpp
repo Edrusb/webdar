@@ -507,12 +507,12 @@ void saisie::new_css_library_available()
     if(!csslib)
 	throw WEBDAR_BUG;
 
-    tmp.css_clear_attributes();
+    tmp.clear();
     tmp.css_margin_left("9.4em");
     csslib->add(css_class_rightpan, tmp);
     right_pan.add_css_class(css_class_rightpan);
 
-    tmp.css_clear_attributes();
+    tmp.clear();
     tmp.css_float(css::fl_right);
     csslib->add(css_class_right, tmp);
     go_extract.add_css_class(css_class_right);
@@ -523,12 +523,12 @@ void saisie::new_css_library_available()
     go_isolate.add_css_class(css_class_right);
     go_merge.add_css_class(css_class_right);
 
-    tmp.css_clear_attributes();
+    tmp.clear();
     tmp.css_float(css::fl_left);
     csslib->add(css_class_choice, tmp);
     choice.add_css_class(css_class_choice);
 
-    tmp.css_clear_attributes();
+    tmp.clear();
     tmp.css_width("90%", true);
     tmp.css_margin_bottom("1em");
     tmp.css_margin_top("1em");
@@ -536,12 +536,12 @@ void saisie::new_css_library_available()
     csslib->add(css_class_license, tmp);
     around_licensing.add_css_class(css_class_license);
 
-    tmp.css_clear_attributes();
+    tmp.clear();
     tmp.css_text_align(css::al_center, true);
     tmp.css_margin("2em", true);
     csslib->add(css_class_text, tmp);
 
-    tmp.css_clear_attributes();
+    tmp.clear();
     tmp.css_margin_left("9.4em");
     csslib->add(css_class_margin, tmp);
     select.add_css_class(css_class_margin);

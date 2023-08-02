@@ -102,7 +102,7 @@ void html_listing_page::new_css_library_available()
     csslib->add(page);
 
     tree.clear_css_classes();
-    tmp.css_clear_attributes();
+    tmp.clear();
     tmp.css_float(css::fl_left);
     tmp.css_height("100%", false);
     tmp.css_width("32.6%", false);
@@ -110,13 +110,13 @@ void html_listing_page::new_css_library_available()
     tmp.css_overflow(css::ov_scroll);
     tmp.css_margin_right("1%");
     c_tree.set_value(tmp);
-    tmp.css_clear_attributes();
+    tmp.clear();
     tmp.css_color(COLOR_TEXT);
     tree.add_css_class(c_tree.get_name());
     csslib->add(c_tree);
 
     title.clear_css_classes();
-    tmp.css_clear_attributes();
+    tmp.clear();
     tmp.css_width("64%", false);
     tmp.css_padding_top("1em");
     tmp.css_padding_bottom("1em");
@@ -136,7 +136,7 @@ void html_listing_page::new_css_library_available()
     csslib->add(c_title);
 
     close.clear_css_classes();
-    tmp.css_clear_attributes();
+    tmp.clear();
     tmp.css_float(css::fl_right);
     tmp.css_float_clear(css::fc_both);
     tmp.css_position_type(css::pos_fixed);
@@ -148,7 +148,7 @@ void html_listing_page::new_css_library_available()
     csslib->add(c_close);
 
     focus.clear_css_classes();
-    tmp.css_clear_attributes();
+    tmp.clear();
     tmp.css_margin_top("5em");
     tmp.css_width("66%", false);
     c_focus.set_value(tmp);

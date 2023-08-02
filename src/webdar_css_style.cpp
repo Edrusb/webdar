@@ -80,7 +80,7 @@ namespace webdar_css_style
                 box_void.css_border_style(css::bd_all, css::bd_none);
 
                     // box_off and tmp_norm COLORS
-                tmp_set.css_clear_attributes();
+                tmp_set.clear();
                 tmp_set.css_color(COLOR_MENU_FRONT_OFF, true);
                 tmp_set.css_background_color(COLOR_MENU_BACK_OFF, true);
                 tmp_set.css_font_weight_bold(true);

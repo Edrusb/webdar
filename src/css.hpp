@@ -47,7 +47,7 @@ class css
 {
 public:
 
-    css() { css_clear_attributes(); };
+    css() { clear(); };
     css(const css & ref) = default;
     css(css && ref) noexcept = default;
     css & operator = (const css & ref) = default;
@@ -55,7 +55,7 @@ public:
     virtual ~css() = default;
 
 	/// set css attributes to their default
-    void css_clear_attributes();
+    void clear();
 
 	// colors
 

@@ -163,16 +163,16 @@ void html_libdar_running::new_css_library_available()
     {
 	try
 	{
-	    tmp.css_clear_attributes();
+	    tmp.clear();
 	    tmp.css_margin("1em");
 	    tmp.css_padding("1em");
 	    csslib->add(class_global, tmp);
 
-	    tmp.css_clear_attributes();
+	    tmp.clear();
 	    tmp.css_width("90%", true);
 	    csslib->add(class_web, tmp);
 
-	    tmp.css_clear_attributes();
+	    tmp.clear();
 	    tmp.css_float(css::fl_right);
 	    tmp.css_float_clear(css::fc_both);
 	    tmp.css_margin_right("1em");
