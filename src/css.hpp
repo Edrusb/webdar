@@ -57,9 +57,6 @@ public:
 	/// set css attributes to their default
     void css_clear_attributes();
 
-	/// clear all html classes
-    void clear_html_classes() { html_class.clear(); };
-
 	// colors
 
     void css_color(const std::string & col,
@@ -227,18 +224,6 @@ public:
     void css_border_style(border which, bd_style val, bool inherit=false);
     void css_border_style() { border_style.clear(); };
 
-	// HTML classes
-
-	/// all css attributes contained in class will be applicable to the object as if it had those attributes
-    void add_html_class(const std::string & classname, bool inherit=false);
-
-	/// remove an already assigned class to this object
-    void remove_html_class(const std::string & classname);
-
-	/// get the list of html classes this object has
-    std::deque<std::string> get_html_class_list() const;
-
-
 	/// inherit css properties and html classes from the given reference
 	///
 	/// \param[in] ref from which to inherit properties
@@ -322,11 +307,6 @@ private:
 
 	// custom css
     std::map<std::string, css_property> custom_css;
-
-	// html_class properties
-
-	/// maps classname (string) to its inherit (bool) property
-    std::map<std::string, bool> html_class;
 
     std::string border_to_string(border val);
 };
