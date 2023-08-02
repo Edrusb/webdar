@@ -35,23 +35,30 @@ extern "C"
 
     // webdar headers
 
+    /// class reference gives a mean to link objects by a peering mehod
+
+    /// it handls object destruction and updates all existing peers accordingly
+    /// main use is for inherited classes needing link between objects of the same
+    /// class or between objects of different classes (shared implementation for those
+    /// uses cases).
 class reference
 {
 public:
-    reference() { reset(); }; // default constructor
-    reference(const reference & ref); // copy constructor
-    reference(reference && ref) noexcept(false); // move constructor
-    reference & operator = (const reference & ref); // assignment operator
-    reference & operator = (reference && ref) noexcept(false); // move assignment operator
+    reference() { reset(); }; /// default constructor
+    reference(const reference & ref); /// copy constructor
+    reference(reference && ref) noexcept(false); /// move constructor
+    reference & operator = (const reference & ref); /// assignment operator
+    reference & operator = (reference && ref) noexcept(false); /// move assignment operator
     virtual ~reference() { shut_all_peerings(); };
 
 	/// method used to create a relation between two objects
-	///
+
+	/// \param[in] obj must point to valid/existing object of class reference
+	/// or inherited class.
 	/// \note the relation is symetrical [a.peer_with(&b) is the same
 	/// as b.peer_with(&a)]. The relation ends when one or the other object
 	/// is destroyed. The other object is then notified of this event by
 	/// a call to its broken_peering_from() method
-
     void peer_with(reference *obj);
 
 	/// break the peering with the object given as argument
@@ -83,12 +90,12 @@ protected:
     bool read_next_peer(reference * & peer);
 
 private:
-    std::set<reference *>::iterator next_to_read;
-    std::set<reference *> peers;
-    bool already_moved;    ///< review implementation, does not seems necessary
+    std::set<reference *>::iterator next_to_read; ///< pointer to the next peer to read from the list
+    std::set<reference *> peers;                  ///< list of peers
+    bool already_moved;                           ///< flag objects std::move(d) (multi inheritance possible)
 
-    void reset();
-    void shut_all_peerings();
+    void reset();             ///< clear object status (ignoring possibily existing peers)
+    void shut_all_peerings(); ///< break link with all peers
 };
 
 #endif
