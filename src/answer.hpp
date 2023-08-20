@@ -42,107 +42,139 @@ extern "C"
 
     /// class answer provides easy means to set an HTTP answer and means to sent it back to a proto_connexion object
 
-    /// \note the main consumers of class answer are responder class and its inherited classes
+    /// \note the main consumers of class answer are objects from responder class and its inherited classes
 
 class answer
 {
 public:
+        /// class constructor
     answer() { clear(); };
+
+        /// copy constructor
     answer(const answer & ref) { copy_from(ref); };
+
+        /// move constructor
     answer(answer && ref) noexcept = default;
+
+        /// assignment copy operator
     answer & operator = (const answer & ref) { copy_from(ref); return *this; };
+
+        /// assignment move operator
     answer & operator = (answer && ref) noexcept = default;
+
+        /// destructor
     ~answer() = default;
 
-	/// clear all information from the object
+
+        /////// SETTING THE OBJECT
+
+        /// clear all information from the object
     void clear();
 
-	/// set/get answer status code and reason [MANDATORY]
+        /// set answer status code and reason [MANDATORY]
     void set_status(unsigned int status_code) { status = status_code; };
-    unsigned int get_status_code() const { return status; };
 
-	/// set/get reason [optional]
+        /// set reason [optional]
     void set_reason(const std::string & reason_phrase) { reason = reason_phrase; };
-    const std::string get_reason() const { return reason; };
 
-	/// set/get version info [MANDATORY]
+        /// set version info [MANDATORY]
     void set_version(unsigned int maj, unsigned int min) { maj_vers = maj; min_vers = min; };
-    unsigned int get_maj_version() const { return maj_vers; };
-    unsigned int get_min_version() const { return min_vers; };
 
-    	/// add cookie to the answer [optional]
+        /// add cookie to the answer [optional]
     void add_cookie(const std::string & key, const std::string & value);
 
-	/// adds the  body to the answer [optional]
-	///
-	/// \note this also set Content-Length accordingly
+        /// adds the  body to the answer [optional]
+
+        /// \note this also set Content-Length accordingly
     void add_body(const std::string & key);
 
-	/// get the current body of the answer
-    const std::string get_body() const { return body; };
-
-	/// removes the body keeping header untouched (Content-Lenght in particular)
+        /// removes the body keeping header untouched (Content-Lenght in particular)
     void drop_body_keep_header() { body = ""; };
 
-	/// whether the minimal parameters have been set
-    bool is_valid() const;
-
-	/// set a given attribute to the HTTP header
+        /// set a given attribute to the HTTP header
     void set_attribute(const std::string & key, const std::string & value) { attributes[webdar_tools_to_canonical_case(key)] = value; };
 
-	/// add an attribute to a possibly already existing message header
-	///
-	/// \note according to RFC1945:
-	/// "Multiple HTTP-header fields with the same field-name may be present
-	/// in a message if and only if the entire field-value for that header
-	/// field is defined as a comma-separated list [i.e., #(values)]. It must
-	/// be possible to combine the multiple header fields into one "field-
-	/// name: field-value" pair, without changing the semantics of the
-	///  message, by appending each subsequent field-value to the first, each
-	/// separated by a comma.
-	///  Multiple HTTP-header fields with the same field-name may be present
-	/// in a message if and only if the entire field-value for that header
-	/// field is defined as a comma-separated list [i.e., #(values)]. It must
-	/// be possible to combine the multiple header fields into one "field-
-	/// name: field-value" pair, without changing the semantics of the
-	/// message, by appending each subsequent field-value to the first, each
-	/// separated by a comma."
-	/// This is the way add_attribute_member behaves. If the given key already
-	/// exists, the given value is added to the existing value to form a new CSV f
+        /// add an attribute to a possibly already existing message header
+        ///
+        /// \note according to RFC1945:
+        /// "Multiple HTTP-header fields with the same field-name may be present
+        /// in a message if and only if the entire field-value for that header
+        /// field is defined as a comma-separated list [i.e., #(values)]. It must
+        /// be possible to combine the multiple header fields into one "field-
+        /// name: field-value" pair, without changing the semantics of the
+        ///  message, by appending each subsequent field-value to the first, each
+        /// separated by a comma.
+        ///  Multiple HTTP-header fields with the same field-name may be present
+        /// in a message if and only if the entire field-value for that header
+        /// field is defined as a comma-separated list [i.e., #(values)]. It must
+        /// be possible to combine the multiple header fields into one "field-
+        /// name: field-value" pair, without changing the semantics of the
+        /// message, by appending each subsequent field-value to the first, each
+        /// separated by a comma."
+        /// This is the way add_attribute_member behaves. If the given key already
+        /// exists, the given value is added to the existing value to form a new CSV f
     void add_attribute_member(const std::string & key, const std::string & value);
 
-	/// retrieve the value of an attribute of the HTTP answer
-	///
-	/// \param[in] key is the key's attribute to look for
-	/// \param[out] value is the associated value of the attribute if such attribute exists
-	/// \return true if the requested attribute has been found in this request
+
+        /////// VALIDATING THE OBJECT
+
+        /// whether the minimal parameters have been set
+    bool is_valid() const;
+
+
+
+        /////// GETTING INFORMATIONS ABOUT THE OBJECT
+
+        /// get answer status code and reason
+    unsigned int get_status_code() const { return status; };
+
+        /// get reason
+    const std::string get_reason() const { return reason; };
+
+        /// get integer part of the version info
+    unsigned int get_maj_version() const { return maj_vers; };
+
+        /// get decimal part of the version info
+    unsigned int get_min_version() const { return min_vers; };
+
+        /// get the current body of the answer
+    const std::string get_body() const { return body; };
+
+        /// retrieve the value of an attribute of the HTTP answer
+        ///
+        /// \param[in] key is the key's attribute to look for
+        /// \param[out] value is the associated value of the attribute if such attribute exists
+        /// \return true if the requested attribute has been found in this request
     bool find_attribute(const std::string & key, std::string & value) const;
 
-	/// send the answer
+
+        /////// SERIALIZING THE OBJECT TO AN EXISTING CONNECTION
+
+        /// send the answer
     void write(proto_connexion & output);
 
 private:
-    unsigned int status;
-    std::string reason;
-    unsigned int maj_vers;
-    unsigned int min_vers;
-    std::map<std::string, std::string> attributes;
-    std::string body;
+    unsigned int status;       ///< the HTTP status the answer should return
+    std::string reason;        ///< the HTTP reason the answer should return
+    unsigned int maj_vers;     ///< the HTTP version of the answer (in HTTP/1.0 maj_vers is 1)
+    unsigned int min_vers;     ///< the HTTP decimal version of the answer (in HTTP/1.0 min_vers is 0)
+    std::map<std::string, std::string> attributes; ///< http answer attributes like cookies
+    std::string body;          ///< the HTTP body (HTML header + HTML Body) of the HTTP answer
 
-	/// used to sequentially read the map of attributes
+        /// field used to sequentially read the map of attributes
     mutable std::map<std::string, std::string>::const_iterator next_read;
 
-
-	/// reset the read_next_attribute to the beginning of the list
+        /// reset the read_next_attribute to the beginning of the list
     void reset_read_next_attribute() const;
 
-	/// reads the next attributes
-	///
-	/// \param[out] key key of the next attribute
-	/// \param[out] value value of that attribute
-	/// \return true if a next attribute has been else, key and value are not set
+        /// reads the next attributes
+        ///
+        /// \param[out] key key of the next attribute
+        /// \param[out] value value of that attribute
+        /// \return true if a next attribute has been else, key and value are not set
     bool read_next_attribute(std::string & key, std::string & value) const;
 
+        /// used in copy constructor and copy operators
     void copy_from(const answer & ref);
 
 };
