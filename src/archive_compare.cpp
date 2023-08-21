@@ -75,11 +75,17 @@ void archive_compare::inherited_run()
 {
     try
     {
+	    // we create a local libdar::archive
+	    // it will be destroyed this try/catch block
+
 	libdar::archive arch(ui,
 			     archpath,
 			     basename,
 			     EXTENSION,
 			     read_opt);
+
+	    // if no exception has been raised, the object
+	    // has been created so we can
 
 	libdar::statistics final = arch.op_diff(fs_root,
 						diff_opt,
@@ -87,6 +93,8 @@ void archive_compare::inherited_run()
     }
     catch(libdar::Egeneric & e)
     {
+	    // converting libdar exceptions to exception_libcall
+	    // used within webdar
 	throw exception_libcall(e);
     }
 }

@@ -38,6 +38,17 @@ extern "C"
 
 #include "web_user_interaction.hpp"
 
+    /// class archive_compare run libdar comparison in a dedicated thread
+
+    /// Accordingly to the libhtreadar::thread paradigm, this class
+    /// provides methods to set parameter to the comparison operation
+    /// these are not set at object construction time, nor the thread
+    /// is run at that time, but once all parameter have been set by
+    /// invoking the libthreadar::run() method
+    /// \note this class is not a graphical class at all but relies
+    /// on aprovided web_user_interaction object to report status and
+    /// intermediate information about the operation under process
+
 class archive_compare : public libthreadar::thread
 {
 public:
@@ -47,6 +58,9 @@ public:
     archive_compare & operator = (const archive_compare & ref) = default;
     archive_compare & operator = (archive_compare && ref) noexcept = default;
     ~archive_compare() = default;
+
+	// parameters expected by the libdar::archive constructor
+	// and libdar::archive::op_diff method
 
     void set_user_interaction(web_user_interaction & ref) { ui = std::make_shared<web_user_interaction>(ref); };
     void set_archive_path(const std::string & val);
@@ -59,6 +73,9 @@ public:
 protected:
 
 	/// inherited from class libthreadar::thread
+
+	/// this fires the libdar comparison operation with the so far
+	/// provided parameters
     virtual void inherited_run() override;
 
 private:
@@ -66,9 +83,9 @@ private:
     libdar::path archpath;
     std::string basename;
     libdar::path fs_root;
-    libdar::archive_options_read read_opt;
-    libdar::archive_options_diff diff_opt;
-    libdar::statistics *progressive_report;
+    libdar::archive_options_read read_opt;  ///< parameter for archive constructor
+    libdar::archive_options_diff diff_opt;  ///< parameters for archive diff operation
+    libdar::statistics *progressive_report; ///< holds intermediate counter of the under process comparison
 };
 
 #endif
