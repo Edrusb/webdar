@@ -38,6 +38,18 @@ extern "C"
 #include "web_user_interaction.hpp"
 #include "html_options_create.hpp"
 
+    /// class archive_create run libdar comparison in a dedicated thread
+
+    /// Accordingly to the libhtreadar::thread paradigm, this class
+    /// provides methods to set parameter to the comparison operation
+    /// these are not set at object construction time, nor the thread
+    /// is run at that time, but once all parameter have been set by
+    /// invoking the libthreadar::run() method
+    /// \note this class is not a graphical class at all but relies
+    /// on aprovided web_user_interaction object to report status and
+    /// intermediate information about the operation under process
+
+
 class archive_create : public libthreadar::thread
 {
 public:
@@ -48,6 +60,7 @@ public:
     archive_create & operator = (archive_create && ref) noexcept = default;
     ~archive_create() = default;
 
+	// parameters expected by the libdar::archive constructor
 
     void set_user_interaction(web_user_interaction & ref) { ui = std::make_shared<web_user_interaction>(ref); };
     void set_archive_path(const std::string & val);
@@ -73,13 +86,13 @@ private:
     std::string basename;
     std::string extension;
     libdar::path fs_root;
-    libdar::archive_options_create opt;
-    bool has_ref;
-    std::string ref_path;
-    std::string ref_basename;
-    std::string ref_extension;
-    libdar::archive_options_read ref_opt;
-    libdar::statistics *progressive_report;
+    libdar::archive_options_create opt;     ///< options for the backup to create
+    bool has_ref;                           ///< whether an archive of reference has to be used
+    std::string ref_path;                   ///< backup of reference path
+    std::string ref_basename;               ///< backup of reference base name
+    std::string ref_extension;              ///< backup of reference extension
+    libdar::archive_options_read ref_opt;   ///< options for the archive of reference
+    libdar::statistics *progressive_report; ///< holds intermediate counter of the under process comparison
 };
 
 #endif

@@ -116,4 +116,3 @@ void archive_create::inherited_run()
 	throw exception_libcall(e);
     }
 }
-
