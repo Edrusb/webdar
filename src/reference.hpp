@@ -80,19 +80,19 @@ protected:
 
 
 	/// reset the peers reading
-    void reset_read_peers() { next_to_read = peers.begin(); };
+    void reset_read_peers() const { next_to_read = peers.begin(); };
 
 	/// provide the next peer
 	///
 	/// \param[in] the address of the next peer upon successful call
 	/// \return true if a next peer exists, false else in that case
 	/// the argument is undefined
-    bool read_next_peer(reference * & peer);
+    bool read_next_peer(reference * & peer) const;
 
 private:
-    std::set<reference *>::iterator next_to_read; ///< pointer to the next peer to read from the list
-    std::set<reference *> peers;                  ///< list of peers
-    bool already_moved;                           ///< flag objects std::move(d) (multi inheritance possible)
+    mutable std::set<reference *>::iterator next_to_read; ///< pointer to the next peer to read from the list
+    std::set<reference *> peers;                          ///< list of peers
+    bool already_moved;                                   ///< flag objects std::move(d) (multi inheritance possible)
 
     void reset();             ///< clear object status (ignoring possibily existing peers)
     void shut_all_peerings(); ///< break link with all peers

@@ -137,7 +137,7 @@ void reference::break_peer_with(reference *obj)
 }
 
 
-bool reference::read_next_peer(reference * & peer)
+bool reference::read_next_peer(reference * & peer) const
 {
     if(next_to_read != peers.end())
     {
