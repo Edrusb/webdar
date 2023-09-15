@@ -55,10 +55,10 @@ public:
 	/// read from an already open file the part that will provide the object status
 
 	/// \note in case of unexpected data exception_range should be thrown
-    void read_json(const libdar::fichier_local & ref) = 0;
+    virtual void read_json(const libdar::fichier_local & ref) = 0;
 
 	/// write at its turn in the already open file data that will let it read from read_json in the future
-    void write_json(const libdar::fichier_local & ref) const = 0;
+    virtual void write_json(const libdar::fichier_local & ref) const = 0;
 };
 
 #endif
