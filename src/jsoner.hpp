@@ -59,6 +59,11 @@ public:
 
 	/// write at its turn in the already open file data that will let it read from read_json in the future
     virtual void write_json(const libdar::fichier_local & ref) const = 0;
+
+	/// wether the object is deletable or has dependencies
+
+	/// necessary for bibliotheque to know before trying to delete an object
+    virtual bool deletable() const = 0;
 };
 
 #endif
