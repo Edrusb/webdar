@@ -21,6 +21,9 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
+#ifndef BIBLI_REFERABLE_HPP
+#define BIBLI_REFERABLE_HPP
+
     // C system header files
 extern "C"
 {
@@ -29,24 +32,28 @@ extern "C"
 
     // C++ system header files
 
-
     // webdar headers
-#include "exceptions.hpp"
+#include "reference.hpp"
 
+    /// \file bibli_referable.hpp defines bibli_referable class
+    ///
+    /// bibli_referable is an interface own by objects a bibliotheque
+    /// is able to store and associate to a name. There can be referred
+    /// by objects of type bibli_renvoi (sort of pointer with reference
+    /// counter)
 
-    //
-#include "json_child.hpp"
-
-using namespace std;
-
-reference* json_child::get_parent() const
+class bibli_referable : public reference
 {
-    reference* ret = nullptr;
+public:
+    bibli_referable() = default;
+    bibli_referable(const bibli_referable & ref) = default;
+    bibli_referable(bibli_referable && ref) noexcept(false) = default;
+    bibli_referable & operator = (const bibli_referable & ref) = default;
+    bibli_referable & operator = (bibli_referable && ref) noexcept(false) = default;
+    virtual ~bibli_referable() {};
 
-    reset_read_peers();
-    if(! read_next_peer(ret))
-	throw WEBDAR_BUG;
+	/// whether the current object is referred by a bibli_renvoi
+    bool referred() const { return ! is_empty(); };
+};
 
-    return ret;
-}
-
+#endif

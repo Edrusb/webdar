@@ -21,9 +21,6 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
-#ifndef JSON_CHILD_HPP
-#define JSON_CHILD_HPP
-
     // C system header files
 extern "C"
 {
@@ -32,33 +29,42 @@ extern "C"
 
     // C++ system header files
 
+
     // webdar headers
-#include "reference.hpp"
+#include "exceptions.hpp"
 
-    /// \file json_child.hpp defines json_child class
-    ///
-    /// json_child class is the base class of all others that
-    /// are able to save their status and read their status
-    /// from a configuration file (json formated)
+    //
+#include "bibli_renvoi.hpp"
 
-class json_child : public reference
+using namespace std;
+
+bibli_renvoi::bibli_renvoi(bibli_referable *ptr)
 {
-public:
-    json_child() = default;
-    json_child(const json_child & ref) = default;
-    json_child(json_child && ref) noexcept(false) = default;
-    json_child & operator = (const json_child & ref) = default;
-    json_child & operator = (json_child && ref) noexcept(false) = default;
-    virtual ~json_child() {};
+    if(ptr == nullptr)
+	throw WEBDAR_BUG;
 
-	/// whether the current object has a parent
-    bool orphaned() const { return is_empty(); };
+    peer_with(ptr);
+}
 
-	/// return the parent object
+const bibli_referable* bibli_renvoi::get_reference() const
+{
+    reference* ptr = nullptr;
 
-	/// throw exception if the object is orphaned
-    reference* get_parent() const;
+    if(size() != 1)
+	throw WEBDAR_BUG;
 
-};
+    reset_read_peers();
+    if(! read_next_peer(ptr))
+	throw WEBDAR_BUG;
 
-#endif
+    if(ptr == nullptr)
+	throw WEBDAR_BUG;
+
+    const bibli_referable* ret = dynamic_cast<const bibli_referable*>(ptr);
+
+    if(ret == nullptr)
+	throw WEBDAR_BUG;
+
+    return ret;
+}
+
