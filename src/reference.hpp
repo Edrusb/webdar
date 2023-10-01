@@ -35,9 +35,9 @@ extern "C"
 
     // webdar headers
 
-    /// class reference gives a mean to link objects by a peering mehod
+    /// class reference gives a mean to link objects by a peering method
 
-    /// it handls object destruction and updates all existing peers accordingly
+    /// it handles object destruction and updates all existing peers accordingly
     /// main use is for inherited classes needing link between objects of the same
     /// class or between objects of different classes (shared implementation for those
     /// uses cases).
