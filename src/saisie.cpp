@@ -119,6 +119,7 @@ saisie::saisie():
     choice.add_entry("Merging", menu_merge);
     choice.add_entry("", "");
     choice.add_entry("Configuration", menu_biblio);
+    choice.add_entry("", "");
     choice.add_entry("Other Sessions", menu_sessions);
     choice.add_entry("", "");
     choice.add_entry("Close Session", menu_close);
@@ -198,23 +199,27 @@ saisie::saisie():
 	// separator
     select.adopt(&div_sep1);
 
-	// filter sub-page
+	// configuration sub-page
     text.clear();
     text.add_text(1,"NOT YET IMPLEMENTED");
     div_biblio.adopt_static_html(text.get_body_part());
     select.adopt(&div_biblio);
 
+	// separator
+    select.adopt(&div_sep2);
+
 	// other sessions sub_page
     select.adopt(&div_sess);
 
 	// separator
-    select.adopt(&div_sep2);
+    select.adopt(&div_sep3);
 
     text.clear();
     text.add_text(1, "BUG: THIS separation PAGE SHOULD NEVER SHOW");
     div_sep0.adopt_static_html(text.get_body_part());
     div_sep1.adopt_static_html(text.get_body_part());
     div_sep2.adopt_static_html(text.get_body_part());
+    div_sep3.adopt_static_html(text.get_body_part());
 
 	// close session sub_page
     select.adopt(&close);

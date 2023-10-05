@@ -207,9 +207,11 @@ private:
 	//
     html_div div_biblio;
 	//
+    html_div div_sep2;
+	//
     html_div div_sess;
 	//
-    html_div div_sep2;
+    html_div div_sep3;
 	//
     html_yes_no_box close;
 
