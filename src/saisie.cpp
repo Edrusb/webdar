@@ -200,10 +200,7 @@ saisie::saisie():
     select.adopt(&div_sep1);
 
 	// configuration sub-page
-    text.clear();
-    text.add_text(1,"NOT YET IMPLEMENTED");
-    div_biblio.adopt_static_html(text.get_body_part());
-    select.adopt(&div_biblio);
+     select.adopt(&biblio);
 
 	// separator
     select.adopt(&div_sep2);

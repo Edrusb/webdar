@@ -39,6 +39,8 @@ extern "C"
 #include "jsoner.hpp"
 #include "bibli_renvoi.hpp"
 #include "bibli_referable.hpp"
+#include "body_builder.hpp"
+#include "html_text.hpp"
 
     /// \file bibliotheque.hpp defines bibliotheque class
     ///
@@ -48,23 +50,21 @@ extern "C"
     /// format of the configuration file, calling in turn the different
     ///
 
-class bibliotheque : public jsoner
+class bibliotheque : public jsoner, public body_builder
 {
 public:
 	/// json objects are split into category, each used as a different namespace
-    enum category { filter, command, repo, confsave, conftest, confdiff, conflist, confrest, confmerg, confrepair, confcommon };
+    enum category { filter, command, repo, confsave, conftest, confdiff, conflist, confrest, confmerg, confrepair, confcommon, EOE };
+    void begin(category & cat); // reset to first value
+    bool end(category cat) { return cat >= EOE; };
+    void incr(category & v); // ++cat implementation with out of bound control
 
-    bibliotheque() = default;
-    bibliotheque(const bibliotheque & ref) = default;
-    bibliotheque(bibliotheque && ref) noexcept(false) = default;
-    bibliotheque & operator = (const bibliotheque & ref) = default;
-    bibliotheque & operator = (bibliotheque && ref) noexcept(false) = default;
-    virtual ~bibliotheque() {};
-
-    void set_config_filename();
-    void get_config_filename();
-    virtual void read_json(const libdar::fichier_local & ref) override;
-    virtual void write_json(const libdar::fichier_local & ref) override;
+    bibliotheque();
+    bibliotheque(const bibliotheque & ref) { copy_from(ref); };
+    bibliotheque(bibliotheque && ref) noexcept(false) { swap_with(std::move(ref)); };
+    bibliotheque & operator = (const bibliotheque & ref) { copy_from(ref); return *this; };
+    bibliotheque & operator = (bibliotheque && ref) noexcept(false) { swap_with(std::move(ref)); return *this; };
+    virtual ~bibliotheque() = default;
 
 	////// attention, les objets references ne sont copiables etc. seulement s'ils sont sans reference !!!
 	////// ca veut dire que s'ils sont crees en dehors de Bibiotheque et y sont ajoutes apres
@@ -73,46 +73,52 @@ public:
 	////// corolaire le remplacement d'un objet par un autre
         //////
 	////// le reference d'un objet par une autre lors de sa creation se fait par son nom au sein de la
-	////// bibiotheque, le parent doit aller chercher l'objet et l'adopter. Ainsi un enfant peut avoir plusieurs parents /!\
+	////// bibiotheque, le parent doit aller chercher l'objet et l'adopter. Ainsi un enfant peut avoir plusieurs parents [!]
 
-    void add(category cat, const std::string & name, std::shared_ptr<jsoner> obj);
-    void replace(category cat, const std::string & name, std::shared_ptr<jsoner> obj);
-    void delete(category cat, const std::string & name);
+    void add(category cat, const std::string & name, const  bibli_referable & obj, bool can_replace = false);
+    bool remove(category cat, const std::string & name); /// \returns true if an object was found and deleted
 
-    void reset_read(category cat);
-    bool read_next(category cat, std::string & name);
+    void reset_read(category cat) const;
+    bool read_next(category cat, std::string & name) const;
 
 	/// only child are available for lookup per name
 	/// target of this call is for a json_parent to register a child given its name
-    bool find_by_name(category cat, std::string & name, json_child* found);
+    bool find_by_name(category cat, std::string & name, bibli_referable & found) const;
 
-	/// provides a reference to an existing object of the bibliotheque
-    std::unique_ptr<bibli_renvoi> create_renvoi(category cat, std::string & name);
+    virtual void read_json(const libdar::fichier_global & ref) override {};
+    virtual void write_json(const libdar::fichier_global & ref) const override {};
+
+
+protected:
+	// from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
+
 
 private:
-    std::map<std::string, bibli_referable> filters;
-    std::map<std::string, bibli_referable> command;
-    std::map<std::string, bibli_referable> repo;
-    std::map<std::string, bibli_referable> save;
-    std::map<std::string, bibli_referable> test;
-    std::map<std::string, bibli_referable> diff;
-    std::map<std::string, bibli_referable> list;
-    std::map<std::string, bibli_referable> rest;
-    std::map<std::string, bibli_referable> merg;
-    std::map<std::string, bibli_referable> repair;
-    std::map<std::string, bibli_referable> common; /// object of that kind are not libdarer, they are referred by action relative configurations
+    struct referable_list
+    {
+	std::map<std::string, bibli_referable> refs;
+	mutable std::map<std::string, bibli_referable>::const_iterator read_index;
 
-    mutable std::map<std::string, bibli_referable>::iterator read_filters;
-    mutable std::map<std::string, bibli_referable>::iterator read_command;
-    mutable std::map<std::string, bibli_referable>::iterator read_repo;
-    mutable std::map<std::string, bibli_referable>::iterator read_save;
-    mutable std::map<std::string, bibli_referable>::iterator read_test;
-    mutable std::map<std::string, bibli_referable>::iterator read_diff;
-    mutable std::map<std::string, bibli_referable>::iterator read_list;
-    mutable std::map<std::string, bibli_referable>::iterator read_rest;
-    mutable std::map<std::string, bibli_referable>::iterator read_repair;
-    mutable std::map<std::string, bibli_referable>::iterator read_common;
+	referable_list() { refs.clear(); reset_read(); };
+	void reset_read() const { read_index = refs.begin(); };
+    };
 
+    typedef std::map<category, referable_list>::iterator content_index;
+    typedef std::map<category, referable_list>::const_iterator const_content_index;
+    typedef std::map<std::string, bibli_referable>::iterator refs_index;
+    typedef std::map<std::string, bibli_referable>::const_iterator const_refs_index;
+
+    std::map<category, referable_list> content;
+
+    html_text text;
+
+    void initialize_content_and_indexes();
+    void reset_read_iterators();
+
+    void swap_with(bibliotheque && ref);
+    void copy_from(const bibliotheque & ref);
 };
 
 #endif

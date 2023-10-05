@@ -50,15 +50,15 @@ public:
     jsoner(jsoner && ref) noexcept(false) = default;
     jsoner & operator = (const jsoner & ref) = default;
     jsoner & operator = (jsoner && ref) noexcept(false) = default;
-    virtual ~jsoner() {};
+    virtual ~jsoner() = default;
 
 	/// read from an already open file the part that will provide the object status
 
 	/// \note in case of unexpected data exception_range should be thrown
-    virtual void read_json(const libdar::fichier_local & ref) = 0;
+    virtual void read_json(const libdar::fichier_global & ref) = 0;
 
 	/// write at its turn in the already open file data that will let it read from read_json in the future
-    virtual void write_json(const libdar::fichier_local & ref) const = 0;
+    virtual void write_json(const libdar::fichier_global & ref) const = 0;
 
 };
 
