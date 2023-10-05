@@ -55,10 +55,10 @@ extern "C"
     ///
     /// defines the web "pages" when no operation is
     /// running in the current session.
-    /// .on the left a menu 'choices' that triggers 'this' to modify the middle and top area
-    /// .on the top midle an html_aiguille 'show_archive' which
+    ///- on the left a menu 'choices' that triggers 'this' to modify the middle and top area
+    ///- on the top midle an html_aiguille 'show_archive' which
     /// contains two alternatives, nothing or the archive path
-    /// .just below and beside the menu, an html_aiguille "select" that
+    ///- just below and beside the menu, an html_aiguille "select" that
     /// shows the different fields in the context of the menu "choices"
 
 class saisie : public html_page, public actor, public events
@@ -205,9 +205,7 @@ private:
 	//
     html_div div_sep1;
 	//
-    html_div div_filters;
-	//
-    html_div div_repo;
+    html_div div_biblio;
 	//
     html_div div_sess;
 	//
@@ -225,8 +223,7 @@ private:
     static const std::string menu_create;
     static const std::string menu_isolate;
     static const std::string menu_merge;
-    static const std::string menu_filters;
-    static const std::string menu_repos;
+    static const std::string menu_biblio;
     static const std::string menu_sessions;
     static const std::string menu_close;
 

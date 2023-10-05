@@ -61,8 +61,7 @@ const string saisie::menu_list = "list";
 const string saisie::menu_create = "create";
 const string saisie::menu_isolate = "isolate";
 const string saisie::menu_merge = "merge";
-const string saisie::menu_filters = "filters";
-const string saisie::menu_repos = "repos";
+const string saisie::menu_biblio = "bibliotheque";
 const string saisie::menu_sessions = "sessions";
 const string saisie::menu_close = "close";
 
@@ -119,8 +118,7 @@ saisie::saisie():
     choice.add_entry("Isolation", menu_isolate);
     choice.add_entry("Merging", menu_merge);
     choice.add_entry("", "");
-    choice.add_entry("Filters", menu_filters);
-    choice.add_entry("Repositories", menu_repos);
+    choice.add_entry("Configuration", menu_biblio);
     choice.add_entry("Other Sessions", menu_sessions);
     choice.add_entry("", "");
     choice.add_entry("Close Session", menu_close);
@@ -203,12 +201,8 @@ saisie::saisie():
 	// filter sub-page
     text.clear();
     text.add_text(1,"NOT YET IMPLEMENTED");
-    div_filters.adopt_static_html(text.get_body_part());
-    select.adopt(&div_filters);
-
-	// repository sub-page
-    div_repo.adopt_static_html(text.get_body_part());
-    select.adopt(&div_repo);
+    div_biblio.adopt_static_html(text.get_body_part());
+    select.adopt(&div_biblio);
 
 	// other sessions sub_page
     select.adopt(&div_sess);
