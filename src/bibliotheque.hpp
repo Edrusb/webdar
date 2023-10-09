@@ -60,10 +60,10 @@ public:
     void incr(category & v); // ++cat implementation with out of bound control
 
     bibliotheque();
-    bibliotheque(const bibliotheque & ref) { copy_from(ref); };
-    bibliotheque(bibliotheque && ref) noexcept(false) { swap_with(std::move(ref)); };
-    bibliotheque & operator = (const bibliotheque & ref) { copy_from(ref); return *this; };
-    bibliotheque & operator = (bibliotheque && ref) noexcept(false) { swap_with(std::move(ref)); return *this; };
+    bibliotheque(const bibliotheque & ref) = delete;
+    bibliotheque(bibliotheque && ref) noexcept(false) = delete;
+    bibliotheque & operator = (const bibliotheque & ref) = delete;
+    bibliotheque & operator = (bibliotheque && ref) noexcept(false) = delete;
     virtual ~bibliotheque() = default;
 
 	////// attention, les objets references ne sont copiables etc. seulement s'ils sont sans reference !!!
@@ -116,9 +116,6 @@ private:
 
     void initialize_content_and_indexes();
     void reset_read_iterators();
-
-    void swap_with(bibliotheque && ref);
-    void copy_from(const bibliotheque & ref);
 };
 
 #endif

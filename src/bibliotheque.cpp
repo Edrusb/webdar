@@ -159,21 +159,3 @@ void bibliotheque::reset_read_iterators()
 	incr(cat);
     }
 }
-
-void bibliotheque::copy_from(const bibliotheque & ref)
-{
-    content = ref.content;
-    reset_read_iterators();
-
-    text = ref.text;
-}
-
-void bibliotheque::swap_with(bibliotheque && ref)
-{
-    swap(content, ref.content);
-
-    reset_read_iterators();
-    ref.reset_read_iterators(); // just for sanity
-
-    swap(text, ref.text);
-}
