@@ -54,6 +54,9 @@ public:
 
     void set_mode(unsigned int m);
 
+	/// return the number of child or modes
+    unsigned int size() const { return body_builder::size(); };
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
