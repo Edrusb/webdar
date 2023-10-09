@@ -55,7 +55,7 @@ public:
     virtual ~libdarer() {};
 };
 
-///////////// some prototype of class that would be old in bibliotheque
+///////////// some prototype of class that would be hold by a bibliotheque
 ////// the following class will be moved to their dedicated hpp/cpp module
 
 class libdarer_mask: public libdarer, public jsoner, public bibli_referable, public body_builder

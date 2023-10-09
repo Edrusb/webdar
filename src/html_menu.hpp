@@ -40,6 +40,7 @@ extern "C"
 #include "html_div.hpp"
 #include "events.hpp"
 
+    /// class html_menu shows a menu and provides events to act on other objects
 
     /// class html_menu provides a menu of choices to dynamically
     /// change another part of the html user interface
