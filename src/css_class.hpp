@@ -77,6 +77,9 @@ public:
     css_class & operator = (css_class && ref) noexcept = default;
     virtual ~css_class() = default;
 
+	/// change css_class name
+    void change_name(const std::string & newname) { class_name = newname; };
+
 	/// get the css_class name
     const std::string & get_name() const { return class_name; };
 

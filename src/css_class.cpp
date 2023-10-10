@@ -136,6 +136,3 @@ std::string css_class::get_selector_name(selector_type sel)
 	throw WEBDAR_BUG;
     }
 }
-
-
-
