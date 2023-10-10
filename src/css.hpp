@@ -224,6 +224,16 @@ public:
     void css_border_style(border which, bd_style val, bool inherit=false);
     void css_border_style() { border_style.clear(); };
 
+	// round corners
+    void css_corner_radius(const std::string & all, bool inherit=false);
+    void css_corner_radius(const std::string & topleft,
+			   const std::string & topright,
+			   const std::string & botright,
+			   const std::string & botleft,
+			   bool inherit=false);
+    void css_corner_radius(); // clear all css_corner radius relative information
+
+
 	/// inherit css properties and html classes from the given reference
 	///
 	/// \param[in] ref from which to inherit properties
@@ -304,6 +314,9 @@ private:
     css_property border_width;
     css_property border_color;
     css_property border_style;
+
+	// round corners
+    css_property corner_radius;
 
 	// custom css
     std::map<std::string, css_property> custom_css;

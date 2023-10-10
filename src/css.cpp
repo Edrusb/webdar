@@ -74,6 +74,7 @@ void css::clear()
     border_width.clear();
     border_color.clear();
     border_style.clear();
+    corner_radius.clear();
 
     map<string, css_property>::iterator it = custom_css.begin();
     while(it != custom_css.end())
@@ -571,6 +572,32 @@ void css::css_border_style(border which, bd_style val, bool inherit)
     css_updated(inherit);
 }
 
+void css::css_corner_radius(const std::string & all, bool inherit)
+{
+    css_corner_radius(all, all, all, all, inherit);
+}
+
+void css::css_corner_radius(const std::string & topleft,
+			    const std::string & topright,
+			    const std::string & botright,
+			    const std::string & botleft,
+			    bool inherit)
+{
+    string arg = " border-radius: ";
+
+    if(topleft == topright
+       && botleft == botright
+       && topleft == botleft) // all are equal
+	arg += topleft + ";";
+    else
+	arg += topleft + " " + topright + " " + botright + " " + botleft + ";";
+
+    corner_radius.set_value(arg);
+    corner_radius.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
+
 void css::css_inherit_from(const css & ref, bool all, bool force)
 {
     color.inherit_from(ref.color, all, force);
@@ -603,6 +630,7 @@ void css::css_inherit_from(const css & ref, bool all, bool force)
     border_width.inherit_from(ref.border_width, all, force);
     border_color.inherit_from(ref.border_color, all, force);
     border_style.inherit_from(ref.border_style, all, force);
+    corner_radius.inherit_from(ref.corner_radius, all, force);
 
 	// custom css inheritance
 
@@ -675,6 +703,7 @@ string css::css_get_raw_string() const
     ret += border_width.get_value();
     ret += border_color.get_value();
     ret += border_style.get_value();
+    ret += corner_radius.get_value();
 
     map<string, css_property>::const_iterator it = custom_css.begin();
 
