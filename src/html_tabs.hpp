@@ -35,10 +35,10 @@ extern "C"
 #include <deque>
 
     // webdar headers
-#include "body_builder.hpp"
+#include "html_div.hpp"
 #include "html_button.hpp"
 #include "html_aiguille.hpp"
-#include "html_div.hpp"
+#include "html_table.hpp"
 #include "css.hpp"
 
     /// class html_tabs implements tabs
@@ -49,7 +49,7 @@ extern "C"
     /// selected tab. A new tab must first be created before
     /// being able to adopt a new child.
 
-class html_tabs: public body_builder, public actor
+class html_tabs: public html_table, public actor
 {
 public:
     html_tabs();
@@ -79,12 +79,23 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 private:
     html_div tab_bar;
     std::map<std::string, unsigned int> corres; ///< link eventname to tab number
     std::deque<html_button*> tabs;
     html_aiguille content;
-    css tab_on, tab_off;
+
+    void set_mode(unsigned int mode);
+
+    static const char* tab_on;
+    static const char* tab_on_url;
+    static const char* tab_off;
+    static const char* tab_off_url;
+    static const char* menu_bar;
+    static const char* tab_sep;
 };
 
 #endif
