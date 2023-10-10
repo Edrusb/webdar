@@ -224,7 +224,7 @@ int main(int argc, char *argv[], char **env)
 
 			reminder_msg += string("\t\t")
 			    + (cipher ? "https://" : "http://")
-			    + (it->interface = "" ? "127.0.0.1" : it->interface)
+			    + (it->interface == "" ? "127.0.0.1" : it->interface)
 			    + string(":") + to_string(it->port) + string("\n");
 
 			if(it->interface == "")
