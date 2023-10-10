@@ -1,0 +1,90 @@
+/*********************************************************************/
+// webdar - a web server and interface program to libdar
+// Copyright (C) 2013-2023 Denis Corbin
+//
+// This file is part of Webdar
+//
+//  Webdar is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Webdar is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with Webdar.  If not, see <http://www.gnu.org/licenses/>
+//
+//----
+//  to contact the author: dar.linux@free.fr
+/*********************************************************************/
+
+#ifndef HTML_TABS_HPP
+#define HTML_TABS_HPP
+
+    // C system header files
+extern "C"
+{
+
+}
+
+    // C++ system header files
+#include <string>
+#include <deque>
+
+    // webdar headers
+#include "body_builder.hpp"
+#include "html_button.hpp"
+#include "html_aiguille.hpp"
+#include "html_div.hpp"
+#include "css.hpp"
+
+    /// class html_tabs implements tabs
+    ///
+    /// this class implements tabs. Tabs are created
+    /// calling add_tab(). Below the tab bar
+    /// the rest of the area shows the object adopted for the
+    /// selected tab. A new tab must first be created before
+    /// being able to adopt a new child.
+
+class html_tabs: public body_builder, public actor
+{
+public:
+    html_tabs();
+    html_tabs(const html_tabs & ref) = delete;
+    html_tabs(html_tabs && ref) noexcept = delete;
+    html_tabs & operator = (const html_tabs & ref) = delete;
+    html_tabs & operator = (html_tabs && ref) noexcept = delete;
+    virtual ~html_tabs();
+
+	/// add a new tab to the tab bar
+    void add_tab(const std::string & label);
+
+	/// inherited from actor class
+    virtual void on_event(const std::string & event_name) override;
+
+	/// sub_adopt should be used in place of body_builder::adopt()
+
+	/// child object are not adopted directly by the html_tabs but by
+	/// its private html_aiguille field.
+    void sub_adopt(body_builder *obj);
+
+protected:
+	/// inherited from body_builder
+    virtual void has_adopted(body_builder *obj) override;
+
+	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
+
+private:
+    html_div tab_bar;
+    std::map<std::string, unsigned int> corres; ///< link eventname to tab number
+    std::deque<html_button*> tabs;
+    html_aiguille content;
+    css tab_on, tab_off;
+};
+
+#endif
