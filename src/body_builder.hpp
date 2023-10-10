@@ -71,6 +71,18 @@ extern "C"
     /// needed.
     ///. objects of this class also produce HTML code referring to what should be displayed on
     /// on the browser (get_body_part())
+    /// \note more details about css. body_builder object can be associated to the name of one
+    /// or more css_class or css_class_group at any time, those are just labels. The class
+    /// definition is stored in a css_library. If a body_builder object have created
+    /// a css_library (calling store_css_library()) all its adopted body_builder objects
+    /// can access it and upload their class definitions using lookup_css_library().
+    /// a class can be informed of the availability of a css_library overriding the
+    /// protected method new_css_library_available() and implement there the css class
+    /// definition they or their components have been associated to by mean of
+    /// add_css_class(). Last from the outside of a class it is possible to define
+    /// a css_class using the public method define_css_class_in_library(), but for
+    /// this to work a css_library must be reachable in an ancestors (in regard to
+    /// the adoption relationship) of this object.
 
 class body_builder
 {
@@ -170,7 +182,7 @@ public:
     std::string get_css_classes() const;
 
         /// add a css definition on a css_library reachable by this object
-        /// \note so far this object does not use it, a call to add_css_class must be done
+        /// \note so far this object does not use it, a call to add_css_class must also be done
         /// \note the provided css class name must not already exist (exception raised else)
     void define_css_class_in_library(const css_class & csscl);
     void define_css_class_in_library(const std::string & name, const css & cssdef);
