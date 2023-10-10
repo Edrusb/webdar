@@ -98,6 +98,9 @@ void body_builder::adopt(body_builder *obj)
     if(obj == nullptr)
         throw WEBDAR_BUG;
 
+    if(obj == this)
+	throw WEBDAR_BUG; // trying to adopt ourself!!!
+
     const css_library* ancient_css_library = obj->lookup_css_library().get();
     const css_library* new_css_library = lookup_css_library().get();
     string new_name;
