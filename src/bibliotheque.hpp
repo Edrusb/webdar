@@ -41,6 +41,7 @@ extern "C"
 #include "bibli_referable.hpp"
 #include "body_builder.hpp"
 #include "html_text.hpp"
+#include "html_tabs.hpp"
 
     /// \file bibliotheque.hpp defines bibliotheque class
     ///
@@ -54,7 +55,7 @@ class bibliotheque : public jsoner, public body_builder
 {
 public:
 	/// json objects are split into category, each used as a different namespace
-    enum category { filter, command, repo, confsave, conftest, confdiff, conflist, confrest, confmerg, confrepair, confcommon, EOE };
+    enum category { filefilter, pathfilter, command, repo, confsave, conftest, confdiff, conflist, confrest, confmerg, confrepair, confcommon, EOE };
     void begin(category & cat); // reset to first value
     bool end(category cat) { return cat >= EOE; };
     void incr(category & v); // ++cat implementation with out of bound control
@@ -94,6 +95,7 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+    virtual void new_css_library_available() override;
 
 private:
     struct referable_list
@@ -112,10 +114,14 @@ private:
 
     std::map<category, referable_list> content;
 
-    html_text text;
+    html_tabs tabs;
+    static constexpr unsigned int numtabs = EOE;
+    html_text text[numtabs];
 
     void initialize_content_and_indexes();
     void reset_read_iterators();
+
+    static const char* css_tabs;
 };
 
 #endif

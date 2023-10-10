@@ -37,6 +37,8 @@ extern "C"
 
 using namespace std;
 
+const char* bibliotheque::css_tabs = "bibliotheque_tabs";
+
 void bibliotheque::begin(category & v)
 {
     v = static_cast<category>(0);
@@ -50,10 +52,28 @@ void bibliotheque::incr(category & v)
 	v = static_cast<category>(v+1);
 }
 
-bibliotheque::bibliotheque(): text(1, "Configuration page, work under progress")
+bibliotheque::bibliotheque()
 {
     initialize_content_and_indexes();
-    adopt(&text);
+    adopt(&tabs);
+    tabs.add_tab("File Filters");
+    tabs.add_tab("Path Filters");
+    tabs.add_tab("Commands");
+    tabs.add_tab("Repositories");
+    tabs.add_tab("Save Options");
+    tabs.add_tab("Test Options");
+    tabs.add_tab("Diff Options");
+    tabs.add_tab("List Options");
+    tabs.add_tab("Restore Options");
+    tabs.add_tab("Merge Options");
+    tabs.add_tab("Repair Options");
+    tabs.add_tab("Common Options");
+    for(unsigned int i = 0; i < numtabs; ++i)
+    {
+	text[i].add_text(1, string("Page under construction: #") + to_string(i));
+	tabs.sub_adopt(&(text[i]));
+    }
+    tabs.add_css_class(css_tabs);
 }
 
 void bibliotheque::add(category cat, const string & name, const bibli_referable & obj, bool can_replace)
@@ -134,6 +154,19 @@ string bibliotheque::inherited_get_body_part(const chemin & path,
     return get_body_part_from_all_children(path, req);
 }
 
+void bibliotheque::new_css_library_available()
+{
+    std::unique_ptr<css_library> & csslib = lookup_css_library();
+
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    css tmp;
+    tmp.css_width("95%", true);
+
+    if(!csslib->class_exists(css_tabs))
+	csslib->add(css_tabs, tmp);
+}
 
 void bibliotheque::initialize_content_and_indexes()
 {
