@@ -53,6 +53,7 @@ public:
     ~html_aiguille() = default;
 
     void set_mode(unsigned int m);
+    unsigned int get_mode() const { return mode; };
 
 	/// return the number of child or modes
     unsigned int size() const { return body_builder::size(); };
