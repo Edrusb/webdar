@@ -200,7 +200,7 @@ saisie::saisie():
     select.adopt(&div_sep1);
 
 	// configuration sub-page
-     select.adopt(&biblio);
+    select.adopt(&biblio);
 
 	// separator
     select.adopt(&div_sep2);
