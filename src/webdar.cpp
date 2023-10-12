@@ -63,12 +63,15 @@ extern "C"
 #define WEBDAR_EXIT_SIGT2 5
 #define WEBDAR_EXIT_RESOURCE 6
 
+#define DEFAULT_TCP_PORT 8008
+
 using namespace std;
 
 struct interface_port
 {
     std::string interface; //< if empty means any interface
     unsigned int port;
+    interface_port() { interface = ""; port = DEFAULT_TCP_PORT; };
 };
 
 static void parse_cmd(int argc, char *argv[],
@@ -388,7 +391,7 @@ static void parse_cmd(int argc, char *argv[],
     facility = LOG_USER;
     ecoute.clear();
 
-    while((lu = getopt(argc, argv, "vl:bC:K:" )) != -1)
+    while((lu = getopt(argc, argv, "vl:bC:K:h" )) != -1)
     {
 	switch(lu)
 	{
@@ -413,6 +416,10 @@ static void parse_cmd(int argc, char *argv[],
 	    if(privateK.empty())
 		throw exception_range("-K option needs a filename");
 	    break;
+	case 'h':
+	    throw exception_range(std::string("Usage: ")
+				  + std::string(argv[0])
+				  + std::string(" [-l <IP>[:port]] [-v] [-b] [-C <certificate file> -K <private key file>]\n"));
 	case '?':
 	    cerr << "Ignoring Unknown argument given on command line: " << lu << endl;
 	    break;
@@ -434,10 +441,8 @@ static void parse_cmd(int argc, char *argv[],
 	if(argc < 1 || argv[0] == nullptr)
 	    throw WEBDAR_BUG;
 	else
-	    throw exception_range(std::string("Usage: ")
-				  + std::string(argv[0])
-				  + std::string(" -l <IP:port> [-v] [-b] [-C <certificate file> -K <private key file>]\n"));
-    }
+	    add_item_to_list((string("127.0.0.1:") + to_string(DEFAULT_TCP_PORT)).c_str(), ecoute);
+   }
 
     if(background)
 	throw exception_feature("webdar in background as a daemon");
@@ -457,44 +462,84 @@ static void add_item_to_list(const char *optarg, vector<interface_port> & ecoute
     {
 	string m1, m2;
 
-	webdar_tools_split_in_two(']', *itc, m1, m2);
-	if(m2 == "") // either final ']' or no ']' at all, assuming no IPv6 has been given
-	{
-	    webdar_tools_split_in_two(':', *itc, m1, m2);
-	    try
-	    {
-		couple.port = webdar_tools_convert_to_int(m2);
-	    }
-	    catch(exception_base & e)
-	    {
-		throw exception_range(string("Error while parsing argument \"") + *itc + "\" : " + e.get_message());
-	    }
-	    couple.interface = m1;
-	}
-	else // an IPv6 was given
-	{
-	    string tmp;
-	    webdar_tools_split_in_two(':',m2, tmp, m2);
-	    if(m2 == "") // either final ':' or no ':' in any case this is a syntax error
-		throw exception_range(string("missing port after IPv6 in argument: ") + *itc);
-	    if(tmp != "") //
-		throw exception_range(string("unexpected string: \"") + tmp + "\" in argument " + *itc);
-	    try
-	    {
-		couple.port = webdar_tools_convert_to_int(m2);
-	    }
-	    catch(exception_base & e)
-	    {
-		throw exception_range(string("Error while parsing argument \"") + *itc + "\" : " + e.get_message());
-	    }
+	if(itc->size() == 0)
+	    throw exception_range(string("Error while parsing argument, empty argument provided in comma separated list"));
 
-	    webdar_tools_split_in_two('[', m1, tmp, m1);
-	    if(tmp != "")
-		throw exception_range(string("unexpected string before IPv6 address in argument: ") + *itc);
-	    if(m1 == "")
-		throw exception_range(string("missing '[' before IPv6 address in argument: ") + *itc);
-	    couple.interface = m1;
+	webdar_tools_split_in_two(']', *itc, m1, m2);
+	if(m2 == "") // either final ']' or no ']' at all
+	{
+	    if(*(itc->rbegin()) == ']') // there was a final ']' thus IPv6 is expected (without port specs)
+	    {
+		string tmp;
+
+		webdar_tools_split_in_two('[', m1, tmp, m2);
+		if(tmp.empty() && ! m2.empty()) //  full IPv6 specification
+		{
+		    couple.port = DEFAULT_TCP_PORT;
+		    couple.interface = m2;
+		}
+		else
+		    throw exception_range(string("Error while parsing argument \"") + *itc + "\" : unbalanced '[' and ']'");
+	    }
+	    else // no IPv6 provided, ':' are now only possible for port specification
+	    {
+		webdar_tools_split_in_two(':', *itc, m1, m2);
+		if(m2 == "") // no ':' or final ':'
+		{
+		    if( *(itc->rbegin()) == ':')
+			throw exception_range(string("Error while parsing argument \"") + *itc + "\" : unexpected ':' at end of argument");
+		    else
+		    {
+			couple.port = DEFAULT_TCP_PORT;
+			couple.interface = m1;
+		    }
+		}
+		else // port specification provided
+		{
+		    try
+		    {
+			couple.port = webdar_tools_convert_to_int(m2);
+		    }
+		    catch(exception_base & e)
+		    {
+			throw exception_range(string("Error while parsing argument \"") + *itc + "\" : " + e.get_message());
+		    }
+
+		    if(m1.size() > 0)
+			couple.interface = m1;
+		    else
+			throw exception_range(string("Error while parsing argument \"") + *itc + "\" : missing IP of hostname specification before ':'");
+		}
+	    }
 	}
+	else // an IPv6 was given followed by a port specification
+	{
+	    string tmp1, tmp2;
+
+	    if(m1.size() < 4 || *(m1.begin()) != '[') // smallest IPv6 specs if [::]
+		throw exception_range(string("Error while parsing argument \"") + *itc + "\" : invalid IPv6 specification: " + m1);
+
+	    webdar_tools_split_in_two('[', m1, tmp1, tmp2);
+	    if(! tmp1.empty())
+		throw exception_range(string("unexpected string before IPv6 address in argument: ") + *itc);
+	    if(tmp2.empty())
+		throw exception_range(string("missing '[' before IPv6 address in argument: ") + *itc);
+	    couple.interface = tmp2;
+
+	    webdar_tools_split_in_two(':', m2, tmp1, tmp2);
+	    if(! tmp1.empty() || tmp2.empty()) // extra garbage between IPv6 and ':'
+		throw exception_range(string("Port specification missing after IPV6 in argument: ") + *itc);
+
+	    try
+	    {
+		couple.port = webdar_tools_convert_to_int(tmp2);
+	    }
+	    catch(exception_base & e)
+	    {
+		throw exception_range(string("Error while parsing argument \"") + *itc + "\" : " + e.get_message());
+	    }
+	}
+
 	ecoute.push_back(couple);
     }
 }

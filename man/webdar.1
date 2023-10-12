@@ -3,7 +3,7 @@
 .SH NAME
 webdar \- web interface to libdar
 .SH SYNOPSIS
-webdar -l [<network interface>:]port [,[<network interface>:]port [,...] ] [-v] [-b <facility>] [-C <certificate file> -K <private key file>]
+webdar [-l <network interface>[:port] [,<network interface>[:port] [,...]]] [-v] [-b <facility>] [-C <certificate file> -K <private key file>]
 .P
 webdar -h
 .P
@@ -19,22 +19,15 @@ Note that by default webdar is not a daemon, it uses stderr/stdout to report err
 
 .SH OPTIONS
 .TP 20
--l, --listen [<network interface>]:port [, ...]
+-l, --listen <network interface>[:port] [, ...]
 .RS
-this is a mandatory option, that defines on which port and interface to listen for incoming requests. Network interface can be a hostname, FQDN, IPv4 or IPv6 address. IPv6 address have to be surrounded by squared brackets (`[' and `]'). Note that you will need to quote the argument when using IPv6 address format for the square brackets not to be interpreted by the shell.
+This option defines on which port(s) and interface(s) to listen for incoming requests. Network interface can be a hostname, FQDN, IPv4 or IPv6 address. IPv6 address have to be surrounded by squared brackets (`[' and `]'). Note that you will need to quote the argument when using IPv6 address format for the square brackets not to be interpreted by the shell. If an interface is specified without port, it defaults to port 8008.
 .P
-Example : -l "localhost:8080,[::1]:8082,127.0.0.1:8083"
+Example : -l "1.2.3.4,[::1]:8082,127.0.0.1:8083"
 .P
-In the previous example, webdar will listen on interface 'localhost' (aka loopback interface) on port 8080, IPv6 address ::1 on port 8082, and IPv4 address 127.0.0.1 on port 8083.
+In the previous example, webdar will listen on the interface having the IP address '1.2.3.4' on port 8008, on IPv6 address ::1 port 8082 and IPv4 address 127.0.0.1 on port 8083.
 .P
-When only port information is given (preceeded by a colon (:)) the IP address used is the loopback interface. For example:
-.RS
-	webdar -l :1234
-.RE
-is equivalent to:
-.RS
-	webdar -l 127.0.0.1:1234
-.RE
+Without -l option, webdar listens on loopback interface (127.0.0.1) on port 8008
 .RE
 .TP 20
 -v, --verbose

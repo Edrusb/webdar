@@ -41,7 +41,7 @@ using namespace std;
 
 int webdar_tools_convert_to_int(const string & ref)
 {
-    int ret;
+    int ret = -1;
     stringstream buf;
 
     buf.str(ref);
