@@ -32,6 +32,17 @@ extern "C"
 
     // C++ system header files
 
+    /// class html_form_select implements HTML <select>
+
+    /// It should be adopted directory or not by an html_form
+    /// object. It shows a dropdown list of choices the user
+    /// has to select. To setup the available choices use the
+    /// add_choice(), clear() methods. To obtain the value selected
+    /// by the user, use the get_selected_id() or get_selected_num()
+    /// methods. Note that the change only occurs when the form is
+    /// submited by the browser. As result of this POST action
+    /// if the user changed the field, the object triggers the 'changed'
+    /// event other objects can register on to be notified of change
 
     // webdar headers
 #include "html_form_radio.hpp"

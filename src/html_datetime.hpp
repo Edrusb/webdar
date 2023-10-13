@@ -38,6 +38,11 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_form_select.hpp"
 
+    /// class html_datetime is a html_form_field object
+
+    /// like html_form_input it is expected to be adopted directly
+    /// or thrown an html_form_fieldset by an html_form object
+    /// and let the user provide a date information
 
 class html_datetime : public body_builder
 {
@@ -49,7 +54,10 @@ public:
     html_datetime & operator = (html_datetime && ref) noexcept = default;
     ~html_datetime() = default;
 
+	/// return the provided date in the form a number of seconds since 1969
     libdar::infinint get_value() const;
+
+	/// setup the initial value displayed to the user
     void set_value(libdar::infinint val);
 
 protected:

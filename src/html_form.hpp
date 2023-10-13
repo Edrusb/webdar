@@ -36,6 +36,14 @@ extern "C"
     // webdar headers
 #include "body_builder.hpp"
 
+    /// class html_form implements HTML <form>
+
+    /// html_form object should adopt html_form_fieldset
+    /// or directly html_form_input, html_datetime, html_form_radio
+    /// or any more generally called html_form_field object
+    /// Visually, html_form only shows a button to validate the change
+    /// set by the user in the displayed form. The text of the button
+    /// is given as argument of this class constructor
 
 class html_form : public body_builder
 {

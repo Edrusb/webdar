@@ -37,6 +37,16 @@ extern "C"
 #include "body_builder.hpp"
 #include "events.hpp"
 
+    /// class html_form_input implements HTML <input>
+
+    /// it is expected to be adopted by an html_form directory
+    /// or through an html_form_fieldset, to provide a mean for
+    /// user to provide information.
+    /// Depdending on the type set in the constructor argument,
+    /// this object is visually a text window, a check box or
+    /// let the user select a file on his local directory (local
+    /// from browser point of view).
+
 class html_form_input : public body_builder, public events
 {
 public:

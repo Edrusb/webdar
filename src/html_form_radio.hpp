@@ -37,6 +37,16 @@ extern "C"
 #include "body_builder.hpp"
 #include "events.hpp"
 
+    /// class html_form_radio implements HTML <input> of type "radio"
+
+    /// these html_form_field objects are set calling add_choice(), clear()
+    /// set_selected() methods and provide in return the menu selected by
+    /// the user using get_selected_id() or get_selected_num()
+    /// These object provide an event "changed" that is triggered when user
+    /// change the selection of the radio button set. This change is only
+    /// visible to the application once the user validated the change by clicking
+    /// the button of the parent or grand-parent html_form.
+
 class html_form_radio : public body_builder, public events
 {
 public:
