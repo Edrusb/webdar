@@ -56,6 +56,8 @@ public:
     ~html_form_fieldset() = default;
 
     void change_label(const std::string & label) { x_label = label; };
+    const std::string get_label() const { return x_label; };
+
 	/// clear and destroy previously added objects
     void clear() { orphan_all_children(); };
 
