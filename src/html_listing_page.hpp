@@ -41,6 +41,14 @@ extern "C"
 #include "archive_init_list.hpp"
 #include "html_focus.hpp"
 
+    /// html_listing_page is the page that shows when listing an existing archive content
+
+    /// it is used by class user_interface once the archive_init_list object it has
+    /// created has completed the dar archive openning at which time it passed this object
+    /// using the set_source() method and this html_page (html_listing_page) becomes the
+    /// one receiving html request and provides html content thanks to its get_body_part()
+    /// inherited method.
+
 class html_listing_page : public html_page, public actor, public events
 {
 public:

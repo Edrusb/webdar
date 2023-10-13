@@ -42,6 +42,14 @@ extern "C"
 #include "html_focus.hpp"
 #include "html_table.hpp"
 
+    /// class html_dir_tree show a directory content read from an existing dar archive
+
+    /// this component is composed of a left button to shrink/expend the directory it points at
+    /// followed by the directory name, followed on the right by the directory content if
+    /// the object is expanded. The directory content read from the dar archive, when expanded
+    /// it created child html_dir_tree for any direct subdirectory it contains which are not
+    /// expanded by default.
+    /// This object is a component used by html_listing_page class
 
 class html_dir_tree: public html_div, public actor
 {

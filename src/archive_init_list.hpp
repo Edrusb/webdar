@@ -38,6 +38,16 @@ extern "C"
     // webdar headers
 #include "web_user_interaction.hpp"
 
+    /// this objects is a thread object that provide access to the content of an existing archive
+
+    /// the object must first be set with the location of the dar archive to open
+    /// using set_archive_path(), set_archive_basename() and eventually set_archive_options_read()
+    /// then the thread has to be run calling the libthreadar::run() inherited method which opens
+    /// the archive. Once the archive has been openned successfully the thread ends and the method
+    /// openned() return true. Starting this point the archive content is available
+    /// calling get_children_in_table() or has_subdirectory(). Once completed close_archive() can be called
+    /// or the object deleted.
+
 class archive_init_list : public libthreadar::thread
 {
 public:
