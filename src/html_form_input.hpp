@@ -42,7 +42,7 @@ class html_form_input : public body_builder, public events
 public:
     static const std::string changed;
 
-    enum input_type { text, password, number, range, check };
+    enum input_type { text, password, number, range, check, file };
 
     html_form_input(const std::string & label,
 		    input_type type,

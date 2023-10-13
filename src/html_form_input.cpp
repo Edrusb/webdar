@@ -162,6 +162,9 @@ string html_form_input::string_for_type(input_type type)
     case check:
 	ret = "checkbox";
 	break;
+    case file:
+	ret = "file";
+	break;
     default:
 	throw WEBDAR_BUG;
     }
