@@ -38,7 +38,7 @@
 #include "chemin.hpp"
 
     /////////////////////////////////////////////////////////////////////////////////////
-    /// pure virtual class, base class for all classes that can generate an anwser to a request
+    /// pure virtual class, base class for all classes that can generate an answer to a request
 
 class responder
 {
