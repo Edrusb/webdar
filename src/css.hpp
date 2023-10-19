@@ -153,6 +153,11 @@ public:
     void css_float_clear(floatclear val, bool inherit=false);
     void css_float_clear() { float_clear.clear(); };
 
+	// opacity
+
+    void css_opacity(const std::string & opacity, bool inherit=false);
+
+
 	// padding
 
     void css_padding(const std::string & val,
@@ -306,6 +311,7 @@ private:
 	// floating properties
     css_property float_pos;
     css_property float_clear;
+    css_property opacity;
 
 	// padding properties
     css_property padding_top;

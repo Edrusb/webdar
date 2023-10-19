@@ -63,6 +63,7 @@ void css::clear()
     overflow.clear();
     float_pos.clear();
     float_clear.clear();
+    opacity.clear();
     padding_top.clear();
     padding_right.clear();
     padding_bottom.clear();
@@ -341,6 +342,14 @@ void css::css_float_clear(floatclear val, bool inherit)
     }
     float_clear.set_value(arg);
     float_clear.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
+void css::css_opacity(const string & val,
+		      bool inherit)
+{
+    opacity.set_value(string(" opacity: ") + val + ";");
+    opacity.set_inheritance(inherit);
     css_updated(inherit);
 }
 
@@ -628,6 +637,7 @@ void css::css_inherit_from(const css & ref, bool all, bool force)
     overflow.inherit_from(ref.overflow, all, force);
     float_pos.inherit_from(ref.float_pos, all, force);
     float_clear.inherit_from(ref.float_clear, all, force);
+    opacity.inherit_from(ref.opacity, all, force);
     padding_top.inherit_from(ref.padding_top, all, force);
     padding_right.inherit_from(ref.padding_right, all, force);
     padding_bottom.inherit_from(ref.padding_bottom, all, force);
@@ -702,6 +712,7 @@ string css::css_get_raw_string() const
     ret += overflow.get_value();
     ret += float_pos.get_value();
     ret += float_clear.get_value();
+    ret += opacity.get_value();
     ret += padding_top.get_value();
     ret += padding_right.get_value();
     ret += padding_bottom.get_value();
