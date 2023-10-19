@@ -233,6 +233,15 @@ public:
 			   bool inherit=false);
     void css_corner_radius(); // clear all css_corner radius relative information
 
+	/// css_visibility does not prevent sending HTML code to the browser
+
+	/// \note body_builder class has a set_visible() method that avoids a
+	/// component to produce html code though it keeps it place in the adoption tree
+	/// but no html code is sent to the browser. Here CSS visibility sends
+	/// html code to the browser and may lead an object to change its visibility without
+	/// webdar - browser communication (Responsive CSSS)
+    void css_visibility(bool val, bool inherit=false);
+
 
 	/// inherit css properties and html classes from the given reference
 	///
@@ -317,6 +326,9 @@ private:
 
 	// round corners
     css_property corner_radius;
+
+	// CSS visibility
+    css_property visibility;
 
 	// custom css
     std::map<std::string, css_property> custom_css;

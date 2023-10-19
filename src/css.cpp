@@ -597,6 +597,15 @@ void css::css_corner_radius(const std::string & topleft,
     css_updated(inherit);
 }
 
+void css::css_visibility(bool val, bool inherit)
+{
+    string text_val = val ? "visible" : "hidden";
+
+    visibility.set_value(string(" visibility: ") + text_val + ";");
+    visibility.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
 
 void css::css_inherit_from(const css & ref, bool all, bool force)
 {
@@ -631,6 +640,7 @@ void css::css_inherit_from(const css & ref, bool all, bool force)
     border_color.inherit_from(ref.border_color, all, force);
     border_style.inherit_from(ref.border_style, all, force);
     corner_radius.inherit_from(ref.corner_radius, all, force);
+    visibility.inherit_from(ref.visibility, all, force);
 
 	// custom css inheritance
 
@@ -704,6 +714,7 @@ string css::css_get_raw_string() const
     ret += border_color.get_value();
     ret += border_style.get_value();
     ret += corner_radius.get_value();
+    ret += visibility.get_value();
 
     map<string, css_property>::const_iterator it = custom_css.begin();
 

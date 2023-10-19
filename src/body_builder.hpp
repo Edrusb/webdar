@@ -58,6 +58,8 @@ extern "C"
     ///  path and adoption tree without returning any HTML code temporarily. This property
     ///  changes in two steps: the request (set_visible(bool) from the object outside,
     ///  then ack_visible() call, done from the object inside that act the visibility change.
+    ///  Note that this visibility feature is not the CSS visibility one which still sends
+    ///  html body to the browser. for CSS visibility see class css.
     ///. the get_body_part() of a parent can thus rely on the get_body_part() of its
     ///  adopted children, this is the freedom of the parent class do decide how to
     ///  compose or ignore its childen and their the possible HTML code they can return
