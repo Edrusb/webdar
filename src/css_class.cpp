@@ -104,34 +104,38 @@ std::string css_class::get_selector_name(selector_type sel)
 {
     switch(sel)
     {
-    case link:
-	return "link";
     case active:
 	return "active";
-    case visited:
-	return "visited";
-    case hover:
-	return "hover";
     case checked:
 	return "checked";
-    case enabled:
-	return "enabled";
     case disabled:
 	return "disabled";
+    case enabled:
+	return "enabled";
     case focus:
 	return "focus";
-    case valid:
-	return "valid";
-    case invalid:
-	return "invalid";
+    case hover:
+	return "hover";
+    case link:
+	return "link";
     case in_range:
 	return "in-range";
+    case invalid:
+	return "invalid";
     case out_of_range:
 	return "out-of-range";
     case read_only:
 	return "read-only";
     case read_write:
 	return "read-write";
+    case root:
+	return "root";
+    case target:
+	return "target";
+    case valid:
+	return "valid";
+    case visited:
+	return "visited";
     default:
 	throw WEBDAR_BUG;
     }

@@ -53,20 +53,22 @@ public:
 	/// selector_type is ordered for :hover being defined after :link and :visited
     enum selector_type
     {
-	link,
 	active,
-	visited,
-	hover,
 	checked,
-	enabled,
 	disabled,
+	enabled,
 	focus,
-	valid,
-	invalid,
+	hover,
+	link,
 	in_range,
+	invalid,
 	out_of_range,
 	read_only,
-	read_write
+	read_write,
+	root,
+	target,
+	valid,
+	visited
     };
 
     css_class(const std::string & name);
