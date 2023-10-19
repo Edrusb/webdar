@@ -48,6 +48,9 @@ void css::clear()
     bg_col.clear();
     bg_img.clear();
     img_pos.clear();
+    box_shadow.clear();
+    text_shadow.clear();
+    box_sizing.clear();
     margin_top.clear();
     margin_right.clear();
     margin_bottom.clear();
@@ -140,6 +143,60 @@ void css::css_background_position(const string & x,
 	img_pos.clear();
     css_updated(inherit);
 }
+
+void css::css_box_shadow(const string & x_shift,
+			 const string & y_shift,
+			 const string & blur_size,
+			 const string & color,
+			 bool inherit)
+{
+    box_shadow.set_value(string(" box-shadow: ")
+			 + x_shift + " "
+			 + y_shift + " "
+			 + blur_size + " "
+			 + color + ";");
+    box_shadow.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
+void css::css_text_shadow(const string & x_shift,
+			  const string & y_shift,
+			  const string & blur_size,
+			  const string & color,
+			  bool inherit)
+{
+    text_shadow.set_value(string(" text-shadow: ")
+			  + x_shift + " "
+			  + y_shift + " "
+			  + blur_size + " "
+			  + color + ";");
+    text_shadow.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
+void css::css_box_sizing(bx_sizing val,
+			 bool inherit)
+{
+    string tmp;
+
+    switch(val)
+    {
+    case bx_content:
+	tmp = "content-box";
+	break;
+    case bx_border:
+	tmp = "border-box";
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+
+    box_sizing.set_value(string(" box-sizing: ") + tmp + ";");
+    box_sizing.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
+
 
 void css::css_margin(const string & all, bool inherit)
 {
@@ -586,6 +643,7 @@ void css::css_corner_radius(const std::string & all, bool inherit)
     css_corner_radius(all, all, all, all, inherit);
 }
 
+
 void css::css_corner_radius(const std::string & topleft,
 			    const std::string & topright,
 			    const std::string & botright,
@@ -622,6 +680,9 @@ void css::css_inherit_from(const css & ref, bool all, bool force)
     bg_col.inherit_from(ref.bg_col, all, force);
     bg_img.inherit_from(ref.bg_img, all, force);
     img_pos.inherit_from(ref.img_pos, all, force);
+    box_shadow.inherit_from(ref.box_shadow, all, force);
+    text_shadow.inherit_from(ref.text_shadow, all, force);
+    box_sizing.inherit_from(ref.box_sizing, all, force);
     margin_top.inherit_from(ref.margin_top, all, force);
     margin_right.inherit_from(ref.margin_right, all, force);
     margin_bottom.inherit_from(ref.margin_bottom, all, force);
@@ -681,6 +742,9 @@ string css::css_get_raw_string() const
     ret += bg_col.get_value();
     ret += bg_img.get_value();
     ret += img_pos.get_value();
+    ret += box_shadow.get_value();
+    ret += text_shadow.get_value();
+    ret += box_sizing.get_value();
     ret += margin_top.get_value();
     ret += margin_right.get_value();
     ret += margin_bottom.get_value();

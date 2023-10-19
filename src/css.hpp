@@ -79,6 +79,19 @@ public:
 				     bool inherit=false);
     void css_background_position() { img_pos.clear(); };
 
+	// shadow
+    void css_box_shadow(const std::string & x_shift = "10px",
+			const std::string & y_shift = "10px",
+			const std::string & blur_size = "0",
+			const std::string & color = "#444444",
+			bool inherit=false);
+
+    void css_text_shadow(const std::string & x_shift = "10px",
+			 const std::string & y_shift = "10px",
+			 const std::string & blur_size = "0",
+			 const std::string & color = "#444444",
+			 bool inherit=false);
+
 	// position in the window
 
     void css_margin(const std::string & all,
@@ -137,6 +150,7 @@ public:
     void css_overflow(overflowing val, bool inherit=false);
     void css_overflow() { overflow.clear(); };
 
+
 	// floating
 
     enum floating { fl_left,
@@ -159,6 +173,15 @@ public:
 
 
 	// padding
+
+    enum bx_sizing
+    {
+	bx_content, ///< width and height define the content (add padding and border size for the real size)
+	bx_border   ///< width and height define the box size (reduce content space to fit within the border+padding)
+    };
+
+    void css_box_sizing(bx_sizing val,
+			bool inherit = false);
 
     void css_padding(const std::string & val,
 		     bool inherit=false);
@@ -293,7 +316,12 @@ private:
     css_property bg_img;
     css_property img_pos;
 
+	// shadowing
+    css_property box_shadow;
+    css_property text_shadow;
+
 	// position properties
+    css_property box_sizing;
     css_property margin_top;
     css_property margin_right;
     css_property margin_bottom;
