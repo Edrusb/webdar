@@ -177,6 +177,7 @@ void body_builder::add_css_class(const std::string & name)
         throw exception_range(string("the css_class name to add is already present: ") + name);
 
     css_class_names.insert(name);
+    css_classes_have_changed();
 }
 
 void body_builder::add_css_class(const css_class_group & cg)
@@ -186,6 +187,7 @@ void body_builder::add_css_class(const css_class_group & cg)
     cg.reset_read();
     while(cg.read_next(name))
         add_css_class(name);
+    css_classes_have_changed();
 }
 
 bool body_builder::has_css_class(const string & name) const
@@ -199,6 +201,7 @@ void body_builder::remove_css_class(const std::string & name)
         throw exception_range(string("the css_class name to remove is not present in the list: ") + name);
 
     css_class_names.erase(name);
+    css_classes_have_changed();
 }
 
 void body_builder::remove_css_class(const css_class_group & cg)
@@ -208,6 +211,7 @@ void body_builder::remove_css_class(const css_class_group & cg)
     cg.reset_read();
     while(cg.read_next(name))
         remove_css_class(name);
+    css_classes_have_changed();
 }
 
 css_class_group body_builder::get_css_class_group() const

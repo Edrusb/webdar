@@ -169,7 +169,7 @@ public:
     void remove_css_class(const css_class_group & cg);
 
         /// clear the whole list of css_class names
-    void clear_css_classes() { css_class_names.clear(); };
+    void clear_css_classes() { css_class_names.clear(); css_classes_have_changed(); };
 
         /// provide the list of css_class names that this object has been set with
     const std::set<std::string> & get_css_classes_as_a_set() const { return css_class_names; };
@@ -285,6 +285,9 @@ protected:
 
         /// Be informed that we are about to be foresaken by obj, our soon former parent
     virtual void will_be_foresaken_by(body_builder *obj) {};
+
+	/// Be informed about css class modification
+    virtual void css_classes_have_changed() {};
 
         /// this is a trigger, ran when a css_library becomes available in a parent or "this"
         /// \note this may also be triggered upon adoption by a object having acces to a css_library
