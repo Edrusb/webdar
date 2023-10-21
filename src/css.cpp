@@ -272,26 +272,27 @@ void css::css_z_index(unsigned int index, bool inherit)
 void css::css_position_type(positionning val,
 			    bool inherit)
 {
-    string arg;
+    static const string command = " position: ";
 
     switch(val)
     {
     case pos_absolute:
-	arg = "absolute";
+	position_type.set_value(command + "absolute;");
 	break;
     case pos_relative:
-	arg = "relative";
+	position_type.set_value(command + "relative;");
 	break;
     case pos_fixed:
-	arg = "fixed";
+	position_type.set_value(command + "fixed;");
 	break;
     case pos_sticky:
-	arg = "sticky";
+	position_type.set_value(command + "sticky;" + command + "-webkit-sticky;");
+	break;
     default:
 	throw WEBDAR_BUG;
     }
 
-    position_type.set_value(string(" position: ") + arg + ";");
+
     position_type.set_inheritance(inherit);
     css_updated(inherit);
 }
@@ -778,6 +779,7 @@ string css::css_get_raw_string() const
 	ret += position_bottom.get_value();
 	ret += position_right.get_value();
     }
+
     ret += z_index.get_value();
     ret += overflow.get_value();
     ret += float_pos.get_value();
