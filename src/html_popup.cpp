@@ -81,14 +81,14 @@ void html_popup::new_css_library_available()
 	css innerdef;
 
 	innerdef.css_position_type(css::pos_fixed);
+	innerdef.css_box_sizing(css::bx_border);
 	innerdef.css_position_top(to_string((100-height)/2)+"%");
 	innerdef.css_position_left(to_string((100-width)/2)+"%");
 	innerdef.css_width(to_string(width)+"%", true);
 	innerdef.css_height(to_string(height)+"%", true);
 	innerdef.css_corner_radius("10px");
-	innerdef.css_padding("5%");
-	innerdef.css_box_shadow();
-	innerdef.css_box_sizing(css::bx_border);
+	innerdef.css_box_shadow("10px", "10px", "5px");
+	innerdef.css_overflow(css::ov_auto);
 
 	innerdef.css_z_index(2);
 
@@ -113,7 +113,7 @@ void html_popup::new_css_library_available()
 	outerdef.css_position_right("0");
 
 	    // visible transparent color (should be parametrable in the future)
-	outerdef.css_opacity("0.5");
+	outerdef.css_opacity("0.2");
 	outerdef.css_background_color("rgb(0, 90, 200)");
 
 	    // and on top of the existing page
