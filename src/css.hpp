@@ -121,9 +121,11 @@ public:
 		     bool inherit=false);
     void css_z_index() { z_index.clear(); };
 
-    enum positionning { pos_absolute,  //< absolute in the document
-			pos_relative,  //< shifted relative to its expected position
-			pos_fixed };  //< fixed in the viewport
+    enum positionning { pos_absolute,  ///< absolute in the document
+			pos_relative,  ///< shifted relative to its expected position
+			pos_fixed,     ///< fixed in the viewport
+			pos_sticky     ///< either relative or fixed depending on scrolling of parent object
+    };
 
     void css_position_type(positionning val,
 			   bool inherit=false);

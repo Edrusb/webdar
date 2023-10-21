@@ -272,20 +272,26 @@ void css::css_z_index(unsigned int index, bool inherit)
 void css::css_position_type(positionning val,
 			    bool inherit)
 {
+    string arg;
+
     switch(val)
     {
     case pos_absolute:
-	position_type.set_value(" position: absolute;");
+	arg = "absolute";
 	break;
     case pos_relative:
-	position_type.set_value(" position: relative;");
+	arg = "relative";
 	break;
     case pos_fixed:
-	position_type.set_value(" position: fixed;");
+	arg = "fixed";
 	break;
+    case pos_sticky:
+	arg = "sticky";
     default:
 	throw WEBDAR_BUG;
     }
+
+    position_type.set_value(string(" position: ") + arg + ";");
     position_type.set_inheritance(inherit);
     css_updated(inherit);
 }
