@@ -122,7 +122,7 @@ private:
 	    itag = tag;
 	};
 	cell(const cell &) = delete; // not implemented (not needed)
-	cell(cell && ref) noexcept { std::swap(ref.ibtn, ibtn); std::swap(ref.itag, itag); };
+	cell(cell && ref) noexcept { ibtn = nullptr; std::swap(ref.ibtn, ibtn); std::swap(ref.itag, itag); };
 	cell & operator = (const cell &) = delete; // not implemented (not needed)
 	cell & operator = (cell && ref) noexcept { std::swap(ref.ibtn, ibtn); std::swap(ref.itag, itag); return *this; };
 	~cell()
