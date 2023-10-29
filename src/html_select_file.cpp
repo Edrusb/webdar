@@ -54,7 +54,7 @@ const string html_select_file::css_sticky_bot = "html_select_sticky_bot";
 html_select_file::html_select_file(const std::string & message):
     html_popup(width_pct,height_pct),
     status(st_init),
-    only_dir(false),
+    select_dir(false),
     title(2, message),
     warning(3, ""),
     fieldset(""),
@@ -63,7 +63,8 @@ html_select_file::html_select_file(const std::string & message):
     btn_cancel("Cancel", op_cancelled),
     btn_validate("Select", entry_selected),
     btn_createdir("New Folder", op_createdir),
-    ignore_events(false)
+    ignore_events(false),
+    fieldset_isdir(true)
 {
     entr.reset();       // entr points to nothing
     set_visible(false); // make us invisible until run() is called
@@ -137,11 +138,16 @@ void html_select_file::on_event(const std::string & event_name)
 
     if(event_name == entry_selected)
     {
-	status = st_completed;
-	set_visible(false);
-	ack_visible();
-	act(entry_selected); // propagate the event to object that subscribed to us
-	entr.reset();
+	if(!select_dir && fieldset_isdir)
+	    warning.add_text(3, string("This is a directory, please select a non-directory file"));
+	else
+	{
+	    status = st_completed;
+	    set_visible(false);
+	    ack_visible();
+	    act(entry_selected); // propagate the event to object that subscribed to us
+	    entr.reset();
+	}
     }
     else if(event_name == op_cancelled)
     {
@@ -160,6 +166,7 @@ void html_select_file::on_event(const std::string & event_name)
 	    warning.add_text(3, string("Cannot go change to parent directory of ") + fieldset.get_label());
 
 	fieldset.change_label(chem.display());
+	fieldset_isdir = true;
 	fill_content();
     }
     else if(event_name == op_createdir)
@@ -169,17 +176,33 @@ void html_select_file::on_event(const std::string & event_name)
     }
     else
     {
-	map<string, html_button*>::iterator it = listed.find(event_name);
+	map<string, item>::iterator it = listed.find(event_name);
+	libdar::path curdir = libdar::path(fieldset.get_label());
 
 	if(it == listed.end())
 	    throw WEBDAR_BUG; // all events we registered for should be known by us
-	if(it->second == nullptr)
+	if(it->second.btn == nullptr)
 	    throw WEBDAR_BUG;
 
-	    // we concatenate (as a path subdir) the current path with the filename the user has clicked on:
-	fieldset.change_label(libdar::path(fieldset.get_label())
-			      .append((it->second)->get_label())
-			      .display());
+
+	if(!fieldset_isdir)
+	{
+	    string prev_file;
+
+		// if the current select item is not a directory we have not
+		// changed directory into it, the current path is the dirname
+		// of what fieldset points to, so we "pop" the current selected
+		// filename from the current path to get back to the currentdir
+
+	    if(! curdir.pop(prev_file))
+		throw WEBDAR_BUG; // should be a popable path
+	}
+
+		// we concatenate (as a path subdir) the current path with the filename the user has clicked on:
+
+	fieldset.change_label(curdir.append((it->second.btn)->get_label())
+			            .display());
+	fieldset_isdir = it->second.isdir;
     }
 
 }
@@ -278,8 +301,10 @@ void html_select_file::new_css_library_available()
 void html_select_file::fill_content()
 {
     string entry;
+    bool isdir;
     string event_name;
     unsigned int count = 0;
+    item current;
 
     clear_content();
 
@@ -288,25 +313,31 @@ void html_select_file::fill_content()
 
     try
     {
-	entr->set_location(fieldset.get_label());
-	entr->read_dir_reset();
+	if(fieldset_isdir)
+	    entr->set_location(fieldset.get_label());
 
-	while(entr->read_dir_next(entry))
+	entr->read_dir_reset_dirinfo();
+
+	while(entr->read_dir_next_dirinfo(entry, isdir))
 	{
 	    event_name = "x_" + to_string(count++);
 	    if(listed.find(event_name) != listed.end())
 		throw WEBDAR_BUG; // event already exists!?!
+	    content.adopt_static_html(isdir ? " DIR " : "");
 
-		// for new we lack from entrepot the ability to know whether the entry is a directory or not
-	    content.adopt_static_html("?");
+	    current.isdir = isdir;
+	    if(!select_dir || isdir)
+	    {
+		current.btn = new (nothrow) html_button(entry, event_name);
+		if(current.btn == nullptr)
+		    throw exception_memory();
 
-	    html_button* btn_entry = new (nothrow) html_button(entry, event_name);
-	    if(btn_entry == nullptr)
-		throw exception_memory();
-
-	    listed[event_name] = btn_entry;
-	    content.adopt(btn_entry);
-	    btn_entry->record_actor_on_event(this, event_name);
+		listed[event_name] = current;
+		content.adopt(current.btn);
+		current.btn->record_actor_on_event(this, event_name);
+	    }
+	    else
+		content.adopt_static_html(entry);
 	}
     }
     catch(libdar::Ebug & e)
@@ -322,15 +353,15 @@ void html_select_file::fill_content()
 
 void html_select_file::clear_content()
 {
-    map<string, html_button*>::iterator it = listed.begin();
+    map<string, item>::iterator it = listed.begin();
 
     content.clear();
     while(it != listed.end())
     {
-	if(it->second != nullptr)
+	if(it->second.btn != nullptr)
 	{
-	    delete it->second;
-	    it->second = nullptr;
+	    delete it->second.btn;
+	    it->second.btn = nullptr;
 	}
 
 	++it;

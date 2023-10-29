@@ -81,9 +81,14 @@ public:
     html_select_file & operator = (html_select_file && ref) noexcept(false) = delete;
     virtual ~html_select_file() { clear_content(); };
 
-	/// set the current dir before read
-    void set_starting_directory(const std::string & val) { if(status != st_init) throw WEBDAR_BUG; fieldset.change_label(val); };
-    void set_only_dir(bool val) { if(status != st_init) throw WEBDAR_BUG; only_dir = val; };
+	/// ask the user to select a file path (false) or a directory path (true)
+
+	/// \note should be setup before calling run()
+    void set_select_dir(bool val) { if(status != st_init) throw WEBDAR_BUG; select_dir = val; };
+
+	/// whether to show the button allowing the user to create a subdirectory
+
+	/// \note should be setup before calling run()
     void set_can_create_dir(bool val) { if(status != st_init) throw WEBDAR_BUG; btn_createdir.set_visible(val); };
 
 	/// start the user interaction for a path selection
@@ -126,13 +131,26 @@ private:
     static constexpr const unsigned int width_pct = 80;
     static constexpr const unsigned int height_pct = 80;
 
+
+	// internal datastructure
+
+    struct item
+    {
+	html_button* btn;
+	bool isdir;
+	item() { btn = nullptr; isdir = false; };
+	item(html_button* ptr) { btn = ptr; isdir = false; };
+    };
+
+
 	// object status
 
     mutable enum { st_init, st_run, st_completed } status;
 
+
 	// settings
 
-    bool only_dir;
+    bool select_dir;
     std::shared_ptr<libdar::entrepot> entr;
 
 
@@ -144,12 +162,18 @@ private:
     html_form_fieldset fieldset;      ///< shows the current directory path
     html_button parentdir;            ///< change to parent dir
     html_table content;               ///< parent of content objects
-    std::map<std::string, html_button*> listed; ///< associate a event message to each listed items
+    std::map<std::string, item> listed; ///< associate a event message to each listed items
     html_div btn_box;                 ///< box containing the bottom buttons
     html_button btn_cancel;           ///< triggers the entry_cancelled event
     html_button btn_validate;         ///< trigger the entry_selected event
     html_button btn_createdir;        ///< leads to create a new directory
+
+
+	// status field about html components
+
     bool ignore_events;               ///< in inherited_get_body_part() we trigger twice the adopted objects but must take action on events only once
+    bool fieldset_isdir;              ///< whether fieldset points to a directory or not
+
 
 	// internal routines
 
