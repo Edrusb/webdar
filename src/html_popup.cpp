@@ -61,7 +61,7 @@ string html_popup::inherited_get_body_part(const chemin & path,
     ack_visible();
     if(get_visible())
     {
-	string ret = outerbox.get_body_part(path, req);
+	string ret = outerbox.get_body_part(path, req); // should be invoked with sub_path where sub_path  is path.pop_front()
 	ret+= html_div::inherited_get_body_part(path, req);
 	return ret;
     }
