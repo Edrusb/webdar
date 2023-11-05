@@ -50,12 +50,17 @@ void html_aiguille::set_mode(unsigned int m)
 string html_aiguille::inherited_get_body_part(const chemin & path,
 					      const request & req)
 {
+    chemin sub_path = path;
+
+    if(sub_path.size() > 0)
+	sub_path.pop_front();
+
     if(mode < size())
     {
 	if((*this)[mode] == nullptr)
 	    throw WEBDAR_BUG;
 	else
-	    return (*this)[mode]->get_body_part(path, req);
+	    return (*this)[mode]->get_body_part(sub_path, req);
     }
     else
 	throw WEBDAR_BUG;
