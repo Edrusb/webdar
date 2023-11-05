@@ -57,7 +57,7 @@ extern "C"
     /// defines the web "pages" when no operation is
     /// running in the current session.
     ///- on the left a menu 'choices' that triggers 'this' to modify the middle and top area
-    ///- on the top midle an html_aiguille 'show_archive' which
+    ///- on the top midle an html_aiguille 'archive_show' which
     /// contains two alternatives, nothing or the archive path
     ///- just below and beside the menu, an html_aiguille "select" that
     /// shows the different fields in the context of the menu "choices"
