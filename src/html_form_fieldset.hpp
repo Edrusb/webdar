@@ -41,9 +41,9 @@ extern "C"
     /// it is expected to be adopted by an html_form and to
     /// adopt itself some html_form_field objects like html_form_input
     /// html_comparison_field, html_form_radio, html_datetime
-    /// Visually an html_fform_fieldset object surround the objects
+    /// Visually an html_form_fieldset object surrounds the objects
     /// it has adopted by a line and show a title on top, which is
-    /// the argument provided to its constructor.
+    /// the argument provided to its constructor (the label)
 
 class html_form_fieldset : public body_builder
 {
