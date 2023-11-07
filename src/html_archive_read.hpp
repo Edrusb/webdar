@@ -41,6 +41,10 @@ extern "C"
 #include "html_options_read.hpp"
 #include "events.hpp"
 
+    /// class html_archive_read let user define the archive path, basename and option to read
+
+    /// it is mainly used in class saisie
+
 class html_archive_read: public body_builder, public actor
 {
 public:
