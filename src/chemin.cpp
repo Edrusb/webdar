@@ -47,7 +47,8 @@ chemin::chemin(const string & path)
     members.clear();
     while(!tmp.empty())
     {
-	members.push_front(tmp.back());
+	if(!tmp.back().empty())
+	    members.push_front(tmp.back());
 	tmp.pop_back();
     }
     index = 0;

@@ -84,7 +84,7 @@ public:
 	/// get the last member of the path
     std::string back() const { if(empty()) throw exception_range("cannot get back() from an empty chemin"); return members.back(); };
 
-	/// removes the first member of the path from this object
+	/// removes the first member of the path from this object (root side)
 	///
 	/// \note throws an exception if the path is empty
     void pop_front();
