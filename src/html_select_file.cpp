@@ -63,6 +63,8 @@ html_select_file::html_select_file(const std::string & message):
     btn_cancel("Cancel", op_cancelled),
     btn_validate("Select", entry_selected),
     btn_createdir("New Folder", op_createdir),
+    createdir_form("Create Folder"),
+    createdir_input("Folder Name", html_form_input::text, "", 25),
     ignore_events(false),
     fieldset_isdir(true)
 {
@@ -74,14 +76,14 @@ html_select_file::html_select_file(const std::string & message):
     register_name(entry_selected);  // we'll propagate the even from btn_validate
     register_name(op_cancelled);    // we will propagate the even from btn_cancel
 
-	// events we want to act on from our own html_button
+	// events we want to act on from our own html components
     btn_cancel.record_actor_on_event(this, op_cancelled);
     btn_validate.record_actor_on_event(this, entry_selected);
     parentdir.record_actor_on_event(this, op_chdir_parent);
     btn_createdir.record_actor_on_event(this, op_createdir);
+    createdir_input.record_actor_on_event(this, html_form_input::changed);
 
 	// setting up the adoption tree (the fixed part)
-
     adopt(&title_box);
     title_box.adopt(&title);
     title_box.adopt(&warning);
@@ -92,7 +94,10 @@ html_select_file::html_select_file(const std::string & message):
     btn_box.adopt(&btn_createdir);
     btn_box.adopt(&btn_validate);
     btn_box.adopt(&btn_cancel);
+    btn_box.adopt(&createdir_form);
+    createdir_form.adopt(&createdir_input);
 
+	// assigning CSS classes names to html components
     title_box.add_css_class(css_sticky_top);
     warning.add_css_class(css_warning);
     webdar_css_style::normal_button(btn_cancel);
@@ -103,6 +108,8 @@ html_select_file::html_select_file(const std::string & message):
     btn_validate.add_css_class(css_float_button_right);
     btn_createdir.add_css_class(css_float_button_left);
 
+	// setup default visibility property
+    createdir_form.set_visible(false);
 }
 
 void html_select_file::run(const shared_ptr<libdar::entrepot> & x_entr,
@@ -120,8 +127,8 @@ void html_select_file::run(const shared_ptr<libdar::entrepot> & x_entr,
 	throw WEBDAR_BUG;
     }
 
-    if(libdar::path(start_dir).is_relative())
-	throw WEBDAR_BUG;
+//    if(chemin(start_dir))
+//	throw WEBDAR_BUG;
 
     set_visible(true);
     ack_visible();
@@ -159,25 +166,45 @@ void html_select_file::on_event(const std::string & event_name)
     }
     else if(event_name == op_chdir_parent)
     {
-	libdar::path chem(fieldset.get_label());
-	string tmp;
+	chemin chem(fieldset.get_label());
 
-	if(!chem.pop(tmp))
-	    warning.add_text(3, string("Cannot go change to parent directory of ") + fieldset.get_label());
-
+	chem.pop_back();
 	fieldset.change_label(chem.display());
 	fieldset_isdir = true;
 	fill_content();
     }
     else if(event_name == op_createdir)
     {
-	    // to be implemented
-	throw exception_feature("create directory in entrepot");
+	createdir_form.set_visible(!createdir_form.get_visible());
+	createdir_input.set_value("");
     }
-    else
+    else if(event_name == html_form_input::changed) // directory name provided to be created
+    {
+	if(! entr)
+	    throw WEBDAR_BUG;
+
+	    // ignoring empty string as value, this event may be triggered by
+	    // the clearing of the previous field value
+	if(! createdir_input.get_value().empty())
+	{
+	    createdir_form.set_visible(false);
+	    try
+	    {
+		entr->create_dir(createdir_input.get_value(), 0700);
+	    }
+	    catch(libdar::Egeneric & e)
+	    {
+		warning.clear();
+		warning.add_text(3, string("Error met while creating directory ") + createdir_input.get_value() + " :");
+		warning.add_text(3, e.get_message());
+	    }
+	}
+    }
+    else // click on directory list entry?
     {
 	map<string, item>::iterator it = listed.find(event_name);
-	libdar::path curdir = libdar::path(fieldset.get_label());
+	chemin curdir(fieldset.get_label());
+	string tmp;
 
 	if(it == listed.end())
 	    throw WEBDAR_BUG; // all events we registered for should be known by us
@@ -194,17 +221,15 @@ void html_select_file::on_event(const std::string & event_name)
 		// of what fieldset points to, so we "pop" the current selected
 		// filename from the current path to get back to the currentdir
 
-	    if(! curdir.pop(prev_file))
-		throw WEBDAR_BUG; // should be a popable path
+	    curdir.pop_back();
 	}
 
 		// we concatenate (as a path subdir) the current path with the filename the user has clicked on:
 
-	fieldset.change_label(curdir.append((it->second.btn)->get_label())
-			            .display());
+	curdir += chemin((it->second.btn)->get_label());
+	fieldset.change_label(curdir.display());
 	fieldset_isdir = it->second.isdir;
     }
-
 }
 
 string html_select_file::inherited_get_body_part(const chemin & path,

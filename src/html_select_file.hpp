@@ -44,6 +44,8 @@ extern "C"
 #include "html_button.hpp"
 #include "html_table.hpp"
 #include "html_popup.hpp"
+#include "html_form.hpp"
+#include "html_form_input.hpp"
 
     /// \file html_select_file.hpp defines html_select_file class
     ///
@@ -167,6 +169,8 @@ private:
     html_button btn_cancel;           ///< triggers the entry_cancelled event
     html_button btn_validate;         ///< trigger the entry_selected event
     html_button btn_createdir;        ///< leads to create a new directory
+    html_form createdir_form;         ///< form for new directory
+    html_form_input createdir_input;  ///< field to let user provide new dir name
 
 
 	// status field about html components
