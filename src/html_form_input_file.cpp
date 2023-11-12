@@ -60,6 +60,8 @@ html_form_input_file::html_form_input_file(const string & label,
 
 	// cabling events
 
+    register_name(changed_event_name);
+
     input.record_actor_on_event(this, html_form_input::changed);
     trigger.record_actor_on_event(this, triggered_event);
     user_select.record_actor_on_event(this, html_select_file::entry_selected);
@@ -89,16 +91,12 @@ void html_form_input_file::set_entrepot(const shared_ptr<libdar::entrepot> & ent
 
 void html_form_input_file::on_event(const string & event_name)
 {
-    if(event_name == "html_form_input::changed")
+    if(event_name == html_form_input::changed)
 	act(changed_event_name);
     else if(event_name == triggered_event)
 	user_select.run(entrep, input.get_value());
-    else if(event_name == "html_select_file::entry_selected")
-    {
+    else if(event_name == html_select_file::entry_selected)
 	input.set_value(user_select.get_selected_path());
-
-
-    }
     else
 	throw WEBDAR_BUG;
 }
