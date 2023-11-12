@@ -193,7 +193,7 @@ void html_libdar_running::new_css_library_available()
 	    throw WEBDAR_BUG;
     }
 
-    webdar_css_style::update_library(*csslib.get());
+    webdar_css_style::update_library(*csslib);
 
 }
 
