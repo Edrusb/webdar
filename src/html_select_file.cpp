@@ -135,6 +135,7 @@ void html_select_file::run(const shared_ptr<libdar::entrepot> & x_entr,
     status = st_run;
     entr = x_entr;
     fieldset.change_label(start_dir);
+    createdir_form.set_visible(false);
     fill_content();
 };
 
@@ -271,6 +272,7 @@ void html_select_file::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
+    html_popup::new_css_library_available();
 
     tmp.clear();
 
