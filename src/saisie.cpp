@@ -360,7 +360,7 @@ void saisie::on_event(const std::string & event_name)
 	throw WEBDAR_BUG;
 }
 
-const string & saisie::get_archive_path() const
+string saisie::get_archive_path() const
 {
     switch(status)
     {
@@ -385,7 +385,7 @@ const string & saisie::get_archive_path() const
     }
 }
 
-const string & saisie::get_archive_basename() const
+string saisie::get_archive_basename() const
 {
     switch(status)
     {

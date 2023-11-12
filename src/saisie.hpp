@@ -91,8 +91,8 @@ public:
 	// list of field available to run libdar
 
 	// reading parameters
-    const std::string & get_archive_path() const;
-    const std::string & get_archive_basename() const;
+    std::string get_archive_path() const;
+    std::string get_archive_basename() const;
     const libdar::archive_options_read & get_read_options() const;
 
 	// common parameter to diff/create/restore

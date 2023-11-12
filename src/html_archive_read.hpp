@@ -37,6 +37,7 @@ extern "C"
 #include "body_builder.hpp"
 #include "html_form.hpp"
 #include "html_form_input.hpp"
+#include "html_form_input_file.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_options_read.hpp"
 #include "events.hpp"
@@ -60,8 +61,8 @@ public:
 
 	// available fields for libdar
 
-    const std::string & get_archive_path() const { return arch_path.get_value(); };
-    const std::string & get_archive_basename() const { return archive.get_value(); };
+    std::string get_archive_path() const;
+    std::string get_archive_basename() const;
     const libdar::archive_options_read & get_read_options() const { return opt_read.get_options(); };
 
 protected:
@@ -73,8 +74,7 @@ protected:
 private:
     html_form form;
     html_form_fieldset fs;
-    html_form_input arch_path;
-    html_form_input archive;
+    html_form_input_file arch_path;
     html_form_input show_read_options;
     html_options_read opt_read;
 };
