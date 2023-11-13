@@ -92,6 +92,8 @@ protected:
 
 	// inherited from body_builder
     virtual void new_css_library_available() override;
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req);
 
 
 private:
@@ -100,6 +102,7 @@ private:
     html_select_file user_select;
     std::string changed_event_name;
     std::shared_ptr<libdar::entrepot> entrep;
+    bool refresh_get_body;
 
     static const std::string triggered_event;
 };

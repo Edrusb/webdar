@@ -50,7 +50,8 @@ html_form_input_file::html_form_input_file(const string & label,
     trigger("+", triggered_event),
     user_select(popup_message),
     changed_event_name(changed_event),
-    entrep(nullptr)
+    entrep(nullptr),
+    refresh_get_body(false)
 {
 	// html adoption tree
 
@@ -96,7 +97,10 @@ void html_form_input_file::on_event(const string & event_name)
     else if(event_name == triggered_event)
 	user_select.run(entrep, input.get_value());
     else if(event_name == html_select_file::entry_selected)
+    {
 	input.set_value(user_select.get_selected_path());
+	refresh_get_body = true;
+    }
     else
 	throw WEBDAR_BUG;
 }
@@ -109,4 +113,17 @@ void html_form_input_file::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
+}
+
+string html_form_input_file::inherited_get_body_part(const chemin & path,
+						     const request & req)
+{
+    string ret;
+    refresh_get_body = false;
+
+    ret = html_div::inherited_get_body_part(path, req);
+    if(refresh_get_body)
+	ret = html_div::inherited_get_body_part(path, req);
+
+    return ret;
 }
