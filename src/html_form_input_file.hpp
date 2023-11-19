@@ -39,6 +39,7 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_button.hpp"
 #include "html_select_file.hpp"
+#include "html_text.hpp"
 
     /// class html_form_input_file provides a mean to the user to navigate to filesystem to select a file or directory
 
@@ -97,14 +98,35 @@ protected:
 
 
 private:
-    html_form_input input;
-    html_button trigger;
-    html_select_file user_select;
+	// adoption tree:
+	//
+	//  html_div (this)
+        //   |
+        //   +--- input_div
+	//   | |
+	//   | +- input
+	//   +--- trigger
+        //   +--- user_select
+	//   +--- empty_text
+	//
+
+    html_form_input input;    ///< input field editable and/or filled by the popup window
+    html_div input_div;       ///< wrapping the html_form_input for CSS class assignment
+    html_button trigger;      ///< the button that triggers the popup window
+    html_select_file user_select;  ///< the popup window letting the user select a file or dir
+    html_text empty_text;    ///< to end the float:left CSS property applied to input and trigger
+
     std::string changed_event_name;
     std::shared_ptr<libdar::entrepot> entrep;
     bool refresh_get_body;
 
     static const std::string triggered_event;
+
+    static const std::string css_input;
+    static const std::string css_button_box;
+    static const std::string css_button_link;
+    static const std::string css_empty_text;
+
 };
 
 
