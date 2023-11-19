@@ -81,11 +81,11 @@ saisie::saisie():
     about_fs(""),
     about_form("Change"),
     extract_fs_root_fs("Restoration parameters"),
-    extract_fs_root("Directory to take as root for restoration", html_form_input::text, "", 30),
+    extract_fs_root("Directory to take as root for restoration", "/", 30, "Select a directory where to restore to..."),
     extract_fs_root_form("Update"),
     go_extract("Restore", event_restore),
     diff_fs_root_fs("Comparison parameters"),
-    diff_fs_root("Directory to compare the archive with", html_form_input::text, "", 30),
+    diff_fs_root("Directory to compare the archive with", "/", 30, "Select the directory to compare with..."),
     diff_fs_root_form("Update"),
     go_compare("Compare", event_compare),
     go_test("Test", event_test),
@@ -163,6 +163,8 @@ saisie::saisie():
     extract_fs_root_fs.adopt(&extract_fs_root);
     div_extract.adopt(&go_extract);
     select.adopt(&div_extract);
+    extract_fs_root.set_select_dir(true);
+    extract_fs_root.set_can_create_dir(false);
 
 	// comparison sub-page
     div_compare.adopt(&compare);
@@ -171,6 +173,8 @@ saisie::saisie():
     diff_fs_root_fs.adopt(&diff_fs_root);
     div_compare.adopt(&go_compare);
     select.adopt(&div_compare);
+    diff_fs_root.set_select_dir(true);
+    diff_fs_root.set_can_create_dir(false);
 
 	// testing sub-page
     div_test.adopt(&test);

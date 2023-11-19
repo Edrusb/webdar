@@ -173,14 +173,14 @@ private:
 	//
     html_div div_extract;
     html_form_fieldset extract_fs_root_fs;
-    html_form_input extract_fs_root;
+    html_form_input_file extract_fs_root;
     html_form extract_fs_root_form;
     html_options_extract extract;
     html_button go_extract;
 	//
     html_div div_compare;
     html_form_fieldset diff_fs_root_fs;
-    html_form_input diff_fs_root;
+    html_form_input_file diff_fs_root;
     html_form diff_fs_root_form;
     html_options_compare compare;
     html_button go_compare;
