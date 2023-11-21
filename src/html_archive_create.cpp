@@ -42,8 +42,8 @@ using namespace std;
 html_archive_create::html_archive_create():
     form("Update"),
     fs("Archive to create"),
-    fs_root("Directory to take as root for the backup", html_form_input::text, "", 20),
-    sauv_path("Where to create the archive", html_form_input::text, "", 20),
+    fs_root("Directory to take as root for the backup", "/", 20, "Select root directory to backup..."),
+    sauv_path("Where to create the archive", "/", 20, "Select path where to create the backup..."),
     basename("Archive basename", html_form_input::text, "", 10),
     show_options("Show creation options", html_form_input::check, "", 1)
 {
@@ -56,6 +56,11 @@ html_archive_create::html_archive_create():
     adopt(&options);
 
     show_options.record_actor_on_event(this, html_form_input::changed);
+
+    fs_root.set_select_dir(true);
+    fs_root.set_can_create_dir(false);
+    sauv_path.set_select_dir(true);
+    sauv_path.set_can_create_dir(true);
 
     on_event("");
 }

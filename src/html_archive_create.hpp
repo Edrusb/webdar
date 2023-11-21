@@ -34,7 +34,7 @@ extern "C"
 
 
     // webdar headers
-#include "html_form_input.hpp"
+#include "html_form_input_file.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_options_create.hpp"
 #include "body_builder.hpp"
@@ -66,8 +66,8 @@ protected:
 private:
     html_form form;
     html_form_fieldset fs;
-    html_form_input fs_root;
-    html_form_input sauv_path;
+    html_form_input_file fs_root;
+    html_form_input_file sauv_path;
     html_form_input basename;
     html_form_input show_options;
     html_options_create options;
