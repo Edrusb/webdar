@@ -42,7 +42,7 @@ using namespace std;
 html_archive_merge::html_archive_merge():
     form("Update"),
     fs("Resulting archive"),
-    sauv_path("Where to create the archive", html_form_input::text, "", 20),
+    sauv_path("Where to create the archive", "/", 20, "Select directory where to create the archive..."),
     basename("Archive basename", html_form_input::text, "", 10),
     show_options("Show merging options", html_form_input::check, "", 1),
     reference("Archive of reference")
