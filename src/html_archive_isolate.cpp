@@ -42,7 +42,7 @@ using namespace std;
 html_archive_isolate::html_archive_isolate():
     form("Update"),
     fs("Isolated catalog to be create"),
-    sauv_path("Where to create the archive", html_form_input::text, "", 20),
+    sauv_path("Where to create the archive", "/", 20, "Select the directory where to create the archive..."),
     basename("Archive basename", html_form_input::text, "", 10),
     ref("Source archive"),
     show_options("Show isolation options", html_form_input::check, "", 1)

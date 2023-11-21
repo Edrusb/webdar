@@ -33,7 +33,7 @@ extern "C"
 
 
     // webdar headers
-#include "html_form_input.hpp"
+#include "html_form_input_file.hpp"
 #include "html_options_isolate.hpp"
 #include "body_builder.hpp"
 #include "events.hpp"
@@ -66,7 +66,7 @@ protected:
 private:
     html_form form;
     html_form_fieldset fs;
-    html_form_input sauv_path;
+    html_form_input_file sauv_path;
     html_form_input basename;
     html_archive_read ref;
     html_form_input show_options;
