@@ -24,7 +24,7 @@
     // C system header files
 extern "C"
 {
-
+#include <fnmatch.h>
 }
 
     // C++ system header files
@@ -55,6 +55,7 @@ html_select_file::html_select_file(const std::string & message):
     html_popup(width_pct,height_pct),
     status(st_init),
     select_dir(false),
+    filter(""),
     title(2, message),
     warning(3, ""),
     fieldset(""),
@@ -352,19 +353,26 @@ void html_select_file::fill_content()
 		throw WEBDAR_BUG; // event already exists!?!
 	    content.adopt_static_html(isdir ? " DIR " : "");
 
-	    current.isdir = isdir;
-	    if(!select_dir || isdir)
+	    if(isdir || filter.empty() || fnmatch(filter.c_str(), entry.c_str(), FNM_PERIOD) == 0)
 	    {
-		current.btn = new (nothrow) html_button(entry, event_name);
-		if(current.btn == nullptr)
-		    throw exception_memory();
+		current.isdir = isdir;
+		if(!select_dir || isdir)
+		{
+		    current.btn = new (nothrow) html_button(entry, event_name);
+		    if(current.btn == nullptr)
+			throw exception_memory();
 
-		listed[event_name] = current;
-		content.adopt(current.btn);
-		current.btn->record_actor_on_event(this, event_name);
+		    listed[event_name] = current;
+		    content.adopt(current.btn);
+		    current.btn->record_actor_on_event(this, event_name);
+		}
+		else
+		    content.adopt_static_html(entry);
 	    }
-	    else
-		content.adopt_static_html(entry);
+		// else ignoring entry because
+		// this is not a directory
+		// and a mask filtering has been set
+		// and the entry does not match the filter
 	}
     }
     catch(libdar::Ebug & e)

@@ -93,6 +93,11 @@ public:
 	/// \note should be setup before calling run()
     void set_can_create_dir(bool val) { if(status != st_init) throw WEBDAR_BUG; btn_createdir.set_visible(val); };
 
+	/// only show directories and files matching the given glob expression (shell wildcards)
+	/// \note giving an empty string disable filtering, all entries are shown
+	/// which is the default behavior
+    void set_filter(const std::string & mask) { filter = mask; };
+
 	/// start the user interaction for a path selection
 
 	/// \param[in] x_entr entrepot to scan directory from
@@ -153,6 +158,7 @@ private:
 	// settings
 
     bool select_dir;
+    std::string filter;
     std::shared_ptr<libdar::entrepot> entr;
 
 
