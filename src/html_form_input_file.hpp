@@ -79,10 +79,12 @@ public:
 
 	// relayed from html_select_file
 
-    void set_select_dir(bool val) { user_select.set_select_dir(val); };
+    enum select_mode { select_dir, select_file, select_slice };
+
+    void set_select_mode(select_mode val);
     void set_can_create_dir(bool val) { user_select.set_can_create_dir(val); };
 
-	/// change the entrepot to search into (by default this is local filesystem
+	/// change the entrepot to search into (by default this is local filesystem)
     void set_entrepot(const std::shared_ptr<libdar::entrepot> & entrepot);
 
 	// inherited from events
@@ -119,6 +121,7 @@ private:
     std::string changed_event_name;
     std::shared_ptr<libdar::entrepot> entrep;
     bool refresh_get_body;
+    select_mode selmode;
 
     static const std::string triggered_event;
 
@@ -127,6 +130,7 @@ private:
     static const std::string css_button_link;
     static const std::string css_empty_text;
 
+    static std::string slicename_to_basename(const std::string & val);
 };
 
 

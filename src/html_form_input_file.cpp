@@ -57,7 +57,8 @@ html_form_input_file::html_form_input_file(const string & label,
     empty_text(),  // must not add text now, need first to set the css_class
     changed_event_name(changed_event),
     entrep(nullptr),
-    refresh_get_body(false)
+    refresh_get_body(false),
+    selmode(select_file)
 {
 	// html adoption tree
 
@@ -103,6 +104,27 @@ void html_form_input_file::set_change_event_name(const string & name)
     changed_event_name = name;
 }
 
+void html_form_input_file::set_select_mode(select_mode val)
+{
+    switch(val)
+    {
+    case select_dir:
+	user_select.set_select_dir(true);
+	break;
+    case select_file:
+	user_select.set_select_dir(false);
+	user_select.set_filter("");
+	break;
+    case select_slice:
+	user_select.set_select_dir(false);
+	user_select.set_filter("*.dar");
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+    selmode = val;
+};
+
 void html_form_input_file::set_entrepot(const shared_ptr<libdar::entrepot> & entrepot)
 {
     if(!entrepot)
@@ -118,7 +140,18 @@ void html_form_input_file::on_event(const string & event_name)
 	user_select.run(entrep, input.get_value());
     else if(event_name == html_select_file::entry_selected)
     {
-	input.set_value(user_select.get_selected_path());
+	switch(selmode)
+	{
+	case select_dir:
+	case select_file:
+	    input.set_value(user_select.get_selected_path());
+	    break;
+	case select_slice:
+	    input.set_value(slicename_to_basename(user_select.get_selected_path()));
+	    break;
+	default:
+	    throw WEBDAR_BUG;
+	}
 	refresh_get_body = true;
     }
     else
@@ -217,6 +250,37 @@ string html_form_input_file::inherited_get_body_part(const chemin & path,
     ret = html_div::inherited_get_body_part(path, req);
     if(refresh_get_body)
 	ret = html_div::inherited_get_body_part(path, req);
+
+    return ret;
+}
+
+string html_form_input_file::slicename_to_basename(const std::string & val)
+{
+    static const char sep = '.';
+    vector<string> splitted;
+
+    webdar_tools_split_by(sep, val, splitted);
+
+    if(splitted.size() < 3)
+	return val; // given arg is not a slicename
+
+    if(splitted[splitted.size() - 1] != "dar")
+	return val; // not a dar slice
+
+    string tmp = splitted[splitted.size() - 2];
+    string::iterator it = tmp.begin();
+    while(it != tmp.end() && *it >= '0' && *it <= '9')
+	++it;
+    if(it != tmp.end()) // not a slice number found before the dar extension
+	return val;
+
+	// we have a well formated slice name
+
+    string ret = splitted[0];
+    unsigned int stopat = splitted.size() - 2;
+
+    for(unsigned int i = 1; i < stopat ; ++i)
+	ret += string(1, sep) + splitted[i];
 
     return ret;
 }
