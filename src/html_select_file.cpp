@@ -348,13 +348,13 @@ void html_select_file::fill_content()
 
 	while(entr->read_dir_next_dirinfo(entry, isdir))
 	{
-	    event_name = "x_" + to_string(count++);
-	    if(listed.find(event_name) != listed.end())
-		throw WEBDAR_BUG; // event already exists!?!
-	    content.adopt_static_html(isdir ? " DIR " : "");
-
 	    if(isdir || filter.empty() || fnmatch(filter.c_str(), entry.c_str(), FNM_PERIOD) == 0)
 	    {
+		event_name = "x_" + to_string(count++);
+		if(listed.find(event_name) != listed.end())
+		    throw WEBDAR_BUG; // event already exists!?!
+		content.adopt_static_html(isdir ? " DIR " : "");
+
 		current.isdir = isdir;
 		if(!select_dir || isdir)
 		{
