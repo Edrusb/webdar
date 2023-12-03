@@ -66,6 +66,7 @@ html_archive_read::html_archive_read(const string & archive_description):
 
 	// initial values
     arch_path.set_value("/");
+    arch_path.set_select_mode(html_form_input_file::select_slice);
 }
 
 

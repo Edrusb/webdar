@@ -57,9 +57,9 @@ html_archive_create::html_archive_create():
 
     show_options.record_actor_on_event(this, html_form_input::changed);
 
-    fs_root.set_select_dir(true);
+    fs_root.set_select_mode(html_form_input_file::select_dir);
     fs_root.set_can_create_dir(false);
-    sauv_path.set_select_dir(true);
+    sauv_path.set_select_mode(html_form_input_file::select_dir);
     sauv_path.set_can_create_dir(true);
 
     on_event("");

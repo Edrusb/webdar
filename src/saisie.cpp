@@ -163,7 +163,7 @@ saisie::saisie():
     extract_fs_root_fs.adopt(&extract_fs_root);
     div_extract.adopt(&go_extract);
     select.adopt(&div_extract);
-    extract_fs_root.set_select_dir(true);
+    extract_fs_root.set_select_mode(html_form_input_file::select_dir);
     extract_fs_root.set_can_create_dir(false);
 
 	// comparison sub-page
@@ -173,7 +173,7 @@ saisie::saisie():
     diff_fs_root_fs.adopt(&diff_fs_root);
     div_compare.adopt(&go_compare);
     select.adopt(&div_compare);
-    diff_fs_root.set_select_dir(true);
+    diff_fs_root.set_select_mode(html_form_input_file::select_dir);
     diff_fs_root.set_can_create_dir(false);
 
 	// testing sub-page
