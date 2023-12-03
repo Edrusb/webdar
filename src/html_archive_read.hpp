@@ -79,8 +79,6 @@ private:
     html_form_input_file arch_path;
     html_form_input show_read_options;
     html_options_read opt_read;
-
-    static std::string slicename_to_basename(const std::string & filename);
 };
 
 #endif

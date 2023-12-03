@@ -90,7 +90,6 @@ string html_archive_read::get_archive_path() const
 	return "";
 }
 
-
 string html_archive_read::get_archive_basename() const
 {
     string ret;
@@ -101,7 +100,7 @@ string html_archive_read::get_archive_basename() const
     else
 	ret = arch_path.get_value();
 
-    return slicename_to_basename(ret);
+    return ret;
 }
 
 void html_archive_read::on_event(const std::string & event_name)
@@ -110,29 +109,4 @@ void html_archive_read::on_event(const std::string & event_name)
 	throw WEBDAR_BUG;
 
     opt_read.set_visible(show_read_options.get_value_as_bool());
-}
-
-
-string html_archive_read::slicename_to_basename(const string & filename)
-{
-    string new_base = filename;
-    static const string extension = dar_extension;
-
-	// filename is supposed to be an existing filename (due to the GUI selection method, unlike shell completion or the like)
-
-	// the following code is a copy/adaptation of dar/line_tools.cpp/retrieve_basename
-	// why not having made something reusable exposing this routing to the libdar API?
-	// because this code is not part of libdar but of dar, this would need moving the
-	// code where in libdar? as tool? ... we'll see in the future if needed.
-
-    signed int index;
-
-    if(new_base.size() < 2+1+extension.size())
-	return filename;
-    index = new_base.find_last_not_of(string(".")+dar_extension);
-    new_base = string(new_base.begin(), new_base.begin()+index);
-    index = new_base.find_last_not_of("0123456789");
-    new_base = string(new_base.begin(), new_base.begin()+index);
-
-    return new_base;
 }
