@@ -29,6 +29,8 @@ extern "C"
 
     // C++ system header files
 #include <utility>
+#include <deque>
+#include <algorithm>
 
     // webdar headers
 #include "webdar_css_style.hpp"
@@ -332,7 +334,8 @@ void html_select_file::fill_content()
     bool isdir;
     string event_name;
     unsigned int count = 0;
-    item current;
+    deque<string> entry_dirs;
+    deque<string> entry_files;
 
     clear_content();
 
@@ -350,29 +353,39 @@ void html_select_file::fill_content()
 	{
 	    if(isdir || filter.empty() || fnmatch(filter.c_str(), entry.c_str(), FNM_PERIOD) == 0)
 	    {
-		event_name = "x_" + to_string(count++);
-		if(listed.find(event_name) != listed.end())
-		    throw WEBDAR_BUG; // event already exists!?!
-		content.adopt_static_html(isdir ? " DIR " : "");
-
-		current.isdir = isdir;
-		if(!select_dir || isdir)
-		{
-		    current.btn = new (nothrow) html_button(entry, event_name);
-		    if(current.btn == nullptr)
-			throw exception_memory();
-
-		    listed[event_name] = current;
-		    content.adopt(current.btn);
-		    current.btn->record_actor_on_event(this, event_name);
-		}
+		if(isdir)
+		    entry_dirs.push_back(entry);
 		else
-		    content.adopt_static_html(entry);
+		    entry_files.push_back(entry);
 	    }
 		// else ignoring entry because
 		// this is not a directory
 		// and a mask filtering has been set
 		// and the entry does not match the filter
+	}
+
+	sort(entry_dirs.begin(), entry_dirs.end());
+	sort(entry_files.begin(), entry_files.end());
+
+	deque<string>::iterator it = entry_dirs.begin();
+
+	while(it != entry_dirs.end())
+	{
+	    event_name = "x_" + to_string(count++);
+	    if(listed.find(event_name) != listed.end())
+		throw WEBDAR_BUG; // event already exists!?!
+	    add_content_entry(event_name, true, *it);
+	    ++it;
+	}
+
+	it = entry_files.begin();
+	while(it != entry_files.end())
+	{
+	    event_name = "x_" + to_string(count++);
+	    if(listed.find(event_name) != listed.end())
+		throw WEBDAR_BUG; // event already exists!?!
+	    add_content_entry(event_name, false, *it);
+	    ++it;
 	}
     }
     catch(libdar::Ebug & e)
@@ -384,6 +397,27 @@ void html_select_file::fill_content()
 	warning.clear();
 	warning.add_text(3, e.get_message());
     }
+}
+
+void html_select_file::add_content_entry(const string & event_name, bool isdir, const string & entry)
+{
+    item current;
+
+    content.adopt_static_html(isdir ? " DIR " : "");
+
+    current.isdir = isdir;
+    if(!select_dir || isdir)
+    {
+	current.btn = new (nothrow) html_button(entry, event_name);
+	if(current.btn == nullptr)
+	    throw exception_memory();
+
+	listed[event_name] = current;
+	content.adopt(current.btn);
+	current.btn->record_actor_on_event(this, event_name);
+    }
+    else
+	content.adopt_static_html(entry);
 }
 
 void html_select_file::clear_content()

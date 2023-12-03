@@ -190,6 +190,11 @@ private:
 	/// fills content and listed from entry located in fieldset.get_label() directory of the entr libdar::entrepot
     void fill_content();
 
+	/// used by fill_content() to add a single entry to the "listed" field
+    void add_content_entry(const std::string & event_name,
+			   bool isdir,
+			   const std::string & entry);
+
 	/// free up and clean all html_button of listed and clear content too in coherence
     void clear_content();
 };
