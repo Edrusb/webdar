@@ -50,8 +50,8 @@ public:
 
     void set_user_interaction(web_user_interaction & ref) { ui = std::make_shared<web_user_interaction>(ref); };
     void set_archive_path(const std::string & val);
-    void set_archive_basename(const std::string & val) { basename = val; };
-    void set_archive_extension(const std::string & val) { extension = val; };
+    void set_archive_basename(const std::string & val) { if(val.empty()) throw exception_range("empty string is not a valid basename"); basename = val; };
+    void set_archive_extension(const std::string & val) {  if(val.empty()) throw exception_range("empty string is not a valid dar extension"); extension = val; };
     void set_archive_options_isolate(const libdar::archive_options_isolate & val) { opt = val; };
     void clear_archive_options_reference() { has_ref = false; };
     void set_archive_reference(const std::string & refpath,
