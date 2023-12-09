@@ -21,8 +21,8 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
-#ifndef BIBLIOTHEQUE_HPP
-#define BIBLIOTHEQUE_HPP
+#ifndef HTML_BIBLIOTHEQUE_HPP
+#define HTML_BIBLIOTHEQUE_HPP
 
     // C system header files
 extern "C"
@@ -43,7 +43,7 @@ extern "C"
 #include "html_text.hpp"
 #include "html_tabs.hpp"
 
-    /// \file bibliotheque.hpp defines bibliotheque class
+    /// \file html_bibliotheque.hpp defines html_bibliotheque class
     ///
     /// class blibliotheque purpose is to assign a label per category
     /// to jsoner objects that constitue a given configuration set.
@@ -51,7 +51,7 @@ extern "C"
     /// format of the configuration file, calling in turn the different
     ///
 
-class bibliotheque : public jsoner, public body_builder
+class html_bibliotheque : public jsoner, public body_builder
 {
 public:
 	/// json objects are split into category, each used as a different namespace
@@ -60,12 +60,12 @@ public:
     bool end(category cat) { return cat >= EOE; };
     void incr(category & v); // ++cat implementation with out of bound control
 
-    bibliotheque();
-    bibliotheque(const bibliotheque & ref) = delete;
-    bibliotheque(bibliotheque && ref) noexcept(false) = delete;
-    bibliotheque & operator = (const bibliotheque & ref) = delete;
-    bibliotheque & operator = (bibliotheque && ref) noexcept(false) = delete;
-    virtual ~bibliotheque() = default;
+    html_bibliotheque();
+    html_bibliotheque(const html_bibliotheque & ref) = delete;
+    html_bibliotheque(html_bibliotheque && ref) noexcept(false) = delete;
+    html_bibliotheque & operator = (const html_bibliotheque & ref) = delete;
+    html_bibliotheque & operator = (html_bibliotheque && ref) noexcept(false) = delete;
+    virtual ~html_bibliotheque() = default;
 
 	////// attention, les objets references ne sont copiables etc. seulement s'ils sont sans reference !!!
 	////// ca veut dire que s'ils sont crees en dehors de Bibiotheque et y sont ajoutes apres

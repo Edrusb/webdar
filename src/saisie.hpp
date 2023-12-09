@@ -49,7 +49,7 @@ extern "C"
 #include "html_archive_isolate.hpp"
 #include "html_archive_merge.hpp"
 #include "html_button.hpp"
-#include "bibliotheque.hpp"
+#include "html_bibliotheque.hpp"
 
 
     /// class saisie
@@ -206,7 +206,7 @@ private:
 	//
     html_div div_sep1;
 	//
-    bibliotheque biblio;
+    html_bibliotheque biblio;
 	//
     html_div div_sep2;
 	//

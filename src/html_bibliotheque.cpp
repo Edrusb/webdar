@@ -33,18 +33,18 @@ extern "C"
     // webdar headers
 
     //
-#include "bibliotheque.hpp"
+#include "html_bibliotheque.hpp"
 
 using namespace std;
 
-const char* bibliotheque::css_tabs = "bibliotheque_tabs";
+const char* html_bibliotheque::css_tabs = "html_bibliotheque_tabs";
 
-void bibliotheque::begin(category & v)
+void html_bibliotheque::begin(category & v)
 {
     v = static_cast<category>(0);
 }
 
-void bibliotheque::incr(category & v)
+void html_bibliotheque::incr(category & v)
 {
     if(v > EOE)
 	throw WEBDAR_BUG;
@@ -52,7 +52,7 @@ void bibliotheque::incr(category & v)
 	v = static_cast<category>(v+1);
 }
 
-bibliotheque::bibliotheque()
+html_bibliotheque::html_bibliotheque()
 {
     initialize_content_and_indexes();
     adopt(&tabs);
@@ -76,7 +76,7 @@ bibliotheque::bibliotheque()
     tabs.add_css_class(css_tabs);
 }
 
-void bibliotheque::add(category cat, const string & name, const bibli_referable & obj, bool can_replace)
+void html_bibliotheque::add(category cat, const string & name, const bibli_referable & obj, bool can_replace)
 {
     content_index it = content.find(cat);
     if(it == content.end())
@@ -89,7 +89,7 @@ void bibliotheque::add(category cat, const string & name, const bibli_referable 
 	it->second.refs[name] = obj;
 }
 
-bool bibliotheque::remove(category cat, const string & name)
+bool html_bibliotheque::remove(category cat, const string & name)
 {
     content_index it = content.find(cat);
     if(it == content.end())
@@ -107,7 +107,7 @@ bool bibliotheque::remove(category cat, const string & name)
 	return false;
 }
 
-void bibliotheque::reset_read(category cat) const
+void html_bibliotheque::reset_read(category cat) const
 {
     const_content_index it = content.find(cat);
     if(it == content.end())
@@ -116,7 +116,7 @@ void bibliotheque::reset_read(category cat) const
     it->second.reset_read();
 }
 
-bool bibliotheque::read_next(category cat, string & name) const
+bool html_bibliotheque::read_next(category cat, string & name) const
 {
     const_content_index it = content.find(cat);
     if(it == content.end())
@@ -132,7 +132,7 @@ bool bibliotheque::read_next(category cat, string & name) const
 	return false; // end of referable_list
 }
 
-bool bibliotheque::find_by_name(category cat, string & name, bibli_referable & found) const
+bool html_bibliotheque::find_by_name(category cat, string & name, bibli_referable & found) const
 {
     const_content_index it = content.find(cat);
     if(it == content.end())
@@ -148,13 +148,13 @@ bool bibliotheque::find_by_name(category cat, string & name, bibli_referable & f
 	return false;
 }
 
-string bibliotheque::inherited_get_body_part(const chemin & path,
+string html_bibliotheque::inherited_get_body_part(const chemin & path,
 					     const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }
 
-void bibliotheque::new_css_library_available()
+void html_bibliotheque::new_css_library_available()
 {
     std::unique_ptr<css_library> & csslib = lookup_css_library();
 
@@ -168,7 +168,7 @@ void bibliotheque::new_css_library_available()
 	csslib->add(css_tabs, tmp);
 }
 
-void bibliotheque::initialize_content_and_indexes()
+void html_bibliotheque::initialize_content_and_indexes()
 {
     category cat;
 
@@ -181,7 +181,7 @@ void bibliotheque::initialize_content_and_indexes()
     }
 }
 
-void bibliotheque::reset_read_iterators()
+void html_bibliotheque::reset_read_iterators()
 {
     category cat;
 
