@@ -1,0 +1,60 @@
+#!/bin/sh
+
+#######################################################################
+# dar - disk archive - a backup/restoration program
+# Copyright (C) 2002-2023 Denis Corbin
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# to contact the author, see the AUTHOR file
+#######################################################################
+
+
+if [ ! -f AUTHORS ] ; then
+  echo "Script must be ran from the package root directory"
+  exit 1
+fi
+
+# if 'make' fails because of a lack of 'Makefile' in the po subdirectory
+# you probably have to tune the following environment variable according
+# to your system.
+NLSPATH='/usr/share/locale/%L/LC_MESSAGES/%N.cat'
+export NLSPATH
+# if you can't figure out the problem and can avoid having
+# translated messages do the following
+#
+#    cp po/Makefile.sos po/Makefile
+#
+#
+
+cp build/configure.ac .
+cp build/Makefile.am .
+
+libtoolize --automake || (echo "libtoolize failed" && exit 1)
+gettextize --force    || (echo "gettextize failed" && exit 1)
+po/generate_POTFILES.in || (echo "generate_POTFILES.in failed" && exit 1)
+aclocal -I m4  || (echo "aclocal failed" && exit 1)
+autoconf || (echo "autoconf failed" && exit 1)
+autoheader || (echo "autoheader failed" && exit 1)
+automake --add-missing --gnu || (echo "automake failed" && exit 1)
+
+cp build/ChangeLog . || (echo "cp failed" && exit 1)
+chmod a-w configure.ac Makefile.am ChangeLog || (echo "chmod failed" && exit 1)
+if [ ! -e mkinstalldirs ]; then
+cp build/mkinstalldirs .
+fi
+
+
+
