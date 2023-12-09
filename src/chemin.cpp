@@ -54,6 +54,20 @@ chemin::chemin(const string & path)
     index = 0;
 }
 
+bool chemin::is_the_beginning_of(const chemin & ref) const
+{
+    deque<string>::const_iterator me_it = members.begin();
+    deque<string>::const_iterator ref_it = ref.members.begin();
+
+    while(me_it != members.end() && ref_it != ref.members.end() && *me_it == *ref_it)
+    {
+	++me_it;
+	++ref_it;
+    }
+
+    return (me_it == members.end());
+}
+
 void chemin::push_back(const std::string & x)
 {
 	// must avoid adding a string that contains a /

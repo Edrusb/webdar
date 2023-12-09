@@ -69,6 +69,9 @@ public:
     bool operator == (const chemin & ref) const { return members == ref.members; };
     bool operator != (const chemin & ref) const { return !((*this) == ref); };
 
+	/// return true if 'this' is the beginning of ref
+    bool is_the_beginning_of(const chemin & ref) const;
+
 	/// concatenate a path to this object
     void operator += (const chemin & ref);
 
