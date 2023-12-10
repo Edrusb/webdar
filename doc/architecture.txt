@@ -22,21 +22,23 @@ through HTTP requests. An object can be both an actor and an event, an actor onl
 
 =========
 
+class css_property
+- single css property and its value (exemple "width: 10px;")
+
 class css
-- provide a way to define a set of attribute to assign to a html object (like a <div>)
+- provides a way to define a set of attribute (css_property objects) to assign to a html object (like a <div>)
 - has inheritance ability for field flagged as inheritable
-> can receive class name attribute ??? (why that in fact?)
 - provide raw string or <style>-embedded string to be used into html or css style-sheet
 
 class css_class
-- is the association of a name to a css (the value)
-- can provide the value as a string to be put in css style-sheet
+- is the association of a name to a set of css objects, including css associated to
+  different selectors (hover, link, in_range, disabled, ...)
+- can provide the value as a string to be put in css style-sheet associated to the name of the css_class
 
-class css_selector : public css_class
-- is a specific implementation of for selector on classes (like the :hover CSS selectror)
+class css_class_group
+- gathers the *names* of a set of css_classes to be used in HTML part (not in the css style-sheet
+  which contains the definitions of thoses css classes)
 
-class css_select_* : public css_selector
-- a set of inherited class from css_selector that implement the :hover :active :checked and other selectors
 
 class css_library
 - gather a set of css_classes (i.e.: the association of a css definition and its name)
@@ -46,7 +48,7 @@ class css_library
 class body_builder
 - parent class of all object that produce html code (the body of the HTML answer)
   ->  body_builder::get_body_part()
-- objects have a visibile toggle and transition state that the inherited implementation
+- objects have a visible toggle and transition state that the inherited implementation
   must ack for the new visibility status to be set. Only visible object should return
   HTML code.
 * body_builder define a tree adoption feature that let a object adopt another
@@ -75,12 +77,27 @@ class body_builder
 
 There is a lot of inherited classes from body_builder, but we can classify then in two types
 
-HTML basic classes, that stick to the HTML constructs like <div> <a> <html> <h*>...
 HTML generic construct provide generic object combination like alternative or concatenation
-HTML constructed class that are a composition of basic class to address a given complex interaction
+HTML basic classes, that stick to the HTML constructs like <div> <a> <html> <h*>...
+HTML elaborated class that are a composition of basic and generic classes to address a given complex interaction
+
+
+HTML generic constructs
+     - html_aiguille , displays only one of its adopted children, it defines an integer "mode"
+            that correspond to the object to display in the order they have been adopted
+	    all child object have the same path, which is the path of the html_aiguille object
+     - html_focus has only one adopted child, used to apply well defined css attributes to
+            an object "under focus", such adopted (unique) object can change over time the
+	    CSS display properties are kept ready to be applied to a new object
+     - html_level: mixes body_builder objects with static html contents (string) and provide
+            method to list such list of objects. Does not define any HTML output (get_body_part())
+	    this is left to the inherited class to define how to do that
+     - html_page: inherits from html_level displays html_level childs in table of defined dimensions
+     - html_focus: provide a popup wrapper for objects it adopts
+
 
 HTML basic classes
-     - html_dir : wraps all child generated HTML code into <div> </div> markups with eventually
+     - html_div : wraps all child generated HTML code into <div> </div> markups with eventually
        the assigned css_class for that object
      - html_form : implement the <form> HTML code, the content of the form is based on adopted children
      - html_form_fieldset: implements the <fieldset> HTML code, the possible alternative are defined from
@@ -100,28 +117,15 @@ HTML basic classes
      - static_object_library: hold static_objects associated with a label (read-only library and at global level)
 
 
-
-HTML generic construct
-     - html_aiguille , displays only one of its adopted children, it defines an integer "mode"
-            that correspond to the object to display in the order they have been adopted
-	    all child object have the same path, which is the path of the html_aiguille object
-     - html_button is the combination of an html_div and an html_url that provide button-like
-            feature and event triggered hook (when the button is clicked by the user)
-	    html_button is an event class that record an event "html_button::action"
-     - html_focus has only one adopted child, used to apply well defined css attributes to
-            an object "under focus", such adopted (unique) object can change over time the
-	    CSS display properties are kept ready to be applied to a new object
-     - html_level: mixes body_builder objects with static html contents (string) and provide
-            method to list such list of objects. Does not define any HTML output (get_body_part())
-	    this is left to the inherited class to define how to do that
+HTML elaborated
      - html_menu: set a list of html_button and associated labels with events. The "mode"
             correspond the the item selected from the menu and can be changed by application of
 	    by the user through HTTP requests) The event upon mode change can be used to define
 	    which object get visibile somewhere else in the page for example.
-     - html_page: inherits from html_level displays html_level childs in table of defined dimensions
+     - html_button is the combination of an html_div and an html_url that provide button-like
+            feature and event triggered hook (when the button is clicked by the user)
+	    html_button is an event class that record an event "html_button::action"
      - html_yes_no_box: yes/no box with displayed message
-
-libdar related HTML constructed classes
      - html_archive_create
      - html_archive_isolate
      - html_archive_merge
@@ -145,6 +149,8 @@ libdar related HTML constructed classes
      - html_size_unit
      - html_statistics
      - html_web_user_interaction
+     - html_select_file (popup box to select dir of file from a repo)
+     - html_form_input_file composition of an html_form_input and a html_select_file
 
 libdar high level:
      - user_interface
