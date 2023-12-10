@@ -1,19 +1,9 @@
 
 	W E B D A R
 
-"Being able to backup is good. Being able to restore is essential."
+Backup and restore data as a lazy "cloud" user
 
        ---
-
-Many backup tool are pretty, with nice graphical user interfaces,
-databases to hold and sort files, etc. But many of them are not
-taking restoration much into account.
-
-This may lead you not being able to restore your backup,
-or at best not without first rebuilding a whole operating system in
-order to install on it the pretty graphical tool that will let you
-proceed to restoration... but restoring where? On the current live
-system? Doing that way sound a bit absurd, complex and/or hazardous.
 
 Webdar has been designed taking first into account the restoration step.
 For that reason:
@@ -21,58 +11,14 @@ For that reason:
    which can be used usable remotely from the host where webdar is running
    or from a live CD/DVD/USB key for example.
  - it uses no complex database
- - it is available as a single autonomous binary file (statically compiled)
- - it relies on a proven robust, portable, full featured backup/restoration
-   tool: libdar
+ - can be available as a single binary file (statically linked binary)
+ - relies on a proven robust, portable, full featured backup/restoration
+   software: libdar
  - it is simple to use, compatible with any browser respecting the HTTP
-   standard, it does not make use of web scripting that are an important
-   source of security breach today.
+   standard,
+ - does not make use of web scripting that are an important source of
+   security breach today,
+ - is expected to be self-explanatory and intuitive,
+ - webdar is not commercial and will never become, it is licensed under
+   GPLv3: this is free software.
 
-Webdar is able to take place in a bootable read-only system (like a CD/DVD),
-in order to restore your data into a newly formated partition or into several
-newly formated partitions if you like, whatever was the original layout of
-your system.
-
-If your hard disk crashed after ten years of good services
-you will not buy as replacement a disk having the same size. First, such
-model will most probably no more be saled, and second, if you buy
-a disk ten times larger, you won't want to use only a tenth of its size
-to simulate the size or the original disk, because your backup tool is one
-that clones partitions, and does not handle your filessystem in order to resize
-logical partitions, for example.
-
-For that reason, Webdar is transparent to partitions, it is also
-mostly transparent to filesystems. So you can take the opportunity to
-restore your system into a different filesystem without fear or risk.
-
-Webdar is able to handle your backups locally on a set of CD, DVD,
-usb key, or tapes (thanks to the underlying libdar library), but it can
-also directly fetch your backups over the network from a remote FTP repository.
-
-Some will say that FTP is not a secure protocol, and they would be right, so
-Webdar can today exploit encrypted archives (AES, twofish, blowfish, camellia,
-etc.). Tomorrow, more protocols will be added like FTP over SSL, etc.
-But now, why using the network? First, because network storage becomes cheeper
-and cheeper. Second because it does not implies having a person (you) in front of
-the computer replacing floppy, CD, DVD, tapes hours after hours... Third and last
-because if you've faced to a disaster (fire, flooding, etc.), there is much
-chances that your floppy, CD, DVD, tapes, usb keys got lost too, beside your
-lost computer.
-
-Last, but not least, Webdar is not only a restoration tool, that can be
-driven remotely or locally, on a headed or headless system to fetch backup
-locally or from over the network, to restore a whole system into a larger or
-different partitions, having same or different filesystems: yes, Webdar is also
-a backup tool! :-)
-
-Why using Webdar for backup too? Because, its the best way to become familiar
-with the tool you could have to use when you would have lost everything.
-But would you have lost everything using Webdar? I guess no, just remains
-for you to make your backups and, as always in that area, to *test* the overall
-restoration process yourself. Testing means restoring on another system from scratch,
-may it be a real or temporary virtual machine. If you succeed this test step,
-you may be confident in your ability to recover the data you backup using Webdar.
-
-P.S.: this speech sounds quite commercial, but it was just for fun presenting
-Webdar that way ;-) No, webdar is not commercial and will never become, it is
-licensed under GPLv3: this is free software.

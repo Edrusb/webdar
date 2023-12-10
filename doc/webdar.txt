@@ -46,28 +46,30 @@ LICENSING:
 ARCHITECTURE:
 
 +----------+         +--------------------------+
-| browser  |<======> | WEBDAR                   |                    +---------+
-+----------+         +--------+-----------------+                    | FTP     |
-                     | libdar | FTP module      |<==================>| Server  |
-                     |        +-----------------+   slice drop/read  |         |
-                     |        | local FS module |                    +---------+
-                     +--------+-----------------+                         ^
-                        ^            ^                                    |
-     backup/restoration |            | slice drop/read                    |
-                        v            v                                    v
---------   network   --------------------------------    network    ------------
-                               local                                   remote
-                             filesystem                              filesystem
+| browser  |<------->| WEBDAR                   |                   +----------+
++----------+         +--------------------------+                   | FTP/SFTP |
+                     | libdar                   |<#################>| Server   |
+                     |                          |  slice drop/read  |          |
+                     |                          |                   +----------+
+                     +--------------------------+                        ^
+                        ^            ^                                   #
+     backup/restoration +            # slice drop/read                   #
+                        +            #                                   #
+			+            #                                   #
+                        v            v                                   v
+--------   network   --------------------------------   network    -------------
+                               local                                  remote
+                             filesystem                             filesystem
 
 
 
 POSSIBLE EVOLUTIONS:
       Room should be done for future evolutions:
-       - support for other network protocols than FTP like FTP/SSL, etc.
-         (using libcurl for example)
        - support for daemon mode and user priviledge management (with a
          semaphore to limit the maximum number of running backup at a given
 	 time, other job get pending for a slot to get free => new session
-	 status "pending")
+	 status "pending" => scheduling/queuing)
        - support for concurrent sessions (may not be available in version 1.0)
        - support webdar configuration/restoration using the http interface
+       - implement dar_manager API
+       - interact with cron/crontab to schedule/manage backup process
