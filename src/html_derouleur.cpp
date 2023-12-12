@@ -31,7 +31,6 @@ extern "C"
 #include <algorithm>
 
     // webdar headers
-#include "html_text.hpp"
 
 
     //
@@ -49,21 +48,34 @@ void html_derouleur::clear()
 
 void html_derouleur::add_section(const std::string & name, const std::string & title)
 {
-    section tmp;
-
-    tmp.title = title;
-    tmp.adopted.clear();
+    if(find(order.begin(), order.end(), name) != order.end())
+	throw exception_range("section name already used in this html_derouleur");
 
     order.push_back(name);
     try
     {
-	sections[name] = tmp;
+	sections[name] = section(new (nothrow) html_button(title, name));
     }
     catch(...)
     {
 	order.pop_back();
 	throw;
     }
+
+    map<string, section>::iterator it = sections.find(name);
+    if(it == sections.end())
+	throw WEBDAR_BUG;
+
+    if(it->second.title == nullptr)
+	throw WEBDAR_BUG;
+
+    it->second.title->record_actor_on_event(this, name);
+    if(! css_url.is_empty())
+	it->second.title->url_add_css_class(css_url);
+
+    css_class_group css_box = get_css_class_group();
+    if(! css_box.is_empty())
+	it->second.title->add_css_class(css_box);
 }
 
 void html_derouleur::adopt_in_section(const std::string & section_name, body_builder *obj)
@@ -138,6 +150,58 @@ void html_derouleur::remove_section(const std::string & section_name)
 	active_section = noactive;
 }
 
+void html_derouleur::set_active_section(signed int num)
+{
+    if(num >= order.size() && num != noactive)
+	throw exception_range("invalid section number given to html_derouleur object");
+
+    active_section = num;
+}
+
+void html_derouleur::url_add_css_class(const std::string & name)
+{
+    css_url.add_css_class(name); // record this new class for future sections
+    map<string, section>::iterator it = sections.begin();
+
+    while(it != sections.end())
+    {
+	if(it->second.title == nullptr)
+	    throw WEBDAR_BUG;
+	it->second.title->url_add_css_class(name);
+	++it;
+    }
+}
+
+void html_derouleur::url_add_css_class(const css_class_group & cg)
+{
+    css_url.add_css_class(cg); // record this new class for future sections
+    map<string, section>::iterator it = sections.begin();
+
+    while(it != sections.end())
+    {
+	if(it->second.title == nullptr)
+	    throw WEBDAR_BUG;
+	it->second.title->url_add_css_class(cg);
+	++it;
+    }
+}
+
+void html_derouleur::on_event(const std::string & event_name)
+{
+    unsigned int size = order.size();
+    unsigned int found = 0;
+
+    while(found < size && order[found] != event_name)
+	++found;
+
+    if(found >= size)
+	throw WEBDAR_BUG; // unexpected event_name received;
+
+    if(found == active_section)    // clicked on the expanded section title
+	active_section = noactive; // shrink all section
+    else
+	active_section = found;
+}
 
 void html_derouleur::will_foresake(body_builder *obj)
 {
@@ -164,6 +228,21 @@ void html_derouleur::will_foresake(body_builder *obj)
     obj_to_section.erase(it);
 }
 
+void html_derouleur::css_classes_have_changed()
+{
+    map<string, section>::iterator it = sections.begin();
+    css_class_group updated_set = get_css_class_group();
+
+    while(it != sections.end())
+    {
+	if(it->second.title == nullptr)
+	    throw WEBDAR_BUG;
+	it->second.title->clear_css_classes();
+	it->second.title->add_css_class(updated_set);
+	++it;
+    }
+}
+
 string html_derouleur::inherited_get_body_part(const chemin & path,
 					       const request & req)
 {
@@ -171,13 +250,10 @@ string html_derouleur::inherited_get_body_part(const chemin & path,
     map<string, section>::iterator sect;
     list<body_builder*>::iterator objt;
     chemin sub_path = path;
-    html_text section_title;
     string ret = "";
 
     if(sub_path.size() > 0)
 	sub_path.pop_front();
-
-    section_title.add_css_class(get_css_class_group());
 
     for(unsigned int i = 0; i < size; ++i)
     {
@@ -186,9 +262,9 @@ string html_derouleur::inherited_get_body_part(const chemin & path,
 	    throw WEBDAR_BUG;
 
 	    // display section title
-	section_title.clear();
-	section_title.add_text(1, sect->second.title);
-	ret += section_title.get_body_part();
+	if(sect->second.title == nullptr)
+	    throw WEBDAR_BUG;
+	ret += sect->second.title->get_body_part(sub_path, req);
 
 	    // if section is active display its content
 	if(i == active_section)

@@ -37,6 +37,8 @@ extern "C"
 
     // webdar headers
 #include "body_builder.hpp"
+#include "actor.hpp"
+#include "html_button.hpp"
 
     /// class html_derouleur is a pure virtual class
     ///
@@ -46,9 +48,11 @@ extern "C"
     /// at a any given time
 
 
-class html_derouleur : protected body_builder
+class html_derouleur : protected body_builder, public actor
 {
 public:
+    static constexpr const signed int noactive = -1;
+
     html_derouleur() { clear(); };
     html_derouleur(const html_derouleur & ref) = delete;
     html_derouleur(html_derouleur && ref) noexcept = delete;
@@ -79,31 +83,21 @@ public:
 	/// foresake objects and remove section of that name
     void remove_section(const std::string & section_name);
 
+    	/// manually set the expanded section number (numbered by ordre or addition)
+
+	/// \note to shrink all sections pass noactive static filed as argument
+	/// \note section shrinkign and expansion is also driven clicking on each
+	/// section title
+    void set_active_section(signed int num);
+
+	/// set css of URL titles
+    void url_add_css_class(const std::string & name);
+    void url_add_css_class(const css_class_group & name);
+
+
 	// --- redirect to the protected inherited body_builder class
 	// having proteected inheritance allow hiding adopt() and foresake()
 	// which are replaced by the per section methodes defined above
-
-	/*
-    void set_prefix(const chemin & prefix) { body_builder::set_prefix(prefix); };
-    void set_visible(bool mode) { body_builder::set_visible(mode); };
-    bool get_visible() const { return body_builder::get_visible(); };
-    bool get_next_visible() const { return body_builder::get_next_visible(); };
-    void add_css_class(const std::string & name) { body_uilder::add_css_class(name); };
-    void add_css_class(const css_class_group & cg) { body_builder::add_css_class(cg); };
-    bool has_css_class(const std::string & name) { return body_builder::has_css_class(name); };
-    void remove_css_class(const std::string & name) { body_builder::remove_css_class(name); };
-    void remove_css_class(const css_class_group & cg) { body_builder::remove_css_class(cg); };
-    void clear_css_classes() { body_builder::clear_css_classes(); };
-    const std::set<std::string> & get_css_clases_as_a_set() const { return body_builder::get_css_classes_as_a_set(); };
-    css_class_group get_css_class_group() const { return body_builder::get_css_class_group(); };
-    std::string get_css_classes() const { return body_builder::get_css_classes(); };
-    void define_css_class_in_library(const css_class & csscl) { body_builder::define_css_class_jn_library(csscl); };
-    void define_css_class_in_library(const std::string & name, const css & cssdef) { body_builder::define_css_class_in_library(name, cssdef); };
-    bool is_css_class_defined_in_library(const std::string & name) const { body_builder::is_css_class_defined_in_library(name); };
-    std::string get_body_part(const chemin & path,
-			      const request & req) { return body_builder::get_body_part(path, req); };
-    void set_no_CR() { body_builder::set_no_CR() };
-	*/
 
     using body_builder::set_prefix;
     using body_builder::set_visible;
@@ -121,29 +115,43 @@ public:
     using body_builder::get_body_part;
     using body_builder::set_no_CR;
 
+	// from actor
+    virtual void on_event(const std::string & event_name) override;
+
 protected:
 
 	// inherited from body_builder
     virtual void will_foresake(body_builder *obj) override;
+
+	/// inheroted from body_builder
+    virtual void css_classes_have_changed() override;
 
     	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
 private:
-    static constexpr const signed int noactive = -1;
 
     struct section
     {
-	std::string title;
+	html_button* title;
 	std::list<body_builder*> adopted;
+
+	section() { title = nullptr; };
+	section(html_button *ptr) { if(ptr == nullptr) throw exception_memory(); title = ptr; };
+	section(const section & arg) = delete;
+	section(section && arg) = default;
+	section & operator = (const section & arg) = delete;
+	section & operator = (section && arg) = default;
+	~section() { if(title != nullptr) delete title; };
     };
 
     std::deque<std::string> order;              ///< holds section name in order
     std::map<std::string, section> sections;    ///< map section name to its content
     std::map<body_builder*, std::string> obj_to_section; ///< maps back an object to it section name
     signed int active_section; ///< set to noactive if no section is expanded
-    bool selfcleaning;
+    bool selfcleaning;         ///< when true, ignore will_foresake() calls, we are at the root of this
+    css_class_group css_url;   ///< css classes to apply to title urls
 };
 
 #endif
