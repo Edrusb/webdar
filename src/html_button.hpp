@@ -37,6 +37,7 @@ extern "C"
 #include "events.hpp"
 #include "html_url.hpp"
 #include "html_div.hpp"
+#include "css_class_group.hpp"
 
 class html_button : public html_div, public events
 {
@@ -50,6 +51,9 @@ public:
 
         /// the inherited add_css_class() applies to the html_div around, this one to the url inside
     void url_add_css_class(const std::string & name) { inside.add_css_class(name); };
+
+	/// add a several CSS classes at once for the url inside the button
+    void url_add_css_class(const css_class_group & cg) { inside.add_css_class(cg); };
 
         /// the inherited add_css_class() applies to the html_div around, this one to the url inside
     void url_remove_css_class(const std::string & name) { inside.remove_css_class(name); };
