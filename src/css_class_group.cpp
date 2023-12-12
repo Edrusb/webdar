@@ -47,6 +47,16 @@ void css_class_group::add_css_class(const string & name)
     content.insert(name);
 }
 
+void css_class_group::add_css_class(const css_class_group & cg)
+{
+    std::set<std::string>::iterator it = cg.content.begin();
+
+    while(it != cg.content.end())
+    {
+	add_css_class(*it);
+	++it;
+    }
+}
 
 void css_class_group::remove_css_class(const string & name)
 {

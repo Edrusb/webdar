@@ -53,6 +53,9 @@ public:
 	/// add a class name to the list
     void add_css_class(const std::string & name);
 
+	/// a a class group to a class the list
+    void add_css_class(const css_class_group & cg);
+
 	/// remove a class from the list
     void remove_css_class(const std::string & name);
 
@@ -64,6 +67,9 @@ public:
 
 	/// read the next element or return false
     bool read_next(std::string & next_class) const;
+
+	/// return true if the class group is empty
+    bool is_empty() const { return content.empty(); };
 
 private:
     std::set<std::string> content;
