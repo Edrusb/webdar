@@ -106,10 +106,16 @@ extern const char *COLOR_MENU_BORDER_ON;
 extern const char *COLOR_MENU_FRONT_OFF;
 extern const char *COLOR_MENU_BACK_OFF;
 extern const char *COLOR_MENU_BORDER_OFF;
+extern const char* COLOR_MENU_FRONT_GREY;
+extern const char* COLOR_MENU_BACK_GREY;
+extern const char* COLOR_MENU_BORDER_GREY;
 extern const char *COLOR_MENU_FRONT_HOVER_ON;
 extern const char *COLOR_MENU_FRONT_HOVER_OFF;
+extern const char* COLOR_MENU_FRONT_HOVER_GREY;
 extern const char *COLOR_MENU_FRONT_ACTIVE_ON;
 extern const char *COLOR_MENU_FRONT_ACTIVE_OFF;
+extern const char* COLOR_MENU_FRONT_ACTIVE_GREY;
+
 
 extern const char *STATIC_PATH_ID;
 extern const char *STATIC_OBJ_LICENSING;

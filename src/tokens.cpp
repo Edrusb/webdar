@@ -57,10 +57,15 @@ const char *COLOR_MENU_BORDER_ON = "rgb(255,0,0)";
 const char *COLOR_MENU_FRONT_OFF = "rgb(150,150,255)";
 const char *COLOR_MENU_BACK_OFF = "rgb(0,0,150)";
 const char *COLOR_MENU_BORDER_OFF = "rgb(0,0,100)";
+const char* COLOR_MENU_FRONT_GREY = COLOR_MENU_BORDER_OFF;
+const char* COLOR_MENU_BACK_GREY = "rgb(200,200,200)";
+const char* COLOR_MENU_BORDER_GREY = "rgb(150,150,150)";
 const char *COLOR_MENU_FRONT_HOVER_ON = "purple";
 const char *COLOR_MENU_FRONT_HOVER_OFF = "white";
+const char* COLOR_MENU_FRONT_HOVER_GREY = "yellow";
 const char *COLOR_MENU_FRONT_ACTIVE_ON = "red";
 const char *COLOR_MENU_FRONT_ACTIVE_OFF = "red";
+const char* COLOR_MENU_FRONT_ACTIVE_GREY = "blue";;
 
 const char *STATIC_PATH_ID = "st";
 // STATIC_PATH_ID's length should be strictly less than the lenght of session_ID, as defined INITIAL_SESSION_ID_WIDTH in session.cpp to avoid collision with session_ID.
