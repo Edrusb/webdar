@@ -45,6 +45,8 @@ extern "C"
 #include "html_form.hpp"
 #include "html_archive_read.hpp"
 #include "html_hash_algo.hpp"
+#include "html_derouleur.hpp"
+#include "html_text.hpp"
 
 class html_options_create : public body_builder , public actor
 {
@@ -76,34 +78,30 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+    virtual void new_css_library_available() override;
 
 private:
+    html_derouleur deroule;
+
     html_form form_archtype;
-    html_form_fieldset fs_archtype;
 
     html_form form_archgen;
-    html_form_fieldset fs_archgen;
 
     html_form form_shown;
-    html_form_fieldset fs_shown;
 
     html_form form_perimeter;
-    html_form_fieldset fs_perimeter;
 
     html_form form_reading;
-    html_form_fieldset fs_reading;
 
     html_form form_compr;
-    html_form_fieldset fs_compr;
 
     html_form form_slicing;
-    html_form_fieldset fs_slicing;
 
     html_form form_crypto;
-    html_form_fieldset fs_crypto;
 
     html_form_radio archtype;    // fs_archtype member
     html_archive_read reference;      // fs_archtype member
+    html_text ref_placeholder;     // shows when archtype is not differential/incremental
     html_form_input allow_over;
     html_form_input warn_over;
     html_form_input info_details;

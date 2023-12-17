@@ -31,7 +31,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_tools.hpp"
-
+#include "webdar_css_style.hpp"
 
     //
 #include "html_options_create.hpp"
@@ -40,21 +40,13 @@ using namespace std;
 
 html_options_create::html_options_create():
     form_archtype("Update"),
-    fs_archtype("Type of Backup and relative options"),
     form_archgen("Update"),
-    fs_archgen("General archive generation options"),
     form_shown("Update"),
-    fs_shown("What to show during the operation"),
     form_perimeter("Update"),
-    fs_perimeter("What to take into consideration for backup"),
     form_reading("Update"),
-    fs_reading("Source file reading mode"),
     form_compr("Update"),
-    fs_compr("Compression options"),
     form_slicing("Update"),
-    fs_slicing("Slicing options"),
     form_crypto("Update"),
-    fs_crypto("Encryption options"),
     reference("Archive of reference"),
     allow_over("Allow slice overwriting", html_form_input::check, "", 1),
     warn_over("Warn before overwriting", html_form_input::check, "", 1),
@@ -170,86 +162,103 @@ html_options_create::html_options_create():
 
 	// build tree dependancy
 
+    static const char* sect_type = "type";
+    static const char* sect_ref = "archive_ref";
+    static const char* sect_gen = "archive_gen_opt";
+    static const char* sect_show = "archive show opt";
+    static const char* sect_perimeter = "backup perimeter";
+    static const char* sect_source = "source reading mode";
+    static const char* sect_compr = "compression";
+    static const char* sect_slice = "slicing";
+    static const char* sect_cipher = "ciphering";
+
+    deroule.add_section(sect_type, "Archive type");
+    deroule.add_section(sect_ref, "Archive of Reference");
+    deroule.add_section(sect_gen, "Archive generation options");
+    deroule.add_section(sect_show, "What to show during the operation");
+    deroule.add_section(sect_perimeter, "What to take into consideration for backup");
+    deroule.add_section(sect_source, "Source file reading mode");
+    deroule.add_section(sect_compr, "Compression options");
+    deroule.add_section(sect_slice, "Slicing options");
+    deroule.add_section(sect_cipher, "Encryption options");
+    adopt(&deroule);
+
 	// archive type and associated optional fields
-    fs_archtype.adopt(&archtype);
-    fs_archtype.adopt(&what_to_check);
-    fs_archtype.adopt(&hourshift);
-    fs_archtype.adopt(&fixed_date);
-    form_archtype.adopt(&fs_archtype);
-    adopt(&form_archtype);
-    adopt(&reference);
+    form_archtype.adopt(&archtype);
+    form_archtype.adopt(&what_to_check);
+    form_archtype.adopt(&hourshift);
+    form_archtype.adopt(&fixed_date);
+    deroule.adopt_in_section(sect_type, &form_archtype);
+
+	// archive ref
+    ref_placeholder.add_text(2, "Reference archive is only available for Differential/Incremental archive type");
+    deroule.adopt_in_section(sect_ref, &reference);
+    deroule.adopt_in_section(sect_ref, &ref_placeholder);
 
 
 	// archive generation
-    fs_archgen.adopt(&allow_over);
-    fs_archgen.adopt(&warn_over);
-    fs_archgen.adopt(&pause);
-    fs_archgen.adopt(&slice_permission);
-    fs_archgen.adopt(&slice_user_ownership);
-    fs_archgen.adopt(&slice_group_ownership);
-    fs_archgen.adopt(&retry_on_change_times);
-    fs_archgen.adopt(&retry_on_change_overhead);
-    fs_archgen.adopt(&retry_on_change_overhead_unit);
-    fs_archgen.adopt(&sequential_marks);
-    fs_archgen.adopt(&sparse_file_min_size);
-    fs_archgen.adopt(&sparse_file_min_size_unit);
-    fs_archgen.adopt(&user_comment);
-    fs_archgen.adopt(&slice_min_digits);
-    fs_archgen.adopt(&hash_algo);
-    fs_archgen.adopt(&execute);
-    fs_archgen.adopt(&empty);
-    form_archgen.adopt(&fs_archgen);
-    adopt(&form_archgen);
+    form_archgen.adopt(&allow_over);
+    form_archgen.adopt(&warn_over);
+    form_archgen.adopt(&pause);
+    form_archgen.adopt(&slice_permission);
+    form_archgen.adopt(&slice_user_ownership);
+    form_archgen.adopt(&slice_group_ownership);
+    form_archgen.adopt(&retry_on_change_times);
+    form_archgen.adopt(&retry_on_change_overhead);
+    form_archgen.adopt(&retry_on_change_overhead_unit);
+    form_archgen.adopt(&sequential_marks);
+    form_archgen.adopt(&sparse_file_min_size);
+    form_archgen.adopt(&sparse_file_min_size_unit);
+    form_archgen.adopt(&user_comment);
+    form_archgen.adopt(&slice_min_digits);
+    form_archgen.adopt(&hash_algo);
+    form_archgen.adopt(&execute);
+    form_archgen.adopt(&empty);
+    deroule.adopt_in_section(sect_gen, &form_archgen);
 
 
 	// operation visibility
-    fs_shown.adopt(&info_details);
-    fs_shown.adopt(&display_skipped);
-    fs_shown.adopt(&security_check);
-    fs_shown.adopt(&ignore_unknown_inode_type);
-    form_shown.adopt(&fs_shown);
-    adopt(&form_shown);
+    form_shown.adopt(&info_details);
+    form_shown.adopt(&display_skipped);
+    form_shown.adopt(&security_check);
+    form_shown.adopt(&ignore_unknown_inode_type);
+    deroule.adopt_in_section(sect_show, &form_shown);
 
 	// perimeter
-    fs_perimeter.adopt(&empty_dir);
-    fs_perimeter.adopt(&nodump);
-    fs_perimeter.adopt(&same_fs);
-    fs_perimeter.adopt(&cache_directory_tagging);
-    form_perimeter.adopt(&fs_perimeter);
-    adopt(&form_perimeter);
+    form_perimeter.adopt(&empty_dir);
+    form_perimeter.adopt(&nodump);
+    form_perimeter.adopt(&same_fs);
+    form_perimeter.adopt(&cache_directory_tagging);
+    deroule.adopt_in_section(sect_perimeter, &form_perimeter);
 
 	// source data
     fs_alter_atime.adopt(&alter_atime);
-    fs_reading.adopt(&furtive_read_mode);
-    fs_reading.adopt(&fs_alter_atime);
-    form_reading.adopt(&fs_reading);
-    adopt(&form_reading);
+    form_reading.adopt(&furtive_read_mode);
+    form_reading.adopt(&fs_alter_atime);
+    deroule.adopt_in_section(sect_source, &form_reading);
 
 	// compression
-    fs_compr.adopt(&compression);
-    fs_compr.adopt(&compression_level);
-    fs_compr.adopt(&min_compr_size);
-    fs_compr.adopt(&min_compr_size_unit);
-    form_compr.adopt(&fs_compr);
-    adopt(&form_compr);
+    form_compr.adopt(&compression);
+    form_compr.adopt(&compression_level);
+    form_compr.adopt(&min_compr_size);
+    form_compr.adopt(&min_compr_size_unit);
+    deroule.adopt_in_section(sect_compr, &form_compr);
 
 	// slicing
-    fs_slicing.adopt(&slicing);
-    fs_slicing.adopt(&slice_size);
-    fs_slicing.adopt(&slice_size_unit);
-    fs_slicing.adopt(&different_first_slice);
-    fs_slicing.adopt(&first_slice_size);
-    fs_slicing.adopt(&first_slice_size_unit);
-    form_slicing.adopt(&fs_slicing);
-    adopt(&form_slicing);
+    form_slicing.adopt(&slicing);
+    form_slicing.adopt(&slice_size);
+    form_slicing.adopt(&slice_size_unit);
+    form_slicing.adopt(&different_first_slice);
+    form_slicing.adopt(&first_slice_size);
+    form_slicing.adopt(&first_slice_size_unit);
+    deroule.adopt_in_section(sect_slice, &form_slicing);
 
 	// ciphering
-    fs_crypto.adopt(&crypto_algo);
-    fs_crypto.adopt(&crypto_pass1);
-    fs_crypto.adopt(&crypto_pass2);
-    fs_crypto.adopt(&crypto_size);
-    form_crypto.adopt(&fs_crypto);
-    adopt(&form_crypto);
+    form_crypto.adopt(&crypto_algo);
+    form_crypto.adopt(&crypto_pass1);
+    form_crypto.adopt(&crypto_pass2);
+    form_crypto.adopt(&crypto_size);
+    deroule.adopt_in_section(sect_cipher, &form_crypto);
 
 	// events and visibility
     archtype.record_actor_on_event(this, html_form_radio::changed);
@@ -346,24 +355,28 @@ void html_options_create::on_event(const std::string & event_name)
     {
     case 0: // full
 	reference.set_visible(false);
+	ref_placeholder.set_visible(true);
 	hourshift.set_visible(false);
 	fixed_date.set_visible(false);
 	what_to_check.set_visible(false);
 	break;
     case 1: // diff
 	reference.set_visible(true);
+	ref_placeholder.set_visible(false);
 	hourshift.set_visible(true);
 	fixed_date.set_visible(false);
 	what_to_check.set_visible(true);
 	break;
     case 2: // snapshot
 	reference.set_visible(false);
+	ref_placeholder.set_visible(true);
 	hourshift.set_visible(false);
 	fixed_date.set_visible(false);
 	what_to_check.set_visible(false);
 	break;
     case 3: // date
 	reference.set_visible(false);
+	ref_placeholder.set_visible(true);
 	hourshift.set_visible(true);
 	fixed_date.set_visible(true);
 	what_to_check.set_visible(false);
@@ -437,3 +450,12 @@ void html_options_create::on_event(const std::string & event_name)
     }
 }
 
+void html_options_create::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
+    webdar_css_style::grey_button(deroule, true);
+}
