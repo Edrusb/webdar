@@ -46,12 +46,12 @@ namespace webdar_css_style
     static bool initialized = false;
 
     static libthreadar::mutex init_lock;
-    static css_class btn_off("wcs_btn_off");           ///< used to assign CSS attributes: unselected item
-    static css_class btn_on("wcs_btn_on");             ///< used to assign CSS attributes: selected item
-    static css_class btn_void("wcs_btn_void");         ///< used to assign CSS attributes: separators
-    static css_class url_selected("wcs_url_selected"); ///< links when button selected
-    static css_class url_normal("wcs_url_normal");     ///< links when button no selected
-    static css_class url_void("wcs_url_void");         ///< links when button is a void
+    static css_class btn_off(wcs_btn_off);           ///< used to assign CSS attributes: unselected item
+    static css_class btn_on(wcs_btn_on);             ///< used to assign CSS attributes: selected item
+    static css_class btn_void(wcs_btn_void);         ///< used to assign CSS attributes: separators
+    static css_class url_selected(wcs_url_selected); ///< links when button selected
+    static css_class url_normal(wcs_url_normal);     ///< links when button no selected
+    static css_class url_void(wcs_url_void);         ///< links when button is a void
 
     static void init()
     {
@@ -133,6 +133,8 @@ namespace webdar_css_style
 
     void update_library(css_library & csslib)
     {
+	init();
+
 	if(!csslib.class_exists(btn_on.get_name()))
 	{
 	    csslib.add(btn_on);
@@ -155,39 +157,6 @@ namespace webdar_css_style
 	    if(!csslib.class_exists(url_void.get_name()))
 		throw WEBDAR_BUG;
 	}
-    }
-
-    void normal_button(html_button & obj)
-    {
-        if(!initialized)
-            init();
-
-        obj.clear_css_classes();
-        obj.add_css_class(btn_off.get_name());
-        obj.url_clear_css_classes();
-        obj.url_add_css_class(url_normal.get_name());
-    }
-
-    void active_button(html_button & obj)
-    {
-        if(!initialized)
-            init();
-
-        obj.clear_css_classes();
-        obj.add_css_class(btn_on.get_name());
-        obj.url_clear_css_classes();
-        obj.url_add_css_class(url_selected.get_name());
-    }
-
-    void void_button(html_button & obj)
-    {
-        if(!initialized)
-            init();
-
-        obj.clear_css_classes();
-        obj.add_css_class(btn_void.get_name());
-        obj.url_clear_css_classes();
-        obj.url_add_css_class(url_void.get_name());
     }
 
 }  // end of namespace
