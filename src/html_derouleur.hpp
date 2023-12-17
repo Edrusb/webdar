@@ -48,7 +48,7 @@ extern "C"
     /// at a any given time
 
 
-class html_derouleur : protected body_builder, public actor
+class html_derouleur : public body_builder, public actor
 {
 public:
     static constexpr const signed int noactive = -1;
@@ -91,29 +91,9 @@ public:
     void set_active_section(signed int num);
 
 	/// set css of URL titles
+    void url_clear_css_classes() { css_url.clear_css_classes(); };
     void url_add_css_class(const std::string & name);
     void url_add_css_class(const css_class_group & name);
-
-
-	// --- redirect to the protected inherited body_builder class
-	// having proteected inheritance allow hiding adopt() and foresake()
-	// which are replaced by the per section methodes defined above
-
-    using body_builder::set_prefix;
-    using body_builder::set_visible;
-    using body_builder::get_visible;
-    using body_builder::get_next_visible;
-    using body_builder::add_css_class;
-    using body_builder::has_css_class;
-    using body_builder::remove_css_class;
-    using body_builder::clear_css_classes;
-    using body_builder::get_css_classes_as_a_set;
-    using body_builder::get_css_class_group;
-    using body_builder::get_css_classes;
-    using body_builder::define_css_class_in_library;
-    using body_builder::is_css_class_defined_in_library;
-    using body_builder::get_body_part;
-    using body_builder::set_no_CR;
 
 	// from actor
     virtual void on_event(const std::string & event_name) override;
@@ -130,20 +110,30 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	// hiding adopt() as it is replaced by adopt_in_section()
+    using body_builder::adopt;
+
 private:
+    static const std::string shrink_event;
 
     struct section
     {
 	html_button* title;
+	html_button* shrinker;
 	std::list<body_builder*> adopted;
 
-	section() { title = nullptr; };
-	section(html_button *ptr) { if(ptr == nullptr) throw exception_memory(); title = ptr; };
+	    // by default shrinker is hidden and title is
+	    // visible (when the section is not expanded)
+	    // clicking on title expands the section
+	    // and leads the shrinker button to show while
+	    // title get invisible, and so on...
+
+	section() { title = nullptr; shrinker = nullptr; };
 	section(const section & arg) = delete;
 	section(section && arg) = default;
 	section & operator = (const section & arg) = delete;
 	section & operator = (section && arg) = default;
-	~section() { if(title != nullptr) delete title; };
+	~section() { if(title != nullptr) delete title; if(shrinker != nullptr) delete shrinker; };
     };
 
     std::deque<std::string> order;              ///< holds section name in order
@@ -151,7 +141,14 @@ private:
     std::map<body_builder*, std::string> obj_to_section; ///< maps back an object to it section name
     signed int active_section; ///< set to noactive if no section is expanded
     bool selfcleaning;         ///< when true, ignore will_foresake() calls, we are at the root of this
+    bool ignore_events;        ///< disable the on_event() actions
     css_class_group css_url;   ///< css classes to apply to title urls
+
+
+	/// used from inherited_get_body_part to avoid duplcated code
+    std::string generate_html(const chemin & path,
+			      const request & req);
+
 };
 
 #endif

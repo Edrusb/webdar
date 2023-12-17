@@ -38,12 +38,16 @@ extern "C"
 
 using namespace std;
 
+const string html_derouleur::shrink_event = "shrink";
 
 void html_derouleur::clear()
 {
     while(order.begin() != order.end())
 	remove_section(*(order.begin()));
     active_section = noactive;
+    selfcleaning = false;
+    ignore_events = false;
+    css_url.clear_css_classes();
 }
 
 void html_derouleur::add_section(const std::string & name, const std::string & title)
@@ -54,7 +58,51 @@ void html_derouleur::add_section(const std::string & name, const std::string & t
     order.push_back(name);
     try
     {
-	sections[name] = section(new (nothrow) html_button(title, name));
+	sections[name] = section();
+
+	try
+	{
+	    map<string, section>::iterator it = sections.find(name);
+	    if(it == sections.end())
+		throw WEBDAR_BUG;
+
+	    if(it->second.title != nullptr)
+		throw WEBDAR_BUG;
+
+	    it->second.title = new (nothrow) html_button(title, name);
+	    it->second.shrinker = new (nothrow) html_button(title, shrink_event);
+
+	    if(it->second.title == nullptr || it->second.shrinker == nullptr)
+		throw exception_memory();
+
+	    adopt(it->second.title);
+	    adopt(it->second.shrinker);
+
+	    it->second.title->record_actor_on_event(this, name);
+	    it->second.shrinker->record_actor_on_event(this, shrink_event);
+
+	    if(! css_url.is_empty())
+	    {
+		it->second.title->url_clear_css_classes();
+		it->second.title->url_add_css_class(css_url);
+		it->second.shrinker->url_clear_css_classes();
+		it->second.shrinker->url_add_css_class(css_url);
+	    }
+
+	    css_class_group css_box = get_css_class_group();
+	    if(! css_box.is_empty())
+	    {
+		it->second.title->clear_css_classes();
+		it->second.title->add_css_class(css_box);
+		it->second.shrinker->clear_css_classes();
+		it->second.shrinker->add_css_class(css_box);
+	    }
+	}
+	catch(...)
+	{
+	    sections.erase(name);
+	    throw;
+	}
     }
     catch(...)
     {
@@ -62,20 +110,6 @@ void html_derouleur::add_section(const std::string & name, const std::string & t
 	throw;
     }
 
-    map<string, section>::iterator it = sections.find(name);
-    if(it == sections.end())
-	throw WEBDAR_BUG;
-
-    if(it->second.title == nullptr)
-	throw WEBDAR_BUG;
-
-    it->second.title->record_actor_on_event(this, name);
-    if(! css_url.is_empty())
-	it->second.title->url_add_css_class(css_url);
-
-    css_class_group css_box = get_css_class_group();
-    if(! css_box.is_empty())
-	it->second.title->add_css_class(css_box);
 }
 
 void html_derouleur::adopt_in_section(const std::string & section_name, body_builder *obj)
@@ -168,6 +202,7 @@ void html_derouleur::url_add_css_class(const std::string & name)
 	if(it->second.title == nullptr)
 	    throw WEBDAR_BUG;
 	it->second.title->url_add_css_class(name);
+	it->second.shrinker->url_add_css_class(name);
 	++it;
     }
 }
@@ -182,6 +217,7 @@ void html_derouleur::url_add_css_class(const css_class_group & cg)
 	if(it->second.title == nullptr)
 	    throw WEBDAR_BUG;
 	it->second.title->url_add_css_class(cg);
+	it->second.shrinker->url_add_css_class(cg);
 	++it;
     }
 }
@@ -191,16 +227,22 @@ void html_derouleur::on_event(const std::string & event_name)
     unsigned int size = order.size();
     unsigned int found = 0;
 
+    if(ignore_events)
+	return;
+
+    if(event_name == shrink_event)
+    {
+	active_section = noactive;
+	return;
+    }
+
     while(found < size && order[found] != event_name)
 	++found;
 
     if(found >= size)
 	throw WEBDAR_BUG; // unexpected event_name received;
 
-    if(found == active_section)    // clicked on the expanded section title
-	active_section = noactive; // shrink all section
-    else
-	active_section = found;
+    active_section = found;
 }
 
 void html_derouleur::will_foresake(body_builder *obj)
@@ -239,6 +281,8 @@ void html_derouleur::css_classes_have_changed()
 	    throw WEBDAR_BUG;
 	it->second.title->clear_css_classes();
 	it->second.title->add_css_class(updated_set);
+	it->second.shrinker->clear_css_classes();
+	it->second.shrinker->add_css_class(updated_set);
 	++it;
     }
 }
@@ -246,14 +290,45 @@ void html_derouleur::css_classes_have_changed()
 string html_derouleur::inherited_get_body_part(const chemin & path,
 					       const request & req)
 {
-    const unsigned int size = order.size();
-    map<string, section>::iterator sect;
-    list<body_builder*>::iterator objt;
+    string ret;
     chemin sub_path = path;
-    string ret = "";
 
     if(sub_path.size() > 0)
 	sub_path.pop_front();
+
+	// first thing, have the classes generating the events
+	// and updating objects accordingly
+    (void)generate_html(sub_path, req);
+
+	// now freezing the even for it does not change a second time
+	// but as all components have their status we can now
+	// have a correct status for all components (even those
+	// that would have provided their content before an next event
+	// would have changed it
+
+    ignore_events = true;
+    try
+    {
+	ret = generate_html(sub_path, req);
+    }
+    catch(...)
+    {
+	ignore_events = false;
+	throw;
+    }
+    ignore_events = false;
+
+    return ret;
+}
+
+
+string html_derouleur::generate_html(const chemin & path,
+				     const request & req)
+{
+    const unsigned int size = order.size();
+    map<string, section>::iterator sect;
+    list<body_builder*>::iterator objt;
+    string ret = "";
 
     for(unsigned int i = 0; i < size; ++i)
     {
@@ -264,20 +339,24 @@ string html_derouleur::inherited_get_body_part(const chemin & path,
 	    // display section title
 	if(sect->second.title == nullptr)
 	    throw WEBDAR_BUG;
-	ret += sect->second.title->get_body_part(sub_path, req);
 
 	    // if section is active display its content
 	if(i == active_section)
 	{
+	    ret += sect->second.shrinker->get_body_part(path, req);
+
 	    objt = sect->second.adopted.begin();
 	    while(objt != sect->second.adopted.end())
 	    {
 		if(*objt == nullptr)
 		    throw WEBDAR_BUG;
-		ret += (*objt)->get_body_part(sub_path, req);
+		ret += (*objt)->get_body_part(path, req);
 		++objt;
 	    }
 	}
+	else
+	    ret += sect->second.title->get_body_part(path, req);
+
     }
 
     return ret;
