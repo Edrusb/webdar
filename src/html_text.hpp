@@ -72,7 +72,7 @@ public:
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
-						const request & req) override { return get_body_part(); };
+						const request & req) override;
 
 private:
     std::string txt;

@@ -55,3 +55,16 @@ void html_text::add_text(unsigned int level, const std::string & text)
 	txt += "<h" + h + " " + css_val + ">" + text + "</h" + h + ">\n";
     }
 }
+
+string html_text::inherited_get_body_part(const chemin & path,
+					  const request & req)
+{
+    string ret = "";
+
+    ack_visible();
+
+    if(get_visible())
+	ret = get_body_part();
+
+    return ret;
+}
