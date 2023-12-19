@@ -38,6 +38,7 @@ extern "C"
 #include "body_builder.hpp"
 #include "events.hpp"
 #include "html_archive_read.hpp"
+#include "html_derouleur.hpp"
 
 class html_archive_isolate: public body_builder, public actor
 {
@@ -63,7 +64,10 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+    virtual void new_css_library_available() override;
+
 private:
+    html_derouleur deroule;
     html_form form;
     html_form_fieldset fs;
     html_form_input_file sauv_path;
