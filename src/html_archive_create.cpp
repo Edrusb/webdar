@@ -31,7 +31,7 @@ extern "C"
 
 
     // webdar headers
-
+#include "webdar_css_style.hpp"
 
 
     //
@@ -47,12 +47,18 @@ html_archive_create::html_archive_create():
     basename("Archive basename", html_form_input::text, "", 10),
     show_options("Show creation options", html_form_input::check, "", 1)
 {
+    static const char* sect_archive = "archive";
+
+    deroule.add_section(sect_archive, "Archive Creation");
+    deroule.set_active_section(0);
+
     fs.adopt(&fs_root);
     fs.adopt(&sauv_path);
     fs.adopt(&basename);
     fs.adopt(&show_options);
     form.adopt(&fs);
-    adopt(&form);
+    deroule.adopt_in_section(sect_archive, &form);
+    adopt(&deroule);
     adopt(&options);
 
     show_options.record_actor_on_event(this, html_form_input::changed);
@@ -74,4 +80,14 @@ string html_archive_create::inherited_get_body_part(const chemin & path,
 void html_archive_create::on_event(const std::string & event_name)
 {
     options.set_visible(show_options.get_value_as_bool());
+}
+
+
+void html_archive_create::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::normal_button(deroule, true);
 }
