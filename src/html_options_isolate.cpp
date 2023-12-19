@@ -31,7 +31,7 @@ extern "C"
 #include <dar/libdar.hpp>
 
     // webdar headers
-
+#include "webdar_css_style.hpp"
 
 
     //
@@ -109,6 +109,18 @@ html_options_isolate::html_options_isolate():
 
 	// building HTML structure
 
+    static const char* sect_general = "general";
+    static const char* sect_show = "show";
+    static const char* sect_compr = "compress";
+    static const char* sect_slice = "slicing";
+    static const char* sect_cipher = "ciphering";
+
+    deroule.add_section(sect_general, "General archive isolation options");
+    deroule.add_section(sect_show, "What to show during the operation");
+    deroule.add_section(sect_compr, "Compression options");
+    deroule.add_section(sect_slice, "Slicing options");
+    deroule.add_section(sect_cipher, "Encryption options");
+
     fs_archgen.adopt(&allow_over);
     fs_archgen.adopt(&warn_over);
     fs_archgen.adopt(&pause);
@@ -122,16 +134,16 @@ html_options_isolate::html_options_isolate():
     fs_archgen.adopt(&execute);
     fs_archgen.adopt(&empty);
     form_archgen.adopt(&fs_archgen);
-    adopt(&form_archgen);
+    deroule.adopt_in_section(sect_general, &form_archgen);
 
     fs_shown.adopt(&info_details);
     form_shown.adopt(&fs_shown);
-    adopt(&form_shown);
+    deroule.adopt_in_section(sect_show, &form_shown);
 
     fs_compr.adopt(&compression);
     fs_compr.adopt(&compression_level);
     form_compr.adopt(&fs_compr);
-    adopt(&form_compr);
+    deroule.adopt_in_section(sect_compr, &form_compr);
 
     fs_slicing.adopt(&slicing);
     fs_slicing.adopt(&slice_size);
@@ -140,14 +152,15 @@ html_options_isolate::html_options_isolate():
     fs_slicing.adopt(&first_slice_size);
     fs_slicing.adopt(&first_slice_size_unit);
     form_slicing.adopt(&fs_slicing);
-    adopt(&form_slicing);
+    deroule.adopt_in_section(sect_slice, &form_slicing);
 
     fs_crypto.adopt(&crypto_algo);
     fs_crypto.adopt(&crypto_pass1);
     fs_crypto.adopt(&crypto_pass2);
     fs_crypto.adopt(&crypto_size);
     form_crypto.adopt(&fs_crypto);
-    adopt(&form_crypto);
+    deroule.adopt_in_section(sect_cipher, &form_crypto);
+    adopt(&deroule);
 
 	// events and visibility
     compression.record_actor_on_event(this, html_compression::changed);
@@ -271,4 +284,13 @@ libdar::archive_options_isolate html_options_isolate::get_options() const
 
 
     return ret;
+}
+
+void html_options_isolate::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::grey_button(deroule, true);
 }

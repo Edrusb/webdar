@@ -42,6 +42,7 @@ extern "C"
 #include "html_size_unit.hpp"
 #include "html_hash_algo.hpp"
 #include "html_crypto_algo.hpp"
+#include "html_derouleur.hpp"
 
 class html_options_isolate : public body_builder, public actor
 {
@@ -64,7 +65,11 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+    virtual void new_css_library_available() override;
+
 private:
+    html_derouleur deroule;
+
     html_form form_archgen;
     html_form_fieldset fs_archgen;
     html_form_input allow_over;
