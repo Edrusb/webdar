@@ -31,7 +31,7 @@ extern "C"
 
 
     // webdar headers
-
+#include "webdar_css_style.hpp"
 
 
     //
@@ -47,12 +47,20 @@ html_archive_merge::html_archive_merge():
     show_options("Show merging options", html_form_input::check, "", 1),
     reference("Archive of reference")
 {
+    static const char* sect_archive = "archive";
+    static const char* sect_ref = "reference";
+
+    deroule.add_section(sect_archive, "Archive Merging");
+    deroule.add_section(sect_ref, "Reference Archive");
+    deroule.set_active_section(0);
+
     fs.adopt(&sauv_path);
     fs.adopt(&basename);
     fs.adopt(&show_options);
     form.adopt(&fs);
-    adopt(&form);
-    adopt(&reference);
+    deroule.adopt_in_section(sect_archive, &form);
+    deroule.adopt_in_section(sect_ref, &reference);
+    adopt(&deroule);
     adopt(&options);
 
     show_options.record_actor_on_event(this, html_form_input::changed);
@@ -70,4 +78,13 @@ string html_archive_merge::inherited_get_body_part(const chemin & path,
 void html_archive_merge::on_event(const std::string & event_name)
 {
     options.set_visible(show_options.get_value_as_bool());
+}
+
+void html_archive_merge::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::normal_button(deroule, true);
 }
