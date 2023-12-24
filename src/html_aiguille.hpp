@@ -128,6 +128,12 @@ protected:
 	// for inherited class to act upon section removal
     virtual void section_removed(const std::string & name) {};
 
+	/// return the index of the provided section name
+    unsigned int section_name_to_num(const std::string & name) const;
+
+	/// return the name of the section knowing its index
+    std::string num_to_section_name(unsigned int num) const { return order[num]; };
+
 private:
     struct section
     {

@@ -250,3 +250,17 @@ string html_aiguille::inherited_get_body_part(const chemin & path,
 
     return ret;
 }
+
+unsigned int html_aiguille::section_name_to_num(const std::string & name) const
+{
+    unsigned int size = order.size();
+    unsigned int found = 0;
+
+    while(found < size && order[found] != name)
+	++found;
+
+    if(found >= size)
+	throw exception_range("Unknown section name in html_aiguille");
+    else
+	return found;
+}
