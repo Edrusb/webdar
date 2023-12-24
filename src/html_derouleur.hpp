@@ -83,7 +83,7 @@ public:
 	/// foresake objects and remove section of that name
     void remove_section(const std::string & section_name);
 
-    	/// manually set the expanded section number (numbered by ordre or addition)
+    	/// manually set the expanded section number (numbered by ordre or addition, starting at zero)
 
 	/// \note to shrink all sections pass noactive static filed as argument
 	/// \note section shrinkign and expansion is also driven clicking on each

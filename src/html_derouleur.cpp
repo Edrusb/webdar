@@ -290,7 +290,7 @@ void html_derouleur::css_classes_have_changed()
 string html_derouleur::inherited_get_body_part(const chemin & path,
 					       const request & req)
 {
-    string ret;
+    string ret = "";
     chemin sub_path = path;
 
     if(sub_path.size() > 0)
@@ -298,25 +298,30 @@ string html_derouleur::inherited_get_body_part(const chemin & path,
 
 	// first thing, have the classes generating the events
 	// and updating objects accordingly
-    (void)generate_html(sub_path, req);
+    if(get_visible())
+	(void)generate_html(sub_path, req);
 
-	// now freezing the even for it does not change a second time
-	// but as all components have their status we can now
-	// have a correct status for all components (even those
-	// that would have provided their content before an next event
-	// would have changed it
+    ack_visible();
+    if(get_visible())
+    {
+	    // now freezing the even for it does not change a second time
+	    // but as all components have their status we can now
+	    // have a correct status for all components (even those
+	    // that would have provided their content before an next event
+	    // would have changed it
 
-    ignore_events = true;
-    try
-    {
-	ret = generate_html(sub_path, req);
-    }
-    catch(...)
-    {
+	ignore_events = true;
+	try
+	{
+	    ret = generate_html(sub_path, req);
+	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
 	ignore_events = false;
-	throw;
     }
-    ignore_events = false;
 
     return ret;
 }
