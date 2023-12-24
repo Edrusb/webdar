@@ -43,6 +43,7 @@ extern "C"
 #include "html_hash_algo.hpp"
 #include "html_crypto_algo.hpp"
 #include "html_archive_read.hpp"
+#include "html_derouleur.hpp"
 
 class html_options_merge : public body_builder, public actor
 {
@@ -72,7 +73,11 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+    virtual void new_css_library_available() override;
+
 private:
+    html_derouleur deroule;
+
     html_form form_archgen;
     html_form_fieldset fs_archgen;
     html_form_input allow_over;
@@ -92,6 +97,7 @@ private:
     html_form_input has_aux;
 
     html_archive_read auxilliary;
+    html_text aux_placeholder;
 
     html_form form_shown;
     html_form_fieldset fs_shown;

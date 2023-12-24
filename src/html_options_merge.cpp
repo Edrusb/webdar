@@ -31,11 +31,11 @@ extern "C"
 #include <dar/libdar.hpp>
 
     // webdar headers
-
-
+#include "webdar_css_style.hpp"
 
     //
 #include "html_options_merge.hpp"
+
 
 using namespace std;
 
@@ -134,6 +134,22 @@ html_options_merge::html_options_merge():
 
 	// building HTML structure
 
+    static const char* sect_general = "general";
+    static const char* sect_aux = "auxiliary";
+    static const char* sect_show = "show";
+    static const char* sect_filter = "filter";
+    static const char* sect_compr = "slicing";
+    static const char* sect_slice = "compression";
+    static const char* sect_cipher = "ciphering";
+
+    deroule.add_section(sect_general, "General archive isolation options");
+    deroule.add_section(sect_aux, "Auxiliary archive of reference");
+    deroule.add_section(sect_show, "What to show during the operation");
+    deroule.add_section(sect_filter, "Filtering options");
+    deroule.add_section(sect_compr, "Compression options");
+    deroule.add_section(sect_slice, "Slicing options");
+    deroule.add_section(sect_cipher, "Encryption options");
+
     fs_archgen.adopt(&allow_over);
     fs_archgen.adopt(&warn_over);
     fs_archgen.adopt(&pause);
@@ -150,19 +166,21 @@ html_options_merge::html_options_merge():
     fs_archgen.adopt(&empty);
     fs_archgen.adopt(&has_aux);
     form_archgen.adopt(&fs_archgen);
-    adopt(&form_archgen);
+    deroule.adopt_in_section(sect_general, &form_archgen);
 
-    adopt(&auxilliary);
+    aux_placeholder.add_text(2, "Auxiliary archive disabled");
+    deroule.adopt_in_section(sect_aux, &auxilliary);
+    deroule.adopt_in_section(sect_aux, &aux_placeholder);
 
     fs_shown.adopt(&info_details);
     fs_shown.adopt(&display_skipped);
     form_shown.adopt(&fs_shown);
-    adopt(&form_shown);
+    deroule.adopt_in_section(sect_show, &form_shown);
 
     fs_perimeter.adopt(&empty_dir);
     fs_perimeter.adopt(&decremental_mode);
     form_perimeter.adopt(&fs_perimeter);
-    adopt(&form_perimeter);
+    deroule.adopt_in_section(sect_filter, &form_perimeter);
 
     fs_compr.adopt(&keep_compressed);
     fs_compr.adopt(&compression);
@@ -170,7 +188,7 @@ html_options_merge::html_options_merge():
     fs_compr.adopt(&min_compr_size);
     fs_compr.adopt(&min_compr_size_unit);
     form_compr.adopt(&fs_compr);
-    adopt(&form_compr);
+    deroule.adopt_in_section(sect_compr, &form_compr);
 
     fs_slicing.adopt(&slicing);
     fs_slicing.adopt(&slice_size);
@@ -179,14 +197,16 @@ html_options_merge::html_options_merge():
     fs_slicing.adopt(&first_slice_size);
     fs_slicing.adopt(&first_slice_size_unit);
     form_slicing.adopt(&fs_slicing);
-    adopt(&form_slicing);
+    deroule.adopt_in_section(sect_slice, &form_slicing);
 
     fs_crypto.adopt(&crypto_algo);
     fs_crypto.adopt(&crypto_pass1);
     fs_crypto.adopt(&crypto_pass2);
     fs_crypto.adopt(&crypto_size);
     form_crypto.adopt(&fs_crypto);
-    adopt(&form_crypto);
+    deroule.adopt_in_section(sect_cipher, &form_crypto);
+
+    adopt(&deroule);
 
 	// events and visibility
     keep_compressed.record_actor_on_event(this, html_form_input::changed);
@@ -209,6 +229,7 @@ string html_options_merge::inherited_get_body_part(const chemin & path,
 void html_options_merge::on_event(const std::string & event_name)
 {
     auxilliary.set_visible(has_aux.get_value_as_bool());
+    aux_placeholder.set_visible(! has_aux.get_value_as_bool());
 
     if(keep_compressed.get_value_as_bool())
     {
@@ -334,4 +355,14 @@ libdar::archive_options_merge html_options_merge::get_options() const
     }
 
     return ret;
+}
+
+
+void html_options_merge::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::grey_button(deroule, true);
 }
