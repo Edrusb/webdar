@@ -36,7 +36,7 @@ extern "C"
 #include <map>
 
     // webdar headers
-#include "body_builder.hpp"
+#include "html_aiguille.hpp"
 #include "actor.hpp"
 #include "html_button.hpp"
 
@@ -48,7 +48,7 @@ extern "C"
     /// at a any given time
 
 
-class html_derouleur : public body_builder, public actor
+class html_derouleur : public html_aiguille, public actor
 {
 public:
     static constexpr const signed int noactive = -1;
@@ -58,37 +58,10 @@ public:
     html_derouleur(html_derouleur && ref) noexcept = delete;
     html_derouleur & operator = (const html_derouleur & ref) = delete;
     html_derouleur & operator = (html_derouleur && ref) noexcept = delete;
-    ~html_derouleur() { selfcleaning = true; };
+    ~html_derouleur() = default;
 
 	/// clear all adopted data and remove all sections
     void clear();
-
-	/// add a new sections
-
-	/// \param[in] name is the name of the section, not two sections
-	/// can have the same name, this is code internal information which
-	/// can be used to be referred.
-	/// \param[in] title is what shows in the section title, may be the
-	/// the same title of another section, can also be tranlated for
-	/// localization, code should not assume anything based in the value
-	/// of this field.
-    void add_section(const std::string & name, const std::string & title);
-
-	/// adopt another objet in the section which name is provided
-    void adopt_in_section(const std::string & section_name, body_builder* obj);
-
-	/// foresake all adopted objets in the given section
-    void clear_section(const std::string & section_name);
-
-	/// foresake objects and remove section of that name
-    void remove_section(const std::string & section_name);
-
-    	/// manually set the expanded section number (numbered by ordre or addition, starting at zero)
-
-	/// \note to shrink all sections pass noactive static filed as argument
-	/// \note section shrinkign and expansion is also driven clicking on each
-	/// section title
-    void set_active_section(signed int num);
 
 	/// set css of URL titles
     void url_clear_css_classes() { css_url.clear_css_classes(); };
@@ -101,17 +74,18 @@ public:
 protected:
 
 	// inherited from body_builder
-    virtual void will_foresake(body_builder *obj) override;
-
-	/// inheroted from body_builder
     virtual void css_classes_have_changed() override;
 
-    	/// inherited from body_builder
+	// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
-	// hiding adopt() as it is replaced by adopt_in_section()
-    using body_builder::adopt;
+	// inherited from html_aiguille
+    virtual void section_added(const std::string & name, const std::string & title) override;
+
+	// inherited from html_aiguille
+    virtual void section_removed(const std::string & name) override;
+
 
 private:
     static const std::string shrink_event;
@@ -120,7 +94,6 @@ private:
     {
 	html_button* title;
 	html_button* shrinker;
-	std::list<body_builder*> adopted;
 
 	    // by default shrinker is hidden and title is
 	    // visible (when the section is not expanded)
@@ -136,11 +109,7 @@ private:
 	~section() { if(title != nullptr) delete title; if(shrinker != nullptr) delete shrinker; };
     };
 
-    std::deque<std::string> order;              ///< holds section name in order
     std::map<std::string, section> sections;    ///< map section name to its content
-    std::map<body_builder*, std::string> obj_to_section; ///< maps back an object to it section name
-    signed int active_section; ///< set to noactive if no section is expanded
-    bool selfcleaning;         ///< when true, ignore will_foresake() calls, we are at the root of this
     bool ignore_events;        ///< disable the on_event() actions
     css_class_group css_url;   ///< css classes to apply to title urls
 
