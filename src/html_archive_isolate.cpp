@@ -64,6 +64,9 @@ html_archive_isolate::html_archive_isolate():
 
     show_options.record_actor_on_event(this, html_form_input::changed);
     on_event("");
+
+	// css
+    webdar_css_style::normal_button(deroule, true);
 }
 
 string html_archive_isolate::inherited_get_body_part(const chemin & path,
@@ -84,5 +87,5 @@ void html_archive_isolate::new_css_library_available()
     if(!csslib)
 	throw WEBDAR_BUG;
 
-    webdar_css_style::normal_button(deroule, true);
+    webdar_css_style::update_library(*csslib);
 }

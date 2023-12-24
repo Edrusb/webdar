@@ -54,6 +54,8 @@ html_archive_merge::html_archive_merge():
     deroule.add_section(sect_ref, "Reference Archive");
     deroule.set_active_section(0);
 
+	// adoption tree
+
     fs.adopt(&sauv_path);
     fs.adopt(&basename);
     fs.adopt(&show_options);
@@ -63,9 +65,14 @@ html_archive_merge::html_archive_merge():
     adopt(&deroule);
     adopt(&options);
 
-    show_options.record_actor_on_event(this, html_form_input::changed);
+	// events
 
+    show_options.record_actor_on_event(this, html_form_input::changed);
     on_event("");
+
+	// CSS
+
+    webdar_css_style::normal_button(deroule, true);
 }
 
 string html_archive_merge::inherited_get_body_part(const chemin & path,
@@ -86,5 +93,5 @@ void html_archive_merge::new_css_library_available()
     if(!csslib)
 	throw WEBDAR_BUG;
 
-    webdar_css_style::normal_button(deroule, true);
+    webdar_css_style::update_library(*csslib);
 }

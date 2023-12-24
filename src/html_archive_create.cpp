@@ -52,6 +52,13 @@ html_archive_create::html_archive_create():
     deroule.add_section(sect_archive, "Archive Creation");
     deroule.set_active_section(0);
 
+    fs_root.set_select_mode(html_form_input_file::select_dir);
+    fs_root.set_can_create_dir(false);
+    sauv_path.set_select_mode(html_form_input_file::select_dir);
+    sauv_path.set_can_create_dir(true);
+
+	// adoption tree
+
     fs.adopt(&fs_root);
     fs.adopt(&sauv_path);
     fs.adopt(&basename);
@@ -61,13 +68,13 @@ html_archive_create::html_archive_create():
     adopt(&deroule);
     adopt(&options);
 
+    	// css stuff
+
+    webdar_css_style::normal_button(deroule, true);
+
+	// signal stuff
+
     show_options.record_actor_on_event(this, html_form_input::changed);
-
-    fs_root.set_select_mode(html_form_input_file::select_dir);
-    fs_root.set_can_create_dir(false);
-    sauv_path.set_select_mode(html_form_input_file::select_dir);
-    sauv_path.set_can_create_dir(true);
-
     on_event("");
 }
 
@@ -89,5 +96,5 @@ void html_archive_create::new_css_library_available()
     if(!csslib)
 	throw WEBDAR_BUG;
 
-    webdar_css_style::normal_button(deroule, true);
+    webdar_css_style::update_library(*csslib);
 }

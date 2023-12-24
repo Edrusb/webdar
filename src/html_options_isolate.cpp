@@ -169,6 +169,9 @@ html_options_isolate::html_options_isolate():
     crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
 
     on_event("");
+
+	// css
+    webdar_css_style::grey_button(deroule, true);
 }
 
 
@@ -292,5 +295,5 @@ void html_options_isolate::new_css_library_available()
     if(!csslib)
 	throw WEBDAR_BUG;
 
-    webdar_css_style::grey_button(deroule, true);
+    webdar_css_style::update_library(*csslib);
 }
