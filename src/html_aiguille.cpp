@@ -28,10 +28,9 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <algorithm>
 
     // webdar headers
-
 
 
     //
@@ -39,29 +38,211 @@ extern "C"
 
 using namespace std;
 
-void html_aiguille::set_mode(unsigned int m)
+void html_aiguille::clear()
 {
-    if(m < size())
-	mode = m;
-    else
+    while(order.begin() != order.end())
+	remove_section(*(order.begin()));
+    active_section = noactive;
+    selfcleaning = true;
+}
+
+signed int html_aiguille::add_section(const std::string & name, const std::string & title)
+{
+    if(find(order.begin(), order.end(), name) != order.end())
+	throw exception_range("section name already used in this html_aiguille");
+
+    order.push_back(name);
+    try
+    {
+	sections[name] = section();
+
+	try
+	{
+	    map<string, section>::iterator it = sections.find(name);
+	    if(it == sections.end())
+		throw WEBDAR_BUG;
+
+	    it->second.title = title;
+	}
+	catch(...)
+	{
+	    sections.erase(name);
+	    throw;
+	}
+    }
+    catch(...)
+    {
+	order.pop_back();
+	throw;
+    }
+
+    return sections.size() - 1;
+}
+
+void html_aiguille::adopt_in_section(const std::string & section_name, body_builder* obj)
+{
+    map<string, section>::iterator it = sections.find(section_name);
+
+    if(it == sections.end())
+	throw exception_range("unknown section named: " + section_name);
+
+    if(obj == nullptr)
 	throw WEBDAR_BUG;
+
+    it->second.adopted.push_back(obj);
+    obj_to_section[obj] = section_name;
+    adopt(obj);
+}
+
+void html_aiguille::adopt_in_section(signed int num, body_builder* obj)
+{
+    if(num >= size())
+	throw exception_range("invalid section number given to html_aiguille object");
+    adopt_in_section(order[num], obj);
+}
+
+void html_aiguille::clear_section(const std::string & section_name)
+{
+    map<string, section>::iterator it = sections.find(section_name);
+
+    selfcleaning = true;
+    try
+    {
+	if(it == sections.end())
+	    throw exception_range("unknown section to clear named: " + section_name);
+
+	list<body_builder*>::iterator objt = it->second.adopted.begin();
+	map<body_builder*, string>::iterator revt;
+
+	while(objt != it->second.adopted.end())
+	{
+	    if(*objt == nullptr)
+		throw WEBDAR_BUG;
+	    revt = obj_to_section.find(*objt);
+	    if(revt == obj_to_section.end())
+		throw WEBDAR_BUG;
+	    obj_to_section.erase(revt);
+	    foresake(*objt);
+	    *objt = nullptr;
+	    ++objt;
+	}
+
+	it->second.adopted.clear();
+    }
+    catch(...)
+    {
+	selfcleaning = false;
+	throw;
+    }
+    selfcleaning = false;
+}
+
+void html_aiguille::clear_section(signed int num)
+{
+    if(num >= size())
+	throw exception_range("invalid section number given to html_aiguille object");
+    clear_section(order[num]);
+}
+
+void html_aiguille::remove_section(const std::string & section_name)
+{
+    clear_section(section_name);
+
+    map<string, section>::iterator it = sections.find(section_name);
+
+    if(it == sections.end())
+	throw WEBDAR_BUG; /// clear_section succeeded, and we don't ???
+
+    sections.erase(it);
+
+    deque<string>::iterator ut = find(order.begin(), order.end(), section_name);
+    if(ut == order.end())
+	throw WEBDAR_BUG;
+
+    order.erase(ut);
+
+    if(active_section >= order.size())
+	active_section = noactive;
+}
+
+void html_aiguille::remove_section(signed int num)
+{
+    if(num >= size())
+	throw exception_range("invalid section number given to html_aiguille object");
+    remove_section(order[num]);
+}
+
+void html_aiguille::set_active_section(const std::string & name)
+{
+   unsigned int i = 0;
+
+   while(i < order.size() && name != order[i])
+       ++i;
+
+   if(i < order.size())
+       set_active_section(i);
+   else
+       throw exception_range("invalid section name given to html_aiguille object");
+}
+
+void html_aiguille::set_active_section(signed int num)
+{
+    if((num >= order.size() || num < 0) && num != noactive)
+	throw exception_range("invalid section number given to html_aiguille object");
+
+    active_section = num;
+}
+
+void html_aiguille::will_foresake(body_builder *obj)
+{
+    if(selfcleaning)
+	return;
+
+    map<body_builder*, string>::iterator it = obj_to_section.find(obj);
+
+    if(it == obj_to_section.end())
+	throw WEBDAR_BUG;
+
+    map<string, section>::iterator sect = sections.find(it->second);
+    if(sect == sections.end())
+	throw WEBDAR_BUG;
+
+    list<body_builder*>::iterator objt = sect->second.adopted.begin();
+    while(objt != sect->second.adopted.end() && *objt != obj)
+	++objt;
+
+    if(objt == sect->second.adopted.end())
+	throw WEBDAR_BUG;
+    sect->second.adopted.erase(objt);
+
+    obj_to_section.erase(it);
 }
 
 string html_aiguille::inherited_get_body_part(const chemin & path,
-					      const request & req)
+					       const request & req)
 {
+    string ret = "";
     chemin sub_path = path;
 
     if(sub_path.size() > 0)
 	sub_path.pop_front();
 
-    if(mode < size())
+    ack_visible();
+    if(get_visible() && active_section >= 0 && active_section < order.size())
     {
-	if((*this)[mode] == nullptr)
+	map<string, section>::iterator sect = sections.find(order[active_section]);
+	if(sect == sections.end())
 	    throw WEBDAR_BUG;
-	else
-	    return (*this)[mode]->get_body_part(sub_path, req);
+
+	list<body_builder*>::iterator objt = sect->second.adopted.begin();
+	while(objt != sect->second.adopted.end())
+	{
+	    if(*objt == nullptr)
+		throw WEBDAR_BUG;
+	    ret += (*objt)->get_body_part(sub_path, req);
+	    ++objt;
+	}
     }
-    else
-	throw WEBDAR_BUG;
+
+    return ret;
 }
