@@ -110,20 +110,35 @@ saisie::saisie():
 
 	// configuration of "choice"
     choice.add_entry("Main Page", menu_main);
+    select.add_section(menu_main, "");
     choice.add_entry("", "");
+    select.add_section("sep1", "");
     choice.add_entry("Restoration", menu_restore);
+    select.add_section(menu_restore, "");
     choice.add_entry("Comparison", menu_compare);
+    select.add_section(menu_compare, "");
     choice.add_entry("Testing", menu_test);
+    select.add_section(menu_test, "");
     choice.add_entry("Listing", menu_list);
+    select.add_section(menu_list, "");
     choice.add_entry("Creation", menu_create);
+    select.add_section(menu_create, "");
     choice.add_entry("Isolation", menu_isolate);
+    select.add_section(menu_isolate, "");
     choice.add_entry("Merging", menu_merge);
+    select.add_section(menu_merge, "");
     choice.add_entry("", "");
+    select.add_section("sep2", "");
     choice.add_entry("Configuration", menu_biblio);
+    select.add_section(menu_biblio, "");
     choice.add_entry("", "");
+    select.add_section("sep3", "");
     choice.add_entry("Other Sessions", menu_sessions);
+    select.add_section(menu_sessions, "");
     choice.add_entry("", "");
+    select.add_section("sep4", "");
     choice.add_entry("Close Session", menu_close);
+    select.add_section(menu_close, "");
     adopt(&choice);
 
 	// Configuring archive_show
@@ -155,87 +170,62 @@ saisie::saisie():
     text.add_css_class(css_class_text);
     around_licensing.adopt_static_html(text.get_body_part());
     around_licensing.adopt(&licensing);
-    div_about.adopt(&around_licensing);
-    div_about.adopt_static_html(html_text(0,"").add_paragraph().get_body_part());
+    around_licensing.adopt_static_html(html_text(0,"").add_paragraph().get_body_part());
+    select.adopt_in_section(menu_main, &around_licensing);
     about_fs.adopt(&session_name);
     about_form.adopt(&about_fs);
-    div_about.adopt(&about_form);
-    select.adopt(&div_about);
-
-	// separator
-    select.adopt(&div_sep0);
+    select.adopt_in_section(menu_main, &about_form);
 
 	// configuration of the restore sub-page
-    div_extract.adopt(&extract);
-    div_extract.adopt(&extract_fs_root_form);
+    select.adopt_in_section(menu_restore, &extract);
+    select.adopt_in_section(menu_restore, &extract_fs_root_form);
     extract_fs_root_form.adopt(&extract_fs_root_fs);
     extract_fs_root_fs.adopt(&extract_fs_root);
-    div_extract.adopt(&go_extract);
-    select.adopt(&div_extract);
+    select.adopt_in_section(menu_restore, &go_extract);
+
     extract_fs_root.set_select_mode(html_form_input_file::select_dir);
     extract_fs_root.set_can_create_dir(false);
 
 	// comparison sub-page
-    div_compare.adopt(&compare);
-    div_compare.adopt(&diff_fs_root_form);
+    select.adopt_in_section(menu_compare, &compare);
+    select.adopt_in_section(menu_compare, &diff_fs_root_form);
     diff_fs_root_form.adopt(&diff_fs_root_fs);
     diff_fs_root_fs.adopt(&diff_fs_root);
-    div_compare.adopt(&go_compare);
-    select.adopt(&div_compare);
+    select.adopt_in_section(menu_compare, &go_compare);
+
     diff_fs_root.set_select_mode(html_form_input_file::select_dir);
     diff_fs_root.set_can_create_dir(false);
 
 	// testing sub-page
-    div_test.adopt(&test);
-    div_test.adopt(&go_test);
-    select.adopt(&div_test);
+    select.adopt_in_section(menu_test, &test);
+    select.adopt_in_section(menu_test, &go_test);
 
 	// listing sub-page
-    div_list.adopt(&go_list);
-    select.adopt(&div_list);
+    select.adopt_in_section(menu_list, &go_list);
 
 	// creation sub-page
-    div_create.adopt(&create);
-    div_create.adopt(&go_create);
-    select.adopt(&div_create);
+    select.adopt_in_section(menu_create, &create);
+    select.adopt_in_section(menu_create, &go_create);
 
 	// isolation sub-page
-    div_isolate.adopt(&isolate);
-    div_isolate.adopt(&go_isolate);
-    select.adopt(&div_isolate);
+    select.adopt_in_section(menu_isolate, &isolate);
+    select.adopt_in_section(menu_isolate, &go_isolate);
 
 	// merging sub-page
-    div_merge.adopt(&merge);
-    div_merge.adopt(&go_merge);
-    select.adopt(&div_merge);
-
-	// separator
-    select.adopt(&div_sep1);
+    select.adopt_in_section(menu_merge, &merge);
+    select.adopt_in_section(menu_merge, &go_merge);
 
 	// configuration sub-page
-    select.adopt(&biblio);
-
-	// separator
-    select.adopt(&div_sep2);
+    select.adopt_in_section(menu_biblio, &biblio);
 
 	// other sessions sub_page
-    select.adopt(&div_sess);
+    select.adopt_in_section(menu_sessions, &div_sess);
 
-	// separator
-    select.adopt(&div_sep3);
-
-    text.clear();
-    text.add_text(1, "BUG: THIS separation PAGE SHOULD NEVER SHOW");
-    div_sep0.adopt_static_html(text.get_body_part());
-    div_sep1.adopt_static_html(text.get_body_part());
-    div_sep2.adopt_static_html(text.get_body_part());
-    div_sep3.adopt_static_html(text.get_body_part());
-
-	// close session sub_page
-    select.adopt(&close);
+    	// close session sub_page
+    select.adopt_in_section(menu_close, &close);
 
 	/// configuration of "select"
-    select.set_mode(0);
+    select.set_active_section(menu_main);
     right_pan.adopt(&select);
     adopt(&right_pan);
 
@@ -322,7 +312,7 @@ void saisie::on_event(const std::string & event_name)
 	    archive_show.set_visible(true);
 	else
 	    archive_show.set_visible(false);
-	select.set_mode(choice.get_current_mode());
+	select.set_active_section(choice.get_current_mode());
 
 	if(show_operation_options.get_value_as_bool())
 	{

@@ -171,8 +171,6 @@ private:
     html_form_fieldset about_fs;
     html_form about_form;
 	//
-    html_div div_sep0;
-	//
     html_div div_extract;
     html_form_fieldset extract_fs_root_fs;
     html_form_input_file extract_fs_root;
@@ -206,15 +204,9 @@ private:
     html_archive_merge merge;
     html_button go_merge;
 	//
-    html_div div_sep1;
-	//
     html_bibliotheque biblio;
 	//
-    html_div div_sep2;
-	//
     html_div div_sess;
-	//
-    html_div div_sep3;
 	//
     html_yes_no_box close;
 
