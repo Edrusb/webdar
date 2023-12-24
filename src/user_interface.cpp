@@ -639,16 +639,16 @@ void user_interface::go_merge()
 	get_parametrage().get_merging_reference().get_archive_basename(),
 	EXTENSION,
 	get_parametrage().get_merging_reference().get_read_options());
-    if(get_parametrage().get_merging_options().has_auxilliary())
+    if(get_parametrage().get_merging_options().has_auxiliary())
     {
-	arch_merge.set_archive_options_auxilliary(
-	    get_parametrage().get_merging_options().get_auxilliary().get_archive_path(),
-	    get_parametrage().get_merging_options().get_auxilliary().get_archive_basename(),
+	arch_merge.set_archive_options_auxiliary(
+	    get_parametrage().get_merging_options().get_auxiliary().get_archive_path(),
+	    get_parametrage().get_merging_options().get_auxiliary().get_archive_basename(),
 	    EXTENSION,
-	    get_parametrage().get_merging_options().get_auxilliary().get_read_options());
+	    get_parametrage().get_merging_options().get_auxiliary().get_read_options());
     }
     else
-	arch_merge.clear_archive_options_auxilliary();
+	arch_merge.clear_archive_options_auxiliary();
 
     arch_merge.set_progressive_report(get_statistics().get_libdar_statistics());
 

@@ -61,11 +61,11 @@ public:
 	/// informations available for libdar
 	///
 	/// \note if a reference is requested it implies openninng an archive
-	/// and feeding the libdar::archive_options_merge::set_auxilliary_ref(libdar::archive *)
-	/// with the object built from this->get_auxilliary()
+	/// and feeding the libdar::archive_options_merge::set_auxiliary_ref(libdar::archive *)
+	/// with the object built from this->get_auxiliary()
     libdar::archive_options_merge get_options() const;
-    bool has_auxilliary() const { return has_aux.get_value_as_bool(); };
-    const html_archive_read & get_auxilliary() const { return auxilliary; };
+    bool has_auxiliary() const { return has_aux.get_value_as_bool(); };
+    const html_archive_read & get_auxiliary() const { return auxiliary; };
 
 protected:
 
@@ -96,7 +96,7 @@ private:
     html_form_input empty;
     html_form_input has_aux;
 
-    html_archive_read auxilliary;
+    html_archive_read auxiliary;
     html_text aux_placeholder;
 
     html_form form_shown;

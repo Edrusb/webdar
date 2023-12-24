@@ -58,11 +58,11 @@ public:
 			       const std::string & basename,
 			       const std::string & extension,
 			       const libdar::archive_options_read & readopt);
-    void clear_archive_options_auxilliary() { has_aux = false; };
-    void set_archive_options_auxilliary(const std::string & refpath,
-					const std::string & basename,
-					const std::string & extension,
-					const libdar::archive_options_read & readopt);
+    void clear_archive_options_auxiliary() { has_aux = false; };
+    void set_archive_options_auxiliary(const std::string & refpath,
+				       const std::string & basename,
+				       const std::string & extension,
+				       const libdar::archive_options_read & readopt);
     void set_progressive_report(libdar::statistics *ptr) { progressive_report = ptr; };
 
 protected:

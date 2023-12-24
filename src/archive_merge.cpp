@@ -61,10 +61,10 @@ void archive_merge::set_archive_reference(const string & refpath,
     ref_opt = readopt;
 }
 
-void archive_merge::set_archive_options_auxilliary(const string & refpath,
-						   const string & basename,
-						   const string & extension,
-						   const libdar::archive_options_read & readopt)
+void archive_merge::set_archive_options_auxiliary(const string & refpath,
+						  const string & basename,
+						  const string & extension,
+						  const libdar::archive_options_read & readopt)
 {
     has_aux = true;
     aux_path = refpath;
@@ -100,7 +100,7 @@ void archive_merge::inherited_run()
 	ui->message("--- The archive of reference is now opened");
 	if(has_aux)
 	{
-	    ui->message("--- Opening the auxilliary archive of reference...");
+	    ui->message("--- Opening the auxiliary archive of reference...");
 	    aux = make_shared<libdar::archive>(ui,
 					       libdar::path(aux_path),
 					       aux_basename,
@@ -109,7 +109,7 @@ void archive_merge::inherited_run()
 	    if(!aux)
 		throw exception_memory();
 	    opt.set_auxiliary_ref(aux);
-	    ui->message("--- The auxilliary archive of reference is now opened");
+	    ui->message("--- The auxiliary archive of reference is now opened");
 	}
 	else
 	    opt.set_auxiliary_ref(nullptr);

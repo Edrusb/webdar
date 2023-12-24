@@ -55,8 +55,8 @@ html_options_merge::html_options_merge():
     hash_algo("Hashing algorithm"),
     execute("Command to execute after each slice", html_form_input::text, "", 30),
     empty("Dry run execution", html_form_input::check, "", 1),
-    has_aux("Use an auxilliary archive", html_form_input::check, "", 1),
-    auxilliary("Auxilliary archive of reference"),
+    has_aux("Use an auxiliary archive", html_form_input::check, "", 1),
+    auxiliary("Auxiliary archive of reference"),
     form_shown("Update"),
     fs_shown("What to show during the operation"),
     info_details("Detailed informations", html_form_input::check, "", 1),
@@ -169,7 +169,7 @@ html_options_merge::html_options_merge():
     deroule.adopt_in_section(sect_general, &form_archgen);
 
     aux_placeholder.add_text(2, "Auxiliary archive disabled");
-    deroule.adopt_in_section(sect_aux, &auxilliary);
+    deroule.adopt_in_section(sect_aux, &auxiliary);
     deroule.adopt_in_section(sect_aux, &aux_placeholder);
 
     fs_shown.adopt(&info_details);
@@ -228,7 +228,7 @@ string html_options_merge::inherited_get_body_part(const chemin & path,
 
 void html_options_merge::on_event(const std::string & event_name)
 {
-    auxilliary.set_visible(has_aux.get_value_as_bool());
+    auxiliary.set_visible(has_aux.get_value_as_bool());
     aux_placeholder.set_visible(! has_aux.get_value_as_bool());
 
     if(keep_compressed.get_value_as_bool())
