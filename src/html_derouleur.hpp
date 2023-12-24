@@ -75,7 +75,7 @@ public:
     void add_section(const std::string & name, const std::string & title);
 
 	/// adopt another objet in the section which name is provided
-    void adopt_in_section(const std::string & section_name, body_builder *obj);
+    void adopt_in_section(const std::string & section_name, body_builder* obj);
 
 	/// foresake all adopted objets in the given section
     void clear_section(const std::string & section_name);
