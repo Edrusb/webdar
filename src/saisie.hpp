@@ -50,6 +50,7 @@ extern "C"
 #include "html_archive_merge.hpp"
 #include "html_button.hpp"
 #include "html_bibliotheque.hpp"
+#include "html_derouleur.hpp"
 
 
     /// class saisie
@@ -57,9 +58,10 @@ extern "C"
     /// defines the web "pages" when no operation is
     /// running in the current session.
     ///- on the left a menu 'choices' that triggers 'this' to modify the middle and top area
-    ///- on the top midle an html_aiguille 'archive_show' which
-    /// contains two alternatives, nothing or the archive path
-    ///- just below and beside the menu, an html_aiguille "select" that
+    ///- on the top midle an html_derouleur (with only 1 section) 'archive_show' which
+    /// contains html components to define the archive to read
+    /// for isolation, creation, merging, repairing archive_show is hidden
+    ///- just below and beside the menu, an html_aiguille "select"
     /// shows the different fields in the context of the menu "choices"
 
 class saisie : public html_page, public actor, public events
@@ -152,7 +154,7 @@ private:
     html_div right_pan;    ///< holds all that is beside main menu
 
 	/// show archive zone (middle top)
-    html_div archive_show;   ///< global container that is either visible or not depending on "choice" value
+    html_derouleur archive_show;   ///< global container that is either visible or not depending on "choice" value
     html_archive_read archread;   ///< the archive to operate on (reading)
     html_form_input show_operation_options; ///< whether operation options are shown or not
     html_form show_archive_form_options;    ///< around show_archive_fs_options

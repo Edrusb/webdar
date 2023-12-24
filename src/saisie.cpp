@@ -98,6 +98,7 @@ saisie::saisie():
     status = st_idle;
     html_text text; // used to build static text content
 
+    webdar_css_style::normal_button(archive_show, true);
     webdar_css_style::normal_button(go_extract);
     webdar_css_style::normal_button(go_compare);
     webdar_css_style::normal_button(go_test);
@@ -126,10 +127,18 @@ saisie::saisie():
     adopt(&choice);
 
 	// Configuring archive_show
-    archive_show.adopt(&archread);
+
+    static const char* sect_archshow = "show";
+    static const char* sect_option= "opt";
+
+    archive_show.add_section(sect_archshow, "Archive to read");
+    archive_show.add_section(sect_option, "Options");
+    archive_show.set_active_section(0);
+
+    archive_show.adopt_in_section(sect_archshow, &archread);
     show_archive_form_options.adopt(&show_operation_options);
     show_archive_fs_options.adopt(&show_archive_form_options);
-    archive_show.adopt(&show_archive_fs_options);
+    archive_show.adopt_in_section(sect_option, &show_archive_fs_options);
     right_pan.adopt(&archive_show);
 
 	// configuration of the sub-pages brought by "select"
