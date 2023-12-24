@@ -122,6 +122,12 @@ protected:
 	// hiding adopt() as it is replaced by adopt_in_section()
     using body_builder::adopt;
 
+	// for inherited class to act upon new section addition
+    virtual void section_added(const std::string & name, const std::string & title) {};
+
+	// for inherited class to act upon section removal
+    virtual void section_removed(const std::string & name) {};
+
 private:
     struct section
     {

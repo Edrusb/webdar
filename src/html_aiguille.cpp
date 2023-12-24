@@ -76,6 +76,8 @@ signed int html_aiguille::add_section(const std::string & name, const std::strin
 	throw;
     }
 
+    section_added(name, title); // eventually inform inherited class if applicable
+
     return sections.size() - 1;
 }
 
@@ -163,6 +165,8 @@ void html_aiguille::remove_section(const std::string & section_name)
 
     if(active_section >= order.size())
 	active_section = noactive;
+
+    section_removed(section_name); // eventually inform inherited class
 }
 
 void html_aiguille::remove_section(signed int num)
