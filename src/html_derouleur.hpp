@@ -58,7 +58,7 @@ public:
     html_derouleur(html_derouleur && ref) noexcept = delete;
     html_derouleur & operator = (const html_derouleur & ref) = delete;
     html_derouleur & operator = (html_derouleur && ref) noexcept = delete;
-    ~html_derouleur() = default;
+    ~html_derouleur() { selfcleaning = true; };
 
 	/// clear all adopted data and remove all sections
     void clear();
