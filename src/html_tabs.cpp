@@ -91,7 +91,13 @@ void html_tabs::add_tab(const std::string & label)
 	if(it != corres.end())
 	    throw WEBDAR_BUG; // event name already exisits!?!
 	corres[event_name] = tab_num;
+	content.add_section(label, "");
+	if(content.size() == 1) // by default no section is active
+	    content.set_active_section(0);  // we activate the first tab content at its creation
 
+	unsigned int cur = content.get_active_section();
+	set_mode(content.size() - 1); // set css stuff to the new tab
+	set_mode(cur);  // keep back the same active tab
     }
     catch(...)
     {
@@ -115,16 +121,14 @@ void html_tabs::on_event(const std::string & event_name)
     set_mode(it->second);
 }
 
-void html_tabs::sub_adopt(body_builder *obj)
+void html_tabs::adopt_in_section(const string & tab_label, body_builder *obj)
 {
-    if(content.size() >= corres.size())
-	throw WEBDAR_BUG;
+    content.adopt_in_section(tab_label, obj);
+}
 
-    content.adopt(obj);
-
-    unsigned int cur = content.get_mode();
-    set_mode(content.size() - 1); // set css stuff to the new tab
-    set_mode(cur);  // keep back the same active tab
+void html_tabs::adopt_in_section(signed int num, body_builder* obj)
+{
+    content.adopt_in_section(num, obj);
 }
 
 void html_tabs::has_adopted(body_builder *obj)
@@ -256,14 +260,14 @@ void html_tabs::set_mode(unsigned int mode)
 	// setting currently active tab to non-active
     if(content.size() > 0)
     {
-	if(tabs.size() < content.get_mode())
+	if(tabs.size() < content.size())
 	    throw WEBDAR_BUG;
-	if(tabs[content.get_mode()] == nullptr)
+	if(tabs[content.get_active_section()] == nullptr)
 	    throw WEBDAR_BUG;
-	tabs[content.get_mode()]->clear_css_classes();
-	tabs[content.get_mode()]->url_clear_css_classes();
-	tabs[content.get_mode()]->add_css_class(tab_off);
-	tabs[content.get_mode()]->url_add_css_class(tab_off_url);
+	tabs[content.get_active_section()]->clear_css_classes();
+	tabs[content.get_active_section()]->url_clear_css_classes();
+	tabs[content.get_active_section()]->add_css_class(tab_off);
+	tabs[content.get_active_section()]->url_add_css_class(tab_off_url);
     }
     else
 	throw WEBDAR_BUG;
@@ -280,5 +284,5 @@ void html_tabs::set_mode(unsigned int mode)
     tabs[mode]->add_css_class(tab_on);
     tabs[mode]->url_add_css_class(tab_on_url);
 
-    content.set_mode(mode);
+    content.set_active_section(mode);
 }

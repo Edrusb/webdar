@@ -65,11 +65,12 @@ public:
 	/// inherited from actor class
     virtual void on_event(const std::string & event_name) override;
 
-	/// sub_adopt should be used in place of body_builder::adopt()
+	/// adopt_in_section replaces body_builder::adopt()
+    void adopt_in_section(const std::string & tab_label, body_builder *obj);
 
-	/// child object are not adopted directly by the html_tabs but by
-	/// its private html_aiguille field.
-    void sub_adopt(body_builder *obj);
+	/// adopt in section replaces body_builder::adopt()
+    void adopt_in_section(signed int num, body_builder* obj);
+
 
 protected:
 	/// inherited from body_builder
@@ -81,6 +82,9 @@ protected:
 
 	/// inherited from body_builder
     virtual void new_css_library_available() override;
+
+	/// hiding adopt() as it is replaced by adopt_in_section()
+    using body_builder::adopt;
 
 private:
     html_div tab_bar;
