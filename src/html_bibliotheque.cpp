@@ -71,7 +71,7 @@ html_bibliotheque::html_bibliotheque()
     for(unsigned int i = 0; i < numtabs; ++i)
     {
 	text[i].add_text(1, string("Page under construction: #") + to_string(i));
-	tabs.sub_adopt(&(text[i]));
+	tabs.adopt_in_section(i, &(text[i]));
     }
     tabs.add_css_class(css_tabs);
 }
