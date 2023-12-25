@@ -45,24 +45,14 @@ html_archive_read::html_archive_read(const string & archive_description):
     arch_path("Archive path",
 	      "",
 	      50,
-	      "Select the backup to read..."),
-    show_read_options("Show archive reading options",
-		      html_form_input::check,
-		      "",
-		      1)
+	      "Select the backup to read...")
 {
 
 	// web components layout
-    adopt(&form);
-    form.adopt(&fs);
     fs.adopt(&arch_path);
-    fs.adopt(&show_read_options);
-
+    form.adopt(&fs);
+    adopt(&form);
     adopt(&opt_read);
-
-	// events
-    show_read_options.record_actor_on_event(this, html_form_input::changed);
-    on_event(html_form_input::changed); // set the object in a coherent status
 
 	// initial values
     arch_path.set_value("/");
@@ -101,12 +91,4 @@ string html_archive_read::get_archive_basename() const
 	ret = arch_path.get_value();
 
     return ret;
-}
-
-void html_archive_read::on_event(const std::string & event_name)
-{
-    if(event_name != html_form_input::changed)
-	throw WEBDAR_BUG;
-
-    opt_read.set_visible(show_read_options.get_value_as_bool());
 }

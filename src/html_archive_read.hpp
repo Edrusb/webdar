@@ -40,13 +40,12 @@ extern "C"
 #include "html_form_input_file.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_options_read.hpp"
-#include "events.hpp"
 
     /// class html_archive_read let user define the archive path, basename and option to read
 
     /// it is mainly used in class saisie
 
-class html_archive_read: public body_builder, public actor
+class html_archive_read: public body_builder
 {
 public:
     html_archive_read(const std::string & archive_description);
@@ -55,9 +54,6 @@ public:
     html_archive_read & operator = (const html_archive_read & ref) = delete;
     html_archive_read & operator = (html_archive_read && ref) noexcept = delete;
     ~html_archive_read() = default;
-
-	/// inherited from actor
-    virtual void on_event(const std::string & event_name) override;
 
 	// available fields for libdar
 
@@ -77,7 +73,6 @@ private:
     html_form form;
     html_form_fieldset fs;
     html_form_input_file arch_path;
-    html_form_input show_read_options;
     html_options_read opt_read;
 };
 
