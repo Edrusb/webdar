@@ -43,7 +43,7 @@ html_archive_read::html_archive_read(const string & archive_description):
     form("Update"),
     fs(archive_description),
     arch_path("Archive path",
-	      "",
+	      "/",
 	      50,
 	      "Select the backup to read...")
 {
@@ -55,7 +55,6 @@ html_archive_read::html_archive_read(const string & archive_description):
     adopt(&opt_read);
 
 	// initial values
-    arch_path.set_value("/");
     arch_path.set_select_mode(html_form_input_file::select_slice);
 }
 
