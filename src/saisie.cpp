@@ -151,9 +151,9 @@ saisie::saisie():
     archive_show.set_active_section(0);
 
     archive_show.adopt_in_section(sect_archshow, &archread);
-    show_archive_form_options.adopt(&show_operation_options);
-    show_archive_fs_options.adopt(&show_archive_form_options);
-    archive_show.adopt_in_section(sect_option, &show_archive_fs_options);
+    show_archive_fs_options.adopt(&show_operation_options);
+    show_archive_form_options.adopt(&show_archive_fs_options);
+    archive_show.adopt_in_section(sect_option, &show_archive_form_options);
     right_pan.adopt(&archive_show);
 
 	// configuration of the sub-pages brought by "select"
@@ -177,20 +177,20 @@ saisie::saisie():
     select.adopt_in_section(menu_main, &about_form);
 
 	// configuration of the restore sub-page
-    select.adopt_in_section(menu_restore, &extract);
-    select.adopt_in_section(menu_restore, &extract_fs_root_form);
-    extract_fs_root_form.adopt(&extract_fs_root_fs);
     extract_fs_root_fs.adopt(&extract_fs_root);
+    extract_fs_root_form.adopt(&extract_fs_root_fs);
+    select.adopt_in_section(menu_restore, &extract_fs_root_form);
+    select.adopt_in_section(menu_restore, &extract);
     select.adopt_in_section(menu_restore, &go_extract);
 
     extract_fs_root.set_select_mode(html_form_input_file::select_dir);
     extract_fs_root.set_can_create_dir(false);
 
 	// comparison sub-page
-    select.adopt_in_section(menu_compare, &compare);
-    select.adopt_in_section(menu_compare, &diff_fs_root_form);
-    diff_fs_root_form.adopt(&diff_fs_root_fs);
     diff_fs_root_fs.adopt(&diff_fs_root);
+    diff_fs_root_form.adopt(&diff_fs_root_fs);
+    select.adopt_in_section(menu_compare, &diff_fs_root_form);
+    select.adopt_in_section(menu_compare, &compare);
     select.adopt_in_section(menu_compare, &go_compare);
 
     diff_fs_root.set_select_mode(html_form_input_file::select_dir);
@@ -219,7 +219,7 @@ saisie::saisie():
     select.adopt_in_section(menu_biblio, &biblio);
 
 	// other sessions sub_page
-    select.adopt_in_section(menu_sessions, &div_sess);
+	// nothing to add "saisie" is not involved in that context
 
     	// close session sub_page
     select.adopt_in_section(menu_close, &close);

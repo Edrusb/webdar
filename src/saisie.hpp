@@ -58,11 +58,27 @@ extern "C"
     /// defines the web "pages" when no operation is
     /// running in the current session.
     ///- on the left a menu 'choices' that triggers 'this' to modify the middle and top area
-    ///- on the top midle an html_derouleur (with only 1 section) 'archive_show' which
-    /// contains html components to define the archive to read
+    ///- on the right a html_div right_pan contains two main components, archive_show on top
+    ///  and select on the bottom
+    ///- 'archive_show' let the user define the archive to read
     /// for isolation, creation, merging, repairing archive_show is hidden
     ///- just below and beside the menu, an html_aiguille "select"
-    /// shows the different fields in the context of the menu "choices"
+    /// shows the different "pages" for parameters and options depending on the selection
+    /// action
+    ///  +---------+---------------------+
+    ///  | choices | right_pan           |
+    ///  | (menu)  |+-------------------+|
+    ///  |         ||archive_show       ||
+    ///  |         ||(for read actions) ||
+    ///  |         |+-------------------+|
+    ///  |         |+-------------------+|
+    ///  |         ||select             ||
+    ///  |         ||(a page for each   ||
+    ///  |         || action)           ||
+    ///  |         ||                   ||
+    ///  |         |+-------------------+|
+    ///  +---------+---------------------+
+    ///
 
 class saisie : public html_page, public actor, public events
 {
@@ -160,7 +176,7 @@ private:
     html_form show_archive_form_options;    ///< around show_archive_fs_options
     html_form_fieldset show_archive_fs_options; //< around show_operations_options
 
-	/// right_pan zone
+	// select zone
     html_aiguille select;         ///< middle center zone, containing the different pages according to "choice" value
 
 	// the different sub pages contained by "select" and shown depending on choice's value
@@ -171,42 +187,33 @@ private:
     html_form_fieldset about_fs;
     html_form about_form;
 	//
-    html_div div_extract;
     html_form_fieldset extract_fs_root_fs;
     html_form_input_file extract_fs_root;
     html_form extract_fs_root_form;
     html_options_extract extract;
     html_button go_extract;
 	//
-    html_div div_compare;
     html_form_fieldset diff_fs_root_fs;
     html_form_input_file diff_fs_root;
     html_form diff_fs_root_form;
     html_options_compare compare;
     html_button go_compare;
 	//
-    html_div div_test;
     html_options_test test;
     html_button go_test;
 	//
-    html_div div_list;
     html_button go_list;
 	//
-    html_div div_create;
     html_archive_create create;
     html_button go_create;
 	//
-    html_div div_isolate;
     html_archive_isolate isolate;
     html_button go_isolate;
 	//
-    html_div div_merge;
     html_archive_merge merge;
     html_button go_merge;
 	//
     html_bibliotheque biblio;
-	//
-    html_div div_sess;
 	//
     html_yes_no_box close;
 
