@@ -166,9 +166,14 @@ saisie::saisie():
     select.adopt_in_section(menu_main, &about_form);
 
 	// configuration of the restore sub-page
+    static const char* sect_extract_params = "eparams";
+    extract_params.add_section(sect_extract_params, "Restoration parameters");
+    extract_params.set_active_section(sect_extract_params);
+
     extract_fs_root_fs.adopt(&extract_fs_root);
     extract_fs_root_form.adopt(&extract_fs_root_fs);
-    select.adopt_in_section(menu_restore, &extract_fs_root_form);
+    extract_params.adopt_in_section(sect_extract_params, &extract_fs_root_form);
+    select.adopt_in_section(menu_restore, &extract_params);
     select.adopt_in_section(menu_restore, &extract);
     select.adopt_in_section(menu_restore, &go_extract);
 
@@ -176,9 +181,14 @@ saisie::saisie():
     extract_fs_root.set_can_create_dir(false);
 
 	// comparison sub-page
+    static const char* sect_diff_params = "dparams";
+    diff_params.add_section(sect_diff_params, "Comparison parameters");
+    diff_params.set_active_section(sect_diff_params);
+
     diff_fs_root_fs.adopt(&diff_fs_root);
     diff_fs_root_form.adopt(&diff_fs_root_fs);
-    select.adopt_in_section(menu_compare, &diff_fs_root_form);
+    diff_params.adopt_in_section(sect_diff_params, &diff_fs_root_form);
+    select.adopt_in_section(menu_compare, &diff_params);
     select.adopt_in_section(menu_compare, &compare);
     select.adopt_in_section(menu_compare, &go_compare);
 
@@ -245,6 +255,10 @@ saisie::saisie():
     register_name(event_isolate);
     register_name(event_merge);
     register_name(changed_session_name);
+
+	// css
+    webdar_css_style::normal_button(extract_params, true);
+    webdar_css_style::normal_button(diff_params, true);
 }
 
 string saisie::inherited_get_body_part(const chemin & path,

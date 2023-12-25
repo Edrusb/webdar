@@ -184,12 +184,14 @@ private:
     html_form_fieldset about_fs;
     html_form about_form;
 	//
+    html_derouleur extract_params;
     html_form_fieldset extract_fs_root_fs;
     html_form_input_file extract_fs_root;
     html_form extract_fs_root_form;
     html_options_extract extract;
     html_button go_extract;
 	//
+    html_derouleur diff_params;
     html_form_fieldset diff_fs_root_fs;
     html_form_input_file diff_fs_root;
     html_form diff_fs_root_form;
