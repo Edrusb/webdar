@@ -36,11 +36,10 @@ extern "C"
 #include "html_form_input_file.hpp"
 #include "html_options_isolate.hpp"
 #include "body_builder.hpp"
-#include "events.hpp"
 #include "html_archive_read.hpp"
 #include "html_derouleur.hpp"
 
-class html_archive_isolate: public body_builder, public actor
+class html_archive_isolate: public body_builder
 {
 public:
     html_archive_isolate();
@@ -49,9 +48,6 @@ public:
     html_archive_isolate & operator = (const html_archive_isolate & ref) = delete;
     html_archive_isolate & operator = (html_archive_isolate && ref) noexcept = delete;
     ~html_archive_isolate() = default;
-
-	/// inherited from actor
-    virtual void on_event(const std::string & event_name) override;
 
     const std::string & get_archive_path() const { return sauv_path.get_value(); };
     const std::string & get_archive_basename() const { return basename.get_value(); };
@@ -73,7 +69,6 @@ private:
     html_form_input_file sauv_path;
     html_form_input basename;
     html_archive_read ref;
-    html_form_input show_options;
     html_options_isolate options;
 };
 

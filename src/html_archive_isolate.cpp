@@ -44,8 +44,7 @@ html_archive_isolate::html_archive_isolate():
     fs("Isolated catalog to create"),
     sauv_path("Where to create the archive", "/", 20, "Select the directory where to create the archive..."),
     basename("Archive basename", html_form_input::text, "", 10),
-    ref("Source archive"),
-    show_options("Show isolation options", html_form_input::check, "", 1)
+    ref("Source archive")
 {
     static const char* sect_archive = "archive";
     static const char* sect_ref = "reference";
@@ -55,17 +54,14 @@ html_archive_isolate::html_archive_isolate():
 
     fs.adopt(&sauv_path);
     fs.adopt(&basename);
-    fs.adopt(&show_options);
     form.adopt(&fs);
     deroule.adopt_in_section(sect_archive, &form);
     deroule.adopt_in_section(sect_ref, &ref);
     adopt(&deroule);
     adopt(&options);
 
-    show_options.record_actor_on_event(this, html_form_input::changed);
-    on_event("");
-
 	// css
+
     webdar_css_style::normal_button(deroule, true);
 }
 
@@ -73,12 +69,6 @@ string html_archive_isolate::inherited_get_body_part(const chemin & path,
 						     const request & req)
 {
     return get_body_part_from_all_children(path, req);
-}
-
-
-void html_archive_isolate::on_event(const std::string & event_name)
-{
-    options.set_visible(show_options.get_value_as_bool());
 }
 
 void html_archive_isolate::new_css_library_available()
