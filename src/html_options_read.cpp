@@ -54,14 +54,15 @@ html_options_read::html_options_read():
     sequential_read("Sequential read", html_form_input::check, "", 1),
     ref_use_external_catalogue("Use external catalog to open the archive", html_form_input::check, "", 1),
     form_ref("Update Options"),
-    ref_path("Path", html_form_input::text, "", 30),
-    ref_basename("Archive basename", html_form_input::text, "", 30),
+    ref_path("External catalog path", "/", 50, "Select the external catalog..."),
     ref_crypto_algo("Cipher"),
     ref_crypto_pass("Passphrase", html_form_input::password, "", 30),
     ref_crypto_size("Cipher block size", html_form_input::number, "0", 8),
     ref_execute("Command to execute locally before reading each slice", html_form_input::text, "", 30),
     ref_slice_min_digits("Slice minimum digit", html_form_input::number, "0", 8)
 {
+    ref_path.set_select_mode(html_form_input_file::select_slice);
+    ref_path.set_can_create_dir(false);
 
 	// set default values from libdar
 
@@ -77,10 +78,7 @@ html_options_read::html_options_read():
     sequential_read.set_value_as_bool(defaults.get_sequential_read());
     ref_use_external_catalogue.set_value_as_bool(defaults.is_external_catalogue_set());
     if(ref_use_external_catalogue.get_value_as_bool())
-    {
 	ref_path.set_value(defaults.get_ref_path().display());
-	ref_basename.set_value(defaults.get_ref_basename());
-    }
     ref_crypto_algo.set_value(defaults.get_ref_crypto_algo());
     ref_crypto_pass.set_value("");
     ref_crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_ref_crypto_size()));
@@ -106,7 +104,6 @@ html_options_read::html_options_read():
 
     fs_ref.adopt(&ref_use_external_catalogue);
     fs_ref.adopt(&ref_path);
-    fs_ref.adopt(&ref_basename);
     fs_ref.adopt(&ref_crypto_algo);
     fs_ref.adopt(&ref_crypto_pass);
     fs_ref.adopt(&ref_crypto_size);
@@ -152,7 +149,18 @@ const libdar::archive_options_read & html_options_read::get_options() const
     me->opts.set_sequential_read(sequential_read.get_value_as_bool());
     if(ref_use_external_catalogue.get_value_as_bool())
     {
-	me->opts.set_external_catalogue(ref_path.get_value(), ref_basename.get_value());
+	chemin chem(ref_path.get_value());
+
+	if(chem.size() > 1)
+	{
+	    string basename = chem.back();
+	    chem.pop_back();
+
+	    me->opts.set_external_catalogue(chem.display(), basename);
+	}
+	else
+	    me->opts.set_external_catalogue(string(""), chem.display());
+
 	me->opts.set_ref_crypto_algo(ref_crypto_algo.get_value());
 	if(ref_crypto_algo.get_value() != libdar::crypto_algo::none)
 	{
@@ -195,7 +203,6 @@ void html_options_read::on_event(const std::string & event_name)
     if(ref_use_external_catalogue.get_value_as_bool())
     {
 	ref_path.set_visible(true);
-	ref_basename.set_visible(true);
 	ref_crypto_algo.set_visible(true);
 	ref_execute.set_visible(true);
 	ref_slice_min_digits.set_visible(true);
@@ -203,7 +210,6 @@ void html_options_read::on_event(const std::string & event_name)
     else
     {
 	ref_path.set_visible(false);
-	ref_basename.set_visible(false);
 	ref_crypto_algo.set_visible(false);
 	ref_execute.set_visible(false);
 	ref_slice_min_digits.set_visible(false);

@@ -40,6 +40,7 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_form_select.hpp"
 #include "html_form_input.hpp"
+#include "html_form_input_file.hpp"
 #include "html_crypto_algo.hpp"
 #include "events.hpp"
 #include "html_derouleur.hpp"
@@ -87,8 +88,7 @@ private:
 
     html_form_input ref_use_external_catalogue;
     html_form form_ref;
-    html_form_input ref_path;
-    html_form_input ref_basename;
+    html_form_input_file ref_path;
     html_crypto_algo ref_crypto_algo;
     html_form_input ref_crypto_pass;
     html_form_input ref_crypto_size;
