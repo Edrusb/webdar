@@ -172,9 +172,6 @@ private:
 	/// show archive zone (middle top)
     html_derouleur archive_show;   ///< global container that is either visible or not depending on "choice" value
     html_archive_read archread;   ///< the archive to operate on (reading)
-    html_form_input show_operation_options; ///< whether operation options are shown or not
-    html_form show_archive_form_options;    ///< around show_archive_fs_options
-    html_form_fieldset show_archive_fs_options; //< around show_operations_options
 
 	// select zone
     html_aiguille select;         ///< middle center zone, containing the different pages according to "choice" value

@@ -67,12 +67,6 @@ const string saisie::menu_close = "close";
 
 saisie::saisie():
     archread("Source archive"),
-    show_operation_options("Show operation options",
-			   html_form_input::check,
-			   "",
-			   1),
-    show_archive_form_options("Update"),
-    show_archive_fs_options("Options details"),
     licensing((chemin(STATIC_PATH_ID) + chemin(STATIC_OBJ_LICENSING)).display(false), "Webdar is released under the GNU Public License v3"),
     session_name("Session name",
 		 html_form_input::text,
@@ -144,16 +138,11 @@ saisie::saisie():
 	// Configuring archive_show
 
     static const char* sect_archshow = "show";
-    static const char* sect_option= "opt";
 
     archive_show.add_section(sect_archshow, "Archive to read");
-    archive_show.add_section(sect_option, "Options");
     archive_show.set_active_section(0);
 
     archive_show.adopt_in_section(sect_archshow, &archread);
-    show_archive_fs_options.adopt(&show_operation_options);
-    show_archive_form_options.adopt(&show_archive_fs_options);
-    archive_show.adopt_in_section(sect_option, &show_archive_form_options);
     right_pan.adopt(&archive_show);
 
 	// configuration of the sub-pages brought by "select"
@@ -234,8 +223,6 @@ saisie::saisie():
 
 	// attaching the "changed" event of the menu "choice" to "this" saisie object
     choice.record_actor_on_event(this);
-	// attaching the "changed" event of the show_operation_options checkbox to "this"
-    show_operation_options.record_actor_on_event(this, html_form_input::changed);
     on_event(""); // manually triggering the event for the initial setup
 
     go_extract.record_actor_on_event(this, event_restore);
@@ -313,19 +300,6 @@ void saisie::on_event(const std::string & event_name)
 	else
 	    archive_show.set_visible(false);
 	select.set_active_section(choice.get_current_mode());
-
-	if(show_operation_options.get_value_as_bool())
-	{
-	    extract.set_visible(true);
-	    compare.set_visible(true);
-	    test.set_visible(true);
-	}
-	else
-	{
-	    extract.set_visible(false);
-	    compare.set_visible(false);
-	    test.set_visible(false);
-	}
     }
     else if(event_name == event_restore
 	    || event_name == event_compare
