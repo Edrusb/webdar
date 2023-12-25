@@ -42,10 +42,15 @@ using namespace std;
 html_archive_isolate::html_archive_isolate():
     form("Update"),
     fs("Isolated catalog to create"),
-    sauv_path("Where to create the archive", "/", 20, "Select the directory where to create the archive..."),
+    sauv_path("Where to create the isolated catalogue", "/", 20, "Select the directory where to create the isolated catalog..."),
     basename("Archive basename", html_form_input::text, "", 10),
     ref("Source archive")
 {
+    sauv_path.set_can_create_dir(true);
+    sauv_path.set_select_mode(html_form_input_file::select_dir);
+
+	// adoption tree
+
     static const char* sect_archive = "archive";
     static const char* sect_ref = "reference";
     deroule.add_section(sect_archive, "Archive Isolation");
