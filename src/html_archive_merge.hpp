@@ -38,10 +38,9 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_options_merge.hpp"
 #include "body_builder.hpp"
-#include "events.hpp"
 #include "html_derouleur.hpp"
 
-class html_archive_merge: public body_builder, public actor
+class html_archive_merge: public body_builder
 {
 public:
     html_archive_merge();
@@ -50,10 +49,6 @@ public:
     html_archive_merge & operator = (const html_archive_merge & ref) = delete;
     html_archive_merge & operator = (html_archive_merge && ref) noexcept = delete;
     ~html_archive_merge() = default;
-
-
-	/// inherited from actor
-    virtual void on_event(const std::string & event_name) override;
 
     const std::string & get_archive_path() const { return sauv_path.get_value(); };
     const std::string & get_archive_basename() const { return basename.get_value(); };
@@ -74,7 +69,6 @@ private:
     html_form_fieldset fs;
     html_form_input_file sauv_path;
     html_form_input basename;
-    html_form_input show_options;
     html_archive_read reference;
     html_options_merge options;
 

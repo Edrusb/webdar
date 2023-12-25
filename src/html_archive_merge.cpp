@@ -44,7 +44,6 @@ html_archive_merge::html_archive_merge():
     fs("Resulting archive"),
     sauv_path("Where to create the archive", "/", 20, "Select directory where to create the archive..."),
     basename("Archive basename", html_form_input::text, "", 10),
-    show_options("Show merging options", html_form_input::check, "", 1),
     reference("Archive of reference")
 {
     static const char* sect_archive = "archive";
@@ -58,17 +57,11 @@ html_archive_merge::html_archive_merge():
 
     fs.adopt(&sauv_path);
     fs.adopt(&basename);
-    fs.adopt(&show_options);
     form.adopt(&fs);
     deroule.adopt_in_section(sect_archive, &form);
     deroule.adopt_in_section(sect_ref, &reference);
     adopt(&deroule);
     adopt(&options);
-
-	// events
-
-    show_options.record_actor_on_event(this, html_form_input::changed);
-    on_event("");
 
 	// CSS
 
@@ -79,12 +72,6 @@ string html_archive_merge::inherited_get_body_part(const chemin & path,
 						   const request & req)
 {
     return get_body_part_from_all_children(path, req);
-}
-
-
-void html_archive_merge::on_event(const std::string & event_name)
-{
-    options.set_visible(show_options.get_value_as_bool());
 }
 
 void html_archive_merge::new_css_library_available()
