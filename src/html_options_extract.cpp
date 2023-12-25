@@ -120,7 +120,6 @@ html_options_extract::html_options_extract():
 
     static const char* sect_opt = "options";
     deroule.add_section(sect_opt, "Restoration options");
-    deroule.set_active_section(sect_opt);
 
     fs.adopt(&warn_over);
     fs.adopt(&info_details);

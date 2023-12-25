@@ -82,7 +82,6 @@ html_options_compare::html_options_compare():
 
     static const char* sect_opt = "options";
     deroule.add_section(sect_opt, "Comparison options");
-    deroule.set_active_section(sect_opt);
 
     fs.adopt(&info_details);
     fs.adopt(&what_to_check);
