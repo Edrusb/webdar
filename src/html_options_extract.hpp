@@ -39,6 +39,7 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_form.hpp"
 #include "html_form_fieldset.hpp"
+#include "html_derouleur.hpp"
 
 class html_options_extract : public body_builder
 {
@@ -54,10 +55,15 @@ public:
 
 protected:
 
-	/// inherited from body_builder
+	// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
+
+	// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 private:
+    html_derouleur deroule;
     html_form form;
     html_form_fieldset fs;
 	// selection (filter)

@@ -31,7 +31,7 @@ extern "C"
 
 
     // webdar headers
-
+#include "webdar_css_style.hpp"
 
 
     //
@@ -81,6 +81,8 @@ html_options_extract::html_options_extract():
 		   "",
 		   0)
 {
+	// set html fields to default value used by libdar
+
     libdar::archive_options_extract defaults;
 
     warn_over.set_value_as_bool(defaults.get_warn_over());
@@ -114,6 +116,12 @@ html_options_extract::html_options_extract():
     only_deleted.set_value_as_bool(defaults.get_only_deleted());
     ignore_deleted.set_value_as_bool(defaults.get_ignore_deleted());
 
+	// build the adoption tree
+
+    static const char* sect_opt = "options";
+    deroule.add_section(sect_opt, "Restoration options");
+    deroule.set_active_section(sect_opt);
+
     fs.adopt(&warn_over);
     fs.adopt(&info_details);
     fs.adopt(&flat);
@@ -126,7 +134,12 @@ html_options_extract::html_options_extract():
     fs.adopt(&only_deleted);
     fs.adopt(&ignore_deleted);
     form.adopt(&fs);
-    adopt(&form);
+    deroule.adopt_in_section(sect_opt, &form);
+    adopt(&deroule);
+
+	// css
+
+    webdar_css_style::grey_button(deroule, true);
 }
 
 libdar::archive_options_extract html_options_extract::get_options() const
@@ -170,3 +183,12 @@ std::string html_options_extract::inherited_get_body_part(const chemin & path,
     return get_body_part_from_all_children(path, req);
 }
 
+
+void html_options_extract::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
+}
