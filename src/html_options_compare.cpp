@@ -28,7 +28,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include "webdar_css_style.hpp"
 
     // webdar headers
 #include "webdar_tools.hpp"
@@ -78,7 +78,11 @@ html_options_compare::html_options_compare():
     hourshift.set_value(webdar_tools_convert_to_string(defaults.get_hourshift()));
     compare_symlink_date.set_value_as_bool(defaults.get_compare_symlink_date());
 
-	/// building HTML dependancies
+	// building adoption tree
+
+    static const char* sect_opt = "options";
+    deroule.add_section(sect_opt, "Comparison options");
+    deroule.set_active_section(sect_opt);
 
     fs.adopt(&info_details);
     fs.adopt(&what_to_check);
@@ -88,7 +92,12 @@ html_options_compare::html_options_compare():
     fs.adopt(&hourshift);
     fs.adopt(&compare_symlink_date);
     form.adopt(&fs);
-    adopt(&form);
+    deroule.adopt_in_section(sect_opt, &form);
+    adopt(&deroule);
+
+	// css
+
+    webdar_css_style::grey_button(deroule, true);
 }
 
 libdar::archive_options_diff html_options_compare::get_options() const
@@ -113,3 +122,11 @@ string html_options_compare::inherited_get_body_part(const chemin & path,
     return get_body_part_from_all_children(path, req);
 }
 
+void html_options_compare::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
+}
