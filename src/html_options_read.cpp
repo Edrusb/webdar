@@ -62,9 +62,11 @@ html_options_read::html_options_read():
     ref_execute("Command to execute locally before reading each slice", html_form_input::text, "", 30),
     ref_slice_min_digits("Slice minimum digit", html_form_input::number, "0", 8)
 {
+
+	// set default values from libdar
+
     libdar::archive_options_read defaults;
 
-	// set default values
     src_crypto_algo.set_value(defaults.get_crypto_algo());
     src_crypto_pass.set_value("");
     src_crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
