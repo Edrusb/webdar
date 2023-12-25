@@ -31,7 +31,7 @@ extern "C"
 
 
     // webdar headers
-
+#include "webdar_css_style.hpp"
 
 
     //
@@ -58,17 +58,26 @@ html_options_test::html_options_test():
     libdar::archive_options_test defaults;
 
 	// default values
+
     info_details.set_value_as_bool(defaults.get_display_treated());
     empty.set_value_as_bool(defaults.get_empty());
     display_skipped.set_value_as_bool(defaults.get_display_skipped());
 
 	// building HTML structure
 
+    static const char* sect_opt = "options";
+    deroule.add_section(sect_opt, "Testing options");
+
     fs.adopt(&info_details);
     fs.adopt(&empty);
     fs.adopt(&display_skipped);
     form.adopt(&fs);
-    adopt(&form);
+    deroule.adopt_in_section(sect_opt, &form);
+    adopt(&deroule);
+
+	// css
+
+    webdar_css_style::grey_button(deroule, true);
 }
 
 libdar::archive_options_test html_options_test::get_options() const
@@ -86,4 +95,13 @@ string html_options_test::inherited_get_body_part(const chemin & path,
 						  const request & req)
 {
     return get_body_part_from_all_children(path, req);
+}
+
+void html_options_test::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
 }
