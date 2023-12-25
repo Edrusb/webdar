@@ -44,8 +44,7 @@ html_archive_create::html_archive_create():
     fs("Archive to create"),
     fs_root("Directory to take as root for the backup", "/", 20, "Select root directory to backup..."),
     sauv_path("Where to create the archive", "/", 20, "Select path where to create the backup..."),
-    basename("Archive basename", html_form_input::text, "", 10),
-    show_options("Show creation options", html_form_input::check, "", 1)
+    basename("Archive basename", html_form_input::text, "", 10)
 {
     static const char* sect_archive = "archive";
 
@@ -62,7 +61,6 @@ html_archive_create::html_archive_create():
     fs.adopt(&fs_root);
     fs.adopt(&sauv_path);
     fs.adopt(&basename);
-    fs.adopt(&show_options);
     form.adopt(&fs);
     deroule.adopt_in_section(sect_archive, &form);
     adopt(&deroule);
@@ -71,11 +69,6 @@ html_archive_create::html_archive_create():
     	// css stuff
 
     webdar_css_style::normal_button(deroule, true);
-
-	// signal stuff
-
-    show_options.record_actor_on_event(this, html_form_input::changed);
-    on_event("");
 }
 
 string html_archive_create::inherited_get_body_part(const chemin & path,
@@ -83,12 +76,6 @@ string html_archive_create::inherited_get_body_part(const chemin & path,
 {
     return get_body_part_from_all_children(path, req);
 }
-
-void html_archive_create::on_event(const std::string & event_name)
-{
-    options.set_visible(show_options.get_value_as_bool());
-}
-
 
 void html_archive_create::new_css_library_available()
 {
