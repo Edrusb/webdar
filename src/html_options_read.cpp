@@ -32,6 +32,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_tools.hpp"
+#include "webdar_css_style.hpp"
 
 
     //
@@ -51,7 +52,7 @@ html_options_read::html_options_read():
     info_details("Detailed information", html_form_input::check, "", 1),
     lax("Laxist check mode", html_form_input::check, "", 1),
     sequential_read("Sequential read", html_form_input::check, "", 1),
-    src_use_external_catalogue("Use external catalog to open the archive", html_form_input::check, "", 1),
+    ref_use_external_catalogue("Use external catalog to open the archive", html_form_input::check, "", 1),
     form_ref("Update Options"),
     ref_path("Path", html_form_input::text, "", 30),
     ref_basename("Archive basename", html_form_input::text, "", 30),
@@ -72,8 +73,8 @@ html_options_read::html_options_read():
     info_details.set_value_as_bool(defaults.get_info_details());
     lax.set_value_as_bool(defaults.get_lax());
     sequential_read.set_value_as_bool(defaults.get_sequential_read());
-    src_use_external_catalogue.set_value_as_bool(defaults.is_external_catalogue_set());
-    if(src_use_external_catalogue.get_value_as_bool())
+    ref_use_external_catalogue.set_value_as_bool(defaults.is_external_catalogue_set());
+    if(ref_use_external_catalogue.get_value_as_bool())
     {
 	ref_path.set_value(defaults.get_ref_path().display());
 	ref_basename.set_value(defaults.get_ref_basename());
@@ -84,7 +85,12 @@ html_options_read::html_options_read():
     ref_execute.set_value(defaults.get_ref_execute());
     ref_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_ref_slice_min_digits()));
 
-	// constructing the view
+	// build the adoption tree
+    static const char* sect_opt = "options";
+    static const char* sect_extcat = "externalcat";
+    deroule.add_section(sect_opt, "Reading options");
+    deroule.add_section(sect_extcat, "External Catalog");
+
     fs_src.adopt(&src_crypto_algo);
     fs_src.adopt(&src_crypto_pass);
     fs_src.adopt(&src_crypto_size);
@@ -93,9 +99,10 @@ html_options_read::html_options_read():
     fs_src.adopt(&info_details);
     fs_src.adopt(&lax);
     fs_src.adopt(&sequential_read);
-    fs_src.adopt(&src_use_external_catalogue);
     form_src.adopt(&fs_src);
+    deroule.adopt_in_section(sect_opt, &form_src);
 
+    fs_ref.adopt(&ref_use_external_catalogue);
     fs_ref.adopt(&ref_path);
     fs_ref.adopt(&ref_basename);
     fs_ref.adopt(&ref_crypto_algo);
@@ -104,19 +111,22 @@ html_options_read::html_options_read():
     fs_ref.adopt(&ref_execute);
     fs_ref.adopt(&ref_slice_min_digits);
     form_ref.adopt(&fs_ref);
+    deroule.adopt_in_section(sect_extcat, &form_ref);
 
-    div.adopt(&form_src);
-    div.adopt(&form_ref);
-
-    adopt(&div);
+    adopt(&deroule);
 
 	// binding the events
+
     src_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
-    src_use_external_catalogue.record_actor_on_event(this, html_form_input::changed);
+    ref_use_external_catalogue.record_actor_on_event(this, html_form_input::changed);
     ref_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
 
 	// manually launching on event to have coherent visibility between fields
     on_event(html_crypto_algo::changed);
+
+	// css
+
+    webdar_css_style::grey_button(deroule, true);
 }
 
 const libdar::archive_options_read & html_options_read::get_options() const
@@ -138,7 +148,7 @@ const libdar::archive_options_read & html_options_read::get_options() const
     me->opts.set_info_details(info_details.get_value_as_bool());
     me->opts.set_lax(lax.get_value_as_bool());
     me->opts.set_sequential_read(sequential_read.get_value_as_bool());
-    if(src_use_external_catalogue.get_value_as_bool())
+    if(ref_use_external_catalogue.get_value_as_bool())
     {
 	me->opts.set_external_catalogue(ref_path.get_value(), ref_basename.get_value());
 	me->opts.set_ref_crypto_algo(ref_crypto_algo.get_value());
@@ -180,10 +190,25 @@ void html_options_read::on_event(const std::string & event_name)
 	ref_crypto_size.set_visible(true);
     }
 
-    if(src_use_external_catalogue.get_value_as_bool())
-	form_ref.set_visible(true);
+    if(ref_use_external_catalogue.get_value_as_bool())
+    {
+	ref_path.set_visible(true);
+	ref_basename.set_visible(true);
+	ref_crypto_algo.set_visible(true);
+	ref_execute.set_visible(true);
+	ref_slice_min_digits.set_visible(true);
+    }
     else
-	form_ref.set_visible(false);
+    {
+	ref_path.set_visible(false);
+	ref_basename.set_visible(false);
+	ref_crypto_algo.set_visible(false);
+	ref_execute.set_visible(false);
+	ref_slice_min_digits.set_visible(false);
+	ref_crypto_pass.set_visible(false);
+	ref_crypto_size.set_visible(false);
+
+    }
 }
 
 string html_options_read::inherited_get_body_part(const chemin & path,
@@ -200,4 +225,14 @@ string html_options_read::inherited_get_body_part(const chemin & path,
     ack_visible();
 
     return ret;
+}
+
+
+void html_options_read::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
 }

@@ -42,6 +42,8 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_crypto_algo.hpp"
 #include "events.hpp"
+#include "html_derouleur.hpp"
+#include "html_text.hpp"
 
 class html_options_read : public body_builder, public actor
 {
@@ -60,13 +62,15 @@ public:
 
 protected:
 
-	/// inherited from body_builder
+	// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	// inheroted from body_builder
+    virtual void new_css_library_available() override;
+
 private:
-	// construction fields
-    html_div div;
+    html_derouleur deroule;
     html_form form_src;
     html_form_fieldset fs_src;
     html_form_fieldset fs_ref;
@@ -80,7 +84,8 @@ private:
     html_form_input lax;
     html_form_input sequential_read;
 	// html_select src_entrepot;
-    html_form_input src_use_external_catalogue;
+
+    html_form_input ref_use_external_catalogue;
     html_form form_ref;
     html_form_input ref_path;
     html_form_input ref_basename;
