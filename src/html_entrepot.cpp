@@ -31,7 +31,7 @@ extern "C"
 #include "webdar_tools.hpp"
 
     // webdar headers
-
+#include "environment.hpp"
 
     //
 #include "html_entrepot.hpp"
@@ -48,10 +48,16 @@ html_entrepot::html_entrepot():
     auth_type("Authentication mode"),
     pass("Password", html_form_input::password, "", 30),
     auth_from_file("Fetch password from netrc file", html_form_input::check, "1", 1),
-    known_hosts_file("Known-host file", "/", 40, "Select the knowhosts file..."),
+    pub_keyfile("Public key file", "/", 40, "Select the public key file..."),
+    prv_keyfile("Private key file", "/", 40, "Select the private key file..."),
+    known_hosts_file("Known-hosts file", "/", 40, "Select the knowhosts file..."),
     wait_time("Network retry delay (s)", html_form_input::number, "30", 5),
     verbose("Verbose network connection", html_form_input::check, "", 1)
 {
+    chemin home = global_envir.get_value_with_default("HOME", "/");
+    chemin tmp;
+    string val;
+
     got_inner_event = false;
 
 	// component configuration
@@ -64,6 +70,42 @@ html_entrepot::html_entrepot():
     auth_type.add_choice(auth_key, "Keyfile authentication");
     auth_type.set_selected(0);
 
+    pub_keyfile.set_select_mode(html_form_input_file::select_file);
+    pub_keyfile.set_can_create_dir(false);
+    if(global_envir.get_value_of("DAR_SFTP_PUBLIC_KEYFILE", val))
+	pub_keyfile.set_value(val);
+    else
+    {
+	tmp = home;
+	tmp.push_back(".ssh");
+	tmp.push_back("id_rsa.pub");
+	pub_keyfile.set_value(tmp.display());
+    }
+
+    prv_keyfile.set_select_mode(html_form_input_file::select_file);
+    prv_keyfile.set_can_create_dir(false);
+    if(global_envir.get_value_of("DAR_SFTP_PRIVATE_KEYFILE", val))
+	prv_keyfile.set_value(val);
+    else
+    {
+	tmp = home;
+	tmp.push_back(".ssh");
+	tmp.push_back("id_rsa");
+	prv_keyfile.set_value(tmp.display());
+    }
+
+    known_hosts_file.set_select_mode(html_form_input_file::select_file);
+    known_hosts_file.set_can_create_dir(false);
+    if(global_envir.get_value_of("DAR_SFTP_KNOWNHOSTS_FILE", val))
+	known_hosts_file.set_value(val);
+    else
+    {
+	tmp = home;
+	tmp.push_back(".ssh");
+	tmp.push_back("known_hosts");
+	known_hosts_file.set_value(tmp.display());
+    }
+
     	// adoption tree
     fs.adopt(&repo_type);
     fs.adopt(&host);
@@ -72,6 +114,8 @@ html_entrepot::html_entrepot():
     fs.adopt(&auth_type);
     fs.adopt(&pass);
     fs.adopt(&auth_from_file);
+    fs.adopt(&pub_keyfile);
+    fs.adopt(&prv_keyfile);
     fs.adopt(&known_hosts_file);
     fs.adopt(&wait_time);
     fs.adopt(&verbose);
@@ -171,6 +215,8 @@ void html_entrepot::update_visible()
 	auth_type.set_visible(false);
 	pass.set_visible(false);
 	auth_from_file.set_visible(false);
+	pub_keyfile.set_visible(false);
+	prv_keyfile.set_visible(false);
 	known_hosts_file.set_visible(false);
 	wait_time.set_visible(false);
 	verbose.set_visible(false);
@@ -179,11 +225,28 @@ void html_entrepot::update_visible()
     case 2: // sftp
 	host.set_visible(true);
 	port.set_visible(true);
+	if(port.get_value().empty() || port.get_value() == "0")
+	{
+	    switch(repo_type.get_selected_num())
+	    {
+	    case 1:
+		port.set_value("21");
+		break;
+	    case 2:
+		port.set_value("22");
+		break;
+	    default:
+		throw WEBDAR_BUG;
+	    }
+	}
+
 	login.set_visible(true);
 	if(repo_type.get_selected_num() == 1) // ftp
 	{
 	    auth_type.set_visible(false);
 	    auth_from_file.set_visible(false);
+	    pub_keyfile.set_visible(false);
+	    prv_keyfile.set_visible(false);
 	    known_hosts_file.set_visible(false);
 	}
 	else // sftp
@@ -194,10 +257,14 @@ void html_entrepot::update_visible()
 	    case 0: // pass
 		pass.set_visible(true);
 		auth_from_file.set_visible(true);
+		pub_keyfile.set_visible(false);
+		prv_keyfile.set_visible(false);
 		break;
 	    case 1: // auth key
 		pass.set_visible(false);
 		auth_from_file.set_visible(false);
+		pub_keyfile.set_visible(true);
+		prv_keyfile.set_visible(true);
 		break;
 	    default:
 		throw WEBDAR_BUG;

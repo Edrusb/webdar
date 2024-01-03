@@ -83,6 +83,8 @@ private:
     html_form_select auth_type; // (sftp only) login or keyfile
     html_form_input pass;      // ftp and sftp
     html_form_input auth_from_file;  // ftp and sftp
+    html_form_input_file pub_keyfile; // sftp only
+    html_form_input_file prv_keyfile; // sftp only
     html_form_input_file known_hosts_file; // sftp only
     html_form_input wait_time; // ftp and sftp
     html_form_input verbose;   // ftp and sftp

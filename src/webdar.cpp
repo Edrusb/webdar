@@ -113,6 +113,7 @@ int main(int argc, char *argv[], char** env)
     unique_ptr<ssl_context> cipher(nullptr);
 
     last_trigger = time(nullptr) - 1;
+    global_envir.feed(env);
 
     try
     {
