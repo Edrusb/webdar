@@ -81,11 +81,7 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 	map<string, string>::iterator it = fields.find(x_id);
 	if(it != fields.end())
 	    x_init = it->second;
-	else
-	{
-	    if(get_visible())
-		x_init = "";
-	}
+	    // else no new info to set to this field
 
 	if(x_init != old)
 	{
