@@ -50,6 +50,7 @@ html_entrepot::html_entrepot():
     auth_from_file("Fetch password from netrc file", html_form_input::check, "1", 1),
     pub_keyfile("Public key file", "/", 40, "Select the public key file..."),
     prv_keyfile("Private key file", "/", 40, "Select the private key file..."),
+    knownhosts_check("Check remote host from the known-hosts file", html_form_input::check, "1", 1),
     known_hosts_file("Known-hosts file", "/", 40, "Select the knowhosts file..."),
     wait_time("Network retry delay (s)", html_form_input::number, "30", 5),
     verbose("Verbose network connection", html_form_input::check, "", 1)
@@ -116,6 +117,7 @@ html_entrepot::html_entrepot():
     fs.adopt(&auth_from_file);
     fs.adopt(&pub_keyfile);
     fs.adopt(&prv_keyfile);
+    fs.adopt(&knownhosts_check);
     fs.adopt(&known_hosts_file);
     fs.adopt(&wait_time);
     fs.adopt(&verbose);
@@ -125,6 +127,7 @@ html_entrepot::html_entrepot():
 	// events and actors
     repo_type.record_actor_on_event(this, html_form_select::changed);
     auth_type.record_actor_on_event(this, html_form_select::changed);
+    knownhosts_check.record_actor_on_event(this, html_form_input::changed);
 
 	// css if needed
 
@@ -166,7 +169,7 @@ shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(const shared_ptr<libdar
 							 auth_from_file.get_value_as_bool(),
 							 string("/root/.ssh/id_rsa.pub"), ///<< to review with env variables
 							 string("/root/.ssh/id_rsa"), ///< to review with env variables
-							 known_hosts_file.get_value(),
+							 knownhosts_check.get_value_as_bool() ? "" : known_hosts_file.get_value(),
 							 libdar::U_I(webdar_tools_convert_to_int(wait_time.get_value())),
 							 verbose.get_value_as_bool()));
 	break;
@@ -220,6 +223,7 @@ void html_entrepot::update_visible()
 	auth_from_file.set_visible(false);
 	pub_keyfile.set_visible(false);
 	prv_keyfile.set_visible(false);
+	knownhosts_check.set_visible(false);
 	known_hosts_file.set_visible(false);
 	wait_time.set_visible(false);
 	verbose.set_visible(false);
@@ -250,6 +254,7 @@ void html_entrepot::update_visible()
 	    auth_from_file.set_visible(false);
 	    pub_keyfile.set_visible(false);
 	    prv_keyfile.set_visible(false);
+	    knownhosts_check.set_visible(false);
 	    known_hosts_file.set_visible(false);
 	}
 	else // sftp
@@ -272,7 +277,8 @@ void html_entrepot::update_visible()
 	    default:
 		throw WEBDAR_BUG;
 	    }
-	    known_hosts_file.set_visible(true);
+	    knownhosts_check.set_visible(true);
+	    known_hosts_file.set_visible(knownhosts_check.get_value_as_bool());
 	}
 	wait_time.set_visible(true);
 	verbose.set_visible(true);
