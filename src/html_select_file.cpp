@@ -116,7 +116,8 @@ html_select_file::html_select_file(const std::string & message):
 }
 
 void html_select_file::run(const shared_ptr<libdar::entrepot> & x_entr,
-			   const std::string & start_dir)
+			   const std::string & start_dir,
+			   bool isdir)
 {
     switch(status)
     {
@@ -130,11 +131,9 @@ void html_select_file::run(const shared_ptr<libdar::entrepot> & x_entr,
 	throw WEBDAR_BUG;
     }
 
-//    if(chemin(start_dir))
-//	throw WEBDAR_BUG;
-
     set_visible(true);
     ack_visible();
+    fieldset_isdir = isdir;
     status = st_run;
     entr = x_entr;
     fieldset.change_label(start_dir);
@@ -346,6 +345,18 @@ void html_select_file::fill_content()
     {
 	if(fieldset_isdir)
 	    entr->set_location(fieldset.get_label());
+	else
+	{
+	    chemin chem = fieldset.get_label();
+
+	    if(chem.size() > 1)
+	    {
+		chem.pop_back();
+		entr->set_location(chem.display());
+	    }
+	    else
+		entr->set_location(string("/"));
+	}
 
 	entr->read_dir_reset_dirinfo();
 
