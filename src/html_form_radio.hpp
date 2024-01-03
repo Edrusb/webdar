@@ -62,7 +62,7 @@ public:
     void add_choice(const std::string & id, const std::string & label);
     void clear() { choices.clear(); selected = 0; };
 
-    void set_selected(unsigned int x);
+    void set_selected(unsigned int x); /// \note index zero is the first choice
     const std::string & get_selected_id() const { return choices[selected].id; };
     unsigned int get_selected_num() const { return selected; };
 

@@ -34,7 +34,7 @@ extern "C"
 
     /// class html_form_select implements HTML <select>
 
-    /// It should be adopted directory or not by an html_form
+    /// It should be adopted directly or not by an html_form
     /// object. It shows a dropdown list of choices the user
     /// has to select. To setup the available choices use the
     /// add_choice(), clear() methods. To obtain the value selected
