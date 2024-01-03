@@ -72,6 +72,11 @@ public:
     virtual std::unique_ptr<libdar::mask> generate_libdar() const = 0;
 };
 
+class libdarer_mask_glob: public libdarer_mask
+{
+	/// ...
+}
+
 class libdarer_entrepot: public libdarer, public jsoner, public bibli_referable, public body_builder
 {
 public:
