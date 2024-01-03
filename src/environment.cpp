@@ -73,3 +73,5 @@ bool environment::get_value_of(const std::string & var, std::string & value) con
 	return true;
     }
 }
+
+environment global_envir;

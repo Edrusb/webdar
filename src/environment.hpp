@@ -70,4 +70,6 @@ private:
     std::map<std::string, std::string> envir;
 };
 
+extern environment global_envir;
+
 #endif
