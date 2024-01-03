@@ -154,7 +154,9 @@ string html_tabs::inherited_get_body_part(const chemin & path,
     (void)get_body_part_from_all_children(path, req);
 
 	// so we call it a second time
-    return html_table::inherited_get_body_part(path, req);
+    request tmp = req;
+    tmp.post_to_get();
+    return html_table::inherited_get_body_part(path, tmp);
 }
 
 

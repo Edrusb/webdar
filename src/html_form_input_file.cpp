@@ -249,7 +249,11 @@ string html_form_input_file::inherited_get_body_part(const chemin & path,
 
     ret = html_div::inherited_get_body_part(path, req);
     if(refresh_get_body)
-	ret = html_div::inherited_get_body_part(path, req);
+    {
+	request tmp = req;
+	tmp.post_to_get();
+	ret = html_div::inherited_get_body_part(path, tmp);
+    }
 
     return ret;
 }

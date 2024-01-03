@@ -77,6 +77,9 @@ public:
 	/// manually change the method of the request
     void change_method(const std::string & val) { if(status < method_read) throw WEBDAR_BUG; cached_method = val; };
 
+	/// change POST request to a GET request, No modification for others
+    void post_to_get() { if(status < method_read) throw WEBDAR_BUG; if(cached_method == "POST") cached_method = "GET"; };
+
 	/// obtains the URI of the read request
     const uri & get_uri() const { if(status < uri_read) throw WEBDAR_BUG; return coordinates; };
 

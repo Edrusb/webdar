@@ -195,8 +195,11 @@ std::string html_entrepot::inherited_get_body_part(const chemin & path,
 
     if(got_inner_event) // need get the update body part as some changed occured
     {
+	request tmp = req;
+
+	tmp.post_to_get();
 	got_inner_event = false;
-	ret = get_body_part_from_all_children(path, req);
+	ret = get_body_part_from_all_children(path, tmp);
 	if(got_inner_event)
 	    throw WEBDAR_BUG; // not expected to have changed event after visibility change only
     }

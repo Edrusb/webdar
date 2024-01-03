@@ -135,7 +135,10 @@ string html_derouleur::inherited_get_body_part(const chemin & path,
 	ignore_events = true;
 	try
 	{
-	    ret = generate_html(sub_path, req);
+	    request tmp = req;
+
+	    tmp.post_to_get();
+	    ret = generate_html(sub_path, tmp);
 	}
 	catch(...)
 	{
