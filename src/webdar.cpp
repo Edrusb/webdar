@@ -97,7 +97,7 @@ static void signal_handler(int x);
 static string reminder_msg;
 static time_t last_trigger;
 
-int main(int argc, char *argv[], char **env)
+int main(int argc, char *argv[], char** env)
 {
     vector<interface_port> ecoute;
     bool verbose;
