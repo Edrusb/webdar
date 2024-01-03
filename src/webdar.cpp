@@ -54,6 +54,7 @@ extern "C"
 #include "base64.hpp"
 #include "choose.hpp"
 #include "static_object_library.hpp"
+#include "environment.hpp"
 
 #define WEBDAR_EXIT_OK 0
 #define WEBDAR_EXIT_SYNTAX 1
@@ -96,6 +97,8 @@ static vector<listener *> taches;
 static void signal_handler(int x);
 static string reminder_msg;
 static time_t last_trigger;
+
+environment global_envir;
 
 int main(int argc, char *argv[], char** env)
 {
