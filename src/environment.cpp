@@ -43,7 +43,7 @@ using namespace std;
 
 void environment::feed(char** env)
 {
-    char* ptr = nullptr;
+    char** ptr = nullptr;
     string tmp;
     string var, val;
 
@@ -51,11 +51,11 @@ void environment::feed(char** env)
 	throw exception_range("empty environment variable set provided");
 
     envir.clear();
-    ptr = *env;
+    ptr = env;
 
-    while(ptr != nullptr)
+    while(*ptr != nullptr)
     {
-	webdar_tools_split_in_two('=', ptr, var, val);
+	webdar_tools_split_in_two('=', *ptr, var, val);
 	envir[var] = val;
 	++ptr;
     }
@@ -65,7 +65,7 @@ bool environment::get_value_of(const std::string & var, std::string & value) con
 {
     map<string, string>::const_iterator it = envir.find(var);
 
-    if(it != envir.end())
+    if(it == envir.end())
 	return false;
     else
     {
@@ -73,5 +73,17 @@ bool environment::get_value_of(const std::string & var, std::string & value) con
 	return true;
     }
 }
+
+string environment::get_value_with_default(const string & var, const string & defaulted) const
+{
+    string ret;
+
+    if(! get_value_of(var, ret))
+	ret = defaulted;
+
+    return ret;
+}
+
+
 
 environment global_envir;
