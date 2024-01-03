@@ -41,7 +41,7 @@ extern "C"
 using namespace std;
 
 
-environment::environment(char** env)
+void environment::feed(char** env)
 {
     char* ptr = nullptr;
     string tmp;
@@ -50,6 +50,7 @@ environment::environment(char** env)
     if(env == nullptr)
 	throw exception_range("empty environment variable set provided");
 
+    envir.clear();
     ptr = *env;
 
     while(ptr != nullptr)

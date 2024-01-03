@@ -41,14 +41,30 @@ extern "C"
 class environment
 {
 public:
-    environment(char** env);
+    environment() = default;
     environment(const environment & ref) = default;
     environment(environment && ref) noexcept = default;
     environment & operator = (const environment & ref) = default;
     environment & operator = (environment && ref) noexcept = default;
     ~environment() = default;
 
+	/// feed the object with the system provided environment
+    void feed(char** env);
+
+	/// provide the value associated to a given environment variable
+
+	/// \param[in] var is the name of the variable to fetch
+	/// \param[out] value is the value associated with this value if it exists
+	/// \return true if a value is available and the "value" argument is set, if the variable does
+	/// not exist in the environment "value" is unchanged and this method returns false
     bool get_value_of(const std::string & var, std::string & value) const;
+
+	/// provide the value associated to a given environment variable or the provided defaulted value
+
+	/// \param[in] var is the name of the variable to fetch
+	/// \param[in] defaulted it the default value to return if the variable is not found in the environment
+	/// \return the value or default valuer associated to the "var" environment variable
+    std::string get_value_with_default(const std::string & var, const std::string & defaulted) const;
 
 private:
     std::map<std::string, std::string> envir;
