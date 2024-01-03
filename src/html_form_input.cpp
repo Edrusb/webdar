@@ -81,7 +81,14 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 	map<string, string>::iterator it = fields.find(x_id);
 	if(it != fields.end())
 	    x_init = it->second;
-	    // else no new info to set to this field
+	else
+	{
+		// checkboxes have specific behavior: unckecked, the browser does not
+		// send any value and even not an empty value associated to this id.
+	    if(x_type == string_for_type(check))
+		x_init = "";
+	}
+
 
 	if(x_init != old)
 	{
