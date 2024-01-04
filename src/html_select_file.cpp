@@ -170,7 +170,17 @@ void html_select_file::on_event(const std::string & event_name)
     {
 	chemin chem(fieldset.get_label());
 
-	chem.pop_back();
+	try
+	{
+	    chem.pop_back();
+	}
+	catch(exception_range & e)
+	{
+		// pop_back() failed because we
+		// we reached the root of the filesystem
+		// ignoring this error and staying at
+		// the same path
+	}
 	fieldset.change_label(chem.display());
 	fieldset_isdir = true;
 	fill_content();
