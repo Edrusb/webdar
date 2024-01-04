@@ -130,15 +130,13 @@ void html_select_file::run(const shared_ptr<libdar::entrepot> & x_entr,
 	throw WEBDAR_BUG;
     }
 
-//    if(chemin(start_dir))
-//	throw WEBDAR_BUG;
-
     set_visible(true);
     ack_visible();
     status = st_run;
     entr = x_entr;
     fieldset.change_label(start_dir);
     createdir_form.set_visible(false);
+    init_fieldset_isdir();
     fill_content();
 };
 
@@ -325,7 +323,61 @@ void html_select_file::new_css_library_available()
     tmp.css_background_color("white");
     if(!csslib->class_exists(css_sticky_bot))
 	csslib->add(css_sticky_bot, tmp);
+}
 
+void html_select_file::init_fieldset_isdir()
+{
+    chemin target(fieldset.get_label());
+
+    if(!entr)
+	throw WEBDAR_BUG;
+
+	// first trying to open target as a if it was a directory
+	// if that fails we will try to open the parent directory
+	// to check for a possible existence of target
+
+    try
+    {
+	entr->set_location(target.display());
+	entr->read_dir_reset_dirinfo();
+	fieldset_isdir = true;
+    }
+    catch(libdar::Erange & e)
+    {
+	    // assuming the operation failed
+	    // because the target is not a directory
+	    // trying to open the parent directory
+	try
+	{
+	    target.pop_back();
+	    entr->set_location(target.display());
+	    entr->read_dir_reset_dirinfo();
+	    fieldset_isdir = false;
+	}
+	catch(exception_range & f)
+	{
+		// target.pop_back() failed
+		// this means target was empty (aka root filesystem)
+		// and "/" was not a directory or failed to be openned
+		// reporting the first exception
+	    warning.clear();
+	    warning.add_text(3, e.get_message());
+	}
+	catch(libdar::Erange & f)
+	{
+		// target.pop_back() succeeded by the
+		// libdar iperation failed, propagating this
+		// exception
+	    warning.clear();
+	    warning.add_text(3, f.get_message());
+	}
+    }
+    catch(libdar::Egeneric & e)
+    {
+	warning.clear();
+	warning.add_text(3, string("Unexpected error returned by libdar:"));
+	warning.add_text(4, e.get_message());
+    }
 }
 
 void html_select_file::fill_content()

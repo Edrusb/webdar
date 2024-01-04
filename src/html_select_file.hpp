@@ -187,6 +187,9 @@ private:
 
 	// internal routines
 
+	/// initialize fieldset_isdir field based on the content of fieldset, exception thrown if file/dir does not exist
+    void init_fieldset_isdir();
+
 	/// fills content and listed from entry located in fieldset.get_label() directory of the entr libdar::entrepot
     void fill_content();
 
