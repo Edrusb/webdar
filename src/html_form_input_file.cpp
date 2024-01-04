@@ -137,7 +137,7 @@ void html_form_input_file::on_event(const string & event_name)
     if(event_name == html_form_input::changed)
 	act(changed_event_name);
     else if(event_name == triggered_event)
-	user_select.run(entrep, input.get_value(), selmode == select_dir);
+	user_select.run(entrep, input.get_value());
     else if(event_name == html_select_file::entry_selected)
     {
 	switch(selmode)

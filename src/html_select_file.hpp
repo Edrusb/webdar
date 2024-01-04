@@ -101,13 +101,11 @@ public:
 	/// start the user interaction for a path selection
 
 	/// \param[in] x_entr entrepot to scan directory from
-	/// \param[in] start_dir absolute path in x_entr to take as starting directory
-	/// \param[in] isdir must be set in cohernec with start_dir nature (directory or file/other)
+	/// \param[in] absolute path in x_entr to take as starting directory
 	/// \note if start_dir is not a directory not is an absolute path
 	/// an exception is thrown
     void run(const std::shared_ptr<libdar::entrepot> & x_entr,
-	     const std::string & start_dir,
-	     bool isdir);
+	     const std::string & start_dir);
 
 	/// obtain the path selected by the user (mandatory after entry_selected event, in order to reuse this object)
     std::string get_selected_path() const { if(status != st_completed) throw WEBDAR_BUG; status = st_init; return fieldset.get_label(); };
