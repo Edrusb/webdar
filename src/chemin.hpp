@@ -40,7 +40,10 @@ extern "C"
 
     /// class chemin definition
     /// \note "chemin" means path in French, this class
-    /// implements path objects
+    /// implements path objects. There is no relative/absolute
+    /// caracteristics in these objects, Only at display() time
+    /// one can decide to given a string representing the path as
+    /// either absolute or relative.
 
 class chemin
 {
@@ -82,9 +85,13 @@ public:
     void push_back(const std::string & x);
 
 	/// get the first member of the path
+
+	/// \note if the path is empty() an exception_range is thrown
     std::string front() const { if(empty()) throw exception_range("cannot get front() from an empty chemin"); return members.front(); };
 
 	/// get the last member of the path
+
+	/// \note if the path is empty() an exception_range is thrown
     std::string back() const { if(empty()) throw exception_range("cannot get back() from an empty chemin"); return members.back(); };
 
 	/// removes the first member of the path from this object (root side)
