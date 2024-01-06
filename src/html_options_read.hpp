@@ -96,7 +96,7 @@ private:
     html_form_input ref_slice_min_digits;
 	// html_select ref_entrepot;
 
-    libdar::archive_options_read opts;
+    mutable libdar::archive_options_read opts;
 };
 
 #endif
