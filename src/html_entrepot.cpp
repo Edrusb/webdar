@@ -256,6 +256,7 @@ void html_entrepot::update_visible()
 	    prv_keyfile.set_visible(false);
 	    knownhosts_check.set_visible(false);
 	    known_hosts_file.set_visible(false);
+	    pass.set_visible(true);
 	}
 	else // sftp
 	{
