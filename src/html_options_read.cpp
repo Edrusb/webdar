@@ -44,7 +44,7 @@ html_options_read::html_options_read():
     form_src("Update Options"),
     fs_src("Archive Options"),
     fs_ref("External catalog Options"),
-    src_crypto_algo("Cipher"),
+    src_crypto_algo("Cipher (for recent archives/backups, this is autodetected)"),
     src_crypto_pass("Passphrase", html_form_input::password, "", 30),
     src_crypto_size("Cipher block size", html_form_input::number, "0", 8),
     src_execute("Command to execute locally before reading each slice", html_form_input::text, "", 30),
