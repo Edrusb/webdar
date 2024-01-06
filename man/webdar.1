@@ -48,6 +48,18 @@ shows a very light help information
 -V, --version
 shows webdar version
 
+.SH ENVIRONMENT
+
+.TP 10
+DAR_SFTP_KNOWNHOSTS_FILE
+if set, webdar will not use the $HOME/.ssh/known_hosts file to check sftp remote server authenticity but the file given as value for this environment variable. Note that setting this variable to an empty string completely disable host validation, which is not recommended. Webar, the web interface program for disk archive, relies on libdar for archive format management which relies on libcurl for network transfer which in turn relies on libssh2 for all that concerns ssh/sftp protocol. In the known_hosts file, libssh2 does not support recent lines like those with "ecdsa-sha2-nistp256" in second argument before its release 1.9.0 (you will also need curl/libcurl 7.69.1 or more recent), in these old versions you only have support for "ssh-rsa" lines. Check libssh2 and libcurl documentations and literature for more details about that limitation. The workaround, if you have not yet libssh2 1.9.0 or more recent, is to disable known hosts validation or set up a restricted known hosts file without any "ecdsa*" entry and have DAR_SFTP_KNOWNHOSTS_FILE pointing to it.
+.TP 10
+DAR_SFTP_PUBLIC_KEYFILE
+by default webdar will fetch the public key file in $HOME/.ssh/id_rsa.pub file. If you use the former id_dsa.pub or more recent key types you need to set this environment variable to point to the appropriated filename
+.TP 10
+DAR_SFTP_PRIVATE_KEYFILE
+by default webdar will fetch the public key file in $HOME/.ssh/id_rsa file. If you use the former id_dsa.pub or more recent key types you need to set this environment variable to point to the appropriated filename
+
 .SH SIGNALS
 Signals are classified in two types:
 .TP 10
