@@ -111,7 +111,7 @@ public:
 	// reading parameters
     std::string get_archive_path() const;
     std::string get_archive_basename() const;
-    const libdar::archive_options_read & get_read_options() const;
+    const libdar::archive_options_read & get_read_options(const std::shared_ptr<libdar::user_interaction> & dialog) const;
 
 	// common parameter to diff/create/restore
     const std::string & get_fs_root() const;

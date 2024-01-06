@@ -460,7 +460,7 @@ void user_interface::go_restore()
     arch_rest.set_user_interaction(get_user_interaction());
     arch_rest.set_archive_path(get_parametrage().get_archive_path());
     arch_rest.set_archive_basename(get_parametrage().get_archive_basename());
-    arch_rest.set_archive_options_read(get_parametrage().get_read_options());
+    arch_rest.set_archive_options_read(get_parametrage().get_read_options(get_user_interaction()));
     arch_rest.set_fs_root(get_parametrage().get_fs_root());
     arch_rest.set_archive_options_restore(get_parametrage().get_extraction_options());
     arch_rest.set_progressive_report(get_statistics().get_libdar_statistics());
@@ -496,7 +496,7 @@ void user_interface::go_diff()
     arch_diff.set_user_interaction(get_user_interaction());
     arch_diff.set_archive_path(get_parametrage().get_archive_path());
     arch_diff.set_archive_basename(get_parametrage().get_archive_basename());
-    arch_diff.set_archive_options_read(get_parametrage().get_read_options());
+    arch_diff.set_archive_options_read(get_parametrage().get_read_options(get_user_interaction()));
     arch_diff.set_fs_root(get_parametrage().get_fs_root());
     arch_diff.set_archive_options_compare(get_parametrage().get_comparison_options());
     arch_diff.set_progressive_report(get_statistics().get_libdar_statistics());
@@ -529,7 +529,7 @@ void user_interface::go_test()
     arch_test.set_user_interaction(get_user_interaction());
     arch_test.set_archive_path(get_parametrage().get_archive_path());
     arch_test.set_archive_basename(get_parametrage().get_archive_basename());
-    arch_test.set_archive_options_read(get_parametrage().get_read_options());
+    arch_test.set_archive_options_read(get_parametrage().get_read_options(get_user_interaction()));
     arch_test.set_archive_options_test(get_parametrage().get_testing_options());
     arch_test.set_progressive_report(get_statistics().get_libdar_statistics());
 
@@ -564,7 +564,7 @@ void user_interface::go_create()
 	    get_parametrage().get_creating_options().get_reference().get_archive_path(),
 	    get_parametrage().get_creating_options().get_reference().get_archive_basename(),
 	    EXTENSION,
-	    get_parametrage().get_creating_options().get_reference().get_read_options());
+	    get_parametrage().get_creating_options().get_reference().get_read_options(get_user_interaction()));
     else
 	arch_create.clear_archive_options_reference();
     arch_create.set_fs_root(get_parametrage().get_fs_root());
@@ -609,7 +609,7 @@ void user_interface::go_isolate()
 	get_parametrage().get_isolating_reference().get_archive_path(),
 	get_parametrage().get_isolating_reference().get_archive_basename(),
 	EXTENSION,
-	get_parametrage().get_isolating_reference().get_read_options());
+	get_parametrage().get_isolating_reference().get_read_options(get_user_interaction()));
 
 	// resetting counters and logs
     get_user_interaction()->clear();
@@ -638,14 +638,14 @@ void user_interface::go_merge()
 	get_parametrage().get_merging_reference().get_archive_path(),
 	get_parametrage().get_merging_reference().get_archive_basename(),
 	EXTENSION,
-	get_parametrage().get_merging_reference().get_read_options());
+	get_parametrage().get_merging_reference().get_read_options(get_user_interaction()));
     if(get_parametrage().get_merging_options().has_auxiliary())
     {
 	arch_merge.set_archive_options_auxiliary(
 	    get_parametrage().get_merging_options().get_auxiliary().get_archive_path(),
 	    get_parametrage().get_merging_options().get_auxiliary().get_archive_basename(),
 	    EXTENSION,
-	    get_parametrage().get_merging_options().get_auxiliary().get_read_options());
+	    get_parametrage().get_merging_options().get_auxiliary().get_read_options(get_user_interaction()));
     }
     else
 	arch_merge.clear_archive_options_auxiliary();
@@ -678,7 +678,7 @@ void user_interface::go_init_list()
     arch_init_list.set_user_interaction(get_user_interaction());
     arch_init_list.set_archive_path(get_parametrage().get_archive_path());
     arch_init_list.set_archive_basename(get_parametrage().get_archive_basename());
-    arch_init_list.set_archive_options_read(get_parametrage().get_read_options());
+    arch_init_list.set_archive_options_read(get_parametrage().get_read_options(get_user_interaction()));
 
 	// resetting counters and logs
     get_user_interaction()->clear();

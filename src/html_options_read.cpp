@@ -86,10 +86,16 @@ html_options_read::html_options_read():
     ref_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_ref_slice_min_digits()));
 
 	// build the adoption tree
+    static const char* sect_entrep = "entrep";
     static const char* sect_opt = "options";
+    static const char* sect_ref_entrep = "ref_entrep";
     static const char* sect_extcat = "externalcat";
+    deroule.add_section(sect_entrep, "Archive location");
     deroule.add_section(sect_opt, "Reading options");
+    deroule.add_section(sect_ref_entrep, "External Catalog location");
     deroule.add_section(sect_extcat, "External Catalog");
+
+    deroule.adopt_in_section(sect_entrep, &entrep);
 
     fs_src.adopt(&src_crypto_algo);
     fs_src.adopt(&src_crypto_pass);
@@ -101,6 +107,8 @@ html_options_read::html_options_read():
     fs_src.adopt(&sequential_read);
     form_src.adopt(&fs_src);
     deroule.adopt_in_section(sect_opt, &form_src);
+
+    deroule.adopt_in_section(sect_ref_entrep, &ref_entrep);
 
     fs_ref.adopt(&ref_use_external_catalogue);
     fs_ref.adopt(&ref_path);
@@ -128,7 +136,7 @@ html_options_read::html_options_read():
     webdar_css_style::grey_button(deroule, true);
 }
 
-const libdar::archive_options_read & html_options_read::get_options() const
+const libdar::archive_options_read & html_options_read::get_options(const shared_ptr<libdar::user_interaction> & dialog) const
 {
     opts.clear();
     opts.set_crypto_algo(src_crypto_algo.get_value());
@@ -139,6 +147,7 @@ const libdar::archive_options_read & html_options_read::get_options() const
     }
     opts.set_execute(src_execute.get_value());
     opts.set_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(src_slice_min_digits.get_value())));
+    opts.set_entrepot(entrep.get_entrepot(dialog));
     opts.set_info_details(info_details.get_value_as_bool());
     opts.set_lax(lax.get_value_as_bool());
     opts.set_sequential_read(sequential_read.get_value_as_bool());
@@ -164,6 +173,7 @@ const libdar::archive_options_read & html_options_read::get_options() const
 	}
 	opts.set_ref_execute(ref_execute.get_value());
 	opts.set_ref_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(ref_slice_min_digits.get_value())));
+	opts.set_ref_entrepot(ref_entrep.get_entrepot(dialog));
     }
     else
 	opts.unset_external_catalogue();

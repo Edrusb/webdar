@@ -32,6 +32,7 @@ extern "C"
 
     // C++ system header files
 #include <dar/libdar.hpp>
+#include <memory>
 
     // webdar headers
 #include "body_builder.hpp"
@@ -45,6 +46,7 @@ extern "C"
 #include "events.hpp"
 #include "html_derouleur.hpp"
 #include "html_text.hpp"
+#include "html_entrepot.hpp"
 
 class html_options_read : public body_builder, public actor
 {
@@ -56,7 +58,7 @@ public:
     html_options_read & operator = (html_options_read && ref) noexcept = default;
     ~html_options_read() = default;
 
-    const libdar::archive_options_read & get_options() const;
+    const libdar::archive_options_read & get_options(const std::shared_ptr<libdar::user_interaction> & dialog) const;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -75,6 +77,10 @@ private:
     html_form form_src;
     html_form_fieldset fs_src;
     html_form_fieldset fs_ref;
+
+	// archive entrepot fields
+    html_entrepot entrep;
+
 	// archive_options_read fields
     html_crypto_algo src_crypto_algo;
     html_form_input src_crypto_pass;
@@ -84,7 +90,9 @@ private:
     html_form_input info_details;
     html_form_input lax;
     html_form_input sequential_read;
-	// html_select src_entrepot;
+
+	// external catalogue entrepot
+    html_entrepot ref_entrep;
 
     html_form_input ref_use_external_catalogue;
     html_form form_ref;

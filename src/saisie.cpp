@@ -398,7 +398,7 @@ string saisie::get_archive_basename() const
     }
 }
 
-const libdar::archive_options_read & saisie::get_read_options() const
+const libdar::archive_options_read & saisie::get_read_options(const shared_ptr<libdar::user_interaction> & dialog) const
 {
     if(status != st_restore
        && status != st_compare
@@ -406,7 +406,7 @@ const libdar::archive_options_read & saisie::get_read_options() const
        && status != st_list)
 	throw WEBDAR_BUG;
 
-    return archread.get_read_options();
+    return archread.get_read_options(dialog);
 }
 
 const string & saisie::get_fs_root() const
