@@ -39,10 +39,23 @@ extern "C"
     // webdar headers
 
 
+    /// class web_user_interaction provides a libdar::user_interaction interface to libdar
+
+    /// this class is not an html_ body_builder class by rather holds information fields and status
+    /// provided by libdar through the libdar::user_interaction interface. The main role of this
+    /// class is to allow any thread to get access to this libdar running thread provided information,
+    /// by mean of mutex on the internal/private data structure.
+
+    /// \note web_user_interaction can has two sides, the libdar::user_interaction interface which
+    /// is implemented by the inherited_* protected methods and the web_user_interaction interface
+    /// that is provided by the public methods of the class. This object is given to libdar
+    /// as is for user_interaction. And this object is consulted/interacted inside webdar possibly
+    /// from another thread for html_ interaction (see html_web_user_interaction class for example)
+
 class web_user_interaction : public libdar::user_interaction
 {
 public:
-    web_user_interaction(unsigned int x_warn_size = 10);
+    web_user_interaction(unsigned int x_warn_size = 10); ///< the argument is the number latest message to retain from libdar
     web_user_interaction(const web_user_interaction & ref) { copy_from(ref); };
     web_user_interaction(web_user_interaction && ref) noexcept = delete;
     web_user_interaction & operator = (const web_user_interaction & ref) { detruit(); copy_from(ref); return *this; };

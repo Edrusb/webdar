@@ -40,6 +40,12 @@ extern "C"
 #include "html_statistics.hpp"
 #include "html_button.hpp"
 
+    /// html_libdar_running allow action on a running libdar and provide libdar output
+
+    /// libdar output is provided by an html_web_user_interaction component
+    /// in addition several components are added to kill the running libdar thread
+    /// and display libdar::statistics fields for libdar archive operations
+
 class html_libdar_running : public html_page, public events, public actor
 {
 public:

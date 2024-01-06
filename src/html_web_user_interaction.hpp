@@ -43,6 +43,30 @@ extern "C"
 #include "events.hpp"
 #include "web_user_interaction.hpp"
 
+    /// body_builder component, providing an html interface to libdar::user_interaction
+
+    /// adoption tree:
+    /// +-h_global----------------------------------+
+    /// |                                           |
+    /// |+-h_form----------------------------------+|
+    /// ||+-h_inter-------------------------------+||
+    /// ||| h_inter_text (question from libdar)   |||
+    /// ||| h_pause (radio button yes/no)         |||
+    /// ||+---------------------------------------+||
+    /// ||+---------------------------------------+||
+    /// ||| h_get_string(string asked from libdar)|||
+    /// ||+---------------------------------------+||
+    /// |+-----------------------------------------+|
+    /// |                                           |
+    /// |+-h_logs----------------------------------+|
+    /// || h_warnings (libdar messages/warnings    ||
+    /// |+-----------------------------------------+|
+    /// |                                           |
+    /// +-------------------------------------------+
+
+    /// \note to communicate with a libdar thread, this class relies on a web_user_interaction
+    /// objects that manages exclusive access (using mutex) to data structures provided and
+    /// requested by libdar.
 
 class html_web_user_interaction: public body_builder, public actor
 {
@@ -81,14 +105,15 @@ private:
     web_user_interaction lib_data;
 
 	// body_builder fields
-    html_form_radio h_pause;
-    html_form_fieldset h_inter;
-    html_text h_inter_text;
-    html_form_input h_get_string;
-    html_form h_form;
-    html_text h_warnings;
-    html_form_fieldset h_logs;
-    html_form_fieldset h_global;
+    html_form_radio h_pause;      ///< shows when libdar request a yes/no decision from the user
+    html_form_fieldset h_inter;   ///< wraps h_pause and h_inter_text and is any visible when libdar request an information from the user
+    html_text h_inter_text;       ///< displays the question/request from libdar
+    html_form_input h_get_string; ///< shows when libdar request a string answer from the user
+    html_form h_form;             ///< html_form for the previous/above html fields
+    html_text h_warnings;         ///< shows the list of warnings/message from libdar
+    html_form_fieldset h_logs;    ///< wraps the h_warnings
+    html_form_fieldset h_global;  ///< wraps the whole output from libdar
+
     bool rebuild_body_part; //< set to true if changes occured while building body part, needing a whole rebuild
     bool ignore_event;      //< if true the on_event() method does not take action
     bool just_set;          //< true when the control have just been activated and no answer has been provided by the user
