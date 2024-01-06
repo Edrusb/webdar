@@ -47,7 +47,7 @@ public:
     archive_test & operator = (archive_test && ref) noexcept = default;
     ~archive_test() = default;
 
-    void set_user_interaction(web_user_interaction & ref) { ui = std::make_shared<web_user_interaction>(ref); };
+    void set_user_interaction(const std::shared_ptr<web_user_interaction> & ref) { ui = ref; };
     void set_archive_path(const std::string & val);
     void set_archive_basename(const std::string & val) { basename = val; };
     void set_archive_options_read(const libdar::archive_options_read & val) { read_opt = val; };

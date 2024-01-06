@@ -119,7 +119,7 @@ private:
     const saisie & get_parametrage() const { return parametrage; };
 
 	/// provides the libdar::user_interaction for libdar execution
-    web_user_interaction & get_user_interaction() { return in_action.get_user_interaction(); };
+    std::shared_ptr<web_user_interaction> get_user_interaction() { return in_action.get_user_interaction(); };
 
 	/// provides the a libdar::statistics datastructure for progressive report in libdar execution
     html_statistics & get_statistics() { return in_action.get_statistics(); };

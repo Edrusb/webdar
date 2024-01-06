@@ -41,13 +41,16 @@ extern "C"
 using namespace std;
 
 html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
-    lib_data(x_warn_size),
     h_inter(""),
     h_get_string("", html_form_input::text, "", 20),
     h_form("Update"),
     h_logs("Last logs"),
     h_global("Interaction with libdar")
 {
+    lib_data.reset(new (nothrow) web_user_interaction(x_warn_size));
+    if(!lib_data)
+	throw exception_memory();
+
     h_pause.add_choice("undefined", "please answer yes or no");
     h_pause.add_choice("no", "No");
     h_pause.add_choice("yes", "Yes");
@@ -83,9 +86,10 @@ string html_web_user_interaction::inherited_get_body_part(const chemin & path,
 	// an interaction from the user
     ignore_event = true;
     just_set = false;
+    check_libdata();
     try
     {
-	list<string> logs = lib_data.get_warnings();
+	list<string> logs = lib_data->get_warnings();
 	string msg;
 	bool echo;
 
@@ -98,7 +102,7 @@ string html_web_user_interaction::inherited_get_body_part(const chemin & path,
 	    h_warnings.add_nl();
 	}
 
-	if(lib_data.pending_pause(msg))
+	if(lib_data->pending_pause(msg))
 	{
 	    if(!h_inter.get_next_visible())
 	    {
@@ -110,7 +114,7 @@ string html_web_user_interaction::inherited_get_body_part(const chemin & path,
 	    }
 	}
 
-	if(lib_data.pending_get_string(msg, echo))
+	if(lib_data->pending_get_string(msg, echo))
 	{
 	    if(!h_get_string.get_next_visible())
 	    {
@@ -125,7 +129,7 @@ string html_web_user_interaction::inherited_get_body_part(const chemin & path,
 	    }
 	}
 
-	if(lib_data.pending_get_secu_string(msg, echo))
+	if(lib_data->pending_get_secu_string(msg, echo))
 	{
 	    if(!h_get_string.get_next_visible())
 	    {
@@ -165,13 +169,15 @@ string html_web_user_interaction::inherited_get_body_part(const chemin & path,
 
 void html_web_user_interaction::on_event(const std::string & event_name)
 {
+    check_libdata();
+
     if(!ignore_event)
     {
 	if(h_inter.get_visible() && !just_set)
 	{
 	    if(h_pause.get_selected_num() != 0)
 	    {
-		lib_data.set_pause_answer(h_pause.get_selected_num() == 2);
+		lib_data->set_pause_answer(h_pause.get_selected_num() == 2);
 		h_inter.set_visible(false);
 		rebuild_body_part = true;
 	    }
@@ -182,17 +188,17 @@ void html_web_user_interaction::on_event(const std::string & event_name)
 	{
 	    string tmpm;
 	    bool tmpe;
-	    if(lib_data.pending_get_string(tmpm, tmpe))
+	    if(lib_data->pending_get_string(tmpm, tmpe))
 	    {
-		lib_data.set_get_string_answer(h_get_string.get_value());
+		lib_data->set_get_string_answer(h_get_string.get_value());
 		h_get_string.set_visible(false);
 		rebuild_body_part = true;
 	    }
 	    else
 	    {
-		if(lib_data.pending_get_secu_string(tmpm, tmpe))
+		if(lib_data->pending_get_secu_string(tmpm, tmpe))
 		{
-		    lib_data.set_get_secu_string_answer(libdar::secu_string(h_get_string.get_value().c_str(), h_get_string.get_value().size()));
+		    lib_data->set_get_secu_string_answer(libdar::secu_string(h_get_string.get_value().c_str(), h_get_string.get_value().size()));
 		    h_get_string.set_visible(false);
 		    rebuild_body_part = true;
 		}
@@ -205,7 +211,8 @@ void html_web_user_interaction::on_event(const std::string & event_name)
 
 void html_web_user_interaction::clear()
 {
-    lib_data.clear();
+    check_libdata();
+    lib_data->clear();
     h_inter.set_visible(false);
     h_get_string.set_visible(false);
     adjust_visibility();

@@ -48,7 +48,7 @@ public:
     archive_merge & operator = (archive_merge && ref) noexcept = default;
     ~archive_merge() = default;
 
-    void set_user_interaction(web_user_interaction & ref) { ui = std::make_shared<web_user_interaction>(ref); };
+    void set_user_interaction(const std::shared_ptr<web_user_interaction> & ref) { ui = ref; };
     void set_archive_path(const std::string & val);
     void set_archive_basename(const std::string & val) { if(val.empty()) throw exception_range("empty string is not a valid basename"); basename = val; };
     void set_archive_extension(const std::string & val) { if(val.empty()) throw exception_range("empty string is not a valid dar extension"); extension = val; };

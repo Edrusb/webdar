@@ -71,7 +71,7 @@ public:
     void libdar_has_finished() { set_mode(finished); set_title(webdar_tools_get_title(sessname, "Webdar - Libdar has ended")); };
 
 	/// provide objects for libdar execution
-    web_user_interaction & get_user_interaction() { return web_ui.get_user_interaction(); };
+    std::shared_ptr<web_user_interaction> get_user_interaction() { return web_ui.get_user_interaction(); };
     html_statistics & get_statistics() { return stats; };
 
 	/// inherited from actor

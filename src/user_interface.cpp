@@ -467,7 +467,7 @@ void user_interface::go_restore()
 
 
 	// restting counters and logs
-    get_user_interaction().clear();
+    get_user_interaction()->clear();
     get_statistics().clear_counters();
     get_statistics().clear_labels();
     get_statistics().set_treated_label("item(s) restored");
@@ -503,7 +503,7 @@ void user_interface::go_diff()
 
 
 	// restting counters and logs
-    get_user_interaction().clear();
+    get_user_interaction()->clear();
     get_statistics().clear_counters();
     get_statistics().clear_labels();
     get_statistics().set_treated_label("item(s) identical");
@@ -534,7 +534,7 @@ void user_interface::go_test()
     arch_test.set_progressive_report(get_statistics().get_libdar_statistics());
 
 	// resetting counters and logs
-    get_user_interaction().clear();
+    get_user_interaction()->clear();
     get_statistics().clear_counters();
     get_statistics().clear_labels();
     get_statistics().set_treated_label("item(s) treated");
@@ -572,7 +572,7 @@ void user_interface::go_create()
     arch_create.set_progressive_report(get_statistics().get_libdar_statistics());
 
 	// resetting counters and logs
-    get_user_interaction().clear();
+    get_user_interaction()->clear();
     get_statistics().clear_counters();
     get_statistics().clear_labels();
     get_statistics().set_treated_label("item(s) treated");
@@ -612,7 +612,7 @@ void user_interface::go_isolate()
 	get_parametrage().get_isolating_reference().get_read_options());
 
 	// resetting counters and logs
-    get_user_interaction().clear();
+    get_user_interaction()->clear();
     get_statistics().clear_counters();
     get_statistics().clear_labels();
 
@@ -653,7 +653,7 @@ void user_interface::go_merge()
     arch_merge.set_progressive_report(get_statistics().get_libdar_statistics());
 
 	// resetting counters and logs
-    get_user_interaction().clear();
+    get_user_interaction()->clear();
     get_statistics().clear_counters();
     get_statistics().clear_labels();
     get_statistics().set_treated_label("item(s) treated");
@@ -681,7 +681,7 @@ void user_interface::go_init_list()
     arch_init_list.set_archive_options_read(get_parametrage().get_read_options());
 
 	// resetting counters and logs
-    get_user_interaction().clear();
+    get_user_interaction()->clear();
     get_statistics().clear_counters();
     get_statistics().clear_labels();
 

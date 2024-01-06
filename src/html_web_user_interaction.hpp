@@ -79,7 +79,7 @@ public:
     ~html_web_user_interaction() = default;
 
 	/// change the number of last warnings to display
-    void set_warning_list_size(unsigned int size) { lib_data.set_warning_list_size(size); };
+    void set_warning_list_size(unsigned int size) { check_libdata(); lib_data->set_warning_list_size(size); };
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -91,7 +91,7 @@ public:
 	/// can take place
     bool can_refresh() const { return !h_form.get_visible(); };
 
-    web_user_interaction & get_user_interaction() { return lib_data; };
+    std::shared_ptr<web_user_interaction> get_user_interaction() { check_libdata(); return lib_data; };
 
 protected:
 	/// inherited from body_builder, called by the webdar thread
@@ -102,7 +102,7 @@ protected:
 
 private:
 	// fields for exchange with libdar thread
-    web_user_interaction lib_data;
+    std::shared_ptr<web_user_interaction> lib_data;
 
 	// body_builder fields
     html_form_radio h_pause;      ///< shows when libdar request a yes/no decision from the user
@@ -119,6 +119,7 @@ private:
     bool just_set;          //< true when the control have just been activated and no answer has been provided by the user
 
     void adjust_visibility();
+    void check_libdata() { if(!lib_data) throw WEBDAR_BUG; };
 };
 
 
