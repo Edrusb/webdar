@@ -56,11 +56,11 @@ class web_user_interaction : public libdar::user_interaction
 {
 public:
     web_user_interaction(unsigned int x_warn_size = 10); ///< the argument is the number latest message to retain from libdar
-    web_user_interaction(const web_user_interaction & ref) { copy_from(ref); };
+    web_user_interaction(const web_user_interaction & ref) = delete;
     web_user_interaction(web_user_interaction && ref) noexcept = delete;
-    web_user_interaction & operator = (const web_user_interaction & ref) { detruit(); copy_from(ref); return *this; };
+    web_user_interaction & operator = (const web_user_interaction & ref) = delete;
     web_user_interaction & operator = (web_user_interaction && ref) noexcept = delete;
-    ~web_user_interaction() { detruit(); };
+    ~web_user_interaction();
 
 	/// change the number of last warnings to display
     void set_warning_list_size(unsigned int size);
@@ -102,46 +102,30 @@ protected:
     virtual libdar::secu_string inherited_get_secu_string(const std::string & message, bool echo) override;
 
 private:
-    struct shared_data
-    {
-	libthreadar::mutex control;    //< control access to any value this object has
-	unsigned int instances;        //< number of reference existing toward this struct object, this object data get destroyed when this number drops to zero
-	libthreadar::semaphore libdar_sem;  //< libdar thread wait on it for an answer
-	bool answered;                 //< true if the pending pause(), get_string() or get_secu_string() has been answered, so the question has not to be shown twice
+    mutable libthreadar::mutex control; ///< control access to any value this object has
+    libthreadar::semaphore libdar_sem;  ///< libdar thread wait on it for an answer
+    bool answered;                      ///< true if the pending pause(), get_string() or get_secu_string() has been answered, so the question has not to be shown twice
 
-	    // pause() fields
-	bool pause_pending;    //< true if a pause() is pending for a response
-	std::string pause_msg; //< the request to answser to
-	bool pause_ans;        //< the answer to the request
+	// pause() fields
+    bool pause_pending;    ///< true if a pause() is pending for a response
+    std::string pause_msg; ///< the request to answser to
+    bool pause_ans;        ///< the answer to the request
 
-	    // get_string() fields
-	bool get_string_pending;//< true if a get_string() is pending for a response
-	std::string get_string_msg;
-	bool get_string_echo;
-	std::string get_string_ans;
+	// get_string() fields
+    bool get_string_pending;    ///< true if a get_string() is pending for a response
+    std::string get_string_msg; ///< the libdar message for get_string()
+    bool get_string_echo;       ///< whether answer has to be echoed
+    std::string get_string_ans; ///< the user provided answer
 
-	    // get_secu_string() fields
-	bool get_secu_string_pending; //< true if a get_secu_string() is pending for a response
-	std::string get_secu_string_msg;
-	bool get_secu_string_echo;
-	libdar::secu_string get_secu_string_ans;
+	// get_secu_string() fields
+    bool get_secu_string_pending;    ///< true if a get_secu_string() is pending for a response
+    std::string get_secu_string_msg; ///< the libdar message for get_secu_string()
+    bool get_secu_string_echo;       ///< whether the answer has to be echoed
+    libdar::secu_string get_secu_string_ans; ///< the user provided secu_string
 
-	    // libdar warnings (= logs)
-	std::list<std::string> warnings;
-	unsigned warn_size;
-
-	shared_data(unsigned int size);
-	~shared_data() noexcept(false);
-	void clear(); // reset fields to default values
-	void incr();
-	bool decr_and_can_delete(); // if true is returned the object can be deleted
-    };
-
-    shared_data *data;
-
-    void check_data() const;
-    void copy_from(const web_user_interaction & ref);
-    void detruit();
+	// libdar warnings (= logs)
+    std::list<std::string> warnings;  ///< lines (message/warning) sent by libdar
+    unsigned warn_size;               ///< max number of line to record from libdar
 };
 
 #endif
