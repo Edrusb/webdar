@@ -116,6 +116,11 @@ public:
 	/// libdar structure provided for user information
     html_statistics & get_statistics() { stats.set_visible(true); return stats; };
 
+	/// hide statistics fields in the web interface
+
+	/// \note get_statistics() unhides the field and it is hidden again, when calling clear()
+    void hide_statistics() { stats.set_visible(false); };
+
 protected:
 	/// inherited from body_builder, called by the webdar thread
     virtual std::string inherited_get_body_part(const chemin & path,

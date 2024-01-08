@@ -681,8 +681,6 @@ void user_interface::go_init_list()
 
 	// resetting counters and logs
     get_user_interaction()->clear();
-    get_statistics().clear_counters();
-    get_statistics().clear_labels();
 
     arch_init_list.run();
     current_thread = & arch_init_list;
