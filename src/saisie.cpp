@@ -243,7 +243,7 @@ saisie::saisie():
     go_isolate.record_actor_on_event(this, event_isolate);
     go_merge.record_actor_on_event(this, event_merge);
 
-    session_name.set_change_event_name(changed_session_name); // using the same event name as the we we will trigger upon session name change
+    session_name.set_change_event_name(changed_session_name); // using the same event name as the we one we will trigger upon session name change
     session_name.record_actor_on_event(this, changed_session_name);
 
 	// other event to register
