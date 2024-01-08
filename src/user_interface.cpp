@@ -382,19 +382,18 @@ void user_interface::on_event(const std::string & event_name)
 string user_interface::get_session_name() const
 {
     string ret;
-    user_interface *me = const_cast<user_interface *>(this);
 
-    me->mut_sessname.lock();
+    mut_sessname.lock();
     try
     {
 	ret = sessname;
     }
     catch(...)
     {
-	me->mut_sessname.unlock();
+	mut_sessname.unlock();
 	throw;
     }
-    me->mut_sessname.unlock();
+    mut_sessname.unlock();
 
     return ret;
 };

@@ -94,7 +94,7 @@ private:
     };
 
     std::string sessname;  //< customized name of that session (empty string by default)
-    libthreadar::mutex mut_sessname; ///< drives the access to sessname, by set and get session name methods
+    mutable libthreadar::mutex mut_sessname; ///< drives the access to sessname, by set and get session name methods
     mode_type mode;        ///< current mode
     mode_type return_mode; ///< mode in which to return from error status
     bool close_requested;  ///< whether session close has been asked
