@@ -54,6 +54,8 @@ const string html_web_user_interaction::class_inter = "html_web_user_interaction
 
 
 html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
+    mode(normal),
+    autohide(false),
     h_inter(""),
     h_get_string("", html_form_input::text, "", 20),
     h_form("Update"),

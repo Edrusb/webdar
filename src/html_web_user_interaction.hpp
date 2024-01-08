@@ -108,7 +108,10 @@ public:
     void clear();
 
 	/// set the component in the finish status
-    void do_finish() { set_mode(finished); };
+    void do_finish() { set_mode(finished); if(autohide) set_visible(false); act(close_libdar_screen); };
+
+	/// when do_finish() is called, the html_web_user_interaction object becomes invisible
+    void auto_hide(bool mode) { autohide = mode; };
 
 	/// libdar strcture provided for user interaction
     std::shared_ptr<web_user_interaction> get_user_interaction() { check_libdata(); return lib_data; };
@@ -148,6 +151,7 @@ private:
 
 	// current display mode
     mode_type mode;
+    bool autohide;
 
 	// body_builder fields
     html_form_radio h_pause;      ///< shows when libdar request a yes/no decision from the user
