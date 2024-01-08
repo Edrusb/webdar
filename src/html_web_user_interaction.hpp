@@ -35,12 +35,15 @@ extern "C"
 
     // webdar headers
 #include "body_builder.hpp"
+#include "events.hpp"
+#include "actor.hpp"
 #include "html_form_input.hpp"
 #include "html_form.hpp"
 #include "html_form_radio.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_text.hpp"
-#include "events.hpp"
+#include "html_button.hpp"
+#include "html_statistics.hpp"
 #include "web_user_interaction.hpp"
 
     /// body_builder component, providing an html interface to libdar::user_interaction
@@ -62,15 +65,32 @@ extern "C"
     /// || h_warnings (libdar messages/warnings    ||
     /// |+-----------------------------------------+|
     /// |                                           |
+    /// |+-----------------------------------------+|
+    /// || stats (libdar::statistics)              ||
+    /// |+-----------------------------------------+|
+    /// |                                           |
+    /// | +-------+  +-------+  +-------+  +-------+|
+    /// | | ask   |  | force |  | kill  |  |finish ||
+    /// | | close |  | close |  | close |  |       ||
+    /// | +-------+  +-------+  +-------+  +-------+|
     /// +-------------------------------------------+
 
     /// \note to communicate with a libdar thread, this class relies on a web_user_interaction
     /// objects that manages exclusive access (using mutex) to data structures provided and
     /// requested by libdar.
 
-class html_web_user_interaction: public body_builder, public actor
+class html_web_user_interaction: public body_builder, public actor, public events
 {
 public:
+    	// this class generates the following events:
+    static const std::string ask_end_libdar;      ///< ask_close button has been pressed (graceful ending requested)
+    static const std::string force_end_libdar;    ///< force_close button has been pressed (immediate ending requested)
+    static const std::string kill_libdar_thread;  ///< kill_close button has been pressed (kill thread requested)
+    static const std::string close_libdar_screen; ///< finish button has been pressed
+    static const std::string can_refresh;         ///< last changes makes the object html refreshable
+    static const std::string dont_refresh;        ///< last changes forbid html refresh
+
+	// class constructor assignment ops and destructors
     html_web_user_interaction(unsigned int x_warn_size = 25);
     html_web_user_interaction(const html_web_user_interaction & ref) = delete;
     html_web_user_interaction(html_web_user_interaction && ref) noexcept = delete;
@@ -87,11 +107,14 @@ public:
 	/// clear logs and reset html interface
     void clear();
 
-	/// true if no input is requested from libdar, thus HTML refresh
-	/// can take place
-    bool can_refresh() const { return !h_form.get_visible(); };
+	/// set the component in the finish status
+    void do_finish() { set_mode(finished); };
 
+	/// libdar strcture provided for user interaction
     std::shared_ptr<web_user_interaction> get_user_interaction() { check_libdata(); return lib_data; };
+
+	/// libdar structure provided for user information
+    html_statistics & get_statistics() { return stats; };
 
 protected:
 	/// inherited from body_builder, called by the webdar thread
@@ -101,8 +124,25 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    static const std::string class_button;
+    static const std::string class_web;
+    static const std::string class_inter;
+
+    enum mode_type
+    {
+	normal,        ///< should display web_user_interface, progressive_report and ask_close button
+	end_asked,     ///< should display web_user_interface, progressive_report and force_close button
+	end_forced,    ///< should display web_user_interface, progressive_report and kill_close button
+	kill_forced,   ///< should display web_user_interface, progressive_report (no button)
+	finished       ///< should display web_user_interface, progressive_report, close button
+    };
+
+
 	// fields for exchange with libdar thread
     std::shared_ptr<web_user_interaction> lib_data;
+
+	// current display mode
+    mode_type mode;
 
 	// body_builder fields
     html_form_radio h_pause;      ///< shows when libdar request a yes/no decision from the user
@@ -112,14 +152,22 @@ private:
     html_form h_form;             ///< html_form for the previous/above html fields
     html_text h_warnings;         ///< shows the list of warnings/message from libdar
     html_form_fieldset h_logs;    ///< wraps the h_warnings
-    html_form_fieldset h_global;  ///< wraps the whole output from libdar
+    html_form_fieldset h_global;  ///< wraps the whole output from libdar (before stats ans buttons)
 
-    bool rebuild_body_part; //< set to true if changes occured while building body part, needing a whole rebuild
-    bool ignore_event;      //< if true the on_event() method does not take action
-    bool just_set;          //< true when the control have just been activated and no answer has been provided by the user
+    html_statistics stats;
+    html_button ask_close;        ///< button that shows to query libdar clean shutdown
+    html_button force_close;      ///< button that shows to query libdar immediate shutdown
+    html_button kill_close;       ///< button that shows to query libdar thread kill
+    html_button finish;           ///< button that shows to let the user read last logs before closing
+
+    bool rebuild_body_part; ///< set to true if changes/events occured while building body part, needing a whole rebuild
+    bool ignore_event;      ///< if true the on_event() method does not take any action
+    bool just_set;          ///< true when the control have just been activated by libdar and no answer has been provided by the user
+    bool event_sent;        ///< true if button event haven been propagated for a given get_body_part()
 
     void adjust_visibility();
     void check_libdata() { if(!lib_data) throw WEBDAR_BUG; };
+    void set_mode(mode_type m);
 };
 
 

@@ -35,10 +35,8 @@ extern "C"
     // webdar headers
 #include "html_page.hpp"
 #include "events.hpp"
-#include "html_div.hpp"
+#include "actor.hpp"
 #include "html_web_user_interaction.hpp"
-#include "html_statistics.hpp"
-#include "html_button.hpp"
 
     /// html_libdar_running allow action on a running libdar and provide libdar output
 
@@ -49,73 +47,48 @@ extern "C"
 class html_libdar_running : public html_page, public events, public actor
 {
 public:
-	// this class generates the following events:
-    static const std::string ask_end_libdar;      //< ask_close button has been pressed (graceful ending requested)
-    static const std::string force_end_libdar;    //< force_close button has been pressed (immediate ending requested)
-    static const std::string kill_libdar_thread;  //< kill_close button has been pressed (kill thread requested)
-    static const std::string close_libdar_screen; //< finish button has been pressed
+    	// this class generates the following events:
+    static const std::string ask_end_libdar;      ///< ask_close button has been pressed (graceful ending requested)
+    static const std::string force_end_libdar;    ///< force_close button has been pressed (immediate ending requested)
+    static const std::string kill_libdar_thread;  ///< kill_close button has been pressed (kill thread requested)
+    static const std::string close_libdar_screen; ///< finish button has been pressed
 
-
-	/// constructor
+	// constructor
     html_libdar_running();
-    html_libdar_running(const html_libdar_running & ref) = default;
-    html_libdar_running(html_libdar_running && ref) noexcept = default;
-    html_libdar_running & operator = (const html_libdar_running & ref) = default;
-    html_libdar_running & operator = (html_libdar_running && ref) noexcept = default;
+    html_libdar_running(const html_libdar_running & ref) = delete;
+    html_libdar_running(html_libdar_running && ref) noexcept = delete;
+    html_libdar_running & operator = (const html_libdar_running & ref) = delete;
+    html_libdar_running & operator = (html_libdar_running && ref) noexcept = delete;
     ~html_libdar_running() = default;
 
 	/// clear logs and reset counters
-    void clear();
+    void clear() { web_ui.clear(); };
 
 	/// be informed of the end of libdar thread
-    void libdar_has_finished() { set_mode(finished); set_title(webdar_tools_get_title(sessname, "Webdar - Libdar has ended")); };
-
-	/// provide objects for libdar execution
-    std::shared_ptr<web_user_interaction> get_user_interaction() { return web_ui.get_user_interaction(); };
-    html_statistics & get_statistics() { return stats; };
+    void libdar_has_finished() { web_ui.do_finish(); set_title(webdar_tools_get_title(sessname, "Webdar - Libdar has ended")); };
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
 	/// defines the name of the session
-    void set_session_name(const std::string & name) { sessname = name; };
+    void set_session_name(const std::string & name) { sessname = name; set_title(webdar_tools_get_title(sessname, "Libdar is running")); };
+
+	/// propagate request to web_ui
+    std::shared_ptr<web_user_interaction> get_user_interaction() { return web_ui.get_user_interaction(); };
+
+	/// propagate request to web_ui
+    html_statistics & get_statistics() { return web_ui.get_statistics(); };
 
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
-	// inherited from body_builder
-    virtual void new_css_library_available() override;
-
 private:
-    enum mode_type
-    {
-	normal,        //< should display web_user_interface, progressive_report and ask_close button
-	end_asked,     //< should display web_user_interface, progressive_report and force_close button
-	end_forced,    //< should display web_user_interface, progressive_report and kill_close button
-	kill_forced,   //< should display web_user_interface, progressive_report (no button)
-	finished       //< should display web_user_interface, progressive_report, close button
-    };
-
-    static const std::string class_global;
-    static const std::string class_web;
-    static const std::string class_button;
-
     std::string sessname;
-    mode_type mode;
-    html_div global;
     html_web_user_interaction web_ui;
-    html_statistics stats;
-    html_button ask_close;
-    html_button force_close;
-    html_button kill_close;
-    html_button finish;
-    bool visibility_has_changed; //< true whether a html component had its visibility changed
-
-    void set_mode(mode_type m);
+    bool finished;
+    bool enable_refresh;
 };
 
-
 #endif
-
