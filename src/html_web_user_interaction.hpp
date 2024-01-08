@@ -114,7 +114,7 @@ public:
     std::shared_ptr<web_user_interaction> get_user_interaction() { check_libdata(); return lib_data; };
 
 	/// libdar structure provided for user information
-    html_statistics & get_statistics() { return stats; };
+    html_statistics & get_statistics() { stats.set_visible(true); return stats; };
 
 protected:
 	/// inherited from body_builder, called by the webdar thread

@@ -68,10 +68,18 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     if(!lib_data)
 	throw exception_memory();
 
+	// status fields
+    rebuild_body_part = false;
+    ignore_event = false;
+    just_set = false;
+    event_sent = false;
+
+
     h_pause.add_choice("undefined", "please answer yes or no");
     h_pause.add_choice("no", "No");
     h_pause.add_choice("yes", "Yes");
 
+	// adoption tree
     h_inter.adopt(&h_inter_text);
     h_inter.adopt(&h_pause);
     h_form.adopt(&h_inter);
@@ -85,13 +93,6 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     h_global.adopt(&kill_close);
     h_global.adopt(&finish);
     adopt(&h_global);
-
-	// visibility
-
-    h_inter.set_visible(false);
-    h_get_string.set_visible(false);
-    h_form.set_visible(false);
-    set_mode(normal);
 
 	// events
     register_name(ask_end_libdar);
@@ -108,10 +109,8 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     kill_close.record_actor_on_event(this, kill_libdar_thread);
     finish.record_actor_on_event(this, close_libdar_screen);
 
-    rebuild_body_part = false;
-    ignore_event = false;
-    just_set = false;
-    event_sent = false;
+	// visibility
+    clear();
 
 	// css
     h_inter_text.add_css_class(class_inter);
@@ -307,6 +306,8 @@ void html_web_user_interaction::clear()
     h_inter.set_visible(false);
     h_get_string.set_visible(false);
     adjust_visibility();
+    stats.clear_counters();
+    stats.set_visible(false);
     set_mode(normal);
     stats.clear_counters();
     stats.clear_labels();
@@ -395,6 +396,7 @@ void html_web_user_interaction::set_mode(mode_type m)
 	force_close.set_visible(false);
 	kill_close.set_visible(false);
 	finish.set_visible(true);
+	act(dont_refresh);
 	break;
     default:
 	throw WEBDAR_BUG;
