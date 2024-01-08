@@ -45,6 +45,13 @@ html_statistics::html_statistics()
 
 }
 
+void html_statistics::clear_counters()
+{
+    stats.clear();
+    update_html_counters();
+}
+
+
 void html_statistics::clear_labels()
 {
     treated_lbl.clear();
@@ -62,61 +69,18 @@ void html_statistics::clear_labels()
 string html_statistics::inherited_get_body_part(const chemin & path,
 						const request & req)
 {
-    if(treated_lbl.get_body_part() != "")
+    ack_visible();
+    if(get_visible())
     {
-	treated_count.clear();
-	treated_count.add_text(0, libdar::deci(stats.get_treated()).human());
-    }
-    if(hard_links_lbl.get_body_part() != "")
-    {
-	hard_links_count.clear();
-	hard_links_count.add_text(0, libdar::deci(stats.get_hard_links()).human());
-    }
-    if(skipped_lbl.get_body_part() != "")
-    {
-	skipped_count.clear();
-	skipped_count.add_text(0, libdar::deci(stats.get_skipped()).human());
-    }
-    if(ignored_lbl.get_body_part() != "")
-    {
-	ignored_count.clear();
-	ignored_count.add_text(0, libdar::deci(stats.get_ignored()).human());
-    }
-    if(tooold_lbl.get_body_part() != "")
-    {
-	tooold_count.clear();
-	tooold_count.add_text(0, libdar::deci(stats.get_tooold()).human());
-    }
-    if(errored_lbl.get_body_part() != "")
-    {
-	errored_count.clear();
-	errored_count.add_text(0, libdar::deci(stats.get_errored()).human());
-    }
-    if(deleted_lbl.get_body_part() != "")
-    {
-	deleted_count.clear();
-	deleted_count.add_text(0, libdar::deci(stats.get_deleted()).human());
-    }
-    if(ea_treated_lbl.get_body_part() != "")
-    {
-	ea_treated_count.clear();
-	ea_treated_count.add_text(0, libdar::deci(stats.get_ea_treated()).human());
-    }
-    if(byte_amount_lbl.get_body_part() != "")
-    {
-	byte_amount_count.clear();
-	byte_amount_count.add_text(0, libdar::deci(stats.get_byte_amount()).human());
-    }
-    if(total_lbl.get_body_part() != "")
-    {
-	total_count.clear();
-	total_count.add_text(0, libdar::deci(stats.total()).human());
-    }
+	update_html_counters();
 
-    if(table == nullptr)
-	build();
+	if(table == nullptr)
+	    build();
 
-    return get_body_part_from_all_children(path, req);
+	return get_body_part_from_all_children(path, req);
+    }
+    else
+	return "";
 }
 
 void html_statistics::new_css_library_available()
@@ -239,5 +203,60 @@ void html_statistics::unbuild()
     {
 	delete table;
 	table = nullptr;
+    }
+}
+
+
+void html_statistics::update_html_counters()
+{
+    if(treated_lbl.get_body_part() != "")
+    {
+	treated_count.clear();
+	treated_count.add_text(0, libdar::deci(stats.get_treated()).human());
+    }
+    if(hard_links_lbl.get_body_part() != "")
+    {
+	hard_links_count.clear();
+	hard_links_count.add_text(0, libdar::deci(stats.get_hard_links()).human());
+    }
+    if(skipped_lbl.get_body_part() != "")
+    {
+	skipped_count.clear();
+	skipped_count.add_text(0, libdar::deci(stats.get_skipped()).human());
+    }
+    if(ignored_lbl.get_body_part() != "")
+    {
+	ignored_count.clear();
+	ignored_count.add_text(0, libdar::deci(stats.get_ignored()).human());
+    }
+    if(tooold_lbl.get_body_part() != "")
+    {
+	tooold_count.clear();
+	tooold_count.add_text(0, libdar::deci(stats.get_tooold()).human());
+    }
+    if(errored_lbl.get_body_part() != "")
+    {
+	errored_count.clear();
+	errored_count.add_text(0, libdar::deci(stats.get_errored()).human());
+    }
+    if(deleted_lbl.get_body_part() != "")
+    {
+	deleted_count.clear();
+	deleted_count.add_text(0, libdar::deci(stats.get_deleted()).human());
+    }
+    if(ea_treated_lbl.get_body_part() != "")
+    {
+	ea_treated_count.clear();
+	ea_treated_count.add_text(0, libdar::deci(stats.get_ea_treated()).human());
+    }
+    if(byte_amount_lbl.get_body_part() != "")
+    {
+	byte_amount_count.clear();
+	byte_amount_count.add_text(0, libdar::deci(stats.get_byte_amount()).human());
+    }
+    if(total_lbl.get_body_part() != "")
+    {
+	total_count.clear();
+	total_count.add_text(0, libdar::deci(stats.total()).human());
     }
 }

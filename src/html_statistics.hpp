@@ -50,7 +50,7 @@ public:
     html_statistics operator = (html_statistics && ref) noexcept = delete;
     ~html_statistics() { unbuild(); };
 
-    void clear_counters() { stats.clear(); };
+    void clear_counters();
     void clear_labels();
 
 	// fields that do not get a label are not shown
@@ -113,6 +113,9 @@ private:
 
 	/// destroy the table to force a build() at the next cycle
     void unbuild();
+
+	/// update html filed from libdar "stats" data structure
+    void update_html_counters();
 };
 
 #endif
