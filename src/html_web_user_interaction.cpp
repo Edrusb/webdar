@@ -306,11 +306,10 @@ void html_web_user_interaction::clear()
     h_inter.set_visible(false);
     h_get_string.set_visible(false);
     adjust_visibility();
-    stats.clear_counters();
-    stats.set_visible(false);
     set_mode(normal);
     stats.clear_counters();
     stats.clear_labels();
+    stats.set_visible(false);
 }
 
 void html_web_user_interaction::new_css_library_available()
