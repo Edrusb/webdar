@@ -140,7 +140,7 @@ public:
 	/// defines the name of the session
 	///
 	/// \note this call does not trigger any event
-    void set_session_name(const std::string & name) { session_name.set_value(name); };
+    void set_session_name(const std::string & name) { session_name.set_value(name); act(changed_session_name); };
 
 	/// get the current session name
     std::string get_session_name() const { return session_name.get_value(); };
