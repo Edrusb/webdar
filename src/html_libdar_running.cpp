@@ -37,30 +37,20 @@ extern "C"
 
 using namespace std;
 
-const string html_libdar_running::ask_end_libdar = "html_libdar_running_ask_end_libdar";
-const string html_libdar_running::force_end_libdar = "html_libdar_running_force_end_libdar";
-const string html_libdar_running::kill_libdar_thread = "html_libdar_running_kill_libdar_thread";
-const string html_libdar_running::close_libdar_screen = "html_libdar_running_close_libdar_screen";
+const string html_libdar_running::libdar_has_finished = "html_libdar_running_finished";
 
 
 html_libdar_running::html_libdar_running():
     html_page("THIS IS A BUG"),
     sessname(""),
-    finished(false),
     enable_refresh(true)
 {
     adopt(&web_ui);
 
 	// signals and events
-    register_name(ask_end_libdar);
-    register_name(force_end_libdar);
-    register_name(kill_libdar_thread);
-    register_name(close_libdar_screen);
+    register_name(libdar_has_finished);
 
-    web_ui.record_actor_on_event(this, html_web_user_interaction::ask_end_libdar);
-    web_ui.record_actor_on_event(this, html_web_user_interaction::force_end_libdar);
-    web_ui.record_actor_on_event(this, html_web_user_interaction::kill_libdar_thread);
-    web_ui.record_actor_on_event(this, html_web_user_interaction::close_libdar_screen);
+    web_ui.record_actor_on_event(this, html_web_user_interaction::libdar_has_finished);
     web_ui.record_actor_on_event(this, html_web_user_interaction::can_refresh);
     web_ui.record_actor_on_event(this, html_web_user_interaction::dont_refresh);
 }
@@ -82,25 +72,10 @@ string html_libdar_running::inherited_get_body_part(const chemin & path,
 
 void html_libdar_running::on_event(const std::string & event_name)
 {
-    if(event_name == html_web_user_interaction::ask_end_libdar)
+    if(event_name == html_web_user_interaction::libdar_has_finished)
     {
-	set_title(webdar_tools_get_title(sessname, "Libdar is gracefully ending"));
-	act(ask_end_libdar);
-    }
-    else if(event_name == html_web_user_interaction::force_end_libdar)
-    {
-	set_title(webdar_tools_get_title(sessname, "Libdar is immediately ending"));
-	act(force_end_libdar);
-    }
-    else if(event_name == html_web_user_interaction::kill_libdar_thread)
-    {
-	set_title(webdar_tools_get_title(sessname, "Libdar thread is being killed"));
-	act(force_end_libdar);
-    }
-    else if(event_name == html_web_user_interaction::close_libdar_screen)
-    {
-	bool finished = true;
-	act(close_libdar_screen);
+	set_title(webdar_tools_get_title(sessname, "Libdar thread has ended"));
+	act(libdar_has_finished);
     }
     else if(event_name == html_web_user_interaction::can_refresh)
 	enable_refresh = true;
