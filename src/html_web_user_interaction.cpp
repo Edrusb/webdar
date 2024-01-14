@@ -64,18 +64,17 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     ask_close("Gracefully stop libdar", ask_end_libdar),
     force_close("Immediately stop libdar", force_end_libdar),
     kill_close("Kill libdar thread", kill_libdar_thread),
-    finish("Close", close_libdar_screen)
+    finish("Close", close_libdar_screen),
+    rebuild_body_part(false),
+    ignore_event(false),
+    just_set(false),
+    managed_thread(nullptr)
 {
     lib_data.reset(new (nothrow) web_user_interaction(x_warn_size));
     if(!lib_data)
 	throw exception_memory();
 
 	// status fields
-    rebuild_body_part = false;
-    ignore_event = false;
-    just_set = false;
-    event_sent = false;
-
 
     h_pause.add_choice("undefined", "please answer yes or no");
     h_pause.add_choice("no", "No");
@@ -97,10 +96,7 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     adopt(&h_global);
 
 	// events
-    register_name(ask_end_libdar);
-    register_name(force_end_libdar);
-    register_name(kill_libdar_thread);
-    register_name(close_libdar_screen);
+    register_name(libdar_has_finished);
     register_name(can_refresh);
     register_name(dont_refresh);
 
@@ -111,7 +107,7 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     kill_close.record_actor_on_event(this, kill_libdar_thread);
     finish.record_actor_on_event(this, close_libdar_screen);
 
-	// visibility
+	// visibility and object status
     clear();
 
 	// css
@@ -136,15 +132,261 @@ string html_web_user_interaction::inherited_get_body_part(const chemin & path,
 {
     string ret;
 
-	// in the following we need to ignore on_event() calls to be able to
+	// keep trace of these libdar side component changes
+    just_set = false;
+	// just set is read on_events() which can be triggered by get_body_part_from_all_children() invoked below
+	// and also read by adjust_visibility() also invoked below.
+
+	// updating components from libdar status (may set just_set field)
+
+    update_html_from_libdar_status();
+
+	// monitoring libdar thread status
+
+    if(managed_thread != nullptr && ! managed_thread->is_running())
+    {
+	if(mode != finished)
+	{
+	    try
+	    {
+		managed_thread->join();
+		set_mode(finished); // this will set managed_thread to nullptr
+	    }
+	    catch(exception_base & e)
+	    {
+		e.change_message(string("Error reported from libdar: ") + e.get_message());
+		throw;
+	    }
+	}
+    }
+
+    	// update visibility status
+    ack_visible();
+    if(! get_visible() && managed_thread == nullptr)
+	return ret; // component accept to stay hidden only if not thread is managed
+
+	    // now we return to the user the updated html interface
+	    // any event triggered during that first generation and may
+	    // need further re-display (rebuild_body_part is set to true in that case)
+
+    rebuild_body_part = false; // libdar change lead compoents to change
+    adjust_visibility();
+    ret = get_body_part_from_all_children(path, req);
+    if(rebuild_body_part)
+    {
+	adjust_visibility();
+	ret = get_body_part_from_all_children(path, req);
+    }
+
+    return ret;
+}
+
+void html_web_user_interaction::on_event(const std::string & event_name)
+{
+    check_libdata();
+
+    if(!ignore_event)
+    {
+	if(event_name == html_form_radio::changed
+	   || event_name == html_form_input::changed)
+	{
+	    if(h_inter.get_visible() && !just_set)
+	    {
+		if(h_pause.get_selected_num() != 0)
+		{
+		    lib_data->set_pause_answer(h_pause.get_selected_num() == 2);
+		    h_inter.set_visible(false);
+		    rebuild_body_part = true;
+		}
+		    // else we do nothing here
+	    }
+
+	    if(h_get_string.get_visible() && !just_set)
+	    {
+		string tmpm;
+		bool tmpe;
+		if(lib_data->pending_get_string(tmpm, tmpe))
+		{
+		    lib_data->set_get_string_answer(h_get_string.get_value());
+		    h_get_string.set_visible(false);
+		    rebuild_body_part = true;
+		}
+		else
+		{
+		    if(lib_data->pending_get_secu_string(tmpm, tmpe))
+		    {
+			lib_data->set_get_secu_string_answer(libdar::secu_string(h_get_string.get_value().c_str(), h_get_string.get_value().size()));
+			h_get_string.set_visible(false);
+			rebuild_body_part = true;
+		    }
+		    else
+			throw WEBDAR_BUG;
+		}
+	    }
+	}
+	else if(event_name == ask_end_libdar)
+	    set_mode(end_asked);
+	else if(event_name == force_end_libdar)
+	    set_mode(end_forced);
+	else if(event_name == kill_libdar_thread)
+	    set_mode(kill_forced);
+	else if(event_name == close_libdar_screen)
+	    set_mode(closed);
+	else
+	    throw WEBDAR_BUG;
+    }
+}
+
+void html_web_user_interaction::clear()
+{
+    check_libdata();
+    lib_data->clear();
+    h_inter.set_visible(false);
+    h_get_string.set_visible(false);
+    adjust_visibility();
+    stats.clear_counters();
+    stats.clear_labels();
+    hide_statistics();
+    set_mode(normal);
+}
+
+void html_web_user_interaction::new_css_library_available()
+{
+    css tmp;
+
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    if(! csslib->class_exists(class_inter))
+    {
+	tmp.css_font_weight_bold();
+	tmp.css_color("blue");
+	define_css_class_in_library(class_inter, tmp);
+
+	tmp.clear();
+	tmp.css_width("90%", true);
+	csslib->add(class_web, tmp);
+
+	tmp.clear();
+	tmp.css_float(css::fl_right);
+	tmp.css_float_clear(css::fc_both);
+	tmp.css_margin_right("1em");
+	csslib->add(class_button, tmp);
+    }
+    else
+    {
+	if(! csslib->class_exists(class_web)
+	   || ! csslib->class_exists(class_button))
+	    throw WEBDAR_BUG;
+    }
+
+    webdar_css_style::update_library(*csslib);
+}
+
+void html_web_user_interaction::adjust_visibility()
+{
+    if(h_get_string.get_next_visible() || h_inter.get_next_visible() || just_set)
+    {
+	h_form.set_visible(true);
+	act(dont_refresh);
+    }
+    else
+    {
+	h_form.set_visible(false);
+	if(mode != finished)
+	    act(can_refresh);
+    }
+}
+
+void html_web_user_interaction::set_mode(mode_type m)
+{
+    if(m == mode)
+	return;
+
+    switch(m)
+    {
+    case normal:
+	ask_close.set_visible(true);
+	force_close.set_visible(false);
+	kill_close.set_visible(false);
+	finish.set_visible(false);
+	break;
+    case end_asked:
+	ask_close.set_visible(false);
+	force_close.set_visible(true);
+	kill_close.set_visible(false);
+	finish.set_visible(false);
+	if(managed_thread != nullptr)
+	{
+	    pthread_t libdar_tid;
+	    if(managed_thread->is_running(libdar_tid))
+	    {
+		libdar::thread_cancellation th;
+		th.cancel(libdar_tid, false, 0);
+	    }
+	}
+	break;
+    case end_forced:
+	ask_close.set_visible(false);
+	force_close.set_visible(false);
+	kill_close.set_visible(true);
+	finish.set_visible(false);
+	if(managed_thread != nullptr)
+	{
+	    pthread_t libdar_tid;
+	    if(managed_thread->is_running(libdar_tid))
+	    {
+		libdar::thread_cancellation th;
+		th.cancel(libdar_tid, true, 0);
+	    }
+	}
+	break;
+    case kill_forced:
+	ask_close.set_visible(false);
+	force_close.set_visible(false);
+	kill_close.set_visible(false);
+	finish.set_visible(false);
+	if(managed_thread != nullptr)
+	{
+	    pthread_t libdar_tid;
+	    if(managed_thread->is_running(libdar_tid))
+		managed_thread->kill();
+	}
+	act(can_refresh);
+	break;
+    case finished:
+	ask_close.set_visible(false);
+	force_close.set_visible(false);
+	kill_close.set_visible(false);
+	finish.set_visible(true);
+	act(dont_refresh);
+	managed_thread = nullptr;
+	if(!autohide)
+	    break;
+	else // if auto hide is set, we go to the closed status
+	    m = closed;
+	    // no break!
+    case closed:
+	set_visible(false);
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+
+    mode = m;
+}
+
+
+void html_web_user_interaction::update_html_from_libdar_status()
+{
+    check_libdata();
+
+    	// in the following we need to ignore on_event() calls to be able to
 	// se the html_interface without considering it as
 	// an interaction from the user
-    ignore_event = true; // we're about to change our own component which will trigger events, si we ignore them here
-    just_set = false;   // keep trace of these libdar side component changes
-    event_sent = false; // keep trace if an event is sent to avoid duplicate
 
-	// fetching libdar status and updating our components from libdar
-    check_libdata();
+    ignore_event = true; // we're about to change our own component which may trigger events, we ignore them here
     try
     {
 	list<string> logs = lib_data->get_warnings();
@@ -208,200 +450,4 @@ string html_web_user_interaction::inherited_get_body_part(const chemin & path,
 	throw;
     }
     ignore_event = false;
-	// libdar status have been updated
-
-	// now we return to the user the updated html interface
-	// any event is a user event and may need further display
-
-    rebuild_body_part = false; // libdar change lead compoents to change
-    adjust_visibility();
-    ret = get_body_part_from_all_children(path, req);
-    if(rebuild_body_part)
-    {
-	adjust_visibility();
-	ret = get_body_part_from_all_children(path, req);
-    }
-
-    return ret;
-}
-
-void html_web_user_interaction::on_event(const std::string & event_name)
-{
-    check_libdata();
-
-    if(!ignore_event)
-    {
-	if(event_name == html_form_radio::changed
-	   || event_name == html_form_input::changed)
-	{
-	    if(h_inter.get_visible() && !just_set)
-	    {
-		if(h_pause.get_selected_num() != 0)
-		{
-		    lib_data->set_pause_answer(h_pause.get_selected_num() == 2);
-		    h_inter.set_visible(false);
-		    rebuild_body_part = true;
-		}
-		    // else we do nothing here
-	    }
-
-	    if(h_get_string.get_visible() && !just_set)
-	    {
-		string tmpm;
-		bool tmpe;
-		if(lib_data->pending_get_string(tmpm, tmpe))
-		{
-		    lib_data->set_get_string_answer(h_get_string.get_value());
-		    h_get_string.set_visible(false);
-		    rebuild_body_part = true;
-		}
-		else
-		{
-		    if(lib_data->pending_get_secu_string(tmpm, tmpe))
-		    {
-			lib_data->set_get_secu_string_answer(libdar::secu_string(h_get_string.get_value().c_str(), h_get_string.get_value().size()));
-			h_get_string.set_visible(false);
-			rebuild_body_part = true;
-		    }
-		    else
-			throw WEBDAR_BUG;
-		}
-	    }
-	}
-	else
-	{
-	    if(! event_sent) // avoid sending twice the event in case of visibility change
-	    {
-		event_sent = true;
-
-		switch(mode)
-		{
-		case normal:
-		    if(event_name == ask_end_libdar)
-			set_mode(end_asked);
-		    break;
-		case end_asked:
-		    if(event_name == force_end_libdar)
-			set_mode(end_forced);
-		    break;
-		case end_forced:
-		    if(event_name == kill_libdar_thread)
-			set_mode(kill_forced);
-		    break;
-		case kill_forced:
-		    break; // nothing to do
-		case finished:
-		    break; // mode already changed by the finish() method
-		default:
-		    throw WEBDAR_BUG;
-		}
-		act(event_name);  // propagate the event from inner buttons
-	    }
-	}
-    }
-}
-
-void html_web_user_interaction::clear()
-{
-    check_libdata();
-    lib_data->clear();
-    h_inter.set_visible(false);
-    h_get_string.set_visible(false);
-    adjust_visibility();
-    set_mode(normal);
-    stats.clear_counters();
-    stats.clear_labels();
-    stats.set_visible(false);
-}
-
-void html_web_user_interaction::new_css_library_available()
-{
-    css tmp;
-
-    unique_ptr<css_library> & csslib = lookup_css_library();
-    if(!csslib)
-	throw WEBDAR_BUG;
-
-    if(! csslib->class_exists(class_inter))
-    {
-	tmp.css_font_weight_bold();
-	tmp.css_color("blue");
-	define_css_class_in_library(class_inter, tmp);
-
-	tmp.clear();
-	tmp.css_width("90%", true);
-	csslib->add(class_web, tmp);
-
-	tmp.clear();
-	tmp.css_float(css::fl_right);
-	tmp.css_float_clear(css::fc_both);
-	tmp.css_margin_right("1em");
-	csslib->add(class_button, tmp);
-    }
-    else
-    {
-	if(! csslib->class_exists(class_web)
-	   || ! csslib->class_exists(class_button))
-	    throw WEBDAR_BUG;
-    }
-
-    webdar_css_style::update_library(*csslib);
-}
-
-void html_web_user_interaction::adjust_visibility()
-{
-    if(h_get_string.get_next_visible() || h_inter.get_next_visible() || just_set)
-    {
-	h_form.set_visible(true);
-	act(dont_refresh);
-    }
-    else
-    {
-	h_form.set_visible(false);
-	if(mode != finished)
-	    act(can_refresh);
-    }
-}
-
-void html_web_user_interaction::set_mode(mode_type m)
-{
-    switch(m)
-    {
-    case normal:
-	ask_close.set_visible(true);
-	force_close.set_visible(false);
-	kill_close.set_visible(false);
-	finish.set_visible(false);
-	break;
-    case end_asked:
-	ask_close.set_visible(false);
-	force_close.set_visible(true);
-	kill_close.set_visible(false);
-	finish.set_visible(false);
-	break;
-    case end_forced:
-	ask_close.set_visible(false);
-	force_close.set_visible(false);
-	kill_close.set_visible(true);
-	finish.set_visible(false);
-	break;
-    case kill_forced:
-	ask_close.set_visible(false);
-	force_close.set_visible(false);
-	kill_close.set_visible(false);
-	finish.set_visible(false);
-	act(can_refresh);
-	break;
-    case finished:
-	ask_close.set_visible(false);
-	force_close.set_visible(false);
-	kill_close.set_visible(false);
-	finish.set_visible(true);
-	act(dont_refresh);
-	break;
-    default:
-	throw WEBDAR_BUG;
-    }
-
-    mode = m;
 }
