@@ -152,7 +152,7 @@ public:
 	/// the web_user_interaction object returned by the get_user_interaction() method, for libdar
 	/// to also interact with the user (display message, ask questions), using this
 	/// html_web_user_interaction.
-    void run_and_control_thread(libthreadar::thread *arg) { managed_thread = arg; arg->run(); };
+    void run_and_control_thread(libthreadar::thread* arg) { managed_thread = arg; arg->run(); };
 
 protected:
 	/// inherited from body_builder, called by the webdar thread
