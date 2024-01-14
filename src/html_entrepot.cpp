@@ -136,53 +136,39 @@ html_entrepot::html_entrepot():
 }
 
 
-shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(const shared_ptr<libdar::user_interaction> & dialog) const
+void html_entrepot::prepare_get_entrepot(std::shared_ptr<html_web_user_interaction> & webui)
 {
-    shared_ptr<libdar::entrepot> ret;
-    libdar::mycurl_protocol proto;
-
-    switch(repo_type.get_selected_num())
-    {
-    case 0:
-	ret.reset(new (nothrow) libdar::entrepot_local("", "", true));
-	break;
-    case 1:
-    case 2:
-	switch(repo_type.get_selected_num())
-	{
-	case 1:
-	    proto = libdar::proto_ftp;
-	    break;
-	case 2:
-	    proto = libdar::proto_sftp;
-	    break;
-	default:
-	    throw WEBDAR_BUG;
-	}
-
-	ret.reset(new (nothrow) libdar::entrepot_libcurl(dialog,
-							 proto,
-							 login.get_value(),
-							 libdar::secu_string(pass.get_value().c_str(), pass.get_value().size()),
-							 host.get_value(),
-							 port.get_value(),
-							 auth_from_file.get_value_as_bool(),
-							 string("/root/.ssh/id_rsa.pub"), ///<< to review with env variables
-							 string("/root/.ssh/id_rsa"), ///< to review with env variables
-							 knownhosts_check.get_value_as_bool() ? "" : known_hosts_file.get_value(),
-							 libdar::U_I(webdar_tools_convert_to_int(wait_time.get_value())),
-							 verbose.get_value_as_bool()));
-	break;
-    default:
+    if(!webui)
 	throw WEBDAR_BUG;
-    }
 
-    if(!ret)
-	throw exception_memory();
+    webui->clear();
+    webui->auto_hide(true);
 
-    return ret;
+    if(dialog)
+	throw WEBDAR_BUG;
+	// should not point to anything or this method has been called
+	// before the thread has completed
+    dialog = webui->get_user_interaction();
+    if(!dialog)
+	throw WEBDAR_BUG;
+
+    webui->run_and_control_thread(this);
 }
 
+
+shared_ptr<libdar::entrepot> html_entrepot::get_entrepot() const
+{
+    if(is_running())
+	throw WEBDAR_BUG;
+
+    if(dialog)
+	throw WEBDAR_BUG; // should be cleared when the thread has completed
+
+    if(!entrep)
+	throw WEBDAR_BUG; // we should now have a entrepot to return
+
+    return entrep;
+}
 
 void html_entrepot::on_event(const std::string & event_name)
 {
@@ -208,6 +194,61 @@ std::string html_entrepot::inherited_get_body_part(const chemin & path,
     }
 
     return ret;
+}
+
+void html_entrepot::inherited_run()
+{
+    if(!dialog)
+	throw WEBDAR_BUG;
+    try
+    {
+	libdar::mycurl_protocol proto;
+
+	switch(repo_type.get_selected_num())
+	{
+	case 0:
+	    entrep.reset(new (nothrow) libdar::entrepot_local("", "", true));
+	    break;
+	case 1:
+	case 2:
+	    switch(repo_type.get_selected_num())
+	    {
+	    case 1:
+		proto = libdar::proto_ftp;
+		break;
+	    case 2:
+		proto = libdar::proto_sftp;
+		break;
+	    default:
+		throw WEBDAR_BUG;
+	    }
+
+	    entrep.reset(new (nothrow) libdar::entrepot_libcurl(dialog,
+								proto,
+								login.get_value(),
+								libdar::secu_string(pass.get_value().c_str(), pass.get_value().size()),
+								host.get_value(),
+								port.get_value(),
+								auth_from_file.get_value_as_bool(),
+								string("/root/.ssh/id_rsa.pub"), ///<< to review with env variables
+								string("/root/.ssh/id_rsa"), ///< to review with env variables
+								knownhosts_check.get_value_as_bool() ? "" : known_hosts_file.get_value(),
+								libdar::U_I(webdar_tools_convert_to_int(wait_time.get_value())),
+								verbose.get_value_as_bool()));
+	    break;
+	default:
+	    throw WEBDAR_BUG;
+	}
+
+	if(!entrep)
+	    throw exception_memory();
+    }
+    catch(...)
+    {
+	dialog.reset();
+	throw;
+    }
+    dialog.reset();
 }
 
 void html_entrepot::update_visible()
