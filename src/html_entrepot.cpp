@@ -62,9 +62,9 @@ html_entrepot::html_entrepot():
     got_inner_event = false;
 
 	// component configuration
-    repo_type.add_choice(type_local, "local filesystem");
-    repo_type.add_choice(type_ftp, "FTP protocol (unciphered)");
-    repo_type.add_choice(type_sftp, "SFTP protocol (ciphered)");
+    repo_type.add_choice(type_local, "local filesystem");         // index 0
+    repo_type.add_choice(type_ftp, "FTP protocol (unciphered)");  // index 1
+    repo_type.add_choice(type_sftp, "SFTP protocol (ciphered)");  // index 2
     repo_type.set_selected(0);
 
     auth_type.add_choice(auth_pass, "Password authentication");
@@ -136,38 +136,40 @@ html_entrepot::html_entrepot():
 }
 
 
-void html_entrepot::prepare_get_entrepot(std::shared_ptr<html_web_user_interaction> & webui)
+std::shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(std::shared_ptr<html_web_user_interaction> & webui) const
 {
+    std::shared_ptr<libdar::entrepot> ret;
+
     if(!webui)
 	throw WEBDAR_BUG;
 
     webui->clear();
     webui->auto_hide(true);
 
-    if(dialog)
-	throw WEBDAR_BUG;
-	// should not point to anything or this method has been called
-	// before the thread has completed
     dialog = webui->get_user_interaction();
     if(!dialog)
 	throw WEBDAR_BUG;
 
-    webui->run_and_control_thread(this);
-}
-
-
-shared_ptr<libdar::entrepot> html_entrepot::get_entrepot() const
-{
-    if(is_running())
-	throw WEBDAR_BUG;
-
-    if(dialog)
-	throw WEBDAR_BUG; // should be cleared when the thread has completed
+    webui->run_and_control_thread(const_cast<html_entrepot*>(this)); // this launches a new thread running inherited_run() and the caller returns
+    join();
+	// we join() ourself, yes, we wait here for the thread launched above to complete or be interrupted
+	// multi-threading is needed here to pass a thread-id for libdar and html_web_user_interaction to be
+	// able to interrupt it gracefully. We cannot interrupt the calling/current thread which may be the
+	// program main thread. However webui should have it get_body_part() running from another thread to
+	// display and update the libdar::user_interaction it contains.
 
     if(!entrep)
-	throw WEBDAR_BUG; // we should now have a entrepot to return
+	throw WEBDAR_BUG;
+	// if an error had to succeed, an exception should be propagated from the join() above
+	// as this is not the case (there is no try/catch statement to catch it here) the inherited_run
+	// succeeded but did not provide a libdar::entrepot as it should
+    else
+    {
+	ret = entrep;
+	entrep.reset();
+    }
 
-    return entrep;
+    return ret;
 }
 
 void html_entrepot::on_event(const std::string & event_name)

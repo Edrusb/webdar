@@ -57,13 +57,10 @@ public:
     ~html_entrepot() = default;
 
 	/// run the entrepot building in a dedicated thread and display/control this thread
-	/// from the provided html_web_user_interaction object. Once completed, the event "finished"
-	/// is used to let the caller run get_entrepot() to obtain the generated object
-	/// \note this call returns right after the thread has started (not waiting for its termination)
-    void prepare_get_entrepot(std::shared_ptr<html_web_user_interaction> & webui);
 
-	/// available after prepare_get_entrepot() method once the event finished has been triggered
-    std::shared_ptr<libdar::entrepot> get_entrepot() const;
+	/// from the provided html_web_user_interaction object, which must run from another
+	/// thread than the one calling this method for the user to be able to interrupt the operation
+    std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> & webui) const;
 
 	// inherited from actor parent class
     virtual void on_event(const std::string & event_name) override;
@@ -101,8 +98,8 @@ private:
     html_form_input wait_time; // ftp and sftp
     html_form_input verbose;   // ftp and sftp
 
-    std::shared_ptr<libdar::user_interaction> dialog; ///< used by inherited_run
-    std::shared_ptr<libdar::entrepot> entrep;         ///< set by inherited_run
+    mutable std::shared_ptr<libdar::user_interaction> dialog; ///< used by inherited_run
+    mutable std::shared_ptr<libdar::entrepot> entrep;         ///< set by inherited_run
 
     void update_visible();
 
