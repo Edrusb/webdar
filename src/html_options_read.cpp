@@ -136,7 +136,7 @@ html_options_read::html_options_read():
     webdar_css_style::grey_button(deroule, true);
 }
 
-const libdar::archive_options_read & html_options_read::get_options(const shared_ptr<libdar::user_interaction> & dialog) const
+const libdar::archive_options_read & html_options_read::get_options(shared_ptr<html_web_user_interaction> & webui) const
 {
     opts.clear();
     opts.set_crypto_algo(src_crypto_algo.get_value());
@@ -147,7 +147,7 @@ const libdar::archive_options_read & html_options_read::get_options(const shared
     }
     opts.set_execute(src_execute.get_value());
     opts.set_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(src_slice_min_digits.get_value())));
-    opts.set_entrepot(entrep.get_entrepot(dialog));
+    opts.set_entrepot(entrep.get_entrepot(webui));
     opts.set_info_details(info_details.get_value_as_bool());
     opts.set_lax(lax.get_value_as_bool());
     opts.set_sequential_read(sequential_read.get_value_as_bool());
@@ -173,7 +173,7 @@ const libdar::archive_options_read & html_options_read::get_options(const shared
 	}
 	opts.set_ref_execute(ref_execute.get_value());
 	opts.set_ref_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(ref_slice_min_digits.get_value())));
-	opts.set_ref_entrepot(ref_entrep.get_entrepot(dialog));
+	opts.set_ref_entrepot(ref_entrep.get_entrepot(webui));
     }
     else
 	opts.unset_external_catalogue();

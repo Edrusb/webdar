@@ -111,7 +111,7 @@ public:
 	// reading parameters
     std::string get_archive_path() const;
     std::string get_archive_basename() const;
-    const libdar::archive_options_read & get_read_options(const std::shared_ptr<libdar::user_interaction> & dialog) const;
+    const libdar::archive_options_read & get_read_options(std::shared_ptr<html_web_user_interaction> & dialog) const;
 
 	// common parameter to diff/create/restore
     const std::string & get_fs_root() const;
@@ -171,7 +171,7 @@ private:
 
 	/// show archive zone (middle top)
     html_derouleur archive_show;   ///< global container that is either visible or not depending on "choice" value
-    html_archive_read archread;   ///< the archive to operate on (reading)
+    html_archive_read archread;    ///< the archive to operate on (reading)
 
 	// select zone
     html_aiguille select;         ///< middle center zone, containing the different pages according to "choice" value

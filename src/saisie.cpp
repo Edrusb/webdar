@@ -398,7 +398,7 @@ string saisie::get_archive_basename() const
     }
 }
 
-const libdar::archive_options_read & saisie::get_read_options(const shared_ptr<libdar::user_interaction> & dialog) const
+const libdar::archive_options_read & saisie::get_read_options(shared_ptr<html_web_user_interaction> & dialog) const
 {
     if(status != st_restore
        && status != st_compare

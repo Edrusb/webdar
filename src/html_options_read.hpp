@@ -58,7 +58,8 @@ public:
     html_options_read & operator = (html_options_read && ref) noexcept = default;
     ~html_options_read() = default;
 
-    const libdar::archive_options_read & get_options(const std::shared_ptr<libdar::user_interaction> & dialog) const;
+	/// obtain the libdar archive_option_read object from the html filled fields
+    const libdar::archive_options_read & get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
