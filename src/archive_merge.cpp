@@ -88,8 +88,10 @@ void archive_merge::inherited_run()
 	if(!has_ref)
 	    throw WEBDAR_BUG; // ref is mandatory for merging
 
-	ui->message("--- Opening the archive of reference...");
-	ref = make_shared<libdar::archive>(ui,
+	if(!ui && !ui->get_user_interaction())
+	    throw WEBDAR_BUG;
+	ui->get_user_interaction()->message("--- Opening the archive of reference...");
+	ref = make_shared<libdar::archive>(ui->get_user_interaction(),
 					   libdar::path(ref_path),
 					   ref_basename,
 					   ref_extension,
@@ -97,11 +99,11 @@ void archive_merge::inherited_run()
 	if(!ref)
 	    throw exception_memory();
 
-	ui->message("--- The archive of reference is now opened");
+	ui->get_user_interaction()->message("--- The archive of reference is now opened");
 	if(has_aux)
 	{
-	    ui->message("--- Opening the auxiliary archive of reference...");
-	    aux = make_shared<libdar::archive>(ui,
+	    ui->get_user_interaction()->message("--- Opening the auxiliary archive of reference...");
+	    aux = make_shared<libdar::archive>(ui->get_user_interaction(),
 					       libdar::path(aux_path),
 					       aux_basename,
 					       aux_extension,
@@ -109,15 +111,15 @@ void archive_merge::inherited_run()
 	    if(!aux)
 		throw exception_memory();
 	    opt.set_auxiliary_ref(aux);
-	    ui->message("--- The auxiliary archive of reference is now opened");
+	    ui->get_user_interaction()->message("--- The auxiliary archive of reference is now opened");
 	}
 	else
 	    opt.set_auxiliary_ref(nullptr);
 
 	    // now we can merge the archive
 
-	ui->message("--- Proceeding to the merging operation...");
-	libdar::archive(ui,
+	ui->get_user_interaction()->message("--- Proceeding to the merging operation...");
+	libdar::archive(ui->get_user_interaction(),
 			archpath,
 			ref,
 			basename,
@@ -129,7 +131,7 @@ void archive_merge::inherited_run()
 	    // it will be destroyed automatically (and the archive
 	    // will be closed) once we will have exit this local block
 
-	ui->message("--- Merging operation completed");
+	ui->get_user_interaction()->message("--- Merging operation completed");
     }
     catch(libdar::Egeneric & e)
     {

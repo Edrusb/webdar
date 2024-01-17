@@ -39,18 +39,19 @@ extern "C"
 
 using namespace std;
 
+const string html_web_user_interaction::libdar_has_finished = "html_web_user_interaction_libdarfinished";
+const string html_web_user_interaction::can_refresh = "html_web_user_interaction_canrefresh";
+const string html_web_user_interaction::dont_refresh = "html_web_user_interaction_dontrefresh";
+
+const string html_web_user_interaction::class_button = "html_web_user_interaction_button";
+const string html_web_user_interaction::class_web = "html_web_user_interaction_web";
+const string html_web_user_interaction::class_inter = "html_web_user_interaction_inter";
 
 const string html_web_user_interaction::ask_end_libdar = "html_web_user_interaction_ask_end_libdar";
 const string html_web_user_interaction::force_end_libdar = "html_web_user_interaction_force_end_libdar";
 const string html_web_user_interaction::kill_libdar_thread = "html_web_user_interaction_kill_libdar_thread";
 const string html_web_user_interaction::close_libdar_screen = "html_web_user_interaction_close_libdar_screen";
-const string html_web_user_interaction::can_refresh = "html_web_user_interaction_canrefresh";
-const string html_web_user_interaction::dont_refresh = "html_web_user_interaction_dontrefresh";
 
-
-const string html_web_user_interaction::class_button = "html_web_user_interaction_button";
-const string html_web_user_interaction::class_web = "html_web_user_interaction_web";
-const string html_web_user_interaction::class_inter = "html_web_user_interaction_inter";
 
 
 html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
@@ -156,6 +157,10 @@ string html_web_user_interaction::inherited_get_body_part(const chemin & path,
 	    {
 		e.change_message(string("Error reported from libdar: ") + e.get_message());
 		throw;
+	    }
+	    catch(libdar::Egeneric & e)
+	    {
+		throw exception_libcall(e);
 	    }
 	}
     }

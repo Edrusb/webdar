@@ -85,9 +85,12 @@ void archive_create::inherited_run()
 	    // be added to the options passed to the create
 	    // constructor
 
+	if(!ui)
+	    throw WEBDAR_BUG;
+
 	if(has_ref)
 	{
-	    ref = make_shared<libdar::archive>(ui,
+	    ref = make_shared<libdar::archive>(ui->get_user_interaction(),
 					       libdar::path(ref_path),
 					       ref_basename,
 					       ref_extension,
@@ -99,7 +102,7 @@ void archive_create::inherited_run()
 
 	    // now we can create the archive
 
-	libdar::archive target(ui,
+	libdar::archive target(ui->get_user_interaction(),
 			       fs_root,
 			       archpath,
 			       basename,

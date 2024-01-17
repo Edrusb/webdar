@@ -45,14 +45,18 @@ html_libdar_running::html_libdar_running():
     sessname(""),
     enable_refresh(true)
 {
-    adopt(&web_ui);
+    web_ui.reset(new (nothrow) html_web_user_interaction());
+    if(!web_ui)
+	throw exception_memory();
+
+    adopt(web_ui.get());
 
 	// signals and events
     register_name(libdar_has_finished);
 
-    web_ui.record_actor_on_event(this, html_web_user_interaction::libdar_has_finished);
-    web_ui.record_actor_on_event(this, html_web_user_interaction::can_refresh);
-    web_ui.record_actor_on_event(this, html_web_user_interaction::dont_refresh);
+    web_ui->record_actor_on_event(this, html_web_user_interaction::libdar_has_finished);
+    web_ui->record_actor_on_event(this, html_web_user_interaction::can_refresh);
+    web_ui->record_actor_on_event(this, html_web_user_interaction::dont_refresh);
 }
 
 string html_libdar_running::inherited_get_body_part(const chemin & path,

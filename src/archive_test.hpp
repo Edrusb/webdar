@@ -35,7 +35,7 @@ extern "C"
 #include <string>
 
     // webdar headers
-#include "web_user_interaction.hpp"
+#include "html_web_user_interaction.hpp"
 
 class archive_test : public libthreadar::thread
 {
@@ -47,7 +47,7 @@ public:
     archive_test & operator = (archive_test && ref) noexcept = default;
     ~archive_test() = default;
 
-    void set_user_interaction(const std::shared_ptr<web_user_interaction> & ref) { ui = ref; };
+    void set_user_interaction(const std::shared_ptr<html_web_user_interaction> ref) { ui = ref; };
     void set_archive_path(const std::string & val);
     void set_archive_basename(const std::string & val) { basename = val; };
     void set_archive_options_read(const libdar::archive_options_read & val) { read_opt = val; };
@@ -59,7 +59,7 @@ protected:
     virtual void inherited_run();
 
 private:
-    std::shared_ptr<web_user_interaction> ui;
+    std::shared_ptr<html_web_user_interaction> ui;
     libdar::path archpath;
     std::string basename;
     libdar::archive_options_read read_opt;

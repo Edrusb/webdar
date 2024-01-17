@@ -74,7 +74,10 @@ void archive_isolate::inherited_run()
 	if(!has_ref)
 	    throw WEBDAR_BUG;
 
-	libdar::archive* ref = new (nothrow) libdar::archive(ui,
+	if(!ui)
+	    throw WEBDAR_BUG;
+
+	libdar::archive* ref = new (nothrow) libdar::archive(ui->get_user_interaction(),
 							     libdar::path(ref_path),
 							     ref_basename,
 							     ref_extension,

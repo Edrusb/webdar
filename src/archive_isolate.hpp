@@ -35,7 +35,7 @@ extern "C"
 #include <libthreadar/libthreadar.hpp>
 
     // webdar headers
-#include "web_user_interaction.hpp"
+#include "html_web_user_interaction.hpp"
 #include "html_options_isolate.hpp"
 
 class archive_isolate : public libthreadar::thread
@@ -48,7 +48,7 @@ public:
     archive_isolate & operator = (archive_isolate && ref) noexcept = default;
     ~archive_isolate() = default;
 
-    void set_user_interaction(const std::shared_ptr<web_user_interaction> & ref) { ui = ref; };
+    void set_user_interaction(std::shared_ptr<html_web_user_interaction> ref) { ui = ref; };
     void set_archive_path(const std::string & val);
     void set_archive_basename(const std::string & val) { if(val.empty()) throw exception_range("empty string is not a valid basename"); basename = val; };
     void set_archive_extension(const std::string & val) {  if(val.empty()) throw exception_range("empty string is not a valid dar extension"); extension = val; };
@@ -64,7 +64,7 @@ protected:
     virtual void inherited_run() override;
 
 private:
-    std::shared_ptr<web_user_interaction> ui;
+    std::shared_ptr<html_web_user_interaction> ui;
     libdar::path archpath;
     std::string basename;
     std::string extension;

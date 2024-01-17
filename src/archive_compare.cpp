@@ -77,8 +77,10 @@ void archive_compare::inherited_run()
     {
 	    // we create a local libdar::archive
 	    // it will be destroyed this try/catch block
+	if(!ui)
+	    throw WEBDAR_BUG;
 
-	libdar::archive arch(ui,
+	libdar::archive arch(ui->get_user_interaction(),
 			     archpath,
 			     basename,
 			     EXTENSION,

@@ -55,7 +55,9 @@ void archive_test::inherited_run()
 {
     try
     {
-	libdar::archive arch(ui,
+	if(!ui)
+	    throw WEBDAR_BUG;
+	libdar::archive arch(ui->get_user_interaction(),
 			     archpath,
 			     basename,
 			     EXTENSION,

@@ -68,15 +68,14 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
-	/// tells whether libdar is running
-    bool is_libdar_running() const { return libdar_running; };
-
 	/// provide the name of the session (given by the user);
     std::string get_session_name() const;
 
 	/// set the session name (customizable by user)
     void set_session_name(const std::string & name);
 
+    	/// whether a libdar thread is running
+    bool is_libdar_running() const { return in_action.is_libdar_running(); };
 
 protected:
 
@@ -105,7 +104,6 @@ private:
     html_error in_error;           ///< page issued when an exception has been caught (mode == error)
     html_listing_page in_list;     ///< page issued when proceeding to archive listing
 
-    bool libdar_running;           ///< whether a libdar child thread is running
     libthreadar::thread *current_thread; ///< points to the running thread (either arch_test, arch_merge, ....)
     archive_test arch_test;        ///< holds thread created for testing archives
     archive_restore arch_rest;     ///< holds thread created for extracting archives
@@ -119,7 +117,7 @@ private:
     const saisie & get_parametrage() const { return parametrage; };
 
 	/// provides the libdar::user_interaction for libdar execution
-    std::shared_ptr<web_user_interaction> get_user_interaction() { return in_action.get_user_interaction(); };
+    std::shared_ptr<html_web_user_interaction> get_user_interaction() { return in_action.get_user_interaction(); };
 
 	/// provides the a libdar::statistics datastructure for progressive report in libdar execution
     html_statistics & get_statistics() { return in_action.get_statistics(); };

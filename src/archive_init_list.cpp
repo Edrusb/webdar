@@ -72,7 +72,9 @@ void archive_init_list::inherited_run()
 
     try
     {
-	ptr = new (nothrow) libdar::archive(ui,
+	if(!ui)
+	    throw WEBDAR_BUG;
+	ptr = new (nothrow) libdar::archive(ui->get_user_interaction(),
 					    archpath,
 					    basename,
 					    EXTENSION,

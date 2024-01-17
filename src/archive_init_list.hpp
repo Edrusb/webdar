@@ -36,7 +36,7 @@ extern "C"
 #include <libthreadar/libthreadar.hpp>
 
     // webdar headers
-#include "web_user_interaction.hpp"
+#include "html_web_user_interaction.hpp"
 
     /// this objects is a thread object that provide access to the content of an existing archive
 
@@ -60,7 +60,7 @@ public:
 
 
 	/// set the user interaction to report on when running the thread
-    void set_user_interaction(const std::shared_ptr<web_user_interaction> & ref) { ui = ref; };
+    void set_user_interaction(std::shared_ptr<html_web_user_interaction> ref) { ui = ref; };
     void set_archive_path(const std::string & val);
     void set_archive_basename(const std::string & val) { basename = val; };
     void set_archive_options_read(const libdar::archive_options_read & val) { read_opt = val; };
@@ -84,7 +84,7 @@ protected:
     virtual void inherited_run() override;
 
 private:
-    std::shared_ptr<web_user_interaction> ui;
+    std::shared_ptr<html_web_user_interaction> ui;
     libdar::path archpath;
     std::string basename;
     libdar::archive_options_read read_opt;

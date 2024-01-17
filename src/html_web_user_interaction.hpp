@@ -144,15 +144,23 @@ public:
 	/// \param[in] arg is the thread to be managed, it must have been setup but not run() by the caller
 	/// this method will run() the thread, monitor its liveness then join() it. The caller must have
 	/// registered to the event close_libdar_screen to be informed when the thread will have completed.
+	/// the caller can also join() the corresponding thread, but is then stuck until the thread ends.
 	/// during the life of the thread, this body_builder component displays buttons to stop/kill the
 	/// provided thread, as well as the output of the get_user_interaction() returned component (which
 	/// is a libdar::user_interaction object).
-
+	///
 	/// \note, this is the duty of the caller to give to the thread as libdar::user_interaction
 	/// the web_user_interaction object returned by the get_user_interaction() method, for libdar
 	/// to also interact with the user (display message, ask questions), using this
 	/// html_web_user_interaction.
+	///
+	/// \note, the provided thread object is not managed by this object, it must exist during
+	/// the whole life of the object until it ends or is aborted.
     void run_and_control_thread(libthreadar::thread* arg) { managed_thread = arg; arg->run(); };
+
+    	/// whether a libdar thread is running under "this" management
+    bool is_libdar_running() const { return managed_thread != nullptr ? managed_thread->is_running() : false; };
+
 
 protected:
 	/// inherited from body_builder, called by the webdar thread

@@ -63,16 +63,19 @@ public:
     void set_session_name(const std::string & name) { sessname = name; set_title(webdar_tools_get_title(sessname, "Libdar is running")); };
 
 	/// propagate request to web_ui
-    void clear() { web_ui.clear(); };
+    void clear() { web_ui->clear(); };
 
 	/// propagate request to web_ui
-    std::shared_ptr<web_user_interaction> get_user_interaction() { return web_ui.get_user_interaction(); };
+    std::shared_ptr<html_web_user_interaction> get_user_interaction() { return web_ui; };
 
 	/// propagate request to web_ui
-    html_statistics & get_statistics() { return web_ui.get_statistics(); };
+    html_statistics & get_statistics() { return web_ui->get_statistics(); };
 
-	/// prpagate request to web_ui
-    void run_and_control_thread(libthreadar::thread* arg) { web_ui.run_and_control_thread(arg); };
+	/// propagate request to web_ui
+    void run_and_control_thread(libthreadar::thread* arg) { web_ui->run_and_control_thread(arg); };
+
+	/// whether a libdar thread is running under "this" management
+    bool is_libdar_running() const { return web_ui->is_libdar_running(); };
 
 protected:
 	/// inherited from body_builder
@@ -81,7 +84,7 @@ protected:
 
 private:
     std::string sessname;
-    html_web_user_interaction web_ui;
+    std::shared_ptr<html_web_user_interaction> web_ui;
     bool enable_refresh;    ///< whether page refresh should be set
 };
 

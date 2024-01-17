@@ -60,10 +60,7 @@ user_interface::user_interface()
     parametrage.record_actor_on_event(this, saisie::changed_session_name);
 
 	/// messages received from html_libdar_running object named in_action
-    in_action.record_actor_on_event(this, html_libdar_running::ask_end_libdar);
-    in_action.record_actor_on_event(this, html_libdar_running::force_end_libdar);
-    in_action.record_actor_on_event(this, html_libdar_running::kill_libdar_thread);
-    in_action.record_actor_on_event(this, html_libdar_running::close_libdar_screen);
+    in_action.record_actor_on_event(this, html_libdar_running::libdar_has_finished);
 
 	/// messages received from html_error object named in_error;
     in_error.record_actor_on_event(this, html_error::acknowledged);
@@ -71,7 +68,6 @@ user_interface::user_interface()
 	/// messages received from html_listring_page object named in_list
     in_list.record_actor_on_event(this, html_listing_page::event_close);
 
-    libdar_running = false;
     current_thread = nullptr;
 
 	/// create the events that this object is willing to generate
@@ -80,7 +76,7 @@ user_interface::user_interface()
 
 user_interface::~user_interface()
 {
-    if(libdar_running)
+    if(is_libdar_running())
     {
 	if(current_thread != nullptr)
 	{
@@ -114,42 +110,6 @@ answer user_interface::give_answer(const request & req)
 		break;
 	    case listing_open:
 	    case running:
-		if(libdar_running)
-		{
-		    if(current_thread == nullptr)
-			throw WEBDAR_BUG;
-		    if(!current_thread->is_running())
-		    {
-			libdar_running = false;
-			if(mode == running)
-			    in_action.libdar_has_finished();
-			else
-			{
-			    mode = listing;
-			    mode_changed = true;
-			}
-
-			try
-			{
-			    current_thread->join(); // may throw re-exception that were generated in this dead thread
-			}
-			catch(exception_base & e)
-			{
-			    current_thread = nullptr;
-			    e.change_message(string("Error reported from libdar: ") + e.get_message());
-			    throw;
-			}
-			catch(...)
-			{
-			    current_thread = nullptr;
-			    throw;
-			}
-			current_thread = nullptr;
-
-			if(mode == listing)
-			    in_list.set_source(&arch_init_list);
-		    }
-		}
 		ret.add_body(in_action.get_body_part(req.get_uri().get_path(), req));
 		break;
 	    case error:
@@ -188,6 +148,7 @@ void user_interface::on_event(const std::string & event_name)
 	    act(closing); // transmetting the event
 	    break;
 	case listing_open:
+	    throw WEBDAR_BUG;
 	case listing:
 	    throw WEBDAR_BUG;
 	case running:
@@ -198,103 +159,15 @@ void user_interface::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	}
     }
-    else if(event_name == html_libdar_running::ask_end_libdar)
-    {
-	switch(mode)
-	{
-	case config:
-	    throw WEBDAR_BUG;
-	case listing:
-	    throw WEBDAR_BUG;
-	case listing_open:
-	case running:
-	case error:
-	    if(libdar_running)
-	    {
-		if(current_thread != nullptr)
-		{
-		    pthread_t libdar_tid;
-		    if(current_thread->is_running(libdar_tid))
-		    {
-			libdar::thread_cancellation th;
-			th.cancel(libdar_tid, false, 0);
-		    }
-		}
-		else
-		    throw WEBDAR_BUG;
-	    }
-	    break;
-	default:
-	    throw WEBDAR_BUG;
-	}
-    }
-    else if(event_name == html_libdar_running::force_end_libdar)
-    {
-	switch(mode)
-	{
-	case config:
-	    throw WEBDAR_BUG;
-	case listing:
-	    throw WEBDAR_BUG;
-	case listing_open:
-	case running:
-	case error:
-	    if(libdar_running)
-	    {
-		if(current_thread != nullptr)
-		{
-		    pthread_t libdar_tid;
-		    if(current_thread->is_running(libdar_tid))
-		    {
-			libdar::thread_cancellation th;
-			th.cancel(libdar_tid, true, 0);
-		    }
-		}
-		else
-		    throw WEBDAR_BUG;
-	    }
-	    break;
-	default:
-	    throw WEBDAR_BUG;
-	}
-    }
-    else if(event_name == html_libdar_running::kill_libdar_thread)
-    {
-	switch(mode)
-	{
-	case config:
-	    throw WEBDAR_BUG;
-	case listing:
-	    throw WEBDAR_BUG;
-	case listing_open:
-	case running:
-	case error:
-	    if(libdar_running)
-	    {
-		if(current_thread != nullptr)
-		{
-		    pthread_t libdar_tid;
-		    if(current_thread->is_running(libdar_tid))
-		    {
-			if(current_thread->is_running())
-			    current_thread->kill();
-		    }
-		}
-		else
-		    throw WEBDAR_BUG;
-	    }
-	    break;
-	default:
-	    throw WEBDAR_BUG;
-	}
-    }
-    else if(event_name == html_libdar_running::close_libdar_screen)
+    else if(event_name == html_libdar_running::libdar_has_finished)
     {
 	switch(mode)
 	{
 	case config:
 	    throw WEBDAR_BUG;
 	case listing_open:
+	    mode_changed = true;
+	    mode = listing;
 	case listing:
 	    throw WEBDAR_BUG;
 	case running:
@@ -450,8 +323,9 @@ void user_interface::prefix_has_changed()
 
 void user_interface::go_restore()
 {
-    if(libdar_running)
+    if(in_action.is_libdar_running())
 	throw WEBDAR_BUG;
+
     if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
@@ -479,15 +353,15 @@ void user_interface::go_restore()
     get_statistics().set_total_label("item(s) considered");
 
 	// launching libdar in a separated thread
-    arch_rest.run();
     current_thread = & arch_rest;
-    libdar_running = true;
+    in_action.run_and_control_thread(current_thread);
 }
 
 void user_interface::go_diff()
 {
-    if(libdar_running)
+    if(in_action.is_libdar_running())
 	throw WEBDAR_BUG;
+
     if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
@@ -502,8 +376,6 @@ void user_interface::go_diff()
 
 
 	// restting counters and logs
-    get_user_interaction()->clear();
-    get_statistics().clear_counters();
     get_statistics().clear_labels();
     get_statistics().set_treated_label("item(s) identical");
     get_statistics().set_errored_label("item(s) do not match those on filesystem");
@@ -511,16 +383,16 @@ void user_interface::go_diff()
     get_statistics().set_total_label("inode(s) considered");
 
 	// launching libdar in a separated thread
-    arch_diff.run();
     current_thread = & arch_diff;
-    libdar_running = true;
+    in_action.run_and_control_thread(current_thread);
 }
 
 
 void user_interface::go_test()
 {
-    if(libdar_running)
+    if(is_libdar_running())
 	throw WEBDAR_BUG;
+
     if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
@@ -533,7 +405,6 @@ void user_interface::go_test()
     arch_test.set_progressive_report(get_statistics().get_libdar_statistics());
 
 	// resetting counters and logs
-    get_user_interaction()->clear();
     get_statistics().clear_counters();
     get_statistics().clear_labels();
     get_statistics().set_treated_label("item(s) treated");
@@ -541,15 +412,15 @@ void user_interface::go_test()
     get_statistics().set_errored_label("items(s) with error");
 
 	// launching libdar in a separated thread
-    arch_test.run();
     current_thread = & arch_test;
-    libdar_running = true;
+    in_action.run_and_control_thread(current_thread);
 }
 
 void user_interface::go_create()
 {
-    if(libdar_running)
+    if(is_libdar_running())
 	throw WEBDAR_BUG;
+
     if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
@@ -571,7 +442,6 @@ void user_interface::go_create()
     arch_create.set_progressive_report(get_statistics().get_libdar_statistics());
 
 	// resetting counters and logs
-    get_user_interaction()->clear();
     get_statistics().clear_counters();
     get_statistics().clear_labels();
     get_statistics().set_treated_label("item(s) treated");
@@ -585,15 +455,15 @@ void user_interface::go_create()
     get_statistics().set_ea_treated_label("item(s) with Extended Attributes");
 
 	// launching libdar in a separated thread
-    arch_create.run();
     current_thread = & arch_create;
-    libdar_running = true;
+    in_action.run_and_control_thread(current_thread);
 }
 
 void user_interface::go_isolate()
 {
-    if(libdar_running)
+    if(is_libdar_running())
 	throw WEBDAR_BUG;
+
     if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
@@ -611,20 +481,19 @@ void user_interface::go_isolate()
 	get_parametrage().get_isolating_reference().get_read_options(get_user_interaction()));
 
 	// resetting counters and logs
-    get_user_interaction()->clear();
     get_statistics().clear_counters();
     get_statistics().clear_labels();
 
 	// launching libdar in a separated thread
-    arch_isolate.run();
     current_thread = & arch_isolate;
-    libdar_running = true;
+    in_action.run_and_control_thread(current_thread);
 }
 
 void user_interface::go_merge()
 {
-    if(libdar_running)
+    if(is_libdar_running())
 	throw WEBDAR_BUG;
+
     if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
@@ -652,8 +521,6 @@ void user_interface::go_merge()
     arch_merge.set_progressive_report(get_statistics().get_libdar_statistics());
 
 	// resetting counters and logs
-    get_user_interaction()->clear();
-    get_statistics().clear_counters();
     get_statistics().clear_labels();
     get_statistics().set_treated_label("item(s) treated");
     get_statistics().set_hard_links_label("hard link(s) treated");
@@ -662,15 +529,16 @@ void user_interface::go_merge()
     get_statistics().set_ea_treated_label("item(s) with Extended Attributes");
     get_statistics().set_total_label("item(s) considered");
 
-    arch_merge.run();
+	// launching libdar in a separated thread
     current_thread = & arch_merge;
-    libdar_running = true;
+    in_action.run_and_control_thread(current_thread);
 }
 
 void user_interface::go_init_list()
 {
-    if(libdar_running)
+    if(is_libdar_running())
 	throw WEBDAR_BUG;
+
     if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
@@ -679,11 +547,8 @@ void user_interface::go_init_list()
     arch_init_list.set_archive_basename(get_parametrage().get_archive_basename());
     arch_init_list.set_archive_options_read(get_parametrage().get_read_options(get_user_interaction()));
 
-	// resetting counters and logs
-    get_user_interaction()->clear();
-
-    arch_init_list.run();
+    	// launching libdar in a separated thread
     current_thread = & arch_init_list;
-    libdar_running = true;
+    in_action.run_and_control_thread(current_thread);
 }
 
