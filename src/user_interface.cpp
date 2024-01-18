@@ -161,6 +161,8 @@ void user_interface::on_event(const std::string & event_name)
     }
     else if(event_name == html_libdar_running::libdar_has_finished)
     {
+	current_thread = nullptr;
+
 	switch(mode)
 	{
 	case config:
@@ -168,6 +170,8 @@ void user_interface::on_event(const std::string & event_name)
 	case listing_open:
 	    mode_changed = true;
 	    mode = listing;
+	    in_list.set_source(&arch_init_list);
+	    break;
 	case listing:
 	    throw WEBDAR_BUG;
 	case running:

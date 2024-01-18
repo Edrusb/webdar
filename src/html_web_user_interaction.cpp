@@ -55,7 +55,7 @@ const string html_web_user_interaction::close_libdar_screen = "html_web_user_int
 
 
 html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
-    mode(normal),
+    mode(closed), // to force set_mode(normal) to do something in constructor body below
     autohide(false),
     h_inter(""),
     h_get_string("", html_form_input::text, "", 20),
@@ -111,6 +111,9 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
 	// visibility and object status
     clear();
 
+    	// setup button visibility
+    set_mode(normal);
+
 	// css
     h_inter_text.add_css_class(class_inter);
     stats.add_css_class(class_web);
@@ -126,6 +129,7 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
 
     webdar_css_style::normal_button(finish);
     finish.add_css_class(class_button);
+
 }
 
 string html_web_user_interaction::inherited_get_body_part(const chemin & path,
@@ -374,6 +378,7 @@ void html_web_user_interaction::set_mode(mode_type m)
 	    // no break!
     case closed:
 	set_visible(false);
+	act(libdar_has_finished);
 	break;
     default:
 	throw WEBDAR_BUG;
