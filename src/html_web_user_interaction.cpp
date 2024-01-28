@@ -320,6 +320,7 @@ void html_web_user_interaction::set_mode(mode_type m)
 	force_close.set_visible(false);
 	kill_close.set_visible(false);
 	finish.set_visible(false);
+	set_visible(true);
 	break;
     case end_asked:
 	ask_close.set_visible(false);
@@ -373,7 +374,7 @@ void html_web_user_interaction::set_mode(mode_type m)
 	managed_thread = nullptr;
 	if(!autohide)
 	    break;
-	else // if auto hide is set, we go to the closed status
+	else // if auto hide is set, we go to the closed status, here below
 	    m = closed;
 	    // no break!
     case closed:
