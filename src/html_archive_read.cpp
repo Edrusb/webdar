@@ -70,7 +70,7 @@ string html_archive_read::get_archive_path() const
 {
     chemin chem(arch_path.get_value());
 
-    if(chem.size() > 1)
+    if(chem.size() >= 1)
     {
 	chem.pop_back();
 	return chem.display();
