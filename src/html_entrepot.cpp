@@ -47,7 +47,7 @@ html_entrepot::html_entrepot():
     login("Login", html_form_input::text, "", 30),
     auth_type("Authentication mode"),
     pass("Password", html_form_input::password, "", 30),
-    auth_from_file("Fetch password from netrc file", html_form_input::check, "1", 1),
+    auth_from_file("Fetch password from netrc file", html_form_input::check, "", 1),
     pub_keyfile("Public key file", "/", 40, "Select the public key file..."),
     prv_keyfile("Private key file", "/", 40, "Select the private key file..."),
     knownhosts_check("Check remote host from the known-hosts file", html_form_input::check, "1", 1),
@@ -294,7 +294,7 @@ void html_entrepot::update_visible()
 	if(repo_type.get_selected_num() == 1) // ftp
 	{
 	    auth_type.set_visible(false);
-	    auth_from_file.set_visible(false);
+	    auth_from_file.set_visible(true);
 	    pub_keyfile.set_visible(false);
 	    prv_keyfile.set_visible(false);
 	    knownhosts_check.set_visible(false);
@@ -314,7 +314,7 @@ void html_entrepot::update_visible()
 		break;
 	    case 1: // auth key
 		pass.set_visible(false);
-		auth_from_file.set_visible(false);
+		auth_from_file.set_visible(true);
 		pub_keyfile.set_visible(true);
 		prv_keyfile.set_visible(true);
 		break;
