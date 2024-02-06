@@ -41,7 +41,7 @@ extern "C"
 
     /// class web_user_interaction provides a libdar::user_interaction interface to libdar
 
-    /// this class is not an html_ body_builder class by rather holds information fields and status
+    /// this class is not an html_ body_builder class but rather holds information fields and status
     /// provided by libdar through the libdar::user_interaction interface. The main role of this
     /// class is to allow any thread to get access to this libdar running thread provided information,
     /// by mean of mutex on the internal/private data structure.

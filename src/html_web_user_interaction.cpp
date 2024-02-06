@@ -172,10 +172,10 @@ string html_web_user_interaction::inherited_get_body_part(const chemin & path,
     	// update visibility status
     ack_visible();
     if(! get_visible() && managed_thread == nullptr)
-	return ret; // component accept to stay hidden only if not thread is managed
+	return ret; // component accepts to stay hidden only if no thread is managed
 
 	    // now we return to the user the updated html interface
-	    // any event triggered during that first generation and may
+	    // any event triggered during that first generation may
 	    // need further re-display (rebuild_body_part is set to true in that case)
 
     rebuild_body_part = false; // libdar change lead compoents to change
