@@ -41,7 +41,7 @@ extern "C"
 using namespace std;
 
 web_user_interaction::web_user_interaction(unsigned int x_warn_size):
-    libdar_sem(x_warn_size),
+    libdar_sem(1),
     warn_size(x_warn_size)
 {
     if(warn_size == 0)
