@@ -103,7 +103,6 @@ class html_web_user_interaction: public body_builder, public actor, public event
 public:
     	// this class generates the following events:
     static const std::string libdar_has_finished; ///< inform the caller that libdar has finished and user asked to close the "window"
-    static const std::string libdar_user_aborted; ///< inform the caller that libdar call has been interrupted by the caller (presing html buttons)
     static const std::string can_refresh;         ///< last changes makes the object html refreshable
     static const std::string dont_refresh;        ///< last changes forbid html refresh
 
@@ -218,7 +217,6 @@ private:
     bool rebuild_body_part; ///< set to true if changes/events occured while building body part, needing a whole rebuild
     bool ignore_event;      ///< if true the on_event() method does not take any action
     bool just_set;          ///< true when the control have just been activated by libdar and no answer has been provided by the user
-    bool was_aborted;       ///< whether user click a button to abort the running thread
 
     libthreadar::thread* managed_thread;
 
