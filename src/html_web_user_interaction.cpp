@@ -57,6 +57,8 @@ const string html_web_user_interaction::close_libdar_screen = "html_web_user_int
 html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     mode(closed), // to force set_mode(normal) to do something in constructor body below
     autohide(false),
+    hide_unless_interrupted(false),
+    was_interrupted(false),
     h_inter(""),
     h_get_string("", html_form_input::text, "", 20),
     h_form("Update"),
@@ -321,6 +323,7 @@ void html_web_user_interaction::set_mode(mode_type m)
 	kill_close.set_visible(false);
 	finish.set_visible(false);
 	set_visible(true);
+	was_interrupted = false;
 	break;
     case end_asked:
 	ask_close.set_visible(false);
@@ -334,6 +337,7 @@ void html_web_user_interaction::set_mode(mode_type m)
 	    {
 		libdar::thread_cancellation th;
 		th.cancel(libdar_tid, false, 0);
+		was_interrupted = true;
 	    }
 	}
 	break;
@@ -372,7 +376,7 @@ void html_web_user_interaction::set_mode(mode_type m)
 	finish.set_visible(true);
 	act(dont_refresh);
 	managed_thread = nullptr;
-	if(!autohide)
+	if(!autohide || (was_interrupted && hide_unless_interrupted))
 	    break;
 	else // if auto hide is set, we go to the closed status, here below
 	    m = closed;

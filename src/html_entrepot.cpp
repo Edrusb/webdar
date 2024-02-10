@@ -144,7 +144,7 @@ std::shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(std::shared_ptr<ht
 	throw WEBDAR_BUG;
 
     webui->clear();
-    webui->auto_hide(true);
+    webui->auto_hide(true, true);
 
     dialog = webui->get_user_interaction();
     if(!dialog)

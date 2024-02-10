@@ -102,7 +102,7 @@ class html_web_user_interaction: public body_builder, public actor, public event
 {
 public:
     	// this class generates the following events:
-    static const std::string libdar_has_finished; ///< inform the caller that libdar has finished and user asked to close the "window"
+    static const std::string libdar_has_finished; ///< inform the caller that libdar has finished and user asked to close the "window" (or autohide was set)
     static const std::string can_refresh;         ///< last changes makes the object html refreshable
     static const std::string dont_refresh;        ///< last changes forbid html refresh
 
@@ -120,8 +120,13 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
-	/// when do_finish() is called, the html_web_user_interaction object becomes invisible
-    void auto_hide(bool mode) { autohide = mode; };
+	/// when the control thread has finished, this html_web_user_interaction object becomes invisible
+
+	/// by default the object stays visible and user has to click on the "close" button to go forward
+	/// \param[in] mode if set to true, no "close" button shows once the thread has complete
+	/// \param[in] unless_interrupted if set to true and the thread has ended due to user request
+	/// the autohide is disabled and a "close" button shows
+    void auto_hide(bool mode, bool unless_interrupted) { autohide = mode; hide_unless_interrupted = unless_interrupted; };
 
 	/// clear counters, logs and reset html interface
 
@@ -197,6 +202,8 @@ private:
 	// current display mode
     mode_type mode;               ///< current mode of operation
     bool autohide;                ///< if true the finish status leads the html component to become invisible
+    bool hide_unless_interrupted; ///< disable autohide when thread ended due to user request
+    bool was_interrupted;         ///< whether user asked for thread cancellation
 
 	// body_builder fields
     html_form_radio h_pause;      ///< shows when libdar request a yes/no decision from the user
