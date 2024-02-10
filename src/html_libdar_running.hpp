@@ -66,7 +66,7 @@ public:
     void clear() { web_ui->clear(); };
 
 	/// propagate request to web_ui
-    std::shared_ptr<html_web_user_interaction> get_user_interaction() { return web_ui; };
+    std::shared_ptr<html_web_user_interaction> get_html_user_interaction() { return web_ui; };
 
 	/// propagate request to web_ui
     html_statistics & get_statistics() { return web_ui->get_statistics(); };
