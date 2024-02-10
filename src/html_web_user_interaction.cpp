@@ -40,6 +40,7 @@ extern "C"
 using namespace std;
 
 const string html_web_user_interaction::libdar_has_finished = "html_web_user_interaction_libdarfinished";
+const string html_web_user_interaction::libdar_user_aborted = "html_web_user_interaction_useraborted";
 const string html_web_user_interaction::can_refresh = "html_web_user_interaction_canrefresh";
 const string html_web_user_interaction::dont_refresh = "html_web_user_interaction_dontrefresh";
 
@@ -69,6 +70,7 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     rebuild_body_part(false),
     ignore_event(false),
     just_set(false),
+    was_aborted(false),
     managed_thread(nullptr)
 {
     lib_data.reset(new (nothrow) web_user_interaction(x_warn_size));
@@ -98,6 +100,7 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
 
 	// events
     register_name(libdar_has_finished);
+    register_name(libdar_user_aborted);
     register_name(can_refresh);
     register_name(dont_refresh);
 
@@ -321,6 +324,7 @@ void html_web_user_interaction::set_mode(mode_type m)
 	kill_close.set_visible(false);
 	finish.set_visible(false);
 	set_visible(true);
+	was_aborted = false;
 	break;
     case end_asked:
 	ask_close.set_visible(false);
@@ -334,6 +338,7 @@ void html_web_user_interaction::set_mode(mode_type m)
 	    {
 		libdar::thread_cancellation th;
 		th.cancel(libdar_tid, false, 0);
+		was_aborted = true;
 	    }
 	}
 	break;
@@ -379,7 +384,10 @@ void html_web_user_interaction::set_mode(mode_type m)
 	    // no break!
     case closed:
 	set_visible(false);
-	act(libdar_has_finished);
+	if(was_aborted)
+	    act(libdar_user_aborted);
+	else
+	    act(libdar_has_finished);
 	break;
     default:
 	throw WEBDAR_BUG;
