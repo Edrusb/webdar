@@ -59,7 +59,7 @@ public:
 
     std::string get_archive_path() const;
     std::string get_archive_basename() const;
-    const libdar::archive_options_read & get_read_options(std::shared_ptr<html_web_user_interaction> dialog) const { return opt_read.get_options(dialog); };
+    libdar::archive_options_read get_read_options(std::shared_ptr<html_web_user_interaction> dialog) const { return opt_read.get_options(dialog); };
 
 protected:
 	/// inherited from body_builder

@@ -136,8 +136,10 @@ html_options_read::html_options_read():
     webdar_css_style::grey_button(deroule, true);
 }
 
-const libdar::archive_options_read & html_options_read::get_options(shared_ptr<html_web_user_interaction> & webui) const
+libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_user_interaction> & webui) const
 {
+    libdar::archive_options_read opts;
+
     opts.clear();
     opts.set_crypto_algo(src_crypto_algo.get_value());
     if(src_crypto_algo.get_value() != libdar::crypto_algo::none)

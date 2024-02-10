@@ -59,7 +59,7 @@ public:
     ~html_options_read() = default;
 
 	/// obtain the libdar archive_option_read object from the html filled fields
-    const libdar::archive_options_read & get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
+    libdar::archive_options_read get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -105,7 +105,6 @@ private:
     html_form_input ref_slice_min_digits;
 	// html_select ref_entrepot;
 
-    mutable libdar::archive_options_read opts;
 };
 
 #endif
