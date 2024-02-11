@@ -29,13 +29,18 @@ extern "C"
 
     // C++ system header files
 
-
     // webdar headers
 
     //
 #include "archive_isolate.hpp"
 
 using namespace std;
+
+archive_isolate::archive_isolate():
+    archpath("/"),
+    dest_path("/")
+{
+}
 
 void archive_isolate::set_archive_path(const string & val)
 {
@@ -49,62 +54,48 @@ void archive_isolate::set_archive_path(const string & val)
     }
 }
 
-void archive_isolate::set_archive_reference(const string & refpath,
-					    const string & basename,
-					    const string & extension,
-					    const libdar::archive_options_read & readopt)
+void archive_isolate::set_archive_dest_path(const string & val)
 {
-    has_ref = true;
-    ref_path = refpath;
-    ref_basename = basename;
-    ref_extension = extension;
-    ref_opt = readopt;
+    try
+    {
+	dest_path = libdar::path(val, true);
+    }
+    catch(libdar::Egeneric & e)
+    {
+	throw exception_libcall(e);
+    }
 }
 
 void archive_isolate::inherited_run()
 {
     try
     {
-
-	    // we must open the archive of reference
-	    // and obtain an libdar::archive object to
-	    // be added to the options passed to the isolate
-	    // constructor
-
-	if(!has_ref)
-	    throw WEBDAR_BUG;
+	std::shared_ptr<libdar::archive> source;
 
 	if(!ui)
 	    throw WEBDAR_BUG;
 
-	libdar::archive* ref = new (nothrow) libdar::archive(ui->get_user_interaction(),
-							     libdar::path(ref_path),
-							     ref_basename,
-							     ref_extension,
-							     ref_opt);
-	if(ref == nullptr)
-	    throw exception_memory();
+	    // first creating the archive object to isolate
 
-	try
-	{
+	source.reset(new (nothrow) libdar::archive(ui->get_user_interaction(),
+						   archpath,
+						   basename,
+						   extension,
+						   read_opt));
+
+	if(!source)
+	    throw exception_memory();
 
 	    // now we can isolate the archive
 
-	    ref->op_isolate(archpath,
-			    basename,
-			    extension,
-			    opt);
+	source->op_isolate(dest_path,
+			   dest_basename,
+			   extension,
+			   isol_opt);
 
-		// as the ref object being local to the local block
-		// it will be destroyed automatically (and the archive
-		// will be closed) once we will have exit this local block
-	}
-	catch(...)
-	{
-	    delete ref;
-	    throw;
-	}
-	delete ref;
+	    // as the ref object being local to the local block
+	    // it will be destroyed automatically (and the archive
+	    // will be closed) once we will have exit this local block
     }
     catch(libdar::Egeneric & e)
     {

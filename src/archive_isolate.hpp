@@ -41,23 +41,26 @@ extern "C"
 class archive_isolate : public libthreadar::thread
 {
 public:
-    archive_isolate(): archpath("/") { has_ref = false; };
+    archive_isolate();
     archive_isolate(const archive_isolate & ref) = default;
     archive_isolate(archive_isolate && ref) noexcept = default;
     archive_isolate & operator = (const archive_isolate & ref) = default;
     archive_isolate & operator = (archive_isolate && ref) noexcept = default;
     ~archive_isolate() = default;
 
+	// needed to read the archive to isolate
+
     void set_user_interaction(std::shared_ptr<html_web_user_interaction> ref) { ui = ref; };
     void set_archive_path(const std::string & val);
     void set_archive_basename(const std::string & val) { if(val.empty()) throw exception_range("empty string is not a valid basename"); basename = val; };
     void set_archive_extension(const std::string & val) {  if(val.empty()) throw exception_range("empty string is not a valid dar extension"); extension = val; };
-    void set_archive_options_isolate(const libdar::archive_options_isolate & val) { opt = val; };
-    void clear_archive_options_reference() { has_ref = false; };
-    void set_archive_reference(const std::string & refpath,
-			       const std::string & basename,
-			       const std::string & extension,
-			       const libdar::archive_options_read & readopt);
+    void set_archive_options_read(const libdar::archive_options_read & val) { read_opt = val; };
+
+	// needed to proceed to isolation operation on the previously defined archive
+
+    void set_archive_dest_path(const std::string & val);
+    void set_archive_dest_basename(const std::string & val) { if(val.empty()) throw exception_range("empty string is not a valid basename"); dest_basename = val; };
+    void set_archive_options_isolate(const libdar::archive_options_isolate & val) { isol_opt = val; };
 
 protected:
 	/// inherited from class libthreadar::thread
@@ -68,12 +71,10 @@ private:
     libdar::path archpath;
     std::string basename;
     std::string extension;
-    libdar::archive_options_isolate opt;
-    bool has_ref;
-    std::string ref_path;
-    std::string ref_basename;
-    std::string ref_extension;
-    libdar::archive_options_read ref_opt;
+    libdar::archive_options_read read_opt;
+    libdar::path dest_path;
+    std::string dest_basename;
+    libdar::archive_options_isolate isol_opt;
 };
 
 #endif
