@@ -38,7 +38,7 @@ extern "C"
 #include "web_user_interaction.hpp"
 #include "html_options_create.hpp"
 
-    /// class archive_create run libdar comparison in a dedicated thread
+    /// class archive_create run libdar creation in a dedicated thread
 
     /// Accordingly to the libhtreadar::thread paradigm, this class
     /// provides methods to set parameter to the comparison operation
