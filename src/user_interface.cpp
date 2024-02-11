@@ -469,12 +469,10 @@ void user_interface::go_isolate()
     arch_isolate.set_archive_path(get_parametrage().get_archive_path());
     arch_isolate.set_archive_basename(get_parametrage().get_archive_basename());
     arch_isolate.set_archive_extension(EXTENSION);
-    arch_isolate.set_archive_options_isolate(get_parametrage().get_isolating_options());
-    arch_isolate.set_archive_reference(
-	get_parametrage().get_isolating_reference().get_archive_path(),
-	get_parametrage().get_isolating_reference().get_archive_basename(),
-	EXTENSION,
-	get_parametrage().get_isolating_reference().get_read_options(get_html_user_interaction()));
+    arch_isolate.set_archive_options_read(get_parametrage().get_read_options(get_html_user_interaction()));
+    arch_isolate.set_archive_dest_path(get_parametrage().get_isolating_path());
+    arch_isolate.set_archive_dest_basename(get_parametrage().get_isolating_basename());
+    arch_isolate.set_archive_options_isolate(get_parametrage().get_isolating_options(get_html_user_interaction()));
 
 	// resetting counters and logs
     get_statistics().clear_counters();
