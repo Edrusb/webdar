@@ -102,6 +102,7 @@ private:
     html_form form_crypto;
 
     html_form_radio archtype;      // fs_archtype member
+    html_form_fieldset wrap_ref;   // help make distinction at display between archive or ref options and archive options
     html_archive_read reference;   // fs_archtype member
     html_text ref_placeholder;     // shows when archtype is not differential/incremental
     html_form_input allow_over;

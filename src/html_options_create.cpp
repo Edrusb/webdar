@@ -48,6 +48,7 @@ html_options_create::html_options_create():
     form_compr("Update"),
     form_slicing("Update"),
     form_crypto("Update"),
+    wrap_ref("Archive of reference related parameters"),
     reference("Archive of reference"),
     allow_over("Allow slice overwriting", html_form_input::check, "", 1),
     warn_over("Warn before overwriting", html_form_input::check, "", 1),
@@ -198,9 +199,9 @@ html_options_create::html_options_create():
 
 	// archive ref
     ref_placeholder.add_text(2, "Reference archive is only available for Differential/Incremental archive type");
-    deroule.adopt_in_section(sect_ref, &reference);
-    deroule.adopt_in_section(sect_ref, &ref_placeholder);
-
+    wrap_ref.adopt(&reference);
+    wrap_ref.adopt(&ref_placeholder);
+    deroule.adopt_in_section(sect_ref, &wrap_ref);
 
 	// archive generation
     form_archgen.adopt(&allow_over);
