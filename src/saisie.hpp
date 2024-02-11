@@ -126,8 +126,8 @@ public:
 	// testing options
     const libdar::archive_options_test get_testing_options() const;
 
-	// create options --- WARNING! The returned object is not a libdar object but holds the information to create it completely
-    const html_options_create & get_creating_options() const;
+	// create options
+    libdar::archive_options_create get_creating_options(std::shared_ptr<html_web_user_interaction> dialog) const;
 
 	// isolate options
     const libdar::archive_options_isolate get_isolating_options() const;

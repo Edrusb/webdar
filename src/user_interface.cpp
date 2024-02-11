@@ -433,16 +433,8 @@ void user_interface::go_create()
     arch_create.set_archive_path(get_parametrage().get_archive_path());
     arch_create.set_archive_basename(get_parametrage().get_archive_basename());
     arch_create.set_archive_extension(EXTENSION);
-    if(get_parametrage().get_creating_options().has_reference())
-	arch_create.set_archive_options_reference(
-	    get_parametrage().get_creating_options().get_reference().get_archive_path(),
-	    get_parametrage().get_creating_options().get_reference().get_archive_basename(),
-	    EXTENSION,
-	    get_parametrage().get_creating_options().get_reference().get_read_options(get_html_user_interaction()));
-    else
-	arch_create.clear_archive_options_reference();
     arch_create.set_fs_root(get_parametrage().get_fs_root());
-    arch_create.set_archive_options_create(get_parametrage().get_creating_options().get_options());
+    arch_create.set_archive_options_create(get_parametrage().get_creating_options(get_html_user_interaction()));
     arch_create.set_progressive_report(get_statistics().get_libdar_statistics());
 
 	// resetting counters and logs

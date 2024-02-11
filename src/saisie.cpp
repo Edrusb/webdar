@@ -458,12 +458,12 @@ const libdar::archive_options_test saisie::get_testing_options() const
     return test.get_options();
 }
 
-const html_options_create & saisie::get_creating_options() const
+libdar::archive_options_create saisie::get_creating_options(shared_ptr<html_web_user_interaction> dialog) const
 {
     if(status != st_create)
 	throw WEBDAR_BUG;
 
-    return create.get_options_create();
+    return create.get_options_create(dialog);
 }
 
 const libdar::archive_options_isolate saisie::get_isolating_options() const
