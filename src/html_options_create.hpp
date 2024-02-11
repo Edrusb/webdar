@@ -32,6 +32,7 @@ extern "C"
 
     // C++ system header files
 #include <dar/libdar.hpp>
+#include <memory>
 
     // webdar headers
 #include "body_builder.hpp"
@@ -47,6 +48,8 @@ extern "C"
 #include "html_hash_algo.hpp"
 #include "html_derouleur.hpp"
 #include "html_text.hpp"
+#include "html_entrepot.hpp"
+#include "html_web_user_interaction.hpp"
 
 class html_options_create : public body_builder , public actor
 {
@@ -66,7 +69,7 @@ public:
 	/// \note if a reference is requested it implies openninng an archive
 	/// and feeding the libdar::archive_options_create::set_reference(libdar::archive *)
 	/// with the object built from this->get_reference().*
-    libdar::archive_options_create get_options() const;
+    libdar::archive_options_create get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
 	/// whether an archive of reference has to be added to the libdar::archive_options_create object
     bool has_reference() const { return archtype.get_selected_num() == 1; };
 	/// parameters required to build the archive of reference
@@ -82,6 +85,8 @@ protected:
 
 private:
     html_derouleur deroule;
+
+    html_entrepot entrep;
 
     html_form form_archtype;
 

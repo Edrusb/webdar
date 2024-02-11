@@ -162,6 +162,7 @@ html_options_create::html_options_create():
 
 	// build tree dependancy
 
+    static const char* sect_repo = "repo";
     static const char* sect_type = "type";
     static const char* sect_ref = "archive_ref";
     static const char* sect_gen = "archive_gen_opt";
@@ -172,6 +173,7 @@ html_options_create::html_options_create():
     static const char* sect_slice = "slicing";
     static const char* sect_cipher = "ciphering";
 
+    deroule.add_section(sect_repo, "Archive repository");
     deroule.add_section(sect_type, "Archive type");
     deroule.add_section(sect_ref, "Archive of Reference");
     deroule.add_section(sect_gen, "Archive generation options");
@@ -182,6 +184,9 @@ html_options_create::html_options_create():
     deroule.add_section(sect_slice, "Slicing options");
     deroule.add_section(sect_cipher, "Encryption options");
     adopt(&deroule);
+
+	// repo
+    deroule.adopt_in_section(sect_repo, &entrep);
 
 	// archive type and associated optional fields
     form_archtype.adopt(&archtype);
@@ -273,7 +278,7 @@ html_options_create::html_options_create():
     webdar_css_style::grey_button(deroule, true);
 }
 
-libdar::archive_options_create html_options_create::get_options() const
+libdar::archive_options_create html_options_create::get_options(std::shared_ptr<html_web_user_interaction> & webui) const
 {
     libdar::archive_options_create ret;
 
@@ -341,6 +346,7 @@ libdar::archive_options_create html_options_create::get_options() const
     ret.set_slice_min_digits(libdar::deci(slice_min_digits.get_value()).computer());
     ret.set_ignore_unknown_inode_type(ignore_unknown_inode_type.get_value_as_bool());
     ret.set_execute(execute.get_value());
+    ret.set_entrepot(entrep.get_entrepot(webui));
 
     return ret;
 }
