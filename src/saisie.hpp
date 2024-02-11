@@ -130,8 +130,9 @@ public:
     libdar::archive_options_create get_creating_options(std::shared_ptr<html_web_user_interaction> dialog) const;
 
 	// isolate options
-    const libdar::archive_options_isolate get_isolating_options() const;
-    const html_archive_read & get_isolating_reference() const { return isolate.get_reference(); };
+    const std::string & get_isolating_path() const { return isolate.get_archive_path(); };
+    const std::string & get_isolating_basename() const { return isolate.get_archive_basename(); };
+    const libdar::archive_options_isolate get_isolating_options(std::shared_ptr<html_web_user_interaction> dialog) const;
 
 	// merge options --- WARNING! here too the returned object is not a libda object
     const html_options_merge & get_merging_options() const;

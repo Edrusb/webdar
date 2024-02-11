@@ -309,7 +309,8 @@ void saisie::on_event(const std::string & event_name)
 	if(choice.get_current_tag() == menu_restore
 	   || choice.get_current_tag() == menu_compare
 	   || choice.get_current_tag() == menu_test
-	   || choice.get_current_tag() == menu_list)
+	   || choice.get_current_tag() == menu_list
+	   || choice.get_current_tag() == menu_isolate)
 	    archive_show.set_visible(true);
 	else
 	    archive_show.set_visible(false);
@@ -361,10 +362,8 @@ string saisie::get_archive_path() const
     case st_compare:
     case st_test:
     case st_list:
-	return archread.get_archive_path();
-	break;
     case st_isolate:
-	return isolate.get_archive_path();
+	return archread.get_archive_path();
 	break;
     case st_create:
 	return create.get_archive_path();
@@ -386,9 +385,8 @@ string saisie::get_archive_basename() const
     case st_compare:
     case st_test:
     case st_list:
-	return archread.get_archive_basename();
     case st_isolate:
-	return isolate.get_archive_basename();
+	return archread.get_archive_basename();
     case st_create:
 	return create.get_archive_basename();
     case st_merge:
@@ -403,7 +401,8 @@ libdar::archive_options_read saisie::get_read_options(shared_ptr<html_web_user_i
     if(status != st_restore
        && status != st_compare
        && status != st_test
-       && status != st_list)
+       && status != st_list
+       && status != st_isolate)
 	throw WEBDAR_BUG;
 
     return archread.get_read_options(dialog);
@@ -466,12 +465,12 @@ libdar::archive_options_create saisie::get_creating_options(shared_ptr<html_web_
     return create.get_options_create(dialog);
 }
 
-const libdar::archive_options_isolate saisie::get_isolating_options() const
+const libdar::archive_options_isolate saisie::get_isolating_options(std::shared_ptr<html_web_user_interaction> dialog) const
 {
     if(status != st_isolate)
 	throw WEBDAR_BUG;
 
-    return isolate.get_options_isolate().get_options();
+    return isolate.get_options_isolate(dialog);
 }
 
 const html_options_merge & saisie::get_merging_options() const
