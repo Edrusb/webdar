@@ -43,6 +43,7 @@ extern "C"
 #include "html_hash_algo.hpp"
 #include "html_crypto_algo.hpp"
 #include "html_derouleur.hpp"
+#include "html_entrepot.hpp"
 
 class html_options_isolate : public body_builder, public actor
 {
@@ -57,7 +58,7 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
-    libdar::archive_options_isolate get_options() const;
+    libdar::archive_options_isolate get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
 
 protected:
 
@@ -70,6 +71,7 @@ protected:
 private:
     html_derouleur deroule;
 
+    html_entrepot entrep;
     html_form form_archgen;
     html_form_fieldset fs_archgen;
     html_form_input allow_over;

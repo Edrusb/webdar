@@ -109,17 +109,21 @@ html_options_isolate::html_options_isolate():
 
 	// building HTML structure
 
+    static const char* sect_entrep = "entrepot";
     static const char* sect_general = "general";
     static const char* sect_show = "show";
     static const char* sect_compr = "compress";
     static const char* sect_slice = "slicing";
     static const char* sect_cipher = "ciphering";
 
+    deroule.add_section(sect_entrep, "Archive repository");
     deroule.add_section(sect_general, "General archive isolation options");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_compr, "Compression options");
     deroule.add_section(sect_slice, "Slicing options");
     deroule.add_section(sect_cipher, "Encryption options");
+
+    deroule.adopt_in_section(sect_entrep, &entrep);
 
     fs_archgen.adopt(&allow_over);
     fs_archgen.adopt(&warn_over);
@@ -245,10 +249,11 @@ void html_options_isolate::on_event(const std::string & event_name)
 }
 
 
-libdar::archive_options_isolate html_options_isolate::get_options() const
+libdar::archive_options_isolate html_options_isolate::get_options(std::shared_ptr<html_web_user_interaction> & webui) const
 {
     libdar::archive_options_isolate ret;
 
+    ret.set_entrepot(entrep.get_entrepot(webui));
     ret.set_allow_over(allow_over.get_value_as_bool());
     ret.set_warn_over(warn_over.get_value_as_bool());
     ret.set_pause(libdar::deci(pause.get_value()).computer());
