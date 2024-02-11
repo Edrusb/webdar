@@ -49,18 +49,6 @@ void archive_create::set_archive_path(const string & val)
     }
 }
 
-void archive_create::set_archive_options_reference(const string & refpath,
-						   const string & basename,
-						   const string & extension,
-						   const libdar::archive_options_read & readopt)
-{
-    has_ref = true;
-    ref_path = refpath;
-    ref_basename = basename;
-    ref_extension = extension;
-    ref_opt = readopt;
-}
-
 void archive_create::set_fs_root(const string & val)
 {
     try
@@ -88,19 +76,7 @@ void archive_create::inherited_run()
 	if(!ui)
 	    throw WEBDAR_BUG;
 
-	if(has_ref)
-	{
-	    ref = make_shared<libdar::archive>(ui->get_user_interaction(),
-					       libdar::path(ref_path),
-					       ref_basename,
-					       ref_extension,
-					       ref_opt);
-	    if(!ref)
-		throw exception_memory();
-	    opt.set_reference(ref);
-	}
-
-	    // now we can create the archive
+	    // let's now create the archive
 
 	libdar::archive target(ui->get_user_interaction(),
 			       fs_root,

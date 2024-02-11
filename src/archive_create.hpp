@@ -67,11 +67,6 @@ public:
     void set_archive_basename(const std::string & val) { if(val.empty()) throw exception_range("empty string is not a valid basename"); basename = val; };
     void set_archive_extension(const std::string & val) { if(val.empty()) throw exception_range("empty string is not a valid dar extension"); extension = val; };
     void set_archive_options_create(const libdar::archive_options_create & val) { opt = val; };
-    void clear_archive_options_reference() { has_ref = false; };
-    void set_archive_options_reference(const std::string & refpath,
-				       const std::string & basename,
-				       const std::string & extension,
-				       const libdar::archive_options_read & readopt);
     void set_fs_root(const std::string & val);
     void set_progressive_report(libdar::statistics *ptr) { progressive_report = ptr; };
 
@@ -87,11 +82,6 @@ private:
     std::string extension;
     libdar::path fs_root;
     libdar::archive_options_create opt;     ///< options for the backup to create
-    bool has_ref;                           ///< whether an archive of reference has to be used
-    std::string ref_path;                   ///< backup of reference path
-    std::string ref_basename;               ///< backup of reference base name
-    std::string ref_extension;              ///< backup of reference extension
-    libdar::archive_options_read ref_opt;   ///< options for the archive of reference
     libdar::statistics *progressive_report; ///< holds intermediate counter of the under process comparison
 };
 
