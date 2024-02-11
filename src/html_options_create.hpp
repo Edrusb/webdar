@@ -70,10 +70,6 @@ public:
 	/// and feeding the libdar::archive_options_create::set_reference(libdar::archive *)
 	/// with the object built from this->get_reference().*
     libdar::archive_options_create get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
-	/// whether an archive of reference has to be added to the libdar::archive_options_create object
-    bool has_reference() const { return archtype.get_selected_num() == 1; };
-	/// parameters required to build the archive of reference
-    const html_archive_read & get_reference() const { return reference; };
 
 protected:
 
@@ -81,6 +77,7 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// inherited from body_builder
     virtual void new_css_library_available() override;
 
 private:
@@ -104,8 +101,8 @@ private:
 
     html_form form_crypto;
 
-    html_form_radio archtype;    // fs_archtype member
-    html_archive_read reference;      // fs_archtype member
+    html_form_radio archtype;      // fs_archtype member
+    html_archive_read reference;   // fs_archtype member
     html_text ref_placeholder;     // shows when archtype is not differential/incremental
     html_form_input allow_over;
     html_form_input warn_over;

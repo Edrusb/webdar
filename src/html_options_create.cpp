@@ -32,6 +32,7 @@ extern "C"
     // webdar headers
 #include "webdar_tools.hpp"
 #include "webdar_css_style.hpp"
+#include "tokens.hpp"
 
     //
 #include "html_options_create.hpp"
@@ -99,7 +100,7 @@ html_options_create::html_options_create():
     alter_atime.add_choice("ctime", "Inode last change time (ctime)");
     compression_level.set_range(1, 9);
     if(defaults.get_reference() != nullptr)
-	throw WEBDAR_BUG; // not able to fill html form with an existing archive
+	throw WEBDAR_BUG; // not expected default value!!!
     else
 	if(defaults.get_snapshot())
 	    archtype.set_selected(2);
@@ -281,13 +282,22 @@ html_options_create::html_options_create():
 libdar::archive_options_create html_options_create::get_options(std::shared_ptr<html_web_user_interaction> & webui) const
 {
     libdar::archive_options_create ret;
+    std::shared_ptr<libdar::archive> ref_arch; // used locally to pass the archive of reference we may build for diff/incr backup
 
     switch(archtype.get_selected_num())
     {
     case 0: // full backup
 	break;
     case 1: // diff/incremental backup
-	ret.set_hourshift(libdar::deci(hourshift.get_value()).computer());
+	ref_arch.reset(new (nothrow) libdar::archive(webui->get_user_interaction(),
+						     libdar::path(reference.get_archive_path()),
+						     reference.get_archive_basename(),
+						     EXTENSION,
+						     reference.get_read_options(webui)));
+	if(!ref_arch)
+	    throw exception_memory();
+	else
+	    ret.set_reference(ref_arch);
 	break;
     case 2: // snapshot
 	ret.set_snapshot(true);
@@ -298,6 +308,8 @@ libdar::archive_options_create html_options_create::get_options(std::shared_ptr<
     default:
 	throw WEBDAR_BUG;
     }
+
+    ret.set_hourshift(libdar::deci(hourshift.get_value()).computer());
     ret.set_allow_over(allow_over.get_value_as_bool());
     ret.set_warn_over(warn_over.get_value_as_bool());
     ret.set_info_details(info_details.get_value_as_bool());
