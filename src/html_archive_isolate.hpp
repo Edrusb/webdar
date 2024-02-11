@@ -51,15 +51,15 @@ public:
 
     const std::string & get_archive_path() const { return sauv_path.get_value(); };
     const std::string & get_archive_basename() const { return basename.get_value(); };
-    const html_options_isolate & get_options_isolate() const { return options; };
-    const html_archive_read & get_reference() const { return ref; };
+    libdar::archive_options_isolate get_options_isolate(std::shared_ptr<html_web_user_interaction> & webui) const { return options.get_options(webui); };
 
 protected:
 
-    	/// inherited from body_builder
+        /// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
-						const request & req) override;
+                                                const request & req) override;
 
+        /// inherited from body_builder
     virtual void new_css_library_available() override;
 
 private:
@@ -68,7 +68,6 @@ private:
     html_form_fieldset fs;
     html_form_input_file sauv_path;
     html_form_input basename;
-    html_archive_read ref;
     html_options_isolate options;
 };
 

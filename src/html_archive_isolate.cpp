@@ -43,25 +43,21 @@ html_archive_isolate::html_archive_isolate():
     form("Update"),
     fs("Isolated catalog to create"),
     sauv_path("Where to create the isolated catalogue", "/", 20, "Select the directory where to create the isolated catalog..."),
-    basename("Archive basename", html_form_input::text, "", 10),
-    ref("Source archive")
+    basename("Archive basename", html_form_input::text, "", 10)
 {
     sauv_path.set_can_create_dir(true);
     sauv_path.set_select_mode(html_form_input_file::select_dir);
 
 	// adoption tree
 
-    static const char* sect_archive = "archive";
-    static const char* sect_ref = "reference";
+    static const char* sect_archive = "isolation options";
     deroule.add_section(sect_archive, "Archive Isolation");
-    deroule.add_section(sect_ref, "Reference Archive");
     deroule.set_active_section(0);
 
     fs.adopt(&sauv_path);
     fs.adopt(&basename);
     form.adopt(&fs);
     deroule.adopt_in_section(sect_archive, &form);
-    deroule.adopt_in_section(sect_ref, &ref);
     adopt(&deroule);
     adopt(&options);
 
