@@ -142,7 +142,7 @@ html_options_merge::html_options_merge():
     static const char* sect_slice = "compression";
     static const char* sect_cipher = "ciphering";
 
-    deroule.add_section(sect_general, "General archive isolation options");
+    deroule.add_section(sect_general, "General archive merging options");
     deroule.add_section(sect_aux, "Auxiliary archive of reference");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_filter, "Filtering options");
