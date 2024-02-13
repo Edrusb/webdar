@@ -41,7 +41,7 @@ extern "C"
 class archive_merge : public libthreadar::thread
 {
 public:
-    archive_merge(): archpath("/") { progressive_report = nullptr; };
+    archive_merge(): archpath("/") { progressive_report = nullptr;  has_ref = false; };
     archive_merge(const archive_merge & ref) = default;
     archive_merge(archive_merge && ref) noexcept = default;
     archive_merge & operator = (const archive_merge & ref) = default;
@@ -58,11 +58,6 @@ public:
 			       const std::string & basename,
 			       const std::string & extension,
 			       const libdar::archive_options_read & readopt);
-    void clear_archive_options_auxiliary() { has_aux = false; };
-    void set_archive_options_auxiliary(const std::string & refpath,
-				       const std::string & basename,
-				       const std::string & extension,
-				       const libdar::archive_options_read & readopt);
     void set_progressive_report(libdar::statistics *ptr) { progressive_report = ptr; };
 
 protected:
@@ -81,11 +76,6 @@ private:
     std::string ref_basename;
     std::string ref_extension;
     libdar::archive_options_read ref_opt;
-    bool has_aux;
-    std::string aux_path;
-    std::string aux_basename;
-    std::string aux_extension;
-    libdar::archive_options_read aux_opt;
     libdar::statistics *progressive_report;
 };
 

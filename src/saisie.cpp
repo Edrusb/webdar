@@ -465,7 +465,7 @@ libdar::archive_options_create saisie::get_creating_options(shared_ptr<html_web_
     return create.get_options_create(dialog);
 }
 
-const libdar::archive_options_isolate saisie::get_isolating_options(std::shared_ptr<html_web_user_interaction> dialog) const
+libdar::archive_options_isolate saisie::get_isolating_options(std::shared_ptr<html_web_user_interaction> dialog) const
 {
     if(status != st_isolate)
 	throw WEBDAR_BUG;
@@ -473,12 +473,12 @@ const libdar::archive_options_isolate saisie::get_isolating_options(std::shared_
     return isolate.get_options_isolate(dialog);
 }
 
-const html_options_merge & saisie::get_merging_options() const
+libdar::archive_options_merge saisie::get_merging_options(std::shared_ptr<html_web_user_interaction> dialog) const
 {
     if(status != st_merge)
 	throw WEBDAR_BUG;
 
-    return merge.get_options_merge();
+    return merge.get_options_merge(dialog);
 }
 
 void saisie::new_css_library_available()

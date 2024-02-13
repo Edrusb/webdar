@@ -61,24 +61,11 @@ void archive_merge::set_archive_reference(const string & refpath,
     ref_opt = readopt;
 }
 
-void archive_merge::set_archive_options_auxiliary(const string & refpath,
-						  const string & basename,
-						  const string & extension,
-						  const libdar::archive_options_read & readopt)
-{
-    has_aux = true;
-    aux_path = refpath;
-    aux_basename = basename;
-    aux_extension = extension;
-    aux_opt = readopt;
-}
-
 void archive_merge::inherited_run()
 {
     try
     {
 	shared_ptr<libdar::archive> ref = nullptr;
-	shared_ptr<libdar::archive> aux = nullptr;
 
 	    // we must open the archive of reference
 	    // and obtain an libdar::archive object to
@@ -86,35 +73,20 @@ void archive_merge::inherited_run()
 	    // constructor
 
 	if(!has_ref)
-	    throw WEBDAR_BUG; // ref is mandatory for merging
+	    throw exception_range("archive of reference not provided for merging");
 
 	if(!ui && !ui->get_user_interaction())
 	    throw WEBDAR_BUG;
 	ui->get_user_interaction()->message("--- Opening the archive of reference...");
-	ref = make_shared<libdar::archive>(ui->get_user_interaction(),
-					   libdar::path(ref_path),
-					   ref_basename,
-					   ref_extension,
-					   ref_opt);
+	ref.reset(new (nothrow) libdar::archive(ui->get_user_interaction(),
+						libdar::path(ref_path),
+						ref_basename,
+						ref_extension,
+						ref_opt));
 	if(!ref)
 	    throw exception_memory();
 
 	ui->get_user_interaction()->message("--- The archive of reference is now opened");
-	if(has_aux)
-	{
-	    ui->get_user_interaction()->message("--- Opening the auxiliary archive of reference...");
-	    aux = make_shared<libdar::archive>(ui->get_user_interaction(),
-					       libdar::path(aux_path),
-					       aux_basename,
-					       aux_extension,
-					       aux_opt);
-	    if(!aux)
-		throw exception_memory();
-	    opt.set_auxiliary_ref(aux);
-	    ui->get_user_interaction()->message("--- The auxiliary archive of reference is now opened");
-	}
-	else
-	    opt.set_auxiliary_ref(nullptr);
 
 	    // now we can merge the archive
 
@@ -137,5 +109,5 @@ void archive_merge::inherited_run()
     {
 	throw exception_libcall(e);
     }
-}
 
+}

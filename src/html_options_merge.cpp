@@ -56,6 +56,7 @@ html_options_merge::html_options_merge():
     execute("Command to execute after each slice", html_form_input::text, "", 30),
     empty("Dry run execution", html_form_input::check, "", 1),
     has_aux("Use an auxiliary archive", html_form_input::check, "", 1),
+    aux_block("Auxiliary archive related information"),
     auxiliary("Auxiliary archive of reference"),
     form_shown("Update"),
     fs_shown("What to show during the operation"),
@@ -169,8 +170,9 @@ html_options_merge::html_options_merge():
     deroule.adopt_in_section(sect_general, &form_archgen);
 
     aux_placeholder.add_text(2, "Auxiliary archive disabled");
-    deroule.adopt_in_section(sect_aux, &auxiliary);
-    deroule.adopt_in_section(sect_aux, &aux_placeholder);
+    aux_block.adopt(&auxiliary);
+    aux_block.adopt(&aux_placeholder);
+    deroule.adopt_in_section(sect_aux, &aux_block);
 
     fs_shown.adopt(&info_details);
     fs_shown.adopt(&display_skipped);
@@ -311,9 +313,10 @@ void html_options_merge::on_event(const std::string & event_name)
 }
 
 
-libdar::archive_options_merge html_options_merge::get_options() const
+libdar::archive_options_merge html_options_merge::get_options(std::shared_ptr<html_web_user_interaction> & webui) const
 {
     libdar::archive_options_merge ret;
+    shared_ptr<libdar::archive> aux;
 
     ret.set_allow_over(allow_over.get_value_as_bool());
     ret.set_warn_over(warn_over.get_value_as_bool());
@@ -355,6 +358,19 @@ libdar::archive_options_merge html_options_merge::get_options() const
 	    throw exception_range("crypto password and its confirmation do not match");
 	ret.set_crypto_pass(libdar::secu_string(crypto_pass1.get_value().c_str(), crypto_pass1.get_value().size()));
 	ret.set_crypto_size(webdar_tools_convert_to_int(crypto_size.get_value()));
+    }
+
+    if(has_aux.get_value_as_bool())
+    {
+	aux.reset(new (nothrow) libdar::archive(webui->get_user_interaction(),
+						libdar::path(auxiliary.get_archive_path()),
+						auxiliary.get_archive_basename(),
+						EXTENSION,
+						auxiliary.get_read_options(webui)));
+	if(!aux)
+	    throw exception_memory();
+	else
+	    ret.set_auxiliary_ref(aux);
     }
 
     return ret;

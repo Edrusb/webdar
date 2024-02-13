@@ -495,22 +495,12 @@ void user_interface::go_merge()
     arch_merge.set_archive_path(get_parametrage().get_archive_path());
     arch_merge.set_archive_basename(get_parametrage().get_archive_basename());
     arch_merge.set_archive_extension(EXTENSION);
-    arch_merge.set_archive_options_merge(get_parametrage().get_merging_options().get_options());
+    arch_merge.set_archive_options_merge(get_parametrage().get_merging_options(get_html_user_interaction()));
     arch_merge.set_archive_reference(
 	get_parametrage().get_merging_reference().get_archive_path(),
 	get_parametrage().get_merging_reference().get_archive_basename(),
 	EXTENSION,
 	get_parametrage().get_merging_reference().get_read_options(get_html_user_interaction()));
-    if(get_parametrage().get_merging_options().has_auxiliary())
-    {
-	arch_merge.set_archive_options_auxiliary(
-	    get_parametrage().get_merging_options().get_auxiliary().get_archive_path(),
-	    get_parametrage().get_merging_options().get_auxiliary().get_archive_basename(),
-	    EXTENSION,
-	    get_parametrage().get_merging_options().get_auxiliary().get_read_options(get_html_user_interaction()));
-    }
-    else
-	arch_merge.clear_archive_options_auxiliary();
 
     arch_merge.set_progressive_report(get_statistics().get_libdar_statistics());
 

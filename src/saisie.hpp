@@ -31,7 +31,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/libdar.hpp>
 
     // webdar headers
 #include "html_page.hpp"
@@ -113,9 +113,8 @@ public:
     std::string get_archive_basename() const;
     libdar::archive_options_read get_read_options(std::shared_ptr<html_web_user_interaction> dialog) const;
 
-	// common parameter to diff/create/restore
+	// common parameter to diff/create/restore/merge
     const std::string & get_fs_root() const;
-
 
 	// extraction parameters
     const libdar::archive_options_extract get_extraction_options() const;
@@ -132,10 +131,10 @@ public:
 	// isolate options
     const std::string & get_isolating_path() const { return isolate.get_archive_path(); };
     const std::string & get_isolating_basename() const { return isolate.get_archive_basename(); };
-    const libdar::archive_options_isolate get_isolating_options(std::shared_ptr<html_web_user_interaction> dialog) const;
+    libdar::archive_options_isolate get_isolating_options(std::shared_ptr<html_web_user_interaction> dialog) const;
 
-	// merge options --- WARNING! here too the returned object is not a libda object
-    const html_options_merge & get_merging_options() const;
+	// merge options
+    libdar::archive_options_merge get_merging_options(std::shared_ptr<html_web_user_interaction> dialog) const;
     const html_archive_read & get_merging_reference() const { return merge.get_reference(); };
 
 	/// defines the name of the session
