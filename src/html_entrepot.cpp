@@ -152,7 +152,6 @@ std::shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(std::shared_ptr<ht
     if(! webui->is_libdar_running())
     {
 	webui->auto_hide(true, true);
-
 	webui->run_and_control_thread(const_cast<html_entrepot*>(this)); // this launches a new thread running inherited_run() and the caller returns
 	join();
 	    // we join() ourself, yes, we wait here for the thread launched above to complete or be interrupted
