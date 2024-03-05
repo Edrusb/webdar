@@ -162,7 +162,7 @@ public:
 	///
 	/// \note, the provided thread object is not managed by this object, it must exist during
 	/// the whole life of the object until it ends or is aborted.
-    void run_and_control_thread(libthreadar::thread* arg) { managed_thread = arg; arg->run(); };
+    void run_and_control_thread(libthreadar::thread* arg) { if(managed_thread != nullptr) throw WEBDAR_BUG; managed_thread = arg; arg->run(); };
 
     	/// whether a libdar thread is running under "this" management
     bool is_libdar_running() const { return managed_thread != nullptr ? managed_thread->is_running() : false; };
