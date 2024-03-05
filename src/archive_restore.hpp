@@ -49,7 +49,6 @@ public:
     ~archive_restore() = default;
 
     void set_user_interaction(std::shared_ptr<html_web_user_interaction> ref) { ui = ref; };
-    void set_progressive_report(libdar::statistics *ptr) { progressive_report = ptr; };
     void set_parametrage(const saisie* x_param) { param = x_param; };
 
 protected:
@@ -59,7 +58,7 @@ protected:
 
 private:
     std::shared_ptr<html_web_user_interaction> ui;
-    libdar::statistics *progressive_report;
+    libdar::statistics* progressive_report;
     const saisie* param;
 
 	// the following field are setup from param in inherited_run() subthrerad

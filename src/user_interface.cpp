@@ -335,22 +335,7 @@ void user_interface::go_restore()
 
 	// providing libdar::parameters
     arch_rest.set_user_interaction(get_html_user_interaction());
-    arch_rest.set_progressive_report(get_statistics().get_libdar_statistics());
     arch_rest.set_parametrage(&get_parametrage());
-
-
-	// restting counters and logs
-    get_html_user_interaction()->clear();
-    get_statistics().clear_counters();
-    get_statistics().clear_labels();
-    get_statistics().set_treated_label("item(s) restored");
-    get_statistics().set_skipped_label("item(s) not restored (not saved in archive)");
-    get_statistics().set_tooold_label("item(s) not restored (overwriting policy decision)");
-    get_statistics().set_errored_label("item(s) failed to restore (filesystem error)");
-    get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
-    get_statistics().set_hard_links_label("hard link(s) restored");
-    get_statistics().set_ea_treated_label("item(s) having their EA restored");
-    get_statistics().set_total_label("item(s) considered");
 
 	// launching libdar in a separated thread
     current_thread = & arch_rest;

@@ -76,14 +76,28 @@ void archive_restore::inherited_run()
 	}
 
 	basename = param->get_archive_basename();
-	read_opt = param->get_read_options(ui);
 	extract_opt = param->get_extraction_options();
+	read_opt = param->get_read_options(ui);    ///< this lead to subthread creation to get entrepot object and clears the web_ui interface
 
 	libdar::archive arch(ui->get_user_interaction(),
 			     archpath,
 			     basename,
 			     EXTENSION,
 			     read_opt);
+
+	    // restting counters and logs
+	ui->clear();
+	ui->get_statistics().clear_counters();
+	ui->get_statistics().clear_labels();
+	ui->get_statistics().set_treated_label("item(s) restored");
+	ui->get_statistics().set_skipped_label("item(s) not restored (not saved in archive)");
+	ui->get_statistics().set_tooold_label("item(s) not restored (overwriting policy decision)");
+	ui->get_statistics().set_errored_label("item(s) failed to restore (filesystem error)");
+	ui->get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
+	ui->get_statistics().set_hard_links_label("hard link(s) restored");
+	ui->get_statistics().set_ea_treated_label("item(s) having their EA restored");
+	ui->get_statistics().set_total_label("item(s) considered");
+	progressive_report = ui->get_statistics().get_libdar_statistics();
 
 	libdar::statistics final = arch.op_extract(fs_root,
 						   extract_opt,
