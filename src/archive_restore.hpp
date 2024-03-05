@@ -36,6 +36,7 @@ extern "C"
 
     // webdar headers
 #include "html_web_user_interaction.hpp"
+#include "saisie.hpp"
 
 class archive_restore : public libthreadar::thread
 {
@@ -48,12 +49,8 @@ public:
     ~archive_restore() = default;
 
     void set_user_interaction(std::shared_ptr<html_web_user_interaction> ref) { ui = ref; };
-    void set_archive_path(const std::string & val);
-    void set_archive_basename(const std::string & val) { basename = val; };
-    void set_archive_options_read(const libdar::archive_options_read & val) { read_opt = val; };
-    void set_fs_root(const std::string & val);
-    void set_archive_options_restore(const libdar::archive_options_extract & val) { extract_opt = val; };
     void set_progressive_report(libdar::statistics *ptr) { progressive_report = ptr; };
+    void set_parametrage(const saisie* x_param) { param = x_param; };
 
 protected:
 
@@ -62,12 +59,16 @@ protected:
 
 private:
     std::shared_ptr<html_web_user_interaction> ui;
+    libdar::statistics *progressive_report;
+    const saisie* param;
+
+	// the following field are setup from param in inherited_run() subthrerad
     libdar::path archpath;
     std::string basename;
     libdar::path fs_root;
     libdar::archive_options_read read_opt;
     libdar::archive_options_extract extract_opt;
-    libdar::statistics *progressive_report;
+
 };
 
 

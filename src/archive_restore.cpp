@@ -41,34 +41,11 @@ using namespace std;
 
 
 archive_restore::archive_restore():
+    progressive_report(nullptr),
+    param(nullptr),
     archpath("/"),
     fs_root("/")
 {
-    progressive_report = nullptr;
-}
-
-void archive_restore::set_archive_path(const std::string & val)
-{
-    try
-    {
-	archpath = libdar::path(val, true);
-    }
-    catch(libdar::Egeneric & e)
-    {
-	throw exception_libcall(e);
-    }
-}
-
-void archive_restore::set_fs_root(const std::string & val)
-{
-    try
-    {
-	fs_root = libdar::path(val, true);
-    }
-    catch(libdar::Egeneric & e)
-    {
-	throw exception_libcall(e);
-    }
 }
 
 void archive_restore::inherited_run()
@@ -77,6 +54,31 @@ void archive_restore::inherited_run()
     {
 	if(!ui)
 	    throw WEBDAR_BUG;
+	if(param == nullptr)
+	    throw WEBDAR_BUG;
+
+	try
+	{
+	    archpath = libdar::path(param->get_archive_path(), true);
+	}
+	catch(libdar::Egeneric & e)
+	{
+	    throw exception_libcall(e);
+	}
+
+	try
+	{
+	    fs_root = libdar::path(param->get_fs_root(), true);
+	}
+	catch(libdar::Egeneric & e)
+	{
+	    throw exception_libcall(e);
+	}
+
+	basename = param->get_archive_basename();
+	read_opt = param->get_read_options(ui);
+	extract_opt = param->get_extraction_options();
+
 	libdar::archive arch(ui->get_user_interaction(),
 			     archpath,
 			     basename,

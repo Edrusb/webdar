@@ -335,12 +335,8 @@ void user_interface::go_restore()
 
 	// providing libdar::parameters
     arch_rest.set_user_interaction(get_html_user_interaction());
-    arch_rest.set_archive_path(get_parametrage().get_archive_path());
-    arch_rest.set_archive_basename(get_parametrage().get_archive_basename());
-    arch_rest.set_archive_options_read(get_parametrage().get_read_options(get_html_user_interaction()));
-    arch_rest.set_fs_root(get_parametrage().get_fs_root());
-    arch_rest.set_archive_options_restore(get_parametrage().get_extraction_options());
     arch_rest.set_progressive_report(get_statistics().get_libdar_statistics());
+    arch_rest.set_parametrage(&get_parametrage());
 
 
 	// restting counters and logs
