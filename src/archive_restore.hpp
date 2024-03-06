@@ -58,10 +58,10 @@ protected:
 
 private:
     std::shared_ptr<html_web_user_interaction> ui;
-    libdar::statistics* progressive_report;
     const saisie* param;
 
-	// the following field are setup from param in inherited_run() subthrerad
+	// the following field are setup from param and ui in inherited_run() subthrerad
+    libdar::statistics* progressive_report;
     libdar::path archpath;
     std::string basename;
     libdar::path fs_root;
