@@ -39,29 +39,42 @@ extern "C"
 
 using namespace std;
 
-void archive_test::set_archive_path(const std::string & val)
-{
-    try
-    {
-	archpath = libdar::path(val, true);
-    }
-    catch(libdar::Egeneric & e)
-    {
-	throw exception_libcall(e);
-    }
-}
-
 void archive_test::inherited_run()
 {
     try
     {
 	if(!ui)
 	    throw WEBDAR_BUG;
+
+	if(param == nullptr)
+	    throw WEBDAR_BUG;
+
+	try
+	{
+	    archpath = libdar::path(param->get_archive_path(), true);
+	}
+	catch(libdar::Egeneric & e)
+	{
+	    throw exception_libcall(e);
+	}
+
+	basename = param->get_archive_basename();
+	read_opt = param->get_read_options(ui);
+	test_opt = param->get_testing_options();
+
 	libdar::archive arch(ui->get_user_interaction(),
 			     archpath,
 			     basename,
 			     EXTENSION,
 			     read_opt);
+
+		// resetting counters and logs
+	ui->get_statistics().clear_counters();
+	ui->get_statistics().clear_labels();
+	ui->get_statistics().set_treated_label("item(s) treated");
+	ui->get_statistics().set_skipped_label("item(s) excluded by filters");
+	ui->get_statistics().set_errored_label("items(s) with error");
+	progressive_report = ui->get_statistics().get_libdar_statistics();
 
 	libdar::statistics final = arch.op_test(test_opt,
 						progressive_report);
