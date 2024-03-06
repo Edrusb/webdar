@@ -41,34 +41,11 @@ using namespace std;
 
 
 archive_compare::archive_compare():
+    param(nullptr),
     archpath("/"),
-    fs_root("/")
+    fs_root("/"),
+    progressive_report(nullptr)
 {
-    progressive_report = nullptr;
-}
-
-void archive_compare::set_archive_path(const std::string & val)
-{
-    try
-    {
-	archpath = libdar::path(val, true);
-    }
-    catch(libdar::Egeneric & e)
-    {
-	throw exception_libcall(e);
-    }
-}
-
-void archive_compare::set_fs_root(const std::string & val)
-{
-    try
-    {
-	fs_root = libdar::path(val, true);
-    }
-    catch(libdar::Egeneric & e)
-    {
-	throw exception_libcall(e);
-    }
 }
 
 void archive_compare::inherited_run()
@@ -80,6 +57,32 @@ void archive_compare::inherited_run()
 	if(!ui)
 	    throw WEBDAR_BUG;
 
+	if(param == nullptr)
+	    throw WEBDAR_BUG;
+
+	try
+	{
+	    archpath = libdar::path(param->get_archive_path(), true);
+	}
+	catch(libdar::Egeneric & e)
+	{
+	    throw exception_libcall(e);
+	}
+
+	basename = param->get_archive_basename();
+
+	try
+	{
+	    fs_root = libdar::path(param->get_fs_root(), true);
+	}
+	catch(libdar::Egeneric & e)
+	{
+	    throw exception_libcall(e);
+	}
+
+	read_opt = param->get_read_options(ui);
+	diff_opt = param->get_comparison_options();
+
 	libdar::archive arch(ui->get_user_interaction(),
 			     archpath,
 			     basename,
@@ -87,7 +90,16 @@ void archive_compare::inherited_run()
 			     read_opt);
 
 	    // if no exception has been raised, the object
-	    // has been created so we can
+	    // has been created so we can compare
+
+		// restting counters and logs
+	ui->clear();
+	ui->get_statistics().clear_labels();
+	ui->get_statistics().set_treated_label("item(s) identical");
+	ui->get_statistics().set_errored_label("item(s) do not match those on filesystem");
+	ui->get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
+	ui->get_statistics().set_total_label("inode(s) considered");
+	progressive_report = ui->get_statistics().get_libdar_statistics();
 
 	libdar::statistics final = arch.op_diff(fs_root,
 						diff_opt,

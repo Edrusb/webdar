@@ -352,20 +352,7 @@ void user_interface::go_diff()
 
 	// providing libdar::parameters
     arch_diff.set_user_interaction(get_html_user_interaction());
-    arch_diff.set_archive_path(get_parametrage().get_archive_path());
-    arch_diff.set_archive_basename(get_parametrage().get_archive_basename());
-    arch_diff.set_archive_options_read(get_parametrage().get_read_options(get_html_user_interaction()));
-    arch_diff.set_fs_root(get_parametrage().get_fs_root());
-    arch_diff.set_archive_options_compare(get_parametrage().get_comparison_options());
-    arch_diff.set_progressive_report(get_statistics().get_libdar_statistics());
-
-
-	// restting counters and logs
-    get_statistics().clear_labels();
-    get_statistics().set_treated_label("item(s) identical");
-    get_statistics().set_errored_label("item(s) do not match those on filesystem");
-    get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
-    get_statistics().set_total_label("inode(s) considered");
+    arch_diff.set_parametrage(&get_parametrage());
 
 	// launching libdar in a separated thread
     current_thread = & arch_diff;
