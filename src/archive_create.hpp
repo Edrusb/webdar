@@ -37,6 +37,7 @@ extern "C"
     // webdar headers
 #include "web_user_interaction.hpp"
 #include "html_options_create.hpp"
+#include "saisie.hpp"
 
     /// class archive_create run libdar creation in a dedicated thread
 
@@ -63,12 +64,7 @@ public:
 	// parameters expected by the libdar::archive constructor
 
     void set_user_interaction(std::shared_ptr<html_web_user_interaction> ref) { ui = ref; };
-    void set_archive_path(const std::string & val);
-    void set_archive_basename(const std::string & val) { if(val.empty()) throw exception_range("empty string is not a valid basename"); basename = val; };
-    void set_archive_extension(const std::string & val) { if(val.empty()) throw exception_range("empty string is not a valid dar extension"); extension = val; };
-    void set_archive_options_create(const libdar::archive_options_create & val) { opt = val; };
-    void set_fs_root(const std::string & val);
-    void set_progressive_report(libdar::statistics *ptr) { progressive_report = ptr; };
+    void set_parametrage(const saisie* x_param) { param = x_param; };
 
 protected:
 
@@ -77,9 +73,11 @@ protected:
 
 private:
     std::shared_ptr<html_web_user_interaction> ui;
+    const saisie* param;
+
+	// the following field are setup from param and ui in inherited_run() subthrerad
     libdar::path archpath;
     std::string basename;
-    std::string extension;
     libdar::path fs_root;
     libdar::archive_options_create opt;     ///< options for the backup to create
     libdar::statistics *progressive_report; ///< holds intermediate counter of the under process comparison

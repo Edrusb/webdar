@@ -387,25 +387,7 @@ void user_interface::go_create()
 
 	// providing libdar::parameters
     arch_create.set_user_interaction(get_html_user_interaction());
-    arch_create.set_archive_path(get_parametrage().get_archive_path());
-    arch_create.set_archive_basename(get_parametrage().get_archive_basename());
-    arch_create.set_archive_extension(EXTENSION);
-    arch_create.set_fs_root(get_parametrage().get_fs_root());
-    arch_create.set_archive_options_create(get_parametrage().get_creating_options(get_html_user_interaction()));
-    arch_create.set_progressive_report(get_statistics().get_libdar_statistics());
-
-	// resetting counters and logs
-    get_statistics().clear_counters();
-    get_statistics().clear_labels();
-    get_statistics().set_treated_label("item(s) treated");
-    get_statistics().set_hard_links_label("hard link(s) treated");
-    get_statistics().set_tooold_label("item(s) modified while read for backup (dirty files)");
-    get_statistics().set_byte_amount_label("byte(s) wasted due to changing files at the time they were read");
-    get_statistics().set_skipped_label("item(s) not saved (no inode/file change)");
-    get_statistics().set_errored_label("items(s) with error (filesystem error)");
-    get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
-    get_statistics().set_deleted_label("item(s) recorded as deleted");
-    get_statistics().set_ea_treated_label("item(s) with Extended Attributes");
+    arch_create.set_parametrage(&get_parametrage());
 
 	// launching libdar in a separated thread
     current_thread = & arch_create;

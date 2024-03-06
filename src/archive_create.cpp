@@ -31,35 +31,13 @@ extern "C"
 
 
     // webdar headers
+#include "tokens.hpp"
+#include "exceptions.hpp"
 
     //
 #include "archive_create.hpp"
 
 using namespace std;
-
-void archive_create::set_archive_path(const string & val)
-{
-    try
-    {
-	archpath = libdar::path(val, true);
-    }
-    catch(libdar::Egeneric & e)
-    {
-	throw exception_libcall(e);
-    }
-}
-
-void archive_create::set_fs_root(const string & val)
-{
-    try
-    {
-	fs_root = libdar::path(val, true);
-    }
-    catch(libdar::Egeneric & e)
-    {
-	throw exception_libcall(e);
-    }
-}
 
 void archive_create::inherited_run()
 {
@@ -76,13 +54,52 @@ void archive_create::inherited_run()
 	if(!ui)
 	    throw WEBDAR_BUG;
 
+	if(param == nullptr)
+	    throw WEBDAR_BUG;
+
+	try
+	{
+	    archpath = libdar::path(param->get_archive_path(), true);
+	}
+	catch(libdar::Egeneric & e)
+	{
+	    throw exception_libcall(e);
+	}
+
+	basename = param->get_archive_basename();
+
+	try
+	{
+	    fs_root = libdar::path(param->get_fs_root(), true);
+	}
+	catch(libdar::Egeneric & e)
+	{
+	    throw exception_libcall(e);
+	}
+
+	opt = param->get_creating_options(ui);
+
+	    // resetting counters and logs
+	ui->get_statistics().clear_counters();
+	ui->get_statistics().clear_labels();
+	ui->get_statistics().set_treated_label("item(s) treated");
+	ui->get_statistics().set_hard_links_label("hard link(s) treated");
+	ui->get_statistics().set_tooold_label("item(s) modified while read for backup (dirty files)");
+	ui->get_statistics().set_byte_amount_label("byte(s) wasted due to changing files at the time they were read");
+	ui->get_statistics().set_skipped_label("item(s) not saved (no inode/file change)");
+	ui->get_statistics().set_errored_label("items(s) with error (filesystem error)");
+	ui->get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
+	ui->get_statistics().set_deleted_label("item(s) recorded as deleted");
+	ui->get_statistics().set_ea_treated_label("item(s) with Extended Attributes");
+	progressive_report = ui->get_statistics().get_libdar_statistics();
+
 	    // let's now create the archive
 
 	libdar::archive target(ui->get_user_interaction(),
 			       fs_root,
 			       archpath,
 			       basename,
-			       extension,
+			       EXTENSION,
 			       opt,
 			       progressive_report);
 
