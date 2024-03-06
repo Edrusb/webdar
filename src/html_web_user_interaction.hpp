@@ -33,6 +33,7 @@ extern "C"
     // C++ system header files
 #include <libthreadar/libthreadar.hpp>
 #include <memory>
+#include <deque>
 
     // webdar headers
 #include "body_builder.hpp"
@@ -112,7 +113,7 @@ public:
     html_web_user_interaction(html_web_user_interaction && ref) noexcept = delete;
     html_web_user_interaction & operator = (const html_web_user_interaction & ref) = delete;
     html_web_user_interaction & operator = (html_web_user_interaction && ref) noexcept = delete;
-    ~html_web_user_interaction() = default;
+    ~html_web_user_interaction();
 
 	/// change the number of last warnings to display
     void set_warning_list_size(unsigned int size) { check_libdata(); lib_data->set_warning_list_size(size); };
@@ -148,12 +149,23 @@ public:
 	/// provide a libdar thread to be managed by this html_web_component (stop, kill, actions)
 
 	/// \param[in] arg is the thread to be managed, it must have been setup but not run() by the caller
-	/// this method will run() the thread, monitor its liveness then join() it. The caller must have
-	/// registered to the event close_libdar_screen to be informed when the thread will have completed.
-	/// the caller can also join() the corresponding thread, but is then stuck until the thread ends.
-	/// during the life of the thread, this body_builder component displays buttons to stop/kill the
+	/// this method will run() the thread, monitor its liveness then join() it when it has completed.
+	/// The caller must have registered to the event close_libdar_screen to be informed when the thread
+	/// will have completed. The caller can also/instead join() the corresponding thread, but is then
+	/// stuck until the thread ends.
+	/// During the life of the thread, this body_builder component displays buttons to stop/kill the
 	/// provided thread, as well as the output of the get_user_interaction() returned component (which
 	/// is a libdar::user_interaction object).
+	///
+	/// \note the run_and_control_thread() method can be invoked while a thread is already managed
+	/// by this object. THe object monitors the liveness status of all managed thread and join() it
+	/// but only triggers the event close_libdar_screen once all thread have ended and user has clicked
+	/// on the "close" button (or all thread have ended and auto_hide() was set. This does not prevent
+	/// the caller to join() any thread it need to wait for its termination. Of course if the user
+	/// asks to abort the libdar process, first only the last provided thread is requested to stop or
+	/// in a second time (upon user action) all threads are killed in reverse order they have been
+	/// given to management.
+
 	///
 	/// \note, this is the duty of the caller to give to the thread as libdar::user_interaction
 	/// the web_user_interaction object returned by the get_user_interaction() method, for libdar
@@ -162,10 +174,10 @@ public:
 	///
 	/// \note, the provided thread object is not managed by this object, it must exist during
 	/// the whole life of the object until it ends or is aborted.
-    void run_and_control_thread(libthreadar::thread* arg) { if(managed_thread != nullptr) throw WEBDAR_BUG; managed_thread = arg; arg->run(); };
+    void run_and_control_thread(libthreadar::thread* arg);
 
     	/// whether a libdar thread is running under "this" management
-    bool is_libdar_running() const { return managed_thread != nullptr ? managed_thread->is_running() : false; };
+    bool is_libdar_running() const;
 
 
 protected:
@@ -226,12 +238,17 @@ private:
     bool ignore_event;      ///< if true the on_event() method does not take any action
     bool just_set;          ///< true when the control have just been activated by libdar and no answer has been provided by the user
 
-    libthreadar::thread* managed_thread;
+    std::deque<libthreadar::thread*> managed_threads;
 
     void adjust_visibility();
     void check_libdata() { if(!lib_data) throw WEBDAR_BUG; };
     void set_mode(mode_type m);
     void update_html_from_libdar_status();
+    void check_thread_status();
+    void clean_end_threads(bool force);
+    void kill_threads();
+    void join_all_threads();
+
 };
 
 

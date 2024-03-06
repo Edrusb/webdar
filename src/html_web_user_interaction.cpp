@@ -70,8 +70,7 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     finish("Close", close_libdar_screen),
     rebuild_body_part(false),
     ignore_event(false),
-    just_set(false),
-    managed_thread(nullptr)
+    just_set(false)
 {
     lib_data.reset(new (nothrow) web_user_interaction(x_warn_size));
     if(!lib_data)
@@ -131,7 +130,46 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
 
     webdar_css_style::normal_button(finish);
     finish.add_css_class(class_button);
+}
 
+html_web_user_interaction::~html_web_user_interaction()
+{
+    try
+    {
+	kill_threads();
+	join_all_threads();
+    }
+    catch(...)
+    {
+	    // do not propagate any exception
+    }
+}
+
+
+void html_web_user_interaction::run_and_control_thread(libthreadar::thread* arg)
+{
+    if(arg == nullptr)
+	throw WEBDAR_BUG;
+    managed_threads.push_back(arg);
+    arg->run();
+}
+
+bool html_web_user_interaction::is_libdar_running() const
+{
+    bool ret = false;
+
+    deque<libthreadar::thread*>::const_iterator it = managed_threads.begin();
+
+    while(it != managed_threads.end() && !ret)
+    {
+	if(*it == nullptr)
+	    throw WEBDAR_BUG;
+	if((*it)->is_running())
+	    ret = true;
+	++it;
+    }
+
+    return ret;
 }
 
 string html_web_user_interaction::inherited_get_body_part(const chemin & path,
@@ -150,30 +188,11 @@ string html_web_user_interaction::inherited_get_body_part(const chemin & path,
 
 	// monitoring libdar thread status
 
-    if(managed_thread != nullptr && ! managed_thread->is_running())
-    {
-	if(mode != finished)
-	{
-	    try
-	    {
-		managed_thread->join();
-		set_mode(finished); // this will set managed_thread to nullptr
-	    }
-	    catch(exception_base & e)
-	    {
-		e.change_message(string("Error reported from libdar: ") + e.get_message());
-		throw;
-	    }
-	    catch(libdar::Egeneric & e)
-	    {
-		throw exception_libcall(e);
-	    }
-	}
-    }
+    check_thread_status();
 
     	// update visibility status
     ack_visible();
-    if(! get_visible() && managed_thread == nullptr)
+    if(! get_visible() && managed_threads.empty())
 	return ret; // component accepts to stay hidden only if no thread is managed
 
 	    // now we return to the user the updated html interface
@@ -331,43 +350,21 @@ void html_web_user_interaction::set_mode(mode_type m)
 	force_close.set_visible(true);
 	kill_close.set_visible(false);
 	finish.set_visible(false);
-	if(managed_thread != nullptr)
-	{
-	    pthread_t libdar_tid;
-	    if(managed_thread->is_running(libdar_tid))
-	    {
-		libdar::thread_cancellation th;
-		th.cancel(libdar_tid, false, 0);
-		was_interrupted = true;
-	    }
-	}
+	clean_end_threads(false);
 	break;
     case end_forced:
 	ask_close.set_visible(false);
 	force_close.set_visible(false);
 	kill_close.set_visible(true);
 	finish.set_visible(false);
-	if(managed_thread != nullptr)
-	{
-	    pthread_t libdar_tid;
-	    if(managed_thread->is_running(libdar_tid))
-	    {
-		libdar::thread_cancellation th;
-		th.cancel(libdar_tid, true, 0);
-	    }
-	}
+	clean_end_threads(true);
 	break;
     case kill_forced:
 	ask_close.set_visible(false);
 	force_close.set_visible(false);
 	kill_close.set_visible(false);
 	finish.set_visible(false);
-	if(managed_thread != nullptr)
-	{
-	    pthread_t libdar_tid;
-	    if(managed_thread->is_running(libdar_tid))
-		managed_thread->kill();
-	}
+	kill_threads();
 	act(can_refresh);
 	break;
     case finished:
@@ -376,7 +373,6 @@ void html_web_user_interaction::set_mode(mode_type m)
 	kill_close.set_visible(false);
 	finish.set_visible(true);
 	act(dont_refresh);
-	managed_thread = nullptr;
 	if(!autohide || (was_interrupted && hide_unless_interrupted))
 	    break;
 	else // if auto hide is set, we go to the closed status, here below
@@ -466,4 +462,103 @@ void html_web_user_interaction::update_html_from_libdar_status()
 	throw;
     }
     ignore_event = false;
+}
+
+void html_web_user_interaction::check_thread_status()
+{
+    while( ! managed_threads.empty()
+	  && managed_threads.back() != nullptr
+	  && ! managed_threads.back()->is_running())
+    {
+	libthreadar::thread* tmp = managed_threads.back();
+	managed_threads.pop_back(); // doing that before join in case join triggers an exception
+
+	try
+	{
+	    tmp->join();
+	}
+	catch(exception_base & e)
+	{
+	    e.change_message(string("Error reported from libdar: ") + e.get_message());
+	    throw;
+	}
+	catch(libdar::Egeneric & e)
+	{
+	    throw exception_libcall(e);
+	}
+    }
+
+    if(! managed_threads.empty()
+       && managed_threads.back() == nullptr)
+	throw WEBDAR_BUG;
+
+    if(managed_threads.empty())
+	set_mode(finished);
+}
+
+void html_web_user_interaction::clean_end_threads(bool force)
+{
+    if( ! managed_threads.empty()
+	&& managed_threads.back() != nullptr)
+    {
+	pthread_t libdar_tid;
+	if(managed_threads.back()->is_running(libdar_tid))
+	{
+	    libdar::thread_cancellation th;
+	    th.cancel(libdar_tid, force, 0);
+	    was_interrupted = true;
+	}
+    }
+
+    if(! managed_threads.empty()
+       && managed_threads.back() == nullptr)
+	throw WEBDAR_BUG;
+}
+
+void html_web_user_interaction::kill_threads()
+{
+    bool bug = false;
+    deque<libthreadar::thread*>::reverse_iterator rit = managed_threads.rbegin();
+
+    while(rit != managed_threads.rend())
+    {
+	if(*rit == nullptr)
+	    bug = true;
+	else
+	{
+	    if((*rit)->is_running())
+		(*rit)->kill();
+	}
+
+	rit++;
+    }
+
+    if(bug)
+	throw WEBDAR_BUG;
+}
+
+
+void html_web_user_interaction::join_all_threads()
+{
+    deque<libthreadar::thread*>::reverse_iterator rit = managed_threads.rbegin();
+
+    while(rit != managed_threads.rend())
+    {
+	if(*rit != nullptr)
+	{
+	    if((*rit)->is_running())
+	    {
+		try
+		{
+		    (*rit)->join();
+		}
+		catch(...)
+		{
+			// no not propagate any exception
+		}
+	    }
+	}
+
+	rit++;
+    }
 }
