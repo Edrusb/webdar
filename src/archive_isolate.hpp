@@ -37,6 +37,7 @@ extern "C"
     // webdar headers
 #include "html_web_user_interaction.hpp"
 #include "html_options_isolate.hpp"
+#include "saisie.hpp"
 
 class archive_isolate : public libthreadar::thread
 {
@@ -51,16 +52,7 @@ public:
 	// needed to read the archive to isolate
 
     void set_user_interaction(std::shared_ptr<html_web_user_interaction> ref) { ui = ref; };
-    void set_archive_path(const std::string & val);
-    void set_archive_basename(const std::string & val) { if(val.empty()) throw exception_range("empty string is not a valid basename"); basename = val; };
-    void set_archive_extension(const std::string & val) {  if(val.empty()) throw exception_range("empty string is not a valid dar extension"); extension = val; };
-    void set_archive_options_read(const libdar::archive_options_read & val) { read_opt = val; };
-
-	// needed to proceed to isolation operation on the previously defined archive
-
-    void set_archive_dest_path(const std::string & val);
-    void set_archive_dest_basename(const std::string & val) { if(val.empty()) throw exception_range("empty string is not a valid basename"); dest_basename = val; };
-    void set_archive_options_isolate(const libdar::archive_options_isolate & val) { isol_opt = val; };
+    void set_parametrage(const saisie* x_param) { param = x_param; };
 
 protected:
 	/// inherited from class libthreadar::thread
@@ -68,9 +60,11 @@ protected:
 
 private:
     std::shared_ptr<html_web_user_interaction> ui;
+    const saisie* param;
+
+	// the following field are setup from param and ui in inherited_run() subthrerad
     libdar::path archpath;
     std::string basename;
-    std::string extension;
     libdar::archive_options_read read_opt;
     libdar::path dest_path;
     std::string dest_basename;

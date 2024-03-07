@@ -403,19 +403,8 @@ void user_interface::go_isolate()
 	throw WEBDAR_BUG;
 
 	// providing libdar::parameters
-
     arch_isolate.set_user_interaction(get_html_user_interaction());
-    arch_isolate.set_archive_path(get_parametrage().get_archive_path());
-    arch_isolate.set_archive_basename(get_parametrage().get_archive_basename());
-    arch_isolate.set_archive_extension(EXTENSION);
-    arch_isolate.set_archive_options_read(get_parametrage().get_read_options(get_html_user_interaction()));
-    arch_isolate.set_archive_dest_path(get_parametrage().get_isolating_path());
-    arch_isolate.set_archive_dest_basename(get_parametrage().get_isolating_basename());
-    arch_isolate.set_archive_options_isolate(get_parametrage().get_isolating_options(get_html_user_interaction()));
-
-	// resetting counters and logs
-    get_statistics().clear_counters();
-    get_statistics().clear_labels();
+    arch_isolate.set_parametrage(&get_parametrage());
 
 	// launching libdar in a separated thread
     current_thread = & arch_isolate;
