@@ -37,48 +37,24 @@ extern "C"
 
 using namespace std;
 
-archive_isolate::archive_isolate():
-    archpath("/"),
-    dest_path("/")
-{
-    param = nullptr;
-}
-
 void archive_isolate::inherited_run()
 {
     try
     {
 	std::shared_ptr<libdar::archive> source;
 
-	if(!ui)
+	if(!ui && ! ui->get_user_interaction())
 	    throw WEBDAR_BUG;
 
 	if(param == nullptr)
 	    throw WEBDAR_BUG;
 
-	try
-	{
-	    archpath = libdar::path(param->get_archive_path(), true);
-	}
-	catch(libdar::Egeneric & e)
-	{
-	    throw exception_libcall(e);
-	}
-
-	basename = param->get_archive_basename();
-	read_opt = param->get_read_options(ui);
-
-	try
-	{
-	    dest_path = libdar::path(param->get_isolating_path(), true);
-	}
-	catch(libdar::Egeneric & e)
-	{
-	    throw exception_libcall(e);
-	}
-
-	dest_basename = param->get_isolating_basename();
-	isol_opt = param->get_isolating_options(ui);
+	libdar::path archpath(param->get_archive_path(), true);
+	string basename(param->get_archive_basename());
+	libdar::archive_options_read read_opt(param->get_read_options(ui));
+	libdar::path dest_path(param->get_isolating_path(), true);
+	string dest_basename(param->get_isolating_basename());
+	libdar::archive_options_isolate isol_opt(param->get_isolating_options(ui));
 
 	    // first creating the archive object to isolate
 

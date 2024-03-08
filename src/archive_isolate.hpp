@@ -42,7 +42,7 @@ extern "C"
 class archive_isolate : public libthreadar::thread
 {
 public:
-    archive_isolate();
+    archive_isolate(): param(nullptr) {};
     archive_isolate(const archive_isolate & ref) = default;
     archive_isolate(archive_isolate && ref) noexcept = default;
     archive_isolate & operator = (const archive_isolate & ref) = default;
@@ -62,13 +62,6 @@ private:
     std::shared_ptr<html_web_user_interaction> ui;
     const saisie* param;
 
-	// the following field are setup from param and ui in inherited_run() subthrerad
-    libdar::path archpath;
-    std::string basename;
-    libdar::archive_options_read read_opt;
-    libdar::path dest_path;
-    std::string dest_basename;
-    libdar::archive_options_isolate isol_opt;
 };
 
 #endif
