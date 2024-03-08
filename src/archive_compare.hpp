@@ -52,7 +52,7 @@ extern "C"
 class archive_compare : public libthreadar::thread
 {
 public:
-    archive_compare();
+    archive_compare(): param(nullptr) {};
     archive_compare(const archive_compare & ref) = default;
     archive_compare(archive_compare && ref) noexcept = default;
     archive_compare & operator = (const archive_compare & ref) = default;
@@ -77,13 +77,6 @@ private:
     std::shared_ptr<html_web_user_interaction> ui;
     const saisie* param;
 
-	// the following field are setup from param and ui in inherited_run() subthrerad
-    libdar::path archpath;
-    std::string basename;
-    libdar::path fs_root;
-    libdar::archive_options_read read_opt;  ///< parameter for archive constructor
-    libdar::archive_options_diff diff_opt;  ///< parameters for archive diff operation
-    libdar::statistics *progressive_report; ///< holds intermediate counter of the under process comparison
 };
 
 #endif

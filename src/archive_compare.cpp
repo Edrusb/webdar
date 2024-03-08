@@ -39,49 +39,25 @@ extern "C"
 
 using namespace std;
 
-
-archive_compare::archive_compare():
-    param(nullptr),
-    archpath("/"),
-    fs_root("/"),
-    progressive_report(nullptr)
-{
-}
-
 void archive_compare::inherited_run()
 {
     try
     {
 	    // we create a local libdar::archive
-	    // it will be destroyed this try/catch block
-	if(!ui)
+	    // it will be destroyed exiting this try/catch block
+
+	if(!ui && ! ui->get_user_interaction())
 	    throw WEBDAR_BUG;
 
 	if(param == nullptr)
 	    throw WEBDAR_BUG;
 
-	try
-	{
-	    archpath = libdar::path(param->get_archive_path(), true);
-	}
-	catch(libdar::Egeneric & e)
-	{
-	    throw exception_libcall(e);
-	}
-
-	basename = param->get_archive_basename();
-
-	try
-	{
-	    fs_root = libdar::path(param->get_fs_root(), true);
-	}
-	catch(libdar::Egeneric & e)
-	{
-	    throw exception_libcall(e);
-	}
-
-	read_opt = param->get_read_options(ui);
-	diff_opt = param->get_comparison_options();
+	libdar::path archpath(param->get_archive_path(), true);
+	string basename(param->get_archive_basename());
+	libdar::path fs_root(param->get_fs_root(), true);
+	libdar::archive_options_read read_opt(param->get_read_options(ui));
+	libdar::archive_options_diff diff_opt(param->get_comparison_options());
+	libdar::statistics* progressive_report = ui->get_statistics().get_libdar_statistics();
 
 	libdar::archive arch(ui->get_user_interaction(),
 			     archpath,
@@ -99,7 +75,6 @@ void archive_compare::inherited_run()
 	ui->get_statistics().set_errored_label("item(s) do not match those on filesystem");
 	ui->get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
 	ui->get_statistics().set_total_label("inode(s) considered");
-	progressive_report = ui->get_statistics().get_libdar_statistics();
 
 	libdar::statistics final = arch.op_diff(fs_root,
 						diff_opt,
