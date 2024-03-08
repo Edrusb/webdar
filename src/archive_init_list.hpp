@@ -37,6 +37,7 @@ extern "C"
 
     // webdar headers
 #include "html_web_user_interaction.hpp"
+#include "saisie.hpp"
 
     /// this objects is a thread object that provide access to the content of an existing archive
 
@@ -61,10 +62,7 @@ public:
 
 	/// set the user interaction to report on when running the thread
     void set_user_interaction(std::shared_ptr<html_web_user_interaction> ref) { ui = ref; };
-    void set_archive_path(const std::string & val);
-    void set_archive_basename(const std::string & val) { basename = val; };
-    void set_archive_options_read(const libdar::archive_options_read & val) { read_opt = val; };
-
+    void set_parametrage(const saisie* x_param) { param = x_param; };
 
 	/// once the thread has been ran and has finished, we end up with an opened archive
 	///
@@ -85,6 +83,9 @@ protected:
 
 private:
     std::shared_ptr<html_web_user_interaction> ui;
+    const saisie* param;
+
+	// the following field are setup from param and ui in inherited_run() subthrerad
     libdar::path archpath;
     std::string basename;
     libdar::archive_options_read read_opt;

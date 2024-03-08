@@ -39,18 +39,6 @@ extern "C"
 
 using namespace std;
 
-void archive_init_list::set_archive_path(const std::string & val)
-{
-    try
-    {
-	archpath = libdar::path(val, true);
-    }
-    catch(libdar::Egeneric & e)
-    {
-	throw exception_libcall(e);
-    }
-}
-
 const vector<libdar::list_entry> archive_init_list::get_children_in_table(const std::string & dir) const
 {
     if(ptr == nullptr)
@@ -74,6 +62,25 @@ void archive_init_list::inherited_run()
     {
 	if(!ui)
 	    throw WEBDAR_BUG;
+
+	if(param == nullptr)
+	    throw WEBDAR_BUG;
+
+	ui->get_statistics().clear_counters();
+	ui->get_statistics().clear_labels();
+
+	try
+	{
+	    archpath = libdar::path(param->get_archive_path(), true);
+	}
+	catch(libdar::Egeneric & e)
+	{
+	    throw exception_libcall(e);
+	}
+
+	basename = param->get_archive_basename();
+	read_opt = param->get_read_options(ui);
+
 	ptr = new (nothrow) libdar::archive(ui->get_user_interaction(),
 					    archpath,
 					    basename,
@@ -81,6 +88,7 @@ void archive_init_list::inherited_run()
 					    read_opt);
 	if(ptr == nullptr)
 	    throw exception_memory();
+	ui->auto_hide(true, true);
 
 	try
 	{
@@ -101,4 +109,3 @@ void archive_init_list::inherited_run()
 	throw exception_libcall(e);
     }
 }
-

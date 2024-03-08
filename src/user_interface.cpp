@@ -436,10 +436,9 @@ void user_interface::go_init_list()
     if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
+	// providing libdar::parameters
     arch_init_list.set_user_interaction(get_html_user_interaction());
-    arch_init_list.set_archive_path(get_parametrage().get_archive_path());
-    arch_init_list.set_archive_basename(get_parametrage().get_archive_basename());
-    arch_init_list.set_archive_options_read(get_parametrage().get_read_options(get_html_user_interaction()));
+    arch_init_list.set_parametrage(&get_parametrage());
 
     	// launching libdar in a separated thread
     current_thread = & arch_init_list;
