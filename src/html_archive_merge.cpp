@@ -55,6 +55,9 @@ html_archive_merge::html_archive_merge():
     deroule.add_section(sect_opt, "Merging Options");
     deroule.set_active_section(0);
 
+    sauv_path.set_select_mode(html_form_input_file::select_dir);
+    sauv_path.set_can_create_dir(true);
+
 	// adoption tree
 
     fs.adopt(&sauv_path);
