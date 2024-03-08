@@ -34,6 +34,7 @@ extern "C"
 #include <string>
 #include <dar/libdar.hpp>
 #include <libthreadar/libthreadar.hpp>
+#include <memory>
 
     // webdar headers
 #include "html_web_user_interaction.hpp"
@@ -52,12 +53,12 @@ extern "C"
 class archive_init_list : public libthreadar::thread
 {
 public:
-    archive_init_list(): archpath("/") { ptr = nullptr; };
+    archive_init_list(): archpath("/") {};
     archive_init_list(const archive_init_list & ref) = delete;
     archive_init_list(archive_init_list && ref) noexcept = delete;
     archive_init_list & operator = (const archive_init_list & ref) = delete;
     archive_init_list & operator = (archive_init_list && ref) noexcept = delete;
-    ~archive_init_list() { close_archive(); };
+    ~archive_init_list() = default;
 
 
 	/// set the user interaction to report on when running the thread
@@ -74,7 +75,7 @@ public:
     bool has_subdirectory(const std::string & dir) const;
 
 	/// close the opened archive run in the calling thread
-    void close_archive() { if(ptr != nullptr) { delete ptr; ptr = nullptr; } };
+    void close_archive() { ptr.reset(); };
 
 protected:
 
@@ -89,7 +90,7 @@ private:
     libdar::path archpath;
     std::string basename;
     libdar::archive_options_read read_opt;
-    libdar::archive *ptr; //< allocated archive object or nullptr if none allocated
+    std::unique_ptr<libdar::archive> ptr; //< allocated archive object or nullptr if none allocated
 
 };
 

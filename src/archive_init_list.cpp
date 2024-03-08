@@ -41,21 +41,21 @@ using namespace std;
 
 const vector<libdar::list_entry> archive_init_list::get_children_in_table(const std::string & dir) const
 {
-    if(ptr == nullptr)
+    if(!ptr)
 	throw WEBDAR_BUG;
     return ptr->get_children_in_table(dir);
 }
 
 bool archive_init_list::has_subdirectory(const std::string & dir) const
 {
-    if(ptr == nullptr)
+    if(!ptr)
 	throw WEBDAR_BUG;
     return ptr->has_subdirectory(dir);
 }
 
 void archive_init_list::inherited_run()
 {
-    if(ptr != nullptr)
+    if(!ptr)
 	throw WEBDAR_BUG;
 
     try
@@ -81,12 +81,12 @@ void archive_init_list::inherited_run()
 	basename = param->get_archive_basename();
 	read_opt = param->get_read_options(ui);
 
-	ptr = new (nothrow) libdar::archive(ui->get_user_interaction(),
-					    archpath,
-					    basename,
-					    EXTENSION,
-					    read_opt);
-	if(ptr == nullptr)
+	ptr.reset(new (nothrow) libdar::archive(ui->get_user_interaction(),
+						archpath,
+						basename,
+						EXTENSION,
+						read_opt));
+	if(!ptr)
 	    throw exception_memory();
 	ui->auto_hide(true, true);
 
@@ -97,14 +97,13 @@ void archive_init_list::inherited_run()
 	}
 	catch(...)
 	{
-	    delete ptr;
-	    ptr = nullptr;
+	    ptr.reset();
 	    throw;
 	}
     }
     catch(libdar::Egeneric & e)
     {
-	if(ptr != nullptr)
+	if(ptr)
 	    throw WEBDAR_BUG;
 	throw exception_libcall(e);
     }
