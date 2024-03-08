@@ -54,7 +54,7 @@ extern "C"
 class archive_create : public libthreadar::thread
 {
 public:
-    archive_create(): archpath("/"), fs_root("/") { progressive_report = nullptr; };
+    archive_create(): param(nullptr) {};
     archive_create(const archive_create & ref) = default;
     archive_create(archive_create && ref) noexcept = default;
     archive_create & operator = (const archive_create & ref) = default;
@@ -75,12 +75,6 @@ private:
     std::shared_ptr<html_web_user_interaction> ui;
     const saisie* param;
 
-	// the following field are setup from param and ui in inherited_run() subthrerad
-    libdar::path archpath;
-    std::string basename;
-    libdar::path fs_root;
-    libdar::archive_options_create opt;     ///< options for the backup to create
-    libdar::statistics *progressive_report; ///< holds intermediate counter of the under process comparison
 };
 
 #endif

@@ -51,33 +51,17 @@ void archive_create::inherited_run()
 	    // be added to the options passed to the create
 	    // constructor
 
-	if(!ui)
+	if(!ui && ! ui->get_user_interaction())
 	    throw WEBDAR_BUG;
 
 	if(param == nullptr)
 	    throw WEBDAR_BUG;
 
-	try
-	{
-	    archpath = libdar::path(param->get_archive_path(), true);
-	}
-	catch(libdar::Egeneric & e)
-	{
-	    throw exception_libcall(e);
-	}
-
-	basename = param->get_archive_basename();
-
-	try
-	{
-	    fs_root = libdar::path(param->get_fs_root(), true);
-	}
-	catch(libdar::Egeneric & e)
-	{
-	    throw exception_libcall(e);
-	}
-
-	opt = param->get_creating_options(ui);
+	libdar::path archpath(param->get_archive_path(), true);
+	string basename(param->get_archive_basename());
+	libdar::path fs_root(param->get_fs_root(), true);
+	libdar::archive_options_create opt(param->get_creating_options(ui));
+	libdar::statistics* progressive_report = ui->get_statistics().get_libdar_statistics();
 
 	    // resetting counters and logs
 	ui->get_statistics().clear_counters();
@@ -91,7 +75,6 @@ void archive_create::inherited_run()
 	ui->get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
 	ui->get_statistics().set_deleted_label("item(s) recorded as deleted");
 	ui->get_statistics().set_ea_treated_label("item(s) with Extended Attributes");
-	progressive_report = ui->get_statistics().get_libdar_statistics();
 
 	    // let's now create the archive
 
