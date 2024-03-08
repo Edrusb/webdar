@@ -41,7 +41,7 @@ extern "C"
 class archive_restore : public libthreadar::thread
 {
 public:
-    archive_restore();
+    archive_restore(): param(nullptr) {};
     archive_restore(const archive_restore & ref) = default;
     archive_restore(archive_restore && ref) noexcept = default;
     archive_restore & operator = (const archive_restore & ref) = default;
@@ -59,14 +59,6 @@ protected:
 private:
     std::shared_ptr<html_web_user_interaction> ui;
     const saisie* param;
-
-	// the following field are setup from param and ui in inherited_run() subthrerad
-    libdar::statistics* progressive_report;
-    libdar::path archpath;
-    std::string basename;
-    libdar::path fs_root;
-    libdar::archive_options_read read_opt;
-    libdar::archive_options_extract extract_opt;
 
 };
 

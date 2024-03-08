@@ -39,45 +39,24 @@ extern "C"
 
 using namespace std;
 
-
-archive_restore::archive_restore():
-    progressive_report(nullptr),
-    param(nullptr),
-    archpath("/"),
-    fs_root("/")
-{
-}
-
 void archive_restore::inherited_run()
 {
     try
     {
-	if(!ui)
+	if(!ui && ! ui->get_user_interaction())
 	    throw WEBDAR_BUG;
+
 	if(param == nullptr)
 	    throw WEBDAR_BUG;
 
-	try
-	{
-	    archpath = libdar::path(param->get_archive_path(), true);
-	}
-	catch(libdar::Egeneric & e)
-	{
-	    throw exception_libcall(e);
-	}
+	ui->clear();
 
-	try
-	{
-	    fs_root = libdar::path(param->get_fs_root(), true);
-	}
-	catch(libdar::Egeneric & e)
-	{
-	    throw exception_libcall(e);
-	}
-
-	basename = param->get_archive_basename();
-	extract_opt = param->get_extraction_options();
-	read_opt = param->get_read_options(ui);    ///< this lead to subthread creation to get entrepot object and clears the web_ui interface
+	libdar::path archpath(param->get_archive_path(), true);
+	libdar::path fs_root(param->get_fs_root(), true);
+	string basename(param->get_archive_basename());
+	libdar::archive_options_extract	extract_opt(param->get_extraction_options());
+	libdar::archive_options_read read_opt(param->get_read_options(ui));
+	libdar::statistics* progressive_report = ui->get_statistics().get_libdar_statistics();
 
 	libdar::archive arch(ui->get_user_interaction(),
 			     archpath,
@@ -86,7 +65,6 @@ void archive_restore::inherited_run()
 			     read_opt);
 
 	    // restting counters and logs
-	ui->clear();
 	ui->get_statistics().clear_counters();
 	ui->get_statistics().clear_labels();
 	ui->get_statistics().set_treated_label("item(s) restored");
@@ -97,7 +75,6 @@ void archive_restore::inherited_run()
 	ui->get_statistics().set_hard_links_label("hard link(s) restored");
 	ui->get_statistics().set_ea_treated_label("item(s) having their EA restored");
 	ui->get_statistics().set_total_label("item(s) considered");
-	progressive_report = ui->get_statistics().get_libdar_statistics();
 
 	libdar::statistics final = arch.op_extract(fs_root,
 						   extract_opt,
