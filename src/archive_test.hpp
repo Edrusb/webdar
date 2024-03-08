@@ -41,7 +41,7 @@ extern "C"
 class archive_test : public libthreadar::thread
 {
 public:
-    archive_test(): archpath("/") { progressive_report = nullptr; };
+    archive_test(): param(nullptr) {};
     archive_test(const archive_test & ref) = default;
     archive_test(archive_test && ref) noexcept = default;
     archive_test & operator = (const archive_test & ref) = default;
@@ -59,12 +59,6 @@ private:
     std::shared_ptr<html_web_user_interaction> ui;
     const saisie* param;
 
-	// the following field are setup from param and ui in inherited_run() subthrerad
-    libdar::path archpath;
-    std::string basename;
-    libdar::archive_options_read read_opt;
-    libdar::archive_options_test test_opt;
-    libdar::statistics *progressive_report;
 };
 
 #endif
