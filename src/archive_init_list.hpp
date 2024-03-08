@@ -53,7 +53,7 @@ extern "C"
 class archive_init_list : public libthreadar::thread
 {
 public:
-    archive_init_list(): archpath("/") {};
+    archive_init_list(): param(nullptr) {};
     archive_init_list(const archive_init_list & ref) = delete;
     archive_init_list(archive_init_list && ref) noexcept = delete;
     archive_init_list & operator = (const archive_init_list & ref) = delete;
@@ -85,12 +85,7 @@ protected:
 private:
     std::shared_ptr<html_web_user_interaction> ui;
     const saisie* param;
-
-	// the following field are setup from param and ui in inherited_run() subthrerad
-    libdar::path archpath;
-    std::string basename;
-    libdar::archive_options_read read_opt;
-    std::unique_ptr<libdar::archive> ptr; //< allocated archive object or nullptr if none allocated
+    std::unique_ptr<libdar::archive> ptr;
 
 };
 

@@ -69,18 +69,11 @@ void archive_init_list::inherited_run()
 	ui->get_statistics().clear_counters();
 	ui->get_statistics().clear_labels();
 
-	try
-	{
-	    archpath = libdar::path(param->get_archive_path(), true);
-	}
-	catch(libdar::Egeneric & e)
-	{
-	    throw exception_libcall(e);
-	}
+	libdar::path archpath(param->get_archive_path(), true);
+	std::string basename(param->get_archive_basename());
+	libdar::archive_options_read read_opt(param->get_read_options(ui));
 
-	basename = param->get_archive_basename();
-	read_opt = param->get_read_options(ui);
-
+	ui->auto_hide(true, true);
 	ptr.reset(new (nothrow) libdar::archive(ui->get_user_interaction(),
 						archpath,
 						basename,
@@ -88,7 +81,6 @@ void archive_init_list::inherited_run()
 						read_opt));
 	if(!ptr)
 	    throw exception_memory();
-	ui->auto_hide(true, true);
 
 	try
 	{
