@@ -31,40 +31,39 @@ extern "C"
 
 
     // webdar headers
+#include "tokens.hpp"
 
     //
 #include "archive_merge.hpp"
 
 using namespace std;
 
-void archive_merge::set_archive_path(const string & val)
-{
-    try
-    {
-	archpath = libdar::path(val, true);
-    }
-    catch(libdar::Egeneric & e)
-    {
-	throw exception_libcall(e);
-    }
-}
-
-void archive_merge::set_archive_reference(const string & refpath,
-					  const string & basename,
-					  const string & extension,
-					  const libdar::archive_options_read & readopt)
-{
-    has_ref = true;
-    ref_path = refpath;
-    ref_basename = basename;
-    ref_extension = extension;
-    ref_opt = readopt;
-}
-
 void archive_merge::inherited_run()
 {
     try
     {
+	if(!ui && ! ui->get_user_interaction())
+	    throw WEBDAR_BUG;
+
+	if(param == nullptr)
+	    throw WEBDAR_BUG;
+
+	try
+	{
+	    archpath = libdar::path(param->get_archive_path(), true);
+	}
+	catch(libdar::Egeneric & e)
+	{
+	    throw exception_libcall(e);
+	}
+
+	basename = param->get_archive_basename();
+	opt = param->get_merging_options(ui);
+	ref_path = param->get_merging_reference().get_archive_path();
+	ref_basename = param->get_merging_reference().get_archive_basename();
+	ref_opt = param->get_merging_reference().get_read_options(ui);
+	progressive_report = ui->get_statistics().get_libdar_statistics();
+
 	shared_ptr<libdar::archive> ref = nullptr;
 
 	    // we must open the archive of reference
@@ -72,16 +71,11 @@ void archive_merge::inherited_run()
 	    // be added to the options passed to the merge
 	    // constructor
 
-	if(!has_ref)
-	    throw exception_range("archive of reference not provided for merging");
-
-	if(!ui && !ui->get_user_interaction())
-	    throw WEBDAR_BUG;
 	ui->get_user_interaction()->message("--- Opening the archive of reference...");
 	ref.reset(new (nothrow) libdar::archive(ui->get_user_interaction(),
 						libdar::path(ref_path),
 						ref_basename,
-						ref_extension,
+						EXTENSION,
 						ref_opt));
 	if(!ref)
 	    throw exception_memory();
@@ -90,12 +84,21 @@ void archive_merge::inherited_run()
 
 	    // now we can merge the archive
 
+		// resetting counters and logs
+	ui->get_statistics().clear_labels();
+	ui->get_statistics().set_treated_label("item(s) treated");
+	ui->get_statistics().set_hard_links_label("hard link(s) treated");
+	ui->get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
+	ui->get_statistics().set_deleted_label("item(s) recorded as deleted");
+	ui->get_statistics().set_ea_treated_label("item(s) with Extended Attributes");
+	ui->get_statistics().set_total_label("item(s) considered");
+
 	ui->get_user_interaction()->message("--- Proceeding to the merging operation...");
 	libdar::archive(ui->get_user_interaction(),
 			archpath,
 			ref,
 			basename,
-			extension,
+			EXTENSION,
 			opt,
 			progressive_report);
 

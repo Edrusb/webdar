@@ -37,11 +37,12 @@ extern "C"
     // webdar headers
 #include "web_user_interaction.hpp"
 #include "html_options_merge.hpp"
+#include "saisie.hpp"
 
 class archive_merge : public libthreadar::thread
 {
 public:
-    archive_merge(): archpath("/") { progressive_report = nullptr;  has_ref = false; };
+    archive_merge(): archpath("/") { param = nullptr; };
     archive_merge(const archive_merge & ref) = default;
     archive_merge(archive_merge && ref) noexcept = default;
     archive_merge & operator = (const archive_merge & ref) = default;
@@ -49,16 +50,7 @@ public:
     ~archive_merge() = default;
 
     void set_user_interaction(const std::shared_ptr<html_web_user_interaction> ref) { ui = ref; };
-    void set_archive_path(const std::string & val);
-    void set_archive_basename(const std::string & val) { if(val.empty()) throw exception_range("empty string is not a valid basename"); basename = val; };
-    void set_archive_extension(const std::string & val) { if(val.empty()) throw exception_range("empty string is not a valid dar extension"); extension = val; };
-    void set_archive_options_merge(const libdar::archive_options_merge & val) { opt = val; };
-    void clear_archive_reference() { has_ref = false; };
-    void set_archive_reference(const std::string & refpath,
-			       const std::string & basename,
-			       const std::string & extension,
-			       const libdar::archive_options_read & readopt);
-    void set_progressive_report(libdar::statistics *ptr) { progressive_report = ptr; };
+    void set_parametrage(const saisie* x_param) { param = x_param; };
 
 protected:
 
@@ -67,16 +59,16 @@ protected:
 
 private:
     std::shared_ptr<html_web_user_interaction> ui;
+    const saisie* param;
+
+	// the following field are setup from param and ui in inherited_run() subthread
     libdar::path archpath;
     std::string basename;
-    std::string extension;
     libdar::archive_options_merge opt;
-    bool has_ref;
     std::string ref_path;
     std::string ref_basename;
-    std::string ref_extension;
     libdar::archive_options_read ref_opt;
-    libdar::statistics *progressive_report;
+    libdar::statistics* progressive_report;
 };
 
 #endif

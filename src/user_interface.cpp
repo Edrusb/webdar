@@ -419,27 +419,9 @@ void user_interface::go_merge()
     if(current_thread != nullptr)
 	throw WEBDAR_BUG;
 
+	// providing libdar::parameters
     arch_merge.set_user_interaction(get_html_user_interaction());
-    arch_merge.set_archive_path(get_parametrage().get_archive_path());
-    arch_merge.set_archive_basename(get_parametrage().get_archive_basename());
-    arch_merge.set_archive_extension(EXTENSION);
-    arch_merge.set_archive_options_merge(get_parametrage().get_merging_options(get_html_user_interaction()));
-    arch_merge.set_archive_reference(
-	get_parametrage().get_merging_reference().get_archive_path(),
-	get_parametrage().get_merging_reference().get_archive_basename(),
-	EXTENSION,
-	get_parametrage().get_merging_reference().get_read_options(get_html_user_interaction()));
-
-    arch_merge.set_progressive_report(get_statistics().get_libdar_statistics());
-
-	// resetting counters and logs
-    get_statistics().clear_labels();
-    get_statistics().set_treated_label("item(s) treated");
-    get_statistics().set_hard_links_label("hard link(s) treated");
-    get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
-    get_statistics().set_deleted_label("item(s) recorded as deleted");
-    get_statistics().set_ea_treated_label("item(s) with Extended Attributes");
-    get_statistics().set_total_label("item(s) considered");
+    arch_merge.set_parametrage(&get_parametrage());
 
 	// launching libdar in a separated thread
     current_thread = & arch_merge;
