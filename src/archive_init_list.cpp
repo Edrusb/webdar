@@ -60,7 +60,7 @@ void archive_init_list::inherited_run()
 
     try
     {
-	if(!ui)
+	if(!ui && ! ui->get_user_interaction())
 	    throw WEBDAR_BUG;
 
 	if(param == nullptr)
@@ -70,7 +70,7 @@ void archive_init_list::inherited_run()
 	ui->get_statistics().clear_labels();
 
 	libdar::path archpath(param->get_archive_path(), true);
-	std::string basename(param->get_archive_basename());
+	string basename(param->get_archive_basename());
 	libdar::archive_options_read read_opt(param->get_read_options(ui));
 
 	ui->auto_hide(true, true);
