@@ -48,21 +48,13 @@ void archive_merge::inherited_run()
 	if(param == nullptr)
 	    throw WEBDAR_BUG;
 
-	try
-	{
-	    archpath = libdar::path(param->get_archive_path(), true);
-	}
-	catch(libdar::Egeneric & e)
-	{
-	    throw exception_libcall(e);
-	}
-
-	basename = param->get_archive_basename();
-	opt = param->get_merging_options(ui);
-	ref_path = param->get_merging_reference().get_archive_path();
-	ref_basename = param->get_merging_reference().get_archive_basename();
-	ref_opt = param->get_merging_reference().get_read_options(ui);
-	progressive_report = ui->get_statistics().get_libdar_statistics();
+	libdar::path archpath(param->get_archive_path(), true);
+	string basename(param->get_archive_basename());
+	libdar::archive_options_merge opt(param->get_merging_options(ui));
+	string ref_path(param->get_merging_reference().get_archive_path());
+	string ref_basename(param->get_merging_reference().get_archive_basename());
+	libdar::archive_options_read ref_opt(param->get_merging_reference().get_read_options(ui));
+	libdar::statistics* progressive_report(ui->get_statistics().get_libdar_statistics());
 
 	shared_ptr<libdar::archive> ref = nullptr;
 

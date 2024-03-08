@@ -42,7 +42,7 @@ extern "C"
 class archive_merge : public libthreadar::thread
 {
 public:
-    archive_merge(): archpath("/") { param = nullptr; };
+    archive_merge(): param(nullptr) {};
     archive_merge(const archive_merge & ref) = default;
     archive_merge(archive_merge && ref) noexcept = default;
     archive_merge & operator = (const archive_merge & ref) = default;
@@ -61,14 +61,6 @@ private:
     std::shared_ptr<html_web_user_interaction> ui;
     const saisie* param;
 
-	// the following field are setup from param and ui in inherited_run() subthread
-    libdar::path archpath;
-    std::string basename;
-    libdar::archive_options_merge opt;
-    std::string ref_path;
-    std::string ref_basename;
-    libdar::archive_options_read ref_opt;
-    libdar::statistics* progressive_report;
 };
 
 #endif
