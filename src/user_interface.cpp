@@ -169,8 +169,16 @@ void user_interface::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	case listing_open:
 	    mode_changed = true;
-	    mode = listing;
-	    in_list.set_source(&arch_init_list);
+	    if(! in_action.has_libdar_been_aborted())
+	    {
+		mode = listing;
+		in_list.set_source(&arch_init_list);
+	    }
+	    else
+	    {
+		arch_init_list.close_archive();
+		mode = config;
+	    }
 	    break;
 	case listing:
 	    throw WEBDAR_BUG;
