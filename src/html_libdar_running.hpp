@@ -77,6 +77,10 @@ public:
 	/// whether a libdar thread is running under "this" management
     bool is_libdar_running() const { return web_ui->is_libdar_running(); };
 
+	/// whether libdar thread has been aborted (to be checked by the caller upon libdar_has_finished event)
+    bool has_libdar_been_aborted() const { return web_ui->has_libdar_been_aborted(); };
+
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
