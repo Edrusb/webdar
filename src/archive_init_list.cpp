@@ -55,7 +55,7 @@ bool archive_init_list::has_subdirectory(const std::string & dir) const
 
 void archive_init_list::inherited_run()
 {
-    if(!ptr)
+    if(ptr)
 	throw WEBDAR_BUG;
 
     try
