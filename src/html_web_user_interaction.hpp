@@ -179,6 +179,9 @@ public:
     	/// whether a libdar thread is running under "this" management
     bool is_libdar_running() const;
 
+	/// whether libdar thread has been aborted (to be checked by the caller upon libdar_has_finished event)
+    bool has_libdar_been_aborted() const { return was_interrupted; };
+
 
 protected:
 	/// inherited from body_builder, called by the webdar thread
