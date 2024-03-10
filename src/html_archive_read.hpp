@@ -31,7 +31,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <memory>
 
     // webdar headers
 #include "body_builder.hpp"
@@ -40,12 +40,14 @@ extern "C"
 #include "html_form_input_file.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_options_read.hpp"
+#include "html_web_user_interaction.hpp"
+#include "actor.hpp"
 
     /// class html_archive_read let user define the archive path, basename and option to read
 
     /// it is mainly used in class saisie
 
-class html_archive_read: public body_builder
+class html_archive_read: public body_builder, public actor
 {
 public:
     html_archive_read(const std::string & archive_description);
@@ -61,6 +63,9 @@ public:
     std::string get_archive_basename() const;
     libdar::archive_options_read get_read_options(std::shared_ptr<html_web_user_interaction> dialog) const { return opt_read.get_options(dialog); };
 
+    virtual void on_event(const std::string & event_name) override;
+
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
@@ -70,6 +75,7 @@ protected:
 private:
     static constexpr const char* dar_extension = "dar";
 
+    std::shared_ptr<html_web_user_interaction> webui;
     html_form form;
     html_form_fieldset fs;
     html_form_input_file arch_path;

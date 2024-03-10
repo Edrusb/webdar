@@ -47,17 +47,34 @@ html_archive_read::html_archive_read(const string & archive_description):
 	      50,
 	      "Select the backup to read...")
 {
+    webui.reset(new (nothrow) html_web_user_interaction(10));
+    if(!webui)
+	throw exception_memory();
+    webui->set_visible(false);
 
 	// web components layout
+    adopt(webui.get());
     fs.adopt(&arch_path);
     form.adopt(&fs);
     adopt(&form);
     adopt(&opt_read);
 
+	// events and actor
+    opt_read.record_actor_on_event(this, html_options_read::entrepot_has_changed);
+
 	// initial values
     arch_path.set_select_mode(html_form_input_file::select_slice);
 }
 
+void html_archive_read::on_event(const std::string & event_name)
+{
+    if(event_name == html_options_read::entrepot_has_changed)
+    {
+	webui->clear();
+	webui->auto_hide(true, true);
+	arch_path.set_entrepot(opt_read.get_entrepot(webui));
+    }
+}
 
 string html_archive_read::inherited_get_body_part(const chemin & path,
 						  const request & req)
