@@ -199,7 +199,7 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
 
 void html_options_read::set_webui(std::shared_ptr<html_web_user_interaction> & x_webui)
 {
-    if(!webui)
+    if(!x_webui)
 	throw WEBDAR_BUG;
 
     webui = x_webui;
