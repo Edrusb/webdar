@@ -33,6 +33,7 @@ extern "C"
     // C++ system header files
 #include <dar/libdar.hpp>
 #include <memory>
+#include <string>
 
     // webdar headers
 #include "body_builder.hpp"
@@ -48,9 +49,11 @@ extern "C"
 #include "html_text.hpp"
 #include "html_entrepot.hpp"
 
-class html_options_read : public body_builder, public actor
+class html_options_read : public body_builder, public actor, public events
 {
 public:
+    static const std::string entrepot_has_changed;
+
     html_options_read();
     html_options_read(const html_options_read & ref) = default;
     html_options_read(html_options_read && ref) noexcept = default;
@@ -60,6 +63,10 @@ public:
 
 	/// obtain the libdar archive_option_read object from the html filled fields
     libdar::archive_options_read get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
+
+	/// optain just the entrepot object from the option fields
+    std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> & webui) const
+    { return entrep.get_entrepot(webui); };
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;

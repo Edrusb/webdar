@@ -40,6 +40,8 @@ extern "C"
 
 using namespace std;
 
+const string html_options_read::entrepot_has_changed = "entrep_has_changed";
+
 html_options_read::html_options_read():
     form_src("Update Options"),
     fs_src("Archive Options"),
@@ -127,6 +129,10 @@ html_options_read::html_options_read():
     src_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
     ref_use_external_catalogue.record_actor_on_event(this, html_form_input::changed);
     ref_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
+    entrep.record_actor_on_event(this, html_entrepot::changed);
+
+	// setting up our own events
+    register_name(entrepot_has_changed);
 
 	// manually launching on event to have coherent visibility between fields
     on_event(html_crypto_algo::changed);
@@ -185,44 +191,51 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
 
 void html_options_read::on_event(const std::string & event_name)
 {
-    if(src_crypto_algo.get_value() == libdar::crypto_algo::none)
-    {
-	src_crypto_pass.set_visible(false);
-	src_crypto_size.set_visible(false);
-    }
+    if(event_name == html_entrepot::changed)
+	act(entrepot_has_changed);
+	// propagating the event
     else
     {
-	src_crypto_pass.set_visible(true);
-	src_crypto_size.set_visible(true);
-    }
 
-    if(ref_crypto_algo.get_value() == libdar::crypto_algo::none)
-    {
-	ref_crypto_pass.set_visible(false);
-	ref_crypto_size.set_visible(false);
-    }
-    else
-    {
-	ref_crypto_pass.set_visible(true);
-	ref_crypto_size.set_visible(true);
-    }
+	if(src_crypto_algo.get_value() == libdar::crypto_algo::none)
+	{
+	    src_crypto_pass.set_visible(false);
+	    src_crypto_size.set_visible(false);
+	}
+	else
+	{
+	    src_crypto_pass.set_visible(true);
+	    src_crypto_size.set_visible(true);
+	}
 
-    if(ref_use_external_catalogue.get_value_as_bool())
-    {
-	ref_path.set_visible(true);
-	ref_crypto_algo.set_visible(true);
-	ref_execute.set_visible(true);
-	ref_slice_min_digits.set_visible(true);
-    }
-    else
-    {
-	ref_path.set_visible(false);
-	ref_crypto_algo.set_visible(false);
-	ref_execute.set_visible(false);
-	ref_slice_min_digits.set_visible(false);
-	ref_crypto_pass.set_visible(false);
-	ref_crypto_size.set_visible(false);
+	if(ref_crypto_algo.get_value() == libdar::crypto_algo::none)
+	{
+	    ref_crypto_pass.set_visible(false);
+	    ref_crypto_size.set_visible(false);
+	}
+	else
+	{
+	    ref_crypto_pass.set_visible(true);
+	    ref_crypto_size.set_visible(true);
+	}
 
+	if(ref_use_external_catalogue.get_value_as_bool())
+	{
+	    ref_path.set_visible(true);
+	    ref_crypto_algo.set_visible(true);
+	    ref_execute.set_visible(true);
+	    ref_slice_min_digits.set_visible(true);
+	}
+	else
+	{
+	    ref_path.set_visible(false);
+	    ref_crypto_algo.set_visible(false);
+	    ref_execute.set_visible(false);
+	    ref_slice_min_digits.set_visible(false);
+	    ref_crypto_pass.set_visible(false);
+	    ref_crypto_size.set_visible(false);
+
+	}
     }
 }
 
