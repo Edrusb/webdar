@@ -56,7 +56,8 @@ html_entrepot::html_entrepot():
     knownhosts_check("Check remote host from the known-hosts file", html_form_input::check, "1", 1),
     known_hosts_file("Known-hosts file", "/", 40, "Select the knowhosts file..."),
     wait_time("Network retry delay (s)", html_form_input::number, "30", 5),
-    verbose("Verbose network connection", html_form_input::check, "", 1)
+    verbose("Verbose network connection", html_form_input::check, "", 1),
+    custom_event_name("")
 {
     chemin home = global_envir.get_value_with_default("HOME", "/");
     chemin tmp;
@@ -132,6 +133,9 @@ html_entrepot::html_entrepot():
     auth_type.record_actor_on_event(this, html_form_select::changed);
     knownhosts_check.record_actor_on_event(this, html_form_input::changed);
 
+	// my own events
+    register_name(changed);
+
 	// css if needed
 
 	// update components visibility
@@ -182,6 +186,15 @@ void html_entrepot::on_event(const std::string & event_name)
     update_visible();
 }
 
+void html_entrepot::set_event_name(const std::string & name)
+{
+    if(!custom_event_name.empty())
+	throw WEBDAR_BUG; // only one alternative event name is allowed
+
+    custom_event_name = name;
+    register_name(custom_event_name);
+}
+
 std::string html_entrepot::inherited_get_body_part(const chemin & path,
 						   const request & req)
 {
@@ -203,7 +216,10 @@ std::string html_entrepot::inherited_get_body_part(const chemin & path,
     if(has_changed && ! change_event_triggered)
     {
 	change_event_triggered = true;
-	act(changed);
+	if(custom_event_name.empty())
+	    act(changed);
+	else
+	    act(custom_event_name);
     }
 
     return ret;

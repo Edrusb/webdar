@@ -66,8 +66,11 @@ public:
 	/// thread than the one calling this method for the user to be able to interrupt the operation
     std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> & webui) const;
 
-	// inherited from actor parent class
+	/// inherited from actor parent class
     virtual void on_event(const std::string & event_name) override;
+
+	/// change the change event name
+    void set_event_name(const std::string & name);
 
 protected:
 	/// inherited from body_builder
@@ -101,6 +104,8 @@ private:
     html_form_input_file known_hosts_file; // sftp only
     html_form_input wait_time; // ftp and sftp
     html_form_input verbose;   // ftp and sftp
+
+    std::string custom_event_name;
 
     mutable bool has_changed;                 ///< whether the repo has changed after a form update
     mutable bool change_event_triggered;      ///< we want to trigger the change event only once until get_entrepot is called
