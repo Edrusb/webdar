@@ -39,7 +39,7 @@ extern "C"
 
 using namespace std;
 
-const string html_entrepot::changed = "changed";
+const string html_entrepot::changed = "html_entrep_changed";
 
 html_entrepot::html_entrepot():
     form("Apply changes"),

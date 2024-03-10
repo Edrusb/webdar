@@ -32,6 +32,7 @@ extern "C"
 
     // C++ system header files
 #include <memory>
+#include <string>
 
     // webdar headers
 #include "body_builder.hpp"
