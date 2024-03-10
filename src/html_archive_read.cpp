@@ -51,6 +51,7 @@ html_archive_read::html_archive_read(const string & archive_description):
     if(!webui)
 	throw exception_memory();
     webui->set_visible(false);
+    opt_read.set_webui(webui);
 
 	// web components layout
     adopt(webui.get());

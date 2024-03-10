@@ -73,6 +73,8 @@ public:
     std::shared_ptr<libdar::entrepot> get_ref_entrepot(std::shared_ptr<html_web_user_interaction> & webui) const
     { return ref_entrep.get_entrepot(webui); };
 
+	/// provide a webui ref, for to be able to let the user control ref_catalog opening
+    void set_webui(std::shared_ptr<html_web_user_interaction> & webui);
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -87,6 +89,8 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    std::shared_ptr<html_web_user_interaction> webui; ///< obtained from constructor
+
     html_derouleur deroule;
     html_form form_src;
     html_form_fieldset fs_src;

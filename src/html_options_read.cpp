@@ -197,6 +197,14 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
     return opts;
 }
 
+void html_options_read::set_webui(std::shared_ptr<html_web_user_interaction> & x_webui)
+{
+    if(!webui)
+	throw WEBDAR_BUG;
+
+    webui = x_webui;
+}
+
 void html_options_read::on_event(const std::string & event_name)
 {
     if(event_name == entrepot_has_changed)
@@ -207,7 +215,17 @@ void html_options_read::on_event(const std::string & event_name)
 
     if(event_name == ref_entrepot_has_changed)
     {
+	if(!webui)
+	    throw WEBDAR_BUG;
+	webui->clear();
+	webui->auto_hide(true, true);
+	ref_path.set_entrepot(ref_entrep.get_entrepot(webui));
 	act(ref_entrepot_has_changed);
+	    // for symmetry with entrepot_has_changed, but should not be used in fact
+	    // as the consummer of the ref_entrepot is within this html_option_read
+	    // object, unlike the consummer of entrepot which is outside the options
+	    // fields, where from the use of an events is necessary only in that latest
+	    // context.
 	return;
     }
 
