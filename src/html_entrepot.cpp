@@ -234,8 +234,8 @@ void html_entrepot::inherited_run()
 								host.get_value(),
 								port.get_value(),
 								auth_from_file.get_value_as_bool(),
-								string("/root/.ssh/id_rsa.pub"), ///<< to review with env variables
-								string("/root/.ssh/id_rsa"), ///< to review with env variables
+								pub_keyfile.get_value(),
+								prv_keyfile.get_value(),
 								knownhosts_check.get_value_as_bool() ? "" : known_hosts_file.get_value(),
 								libdar::U_I(webdar_tools_convert_to_int(wait_time.get_value())),
 								verbose.get_value_as_bool()));
