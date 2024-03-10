@@ -125,21 +125,22 @@ html_options_read::html_options_read():
 
     adopt(&deroule);
 
+	// modyfing entrepot objects to be able to differentiate which one has changed:
+    entrep.set_event_name(entrepot_has_changed);
+    ref_entrep.set_event_name(ref_entrepot_has_changed);
+	// these are the same event name as the ones we used for ourself
+
 	// binding the events
 
     src_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
     ref_use_external_catalogue.record_actor_on_event(this, html_form_input::changed);
     ref_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
-    entrep.record_actor_on_event(this, html_entrepot::changed);
+    entrep.record_actor_on_event(this, entrepot_has_changed);
+    ref_entrep.record_actor_on_event(this, ref_entrepot_has_changed);
 
 	// setting up our own events
     register_name(entrepot_has_changed);
     register_name(ref_entrepot_has_changed);
-
-	// modyfing entrepot objects to be able to differentiate which one has changed:
-    entrep.set_event_name(entrepot_has_changed);
-    ref_entrep.set_event_name(ref_entrepot_has_changed);
-	// these are the same event name as the ones we used for ourself
 
 	// manually launching on event to have coherent visibility between fields
     on_event(html_crypto_algo::changed);
