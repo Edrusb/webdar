@@ -95,6 +95,18 @@ void html_statistics::new_css_library_available()
     if(!csslib)
 	throw WEBDAR_BUG;
 
+    if(csslib->class_exists(css_right_name))
+    {
+	if(!csslib->class_exists(css_bold_name))
+	    throw WEBDAR_BUG;
+	return; // nothing to do, csslib already setup
+    }
+    else
+    {
+	if(csslib->class_exists(css_bold_name))
+	    throw WEBDAR_BUG;
+    }
+
     css_right.css_text_align(css::al_right);
     css_bold.css_font_weight_bold();
 
