@@ -73,13 +73,16 @@ void html_archive_read::on_event(const std::string & event_name)
     {
 	webui->clear();
 	webui->auto_hide(true, true);
-	arch_path.set_entrepot(opt_read.get_entrepot(webui));
+	if(!is_running())
+	    run();
     }
 }
 
 string html_archive_read::inherited_get_body_part(const chemin & path,
 						  const request & req)
 {
+    if(!is_running())
+	join();
     return get_body_part_from_all_children(path, req);
 }
 

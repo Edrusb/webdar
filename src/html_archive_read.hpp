@@ -32,6 +32,7 @@ extern "C"
 
     // C++ system header files
 #include <memory>
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
 #include "body_builder.hpp"
@@ -47,7 +48,7 @@ extern "C"
 
     /// it is mainly used in class saisie
 
-class html_archive_read: public body_builder, public actor
+class html_archive_read: public body_builder, public actor, public libthreadar::thread
 {
 public:
     html_archive_read(const std::string & archive_description);
@@ -70,6 +71,9 @@ protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
+
+	/// inherited from class libthreadar::thread
+    virtual void inherited_run() override { arch_path.set_entrepot(opt_read.get_entrepot(webui)); };
 
 
 private:
