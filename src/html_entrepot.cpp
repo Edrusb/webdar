@@ -362,7 +362,8 @@ void html_entrepot::update_visible()
 
 bool html_entrepot::check_if_changed() const
 {
-    if(mem_type != repo_type.get_selected_num())
+    if(mem_type != repo_type.get_selected_num()
+       && repo_type.get_selected_num() == 0) // local entrepot
 	return true;
     if(mem_login != login.get_value())
 	return true;
