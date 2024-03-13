@@ -62,9 +62,7 @@ html_libdar_running::html_libdar_running():
 string html_libdar_running::inherited_get_body_part(const chemin & path,
 						    const request & req)
 {
-    string body;
-
-    body = get_body_part_from_children_as_a_block(path, req);
+    string body = get_body_part_from_children_as_a_block(path, req);
 
     if(enable_refresh)
 	set_refresh_redirection(1, req.get_uri().get_path().display(false));
