@@ -299,6 +299,29 @@ protected:
         /// access to adopted childs
     body_builder *operator[] (unsigned int i) { return order[i]; };
 
+	/// access to the closest ancestor (parent) matching (dynamic_cast) the provided type
+
+	/// \param[in] ancestor point to the found ancestor if found (undefined else and return is false)
+	/// \return true if ancestor matching the provided type has been found, only in that case
+	/// ancestor argument is set to this found ancestor
+    template <class T> void closest_ancestor_of_type(T* & ancestor)
+    {
+	body_builder* ptr = parent;
+
+	do
+	{
+	    if(ptr != nullptr)
+	    {
+		ancestor = dynamic_cast<T*>(ptr);
+		ptr = ptr->parent;
+	    }
+	    else
+		ancestor = nullptr;
+	}
+	while(ptr != nullptr && ancestor == nullptr);
+    }
+
+
         /// orphan all adopted children
     void orphan_all_children();
 
