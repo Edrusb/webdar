@@ -63,29 +63,44 @@ html_libdar_running_popup::html_libdar_running_popup():
 string html_libdar_running_popup::inherited_get_body_part(const chemin & path,
 						    const request & req)
 {
-    if(changed_refresh)
+    if(get_visible() != get_next_visible())
     {
-	html_page* page = nullptr;
-
-	closest_ancestor_of_type(page);
-	changed_refresh = false;
-
-	if(page != nullptr)
-	{
-	    if(enable_refresh)
-		page->set_refresh_redirection(1, req.get_uri().get_path().display(false));
-	    else
-		page->set_refresh_redirection(0, ""); // disable refresh
-	}
+	web_ui->set_visibile(get_next_visible());
+	ack_visible();
+	    // we propage the web_ui our own visibity status
     }
 
-    return get_body_part_from_all_children(path, req);
+    if(get_visible())
+    {
+	if(changed_refresh)
+	{
+	    html_page* page = nullptr;
+
+	    closest_ancestor_of_type(page);
+	    changed_refresh = false;
+
+	    if(page != nullptr)
+	    {
+		if(enable_refresh)
+		    page->set_refresh_redirection(1, req.get_uri().get_path().display(false));
+		else
+		    page->set_refresh_redirection(0, ""); // disable refresh
+	    }
+	}
+
+	return get_body_part_from_all_children(path, req);
+    }
+    else
+	return "";
 }
 
 void html_libdar_running_popup::on_event(const std::string & event_name)
 {
     if(event_name == html_web_user_interaction::libdar_has_finished)
+    {
 	act(libdar_has_finished); // propagating the event
+	set_visible(false); // nothing more to show
+    }
     else if(event_name == html_web_user_interaction::can_refresh)
     {
 	enable_refresh = true;
