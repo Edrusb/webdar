@@ -63,11 +63,29 @@ html_libdar_running_popup::html_libdar_running_popup():
 string html_libdar_running_popup::inherited_get_body_part(const chemin & path,
 						    const request & req)
 {
+
+	// we want our visibility status to follow and act on
+	// our html_web_user_interaction component visibility
+	// such a way that changing either ours our this component
+	// which we provide direct access to, to stay identical at anytime
+
+	// first, ours visiblity change should change the component
     if(get_visible() != get_next_visible())
     {
-	web_ui->set_visibile(get_next_visible());
+	    // we get here only if our visibily has just changed
+
+	web_ui->set_visible(get_next_visible());
 	ack_visible();
-	    // we propage the web_ui our own visibity status
+    }
+
+	// second, our component's visibilty should change ours accordingly
+    if(get_visible() != web_ui->get_visible())
+    {
+	set_visible(web_ui->get_visible());
+	ack_visible();
+	    // our component visibility has changed
+	    // we have to propagate this to ourself for
+	    // it be visible as expected
     }
 
     if(get_visible())
