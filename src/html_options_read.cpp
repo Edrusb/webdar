@@ -125,18 +125,19 @@ html_options_read::html_options_read():
 
     adopt(&deroule);
 
-	// modyfing entrepot objects to be able to differentiate which one has changed:
-    entrep.set_event_name(entrepot_has_changed);
-    ref_entrep.set_event_name(ref_entrepot_has_changed);
-	// these are the same event name as the ones we used for ourself
-
 	// binding the events
 
     src_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
     ref_use_external_catalogue.record_actor_on_event(this, html_form_input::changed);
     ref_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
+
+	// modyfing entrepot objects to be able to differentiate which one has changed:
+    entrep.set_event_name(entrepot_has_changed);
+    ref_entrep.set_event_name(ref_entrepot_has_changed);
+	// these are the same event name as the ones we used for ourself
     entrep.record_actor_on_event(this, entrepot_has_changed);
     ref_entrep.record_actor_on_event(this, ref_entrepot_has_changed);
+    ref_path.record_actor_on_event(this, html_form_input_file::changed_entrepot);
 
 	// setting up our own events
     register_name(entrepot_has_changed);
@@ -197,7 +198,7 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
     return opts;
 }
 
-void html_options_read::set_webui(std::shared_ptr<html_web_user_interaction> & x_webui)
+void html_options_read::set_webui(std::shared_ptr<html_web_user_interaction> x_webui)
 {
     if(!x_webui)
 	throw WEBDAR_BUG;
@@ -208,66 +209,66 @@ void html_options_read::set_webui(std::shared_ptr<html_web_user_interaction> & x
 void html_options_read::on_event(const std::string & event_name)
 {
     if(event_name == entrepot_has_changed)
-    {
 	act(entrepot_has_changed);
-	return;
-    }
-
-    if(event_name == ref_entrepot_has_changed)
+    else if(event_name == ref_entrepot_has_changed)
     {
 	if(!webui)
 	    throw WEBDAR_BUG;
 	webui->clear();
 	webui->auto_hide(true, true);
-	ref_path.set_entrepot(ref_entrep.get_entrepot(webui));
+	webui->set_visible(true);
+	webui->run_and_control_thread(this);
+    }
+    else if(event_name == html_form_input_file::changed_entrepot)
+    {
 	act(ref_entrepot_has_changed);
-	    // for symmetry with entrepot_has_changed, but should not be used in fact
-	    // as the consummer of the ref_entrepot is within this html_option_read
-	    // object, unlike the consummer of entrepot which is outside the options
-	    // fields, where from the use of an events is necessary only in that latest
-	    // context.
 	return;
     }
-
-    if(src_crypto_algo.get_value() == libdar::crypto_algo::none)
+    else if(event_name == html_crypto_algo::changed
+	    || event_name == html_form_input::changed)
     {
-	src_crypto_pass.set_visible(false);
-	src_crypto_size.set_visible(false);
+
+	if(src_crypto_algo.get_value() == libdar::crypto_algo::none)
+	{
+	    src_crypto_pass.set_visible(false);
+	    src_crypto_size.set_visible(false);
+	}
+	else
+	{
+	    src_crypto_pass.set_visible(true);
+	    src_crypto_size.set_visible(true);
+	}
+
+	if(ref_crypto_algo.get_value() == libdar::crypto_algo::none)
+	{
+	    ref_crypto_pass.set_visible(false);
+	    ref_crypto_size.set_visible(false);
+	}
+	else
+	{
+	    ref_crypto_pass.set_visible(true);
+	    ref_crypto_size.set_visible(true);
+	}
+
+	if(ref_use_external_catalogue.get_value_as_bool())
+	{
+	    ref_path.set_visible(true);
+	    ref_crypto_algo.set_visible(true);
+	    ref_execute.set_visible(true);
+	    ref_slice_min_digits.set_visible(true);
+	}
+	else
+	{
+	    ref_path.set_visible(false);
+	    ref_crypto_algo.set_visible(false);
+	    ref_execute.set_visible(false);
+	    ref_slice_min_digits.set_visible(false);
+	    ref_crypto_pass.set_visible(false);
+	    ref_crypto_size.set_visible(false);
+	}
     }
     else
-    {
-	src_crypto_pass.set_visible(true);
-	src_crypto_size.set_visible(true);
-    }
-
-    if(ref_crypto_algo.get_value() == libdar::crypto_algo::none)
-    {
-	ref_crypto_pass.set_visible(false);
-	ref_crypto_size.set_visible(false);
-    }
-    else
-    {
-	ref_crypto_pass.set_visible(true);
-	ref_crypto_size.set_visible(true);
-    }
-
-    if(ref_use_external_catalogue.get_value_as_bool())
-    {
-	ref_path.set_visible(true);
-	ref_crypto_algo.set_visible(true);
-	ref_execute.set_visible(true);
-	ref_slice_min_digits.set_visible(true);
-    }
-    else
-    {
-	ref_path.set_visible(false);
-	ref_crypto_algo.set_visible(false);
-	ref_execute.set_visible(false);
-	ref_slice_min_digits.set_visible(false);
-	ref_crypto_pass.set_visible(false);
-	ref_crypto_size.set_visible(false);
-
-    }
+	throw WEBDAR_BUG; // unexpected event
 }
 
 string html_options_read::inherited_get_body_part(const chemin & path,
