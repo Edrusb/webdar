@@ -41,7 +41,7 @@ extern "C"
 #include "html_form_input_file.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_options_read.hpp"
-#include "html_web_user_interaction.hpp"
+#include "html_libdar_running_popup.hpp"
 #include "actor.hpp"
 
     /// class html_archive_read let user define the archive path, basename and option to read
@@ -73,17 +73,16 @@ protected:
 						const request & req) override;
 
 	/// inherited from class libthreadar::thread
-    virtual void inherited_run() override { arch_path.set_entrepot(opt_read.get_entrepot(webui)); };
+    virtual void inherited_run() override { arch_path.set_entrepot(opt_read.get_entrepot(libdarexec.get_html_user_interaction())); };
 
 
 private:
-    static constexpr const char* dar_extension = "dar";
-
-    std::shared_ptr<html_web_user_interaction> webui;
+    bool redisplay;
     html_form form;
     html_form_fieldset fs;
     html_form_input_file arch_path;
     html_options_read opt_read;
+    html_libdar_running_popup libdarexec;
 };
 
 #endif

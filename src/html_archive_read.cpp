@@ -40,6 +40,7 @@ extern "C"
 using namespace std;
 
 html_archive_read::html_archive_read(const string & archive_description):
+    redisplay(false),
     form("Update"),
     fs(archive_description),
     arch_path("Archive path",
@@ -47,43 +48,71 @@ html_archive_read::html_archive_read(const string & archive_description):
 	      50,
 	      "Select the backup to read...")
 {
-    webui.reset(new (nothrow) html_web_user_interaction(10));
-    if(!webui)
-	throw exception_memory();
-    webui->set_visible(false);
-    opt_read.set_webui(webui);
+	// used when listing content of defined entrepot for the archive of reference
+	// which is also a read option and inside opt_read
+    opt_read.set_webui(libdarexec.get_html_user_interaction());
 
 	// web components layout
-    adopt(webui.get());
     fs.adopt(&arch_path);
     form.adopt(&fs);
     adopt(&form);
     adopt(&opt_read);
+    adopt(&libdarexec);
 
 	// events and actor
     opt_read.record_actor_on_event(this, html_options_read::entrepot_has_changed);
+    libdarexec.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
 
 	// initial values
     arch_path.set_select_mode(html_form_input_file::select_slice);
+    libdarexec.set_visible(false);
 }
 
 void html_archive_read::on_event(const std::string & event_name)
 {
     if(event_name == html_options_read::entrepot_has_changed)
     {
+	shared_ptr<html_web_user_interaction> webui(libdarexec.get_html_user_interaction());
+	if(!webui)
+	    throw WEBDAR_BUG;
 	webui->clear();
 	webui->auto_hide(true, true);
 	if(!is_running())
-	    run();
+	{
+	    libdarexec.set_visible(true);
+	    redisplay = true;
+	    webui->run_and_control_thread(this);
+	}
+	else
+	{
+	    throw WEBDAR_BUG;
+		// should not succeed as the popup
+		// should display during the subthread running
+		// and only vanish once the subtread has completed
+		// while the popup forbids any change of entrepot configuration
+	}
     }
+    else if(event_name == html_libdar_running_popup::libdar_has_finished)
+    {
+	libdarexec.set_visible(false); // now hiding the popup
+	join();
+    }
+    else
+	throw WEBDAR_BUG;
 }
 
 string html_archive_read::inherited_get_body_part(const chemin & path,
 						  const request & req)
 {
-    if(!is_running())
-	join();
-    return get_body_part_from_all_children(path, req);
+    string ret = "";
+
+    redisplay = false;
+    ret = get_body_part_from_all_children(path, req);
+
+    if(redisplay)
+	ret = get_body_part_from_all_children(path, req);
+
+    return ret;
 }
 
 
