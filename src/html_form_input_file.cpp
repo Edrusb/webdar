@@ -39,8 +39,12 @@ extern "C"
 
 using namespace std;
 
+    // event names
 const string html_form_input_file::changed_event = "html_form_input_file_changed";
+const string html_form_input_file::changed_entrepot = "html_form_entrepot_changed";
 const string html_form_input_file::triggered_event = "triggered";
+
+    // class names
 const string html_form_input_file::css_input = "html_form_input_file_input";
 const string html_form_input_file::css_button_box = "html_form_input_file_button_box";
 const string html_form_input_file::css_button_link = "html_form_input_file_button_lnk";
@@ -71,6 +75,7 @@ html_form_input_file::html_form_input_file(const string & label,
 	// cabling events
 
     register_name(changed_event_name);
+    register_name(changed_entrepot);
 
     input.record_actor_on_event(this, html_form_input::changed);
     trigger.record_actor_on_event(this, triggered_event);
@@ -100,8 +105,8 @@ html_form_input_file::html_form_input_file(const string & label,
 
 void html_form_input_file::set_change_event_name(const string & name)
 {
-    register_name(name);
     changed_event_name = name;
+    register_name(changed_event_name);
 }
 
 void html_form_input_file::set_select_mode(select_mode val)
@@ -130,6 +135,7 @@ void html_form_input_file::set_entrepot(const shared_ptr<libdar::entrepot> & ent
     if(!entrepot)
 	throw WEBDAR_BUG;
     entrep = entrepot;
+    act(changed_entrepot);
 }
 
 void html_form_input_file::on_event(const string & event_name)
