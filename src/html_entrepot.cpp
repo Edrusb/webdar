@@ -405,7 +405,7 @@ void html_entrepot::record_changed_values() const
     mem_pub_keyfile = pub_keyfile.get_value();
     mem_prv_keyfile = prv_keyfile.get_value();
     mem_known_hosts_file = known_hosts_file.get_value();
-    mem_wait_time != webdar_tools_convert_to_int(wait_time.get_value());
+    mem_wait_time = webdar_tools_convert_to_int(wait_time.get_value());
 
     has_changed = false;
     change_event_triggered = false;
