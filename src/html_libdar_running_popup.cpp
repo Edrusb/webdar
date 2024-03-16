@@ -79,9 +79,9 @@ string html_libdar_running_popup::inherited_get_body_part(const chemin & path,
     }
 
 	// second, our component's visibilty should change ours accordingly
-    if(get_visible() != web_ui->get_visible())
+    if(get_visible() != web_ui->get_next_visible())
     {
-	set_visible(web_ui->get_visible());
+	set_visible(web_ui->get_next_visible());
 	ack_visible();
 	    // our component visibility has changed
 	    // we have to propagate this to ourself for
