@@ -105,11 +105,9 @@ string html_libdar_running_popup::inherited_get_body_part(const chemin & path,
 		    page->set_refresh_redirection(0, ""); // disable refresh
 	    }
 	}
-
-	return get_body_part_from_all_children(path, req);
     }
-    else
-	return "";
+
+    return html_popup::inherited_get_body_part(path, req);
 }
 
 void html_libdar_running_popup::on_event(const std::string & event_name)
