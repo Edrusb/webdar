@@ -150,7 +150,7 @@ public:
 
 	/// \param[in] arg is the thread to be managed, it must have been setup but not run() by the caller
 	/// this method will run() the thread, monitor its liveness then join() it when it has completed.
-	/// The caller must have registered to the event close_libdar_screen to be informed when the thread
+	/// The caller must have registered to the event libdar_has_finished to be informed when the thread
 	/// will have completed. The caller can also/instead join() the corresponding thread, but is then
 	/// stuck until the thread ends.
 	/// During the life of the thread, this body_builder component displays buttons to stop/kill the
