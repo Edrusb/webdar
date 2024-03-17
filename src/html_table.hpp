@@ -47,7 +47,7 @@ public:
     html_table(html_table && ref) noexcept = delete;
     const html_table & operator = (const html_table & ref) = delete;
     html_table & operator = (html_table && ref) noexcept = delete;
-    ~html_table() { clear(); };
+    ~html_table() { clear_children(); };
 
 	/// whether border are collapsed or separated (collasped by default)
     void css_border_collapsed(bool mode);
@@ -63,6 +63,9 @@ public:
 
 	/// clear apreviously assigned css object to the title raw
     void set_css_class_cells() { css_class_cells = ""; };
+
+	/// clear table content
+    void clear() { clear_children(); };
 
 protected:
 

@@ -58,7 +58,7 @@ public:
     void adopt_static_html(const std::string & html);
 
 	/// clear all adopted data
-    void clear();
+    void clear_children();
 
 protected:
 	/// inherited from body_builder

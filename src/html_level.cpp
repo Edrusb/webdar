@@ -57,7 +57,7 @@ void html_level::adopt_static_html(const std::string & html)
     reset_read_next();
 }
 
-void html_level::clear()
+void html_level::clear_children()
 {
     orphan_all_children();
     table.clear();

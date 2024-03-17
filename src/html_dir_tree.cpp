@@ -197,7 +197,7 @@ void html_dir_tree::on_event(const std::string & event_name)
 	    focus_place->given_for_temporary_adoption(&contents);
 	if(focus_title != nullptr)
 	{
-	    focus_title->clear();
+	    focus_title->clear_children();
 	    focus_title->adopt_static_html(my_path.display(false));
 	}
 	go_init_indent();
