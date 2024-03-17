@@ -129,8 +129,8 @@ string html_derouleur::inherited_get_body_part(const chemin & path,
 	    // now freezing the even for it does not change a second time
 	    // but as all components have their status we can now
 	    // have a correct status for all components (even those
-	    // that would have provided their content before an next event
-	    // would have changed it
+	    // that would have provided their content before an event
+	    // would have changed it)
 
 	ignore_events = true;
 	try
