@@ -113,7 +113,7 @@ protected:
 
 
 private:
-    std::shared_ptr<html_web_user_interaction> webui; ///< obtained set_webui
+    std::shared_ptr<html_web_user_interaction> webui; ///< obtained from set_webui()
 
     html_derouleur deroule;
     html_form form_src;
