@@ -127,7 +127,6 @@ public:
 	/// \param[in] mode if set to true, no "close" button shows once the thread has complete
 	/// \param[in] unless_interrupted if set to true and the thread has ended due to user request
 	/// the autohide feature is disabled and a "close" button shows.
-	/// \note auto_hide() is reset to default (false, true), when calling clear()
     void auto_hide(bool mode, bool unless_interrupted) { autohide = mode; hide_unless_interrupted = unless_interrupted; };
 
 	/// clear counters, logs and reset html interface

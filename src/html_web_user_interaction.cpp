@@ -277,7 +277,6 @@ void html_web_user_interaction::clear()
     stats.clear_counters();
     stats.clear_labels();
     hide_statistics();
-    auto_hide(false, true);
     set_mode(normal);
 }
 
