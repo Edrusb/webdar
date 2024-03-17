@@ -214,9 +214,7 @@ void html_options_read::on_event(const std::string & event_name)
     {
 	if(!webui)
 	    throw WEBDAR_BUG;
-	webui->clear();
 	webui->auto_hide(true, true);
-	webui->set_visible(true);
 	webui->run_and_control_thread(this);
     }
     else if(event_name == html_form_input_file::changed_entrepot)
