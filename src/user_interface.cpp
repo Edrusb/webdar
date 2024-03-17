@@ -206,7 +206,7 @@ void user_interface::on_event(const std::string & event_name)
 	    mode = running;
 	else
 	    mode = listing_open;
-	in_action.clear();
+	in_action.get_html_user_interaction()->clear();
 	mode_changed = true;
 
 	try
