@@ -71,6 +71,8 @@ html_entrepot::html_entrepot():
     repo_type.add_choice(type_sftp, "SFTP protocol (ciphered)");  // index 2
     repo_type.set_selected(0);
 
+    port.set_range(1, 65536); // actually set to zero to track value change, but 0 is invalid
+
     auth_type.add_choice(auth_pass, "Password authentication");
     auth_type.add_choice(auth_key, "Keyfile authentication");
     auth_type.set_selected(0);
@@ -371,7 +373,7 @@ bool html_entrepot::check_if_changed() const
 	return true;
     if(mem_host != host.get_value())
 	return true;
-    if(mem_port != port.get_value())
+    if(mem_port != port.get_value() && mem_port != "0")
 	return true;
     if(mem_auth_from_file != auth_from_file.get_value_as_bool())
 	return true;
