@@ -218,7 +218,7 @@ private:
     mode_type mode;               ///< current mode of operation
     bool autohide;                ///< if true the finish status leads the html component to become invisible
     bool hide_unless_interrupted; ///< disable autohide when thread ended due to user request
-    bool was_interrupted;         ///< whether user asked for thread cancellation
+    bool was_interrupted;         ///< whether user asked for thread cancellation or exception thrown within thread
 
 	// body_builder fields
     html_form_radio h_pause;      ///< shows when libdar request a yes/no decision from the user

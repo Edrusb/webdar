@@ -479,10 +479,12 @@ void html_web_user_interaction::check_thread_status()
 	catch(exception_base & e)
 	{
 	    e.change_message(string("Error reported from libdar: ") + e.get_message());
+	    was_interrupted = true;
 	    throw;
 	}
 	catch(libdar::Egeneric & e)
 	{
+	    was_interrupted = true;
 	    throw exception_libcall(e);
 	}
     }
