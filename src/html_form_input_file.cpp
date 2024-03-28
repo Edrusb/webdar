@@ -130,7 +130,7 @@ void html_form_input_file::set_select_mode(select_mode val)
     selmode = val;
 };
 
-void html_form_input_file::set_entrepot(const shared_ptr<libdar::entrepot> & entrepot)
+void html_form_input_file::set_entrepot(shared_ptr<libdar::entrepot> entrepot)
 {
     if(!entrepot)
 	throw WEBDAR_BUG;
