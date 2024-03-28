@@ -55,13 +55,18 @@ extern "C"
     /// to this object
     ///
     /// usage for the caller is to:
+    ///- adopt() this object
     ///- register for entry_selected and op_cancelled events
     /// on this object, events which will be triggered once the user will
     /// have selected a file or cancelled choice selection
     ///- call the different set_* methods
-    ///- then call run() giving a libdar::entrepot
+    /// when needed:
+    ///- then call go_select() giving a libdar::entrepot (the object becomes visible)
     ///- and upon event entry_selected fetch the path selected by the user
     ///  calling get_selected_path()
+    ///\note the object visibility is managed by go_select() and before triggering
+    /// entry_select and op_cancelled events
+
 
 class html_select_file: public html_popup, public events, public actor
 {
@@ -85,12 +90,12 @@ public:
 
 	/// ask the user to select a file path (false) or a directory path (true)
 
-	/// \note should be setup before calling run()
+	/// \note should be setup before calling go_select()
     void set_select_dir(bool val) { if(status != st_init) throw WEBDAR_BUG; select_dir = val; };
 
 	/// whether to show the button allowing the user to create a subdirectory
 
-	/// \note should be setup before calling run()
+	/// \note should be setup before calling go_select()
     void set_can_create_dir(bool val) { if(status != st_init) throw WEBDAR_BUG; btn_createdir.set_visible(val); };
 
 	/// only show directories and files matching the given glob expression (shell wildcards)
@@ -104,7 +109,7 @@ public:
 	/// \param[in] absolute path in x_entr to take as starting directory
 	/// \note if start_dir is not a directory not is an absolute path
 	/// an exception is thrown
-    void run(const std::shared_ptr<libdar::entrepot> & x_entr,
+    void go_select(const std::shared_ptr<libdar::entrepot> & x_entr,
 	     const std::string & start_dir);
 
 	/// obtain the path selected by the user (mandatory after entry_selected event, in order to reuse this object)
@@ -152,7 +157,7 @@ private:
 
 	// object status
 
-    mutable enum { st_init, st_run, st_completed } status;
+    mutable enum { st_init, st_go_select, st_completed } status;
 
 
 	// settings
