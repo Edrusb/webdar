@@ -157,7 +157,12 @@ private:
 
 	// object status
 
-    mutable enum { st_init, st_go_select, st_completed } status;
+    mutable enum
+    {
+	st_init,      ///< not showing popup for user selection and not path available
+	st_go_select, ///< currently showing popup for user to select a file/directory
+	st_completed  ///< not showing popup but path available using get_selected_path()
+    } status;
 
 
 	// settings
