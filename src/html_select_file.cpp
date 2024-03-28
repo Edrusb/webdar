@@ -251,9 +251,12 @@ string html_select_file::inherited_get_body_part(const chemin & path,
     {
 	string ret;
 
-	html_popup::inherited_get_body_part(path, req); // a first time to have the even triggering parameter changes
-	if(entr) // when user finally selects the path, the button event destroys the entrepot, fill_content() cannot work anymore and is not needed neither
-	    fill_content();                             // now we can setup the possibly new content and destroy the html_button that triggered an event
+	html_popup::inherited_get_body_part(path, req);
+	    // a first time to have the even triggering parameter changes
+
+	if(entr)
+	    fill_content();
+
 	ignore_events = true;
 
 	try
