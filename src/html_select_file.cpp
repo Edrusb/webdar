@@ -72,7 +72,7 @@ html_select_file::html_select_file(const std::string & message):
     fieldset_isdir(true)
 {
     entr.reset();       // entr points to nothing
-    set_visible(false); // make us invisible until run() is called
+    set_visible(false); // make us invisible until go_select() is called
     ack_visible();      // and invisible immediately (acknowlegment)
 
 	// events for callers objects
