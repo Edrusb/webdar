@@ -46,6 +46,8 @@ extern "C"
 #include "html_popup.hpp"
 #include "html_form.hpp"
 #include "html_form_input.hpp"
+#include "html_web_user_interaction.hpp"
+
 
     /// \file html_select_file.hpp defines html_select_file class
     ///
@@ -69,6 +71,37 @@ extern "C"
 
 
 class html_select_file: public html_popup, public events, public actor
+    ///
+    ///  +------------------------popup----------------------------+
+    ///  |+----------------title box------------------------------+|
+    ///  || title                                                 ||
+    ///  || warning (hidden by default)                           ||
+    ///  || webui (hidden by default)                             ||
+    ///  |+-------------------------------------------------------+|
+    ///  |+--------------- fieldset ------------------------------+|
+    ///  || parentdir                                             ||
+    ///  || +--------------+-----content------------------------+ ||
+    ///  || |              |                                    | ||
+    ///  || +--------------+------------------------------------+ ||
+    ///  || |              |                                    | ||
+    ///  || +--------------+------------------------------------+ ||
+    ///  || |              |                                    | ||
+    ///  || +--------------+------------------------------------+ ||
+    ///  |+-------------------------------------------------------+|
+    ///  |+-------------------btn_box-----------------------------+|
+    ///  ||+--------+                          +--------++-------+||
+    ///  |||creatdir|                          |cancel  ||validate||
+    ///  ||+--------+                          +--------++-------+||
+    ///  ||+----- createdir_form------+                           ||
+    ///  ||| createdir_input          |                           ||
+    ///  ||+--------------------------+                           ||
+    ///  |+-------------------------------------------------------+|
+    ///  |                                                         |
+    ///  +---------------------------------------------------------+
+
+
+
+
 {
 public:
 	/// event when user selected a file
@@ -176,6 +209,7 @@ private:
 
     html_text title;                  ///< shows the message request for the user (provided at constructor time)
     html_text warning;                ///< shows warnings when needed (permission pb, etc.)
+    html_web_user_interaction webui;  ///< used to control and interact with libdarthread used to act on the entrepot
     html_div title_box;               ///< contains title and warning and stay visible as a sticky box
     html_form_fieldset fieldset;      ///< shows the current directory path
     html_button parentdir;            ///< change to parent dir

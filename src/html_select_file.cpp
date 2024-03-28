@@ -74,6 +74,8 @@ html_select_file::html_select_file(const std::string & message):
     entr.reset();       // entr points to nothing
     set_visible(false); // make us invisible until go_select() is called
     ack_visible();      // and invisible immediately (acknowlegment)
+    webui.set_warning_list_size(5);
+    webui.auto_hide(true, true);
 
 	// events for callers objects
     register_name(entry_selected);  // we'll propagate the even from btn_validate
@@ -90,6 +92,7 @@ html_select_file::html_select_file(const std::string & message):
     adopt(&title_box);
     title_box.adopt(&title);
     title_box.adopt(&warning);
+    title_box.adopt(&webui);
     adopt(&fieldset);
     fieldset.adopt(&parentdir);
     fieldset.adopt(&content);
@@ -125,7 +128,7 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
     case st_go_select:
 	return; // already running
     case st_completed:
-	throw WEBDAR_BUG; // previous value has not been red
+	throw WEBDAR_BUG; // previous value has not been read
     default:
 	throw WEBDAR_BUG;
     }
