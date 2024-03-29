@@ -137,6 +137,8 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
     ack_visible();
     status = st_go_select;
     entr = x_entr;
+    mem_ui = entr->get_current_user_interaction();
+    entr->change_user_interaction(webui.get_user_interaction());
     fieldset.change_label(start_dir);
     createdir_form.set_visible(false);
     init_fieldset_isdir();
@@ -158,7 +160,9 @@ void html_select_file::on_event(const std::string & event_name)
 	    set_visible(false);
 	    ack_visible();
 	    act(entry_selected); // propagate the event to object that subscribed to us
+	    entr->change_user_interaction(mem_ui);
 	    entr.reset();
+	    mem_ui.reset();
 	}
     }
     else if(event_name == op_cancelled)
@@ -167,7 +171,9 @@ void html_select_file::on_event(const std::string & event_name)
 	set_visible(false);
 	ack_visible();
 	act(op_cancelled);
+	entr->change_user_interaction(mem_ui);
 	entr.reset();
+	mem_ui.reset();
     }
     else if(event_name == op_chdir_parent)
     {

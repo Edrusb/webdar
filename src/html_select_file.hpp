@@ -206,6 +206,7 @@ private:
     bool select_dir;
     std::string filter;
     std::shared_ptr<libdar::entrepot> entr;
+    std::shared_ptr<libdar::user_interaction> mem_ui;
 
 
 	// html components
