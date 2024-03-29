@@ -115,6 +115,8 @@ AC_DEFINE(_DARWIN_C_SOURCE, 1, [Define on Darwin to activate all library feature
 
 # Checks for libraries.
 AC_CHECK_LIB(dar, [get_version], [], [])
+AC_CHECK_LIB(ssl, [SSL_new], [], [])
+AC_CHECK_LIB(crypto, [ERR_get_error], [], [])
 # AC_CHECK_LIB(nsl, [endnetconfig], [], [])
 # AC_CHECK_LIB(cap, [cap_get_proc], [], [])
 
