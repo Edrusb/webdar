@@ -341,6 +341,14 @@ void html_select_file::new_css_library_available()
 	csslib->add(css_sticky_bot, tmp);
 }
 
+void html_select_file::inherited_run()
+{
+	// faire un filtrage en fonction du mode
+	// pour lancer telle ou telle methode de
+	// la classe
+}
+
+
 void html_select_file::init_fieldset_isdir()
 {
     chemin target(fieldset.get_label());

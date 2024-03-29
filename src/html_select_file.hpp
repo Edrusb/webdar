@@ -34,6 +34,7 @@ extern "C"
 #include <map>
 #include <dar/libdar.hpp>
 #include <memory>
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
 #include "events.hpp"
@@ -68,9 +69,6 @@ extern "C"
     ///  calling get_selected_path()
     ///\note the object visibility is managed by go_select() and before triggering
     /// entry_select and op_cancelled events
-
-
-class html_select_file: public html_popup, public events, public actor
     ///
     ///  +------------------------popup----------------------------+
     ///  |+----------------title box------------------------------+|
@@ -102,6 +100,7 @@ class html_select_file: public html_popup, public events, public actor
 
 
 
+class html_select_file: public html_popup, public events, public actor, public libthreadar::thread
 {
 public:
 	/// event when user selected a file
@@ -159,6 +158,10 @@ protected:
 
 	/// inherited from body_builder (via html_div)
     virtual void new_css_library_available() override;
+
+	/// inherited from libthreadar::thread
+    virtual void inherited_run() override;
+
 
 private:
 	// event nam for the 'change to parent directory' button (parentdir)
