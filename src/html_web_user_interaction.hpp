@@ -82,18 +82,18 @@ extern "C"
     /// The caller should use get_user_interaction() to provide a user interaction to a libthreadar::thread object
     /// for it can interact with the user thanks to this html_web_user_interaction but the thread should not be
     /// run by the caller, but passed to the run_and_control_thread() method for that.
-    /// the caller (code) can still access the thread by the user (Web UI/browser) can not also stop the thread
+    /// the caller (code) can still access the thread. While the user (Web UI/browser) can also stop the thread
     /// using the button that show in turn at the bottom of the component. Once the thread has finished, the component
-    /// can automatically hide from the UI (auto_hide(true)) or stay visibile until the user press the "finish"
+    /// can automatically hide from the UI (auto_hide(true)) or stay visible until the user press the "finish"
     /// html_button.
     /// the caller (code) can also register to the libdar_has_finished event to be notified when the thread
     /// has ended as detected by this html_web_user_interaction (for that its get_body_part() must be regularly
     /// invoked. This can be done by mean of page refresh, though, this is not always good to use, in particular
     /// when the user (web UI side) has to fill some html fields. For that reasons two additional events
     ///- can_refresh
-    ///- dont refresh
+    ///- dont_refresh
     /// are availabe and can be registered from the caller to avoid freshing the HTML page when it conflicts with
-    /// the expected HTML behavoir.
+    /// the expected HTML behavior.
 
     /// \note to communicate with a libdar thread, this class relies on a web_user_interaction
     /// objects that manages exclusive access (using mutex) to data structures provided and
