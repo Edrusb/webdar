@@ -34,6 +34,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
+#include "html_page.hpp"
 
     //
 #include "html_select_file.hpp"
@@ -56,13 +57,18 @@ const string html_select_file::css_sticky_bot = "html_select_sticky_bot";
 html_select_file::html_select_file(const std::string & message):
     html_popup(width_pct,height_pct),
     status(st_init),
+    which_thread(run_nothing),
     select_dir(false),
     filter(""),
+    should_refresh(false),
+    apply_refresh_mode(true),
     title(2, message),
     warning(3, ""),
     fieldset(""),
+    path_loaded(""),
     parentdir("Parent Directory", op_chdir_parent),
     content(2),
+    content_placeholder(2, "Loading directory content..."),
     btn_cancel("Cancel", op_cancelled),
     btn_validate("Select", entry_selected),
     btn_createdir("New Folder", op_createdir),
@@ -72,10 +78,8 @@ html_select_file::html_select_file(const std::string & message):
     fieldset_isdir(true)
 {
     entr.reset();       // entr points to nothing
-    set_visible(false); // make us invisible until go_select() is called
-    ack_visible();      // and invisible immediately (acknowlegment)
+    mem_ui.reset();     // mem_ui points to nothing
     webui.set_warning_list_size(5);
-    webui.auto_hide(true, true);
 
 	// events for callers objects
     register_name(entry_selected);  // we'll propagate the even from btn_validate
@@ -87,6 +91,8 @@ html_select_file::html_select_file(const std::string & message):
     parentdir.record_actor_on_event(this, op_chdir_parent);
     btn_createdir.record_actor_on_event(this, op_createdir);
     createdir_input.record_actor_on_event(this, html_form_input::changed);
+    webui.record_actor_on_event(this, html_web_user_interaction::can_refresh);
+    webui.record_actor_on_event(this, html_web_user_interaction::dont_refresh);
 
 	// setting up the adoption tree (the fixed part)
     adopt(&title_box);
@@ -96,6 +102,7 @@ html_select_file::html_select_file(const std::string & message):
     adopt(&fieldset);
     fieldset.adopt(&parentdir);
     fieldset.adopt(&content);
+    fieldset.adopt(&content_placeholder);
     adopt(&btn_box);
     btn_box.adopt(&btn_createdir);
     btn_box.adopt(&btn_validate);
@@ -115,7 +122,11 @@ html_select_file::html_select_file(const std::string & message):
     btn_createdir.add_css_class(css_float_button_left);
 
 	// setup default visibility property
-    createdir_form.set_visible(false);
+
+    set_visible(false); // make us invisible until go_select() is called
+    ack_visible();      // and invisible immediately (acknowlegment)
+    webui.set_visible(false);
+    webui.auto_hide(true, true);
 }
 
 void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
@@ -126,7 +137,7 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
     case st_init:
 	break;
     case st_go_select:
-	return; // already running
+	return; // already running, ignoring subsequent requests
     case st_completed:
 	throw WEBDAR_BUG; // previous value has not been read
     default:
@@ -141,8 +152,7 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
     entr->change_user_interaction(webui.get_user_interaction());
     fieldset.change_label(start_dir);
     createdir_form.set_visible(false);
-    init_fieldset_isdir();
-    fill_content();
+    run_thread(run_init_fill);
 };
 
 void html_select_file::on_event(const std::string & event_name)
@@ -161,8 +171,8 @@ void html_select_file::on_event(const std::string & event_name)
 	    ack_visible();
 	    act(entry_selected); // propagate the event to object that subscribed to us
 	    entr->change_user_interaction(mem_ui);
-	    entr.reset();
-	    mem_ui.reset();
+	    entr.reset();   // forget about the go_select() provided entrepot
+	    mem_ui.reset(); // forget about the user_interaction entr had
 	}
     }
     else if(event_name == op_cancelled)
@@ -172,8 +182,8 @@ void html_select_file::on_event(const std::string & event_name)
 	ack_visible();
 	act(op_cancelled);
 	entr->change_user_interaction(mem_ui);
-	entr.reset();
-	mem_ui.reset();
+	entr.reset();    // forget about the go_select() provided entrepot
+	mem_ui.reset();  // forget about the user_interaction entr had
     }
     else if(event_name == op_chdir_parent)
     {
@@ -192,7 +202,7 @@ void html_select_file::on_event(const std::string & event_name)
 	}
 	fieldset.change_label(chem.display());
 	fieldset_isdir = true;
-	fill_content();
+	loading_mode(true);
     }
     else if(event_name == op_createdir)
     {
@@ -209,47 +219,72 @@ void html_select_file::on_event(const std::string & event_name)
 	if(! createdir_input.get_value().empty())
 	{
 	    createdir_form.set_visible(false);
-	    try
-	    {
-		entr->create_dir(createdir_input.get_value(), 0700);
-	    }
-	    catch(libdar::Egeneric & e)
-	    {
-		warning.clear();
-		warning.add_text(3, string("Error met while creating directory ") + createdir_input.get_value() + " :");
-		warning.add_text(3, e.get_message());
-	    }
+	    run_thread(run_create_dir);
+	}
+    }
+    else if(event_name == html_web_user_interaction::can_refresh)
+    {
+	if(! should_refresh)
+	{
+	    should_refresh = true;
+	    apply_refresh_mode = true;
+	}
+    }
+    else if (event_name == html_web_user_interaction::dont_refresh)
+    {
+	if(should_refresh)
+	{
+	    should_refresh = false;
+	    apply_refresh_mode = true;
 	}
     }
     else // click on directory list entry?
     {
-	map<string, item>::iterator it = listed.find(event_name);
-	chemin curdir(fieldset.get_label());
-	string tmp;
+	    // here were access to "listed" without locking the mutex
+	    // but the on_event() call should never be invoked from
+	    // outside our own inherited_get_body_part() as we only
+	    // registered to events from our own components. These are only
+	    // consulted during our own inherited_get_body_part() which
+	    // has either acquired to mtx_content lock for us, or has set
+	    // content object as invisible, so we can skip "listed" content
+	    // check.
 
-	if(it == listed.end())
-	    throw WEBDAR_BUG; // all events we registered for should be known by us
-	if(it->second.btn == nullptr)
-	    throw WEBDAR_BUG;
-
-
-	if(!fieldset_isdir)
+	if(content.get_visible())
 	{
-	    string prev_file;
+	    map<string, item>::iterator it = listed.find(event_name);
+	    chemin curdir(fieldset.get_label());
+	    string tmp;
 
-		// if the current select item is not a directory we have not
-		// changed directory into it, the current path is the dirname
-		// of what fieldset points to, so we "pop" the current selected
-		// filename from the current path to get back to the currentdir
+	    if(it == listed.end())
+		throw WEBDAR_BUG; // all events we registered for should be known by us
+	    if(it->second.btn == nullptr)
+		throw WEBDAR_BUG;
 
-	    curdir.pop_back();
-	}
+
+	    if(!fieldset_isdir)
+	    {
+		string prev_file;
+
+		    // if the current select item is not a directory we have not
+		    // changed directory into it, the current path is the dirname
+		    // of what fieldset points to, so we "pop" the current selected
+		    // filename from the current path to get back to the currentdir
+
+		curdir.pop_back();
+	    }
 
 		// we concatenate (as a path subdir) the current path with the filename the user has clicked on:
 
-	curdir += chemin((it->second.btn)->get_label());
-	fieldset.change_label(curdir.display());
-	fieldset_isdir = it->second.isdir;
+	    curdir += chemin((it->second.btn)->get_label());
+	    fieldset.change_label(curdir.display());
+	    fieldset_isdir = it->second.isdir;
+	}
+	else
+		// we avoid consulting listed as it may still be  under construction
+		// and second as content and parentdir are hidden, they should not
+		// lead to any event generation
+	    throw WEBDAR_BUG; // unexpected event
+
     }
 }
 
@@ -259,31 +294,69 @@ string html_select_file::inherited_get_body_part(const chemin & path,
     if(get_visible())
     {
 	string ret;
-
-	html_popup::inherited_get_body_part(path, req);
-	    // a first time to have the even triggering parameter changes
-
-	if(entr)
-	    fill_content();
-
-	ignore_events = true;
+	bool acquired_content = mtx_content.try_lock();
 
 	try
 	{
-	    ret = html_popup::inherited_get_body_part(path, req);
+	    if(acquired_content && which_thread == run_nothing)
+		join(); // possibly trigger exception from our previously running child thread
+
+	    loading_mode(!acquired_content);
+		// we show content only we could acquire the mutex lock
+
+	    html_popup::inherited_get_body_part(path, req);
+		// a first time to have the even triggering parameter changes
+
+	    if(apply_refresh_mode)
+	    {
+		html_page* page = nullptr;
+
+		closest_ancestor_of_type(page);
+		apply_refresh_mode = false;
+
+		if(page != nullptr)
+		{
+		    if(should_refresh)
+			page->set_refresh_redirection(1, req.get_uri().get_path().display(false));
+		    else
+			page->set_refresh_redirection(0, ""); // disable refresh
+		}
+	    }
+
+	    if(entr && which_thread == run_nothing)
+		run_thread(run_fill_only);
+
+	    ignore_events = true;
+
+	    try
+	    {
+		ret = html_popup::inherited_get_body_part(path, req);
+	    }
+	    catch(...)
+	    {
+		ignore_events = false;
+		throw;
+	    }
+	    ignore_events = false;
+
+	    warning.clear();
 	}
 	catch(...)
 	{
-	    ignore_events = false;
+	    if(acquired_content)
+		mtx_content.unlock();
 	    throw;
 	}
-	ignore_events = false;
+	if(acquired_content)
+	    mtx_content.unlock();
 
-	warning.clear();
 	return ret;
     }
     else
+    {
+	join();
 	return "";
+    }
 }
 
 void html_select_file::new_css_library_available()
@@ -349,9 +422,34 @@ void html_select_file::new_css_library_available()
 
 void html_select_file::inherited_run()
 {
-	// faire un filtrage en fonction du mode
-	// pour lancer telle ou telle methode de
-	// la classe
+    mtx_content.lock();
+    try
+    {
+	switch(which_thread)
+	{
+	case run_nothing:
+	    throw WEBDAR_BUG;
+	case run_create_dir:
+	    create_dir();
+	    break;
+	case run_init_fill:
+	    init_fieldset_isdir();
+		/* no break ! */
+	case run_fill_only:
+	    fill_content();
+	    break;
+	default:
+	    throw WEBDAR_BUG;
+	}
+    }
+    catch(...)
+    {
+	which_thread = run_nothing;
+	mtx_content.unlock();
+	throw;
+    }
+    which_thread = run_nothing;
+    mtx_content.unlock();
 }
 
 
@@ -481,6 +579,11 @@ void html_select_file::fill_content()
     }
 }
 
+void html_select_file::create_dir()
+{
+    entr->create_dir(createdir_input.get_value(), 0700);
+}
+
 void html_select_file::add_content_entry(const string & event_name, bool isdir, const string & entry)
 {
     item current;
@@ -502,6 +605,35 @@ void html_select_file::add_content_entry(const string & event_name, bool isdir, 
 	content.adopt_static_html(entry);
 }
 
+void html_select_file::run_thread(thread_to_run val)
+{
+    if(which_thread != run_nothing)
+	throw WEBDAR_BUG; // a thread is already running
+
+    switch(val)
+    {
+    case run_nothing:
+	throw WEBDAR_BUG;
+    case run_create_dir:
+	path_loaded = ""; // this will force reloading dir content
+	which_thread = val;
+	webui.run_and_control_thread(this);
+	break;
+    case run_init_fill:
+    case run_fill_only:
+	if(fieldset.get_label() != path_loaded)
+	{
+	    path_loaded = fieldset.get_label();
+	    which_thread = val;
+	    webui.run_and_control_thread(this);
+	}
+	    // else we are already displaying the requested directory content
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+}
+
 void html_select_file::clear_content()
 {
     map<string, item>::iterator it = listed.begin();
@@ -519,3 +651,20 @@ void html_select_file::clear_content()
     }
     listed.clear();
 }
+
+void html_select_file::loading_mode(bool mode)
+{
+    if(mode)
+    {
+	parentdir.set_visible(false);
+	content.set_visible(false);
+	content_placeholder.set_visible(true);
+    }
+    else
+    {
+	parentdir.set_visible(true);
+	content.set_visible(true);
+	content_placeholder.set_visible(false);
+    }
+}
+

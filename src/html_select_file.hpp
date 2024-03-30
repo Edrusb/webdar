@@ -198,7 +198,17 @@ private:
 	st_init,      ///< not showing popup for user selection and not path available
 	st_go_select, ///< currently showing popup for user to select a file/directory
 	st_completed  ///< not showing popup but path available using get_selected_path()
-    } status;
+    } status;         ///< used to know when get_selected_path() is ready
+
+    enum thread_to_run
+    {
+	run_nothing,   ///< nothing is expected to be run in inherited_run (error condition)
+	run_create_dir,///< create_dir should be run
+	run_init_fill, ///< init_fieldset_isdir() + fill_content() should be run sequentially
+	run_fill_only  ///< fill_content() should be run
+    };
+
+    mutable thread_to_run which_thread; ///< used by inherited_run to know which subroutine to run in the separated thread
 
 
 	// settings
@@ -207,6 +217,8 @@ private:
     std::string filter;
     std::shared_ptr<libdar::entrepot> entr;
     std::shared_ptr<libdar::user_interaction> mem_ui;
+    bool should_refresh;
+    bool apply_refresh_mode;
 
 
 	// html components
@@ -216,9 +228,16 @@ private:
     html_web_user_interaction webui;  ///< used to control and interact with libdarthread used to act on the entrepot
     html_div title_box;               ///< contains title and warning and stay visible as a sticky box
     html_form_fieldset fieldset;      ///< shows the current directory path
+
+	// directory content related components
+    libthreadar::mutex mtx_content;   ///< control the access to listed, content and parentdir
+	//
+    std::string path_loaded;          ///< path displayed (empty string means not initialized)
     html_button parentdir;            ///< change to parent dir
+    html_text content_placeholder;    ///< replace content and *parentdir* when loading the directory content
     html_table content;               ///< parent of content objects
     std::map<std::string, item> listed; ///< associate a event message to each listed items
+
     html_div btn_box;                 ///< box containing the bottom buttons
     html_button btn_cancel;           ///< triggers the entry_cancelled event
     html_button btn_validate;         ///< trigger the entry_selected event
@@ -241,13 +260,24 @@ private:
 	/// fills content and listed from entry located in fieldset.get_label() directory of the entr libdar::entrepot
     void fill_content();
 
+	/// creates the requested directory
+    void create_dir();
+
 	/// used by fill_content() to add a single entry to the "listed" field
     void add_content_entry(const std::string & event_name,
 			   bool isdir,
 			   const std::string & entry);
 
+	/// run requested thread after sanity checks
+
+	/// \note if run_nothing is provided an exception is thrown
+    void run_thread(thread_to_run val);
+
 	/// free up and clean all html_button of listed and clear content too in coherence
     void clear_content();
+
+	/// set the display to show either the dir content or an "loading..." message
+    void loading_mode(bool mode);
 };
 
 #endif
