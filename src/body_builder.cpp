@@ -63,7 +63,6 @@ body_builder::body_builder(const body_builder & ref)
     else
         library.reset();
     css_class_names = ref.css_class_names;
-    backward_recursive_body_changed();
 }
 
 body_builder & body_builder::operator = (const body_builder & ref)
@@ -308,26 +307,35 @@ bool body_builder::is_css_class_defined_in_library(const string & name) const
 string body_builder::get_body_part(const chemin & path,
 				   const request & req)
 {
+    static const unsigned int maxloop = 10;
     string ret; // what we will return
+    unsigned int loop = 0;
 
     create_css_lib_if_needed();
 
-    if(path == last_body_path
-       && req.get_uri() == (const uri)(last_body_req_uri)
-       && req.get_body() == last_body_req_body
-       && visible == last_body_visible
-       && ! body_changed)
-	ret = last_body_part;
-    else
+    do
     {
-	body_changed = false;
-	ret = inherited_get_body_part(path, req);
-	last_body_path = path;
-	last_body_req_uri = req.get_uri();
-	last_body_req_body = req.get_body();
-	last_body_part = ret;
-	last_body_visible = visible;
+	if(path == last_body_path
+	   && req.get_uri() == (const uri)(last_body_req_uri)
+	   && req.get_body() == last_body_req_body
+	   && visible == last_body_visible
+	   && ! body_changed)
+	    ret = last_body_part;
+	else
+	{
+	    body_changed = false;
+	    ret = inherited_get_body_part(path, req);
+	    last_body_path = path;
+	    last_body_req_uri = req.get_uri();
+	    last_body_req_body = req.get_body();
+	    last_body_part = ret;
+	    last_body_visible = visible;
+	}
+
+	if(++loop >= maxloop)
+	    throw WEBDAR_BUG;
     }
+    while(parent == nullptr && body_changed);
 
     return ret;
 }
