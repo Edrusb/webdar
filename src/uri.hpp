@@ -53,6 +53,8 @@ public:
     uri & operator = (uri && ref) noexcept = default;
     ~uri() = default;
 
+    bool operator == (const uri & arg) const;
+
 	/// convert an uri from a string
     void read(const std::string & res);
 

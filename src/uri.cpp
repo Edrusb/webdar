@@ -40,6 +40,12 @@ extern "C"
 
 using namespace std;
 
+bool uri::operator == (const uri & arg) const
+{
+    return scheme == arg.scheme
+	&& hostname == arg.hostname
+	&& path == arg.path;
+}
 
 
 const std::string uri::get_string() const
