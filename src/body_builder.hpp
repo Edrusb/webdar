@@ -216,9 +216,31 @@ protected:
 	/// implementation of get_body_part() method for inherited classes
 
 	/// \note this method defines what the class will return from the public method
-	/// body_builder::get_body_part() which also make some housekeeping at body_builder level
+	/// body_builder::get_body_part() which also make some housekeeping at body_builder level.
+	/// In particular, the body_builder class record the "body_changed" status that is reset
+	/// before calling inherited_get_body_part() and modified by the inherited class when they
+	/// call the my_body_part_has_changed(). In such a way that another class having adopted a
+	/// body_builder inherited class can decide (or not) to reevaluate the get_body_part() of one
+	/// or more of its adpoted children, based on this "body_changed" status obtained calling
+	/// the body_part_has_changed() method of each of its children.
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) = 0;
+
+	/// let a class record a change in what inherited_get_body_part() would return
+
+	/// method provided to inherited class to signal a change since the previous time inherited_get_body_part()
+	/// has changed. The parent of the object, in particular when it has a lot of adopted children, can
+	/// then check the body_part_has_changed() method of all its children and decide to re-evaluate only those
+	/// that have changed.
+    void my_body_part_has_changed() { body_changed = true; };
+
+	/// let a parent class get informed of change in inherited_get_body_part() of its children
+
+	/// this method return whether the object would provide a different result from inherited_get_body_part()
+	/// from the previous invocation if it was done now. The change detection is done by the class by calling
+	/// my_body_part_has_changed()
+    bool body_part_has_changed() const { return body_changed; } ;
+
 
         /// return the path of 'this' according to its descent in the body_builder tree of adopted children
     chemin get_path() const;
@@ -337,15 +359,21 @@ private:
     bool next_visible;                                  ///< whether this object will be visible once ack() by the inherited class implementation
     chemin x_prefix;                                    ///< path of this object
     bool no_CR;                                         ///< whether inherited class implementation should avoid adding a CR at end of HTML produced body part
-    body_builder *parent;                               ///< our parent if we get adopted
-    std::vector<body_builder *> order;                  ///< children by order or adoption
-    std::map<std::string, body_builder *> children;     ///< children and their name
-    std::map<body_builder *, std::string> revert_child; ///< revert map to get name of a child
+    body_builder* parent;                               ///< our parent if we get adopted
+    std::vector<body_builder*> order;                   ///< children by order or adoption
+    std::map<std::string, body_builder*> children;      ///< children and their name
+    std::map<body_builder*, std::string> revert_child;  ///< revert map to get name of a child
+    chemin last_body_path;                              ///< last path value provided to get_body_part()
+    uri last_body_req_uri;                              ///< last req uri value provided to get_body_part()
+    std::string last_body_req_body;                     ///< last req body value provided to get_body_part()
+    std::string last_body_part;                         ///< last return of inherited_get_body_part()
+    bool last_body_visible;                             ///< visible status at the time of the last inherited_get_body_part()
     bool library_asked;                                 ///< whether store_css_library() has been called,
 	                                                ///< this will trigger creation of css_library from get_body_part,
 	                                                ///< to allow store_css_library() being invoked from constructors of inherited classes
     std::unique_ptr<css_library> library;               ///< css library if stored by this object
     std::set<std::string> css_class_names;              ///< list of CSS class that apply to this object
+    bool body_changed;                                  ///< change status of inherited_get_body_part()/get_body_part()
 
         /// unrecord 'this' from its parent as a adopted child
     void unrecord_from_parent();
@@ -355,6 +383,9 @@ private:
 
         /// ask inherited class to provide its css_classes
     void recursive_new_css_library_available();
+
+	/// propagate to ancestor that the body has changed (body_changed field)
+    void backward_recursive_body_changed();
 
         /// (re)initialize fields to default sane values
     void clear();

@@ -48,8 +48,11 @@ body_builder::body_builder(const body_builder & ref)
         throw WEBDAR_BUG;
     visible = ref.visible;
     next_visible = ref.next_visible;
+	// x_prefix cannot be the same as ref so it stays to the default value
     no_CR = ref.no_CR;
-    css_class_names = ref.css_class_names;
+	// parent cannot be the same as ref so it stays nullptr
+	// order, children and revert_child stay defaulted as we do not copy the children
+	// last_body_path, past_body_req, last_body_part and last_body_visible are kept defaulted also
     library_asked = ref.library_asked;
     if(ref.library)
     {
@@ -59,6 +62,8 @@ body_builder::body_builder(const body_builder & ref)
     }
     else
         library.reset();
+    css_class_names = ref.css_class_names;
+    backward_recursive_body_changed();
 }
 
 body_builder & body_builder::operator = (const body_builder & ref)
@@ -81,6 +86,11 @@ body_builder & body_builder::operator = (const body_builder & ref)
     }
     else
         library.reset(); // drop possibly existing css_library
+    body_changed = ref.body_changed;
+    last_body_path = ref.last_body_path;
+    last_body_req_uri = ref.last_body_req_uri;
+    last_body_req_body = ref.last_body_req_body;
+    last_body_visible = ref.last_body_visible;
 
     return *this;
 }
@@ -91,10 +101,13 @@ void body_builder::set_prefix(const chemin & prefix)
         throw WEBDAR_BUG;
     x_prefix = prefix;
     recursive_path_has_changed();
+    body_changed = true; // force reevaluation
 }
 
 void body_builder::adopt(body_builder *obj)
 {
+	// sanity checks
+
     if(obj == nullptr)
         throw WEBDAR_BUG;
 
@@ -104,14 +117,16 @@ void body_builder::adopt(body_builder *obj)
     const css_library* ancient_css_library = obj->lookup_css_library().get();
     const css_library* new_css_library = lookup_css_library().get();
     string new_name;
-    map<string, body_builder *>::iterator it;
-    map<body_builder *, string>::iterator rit = revert_child.find(obj);
+    map<string, body_builder*>::iterator it;
+    map<body_builder*, string>::iterator rit = revert_child.find(obj);
 
     if(rit != revert_child.end())
         throw WEBDAR_BUG; // object already recorded / adopted
 
     if(obj->parent != nullptr)
         throw WEBDAR_BUG; // object already recorded by another parent
+
+	// updating internal data structure to record the adoption
 
     do
     {
@@ -124,6 +139,9 @@ void body_builder::adopt(body_builder *obj)
     children[new_name] = obj;
     revert_child[obj] = new_name;
     obj->parent = this;
+
+	// now informing parent and children
+
     obj->recursive_path_has_changed();
     has_adopted(obj);
     obj->has_been_adopted_by(this);
@@ -132,10 +150,14 @@ void body_builder::adopt(body_builder *obj)
         // we trigger all the child lineage to record its css_classes
     if(new_css_library != ancient_css_library)
         obj->recursive_new_css_library_available();
+
+    backward_recursive_body_changed();
 }
 
 void body_builder::foresake(body_builder *obj)
 {
+	// sanity checks
+
     if(obj == nullptr)
         throw WEBDAR_BUG;
 
@@ -145,8 +167,12 @@ void body_builder::foresake(body_builder *obj)
     if(ot == order.end()) // object not found in the ordered list
         throw WEBDAR_BUG;
 
+	// informing parent and children that we are about to foresake
+
     obj->will_be_foresaken_by(this);
     will_foresake(obj);
+
+	// updating internal data structure about the leave
 
     if(rit != revert_child.end())
     {
@@ -169,6 +195,7 @@ void body_builder::foresake(body_builder *obj)
         throw WEBDAR_BUG; // object known in the ordered list but unknown by the revert_child map
 
     obj->recursive_path_has_changed();
+    backward_recursive_body_changed();
 }
 
 void body_builder::add_css_class(const std::string & name)
@@ -178,6 +205,7 @@ void body_builder::add_css_class(const std::string & name)
 
     css_class_names.insert(name);
     css_classes_have_changed();
+    backward_recursive_body_changed();
 }
 
 void body_builder::add_css_class(const css_class_group & cg)
@@ -188,6 +216,7 @@ void body_builder::add_css_class(const css_class_group & cg)
     while(cg.read_next(name))
         add_css_class(name);
     css_classes_have_changed();
+    backward_recursive_body_changed();
 }
 
 bool body_builder::has_css_class(const string & name) const
@@ -202,6 +231,7 @@ void body_builder::remove_css_class(const std::string & name)
 
     css_class_names.erase(name);
     css_classes_have_changed();
+    backward_recursive_body_changed();
 }
 
 void body_builder::remove_css_class(const css_class_group & cg)
@@ -212,6 +242,7 @@ void body_builder::remove_css_class(const css_class_group & cg)
     while(cg.read_next(name))
         remove_css_class(name);
     css_classes_have_changed();
+    backward_recursive_body_changed();
 }
 
 css_class_group body_builder::get_css_class_group() const
@@ -277,8 +308,28 @@ bool body_builder::is_css_class_defined_in_library(const string & name) const
 string body_builder::get_body_part(const chemin & path,
 				   const request & req)
 {
+    string ret; // what we will return
+
     create_css_lib_if_needed();
-    return inherited_get_body_part(path, req);
+
+    if(path == last_body_path
+       && req.get_uri() == (const uri)(last_body_req_uri)
+       && req.get_body() == last_body_req_body
+       && visible == last_body_visible
+       && ! body_changed)
+	ret = last_body_part;
+    else
+    {
+	body_changed = false;
+	ret = inherited_get_body_part(path, req);
+	last_body_path = path;
+	last_body_req_uri = req.get_uri();
+	last_body_req_body = req.get_body();
+	last_body_part = ret;
+	last_body_visible = visible;
+    }
+
+    return ret;
 }
 
 chemin body_builder::get_path() const
@@ -454,6 +505,13 @@ void body_builder::recursive_new_css_library_available()
     }
 }
 
+void body_builder::backward_recursive_body_changed()
+{
+    body_changed = true;
+    if(parent != nullptr)
+	parent->backward_recursive_body_changed();
+}
+
 void body_builder::clear()
 {
     visible = true ;
@@ -463,9 +521,15 @@ void body_builder::clear()
     order.clear();
     children.clear();
     revert_child.clear();
+    last_body_path.clear();
+    last_body_req_uri.clear();
+    last_body_req_body.clear();
+    last_body_part.clear();
+    last_body_visible = false;
     library_asked = false;
     library.reset();
     css_class_names.clear();
+    body_changed = true;
 }
 
 void body_builder::create_css_lib_if_needed()
