@@ -87,8 +87,6 @@ private:
     static constexpr const char* auth_pass = "password";
     static constexpr const char* auth_key  = "keyfile";
 
-    bool got_inner_event; // set to true by on_event()
-
     html_form form;
     html_form_fieldset fs;
     html_form_select repo_type; // local, ftp or sftp
@@ -107,26 +105,10 @@ private:
 
     std::string custom_event_name;
 
-    mutable bool has_changed;                 ///< whether the repo has changed after a form update
-    mutable bool change_event_triggered;      ///< we want to trigger the change event only once until get_entrepot is called
-    mutable unsigned int mem_type;            ///< previous value of repo_type
-    mutable std::string mem_login;            ///< previous value of login
-    mutable std::string mem_pass;             ///< previous value of pass
-    mutable std::string mem_host;             ///< previous value of host
-    mutable std::string mem_port;             ///< previous value of port
-    mutable bool mem_auth_from_file;          ///< previous value of auth_from_file
-    mutable std::string mem_pub_keyfile;      ///< previous value of pub_keyfile
-    mutable std::string mem_prv_keyfile;      ///< previous value of prv_keyfile
-    mutable bool mem_knownhosts_check;        ///< previous value of known_hosts_check
-    mutable std::string mem_known_hosts_file; ///< previous value of knwonw_hosts_file
-    mutable libdar::U_I mem_wait_time;        ///< previous value of wait_time
-
     mutable std::shared_ptr<libdar::user_interaction> dialog; ///< used by inherited_run
     mutable std::shared_ptr<libdar::entrepot> entrep;         ///< set by inherited_run
 
     void update_visible();
-    bool check_if_changed() const;
-    void record_changed_values() const;
 };
 
 #endif

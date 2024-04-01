@@ -63,8 +63,6 @@ html_entrepot::html_entrepot():
     chemin tmp;
     string val;
 
-    got_inner_event = false;
-
 	// component configuration
     repo_type.add_choice(type_local, "local filesystem");         // index 0
     repo_type.add_choice(type_ftp, "FTP protocol (unciphered)");  // index 1
@@ -142,7 +140,6 @@ html_entrepot::html_entrepot():
 
 	// update components visibility
     update_visible();
-    record_changed_values();
 }
 
 
@@ -160,7 +157,7 @@ std::shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(std::shared_ptr<ht
     if(! webui->is_libdar_running())
 	webui->auto_hide(true, true);
 
-    if(entrep && ! has_changed)
+    if(entrep && ! has_my_body_part_changed())
 	return entrep;
 
     webui->run_and_control_thread(const_cast<html_entrepot*>(this)); // this launches a new thread running inherited_run() and the caller returns
@@ -177,16 +174,17 @@ std::shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(std::shared_ptr<ht
 	// as this is not the case (there is no try/catch statement to catch it here) the inherited_run
 	// succeeded but did not provide a libdar::entrepot as it should
 
-    record_changed_values();
-
     return entrep;
 }
 
 void html_entrepot::on_event(const std::string & event_name)
 {
-    got_inner_event = true;
     update_visible();
-    my_body_part_has_changed();
+	// no need to trigger my_body_part_has_changed()
+	// because all event we registered to are generated
+	// up change of body_builder objects we adopted.
+	// As we adopted them, if they change, our body_builder
+	// change status will also we set accordingly
 }
 
 void html_entrepot::set_event_name(const std::string & name)
@@ -201,24 +199,10 @@ void html_entrepot::set_event_name(const std::string & name)
 std::string html_entrepot::inherited_get_body_part(const chemin & path,
 						   const request & req)
 {
-    got_inner_event = false;
     string ret = get_body_part_from_all_children(path, req);
 
-    if(got_inner_event) // need get the update body part as some changed occured
+    if(has_my_body_part_changed())
     {
-	request tmp = req;
-
-	tmp.post_to_get();
-	got_inner_event = false;
-	ret = get_body_part_from_all_children(path, tmp);
-	if(got_inner_event)
-	    throw WEBDAR_BUG; // not expected to have changed event after visibility change only
-    }
-
-    has_changed = check_if_changed();
-    if(has_changed && ! change_event_triggered)
-    {
-	change_event_triggered = true;
 	if(custom_event_name.empty())
 	    act(changed);
 	else
@@ -360,56 +344,4 @@ void html_entrepot::update_visible()
     default:
 	throw WEBDAR_BUG;
     }
-}
-
-
-bool html_entrepot::check_if_changed() const
-{
-    if(mem_type != repo_type.get_selected_num()
-       && repo_type.get_selected_num() == 0) // local entrepot
-	return true;
-    if(mem_login != login.get_value())
-	return true;
-    if(mem_pass != pass.get_value())
-	return true;
-    if(mem_host != host.get_value())
-	return true;
-    if(mem_port != port.get_value() && mem_port != "0")
-	return true;
-    if(mem_auth_from_file != auth_from_file.get_value_as_bool())
-	return true;
-    if(mem_knownhosts_check != knownhosts_check.get_value_as_bool())
-	return true;
-    if(mem_pub_keyfile != pub_keyfile.get_value())
-	return true;
-    if(mem_prv_keyfile != prv_keyfile.get_value())
-	return true;
-    if(mem_knownhosts_check)
-    {
-	if(mem_known_hosts_file != known_hosts_file.get_value())
-	    return true;
-    }
-    if(mem_wait_time != webdar_tools_convert_to_int(wait_time.get_value()))
-	return true;
-
-    return false;
-}
-
-
-void html_entrepot::record_changed_values() const
-{
-    mem_type = repo_type.get_selected_num();
-    mem_login = login.get_value();
-    mem_pass = pass.get_value();
-    mem_host = host.get_value();
-    mem_port = port.get_value();
-    mem_auth_from_file = auth_from_file.get_value_as_bool();
-    mem_knownhosts_check = knownhosts_check.get_value_as_bool();
-    mem_pub_keyfile = pub_keyfile.get_value();
-    mem_prv_keyfile = prv_keyfile.get_value();
-    mem_known_hosts_file = known_hosts_file.get_value();
-    mem_wait_time = webdar_tools_convert_to_int(wait_time.get_value());
-
-    has_changed = false;
-    change_event_triggered = false;
 }
