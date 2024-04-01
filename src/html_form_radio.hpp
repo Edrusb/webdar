@@ -60,7 +60,7 @@ public:
     ~html_form_radio() = default;
 
     void add_choice(const std::string & id, const std::string & label);
-    void clear() { choices.clear(); selected = 0; };
+    void clear() { choices.clear(); selected = 0; my_body_part_has_changed(); };
 
     void set_selected(unsigned int x); /// \note index zero is the first choice
     const std::string & get_selected_id() const { return choices[selected].id; };

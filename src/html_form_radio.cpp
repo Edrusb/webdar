@@ -47,14 +47,30 @@ void html_form_radio::add_choice(const string & id, const string & label)
     x.id = id;
     x.label = label;
     choices.push_back(x);
+    my_body_part_has_changed();
 }
 
 void html_form_radio::set_selected(unsigned int x)
 {
     if(x >= choices.size())
-	selected = choices.size() - 1;
+    {
+	unsigned int next_val = choices.size() - 1;
+	if(next_val != selected)
+	{
+	    selected = next_val;
+	    act(changed);
+	    my_body_part_has_changed();
+	}
+    }
     else
-	selected = x;
+    {
+	if(x != selected)
+	{
+	    selected = x;
+	    act(changed);
+	    my_body_part_has_changed();
+	}
+    }
 }
 
 string html_form_radio::inherited_get_body_part(const chemin & path,
@@ -111,7 +127,10 @@ void html_form_radio::update_field_from_request(const request & req)
 
 		selected = u;
 		if(has_changed)
+		{
 		    act(changed);
+		    my_body_part_has_changed();
+		}
 	    }
 	}
     }
