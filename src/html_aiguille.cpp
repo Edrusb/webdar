@@ -44,6 +44,7 @@ void html_aiguille::clear()
 	remove_section(*(order.begin()));
     active_section = noactive;
     selfcleaning = true;
+    my_body_part_has_changed();
 }
 
 signed int html_aiguille::add_section(const std::string & name, const std::string & title)
@@ -78,6 +79,9 @@ signed int html_aiguille::add_section(const std::string & name, const std::strin
 
     section_added(name, title); // eventually inform inherited class if applicable
 
+	// adding a section has no influence on the return
+	// of inherited_get_body_part()
+
     return sections.size() - 1;
 }
 
@@ -93,7 +97,7 @@ void html_aiguille::adopt_in_section(const std::string & section_name, body_buil
 
     it->second.adopted.push_back(obj);
     obj_to_section[obj] = section_name;
-    adopt(obj);
+    adopt(obj); // this will trigger body_builder::my_body_part_has_changed()
 }
 
 void html_aiguille::adopt_in_section(signed int num, body_builder* obj)
@@ -124,7 +128,7 @@ void html_aiguille::clear_section(const std::string & section_name)
 	    if(revt == obj_to_section.end())
 		throw WEBDAR_BUG;
 	    obj_to_section.erase(revt);
-	    foresake(*objt);
+	    foresake(*objt);  // will trigger body_builder::my_body_part_has_changed()
 	    *objt = nullptr;
 	    ++objt;
 	}
@@ -167,6 +171,8 @@ void html_aiguille::remove_section(const std::string & section_name)
 	active_section = noactive;
 
     section_removed(section_name); // eventually inform inherited class
+
+    my_body_part_has_changed(); // necessary if the removed section had no object to foresake
 }
 
 void html_aiguille::remove_section(signed int num)
