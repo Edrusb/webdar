@@ -42,7 +42,6 @@ using namespace std;
 html_statistics::html_statistics()
 {
     table = nullptr;
-
 }
 
 void html_statistics::clear_counters()
