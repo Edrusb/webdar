@@ -48,7 +48,7 @@ public:
     html_image & operator = (html_image && ref) noexcept = default;
     ~html_image() = default;
 
-    void set_dimensions(const std::string x, const std::string y) { dim_x = x; dim_y = y; };
+    void set_dimensions(const std::string x, const std::string y);
 
 	/// inherited from static_body_builder
     virtual std::string get_body_part() const override;

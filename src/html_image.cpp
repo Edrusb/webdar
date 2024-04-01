@@ -47,6 +47,17 @@ html_image::html_image(const std::string & url, const std::string & alt)
     dim_y = "";
 }
 
+void html_image::set_dimensions(const std::string x, const std::string y)
+{
+    if(dim_x != x
+       || dim_y != y)
+    {
+	dim_x = x;
+	dim_y = y;
+	my_body_part_has_changed();
+    }
+}
+
 string html_image::get_body_part() const
 {
     string ret;
