@@ -150,7 +150,7 @@ void body_builder::adopt(body_builder *obj)
     if(new_css_library != ancient_css_library)
         obj->recursive_new_css_library_available();
 
-    backward_recursive_body_changed();
+    my_body_part_has_changed();
 }
 
 void body_builder::foresake(body_builder *obj)
@@ -194,7 +194,7 @@ void body_builder::foresake(body_builder *obj)
         throw WEBDAR_BUG; // object known in the ordered list but unknown by the revert_child map
 
     obj->recursive_path_has_changed();
-    backward_recursive_body_changed();
+    my_body_part_has_changed();
 }
 
 void body_builder::add_css_class(const std::string & name)
@@ -204,7 +204,7 @@ void body_builder::add_css_class(const std::string & name)
 
     css_class_names.insert(name);
     css_classes_have_changed();
-    backward_recursive_body_changed();
+    my_body_part_has_changed();
 }
 
 void body_builder::add_css_class(const css_class_group & cg)
@@ -215,7 +215,7 @@ void body_builder::add_css_class(const css_class_group & cg)
     while(cg.read_next(name))
         add_css_class(name);
     css_classes_have_changed();
-    backward_recursive_body_changed();
+    my_body_part_has_changed();
 }
 
 bool body_builder::has_css_class(const string & name) const
@@ -230,7 +230,7 @@ void body_builder::remove_css_class(const std::string & name)
 
     css_class_names.erase(name);
     css_classes_have_changed();
-    backward_recursive_body_changed();
+    my_body_part_has_changed();
 }
 
 void body_builder::remove_css_class(const css_class_group & cg)
@@ -241,7 +241,7 @@ void body_builder::remove_css_class(const css_class_group & cg)
     while(cg.read_next(name))
         remove_css_class(name);
     css_classes_have_changed();
-    backward_recursive_body_changed();
+    my_body_part_has_changed();
 }
 
 css_class_group body_builder::get_css_class_group() const
@@ -338,6 +338,13 @@ string body_builder::get_body_part(const chemin & path,
     while(parent == nullptr && body_changed);
 
     return ret;
+}
+
+void body_builder::my_body_part_has_changed()
+{
+    body_changed = true;
+    if(parent != nullptr)
+	parent->my_body_part_has_changed();
 }
 
 chemin body_builder::get_path() const
@@ -511,13 +518,6 @@ void body_builder::recursive_new_css_library_available()
         (*it)->recursive_new_css_library_available();
         ++it;
     }
-}
-
-void body_builder::backward_recursive_body_changed()
-{
-    body_changed = true;
-    if(parent != nullptr)
-	parent->backward_recursive_body_changed();
 }
 
 void body_builder::clear()

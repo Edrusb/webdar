@@ -236,7 +236,7 @@ protected:
 	/// leads the already returned inherited_get_body_part() value to be wrong/obsolete. Having my_body_part_has_changed()
 	/// invoked from the actor::on_event() method solves this dependency as get_body_part() will relaunch the
 	/// evaluation of such objects that signaled they have changed.
-    void my_body_part_has_changed() { backward_recursive_body_changed(); };
+    void my_body_part_has_changed();
 
 
         /// return the path of 'this' according to its descent in the body_builder tree of adopted children
