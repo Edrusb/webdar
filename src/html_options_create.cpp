@@ -470,8 +470,9 @@ void html_options_create::on_event(const std::string & event_name)
     default:
 	throw WEBDAR_BUG;
     }
-
-    my_body_part_has_changed();
+	// no need to call my_body_part_has_changed()
+	// because changed done in on_event concern
+	// body_builder objects we have adopted
 }
 
 void html_options_create::new_css_library_available()
