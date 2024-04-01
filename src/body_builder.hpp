@@ -389,6 +389,11 @@ private:
 
 	/// create a css_library if it has been requested earlier
     void create_css_lib_if_needed();
+
+	/// fetch cached body_part if the object has not changed since previous call
+    std::string get_body_part_or_cache(const chemin & path,
+				       const request & req);
+
 };
 
 #endif

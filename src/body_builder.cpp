@@ -308,36 +308,32 @@ string body_builder::get_body_part(const chemin & path,
 				   const request & req)
 {
     static const unsigned int maxloop = 10;
-    string ret; // what we will return
-    unsigned int loop = 0;
 
     create_css_lib_if_needed();
 
-    do
+    if(parent != nullptr)
+	return get_body_part_or_cache(path, req);
+    else
     {
-	if(path == last_body_path
-	   && req.get_uri() == (const uri)(last_body_req_uri)
-	   && req.get_body() == last_body_req_body
-	   && visible == last_body_visible
-	   && ! body_changed)
-	    ret = last_body_part;
-	else
+	string ret; // what we will return
+	request localreq = req;
+	unsigned int loop = 0;
+
+	do
 	{
-	    body_changed = false;
-	    ret = inherited_get_body_part(path, req);
-	    last_body_path = path;
-	    last_body_req_uri = req.get_uri();
-	    last_body_req_body = req.get_body();
-	    last_body_part = ret;
-	    last_body_visible = visible;
+	    ret = get_body_part_or_cache(path, localreq);
+
+	    if(body_changed)
+		localreq.post_to_get();
+		// we avoid regenerating post events
+
+	    if(++loop >= maxloop)
+		throw WEBDAR_BUG;
 	}
+	while(body_changed);
 
-	if(++loop >= maxloop)
-	    throw WEBDAR_BUG;
+	return ret;
     }
-    while(parent == nullptr && body_changed);
-
-    return ret;
 }
 
 void body_builder::my_body_part_has_changed()
@@ -556,4 +552,29 @@ void body_builder::create_css_lib_if_needed()
 
 	recursive_new_css_library_available();
     }
+}
+
+string body_builder::get_body_part_or_cache(const chemin & path,
+					    const request & req)
+{
+    string ret;
+
+    if(path == last_body_path
+       && req.get_uri() == (const uri)(last_body_req_uri)
+       && req.get_body() == last_body_req_body
+       && visible == last_body_visible
+       && ! body_changed)
+	ret = last_body_part;
+    else
+    {
+	body_changed = false;
+	ret = inherited_get_body_part(path, req);
+	last_body_path = path;
+	last_body_req_uri = req.get_uri();
+	last_body_req_body = req.get_body();
+	last_body_part = ret;
+	last_body_visible = visible;
+    }
+
+    return ret;
 }
