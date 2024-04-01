@@ -60,9 +60,68 @@ html_form_input::html_form_input(const std::string & label,
 
 void html_form_input::set_range(int min, int max)
 {
-    x_min = webdar_tools_convert_to_string(min);
-    x_max = webdar_tools_convert_to_string(max);
+    string next_min = webdar_tools_convert_to_string(min);
+    string next_max = webdar_tools_convert_to_string(max);
+
+    if(next_min != x_min
+       || next_max != x_max)
+    {
+	my_body_part_has_changed();
+	x_min = next_min;
+	x_max = next_max;
+    }
 }
+
+void html_form_input::change_label(const std::string & label)
+{
+    if(label != x_label)
+    {
+	x_label = label;
+	my_body_part_has_changed();
+    }
+}
+
+void html_form_input::change_type(input_type type)
+{
+    string next_type = string_for_type(type);
+
+    if(next_type != x_type)
+    {
+	x_type = next_type;
+	my_body_part_has_changed();
+    }
+}
+
+void html_form_input::set_value(const std::string & val)
+{
+    if(x_init != val)
+    {
+	x_init = val;
+	act(changed);
+	my_body_part_has_changed();
+    }
+}
+
+void html_form_input::set_value_as_bool(bool val)
+{
+    if(val != get_value_as_bool())
+    {
+	x_init = val ? "x" : "";
+	act(changed);
+	my_body_part_has_changed();
+    }
+}
+
+void html_form_input::set_enabled(bool val)
+{
+    if(enabled != val)
+    {
+	enabled = val;
+	act(changed);
+	my_body_part_has_changed();
+    }
+}
+
 
 string html_form_input::inherited_get_body_part(const chemin & path,
 						const request & req)
@@ -98,6 +157,7 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 		// yes we have to trigger both events,
 		// the default, on which some objects might
 		// have registered and the modifed one too.
+	    my_body_part_has_changed();
 	}
     }
 
