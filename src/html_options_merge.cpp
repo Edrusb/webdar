@@ -225,12 +225,6 @@ html_options_merge::html_options_merge():
 }
 
 
-string html_options_merge::inherited_get_body_part(const chemin & path,
-						   const request & req)
-{
-    return get_body_part_from_all_children(path, req);
-}
-
 void html_options_merge::on_event(const std::string & event_name)
 {
     auxiliary.set_visible(has_aux.get_value_as_bool());
@@ -311,7 +305,9 @@ void html_options_merge::on_event(const std::string & event_name)
 	throw WEBDAR_BUG;
     }
 
-    my_body_part_has_changed();
+	// no need to call my_body_part_has_changed()
+	// because changed done in on_event concern
+	// body_builder objects we have adopted
 }
 
 
@@ -376,6 +372,13 @@ libdar::archive_options_merge html_options_merge::get_options(std::shared_ptr<ht
     }
 
     return ret;
+}
+
+
+string html_options_merge::inherited_get_body_part(const chemin & path,
+						   const request & req)
+{
+    return get_body_part_from_all_children(path, req);
 }
 
 
