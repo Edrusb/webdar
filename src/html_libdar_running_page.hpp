@@ -21,8 +21,8 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
-#ifndef HTML_LIBDAR_RUNNING_HPP
-#define HTML_LIBDAR_RUNNING_HPP
+#ifndef HTML_LIBDAR_RUNNING_PAGE_HPP
+#define HTML_LIBDAR_RUNNING_PAGE_HPP
 
     // C system header files
 extern "C"
@@ -38,23 +38,23 @@ extern "C"
 #include "actor.hpp"
 #include "html_web_user_interaction.hpp"
 
-    /// html_libdar_running wraps up an html_web_user_interaction in a html_page
+    /// html_libdar_running_page wraps up an html_web_user_interaction in a html_page
 
     /// also handle page title and for that need to know the session name
 
-class html_libdar_running : public html_page, public events, public actor
+class html_libdar_running_page : public html_page, public events, public actor
 {
 public:
     	// this class generates the following events:
     static const std::string libdar_has_finished; ///< libdar execution has ended and user has acknoledged it
 
 	// constructor
-    html_libdar_running();
-    html_libdar_running(const html_libdar_running & ref) = delete;
-    html_libdar_running(html_libdar_running && ref) noexcept = delete;
-    html_libdar_running & operator = (const html_libdar_running & ref) = delete;
-    html_libdar_running & operator = (html_libdar_running && ref) noexcept = delete;
-    ~html_libdar_running() = default;
+    html_libdar_running_page();
+    html_libdar_running_page(const html_libdar_running_page & ref) = delete;
+    html_libdar_running_page(html_libdar_running_page && ref) noexcept = delete;
+    html_libdar_running_page & operator = (const html_libdar_running_page & ref) = delete;
+    html_libdar_running_page & operator = (html_libdar_running_page && ref) noexcept = delete;
+    ~html_libdar_running_page() = default;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;

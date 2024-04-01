@@ -60,7 +60,7 @@ user_interface::user_interface()
     parametrage.record_actor_on_event(this, saisie::changed_session_name);
 
 	/// messages received from html_libdar_running object named in_action
-    in_action.record_actor_on_event(this, html_libdar_running::libdar_has_finished);
+    in_action.record_actor_on_event(this, html_libdar_running_page::libdar_has_finished);
 
 	/// messages received from html_error object named in_error;
     in_error.record_actor_on_event(this, html_error::acknowledged);
@@ -159,7 +159,7 @@ void user_interface::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	}
     }
-    else if(event_name == html_libdar_running::libdar_has_finished)
+    else if(event_name == html_libdar_running_page::libdar_has_finished)
     {
 	current_thread = nullptr;
 

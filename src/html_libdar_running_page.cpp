@@ -33,14 +33,14 @@ extern "C"
     // webdar headers
 
     //
-#include "html_libdar_running.hpp"
+#include "html_libdar_running_page.hpp"
 
 using namespace std;
 
-const string html_libdar_running::libdar_has_finished = "html_libdar_running_finished";
+const string html_libdar_running_page::libdar_has_finished = "html_libdar_running_page_finished";
 
 
-html_libdar_running::html_libdar_running():
+html_libdar_running_page::html_libdar_running_page():
     html_page("THIS IS A BUG"),
     sessname(""),
     enable_refresh(true)
@@ -59,7 +59,7 @@ html_libdar_running::html_libdar_running():
     web_ui->record_actor_on_event(this, html_web_user_interaction::dont_refresh);
 }
 
-string html_libdar_running::inherited_get_body_part(const chemin & path,
+string html_libdar_running_page::inherited_get_body_part(const chemin & path,
 						    const request & req)
 {
     string body = get_body_part_from_children_as_a_block(path, req);
@@ -72,7 +72,7 @@ string html_libdar_running::inherited_get_body_part(const chemin & path,
     return get_body_part_given_the_body(path, req, body);
 }
 
-void html_libdar_running::on_event(const std::string & event_name)
+void html_libdar_running_page::on_event(const std::string & event_name)
 {
     if(event_name == html_web_user_interaction::libdar_has_finished)
     {

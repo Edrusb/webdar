@@ -38,7 +38,7 @@ extern "C"
 #include "saisie.hpp"
 #include "html_statistics.hpp"
 #include "events.hpp"
-#include "html_libdar_running.hpp"
+#include "html_libdar_running_page.hpp"
 #include "html_error.hpp"
 #include "html_listing_page.hpp"
 #include "archive_test.hpp"
@@ -100,7 +100,7 @@ private:
     bool mode_changed;     ///< whether mode has changed
 
     saisie parametrage;            ///< page issued in mode == config
-    html_libdar_running in_action; ///< page issued when a libdar thread is running (mode == running)
+    html_libdar_running_page in_action; ///< page issued when a libdar thread is running (mode == running)
     html_error in_error;           ///< page issued when an exception has been caught (mode == error)
     html_listing_page in_list;     ///< page issued when proceeding to archive listing
 
