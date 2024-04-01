@@ -77,7 +77,6 @@ protected:
 
 
 private:
-    bool redisplay;
     html_form form;
     html_form_fieldset fs;
     html_form_input_file arch_path;

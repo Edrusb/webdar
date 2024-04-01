@@ -40,7 +40,6 @@ extern "C"
 using namespace std;
 
 html_archive_read::html_archive_read(const string & archive_description):
-    redisplay(false),
     form("Update"),
     fs(archive_description),
     arch_path("Archive path",
@@ -80,7 +79,7 @@ void html_archive_read::on_event(const std::string & event_name)
 	if(!is_running())
 	{
 	    libdarexec.set_visible(true);
-	    redisplay = true;
+	    my_body_part_has_changed();
 	    webui->run_and_control_thread(this);
 	}
 	else
@@ -95,25 +94,17 @@ void html_archive_read::on_event(const std::string & event_name)
     else if(event_name == html_libdar_running_popup::libdar_has_finished)
     {
 	libdarexec.set_visible(false); // now hiding the popup
+	my_body_part_has_changed();
 	join();
     }
     else
 	throw WEBDAR_BUG;
-    my_body_part_has_changed();
 }
 
 string html_archive_read::inherited_get_body_part(const chemin & path,
 						  const request & req)
 {
-    string ret = "";
-
-    redisplay = false;
-    ret = get_body_part_from_all_children(path, req);
-
-    if(redisplay)
-	ret = get_body_part_from_all_children(path, req);
-
-    return ret;
+    return get_body_part_from_all_children(path, req);
 }
 
 
