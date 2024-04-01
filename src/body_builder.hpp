@@ -238,6 +238,11 @@ protected:
 	/// evaluation of such objects that signaled they have changed.
     void my_body_part_has_changed();
 
+	/// obtain the body_part changed status
+
+	/// \note this is also set when adopted component triggered my_body_part_has_changed()
+    bool has_my_body_part_changed() const { return body_changed; };
+
 
         /// return the path of 'this' according to its descent in the body_builder tree of adopted children
     chemin get_path() const;
