@@ -178,13 +178,6 @@ html_options_isolate::html_options_isolate():
     webdar_css_style::grey_button(deroule, true);
 }
 
-
-string html_options_isolate::inherited_get_body_part(const chemin & path,
-						     const request & req)
-{
-    return get_body_part_from_all_children(path, req);
-}
-
 void html_options_isolate::on_event(const std::string & event_name)
 {
     switch(compression.get_value())
@@ -247,7 +240,9 @@ void html_options_isolate::on_event(const std::string & event_name)
 	throw WEBDAR_BUG;
     }
 
-    my_body_part_has_changed();
+	// no need to call my_body_part_has_changed()
+	// because changed done in on_event concern
+	// body_builder objects we have adopted
 }
 
 
@@ -294,6 +289,12 @@ libdar::archive_options_isolate html_options_isolate::get_options(std::shared_pt
 
 
     return ret;
+}
+
+string html_options_isolate::inherited_get_body_part(const chemin & path,
+						     const request & req)
+{
+    return get_body_part_from_all_children(path, req);
 }
 
 void html_options_isolate::new_css_library_available()
