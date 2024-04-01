@@ -54,7 +54,7 @@ void html_table::css_border_collapsed(bool mode)
 
     if(border_collapsed != next_border_collapsed)
     {
-	border_collapsed == next_border_collapsed;
+	border_collapsed = next_border_collapsed;
 	my_body_part_has_changed();
     }
 }
