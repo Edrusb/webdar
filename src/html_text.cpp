@@ -54,6 +54,7 @@ void html_text::add_text(unsigned int level, const std::string & text)
 	string h = webdar_tools_convert_to_string(level);
 	txt += "<h" + h + " " + css_val + ">" + text + "</h" + h + ">\n";
     }
+    my_body_part_has_changed();
 }
 
 string html_text::inherited_get_body_part(const chemin & path,
@@ -64,7 +65,7 @@ string html_text::inherited_get_body_part(const chemin & path,
     ack_visible();
 
     if(get_visible())
-	ret = get_body_part();
+	ret = get_body_part(); // our own method inherited from static_body_builder
 
     return ret;
 }
