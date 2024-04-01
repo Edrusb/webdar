@@ -55,7 +55,7 @@ public:
     html_form_fieldset & operator = (html_form_fieldset && ref) noexcept = default;
     ~html_form_fieldset() = default;
 
-    void change_label(const std::string & label) { x_label = label; };
+    void change_label(const std::string & label);
     const std::string get_label() const { return x_label; };
 
 	/// clear and destroy previously added objects

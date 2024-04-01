@@ -39,6 +39,14 @@ extern "C"
 
 using namespace std;
 
+void html_form_fieldset::change_label(const std::string & label)
+{
+    if(x_label != label)
+    {
+	x_label = label;
+	my_body_part_has_changed();
+    }
+}
 
 string html_form_fieldset::inherited_get_body_part(const chemin & path,
 						   const request & req)
