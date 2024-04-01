@@ -55,6 +55,7 @@ void html_level::adopt_static_html(const std::string & html)
 
     table.push_back(tmp);
     reset_read_next();
+    my_body_part_has_changed();
 }
 
 void html_level::clear_children()
@@ -62,6 +63,11 @@ void html_level::clear_children()
     orphan_all_children();
     table.clear();
     reset_read_next();
+    my_body_part_has_changed();
+	// not all children are body_builder inherited objects
+	// we must call my_body_part_has_changed() for the
+	// situation where no body_part::foresake() would be
+	// invoked.
 }
 
 void html_level::has_adopted(body_builder *obj)
