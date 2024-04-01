@@ -50,7 +50,6 @@ html_size_unit::html_size_unit() : unit(""),
     set_fields();
     adopt(&unit);
     adopt(&SI_mode);
-    changed = false;
 }
 
 libdar::infinint html_size_unit::get_value() const
@@ -78,24 +77,15 @@ libdar::infinint html_size_unit::get_value() const
 void html_size_unit::on_event(const std::string & event_name)
 {
     set_fields();
-    changed = true;
-    my_body_part_has_changed();
+	// no need to call my_body_part_has_changed()
+	// because changed done in on_event concern
+	// body_builder objects we have adopted
 }
 
 string html_size_unit::inherited_get_body_part(const chemin & path,
 					       const request & req)
 {
-    string ret;
-
-    do
-    {
-	changed = false;
-	ret = get_next_visible() ? get_body_part_from_all_children(path, req) : "";
-	ack_visible();
-    }
-    while(changed);
-
-    return ret;
+    return get_body_part_from_all_children(path, req);
 }
 
 

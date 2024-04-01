@@ -60,8 +60,6 @@ protected:
 private:
     html_form_select unit;
     html_form_select SI_mode;
-    bool changed;
-
 
     void set_fields();
 };
