@@ -53,16 +53,16 @@ public:
     void css_border_collapsed(bool mode);
 
 	/// define a specific css object for the _cells_ first row
-    void set_css_class_first_row(const std::string & val) { cells_title_set = true; css_class_title = val; };
+    void set_css_class_first_row(const std::string & val);
 
 	/// clear apreviously assigned css object to the title row
-    void set_css_class_first_row() { cells_title_set = false; css_class_title = ""; };
+    void set_css_class_first_row();
 
 	/// assigned to all celles except those of the first raw if set_css_cells_first_raw was set
-    void set_css_class_cells(const std::string & val) { css_class_cells = val; };
+    void set_css_class_cells(const std::string & val);
 
 	/// clear apreviously assigned css object to the title raw
-    void set_css_class_cells() { css_class_cells = ""; };
+    void set_css_class_cells();
 
 	/// clear table content
     void clear() { clear_children(); };

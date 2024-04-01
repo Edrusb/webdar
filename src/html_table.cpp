@@ -50,7 +50,51 @@ html_table::html_table(unsigned int width)
 
 void html_table::css_border_collapsed(bool mode)
 {
-    border_collapsed = string(" border-collapse: ") + (mode ? "collapse;" : "separate;");
+    string next_border_collapsed = string(" border-collapse: ") + (mode ? "collapse;" : "separate;");
+
+    if(border_collapsed != next_border_collapsed)
+    {
+	border_collapsed == next_border_collapsed;
+	my_body_part_has_changed();
+    }
+}
+
+void html_table::set_css_class_first_row(const string & val)
+{
+    if(!cells_title_set || css_class_title != val)
+    {
+	cells_title_set = true;
+	css_class_title = val;
+	my_body_part_has_changed();
+    }
+}
+
+void html_table::set_css_class_first_row()
+{
+    if(cells_title_set)
+    {
+	cells_title_set = false;
+	css_class_title = "";
+	my_body_part_has_changed();
+    }
+}
+
+void html_table::set_css_class_cells(const string & val)
+{
+    if(css_class_cells != val)
+    {
+	css_class_cells = val;
+	my_body_part_has_changed();
+    }
+}
+
+void html_table::set_css_class_cells()
+{
+    if(css_class_cells != "")
+    {
+	css_class_cells = "";
+	my_body_part_has_changed();
+    }
 }
 
 string html_table::inherited_get_body_part(const chemin & path,
