@@ -219,10 +219,7 @@ void html_options_read::on_event(const std::string & event_name)
 	my_body_part_has_changed();
     }
     else if(event_name == html_form_input_file::changed_entrepot)
-    {
 	act(ref_entrepot_has_changed);
-	return;
-    }
     else if(event_name == html_crypto_algo::changed
 	    || event_name == html_form_input::changed)
     {
