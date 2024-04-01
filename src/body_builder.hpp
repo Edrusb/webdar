@@ -54,25 +54,24 @@ extern "C"
     ///  topology of body_builder. The path of an object adopted by a parent object
     ///  is a subdirectory of the parent's path. It is a unique name randomly chosen
     ///  by the parent at adoption time.
-    ///. last, the visibility property of an body_builder let it keep its place in the
-    ///  path and adoption tree without returning any HTML code temporarily. This property
-    ///  changes in two steps: the request (set_visible(bool) from the object outside,
-    ///  then ack_visible() call, done from the object inside that act the visibility change.
-    ///  Note that this visibility feature is not the CSS visibility one which still sends
-    ///  html body to the browser. for CSS visibility see class css.
+    ///. the visibility property of an body_builder let it keep its place in the
+    ///  path and adoption tree without returning any HTML code temporarily, this is
+    ///  set using set_visible() method and managed inside get_body_part() after
+    ///  calling inherited_get_body_part() where inherited classes define the body the
+    ///  generate.
     ///. the get_body_part() of a parent can thus rely on the get_body_part() of its
     ///  adopted children, this is the freedom of the parent class do decide how to
-    ///  compose or ignore its childen and their the possible HTML code they can return
+    ///  compose or ignore its childen and the possible HTML code they can return
     ///. Several protected hooks and methods are provided for inherited class to be
     ///  informed of their adoption or foresake.
     ///. defines a hierarchy of objects by mean of adoption (the parent adopts the childs)
-    /// and associate each child a random but unique subdirectory (used to setup the URI)
+    ///  and associate each child a random but unique subdirectory (used to setup the URI)
     ///. the class also handle the CSS components associated to HTML objects or to child objects
-    /// by mean of a css_library (usually only present in the root object of the tree)
-    /// and accessible by any children to store class name+definition and refer to them when
-    /// needed.
+    ///  by mean of a css_library (usually only present in the root object of the tree)
+    ///  and accessible by any children to store class name+definition and refer to them when
+    ///  needed.
     ///. objects of this class also produce HTML code referring to what should be displayed on
-    /// on the browser (get_body_part())
+    ///  on the browser (get_body_part())
     /// \note more details about css. body_builder object can be associated to the name of one
     /// or more css_class or css_class_group at any time, those are just labels. The class
     /// definition is stored in a css_library. If a body_builder object have created
@@ -135,23 +134,16 @@ public:
         /// \note if the requested object is not known an exception is thrown
     void foresake(body_builder *obj);
 
-
         /// ask for the object to become visible in HTML page or temporarily hidden
-    void set_visible(bool mode) { next_visible = mode; };
+
+	/// \note an object which as its visible property set to false still has its inherited_get_body_part()
+	/// method evaluated when calling get_body_part(), though get_body_part does not return its output.
+	/// The reason of doing that way is to keep hidden components being updated under the scene and ready
+	/// to show at any time.
+    void set_visible(bool mode);
 
         /// returns the current visible status of the object
-        ///
-        /// \note the returned visible status becomes what is set calling set_visible() method
-        /// only once the object has acknoledged its new status thanks to the ack_visible() method.
-        /// The object can known the current visible status but also the next_visible() status, which
-        /// is the one that is pending for acknoledgment.
-        /// \note the use of visible acknowlegment is for complex body_builder to trigger
-        /// adopted body_builder objects they have for an event (faking the display) but finally
-        /// when outputing the body part to not return any html body if changing to invisible
     bool get_visible() const { return visible; };
-
-        /// what the future but still non acknoledged visible status
-    bool get_next_visible() const { return next_visible; };
 
         /// set this object with a additional css_class (assuming it is defined in a css_library available for this object)
     void add_css_class(const std::string & name);
@@ -237,6 +229,9 @@ protected:
 	/// invoked from the actor::on_event() method solves this dependency as get_body_part() will relaunch the
 	/// evaluation of such objects that signaled they have changed.
     void my_body_part_has_changed();
+
+	/// available for inherited class to be informed when their visibility changes
+    virtual void my_visibility_has_changed() {};
 
 	/// obtain the body_part changed status
 
@@ -352,13 +347,9 @@ protected:
         /// true if it has been requested no to add Carriage Return after the HTML object
     bool get_no_CR() const { return no_CR; };
 
-        /// acknoledge the new visible status
-    void ack_visible() { visible = next_visible; };
-
 
 private:
     bool visible;                                       ///< whether this object is visible or not
-    bool next_visible;                                  ///< whether this object will be visible once ack() by the inherited class implementation
     chemin x_prefix;                                    ///< path of this object
     bool no_CR;                                         ///< whether inherited class implementation should avoid adding a CR at end of HTML produced body part
     body_builder* parent;                               ///< our parent if we get adopted
@@ -369,7 +360,6 @@ private:
     uri last_body_req_uri;                              ///< last req uri value provided to get_body_part()
     std::string last_body_req_body;                     ///< last req body value provided to get_body_part()
     std::string last_body_part;                         ///< last return of inherited_get_body_part()
-    bool last_body_visible;                             ///< visible status at the time of the last inherited_get_body_part()
     bool library_asked;                                 ///< whether store_css_library() has been called,
 	                                                ///< this will trigger creation of css_library from get_body_part,
 	                                                ///< to allow store_css_library() being invoked from constructors of inherited classes

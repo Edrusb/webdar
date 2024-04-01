@@ -120,13 +120,7 @@ string html_derouleur::inherited_get_body_part(const chemin & path,
     if(sub_path.size() > 0)
 	sub_path.pop_front();
 
-    ret = generate_html(sub_path, req);
-
-    ack_visible();
-    if(get_visible())
-	return ret;
-    else
-	return "";
+    return generate_html(sub_path, req);
 }
 
 

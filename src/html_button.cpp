@@ -56,26 +56,19 @@ string html_button::inherited_get_body_part(const chemin & path,
 {
     chemin target = req.get_uri().get_path();
     string choice;
-    string ret = "";
 
-    ack_visible();
-    if(get_visible())
+    if(!target.empty())
     {
-	if(!target.empty())
-	{
-	    choice = target.back();
-	    target.pop_back();
-	}
-	else
-	    choice = "";
-
-	if(target == get_path() && choice == action)
-	    act(event_name);
-
-	ret = html_div::inherited_get_body_part(path, req);
+	choice = target.back();
+	target.pop_back();
     }
+    else
+	choice = "";
 
-    return ret;
+    if(target == get_path() && choice == action)
+	act(event_name);
+
+    return html_div::inherited_get_body_part(path, req);
 }
 
 

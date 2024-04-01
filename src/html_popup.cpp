@@ -58,15 +58,9 @@ html_popup::html_popup(unsigned int width_pct, unsigned int height_pct)
 string html_popup::inherited_get_body_part(const chemin & path,
 					 const request & req)
 {
-    ack_visible();
-    if(get_visible())
-    {
-	string ret = outerbox.get_body_part(path, req); // should be invoked with sub_path where sub_path  is path.pop_front()
-	ret+= html_div::inherited_get_body_part(path, req);
-	return ret;
-    }
-    else
-	return "";
+    string ret = outerbox.get_body_part(path, req); // should be invoked with sub_path where sub_path  is path.pop_front()
+    ret+= html_div::inherited_get_body_part(path, req);
+    return ret;
 }
 
 void html_popup::new_css_library_available()

@@ -47,12 +47,11 @@ body_builder::body_builder(const body_builder & ref)
     if(ref.parent != nullptr || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty())
         throw WEBDAR_BUG;
     visible = ref.visible;
-    next_visible = ref.next_visible;
 	// x_prefix cannot be the same as ref so it stays to the default value
     no_CR = ref.no_CR;
 	// parent cannot be the same as ref so it stays nullptr
 	// order, children and revert_child stay defaulted as we do not copy the children
-	// last_body_path, past_body_req, last_body_part and last_body_visible are kept defaulted also
+	// last_body_path, past_body_req and last_body_part are kept defaulted also
     library_asked = ref.library_asked;
     if(ref.library)
     {
@@ -73,7 +72,6 @@ body_builder & body_builder::operator = (const body_builder & ref)
         throw WEBDAR_BUG;
 
     visible = ref.visible;
-    next_visible = ref.next_visible;
     no_CR = ref.no_CR;
     css_class_names = ref.css_class_names;
     library_asked = ref.library_asked;
@@ -89,7 +87,6 @@ body_builder & body_builder::operator = (const body_builder & ref)
     last_body_path = ref.last_body_path;
     last_body_req_uri = ref.last_body_req_uri;
     last_body_req_body = ref.last_body_req_body;
-    last_body_visible = ref.last_body_visible;
 
     return *this;
 }
@@ -195,6 +192,16 @@ void body_builder::foresake(body_builder *obj)
 
     obj->recursive_path_has_changed();
     my_body_part_has_changed();
+}
+
+void body_builder::set_visible(bool mode)
+{
+    if(visible != mode)
+    {
+	visible = mode;
+	my_body_part_has_changed();  // keep trace of the change at body_builder level
+	my_visibility_has_changed(); // inform inherited class if they overwrote this method
+    }
 }
 
 void body_builder::add_css_class(const std::string & name)
@@ -308,11 +315,18 @@ string body_builder::get_body_part(const chemin & path,
 				   const request & req)
 {
     static const unsigned int maxloop = 10;
+    string ret;
 
     create_css_lib_if_needed();
 
     if(parent != nullptr)
-	return get_body_part_or_cache(path, req);
+    {
+	ret = get_body_part_or_cache(path, req);
+	if(visible)
+	    return ret;
+	else
+	    return "";
+    }
     else
     {
 	string ret; // what we will return
@@ -332,7 +346,10 @@ string body_builder::get_body_part(const chemin & path,
 	}
 	while(body_changed);
 
-	return ret;
+	if(visible)
+	    return ret;
+	else
+	    return "";
     }
 }
 
@@ -391,31 +408,26 @@ string body_builder::get_body_part_from_target_child(const chemin & path,
     string ret;
 
     create_css_lib_if_needed();
+
     if(path.empty())
         throw WEBDAR_BUG; // invoked with an empty path
 
-    if(get_visible() || get_next_visible())
-    {
-        string name = path.front();
-        map<string, body_builder *>::iterator it = children.find(name);
+    string name = path.front();
+    map<string, body_builder *>::iterator it = children.find(name);
 
-        if(it != children.end())
-        {
-            chemin sub_path = path;
-            sub_path.pop_front();
-            ret = it->second->get_body_part(sub_path, req);
-        }
-        else
-            throw exception_input("unkown URL requested", STATUS_CODE_NOT_FOUND);
+    if(it != children.end())
+    {
+	chemin sub_path = path;
+	sub_path.pop_front();
+	ret = it->second->get_body_part(sub_path, req);
     }
     else
-        ret = "";
+	throw exception_input("unkown URL requested", STATUS_CODE_NOT_FOUND);
 
-    if(!get_next_visible())
-        ret = "";
-    ack_visible();
-
-    return ret;
+    if(visible)
+	return ret;
+    else
+	return "";
 }
 
 string body_builder::get_body_part_from_all_children(const chemin & path,
@@ -426,25 +438,22 @@ string body_builder::get_body_part_from_all_children(const chemin & path,
     vector<body_builder *>::iterator it = order.begin();
 
     create_css_lib_if_needed();
-    if(get_visible() || get_next_visible())
-    {
-        if(!sub_path.empty())
-            sub_path.pop_front();
 
-        while(it != order.end())
-        {
-            if(*it == nullptr)
-                throw WEBDAR_BUG;
-            ret += (*it)->get_body_part(sub_path, req);
-            ++it;
-        }
+    if(!sub_path.empty())
+	sub_path.pop_front();
+
+    while(it != order.end())
+    {
+	if(*it == nullptr)
+	    throw WEBDAR_BUG;
+	ret += (*it)->get_body_part(sub_path, req);
+	++it;
     }
 
-    if(!get_next_visible())
-        ret = "";
-    ack_visible();
-
-    return ret;
+    if(visible)
+	return ret;
+    else
+	return "";
 }
 
 void body_builder::orphan_all_children()
@@ -518,8 +527,7 @@ void body_builder::recursive_new_css_library_available()
 
 void body_builder::clear()
 {
-    visible = true ;
-    next_visible = true;
+    visible = true;
     no_CR = false;
     parent = nullptr;
     order.clear();
@@ -529,7 +537,6 @@ void body_builder::clear()
     last_body_req_uri.clear();
     last_body_req_body.clear();
     last_body_part.clear();
-    last_body_visible = false;
     library_asked = false;
     library.reset();
     css_class_names.clear();
@@ -562,7 +569,6 @@ string body_builder::get_body_part_or_cache(const chemin & path,
     if(path == last_body_path
        && req.get_uri() == (const uri)(last_body_req_uri)
        && req.get_body() == last_body_req_body
-       && visible == last_body_visible
        && ! body_changed)
 	ret = last_body_part;
     else
@@ -573,7 +579,6 @@ string body_builder::get_body_part_or_cache(const chemin & path,
 	last_body_req_uri = req.get_uri();
 	last_body_req_body = req.get_body();
 	last_body_part = ret;
-	last_body_visible = visible;
     }
 
     return ret;

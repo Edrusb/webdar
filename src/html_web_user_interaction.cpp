@@ -190,16 +190,11 @@ string html_web_user_interaction::inherited_get_body_part(const chemin & path,
 
     check_thread_status();
 
-    	// update visibility status
-    ack_visible();
-    if(! get_visible() && managed_threads.empty())
-	return ret; // component accepts to stay hidden only if no thread is managed
+	// now we return to the user the updated html interface
+	// any event triggered during that first generation may
+	// need further re-display (rebuild_body_part is set to true in that case)
 
-	    // now we return to the user the updated html interface
-	    // any event triggered during that first generation may
-	    // need further re-display (rebuild_body_part is set to true in that case)
-
-    rebuild_body_part = false; // libdar change lead compoents to change
+    rebuild_body_part = false; // libdar change lead components to change
     adjust_visibility();
     ret = get_body_part_from_all_children(path, req);
     if(rebuild_body_part)
@@ -319,7 +314,7 @@ void html_web_user_interaction::new_css_library_available()
 
 void html_web_user_interaction::adjust_visibility()
 {
-    if(h_get_string.get_next_visible() || h_inter.get_next_visible() || just_set)
+    if(h_get_string.get_visible() || just_set)
     {
 	h_form.set_visible(true);
 	act(dont_refresh);
@@ -336,8 +331,6 @@ void html_web_user_interaction::set_mode(mode_type m)
 {
     if(m == mode)
 	return;
-    else
-	my_body_part_has_changed();
 
     switch(m)
     {
@@ -420,7 +413,7 @@ void html_web_user_interaction::update_html_from_libdar_status()
 
 	if(lib_data->pending_pause(msg))
 	{
-	    if(!h_inter.get_next_visible())
+	    if(!h_inter.get_visible())
 	    {
 		h_inter.set_visible(true);
 		h_inter_text.clear();
@@ -432,7 +425,7 @@ void html_web_user_interaction::update_html_from_libdar_status()
 
 	if(lib_data->pending_get_string(msg, echo))
 	{
-	    if(!h_get_string.get_next_visible())
+	    if(!h_get_string.get_visible())
 	    {
 		h_get_string.set_visible(true);
 		h_get_string.change_label(msg);
@@ -447,7 +440,7 @@ void html_web_user_interaction::update_html_from_libdar_status()
 
 	if(lib_data->pending_get_secu_string(msg, echo))
 	{
-	    if(!h_get_string.get_next_visible())
+	    if(!h_get_string.get_visible())
 	    {
 		h_get_string.set_visible(true);
 		h_get_string.change_label(msg);
@@ -560,7 +553,7 @@ void html_web_user_interaction::join_all_threads()
 		}
 		catch(...)
 		{
-			// no not propagate any exception
+			// we do not propagate any exception
 		}
 	    }
 	}

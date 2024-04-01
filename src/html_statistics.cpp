@@ -69,18 +69,12 @@ void html_statistics::clear_labels()
 string html_statistics::inherited_get_body_part(const chemin & path,
 						const request & req)
 {
-    ack_visible();
-    if(get_visible())
-    {
-	update_html_counters();
+    update_html_counters();
 
-	if(table == nullptr)
-	    build();
+    if(table == nullptr)
+	build();
 
-	return get_body_part_from_all_children(path, req);
-    }
-    else
-	return "";
+    return get_body_part_from_all_children(path, req);
 }
 
 void html_statistics::new_css_library_available()

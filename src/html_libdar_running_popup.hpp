@@ -76,6 +76,9 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// inherited from body_builder
+    virtual void my_visibility_has_changed() override;
+
 private:
     std::shared_ptr<html_web_user_interaction> web_ui;
     bool enable_refresh;    ///< refresh mode status

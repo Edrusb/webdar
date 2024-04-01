@@ -124,7 +124,6 @@ html_select_file::html_select_file(const std::string & message):
 	// setup default visibility property
 
     set_visible(false); // make us invisible until go_select() is called
-    ack_visible();      // and invisible immediately (acknowlegment)
     webui.set_visible(false);
     webui.auto_hide(true, true);
 }
@@ -145,7 +144,6 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
     }
 
     set_visible(true);
-    ack_visible();
     status = st_go_select;
     entr = x_entr;
     mem_ui = entr->get_current_user_interaction();
@@ -168,7 +166,6 @@ void html_select_file::on_event(const std::string & event_name)
 	{
 	    status = st_completed;
 	    set_visible(false);
-	    ack_visible();
 	    act(entry_selected); // propagate the event to object that subscribed to us
 	    entr->change_user_interaction(mem_ui);
 	    entr.reset();   // forget about the go_select() provided entrepot
@@ -181,7 +178,6 @@ void html_select_file::on_event(const std::string & event_name)
     {
 	status = st_init;
 	set_visible(false);
-	ack_visible();
 	act(op_cancelled);
 	entr->change_user_interaction(mem_ui);
 	entr.reset();    // forget about the go_select() provided entrepot

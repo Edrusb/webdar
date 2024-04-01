@@ -64,14 +64,5 @@ void html_focus::given_for_temporary_adoption(body_builder *obj)
 string html_focus::inherited_get_body_part(const chemin & path,
 					   const request & req)
 {
-    string ret;
-
-    if(get_visible())
-	ret = get_body_part_from_all_children(path, req);
-
-    if(!get_next_visible())
-	ret = "";
-    ack_visible();
-
-    return ret;
+    return get_body_part_from_all_children(path, req);
 }

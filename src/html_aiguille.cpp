@@ -239,8 +239,7 @@ string html_aiguille::inherited_get_body_part(const chemin & path,
     if(sub_path.size() > 0)
 	sub_path.pop_front();
 
-    ack_visible();
-    if(get_visible() && active_section >= 0 && active_section < order.size())
+    if(active_section >= 0 && active_section < order.size())
     {
 	map<string, section>::iterator sect = sections.find(order[active_section]);
 	if(sect == sections.end())

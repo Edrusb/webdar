@@ -82,30 +82,22 @@ string html_form_radio::inherited_get_body_part(const chemin & path,
 	// for POST method only, extract user choice from the body of the request
 	// and update this object's fields
 
-    if(get_visible())
-	update_field_from_request(req);
+    update_field_from_request(req);
 
 	// for any request provide an updated HMTL content in response
 
-    if(get_next_visible())
+    for(unsigned int i = 0; i < choices.size(); ++i)
     {
-	for(unsigned int i = 0; i < choices.size(); ++i)
-	{
-	    ret += "<input " + get_css_classes() + " type=\"radio\" name=\"" + radio_id + "\" id=\"" + choices[i].id + "\" value=\"" + choices[i].id + "\" ";
-	    if(i == selected)
-		ret += "checked ";
-	    ret += "/>\n";
-	    ret += "<label " + get_css_classes() + " for=\"" + choices[i].id + "\">" + choices[i].label + "</label>";
-	    if(i+1 < choices.size() || !get_no_CR())
-		ret += "<br />\n";
-	    else
-		ret += "\n";
-	}
+	ret += "<input " + get_css_classes() + " type=\"radio\" name=\"" + radio_id + "\" id=\"" + choices[i].id + "\" value=\"" + choices[i].id + "\" ";
+	if(i == selected)
+	    ret += "checked ";
+	ret += "/>\n";
+	ret += "<label " + get_css_classes() + " for=\"" + choices[i].id + "\">" + choices[i].label + "</label>";
+	if(i+1 < choices.size() || !get_no_CR())
+	    ret += "<br />\n";
+	else
+	    ret += "\n";
     }
-    else
-	ret = "";
-
-    ack_visible();
 
     return ret;
 }

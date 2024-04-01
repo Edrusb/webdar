@@ -60,12 +60,5 @@ void html_text::add_text(unsigned int level, const std::string & text)
 string html_text::inherited_get_body_part(const chemin & path,
 					  const request & req)
 {
-    string ret = "";
-
-    ack_visible();
-
-    if(get_visible())
-	ret = get_body_part(); // our own method inherited from static_body_builder
-
-    return ret;
+    return get_body_part(); // our own method inherited from static_body_builder
 }

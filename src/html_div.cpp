@@ -45,7 +45,7 @@ string html_div::inherited_get_body_part(const chemin & path,
 {
     string ret;
     string cssdef = get_css_classes();
-    string sub = get_visible() || get_next_visible() ? get_body_part_from_children_as_a_block(path, req) : "";
+    string sub = get_body_part_from_children_as_a_block(path, req);
 
     if(cssdef.empty())
 	if(sub.empty())
@@ -57,10 +57,6 @@ string html_div::inherited_get_body_part(const chemin & path,
 	    ret = "<div " + cssdef + ">" + "</div>\n";
 	else
 	    ret = "<div " + cssdef + ">\n" + sub + "</div>\n";
-
-    ack_visible();
-    if(!get_visible())
-	ret = "";
 
     return ret;
 }

@@ -274,17 +274,7 @@ void html_options_read::on_event(const std::string & event_name)
 string html_options_read::inherited_get_body_part(const chemin & path,
 						  const request & req)
 {
-    string ret;
-
-    if(get_next_visible() || get_visible())
-	ret = get_body_part_from_all_children(path, req);
-
-    if(!get_next_visible())
-	ret = "";
-
-    ack_visible();
-
-    return ret;
+    return get_body_part_from_all_children(path, req);
 }
 
 

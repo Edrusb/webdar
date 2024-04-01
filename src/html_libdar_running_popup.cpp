@@ -61,32 +61,23 @@ html_libdar_running_popup::html_libdar_running_popup():
 }
 
 string html_libdar_running_popup::inherited_get_body_part(const chemin & path,
-						    const request & req)
+							  const request & req)
 {
 
 	// we want our visibility status to follow and act on
 	// our html_web_user_interaction component visibility
-	// such a way that changing either ours our this component
+	// such a way that changing either ours or this component
 	// which we provide direct access to, to stay identical at anytime
 
-	// first, ours visiblity change should change the component
-    if(get_visible() != get_next_visible())
-    {
-	    // we get here only if our visibily has just changed
-
-	web_ui->set_visible(get_next_visible());
-	ack_visible();
-    }
+	// the first direction is done by the virtual method my_visibility_has_changed()
+	// that we overwrote from body_builder, see right after the current method below
 
 	// second, our component's visibilty should change ours accordingly
-    if(get_visible() != web_ui->get_next_visible())
-    {
-	set_visible(web_ui->get_next_visible());
-	ack_visible();
-	    // our component visibility has changed
-	    // we have to propagate this to ourself for
-	    // it be visible as expected
-    }
+    if(get_visible() != web_ui->get_visible())
+	set_visible(web_ui->get_visible());
+	// our component visibility has changed
+	// we have to propagate this to ourself for
+	// it be visible as expected
 
     if(get_visible())
     {
@@ -108,6 +99,13 @@ string html_libdar_running_popup::inherited_get_body_part(const chemin & path,
     }
 
     return html_popup::inherited_get_body_part(path, req);
+}
+
+void html_libdar_running_popup::my_visibility_has_changed()
+{
+    if(!web_ui)
+	throw WEBDAR_BUG;
+    web_ui->set_visible(get_visible());
 }
 
 void html_libdar_running_popup::on_event(const std::string & event_name)

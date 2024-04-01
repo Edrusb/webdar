@@ -53,17 +53,10 @@ string html_form_fieldset::inherited_get_body_part(const chemin & path,
 {
     string ret = "";
 
-    if(get_next_visible() || get_visible())
-    {
-	ret += "<fieldset " + get_css_classes() + ">\n";
-	ret += "<legend>" + x_label + "</legend>\n";
-	ret += get_body_part_from_all_children(path, req);
-	ret += "</fieldset>\n";
-    }
-
-    ack_visible();
-    if(!get_visible())
-	ret = "";
+    ret += "<fieldset " + get_css_classes() + ">\n";
+    ret += "<legend>" + x_label + "</legend>\n";
+    ret += get_body_part_from_all_children(path, req);
+    ret += "</fieldset>\n";
 
     return ret;
 }

@@ -57,25 +57,21 @@ string html_form_select::inherited_get_body_part(const chemin & path, const requ
     }
 
 	// for any request provide an updated HTML content in response
-    if(get_next_visible())
+
+    ret += "<label for=\"" + select_id + "\">" + x_label + "</label>\n";
+    ret += "<select name=\"" + select_id + "\" id=\"" + select_id + "\">\n";
+    while(it != get_choices().end())
     {
-	ret += "<label for=\"" + select_id + "\">" + x_label + "</label>\n";
-	ret += "<select name=\"" + select_id + "\" id=\"" + select_id + "\">\n";
-	while(it != get_choices().end())
-	{
-	    ret += "<option value=\"" + it->id + "\"";
-	    if(it->id == get_selected_id())
-		ret += " selected";
-	    ret += ">" + it->label + "</option>\n";
-	    ++it;
-	}
-	ret += "</select>\n";
-	if(!get_no_CR())
-	    ret += "<br />\n";
+	ret += "<option value=\"" + it->id + "\"";
+	if(it->id == get_selected_id())
+	    ret += " selected";
+	ret += ">" + it->label + "</option>\n";
+	++it;
     }
-    else
-	ret = "";
-    ack_visible();
+    ret += "</select>\n";
+
+    if(!get_no_CR())
+	ret += "<br />\n";
 
     return ret;
 };

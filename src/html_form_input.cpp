@@ -164,34 +164,27 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 	// we can now return the up to date value of
 	// the field
 
-    if(get_next_visible())
+    if(x_type != "checkbox")
+	ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
+    ret += "<input " + get_css_classes() + " type=\"" + x_type + "\" name=\"" + x_id + "\" id=\"" + x_id + "\" ";
+    if(x_min != "" && x_max != "") // yes both
+	ret += "min=\"" + x_min + "\" max=\"" + x_max + "\" ";
+    if(x_init != "")
     {
-	if(x_type != "checkbox")
-	    ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
-	ret += "<input " + get_css_classes() + " type=\"" + x_type + "\" name=\"" + x_id + "\" id=\"" + x_id + "\" ";
-	if(x_min != "" && x_max != "") // yes both
-	    ret += "min=\"" + x_min + "\" max=\"" + x_max + "\" ";
-	if(x_init != "")
-	{
-	    if(x_type == "checkbox")
-		ret += "checked ";
-	    else
-		ret += "value=\"" + x_init +"\" ";
-	}
-	if(x_size != "")
-	    ret += "size=\"" + x_size + "\" ";
-	if(!enabled)
-	    ret += "disabled ";
-	ret += "/>";
 	if(x_type == "checkbox")
-	    ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
-	if(!get_no_CR())
-	    ret += "<br />\n";
+	    ret += "checked ";
+	else
+	    ret += "value=\"" + x_init +"\" ";
     }
-    else // HTML control not visible
-	ret = "";
-
-    ack_visible();
+    if(x_size != "")
+	ret += "size=\"" + x_size + "\" ";
+    if(!enabled)
+	ret += "disabled ";
+    ret += "/>";
+    if(x_type == "checkbox")
+	ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
+    if(!get_no_CR())
+	ret += "<br />\n";
 
     return ret;
 }
