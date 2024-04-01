@@ -39,6 +39,24 @@ extern "C"
 
 using namespace std;
 
+void html_url::change_url(const string & newurl)
+{
+    if(x_url != newurl)
+    {
+	x_url = newurl;
+	my_body_part_has_changed();
+    }
+}
+
+void html_url::change_label(const string & newlabel)
+{
+    if(x_label != newlabel)
+    {
+	x_label = newlabel;
+	my_body_part_has_changed();
+    }
+}
+
 
 string html_url::get_body_part() const
 {

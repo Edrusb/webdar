@@ -46,8 +46,8 @@ public:
     html_url & operator = (html_url && ref) noexcept = default;
     ~html_url() = default;
 
-    void change_url(const std::string & newurl) { x_url = newurl; };
-    void change_label(const std::string & newlabel) { x_label = newlabel; };
+    void change_url(const std::string & newurl);
+    void change_label(const std::string & newlabel);
 
     const std::string & get_label() const { return x_label; };
     const std::string & get_url() const { return x_url; };
