@@ -135,6 +135,7 @@ void html_dir_tree::clear()
     src = nullptr;
     info_read = false;
     has_sub = true;
+    my_body_part_has_changed();
 }
 
 void html_dir_tree::set_source(const archive_init_list *ref)
@@ -148,6 +149,7 @@ void html_dir_tree::set_source(const archive_init_list *ref)
     {
 	nosubdir.set_visible(false);
 	visibility_has_changed = true;
+	my_body_part_has_changed();
     }
 }
 
@@ -204,6 +206,7 @@ void html_dir_tree::on_event(const std::string & event_name)
     }
     else
 	throw WEBDAR_BUG;
+    my_body_part_has_changed();
 }
 
 string html_dir_tree::inherited_get_body_part(const chemin & path,

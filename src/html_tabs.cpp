@@ -109,6 +109,8 @@ void html_tabs::add_tab(const std::string & label)
 	    corres.erase(it);
 	throw;
     }
+
+    my_body_part_has_changed();
 }
 
 void html_tabs::on_event(const std::string & event_name)
@@ -287,4 +289,7 @@ void html_tabs::set_mode(unsigned int mode)
     tabs[mode]->url_add_css_class(tab_on_url);
 
     content.set_active_section(mode);
+	// html_aiguille::set_active_section will trigger my_body_part_has_changed()
 }
+
+

@@ -186,6 +186,7 @@ void html_entrepot::on_event(const std::string & event_name)
 {
     got_inner_event = true;
     update_visible();
+    my_body_part_has_changed();
 }
 
 void html_entrepot::set_event_name(const std::string & name)

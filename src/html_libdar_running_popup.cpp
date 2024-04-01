@@ -114,18 +114,27 @@ void html_libdar_running_popup::on_event(const std::string & event_name)
 {
     if(event_name == html_web_user_interaction::libdar_has_finished)
     {
+	my_body_part_has_changed();
 	act(libdar_has_finished); // propagating the event
 	set_visible(false); // nothing more to show
     }
     else if(event_name == html_web_user_interaction::can_refresh)
     {
-	enable_refresh = true;
-	changed_refresh = true;
+	if(!enable_refresh)
+	{
+	    enable_refresh = true;
+	    changed_refresh = true;
+	    my_body_part_has_changed();
+	}
     }
     else if(event_name == html_web_user_interaction::dont_refresh)
     {
-	enable_refresh = false;
-	changed_refresh = true;
+	if(enable_refresh)
+	{
+	    enable_refresh = false;
+	    changed_refresh = true;
+	    my_body_part_has_changed();
+	}
     }
     else
 	throw WEBDAR_BUG;

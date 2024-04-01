@@ -106,6 +106,7 @@ void html_crypto_algo::set_value(libdar::crypto_algo val)
     default:
 	throw WEBDAR_BUG;
     }
+    my_body_part_has_changed();
 }
 
 void html_crypto_algo::on_event(const std::string & event_name)

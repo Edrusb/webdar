@@ -83,4 +83,5 @@ void html_hash_algo::set_value(libdar::hash_algo val)
     default:
 	throw WEBDAR_BUG;
     }
+    my_body_part_has_changed();
 }

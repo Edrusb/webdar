@@ -90,6 +90,8 @@ void html_derouleur::on_event(const std::string & event_name)
 	set_active_section(noactive);
     else
 	set_active_section(event_name);
+
+	// my_body_part_has_changed() is called from html_aiguille::set_active_section()
 }
 
 void html_derouleur::css_classes_have_changed()

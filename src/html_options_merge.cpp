@@ -310,6 +310,8 @@ void html_options_merge::on_event(const std::string & event_name)
     default:
 	throw WEBDAR_BUG;
     }
+
+    my_body_part_has_changed();
 }
 
 

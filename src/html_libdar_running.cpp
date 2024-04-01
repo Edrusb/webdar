@@ -77,12 +77,25 @@ void html_libdar_running::on_event(const std::string & event_name)
     if(event_name == html_web_user_interaction::libdar_has_finished)
     {
 	set_title(webdar_tools_get_title(sessname, "Libdar thread has ended"));
+	my_body_part_has_changed();
 	act(libdar_has_finished);
     }
     else if(event_name == html_web_user_interaction::can_refresh)
-	enable_refresh = true;
+    {
+	if(!enable_refresh)
+	{
+	    my_body_part_has_changed();
+	    enable_refresh = true;
+	}
+    }
     else if(event_name == html_web_user_interaction::dont_refresh)
-	enable_refresh = false;
+    {
+	if(enable_refresh)
+	{
+	    my_body_part_has_changed();
+	    enable_refresh = false;
+	}
+    }
     else
 	throw WEBDAR_BUG;
 }

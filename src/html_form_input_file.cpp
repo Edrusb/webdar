@@ -143,7 +143,10 @@ void html_form_input_file::on_event(const string & event_name)
     if(event_name == html_form_input::changed)
 	act(changed_event_name);
     else if(event_name == triggered_event)
+    {
+	my_body_part_has_changed();
 	user_select.go_select(entrep, input.get_value());
+    }
     else if(event_name == html_select_file::entry_selected)
     {
 	switch(selmode)
@@ -159,6 +162,7 @@ void html_form_input_file::on_event(const string & event_name)
 	    throw WEBDAR_BUG;
 	}
 	refresh_get_body = true;
+	my_body_part_has_changed();
     }
     else
 	throw WEBDAR_BUG;

@@ -227,6 +227,7 @@ void html_web_user_interaction::on_event(const std::string & event_name)
 		    lib_data->set_pause_answer(h_pause.get_selected_num() == 2);
 		    h_inter.set_visible(false);
 		    rebuild_body_part = true;
+		    my_body_part_has_changed();
 		}
 		    // else we do nothing here
 	    }
@@ -240,6 +241,7 @@ void html_web_user_interaction::on_event(const std::string & event_name)
 		    lib_data->set_get_string_answer(h_get_string.get_value());
 		    h_get_string.set_visible(false);
 		    rebuild_body_part = true;
+		    my_body_part_has_changed();
 		}
 		else
 		{
@@ -248,6 +250,7 @@ void html_web_user_interaction::on_event(const std::string & event_name)
 			lib_data->set_get_secu_string_answer(libdar::secu_string(h_get_string.get_value().c_str(), h_get_string.get_value().size()));
 			h_get_string.set_visible(false);
 			rebuild_body_part = true;
+			my_body_part_has_changed();
 		    }
 		    else
 			throw WEBDAR_BUG;
@@ -255,13 +258,13 @@ void html_web_user_interaction::on_event(const std::string & event_name)
 	    }
 	}
 	else if(event_name == ask_end_libdar)
-	    set_mode(end_asked);
+	    set_mode(end_asked); // eventually calls my_body_part_has_changed()
 	else if(event_name == force_end_libdar)
-	    set_mode(end_forced);
+	    set_mode(end_forced); // eventually calls my_body_part_has_changed()
 	else if(event_name == kill_libdar_thread)
-	    set_mode(kill_forced);
+	    set_mode(kill_forced); // eventually calls my_body_part_has_changed()
 	else if(event_name == close_libdar_screen)
-	    set_mode(closed);
+	    set_mode(closed); // eventually calls my_body_part_has_changed()
 	else
 	    throw WEBDAR_BUG;
     }
@@ -333,6 +336,8 @@ void html_web_user_interaction::set_mode(mode_type m)
 {
     if(m == mode)
 	return;
+    else
+	my_body_part_has_changed();
 
     switch(m)
     {

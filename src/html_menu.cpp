@@ -89,6 +89,7 @@ void html_menu::set_current_mode(unsigned int mode)
 {
     unsigned int size = item.size();
     bool has_changed = (mode != current_mode);
+
     if(mode >= size)
 	throw WEBDAR_BUG;
 
@@ -127,6 +128,7 @@ void html_menu::set_current_mode(unsigned int mode)
 	previous_mode = current_mode;
 	current_mode = mode;
 	act(changed); // trigger the "changed" event
+	my_body_part_has_changed();
     }
 }
 
@@ -180,6 +182,7 @@ void html_menu::on_event(const string & event_name)
     }
 
     set_current_mode(num);
+	// set_current_mode() will eventually trigger my_body_part_has_changed();
 }
 
 string html_menu::inherited_get_body_part(const chemin & path,

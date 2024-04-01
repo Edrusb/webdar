@@ -315,6 +315,9 @@ void saisie::on_event(const std::string & event_name)
 	else
 	    archive_show.set_visible(false);
 	select.set_active_section(choice.get_current_mode());
+
+	    // not necessary to call my_body_part_has_changed()
+	    // as "choice" is adopted and will trigger my_body_part_has_changed()
     }
     else if(event_name == event_restore
 	    || event_name == event_compare
@@ -341,12 +344,16 @@ void saisie::on_event(const std::string & event_name)
 	else
 	    throw WEBDAR_BUG;
 	act(event_name); // propagate the event to the subscribers
+
+	my_body_part_has_changed();
     }
     else if(event_name == changed_session_name)
     {
 	set_title(webdar_tools_get_title(get_session_name(), choice.get_current_label()));
 	act(changed_session_name);
 	// propagating the event
+
+	my_body_part_has_changed();
     }
     else
 	throw WEBDAR_BUG;

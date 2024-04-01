@@ -59,7 +59,7 @@ public:
     html_form_select & operator = (html_form_select && ref) noexcept = default;
     ~html_form_select() = default;
 
-    void change_label(const std::string & label) { x_label = label; };
+    void change_label(const std::string & label) { x_label = label; my_body_part_has_changed(); };
 
 	// inherit from html_form_radio the following methods to feed contents
 	// . add_choice

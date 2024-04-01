@@ -216,6 +216,7 @@ void html_options_read::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	webui->auto_hide(true, true);
 	webui->run_and_control_thread(this);
+	my_body_part_has_changed();
     }
     else if(event_name == html_form_input_file::changed_entrepot)
     {
@@ -264,6 +265,8 @@ void html_options_read::on_event(const std::string & event_name)
 	    ref_crypto_pass.set_visible(false);
 	    ref_crypto_size.set_visible(false);
 	}
+
+	my_body_part_has_changed();
     }
     else
 	throw WEBDAR_BUG; // unexpected event

@@ -470,6 +470,8 @@ void html_options_create::on_event(const std::string & event_name)
     default:
 	throw WEBDAR_BUG;
     }
+
+    my_body_part_has_changed();
 }
 
 void html_options_create::new_css_library_available()

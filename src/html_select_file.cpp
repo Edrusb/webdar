@@ -174,6 +174,8 @@ void html_select_file::on_event(const std::string & event_name)
 	    entr.reset();   // forget about the go_select() provided entrepot
 	    mem_ui.reset(); // forget about the user_interaction entr had
 	}
+
+	my_body_part_has_changed();
     }
     else if(event_name == op_cancelled)
     {
@@ -184,6 +186,8 @@ void html_select_file::on_event(const std::string & event_name)
 	entr->change_user_interaction(mem_ui);
 	entr.reset();    // forget about the go_select() provided entrepot
 	mem_ui.reset();  // forget about the user_interaction entr had
+
+	my_body_part_has_changed();
     }
     else if(event_name == op_chdir_parent)
     {
@@ -203,11 +207,15 @@ void html_select_file::on_event(const std::string & event_name)
 	fieldset.change_label(chem.display());
 	fieldset_isdir = true;
 	loading_mode(true);
+
+	my_body_part_has_changed();
     }
     else if(event_name == op_createdir)
     {
 	createdir_form.set_visible(!createdir_form.get_visible());
 	createdir_input.set_value("");
+
+	my_body_part_has_changed();
     }
     else if(event_name == html_form_input::changed) // directory name provided to be created
     {
@@ -221,6 +229,8 @@ void html_select_file::on_event(const std::string & event_name)
 	    createdir_form.set_visible(false);
 	    run_thread(run_create_dir);
 	}
+
+	my_body_part_has_changed();
     }
     else if(event_name == html_web_user_interaction::can_refresh)
     {
@@ -228,6 +238,7 @@ void html_select_file::on_event(const std::string & event_name)
 	{
 	    should_refresh = true;
 	    apply_refresh_mode = true;
+	    my_body_part_has_changed();
 	}
     }
     else if (event_name == html_web_user_interaction::dont_refresh)
@@ -236,6 +247,7 @@ void html_select_file::on_event(const std::string & event_name)
 	{
 	    should_refresh = false;
 	    apply_refresh_mode = true;
+	    my_body_part_has_changed();
 	}
     }
     else // click on directory list entry?
@@ -285,6 +297,7 @@ void html_select_file::on_event(const std::string & event_name)
 		// lead to any event generation
 	    throw WEBDAR_BUG; // unexpected event
 
+	my_body_part_has_changed();
     }
 }
 

@@ -88,4 +88,5 @@ void html_compression::set_value(libdar::compression val)
     default:
 	throw WEBDAR_BUG;
     }
+    my_body_part_has_changed();
 }

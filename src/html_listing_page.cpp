@@ -68,6 +68,9 @@ void html_listing_page::on_event(const std::string & event_name)
     if(event_name != event_close)
 	throw WEBDAR_BUG;
     act(event_close); // propagate the event
+	// not calling 	my_body_part_has_changed();
+	// as inherited_get_body_part() will not produce something
+	// different due to this event
 }
 
 void html_listing_page::set_session_name(const string & session_name)

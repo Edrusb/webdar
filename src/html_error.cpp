@@ -76,6 +76,9 @@ void html_error::set_message(const std::string & msg)
 void html_error::on_event(const std::string & event_name)
 {
     act(acknowledged);
+	// we propagate the event, but it does not
+	// change the result of inherited_get_body_part()
+	// thus we dont call my_body_part_has_changed();
 }
 
 void html_error::set_session_name(const std::string & sessname)

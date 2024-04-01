@@ -99,6 +99,7 @@ void html_archive_read::on_event(const std::string & event_name)
     }
     else
 	throw WEBDAR_BUG;
+    my_body_part_has_changed();
 }
 
 string html_archive_read::inherited_get_body_part(const chemin & path,

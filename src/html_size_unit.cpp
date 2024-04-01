@@ -79,6 +79,7 @@ void html_size_unit::on_event(const std::string & event_name)
 {
     set_fields();
     changed = true;
+    my_body_part_has_changed();
 }
 
 string html_size_unit::inherited_get_body_part(const chemin & path,
