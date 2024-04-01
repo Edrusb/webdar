@@ -111,6 +111,6 @@ void html_crypto_algo::set_value(libdar::crypto_algo val)
 
 void html_crypto_algo::on_event(const std::string & event_name)
 {
-	// when html_form_select changed propagate the change event to our own event name
+	// when html_form_select changes, we propagate the change event to our own event name
     act(changed);
 }
