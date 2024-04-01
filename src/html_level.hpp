@@ -75,7 +75,7 @@ protected:
     };
 
     void reset_read_next() { nxt = table.begin(); };
-    bool read_next(bundle & bdl); ///< return false if bdl could not be set (nor more entry to read)
+    bool read_next(bundle & bdl) const; ///< return false if bdl could not be set (nor more entry to read)
 
 	/// this is an alternative of using read_next, it creates the body from both static and body_builder objects
 	///
@@ -89,7 +89,7 @@ protected:
 						const request & req) override;
 
 private:
-    std::list<bundle>::iterator nxt;
+    mutable std::list<bundle>::iterator nxt; /// < used by read_next()
     std::list<bundle> table;
 };
 

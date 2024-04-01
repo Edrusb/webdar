@@ -90,7 +90,7 @@ void html_level::will_foresake(body_builder *obj)
     }
 }
 
-bool html_level::read_next(bundle & bdl)
+bool html_level::read_next(bundle & bdl) const
 {
     if(nxt != table.end())
     {
