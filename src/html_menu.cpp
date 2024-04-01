@@ -104,27 +104,26 @@ void html_menu::set_current_mode(unsigned int mode)
 
 	/// all is fine, we can go on modifying the objects
 
-    item[current_mode].ibtn->url_clear_css_classes();
-    item[current_mode].ibtn->url_add_css_class(url_normal_class);
-    if(item[current_mode].ibtn->get_label() == "")
-    {
-	item[current_mode].ibtn->clear_css_classes();
-	item[current_mode].ibtn->add_css_class(box_void_class);
-    }
-    else
-    {
-	item[current_mode].ibtn->clear_css_classes();
-	item[current_mode].ibtn->add_css_class(box_off_class);
-    }
-
-
-    item[mode].ibtn->url_clear_css_classes();
-    item[mode].ibtn->url_add_css_class(url_selected_class);
-    item[mode].ibtn->clear_css_classes();
-    item[mode].ibtn->add_css_class(box_on_class);
-
     if(has_changed)
     {
+	item[current_mode].ibtn->url_clear_css_classes();
+	item[current_mode].ibtn->url_add_css_class(url_normal_class);
+	if(item[current_mode].ibtn->get_label() == "")
+	{
+	    item[current_mode].ibtn->clear_css_classes();
+	    item[current_mode].ibtn->add_css_class(box_void_class);
+	}
+	else
+	{
+	    item[current_mode].ibtn->clear_css_classes();
+	    item[current_mode].ibtn->add_css_class(box_off_class);
+	}
+
+	item[mode].ibtn->url_clear_css_classes();
+	item[mode].ibtn->url_add_css_class(url_selected_class);
+	item[mode].ibtn->clear_css_classes();
+	item[mode].ibtn->add_css_class(box_on_class);
+
 	previous_mode = current_mode;
 	current_mode = mode;
 	act(changed); // trigger the "changed" event
