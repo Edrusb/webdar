@@ -45,6 +45,9 @@ void html_focus::given_for_temporary_adoption(body_builder *obj)
 
     if(obj == nullptr)
 	throw WEBDAR_BUG;
+
+    if(obj != adopted)
+	my_body_part_has_changed();
     if(adopted != nullptr)
 	foresake(adopted);
     adopted = obj;
