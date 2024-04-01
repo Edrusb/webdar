@@ -110,8 +110,7 @@ private:
     };
 
     std::map<std::string, section> sections;    ///< map section name to its content
-    bool ignore_events;        ///< disable the on_event() actions
-    css_class_group css_url;   ///< css classes to apply to title urls
+    css_class_group css_url;                    ///< css classes to apply to title urls
 
 
 	/// used from inherited_get_body_part to avoid duplcated code

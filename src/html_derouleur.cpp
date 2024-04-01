@@ -43,7 +43,6 @@ const string html_derouleur::shrink_event = "shrink";
 void html_derouleur::clear()
 {
     html_aiguille::clear();
-    ignore_events = false;
     css_url.clear_css_classes();
 }
 
@@ -62,6 +61,8 @@ void html_derouleur::url_add_css_class(const std::string & name)
 	it->second.shrinker->url_add_css_class(name);
 	++it;
     }
+
+    my_body_part_has_changed();
 }
 
 void html_derouleur::url_add_css_class(const css_class_group & cg)
@@ -79,13 +80,12 @@ void html_derouleur::url_add_css_class(const css_class_group & cg)
 	it->second.shrinker->url_add_css_class(cg);
 	++it;
     }
+
+    my_body_part_has_changed();
 }
 
 void html_derouleur::on_event(const std::string & event_name)
 {
-    if(ignore_events)
-	return;
-
     if(event_name == shrink_event)
 	set_active_section(noactive);
     else
@@ -120,37 +120,13 @@ string html_derouleur::inherited_get_body_part(const chemin & path,
     if(sub_path.size() > 0)
 	sub_path.pop_front();
 
-	// first thing, have the classes generating the events
-	// and updating objects accordingly
-    if(get_visible())
-	(void)generate_html(sub_path, req);
+    ret = generate_html(sub_path, req);
 
     ack_visible();
     if(get_visible())
-    {
-	    // now freezing the even for it does not change a second time
-	    // but as all components have their status we can now
-	    // have a correct status for all components (even those
-	    // that would have provided their content before an event
-	    // would have changed it)
-
-	ignore_events = true;
-	try
-	{
-	    request tmp = req;
-
-	    tmp.post_to_get();
-	    ret = generate_html(sub_path, tmp);
-	}
-	catch(...)
-	{
-	    ignore_events = false;
-	    throw;
-	}
-	ignore_events = false;
-    }
-
-    return ret;
+	return ret;
+    else
+	return "";
 }
 
 
@@ -234,7 +210,7 @@ string html_derouleur::generate_html(const chemin & path,
 	if(sect->second.shrinker == nullptr)
 	    throw WEBDAR_BUG;
 
-	    // if section is active display its content
+	    // if section is active, display its content
 	if(i == get_active_section())
 	{
 	    ret += sect->second.shrinker->get_body_part(path, req);
