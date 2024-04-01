@@ -50,7 +50,7 @@ public:
     ~html_page() = default;
 
 	/// change page title
-    void set_title(const std::string & title) { x_title = title; };
+    void set_title(const std::string & title);
 
 	/// get current title
     const std::string & get_title() const { return x_title; };

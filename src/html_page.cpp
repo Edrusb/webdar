@@ -39,6 +39,14 @@ extern "C"
 
 using namespace std;
 
+void html_page::set_title(const std::string & title)
+{
+    if(x_title != title)
+    {
+	x_title = title;
+	my_body_part_has_changed();
+    }
+}
 
 void html_page::set_refresh_redirection(unsigned int seconds, const std::string & url)
 {
