@@ -28,7 +28,10 @@ dist_pkgdata_DATA =
 if USE_DOXYGEN
 DOXYGEN = @DOXYGEN_PROG@
 
-all-local: Doxyfile.tmp
+all-local: Doxyfile.tmp html
+
+html: Doxyfile.tmp
+	$(DOXYGEN) $<
 
 Doxyfile.tmp:
 	sed -e "s%##VERSION##%@PACKAGE_VERSION@%g" -e "s%##HAS_DOT##%@HAS_DOT@%g" -e 's%##SRCDIR##%$(abs_top_srcdir)%g' -e 's%##BUILDDIR##%$(abs_top_builddir)%g' '$(srcdir)/Doxyfile' > Doxyfile.tmp
