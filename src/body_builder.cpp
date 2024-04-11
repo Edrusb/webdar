@@ -335,6 +335,8 @@ string body_builder::get_body_part(const chemin & path,
 
 	do
 	{
+	    body_changed = false;
+
 	    ret = get_body_part_or_cache(path, localreq);
 
 	    if(body_changed)
@@ -573,7 +575,6 @@ string body_builder::get_body_part_or_cache(const chemin & path,
 	ret = last_body_part;
     else
     {
-	body_changed = false;
 	ret = inherited_get_body_part(path, req);
 	last_body_path = path;
 	last_body_req_uri = req.get_uri();
