@@ -376,9 +376,6 @@ private:
         /// ask inherited class to provide its css_classes
     void recursive_new_css_library_available();
 
-	/// propagate to ancestor that the body has changed (body_changed field)
-    void backward_recursive_body_changed();
-
         /// (re)initialize fields to default sane values
     void clear();
 
