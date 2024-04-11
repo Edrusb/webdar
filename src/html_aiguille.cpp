@@ -201,8 +201,10 @@ void html_aiguille::set_active_section(signed int num)
 	throw exception_range("invalid section number given to html_aiguille object");
 
     if(active_section != num)
+    {
 	my_body_part_has_changed();
-    active_section = num;
+	active_section = num;
+    }
 }
 
 void html_aiguille::will_foresake(body_builder *obj)
