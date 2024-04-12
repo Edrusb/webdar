@@ -82,13 +82,13 @@ void html_menu::add_entry(const std::string & label, const std::string & tag)
     adopt(item.back().ibtn);
 
     if(item.size() == 1)
-	 set_current_mode(0);
+	set_current_mode(0, true);
 }
 
-void html_menu::set_current_mode(unsigned int mode)
+void html_menu::set_current_mode(unsigned int mode, bool force)
 {
     unsigned int size = item.size();
-    bool has_changed = (mode != current_mode);
+    bool has_changed = (mode != current_mode) || force;
 
     if(mode >= size)
 	throw WEBDAR_BUG;

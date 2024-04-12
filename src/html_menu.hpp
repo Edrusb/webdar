@@ -79,7 +79,8 @@ public:
 
 	/// set html field accordingly to the given mode
 	/// \param[in] mode is the mode to set, it start from 0
-    void set_current_mode(unsigned int mode);
+	/// \param[in] force is set to true, will never take into consideration the current mode and avoid changing if the new mode is the same
+    void set_current_mode(unsigned int mode, bool force = false);
 
 	/// returns the reference of the previous mode (the mode that was selected before current mode)
     unsigned int get_previous_mode() const { return previous_mode; };
