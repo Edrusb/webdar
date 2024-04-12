@@ -256,6 +256,11 @@ string html_aiguille::inherited_get_body_part(const chemin & path,
 	    ++objt;
 	}
     }
+    else
+    {
+	if(active_section != noactive)
+	    throw WEBDAR_BUG;
+    }
 
     return ret;
 }
