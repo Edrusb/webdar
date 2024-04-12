@@ -51,8 +51,6 @@ extern "C"
 class html_derouleur : public html_aiguille, public actor
 {
 public:
-    static constexpr const signed int noactive = -1;
-
     html_derouleur() { clear(); };
     html_derouleur(const html_derouleur & ref) = delete;
     html_derouleur(html_derouleur && ref) noexcept = delete;
