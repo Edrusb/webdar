@@ -47,19 +47,6 @@ events & events::operator = (events && ref) noexcept(false)
     return *this;
 }
 
-void events::register_name(const string & name)
-{
-    map < string , list<actor *> >::iterator it = carte.find(name);
-
-    if(it != carte.end())
-	throw WEBDAR_BUG; // events already registered
-    else
-    {
-	list<actor *> tmp; // we start with an empty list of actors...
-	carte[name] = tmp;
-    }
-}
-
 void events::record_actor_on_event(actor *ptr, const string & name)
 {
     map < string , list<actor *> >::iterator it = carte.find(name);
@@ -85,24 +72,6 @@ void events::record_actor_on_event(actor *ptr, const string & name)
     }
 }
 
-
-void events::act(const std::string & name)
-{
-    map < string , list<actor *> >::iterator it = carte.find(name);
-    list<actor *>::iterator ptr;
-
-    if(it == carte.end())
-	throw WEBDAR_BUG; // unknown event !
-
-    for(ptr = it->second.begin(); ptr != it->second.end(); ++ptr)
-    {
-	if(*ptr == nullptr)
-	    throw WEBDAR_BUG;
-	(*ptr)->on_event(name);
-    }
-}
-
-
 void events::broken_peering_from(reference *obj)
 {
     map< string, list<actor *> >::iterator it = carte.begin();
@@ -123,3 +92,31 @@ void events::broken_peering_from(reference *obj)
     }
 }
 
+void events::register_name(const string & name)
+{
+    map < string , list<actor *> >::iterator it = carte.find(name);
+
+    if(it != carte.end())
+	throw WEBDAR_BUG; // events already registered
+    else
+    {
+	list<actor *> tmp; // we start with an empty list of actors...
+	carte[name] = tmp;
+    }
+}
+
+void events::act(const std::string & name)
+{
+    map < string , list<actor *> >::iterator it = carte.find(name);
+    list<actor *>::iterator ptr;
+
+    if(it == carte.end())
+	throw WEBDAR_BUG; // unknown event !
+
+    for(ptr = it->second.begin(); ptr != it->second.end(); ++ptr)
+    {
+	if(*ptr == nullptr)
+	    throw WEBDAR_BUG;
+	(*ptr)->on_event(name);
+    }
+}
