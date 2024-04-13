@@ -312,12 +312,11 @@ string html_select_file::inherited_get_body_part(const chemin & path,
 	loading_mode(!acquired_content);
 	    // we show content only when we could acquire the mutex lock
 
-	if(apply_refresh_mode)
+	if(acquired_content && apply_refresh_mode)
 	{
 	    html_page* page = nullptr;
 
 	    closest_ancestor_of_type(page);
-	    apply_refresh_mode = false;
 
 	    if(page != nullptr)
 	    {
@@ -326,6 +325,10 @@ string html_select_file::inherited_get_body_part(const chemin & path,
 		else
 		    page->set_refresh_redirection(0, ""); // disable refresh
 	    }
+	    else
+		throw WEBDAR_BUG; // cannot set refresh mode
+
+	    apply_refresh_mode = false;
 	}
 
 	if(entr && which_thread == run_nothing)
