@@ -237,8 +237,7 @@ protected:
 	/// parent (here html_statisitcs) to be recorded as changed and the cycle is complete
 	/// this process never ends. This call avoids propagating any future body_changed status
 	/// toward the parents and set the caller as if it was a static object.
-	/// \note this call has only to be call once for a given object, it is not reset
-    void ignore_body_changed_from_my_children() { ignore_children_body_changed = true; };
+    void ignore_body_changed_from_my_children(bool mode) { ignore_children_body_changed = mode; };
 
 
 	/// available for inherited class to be informed when their visibility changes

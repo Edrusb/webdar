@@ -64,7 +64,7 @@ void html_statistics::clear_labels()
     byte_amount_lbl.clear();
     total_lbl.clear();
     unbuild();
-    ignore_body_changed_from_my_children();
+    ignore_body_changed_from_my_children(true);
 }
 
 string html_statistics::inherited_get_body_part(const chemin & path,
