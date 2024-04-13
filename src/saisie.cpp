@@ -345,7 +345,16 @@ void saisie::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	act(event_name); // propagate the event to the subscribers
 
-	my_body_part_has_changed();
+	// must not call my_body_part_has_changed()!
+	// this would trigger the inherited_get_body_part()
+	// which would reset the status to st_idle
+	// and the user_interface thread (see go_test() for example)
+	// would not be able to gather information from this saisie
+	// object
+	// In other words, the fact the status changed
+	// does not change at all the output returned by
+	// inherited_get_body_part() this my_body_part_has_changed()
+	// has not to be invoked.
     }
     else if(event_name == changed_session_name)
     {
