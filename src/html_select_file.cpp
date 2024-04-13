@@ -299,50 +299,50 @@ void html_select_file::on_event(const std::string & event_name)
 string html_select_file::inherited_get_body_part(const chemin & path,
 						 const request & req)
 {
-    if(get_visible())
+    string ret;
+    bool acquired_content = mtx_content.try_lock();
+
+    try
     {
-	string ret;
-	bool acquired_content = mtx_content.try_lock();
+	if(acquired_content && which_thread == run_nothing)
+	    join(); // possibly trigger exception from our previously running child thread
 
-	try
+	loading_mode(!acquired_content);
+	    // we show content only when we could acquire the mutex lock
+
+	if(apply_refresh_mode)
 	{
-	    if(acquired_content && which_thread == run_nothing)
-		join(); // possibly trigger exception from our previously running child thread
+	    html_page* page = nullptr;
 
-	    loading_mode(!acquired_content);
-		// we show content only we could acquire the mutex lock
+	    closest_ancestor_of_type(page);
+	    apply_refresh_mode = false;
 
-	    html_popup::inherited_get_body_part(path, req);
-		// a first time to have the even triggering parameter changes
-
-	    if(apply_refresh_mode)
+	    if(page != nullptr)
 	    {
-		html_page* page = nullptr;
-
-		closest_ancestor_of_type(page);
-		apply_refresh_mode = false;
-
-		if(page != nullptr)
-		{
-		    if(should_refresh)
-			page->set_refresh_redirection(1, req.get_uri().get_path().display(false));
-		    else
-			page->set_refresh_redirection(0, ""); // disable refresh
-		}
+		if(should_refresh)
+		    page->set_refresh_redirection(1, req.get_uri().get_path().display(false));
+		else
+		    page->set_refresh_redirection(0, ""); // disable refresh
 	    }
+	}
 
 	if(entr && which_thread == run_nothing)
 	    run_thread(run_fill_only);
 
 	ret = html_popup::inherited_get_body_part(path, req);
 
-	return ret;
+	warning.clear();
     }
-    else
+    catch(...)
     {
-	join();
-	return "";
+	if(acquired_content)
+	    mtx_content.unlock();
+	throw;
     }
+    if(acquired_content)
+	mtx_content.unlock();
+
+    return ret;
 }
 
 void html_select_file::new_css_library_available()
@@ -427,6 +427,8 @@ void html_select_file::inherited_run()
 	default:
 	    throw WEBDAR_BUG;
 	}
+	should_refresh = false;
+	apply_refresh_mode = true;
     }
     catch(...)
     {
@@ -601,12 +603,16 @@ void html_select_file::run_thread(thread_to_run val)
     case run_nothing:
 	throw WEBDAR_BUG;
     case run_create_dir:
+	should_refresh = true;
+	apply_refresh_mode = true;
 	path_loaded = ""; // this will force reloading dir content
 	which_thread = val;
 	webui.run_and_control_thread(this);
 	break;
     case run_init_fill:
     case run_fill_only:
+	should_refresh = true;
+	apply_refresh_mode = true;
 	if(fieldset.get_label() != path_loaded)
 	{
 	    path_loaded = fieldset.get_label();
