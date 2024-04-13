@@ -91,6 +91,7 @@ private:
     std::map<std::string, unsigned int> corres; ///< link eventname to tab number
     std::deque<html_button*> tabs;
     html_aiguille content;
+    unsigned int current_mode;
 
     void set_mode(unsigned int mode);
 

@@ -46,7 +46,8 @@ const char* html_tabs::tab_off_url = "html_tabs_off_url";
 const char* html_tabs::menu_bar = "html_tabs_bar";
 const char* html_tabs::tab_sep = "html_tabs_sep";
 
-html_tabs::html_tabs(): html_table(1)
+html_tabs::html_tabs(): html_table(1),
+			current_mode(1) // to allow change to take place upon mode change
 {
     css_border_collapsed(true);
     set_css_class_first_row(tab_sep);
@@ -261,22 +262,32 @@ void html_tabs::new_css_library_available()
 
 void html_tabs::set_mode(unsigned int mode)
 {
+    if(mode == current_mode)
+	return;
+
 	// setting currently active tab to non-active
-    if(content.size() > 0)
+    if(current_mode < tabs.size())
     {
 	if(tabs.size() < content.size())
 	    throw WEBDAR_BUG;
-	if(tabs[content.get_active_section()] == nullptr)
+	if(tabs[current_mode] == nullptr)
 	    throw WEBDAR_BUG;
-	tabs[content.get_active_section()]->clear_css_classes();
-	tabs[content.get_active_section()]->url_clear_css_classes();
-	tabs[content.get_active_section()]->add_css_class(tab_off);
-	tabs[content.get_active_section()]->url_add_css_class(tab_off_url);
+	tabs[current_mode]->clear_css_classes();
+	tabs[current_mode]->url_clear_css_classes();
+	tabs[current_mode]->add_css_class(tab_off);
+	tabs[current_mode]->url_add_css_class(tab_off_url);
     }
     else
-	throw WEBDAR_BUG;
+    {
+	if(mode != 0 || current_mode != 1)
+	    throw WEBDAR_BUG;
+	    // else this is the initialization context
+    }
+
+    current_mode = mode;
 
 	// setting the new active tab to active
+
     if(mode >= tabs.size())
 	throw WEBDAR_BUG;
 
