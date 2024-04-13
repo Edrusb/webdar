@@ -248,7 +248,6 @@ private:
 
 	// status field about html components
 
-    bool ignore_events;               ///< in inherited_get_body_part() we trigger twice the adopted objects but must take action on events only once
     bool fieldset_isdir;              ///< whether fieldset points to a directory or not
 
 

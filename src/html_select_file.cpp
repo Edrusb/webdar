@@ -74,7 +74,6 @@ html_select_file::html_select_file(const std::string & message):
     btn_createdir("New Folder", op_createdir),
     createdir_form("Create Folder"),
     createdir_input("Folder Name", html_form_input::text, "", 25),
-    ignore_events(false),
     fieldset_isdir(true)
 {
     entr.reset();       // entr points to nothing
@@ -155,9 +154,6 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
 
 void html_select_file::on_event(const std::string & event_name)
 {
-    if(ignore_events)
-	return;
-
     if(event_name == entry_selected)
     {
 	if(!select_dir && fieldset_isdir)
@@ -332,32 +328,10 @@ string html_select_file::inherited_get_body_part(const chemin & path,
 		}
 	    }
 
-	    if(entr && which_thread == run_nothing)
-		run_thread(run_fill_only);
+	if(entr && which_thread == run_nothing)
+	    run_thread(run_fill_only);
 
-	    ignore_events = true;
-
-	    try
-	    {
-		ret = html_popup::inherited_get_body_part(path, req);
-	    }
-	    catch(...)
-	    {
-		ignore_events = false;
-		throw;
-	    }
-	    ignore_events = false;
-
-	    warning.clear();
-	}
-	catch(...)
-	{
-	    if(acquired_content)
-		mtx_content.unlock();
-	    throw;
-	}
-	if(acquired_content)
-	    mtx_content.unlock();
+	ret = html_popup::inherited_get_body_part(path, req);
 
 	return ret;
     }
