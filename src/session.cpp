@@ -361,7 +361,7 @@ bool session::close_session(const string & session_ID)
 		    else
 			throw WEBDAR_BUG;
 		}
-		    // else we the object will be destroyed when no more reference will point it
+		    // else the object will be destroyed when no more reference will point it
 		ret = true; // session will be destroyed as soon as possible
 	    }
 	    else

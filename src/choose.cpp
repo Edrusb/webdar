@@ -250,7 +250,6 @@ answer choose::give_answer(const request & req)
     }
     else // normal table display
     {
-
 	regenerate_table_page();
 	if(error_msg != "")
 	{
