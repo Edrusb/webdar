@@ -80,6 +80,8 @@ html_select_file::html_select_file(const std::string & message):
     mem_ui.reset();     // mem_ui points to nothing
     webui.set_warning_list_size(5);
 
+    warning.ignore_body_changed_from_my_children(true);
+
 	// events for callers objects
     register_name(entry_selected);  // we'll propagate the even from btn_validate
     register_name(op_cancelled);    // we will propagate the even from btn_cancel
