@@ -65,6 +65,14 @@ protected:
 	/// add a new event for actors to register against
     void register_name(const std::string & name);
 
+	/// remove an event and remove all actors that registed on it
+    void unregister_name(const std::string & name);
+
+	/// rename an event and keep all existing peering to this new event
+
+	/// \note the new name must not already exist for that same object
+    void rename_name(const std::string & old_name, const std::string & new_name);
+
 	/// trigger a given event
     void act(const std::string & name);
 

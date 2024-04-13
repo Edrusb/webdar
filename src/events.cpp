@@ -105,13 +105,41 @@ void events::register_name(const string & name)
     }
 }
 
+void events::unregister_name(const string & name)
+{
+    map< string , list<actor *> >::iterator it = carte.find(name);
+
+    if(it == carte.end())
+	throw WEBDAR_BUG; // unknown event!
+
+    for(list<actor*>::iterator ptr = it->second.begin(); ptr != it->second.end(); ++ptr)
+	break_peer_with(*ptr);
+
+    carte.erase(it);
+}
+
+void events::rename_name(const string & old_name, const string & new_name)
+{
+    map< string, list<actor*> >::iterator it = carte.find(new_name);
+
+    if(it != carte.end())
+	throw WEBDAR_BUG; // an event of that new name already exists
+
+    it = carte.find(old_name);
+    if(it == carte.end())
+	throw WEBDAR_BUG; // unknown event name to be renamed
+
+    carte[new_name] = it->second;
+    carte.erase(it);
+}
+
 void events::act(const std::string & name)
 {
     map < string , list<actor *> >::iterator it = carte.find(name);
     list<actor *>::iterator ptr;
 
     if(it == carte.end())
-	throw WEBDAR_BUG; // unknown event !
+	throw WEBDAR_BUG; // unknown event!
 
     for(ptr = it->second.begin(); ptr != it->second.end(); ++ptr)
     {
