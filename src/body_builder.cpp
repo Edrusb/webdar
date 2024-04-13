@@ -322,38 +322,32 @@ string body_builder::get_body_part(const chemin & path,
     if(parent != nullptr)
     {
 	ret = get_body_part_or_cache(path, req);
-	if(visible)
-	    return ret;
-	else
-	    return "";
     }
-    else
+    else // root of the adoption tree
     {
-	string ret; // what we will return
 	request localreq = req;
 	unsigned int loop = 0;
+
+	flush_all_cached_body_part();
+	    // now all children will generate events
+	    // and so on accordingly to the received
+	    // request:
 
 	do
 	{
 	    ret = get_body_part_or_cache(path, localreq);
 
-	    if(body_changed)
-	    {
+	    if(body_changed) // one of my child or myself has changed
 		localreq.post_to_get();
-		// we avoid regenerating post events
-		body_changed = false;
-	    }
+		    // we avoid regenerating post events
 
 	    if(++loop >= maxloop)
 		throw WEBDAR_BUG;
 	}
 	while(body_changed);
-
-	if(visible)
-	    return ret;
-	else
-	    return "";
     }
+
+    return ret;
 }
 
 void body_builder::my_body_part_has_changed()
@@ -564,6 +558,20 @@ void body_builder::create_css_lib_if_needed()
     }
 }
 
+void body_builder::flush_all_cached_body_part()
+{
+    std::vector<body_builder*>::iterator it = order.begin();
+
+    body_changed = true;
+    while(it != order.end())
+    {
+	if((*it) == nullptr)
+	    throw WEBDAR_BUG;
+	(*it)->flush_all_cached_body_part();
+	++it;
+    }
+}
+
 string body_builder::get_body_part_or_cache(const chemin & path,
 					    const request & req)
 {
@@ -573,10 +581,16 @@ string body_builder::get_body_part_or_cache(const chemin & path,
        && req.get_uri() == (const uri)(last_body_req_uri)
        && req.get_body() == last_body_req_body
        && ! body_changed)
+    {
 	ret = last_body_part;
+    }
     else
     {
-	ret = inherited_get_body_part(path, req);
+	body_changed = false; // set before to track any changes implied by the following line
+	if(visible)
+	    ret = inherited_get_body_part(path, req);
+	else
+	    ret = "";
 	last_body_path = path;
 	last_body_req_uri = req.get_uri();
 	last_body_req_body = req.get_body();

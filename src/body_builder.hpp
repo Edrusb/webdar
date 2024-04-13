@@ -382,7 +382,19 @@ private:
 	/// create a css_library if it has been requested earlier
     void create_css_lib_if_needed();
 
+	/// flush cached body_part for me and all my children
+    void flush_all_cached_body_part();
+
 	/// fetch cached body_part if the object has not changed since previous call
+
+	/// \note several point have to be addresses:
+	/// - an body_builder object can change after is inherited_get_body_part() has return
+	///   due to the fact another object generated an event, which my_body_part_has_changed() keep trace of
+	/// - some objects need not to be evaluated twice (toggle objects) to not avoid undoing
+	///   the action that was request -> this must be avoided by using different events/objects to do an undo an action
+	///   even if they have the same appearence and place
+	/// - some other objects do not change but need to be evaluated at any time (html_button)
+	///   to perform the desired action.
     std::string get_body_part_or_cache(const chemin & path,
 				       const request & req);
 
