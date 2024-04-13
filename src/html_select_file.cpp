@@ -667,3 +667,22 @@ void html_select_file::loading_mode(bool mode)
     }
 }
 
+string html_select_file::get_parent_path(const string & somepath)
+{
+    chemin chem(somepath);
+
+    try
+    {
+	chem.pop_back();
+    }
+    catch(exception_range & e)
+    {
+	    // pop_back() failed because we
+	    // we reached the root of the filesystem
+	    // ignoring this error and staying at
+	    // the same path
+    }
+
+    return chem.display();
+}
+

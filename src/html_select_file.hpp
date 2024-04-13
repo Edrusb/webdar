@@ -277,6 +277,9 @@ private:
 
 	/// set the display to show either the dir content or an "loading..." message
     void loading_mode(bool mode);
+
+	/// return the parent path of the provided path
+    static std::string get_parent_path(const std::string & somepath);
 };
 
 #endif
