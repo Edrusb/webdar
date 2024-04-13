@@ -96,7 +96,6 @@ html_select_file::html_select_file(const std::string & message):
     createdir_input.record_actor_on_event(this, html_form_input::changed);
     webui.record_actor_on_event(this, html_web_user_interaction::can_refresh);
     webui.record_actor_on_event(this, html_web_user_interaction::dont_refresh);
-    webui.record_actor_on_event(this, html_web_user_interaction::libdar_has_finished);
 
 	// setting up the adoption tree (the fixed part)
     adopt(&title_box);
@@ -242,15 +241,6 @@ void html_select_file::on_event(const std::string & event_name)
 	    apply_refresh_mode = true;
 	    my_body_part_has_changed();
 	}
-    }
-    else if(event_name ==  html_web_user_interaction::libdar_has_finished)
-    {
-	if(should_refresh)
-	{
-	    should_refresh = false;
-	    apply_refresh_mode = true;
-	}
-	my_body_part_has_changed();
     }
     else // click on directory list entry?
     {
