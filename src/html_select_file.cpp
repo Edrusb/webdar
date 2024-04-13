@@ -614,10 +614,10 @@ void html_select_file::run_thread(thread_to_run val)
 	break;
     case run_init_fill:
     case run_fill_only:
-	should_refresh = true;
-	apply_refresh_mode = true;
 	if(fieldset.get_label() != path_loaded)
 	{
+	    should_refresh = true;
+	    apply_refresh_mode = true;
 	    path_loaded = fieldset.get_label();
 	    which_thread = val;
 	    webui.set_visible(true);
