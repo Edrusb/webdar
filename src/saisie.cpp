@@ -273,24 +273,21 @@ string saisie::inherited_get_body_part(const chemin & path,
     status = st_idle;
 
 	// now we can generate in return the whole HTML code for "this" object
-    set_refresh_redirection(0,""); // clearing redirection that could have been set previously
-    if(choice.get_current_tag() == menu_close)
+    if(choice.get_current_tag() == menu_close && close.get_value())
     {
-	if(close.get_value())
-	{
-	    act(event_closing);
-	    set_title(webdar_tools_get_title(get_session_name(), "Session closed"));
-	    set_refresh_redirection(0, "/");
-	    ret = html_page::inherited_get_body_part(path, req);
-	}
+	act(event_closing);
+	set_title(webdar_tools_get_title(get_session_name(), "Session closed"));
+	set_refresh_redirection(0, "/");
+	ret = html_page::inherited_get_body_part(path, req);
     }
     else
+    {
 	if(choice.get_current_tag() == menu_sessions)
 	{
 	    ignore_body_changed_from_my_children(true);
 	    try
 	    {
-		set_title(webdar_tools_get_title(get_session_name(), "Redirection to all user sessions"));
+		set_title(webdar_tools_get_title(get_session_name(), "Redirection to all sessions page"));
 		set_refresh_redirection(0, "/");     /// we redirect to the root path -> a chooser object answers to this URL
 		ret = html_page::inherited_get_body_part(path, req);
 		choice.set_current_mode(choice.get_previous_mode());
@@ -306,7 +303,11 @@ string saisie::inherited_get_body_part(const chemin & path,
 	    ignore_body_changed_from_my_children(false);
 	}
 	else
+	{
+	    set_refresh_redirection(0,""); // clearing redirection that could have been set previously
 	    ret = html_page::inherited_get_body_part(path, req);
+	}
+    }
 
     return ret;
 }
