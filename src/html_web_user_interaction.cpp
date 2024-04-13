@@ -68,7 +68,6 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     force_close("Immediately stop libdar", force_end_libdar),
     kill_close("Kill libdar thread", kill_libdar_thread),
     finish("Close", close_libdar_screen),
-    rebuild_body_part(false),
     ignore_event(false),
     just_set(false)
 {
@@ -196,14 +195,8 @@ string html_web_user_interaction::inherited_get_body_part(const chemin & path,
 	// any event triggered during that first generation may
 	// need further re-display (rebuild_body_part is set to true in that case)
 
-    rebuild_body_part = false; // libdar change lead components to change
     adjust_visibility();
     ret = get_body_part_from_all_children(path, req);
-    if(rebuild_body_part)
-    {
-	adjust_visibility();
-	ret = get_body_part_from_all_children(path, req);
-    }
 
     return ret;
 }
@@ -223,7 +216,6 @@ void html_web_user_interaction::on_event(const std::string & event_name)
 		{
 		    lib_data->set_pause_answer(h_pause.get_selected_num() == 2);
 		    h_inter.set_visible(false);
-		    rebuild_body_part = true;
 		    my_body_part_has_changed();
 		}
 		    // else we do nothing here
@@ -237,7 +229,6 @@ void html_web_user_interaction::on_event(const std::string & event_name)
 		{
 		    lib_data->set_get_string_answer(h_get_string.get_value());
 		    h_get_string.set_visible(false);
-		    rebuild_body_part = true;
 		    my_body_part_has_changed();
 		}
 		else
@@ -246,7 +237,6 @@ void html_web_user_interaction::on_event(const std::string & event_name)
 		    {
 			lib_data->set_get_secu_string_answer(libdar::secu_string(h_get_string.get_value().c_str(), h_get_string.get_value().size()));
 			h_get_string.set_visible(false);
-			rebuild_body_part = true;
 			my_body_part_has_changed();
 		    }
 		    else

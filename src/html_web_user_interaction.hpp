@@ -236,7 +236,6 @@ private:
     html_button kill_close;       ///< button that shows to query libdar thread kill
     html_button finish;           ///< button that shows to let the user read last logs before closing
 
-    bool rebuild_body_part; ///< set to true if changes/events occured while building body part, needing a whole rebuild
     bool ignore_event;      ///< if true the on_event() method does not take any action
     bool just_set;          ///< true when the control have just been activated by libdar and no answer has been provided by the user
 
