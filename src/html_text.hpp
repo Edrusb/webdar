@@ -61,10 +61,10 @@ public:
 	///
 	/// \param[in] level 1 for <h1> etc. and zero for normal text
     void add_text(unsigned int level, const std::string & text);
-    html_text & add_nl() { txt += "<br />"; return *this; };
-    html_text & add_paragraph() { txt += "<p />"; return *this; };
+    html_text & add_nl() { txt += "<br />"; my_body_part_has_changed(); return *this; };
+    html_text & add_paragraph() { txt += "<p />"; my_body_part_has_changed(); return *this; };
 
-    void clear() { txt = ""; };
+    void clear() { txt = ""; my_body_part_has_changed(); };
 
 	/// inherited from static_body_builder
     virtual std::string get_body_part() const override { return txt; };
