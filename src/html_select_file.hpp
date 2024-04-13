@@ -233,7 +233,9 @@ private:
     libthreadar::mutex mtx_content;   ///< control the access to listed, content and parentdir
 	//
     std::string path_loaded;          ///< path displayed (empty string means not initialized)
-    html_button parentdir;            ///< change to parent dir
+    html_button parentdir1;           ///< change to parent dir
+    html_button parentdir2;           ///< replace parentdir one time of two to avoid endelessly changing to parentdirectory (when page refresh is set or user reloads page)
+    bool parentdir1_visible;          ///< keep trace of the parentdir that was last visible (used when loading_mode is set)
     html_text content_placeholder;    ///< replace content and *parentdir* when loading the directory content
     html_table content;               ///< parent of content objects
     std::map<std::string, item> listed; ///< associate a event message to each listed items
@@ -277,6 +279,9 @@ private:
 
 	/// set the display to show either the dir content or an "loading..." message
     void loading_mode(bool mode);
+
+	/// swap parentdir button visibility
+    void set_parentdir_visible();
 
 	/// return the parent path of the provided path
     static std::string get_parent_path(const std::string & somepath);

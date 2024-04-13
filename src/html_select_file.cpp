@@ -66,7 +66,8 @@ html_select_file::html_select_file(const std::string & message):
     warning(3, ""),
     fieldset(""),
     path_loaded(""),
-    parentdir("Parent Directory", op_chdir_parent),
+    parentdir1("Parent Directory", op_chdir_parent),
+    parentdir2("Parent Directory", op_chdir_parent),
     content(2),
     content_placeholder(2, "Loading directory content..."),
     btn_cancel("Cancel", op_cancelled),
@@ -89,11 +90,13 @@ html_select_file::html_select_file(const std::string & message):
 	// events we want to act on from our own html components
     btn_cancel.record_actor_on_event(this, op_cancelled);
     btn_validate.record_actor_on_event(this, entry_selected);
-    parentdir.record_actor_on_event(this, op_chdir_parent);
+    parentdir1.record_actor_on_event(this, op_chdir_parent);
+    parentdir2.record_actor_on_event(this, op_chdir_parent);
     btn_createdir.record_actor_on_event(this, op_createdir);
     createdir_input.record_actor_on_event(this, html_form_input::changed);
     webui.record_actor_on_event(this, html_web_user_interaction::can_refresh);
     webui.record_actor_on_event(this, html_web_user_interaction::dont_refresh);
+    webui.record_actor_on_event(this, html_web_user_interaction::libdar_has_finished);
 
 	// setting up the adoption tree (the fixed part)
     adopt(&title_box);
@@ -101,7 +104,8 @@ html_select_file::html_select_file(const std::string & message):
     title_box.adopt(&warning);
     title_box.adopt(&webui);
     adopt(&fieldset);
-    fieldset.adopt(&parentdir);
+    fieldset.adopt(&parentdir1);
+    fieldset.adopt(&parentdir2);
     fieldset.adopt(&content);
     fieldset.adopt(&content_placeholder);
     adopt(&btn_box);
@@ -123,6 +127,9 @@ html_select_file::html_select_file(const std::string & message):
     btn_createdir.add_css_class(css_float_button_left);
 
 	// setup default visibility property
+
+    parentdir1_visible = true;
+    set_parentdir_visible();
 
     set_visible(false); // make us invisible until go_select() is called
     webui.set_visible(false);
@@ -192,6 +199,8 @@ void html_select_file::on_event(const std::string & event_name)
 	fieldset.change_label(get_parent_path(fieldset.get_label()));
 	fieldset_isdir = true;
 	loading_mode(true);
+	parentdir1_visible = ! parentdir1_visible;
+	set_parentdir_visible();
 	my_body_part_has_changed();
     }
     else if(event_name == op_createdir)
@@ -225,7 +234,7 @@ void html_select_file::on_event(const std::string & event_name)
 	    my_body_part_has_changed();
 	}
     }
-    else if (event_name == html_web_user_interaction::dont_refresh)
+    else if(event_name == html_web_user_interaction::dont_refresh)
     {
 	if(should_refresh)
 	{
@@ -233,6 +242,15 @@ void html_select_file::on_event(const std::string & event_name)
 	    apply_refresh_mode = true;
 	    my_body_part_has_changed();
 	}
+    }
+    else if(event_name ==  html_web_user_interaction::libdar_has_finished)
+    {
+	if(should_refresh)
+	{
+	    should_refresh = false;
+	    apply_refresh_mode = true;
+	}
+	my_body_part_has_changed();
     }
     else // click on directory list entry?
     {
@@ -419,8 +437,6 @@ void html_select_file::inherited_run()
 	default:
 	    throw WEBDAR_BUG;
 	}
-	should_refresh = false;
-	apply_refresh_mode = true;
     }
     catch(...)
     {
@@ -642,16 +658,23 @@ void html_select_file::loading_mode(bool mode)
 {
     if(mode)
     {
-	parentdir.set_visible(false);
+	parentdir1.set_visible(false);
+	parentdir2.set_visible(false);
 	content.set_visible(false);
 	content_placeholder.set_visible(true);
     }
     else
     {
-	parentdir.set_visible(true);
+	set_parentdir_visible();
 	content.set_visible(true);
 	content_placeholder.set_visible(false);
     }
+}
+
+void html_select_file::set_parentdir_visible()
+{
+    parentdir1.set_visible(parentdir1_visible);
+    parentdir2.set_visible(!parentdir1_visible);
 }
 
 string html_select_file::get_parent_path(const string & somepath)
