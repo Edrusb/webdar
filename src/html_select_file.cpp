@@ -150,6 +150,7 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
     fieldset.change_label(start_dir);
     createdir_form.set_visible(false);
     run_thread(run_init_fill);
+    my_body_part_has_changed(); // should not be necessary thanks to set_visible(true) above, but it does not hurt
 };
 
 void html_select_file::on_event(const std::string & event_name)
@@ -157,7 +158,10 @@ void html_select_file::on_event(const std::string & event_name)
     if(event_name == entry_selected)
     {
 	if(!select_dir && fieldset_isdir)
+	{
 	    warning.add_text(3, string("This is a directory, please select a non-directory file"));
+	    my_body_part_has_changed();
+	}
 	else
 	{
 	    status = st_completed;
@@ -166,9 +170,9 @@ void html_select_file::on_event(const std::string & event_name)
 	    entr->change_user_interaction(mem_ui);
 	    entr.reset();   // forget about the go_select() provided entrepot
 	    mem_ui.reset(); // forget about the user_interaction entr had
+	    my_body_part_has_changed();
+	    join();
 	}
-
-	my_body_part_has_changed();
     }
     else if(event_name == op_cancelled)
     {
@@ -178,8 +182,8 @@ void html_select_file::on_event(const std::string & event_name)
 	entr->change_user_interaction(mem_ui);
 	entr.reset();    // forget about the go_select() provided entrepot
 	mem_ui.reset();  // forget about the user_interaction entr had
-
 	my_body_part_has_changed();
+	join();
     }
     else if(event_name == op_chdir_parent)
     {
@@ -199,7 +203,6 @@ void html_select_file::on_event(const std::string & event_name)
 	fieldset.change_label(chem.display());
 	fieldset_isdir = true;
 	loading_mode(true);
-
 	my_body_part_has_changed();
     }
     else if(event_name == op_createdir)
