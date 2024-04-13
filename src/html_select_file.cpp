@@ -48,6 +48,8 @@ const string html_select_file::op_cancelled = "op_cancelled";
     // private static fields:
 const string html_select_file::op_chdir_parent = "parent";
 const string html_select_file::op_createdir = "createdir";
+const string html_select_file::op_hide_createdir = "hide_createdir";
+
 const string html_select_file::css_float_button_right = "html_select_file_btn_right";
 const string html_select_file::css_float_button_left = "html_select_file_btn_left";
 const string html_select_file::css_warning = "html_select_warning";
@@ -73,6 +75,7 @@ html_select_file::html_select_file(const std::string & message):
     btn_cancel("Cancel", op_cancelled),
     btn_validate("Select", entry_selected),
     btn_createdir("New Folder", op_createdir),
+    btn_hide_createdir("New Folder", op_hide_createdir),
     createdir_form("Create Folder"),
     createdir_input("Folder Name", html_form_input::text, "", 25),
     fieldset_isdir(true)
@@ -93,6 +96,7 @@ html_select_file::html_select_file(const std::string & message):
     parentdir1.record_actor_on_event(this, op_chdir_parent);
     parentdir2.record_actor_on_event(this, op_chdir_parent);
     btn_createdir.record_actor_on_event(this, op_createdir);
+    btn_hide_createdir.record_actor_on_event(this, op_hide_createdir);
     createdir_input.record_actor_on_event(this, html_form_input::changed);
     webui.record_actor_on_event(this, html_web_user_interaction::can_refresh);
     webui.record_actor_on_event(this, html_web_user_interaction::dont_refresh);
@@ -109,6 +113,7 @@ html_select_file::html_select_file(const std::string & message):
     fieldset.adopt(&content_placeholder);
     adopt(&btn_box);
     btn_box.adopt(&btn_createdir);
+    btn_box.adopt(&btn_hide_createdir);
     btn_box.adopt(&btn_validate);
     btn_box.adopt(&btn_cancel);
     btn_box.adopt(&createdir_form);
@@ -120,15 +125,18 @@ html_select_file::html_select_file(const std::string & message):
     webdar_css_style::normal_button(btn_cancel);
     webdar_css_style::normal_button(btn_validate);
     webdar_css_style::normal_button(btn_createdir);
+    webdar_css_style::normal_button(btn_hide_createdir);
     btn_box.add_css_class(css_sticky_bot);
     btn_cancel.add_css_class(css_float_button_right);
     btn_validate.add_css_class(css_float_button_right);
     btn_createdir.add_css_class(css_float_button_left);
+    btn_hide_createdir.add_css_class(css_float_button_left);
 
 	// setup default visibility property
 
     parentdir1_visible = true;
     set_parentdir_visible();
+    btn_hide_createdir.set_visible(false);
 
     set_visible(false); // make us invisible until go_select() is called
     webui.set_visible(false);
@@ -204,9 +212,17 @@ void html_select_file::on_event(const std::string & event_name)
     }
     else if(event_name == op_createdir)
     {
-	createdir_form.set_visible(!createdir_form.get_visible());
+	createdir_form.set_visible(true);
 	createdir_input.set_value("");
-
+	btn_createdir.set_visible(false);
+	btn_hide_createdir.set_visible(true);
+	my_body_part_has_changed();
+    }
+    else if(event_name == op_hide_createdir)
+    {
+	createdir_form.set_visible(false);
+	btn_createdir.set_visible(true);
+	btn_hide_createdir.set_visible(false);
 	my_body_part_has_changed();
     }
     else if(event_name == html_form_input::changed) // directory name provided to be created

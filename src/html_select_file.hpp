@@ -167,6 +167,7 @@ private:
 	// event name for the 'change to parent directory' button (parentdir)
     static const std::string op_chdir_parent;
     static const std::string op_createdir;
+    static const std::string op_hide_createdir;
 
 	// internal css class names
     static const std::string css_float_button_right;
@@ -244,6 +245,7 @@ private:
     html_button btn_cancel;           ///< triggers the entry_cancelled event
     html_button btn_validate;         ///< trigger the entry_selected event
     html_button btn_createdir;        ///< leads to create a new directory
+    html_button btn_hide_createdir;   ///< hide the create dir form
     html_form createdir_form;         ///< form for new directory
     html_form_input createdir_input;  ///< field to let user provide new dir name
 
