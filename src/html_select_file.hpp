@@ -213,12 +213,12 @@ private:
 
 	// settings
 
-    bool select_dir;
-    std::string filter;
-    std::shared_ptr<libdar::entrepot> entr;
-    std::shared_ptr<libdar::user_interaction> mem_ui;
-    bool should_refresh;
-    bool apply_refresh_mode;
+    bool select_dir;                  ///< whether user is expected to select a directory
+    std::string filter;               ///< only display files matching this filter (glob expression)
+    std::shared_ptr<libdar::entrepot> entr;  ///< the entrepot we should fetch info from
+    std::shared_ptr<libdar::user_interaction> mem_ui;  ///< the original UI the entrepot had when given to go_select()
+    bool should_refresh;              ///< expected status of the page refresh
+    bool apply_refresh_mode;          ///< true if page refresh has not been yet applied
 
 
 	// html components
