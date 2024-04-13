@@ -200,6 +200,15 @@ public:
     std::string get_body_part(const chemin & path,
 			      const request & req);
 
+	/// ignore my_body_part_has_changed() invoked from adopted children
+
+	/// some object (like html_statistics) are ever changing, but rely on some component
+	/// that will trigger my_body_part_has_changed() to reflect the new value, leading the
+	/// parent (here html_statisitcs) to be recorded as changed and the cycle is complete
+	/// this process never ends. This call avoids propagating any future body_changed status
+	/// toward the parents and set the caller as if it was a static, never changing, object.
+    void ignore_body_changed_from_my_children(bool mode) { ignore_children_body_changed = mode; };
+
         /// ask for the implementation not to add a new line after this control
     void set_no_CR() { no_CR = true; };
 
@@ -229,15 +238,6 @@ protected:
 	/// invoked from the actor::on_event() method solves this dependency as get_body_part() will relaunch the
 	/// evaluation of such objects that signaled they have changed.
     void my_body_part_has_changed();
-
-	/// ignore my_body_part_has_changed() invoked from adopted children
-
-	/// some object (like html_statistics) are ever changing, but rely on some component
-	/// that will trigger my_body_part_has_changed() to reflect the new value, leading the
-	/// parent (here html_statisitcs) to be recorded as changed and the cycle is complete
-	/// this process never ends. This call avoids propagating any future body_changed status
-	/// toward the parents and set the caller as if it was a static object.
-    void ignore_body_changed_from_my_children(bool mode) { ignore_children_body_changed = mode; };
 
 
 	/// available for inherited class to be informed when their visibility changes
