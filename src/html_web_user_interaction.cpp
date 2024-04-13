@@ -82,6 +82,8 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     h_pause.add_choice("no", "No");
     h_pause.add_choice("yes", "Yes");
 
+    h_warnings.ignore_body_changed_from_my_children(true);
+
 	// adoption tree
     h_inter.adopt(&h_inter_text);
     h_inter.adopt(&h_pause);
