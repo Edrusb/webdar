@@ -122,6 +122,9 @@ void events::rename_name(const string & old_name, const string & new_name)
 {
     map< string, list<actor*> >::iterator it = carte.find(new_name);
 
+    if(old_name == new_name)
+	return; // nothing to do
+
     if(it != carte.end())
 	throw WEBDAR_BUG; // an event of that new name already exists
 
