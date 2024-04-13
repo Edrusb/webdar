@@ -230,6 +230,17 @@ protected:
 	/// evaluation of such objects that signaled they have changed.
     void my_body_part_has_changed();
 
+	/// ignore my_body_part_has_changed() invoked from adopted children
+
+	/// some object (like html_statistics) are ever changing, but rely on some component
+	/// that will trigger my_body_part_has_changed() to reflect the new value, leading the
+	/// parent (here html_statisitcs) to be recorded as changed and the cycle is complete
+	/// this process never ends. This call avoids propagating any future body_changed status
+	/// toward the parents and set the caller as if it was a static object.
+	/// \note this call has only to be call once for a given object, it is not reset
+    void ignore_body_changed_from_my_children() { ignore_children_body_changed = true; };
+
+
 	/// available for inherited class to be informed when their visibility changes
     virtual void my_visibility_has_changed() {};
 
@@ -237,7 +248,6 @@ protected:
 
 	/// \note this is also set when adopted component triggered my_body_part_has_changed()
     bool has_my_body_part_changed() const { return body_changed; };
-
 
         /// return the path of 'this' according to its descent in the body_builder tree of adopted children
     chemin get_path() const;
@@ -366,6 +376,7 @@ private:
     std::unique_ptr<css_library> library;               ///< css library if stored by this object
     std::set<std::string> css_class_names;              ///< list of CSS class that apply to this object
     bool body_changed;                                  ///< change status of inherited_get_body_part()/get_body_part()
+    bool ignore_children_body_changed;                  ///< ignore and propagate body_changed notif from adopted children
 
         /// unrecord 'this' from its parent as a adopted child
     void unrecord_from_parent();

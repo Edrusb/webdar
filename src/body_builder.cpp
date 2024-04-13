@@ -83,10 +83,11 @@ body_builder & body_builder::operator = (const body_builder & ref)
     }
     else
         library.reset(); // drop possibly existing css_library
-    body_changed = ref.body_changed;
     last_body_path = ref.last_body_path;
     last_body_req_uri = ref.last_body_req_uri;
     last_body_req_body = ref.last_body_req_body;
+    body_changed = ref.body_changed;
+    ignore_children_body_changed = ref.ignore_children_body_changed;
 
     return *this;
 }
@@ -352,6 +353,9 @@ string body_builder::get_body_part(const chemin & path,
 
 void body_builder::my_body_part_has_changed()
 {
+    if(ignore_children_body_changed)
+	return; // we just ignore this call
+
     body_changed = true;
     if(parent != nullptr)
 	parent->my_body_part_has_changed();
@@ -538,6 +542,7 @@ void body_builder::clear()
     library.reset();
     css_class_names.clear();
     body_changed = true;
+    ignore_children_body_changed = false;
 }
 
 void body_builder::create_css_lib_if_needed()
