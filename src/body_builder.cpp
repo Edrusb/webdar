@@ -335,13 +335,14 @@ string body_builder::get_body_part(const chemin & path,
 
 	do
 	{
-	    body_changed = false;
-
 	    ret = get_body_part_or_cache(path, localreq);
 
 	    if(body_changed)
+	    {
 		localreq.post_to_get();
 		// we avoid regenerating post events
+		body_changed = false;
+	    }
 
 	    if(++loop >= maxloop)
 		throw WEBDAR_BUG;
