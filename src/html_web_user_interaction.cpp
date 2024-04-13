@@ -314,7 +314,7 @@ void html_web_user_interaction::adjust_visibility()
     else
     {
 	h_form.set_visible(false);
-	if(mode != finished)
+	if(mode != finished && mode != closed)
 	    act(can_refresh);
     }
 }
