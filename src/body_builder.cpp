@@ -200,7 +200,7 @@ void body_builder::set_visible(bool mode)
     {
 	visible = mode;
 	my_body_part_has_changed();  // keep trace of the change at body_builder level
-	my_visibility_has_changed(); // inform inherited class if they overwrote this method
+	my_visibility_has_changed(); // inform inherited class that overwrote this method
     }
 }
 
