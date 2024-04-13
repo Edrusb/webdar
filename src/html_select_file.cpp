@@ -609,6 +609,7 @@ void html_select_file::run_thread(thread_to_run val)
 	apply_refresh_mode = true;
 	path_loaded = ""; // this will force reloading dir content
 	which_thread = val;
+	webui.set_visible(true);
 	webui.run_and_control_thread(this);
 	break;
     case run_init_fill:
@@ -619,6 +620,7 @@ void html_select_file::run_thread(thread_to_run val)
 	{
 	    path_loaded = fieldset.get_label();
 	    which_thread = val;
+	    webui.set_visible(true);
 	    webui.run_and_control_thread(this);
 	}
 	    // else we are already displaying the requested directory content
