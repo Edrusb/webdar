@@ -189,20 +189,7 @@ void html_select_file::on_event(const std::string & event_name)
     }
     else if(event_name == op_chdir_parent)
     {
-	chemin chem(fieldset.get_label());
-
-	try
-	{
-	    chem.pop_back();
-	}
-	catch(exception_range & e)
-	{
-		// pop_back() failed because we
-		// we reached the root of the filesystem
-		// ignoring this error and staying at
-		// the same path
-	}
-	fieldset.change_label(chem.display());
+	fieldset.change_label(get_parent_path(fieldset.get_label()));
 	fieldset_isdir = true;
 	loading_mode(true);
 	my_body_part_has_changed();

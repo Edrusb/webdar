@@ -164,7 +164,7 @@ protected:
 
 
 private:
-	// event nam for the 'change to parent directory' button (parentdir)
+	// event name for the 'change to parent directory' button (parentdir)
     static const std::string op_chdir_parent;
     static const std::string op_createdir;
 
