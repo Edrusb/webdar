@@ -87,6 +87,8 @@ private:
     static constexpr const char* auth_pass = "password";
     static constexpr const char* auth_key  = "keyfile";
 
+    static const std::string repo_type_changed;
+
     html_form form;
     html_form_fieldset fs;
     html_form_select repo_type; // local, ftp or sftp
@@ -107,8 +109,10 @@ private:
 
     mutable std::shared_ptr<libdar::user_interaction> dialog; ///< used by inherited_run
     mutable std::shared_ptr<libdar::entrepot> entrep;         ///< set by inherited_run
+    bool repo_type_has_changed;
 
     void update_visible();
+    void trigger_event();
 };
 
 #endif

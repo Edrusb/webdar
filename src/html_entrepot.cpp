@@ -40,11 +40,12 @@ extern "C"
 using namespace std;
 
 const string html_entrepot::changed = "html_entrep_changed";
+const string html_entrepot::repo_type_changed = html_form_select::changed + "type"; // be sure this is different from the default event name
 
 html_entrepot::html_entrepot():
     form("Apply changes"),
     fs("Entrepot parameters"),
-    repo_type("Entrepot type"),
+    repo_type("Entrepot type", repo_type_changed),
     host("Remote host", html_form_input::text, "", 30),
     port("Port", html_form_input::number, "0", 7),
     login("Login", html_form_input::text, "", 30),
@@ -57,7 +58,8 @@ html_entrepot::html_entrepot():
     known_hosts_file("Known-hosts file", "/", 40, "Select the knowhosts file..."),
     wait_time("Network retry delay (s)", html_form_input::number, "30", 5),
     verbose("Verbose network connection", html_form_input::check, "", 1),
-    custom_event_name("")
+    custom_event_name(""),
+    repo_type_has_changed(false)
 {
     chemin home = global_envir.get_value_with_default("HOME", "/");
     chemin tmp;
@@ -129,7 +131,7 @@ html_entrepot::html_entrepot():
     adopt(&form);
 
 	// events and actors
-    repo_type.record_actor_on_event(this, html_form_select::changed);
+    repo_type.record_actor_on_event(this, repo_type_changed);
     auth_type.record_actor_on_event(this, html_form_select::changed);
     knownhosts_check.record_actor_on_event(this, html_form_input::changed);
 
@@ -180,6 +182,10 @@ std::shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(std::shared_ptr<ht
 void html_entrepot::on_event(const std::string & event_name)
 {
     update_visible();
+
+    if(event_name == repo_type_changed)
+	repo_type_has_changed = true;
+
 	// no need to trigger my_body_part_has_changed()
 	// if the body_builder objects we adopted change,
 	// our body_builder changed status will be set accordingly
@@ -197,15 +203,14 @@ void html_entrepot::set_event_name(const std::string & name)
 std::string html_entrepot::inherited_get_body_part(const chemin & path,
 						   const request & req)
 {
-    string ret = get_body_part_from_all_children(path, req);
+    string ret;
 
-    if(has_my_body_part_changed())
-    {
-	if(custom_event_name.empty())
-	    act(changed);
-	else
-	    act(custom_event_name);
-    }
+    repo_type_has_changed = false;
+    ret = get_body_part_from_all_children(path, req);
+    if(has_my_body_part_changed()
+       && (! repo_type_has_changed        // form has been submitted without repo type change
+	   || repo_type.get_selected_num() == 0)) // repo type changed to local filesystem
+	trigger_event();
 
     return ret;
 }
@@ -342,4 +347,12 @@ void html_entrepot::update_visible()
     default:
 	throw WEBDAR_BUG;
     }
+}
+
+void html_entrepot::trigger_event()
+{
+    if(custom_event_name.empty())
+	act(changed);
+    else
+	act(custom_event_name);
 }
