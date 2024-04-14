@@ -76,7 +76,7 @@ public:
 
 
 	/// inherited from actor
-    virtual void on_event(const std::string & event_name) override { act(event_name); };
+    virtual void on_event(const std::string & x_event_name) override { act(event_name); };
 
 protected:
 	/// inherited from body_builder
