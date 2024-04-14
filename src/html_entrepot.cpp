@@ -181,10 +181,8 @@ void html_entrepot::on_event(const std::string & event_name)
 {
     update_visible();
 	// no need to trigger my_body_part_has_changed()
-	// because all event we registered to are generated
-	// up change of body_builder objects we adopted.
-	// As we adopted them, if they change, our body_builder
-	// change status will also we set accordingly
+	// if the body_builder objects we adopted change,
+	// our body_builder changed status will be set accordingly
 }
 
 void html_entrepot::set_event_name(const std::string & name)
