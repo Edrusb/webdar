@@ -41,6 +41,17 @@ using namespace std;
 
 const string html_form_select::changed = "html_form_select_changed";
 
+html_form_select::html_form_select(const std::string & label, const std::string & x_event_name)
+{
+    x_label = label;
+    if(x_event_name.empty())
+	event_name = changed;
+    else
+	event_name = x_event_name;
+    register_name(event_name);
+    record_actor_on_event(this, html_form_radio::changed);
+}
+
 string html_form_select::inherited_get_body_part(const chemin & path, const request & req)
 {
     string ret = "";

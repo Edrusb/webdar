@@ -50,9 +50,15 @@ extern "C"
 class html_form_select : public html_form_radio, public actor
 {
 public:
-    static const std::string changed;  /// common event name for all object of this class
+    static const std::string changed;  /// default event name for all object of this class
 
-    html_form_select(const std::string & label) { x_label = label; register_name(changed); record_actor_on_event(this, html_form_radio::changed); };
+	/// constructor
+
+	/// \param[in] label is what name shows to the user
+	/// \param[in] x_event_name is the event to register upon change on this object
+	/// \note if x_event_name is not given or is an empty string the even to register is
+	/// given by the value of html_form_select::changed
+    html_form_select(const std::string & label, const std::string & x_event_name = "");
     html_form_select(const html_form_select & ref) = default;
     html_form_select(html_form_select && ref) noexcept = default;
     html_form_select & operator = (const html_form_select & ref) = default;
@@ -70,7 +76,7 @@ public:
 
 
 	/// inherited from actor
-    virtual void on_event(const std::string & event_name) override { act(changed); };
+    virtual void on_event(const std::string & event_name) override { act(event_name); };
 
 protected:
 	/// inherited from body_builder
@@ -80,6 +86,7 @@ protected:
 
 private:
     std::string x_label;
+    std::string event_name;
 
 };
 
