@@ -204,7 +204,7 @@ public:
 
 	/// some object (like html_statistics) are ever changing, but rely on some component
 	/// that will trigger my_body_part_has_changed() to reflect the new value, leading the
-	/// parent (here html_statisitcs) to be recorded as changed and the cycle is complete
+	/// parent (here html_statistics) to be recorded as changed and the cycle is complete
 	/// this process never ends. This call avoids propagating any future body_changed status
 	/// toward the parents and set the caller as if it was a static, never changing, object.
     void ignore_body_changed_from_my_children(bool mode) { ignore_children_body_changed = mode; };
