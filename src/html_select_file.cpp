@@ -63,7 +63,6 @@ html_select_file::html_select_file(const std::string & message):
     select_dir(false),
     filter(""),
     should_refresh(false),
-    apply_refresh_mode(true),
     title(2, message),
     warning(3, ""),
     fieldset(""),
@@ -134,6 +133,7 @@ html_select_file::html_select_file(const std::string & message):
 
 	// setup default visibility property
 
+    ignore_body_changed_from_my_children(true); // ignore visibility change
     parentdir1_visible = true;
     set_parentdir_visible();
     btn_hide_createdir.set_visible(false);
@@ -141,6 +141,7 @@ html_select_file::html_select_file(const std::string & message):
     set_visible(false); // make us invisible until go_select() is called
     webui.set_visible(false);
     webui.auto_hide(true, true);
+    ignore_body_changed_from_my_children(false); // end of ignore visibility change
 }
 
 void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
@@ -166,7 +167,7 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
     fieldset.change_label(start_dir);
     createdir_form.set_visible(false);
     run_thread(run_init_fill);
-    my_body_part_has_changed(); // should not be necessary thanks to set_visible(true) above, but it does not hurt
+	// not be necessary to call body_part_has_changed(); due to set_visible(true) above
 };
 
 void html_select_file::on_event(const std::string & event_name)
@@ -176,7 +177,7 @@ void html_select_file::on_event(const std::string & event_name)
 	if(!select_dir && fieldset_isdir)
 	{
 	    warning.add_text(3, string("This is a directory, please select a non-directory file"));
-	    my_body_part_has_changed();
+		// not necessary to call my_body_part_has_changed() as we just changed "warning" one of our own children
 	}
 	else
 	{
@@ -186,7 +187,7 @@ void html_select_file::on_event(const std::string & event_name)
 	    entr->change_user_interaction(mem_ui);
 	    entr.reset();   // forget about the go_select() provided entrepot
 	    mem_ui.reset(); // forget about the user_interaction entr had
-	    my_body_part_has_changed();
+		// not necessary to call my_body_part_has_changed() as we just changed our own visibility
 	    join();
 	}
     }
@@ -198,17 +199,16 @@ void html_select_file::on_event(const std::string & event_name)
 	entr->change_user_interaction(mem_ui);
 	entr.reset();    // forget about the go_select() provided entrepot
 	mem_ui.reset();  // forget about the user_interaction entr had
-	my_body_part_has_changed();
+	    // not necessary to call my_body_part_has_changed() as we just changed our own visibility
 	join();
     }
     else if(event_name == op_chdir_parent)
     {
 	fieldset.change_label(get_parent_path(fieldset.get_label()));
 	fieldset_isdir = true;
-	loading_mode(true);
 	parentdir1_visible = ! parentdir1_visible;
 	set_parentdir_visible();
-	my_body_part_has_changed();
+	    // not necessary to call my_body_part_has_changed() as we just changed a child visibility
     }
     else if(event_name == op_createdir)
     {
@@ -216,14 +216,14 @@ void html_select_file::on_event(const std::string & event_name)
 	createdir_input.set_value("");
 	btn_createdir.set_visible(false);
 	btn_hide_createdir.set_visible(true);
-	my_body_part_has_changed();
+	    // not necessary to call my_body_part_has_changed() as we just changed a child visibility
     }
     else if(event_name == op_hide_createdir)
     {
 	createdir_form.set_visible(false);
 	btn_createdir.set_visible(true);
 	btn_hide_createdir.set_visible(false);
-	my_body_part_has_changed();
+	    // not necessary to call my_body_part_has_changed() as we changed children visibility
     }
     else if(event_name == html_form_input::changed) // directory name provided to be created
     {
@@ -245,7 +245,6 @@ void html_select_file::on_event(const std::string & event_name)
 	if(! should_refresh)
 	{
 	    should_refresh = true;
-	    apply_refresh_mode = true;
 	    my_body_part_has_changed();
 	}
     }
@@ -254,7 +253,6 @@ void html_select_file::on_event(const std::string & event_name)
 	if(should_refresh)
 	{
 	    should_refresh = false;
-	    apply_refresh_mode = true;
 	    my_body_part_has_changed();
 	}
     }
@@ -317,37 +315,34 @@ string html_select_file::inherited_get_body_part(const chemin & path,
 
     try
     {
+	html_page* page = nullptr;
+	closest_ancestor_of_type(page);
+
 	if(acquired_content && which_thread == run_nothing)
 	    join(); // possibly trigger exception from our previously running child thread
 
-	loading_mode(!acquired_content);
+	loading_mode(!acquired_content || webui.get_visible());
 	    // we show content only when we could acquire the mutex lock
-
-	if(acquired_content && apply_refresh_mode)
-	{
-	    html_page* page = nullptr;
-
-	    closest_ancestor_of_type(page);
-
-	    if(page != nullptr)
-	    {
-		if(should_refresh)
-		    page->set_refresh_redirection(1, req.get_uri().get_path().display(false));
-		else
-		    page->set_refresh_redirection(0, ""); // disable refresh
-	    }
-	    else
-		throw WEBDAR_BUG; // cannot set refresh mode
-
-	    apply_refresh_mode = false;
-	}
+	    // and no thread is about to run or has just completed
 
 	if(entr && which_thread == run_nothing)
 	    run_thread(run_fill_only);
 
 	ret = html_popup::inherited_get_body_part(path, req);
 
+	if(page != nullptr)
+	{
+	    if(should_refresh || !acquired_content)
+		page->set_refresh_redirection(1, req.get_uri().get_path().display(false));
+	    else
+		page->set_refresh_redirection(0, ""); // disable refresh
+	}
+	else
+	    throw WEBDAR_BUG; // cannot set refresh mode
+
+	warning.ignore_body_changed_from_my_children(true);
 	warning.clear();
+	warning.ignore_body_changed_from_my_children(false);
     }
     catch(...)
     {
@@ -618,7 +613,6 @@ void html_select_file::run_thread(thread_to_run val)
 	throw WEBDAR_BUG;
     case run_create_dir:
 	should_refresh = true;
-	apply_refresh_mode = true;
 	path_loaded = ""; // this will force reloading dir content
 	which_thread = val;
 	webui.set_visible(true);
@@ -629,7 +623,6 @@ void html_select_file::run_thread(thread_to_run val)
 	if(fieldset.get_label() != path_loaded)
 	{
 	    should_refresh = true;
-	    apply_refresh_mode = true;
 	    path_loaded = fieldset.get_label();
 	    which_thread = val;
 	    webui.set_visible(true);
@@ -662,8 +655,12 @@ void html_select_file::clear_content()
 
 void html_select_file::loading_mode(bool mode)
 {
+    if(mode == is_loading_mode)
+	return; // nothing to do
+
     if(mode)
     {
+	title.set_visible(false);
 	parentdir1.set_visible(false);
 	parentdir2.set_visible(false);
 	content.set_visible(false);
@@ -672,9 +669,12 @@ void html_select_file::loading_mode(bool mode)
     else
     {
 	set_parentdir_visible();
+	title.set_visible(true);
 	content.set_visible(true);
 	content_placeholder.set_visible(false);
     }
+
+    is_loading_mode = mode;
 }
 
 void html_select_file::set_parentdir_visible()

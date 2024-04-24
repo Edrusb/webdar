@@ -200,7 +200,7 @@ public:
     std::string get_body_part(const chemin & path,
 			      const request & req);
 
-	/// ignore my_body_part_has_changed() invoked from adopted children
+	/// ignore my_body_part_has_changed() invoked from adopted children and myself
 
 	/// some object (like html_statistics) are ever changing, but rely on some component
 	/// that will trigger my_body_part_has_changed() to reflect the new value, leading the

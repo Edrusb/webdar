@@ -219,8 +219,6 @@ private:
     std::shared_ptr<libdar::entrepot> entr;  ///< the entrepot we should fetch info from
     std::shared_ptr<libdar::user_interaction> mem_ui;  ///< the original UI the entrepot had when given to go_select()
     bool should_refresh;              ///< expected status of the page refresh
-    bool apply_refresh_mode;          ///< true if page refresh has not been yet applied
-
 
 	// html components
 
@@ -251,7 +249,7 @@ private:
 
 
 	// status field about html components
-
+    bool is_loading_mode;             ///< whether the content place holder shows
     bool fieldset_isdir;              ///< whether fieldset points to a directory or not
 
 
@@ -280,6 +278,9 @@ private:
     void clear_content();
 
 	/// set the display to show either the dir content or an "loading..." message
+
+	/// \param[in] mode if set to true, change visibility to display the content_placeholder
+	/// component, else show the normal components and available directory content
     void loading_mode(bool mode);
 
 	/// swap parentdir button visibility
