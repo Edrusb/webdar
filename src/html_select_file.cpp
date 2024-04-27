@@ -99,17 +99,18 @@ html_select_file::html_select_file(const std::string & message):
     createdir_input.record_actor_on_event(this, html_form_input::changed);
     webui.record_actor_on_event(this, html_web_user_interaction::can_refresh);
     webui.record_actor_on_event(this, html_web_user_interaction::dont_refresh);
+    webui.record_actor_on_event(this,html_web_user_interaction::libdar_has_finished);
 
 	// setting up the adoption tree (the fixed part)
     adopt(&title_box);
     title_box.adopt(&title);
     title_box.adopt(&warning);
-    title_box.adopt(&webui);
     adopt(&fieldset);
     fieldset.adopt(&parentdir1);
     fieldset.adopt(&parentdir2);
     fieldset.adopt(&content);
     fieldset.adopt(&content_placeholder);
+    adopt(&webui);
     adopt(&btn_box);
     btn_box.adopt(&btn_createdir);
     btn_box.adopt(&btn_hide_createdir);
@@ -142,6 +143,7 @@ html_select_file::html_select_file(const std::string & message):
     webui.set_visible(false);
     webui.auto_hide(true, true);
     ignore_body_changed_from_my_children(false); // end of ignore visibility change
+    loading_mode(false);
 }
 
 void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
@@ -162,12 +164,10 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
     set_visible(true);
     status = st_go_select;
     entr = x_entr;
-    mem_ui = entr->get_current_user_interaction();
-    entr->change_user_interaction(webui.get_user_interaction());
     fieldset.change_label(start_dir);
     createdir_form.set_visible(false);
     run_thread(run_init_fill);
-	// not be necessary to call body_part_has_changed(); due to set_visible(true) above
+    my_body_part_has_changed();
 };
 
 void html_select_file::on_event(const std::string & event_name)
@@ -184,23 +184,15 @@ void html_select_file::on_event(const std::string & event_name)
 	    status = st_completed;
 	    set_visible(false);
 	    act(entry_selected); // propagate the event to object that subscribed to us
-	    entr->change_user_interaction(mem_ui);
-	    entr.reset();   // forget about the go_select() provided entrepot
-	    mem_ui.reset(); // forget about the user_interaction entr had
-		// not necessary to call my_body_part_has_changed() as we just changed our own visibility
-	    join();
+	    my_join();
 	}
     }
     else if(event_name == op_cancelled)
     {
 	status = st_init;
 	set_visible(false);
-	act(op_cancelled);
-	entr->change_user_interaction(mem_ui);
-	entr.reset();    // forget about the go_select() provided entrepot
-	mem_ui.reset();  // forget about the user_interaction entr had
-	    // not necessary to call my_body_part_has_changed() as we just changed our own visibility
-	join();
+	act(op_cancelled); // propagate the event to objects that subscribed to us
+	my_join();
     }
     else if(event_name == op_chdir_parent)
     {
@@ -255,6 +247,11 @@ void html_select_file::on_event(const std::string & event_name)
 	    should_refresh = false;
 	    my_body_part_has_changed();
 	}
+    }
+    else if(event_name == html_web_user_interaction::libdar_has_finished)
+    {
+	loading_mode(false);
+	    // webui is auto_hiding thus its visibility has
     }
     else // click on directory list entry?
     {
@@ -311,47 +308,31 @@ string html_select_file::inherited_get_body_part(const chemin & path,
 						 const request & req)
 {
     string ret;
-    bool acquired_content = mtx_content.try_lock();
+    html_page* page = nullptr;
+    closest_ancestor_of_type(page);
 
-    try
+    if(which_thread == run_nothing)
+	my_join(); // possibly trigger exception from our previously running child thread
+
+    if(entr && which_thread == run_nothing)
+	run_thread(run_fill_only);
+
+    ret = html_popup::inherited_get_body_part(path, req);
+
+    if(page != nullptr)
     {
-	html_page* page = nullptr;
-	closest_ancestor_of_type(page);
-
-	if(acquired_content && which_thread == run_nothing)
-	    join(); // possibly trigger exception from our previously running child thread
-
-	loading_mode(!acquired_content || webui.get_visible());
-	    // we show content only when we could acquire the mutex lock
-	    // and no thread is about to run or has just completed
-
-	if(entr && which_thread == run_nothing)
-	    run_thread(run_fill_only);
-
-	ret = html_popup::inherited_get_body_part(path, req);
-
-	if(page != nullptr)
-	{
-	    if(should_refresh || !acquired_content)
-		page->set_refresh_redirection(1, req.get_uri().get_path().display(false));
-	    else
-		page->set_refresh_redirection(0, ""); // disable refresh
-	}
+	if(should_refresh)
+	    page->set_refresh_redirection(1, req.get_uri().get_path().display(false));
 	else
-	    throw WEBDAR_BUG; // cannot set refresh mode
+	    page->set_refresh_redirection(0, ""); // disable refresh
+    }
+    else
+	throw WEBDAR_BUG; // cannot set refresh mode
 
-	warning.ignore_body_changed_from_my_children(true);
+    warning.ignore_body_changed_from_my_children(true);
+    if(!should_refresh)
 	warning.clear();
-	warning.ignore_body_changed_from_my_children(false);
-    }
-    catch(...)
-    {
-	if(acquired_content)
-	    mtx_content.unlock();
-	throw;
-    }
-    if(acquired_content)
-	mtx_content.unlock();
+    warning.ignore_body_changed_from_my_children(false);
 
     return ret;
 }
@@ -419,7 +400,6 @@ void html_select_file::new_css_library_available()
 
 void html_select_file::inherited_run()
 {
-    mtx_content.lock();
     try
     {
 	switch(which_thread)
@@ -441,12 +421,12 @@ void html_select_file::inherited_run()
     }
     catch(...)
     {
+
 	which_thread = run_nothing;
-	mtx_content.unlock();
 	throw;
     }
+
     which_thread = run_nothing;
-    mtx_content.unlock();
 }
 
 
@@ -615,7 +595,13 @@ void html_select_file::run_thread(thread_to_run val)
 	should_refresh = true;
 	path_loaded = ""; // this will force reloading dir content
 	which_thread = val;
-	webui.set_visible(true);
+	loading_mode(true);
+	if(mem_ui)
+	    throw WEBDAR_BUG;
+	mem_ui = entr->get_current_user_interaction();
+	if(!mem_ui)
+	    throw WEBDAR_BUG;
+	entr->change_user_interaction(webui.get_user_interaction());
 	webui.run_and_control_thread(this);
 	break;
     case run_init_fill:
@@ -625,7 +611,13 @@ void html_select_file::run_thread(thread_to_run val)
 	    should_refresh = true;
 	    path_loaded = fieldset.get_label();
 	    which_thread = val;
-	    webui.set_visible(true);
+	    loading_mode(true);
+	    if(mem_ui)
+		throw WEBDAR_BUG;
+	    mem_ui = entr->get_current_user_interaction();
+	    if(!mem_ui)
+		throw WEBDAR_BUG;
+	    entr->change_user_interaction(webui.get_user_interaction());
 	    webui.run_and_control_thread(this);
 	}
 	    // else we are already displaying the requested directory content
@@ -660,17 +652,32 @@ void html_select_file::loading_mode(bool mode)
 
     if(mode)
     {
+	    // in loading mode we must
+	    // hide not only the component
+	    // that are not pertinent to show
+	    // but also all component generating
+	    // an event from the current thread
+	    // as subthread will be run and may
+	    // generare event to us. Then on_event
+	    // method is not designed to be re-entrant
+	    // and does not need to be.
 	title.set_visible(false);
 	parentdir1.set_visible(false);
 	parentdir2.set_visible(false);
 	content.set_visible(false);
+	btn_box.set_visible(false);
+	webui.set_visible(true);
 	content_placeholder.set_visible(true);
     }
     else
     {
-	set_parentdir_visible();
 	title.set_visible(true);
+	set_parentdir_visible();
 	content.set_visible(true);
+	btn_box.set_visible(true);
+	    // not necessary to set webui.set_visible(false) in the
+	    // present condition webui has already finished and hide
+	    // itself (auto_hide)
 	content_placeholder.set_visible(false);
     }
 
@@ -700,5 +707,39 @@ string html_select_file::get_parent_path(const string & somepath)
     }
 
     return chem.display();
+}
+
+void html_select_file::my_join()
+{
+    try
+    {
+	if(!mem_ui)
+	    throw WEBDAR_BUG;
+	entr->change_user_interaction(mem_ui);
+	entr.reset();   // forget about the go_select() provided entrepot
+	mem_ui.reset(); // forget about the user_interaction entr had
+		// not necessary to call my_body_part_has_changed() as we just changed our own visibility
+	join();
+    }
+    catch(exception_bug &)
+    {
+	throw;
+    }
+    catch(exception_base & e)
+    {
+	loading_mode(false);
+	warning.add_text(3, e.get_message());
+    }
+    catch(libdar::Egeneric & e)
+    {
+	loading_mode(false);
+	warning.add_text(3, e.get_message());
+    }
+    catch(...)
+    {
+	loading_mode(false);
+	throw;
+    }
+
 }
 

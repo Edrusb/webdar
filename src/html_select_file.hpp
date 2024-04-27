@@ -228,8 +228,6 @@ private:
     html_div title_box;               ///< contains title and warning and stay visible as a sticky box
     html_form_fieldset fieldset;      ///< shows the current directory path
 
-	// directory content related components
-    libthreadar::mutex mtx_content;   ///< control the access to listed, content and parentdir
 	//
     std::string path_loaded;          ///< path displayed (empty string means not initialized)
     html_button parentdir1;           ///< change to parent dir
@@ -288,6 +286,12 @@ private:
 
 	/// return the parent path of the provided path
     static std::string get_parent_path(const std::string & somepath);
+
+	/// join() wrapper
+
+	/// \note cleanup and restore states changed by run_thread()
+    void my_join();
+
 };
 
 #endif
