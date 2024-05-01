@@ -303,10 +303,7 @@ string saisie::inherited_get_body_part(const chemin & path,
 	    ignore_body_changed_from_my_children(false);
 	}
 	else
-	{
-	    set_refresh_redirection(0,""); // clearing redirection that could have been set previously
 	    ret = html_page::inherited_get_body_part(path, req);
-	}
     }
 
     return ret;
