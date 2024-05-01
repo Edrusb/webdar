@@ -293,12 +293,7 @@ void html_select_file::on_event(const std::string & event_name)
 	    fieldset.change_label(curdir.display());
 	    fieldset_isdir = it->second.isdir;
 
-		// as we changed into a directory we have to update the 'listed' entries
-	    if(fieldset_isdir)
-		run_thread(run_fill_only);
-
-
-
+	    run_thread(run_fill_only);
 	}
 	else
 		// we avoid consulting listed as it may still be  under construction
