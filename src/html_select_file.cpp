@@ -688,6 +688,7 @@ void html_select_file::loading_mode(bool mode)
 	    // not necessary to set webui.set_visible(false) in the
 	    // present condition webui has already finished and hide
 	    // itself (auto_hide)
+	webui.set_visible(false);
 	content_placeholder.set_visible(false);
     }
 
