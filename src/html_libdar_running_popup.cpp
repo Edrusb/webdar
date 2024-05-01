@@ -43,8 +43,7 @@ const string html_libdar_running_popup::libdar_has_finished = "html_libdar_runni
 
 html_libdar_running_popup::html_libdar_running_popup():
     html_popup(90,90),
-    enable_refresh(false),
-    changed_refresh(false)
+    enable_refresh(false)
 {
     web_ui.reset(new (nothrow) html_web_user_interaction());
     if(!web_ui)
@@ -63,6 +62,12 @@ html_libdar_running_popup::html_libdar_running_popup():
 string html_libdar_running_popup::inherited_get_body_part(const chemin & path,
 							  const request & req)
 {
+    string ret;
+    html_page* page = nullptr;
+
+    closest_ancestor_of_type(page);
+    if(page == nullptr)
+	throw WEBDAR_BUG;
 
 	// we want our visibility status to follow and act on
 	// our html_web_user_interaction component visibility
@@ -79,26 +84,14 @@ string html_libdar_running_popup::inherited_get_body_part(const chemin & path,
 	// we have to propagate this to ourself for
 	// it be visible as expected
 
-    if(get_visible())
-    {
-	if(changed_refresh)
-	{
-	    html_page* page = nullptr;
+    ret = html_popup::inherited_get_body_part(path, req);
 
-	    closest_ancestor_of_type(page);
-	    changed_refresh = false;
+    if(enable_refresh)
+	page->set_refresh_redirection(1, req.get_uri().get_path().display(false));
+    else
+	page->set_refresh_redirection(0, ""); // disable refresh
 
-	    if(page != nullptr)
-	    {
-		if(enable_refresh)
-		    page->set_refresh_redirection(1, req.get_uri().get_path().display(false));
-		else
-		    page->set_refresh_redirection(0, ""); // disable refresh
-	    }
-	}
-    }
-
-    return html_popup::inherited_get_body_part(path, req);
+    return ret;
 }
 
 void html_libdar_running_popup::my_visibility_has_changed()
@@ -118,21 +111,11 @@ void html_libdar_running_popup::on_event(const std::string & event_name)
     }
     else if(event_name == html_web_user_interaction::can_refresh)
     {
-	if(!enable_refresh)
-	{
-	    enable_refresh = true;
-	    changed_refresh = true;
-	    my_body_part_has_changed();
-	}
+	enable_refresh = true;
     }
     else if(event_name == html_web_user_interaction::dont_refresh)
     {
-	if(enable_refresh)
-	{
-	    enable_refresh = false;
-	    changed_refresh = true;
-	    my_body_part_has_changed();
-	}
+	enable_refresh = false;
     }
     else
 	throw WEBDAR_BUG;

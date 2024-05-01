@@ -82,7 +82,6 @@ protected:
 private:
     std::shared_ptr<html_web_user_interaction> web_ui;
     bool enable_refresh;    ///< refresh mode status
-    bool changed_refresh;   ///< whether page refresh has been modified
 
 };
 
