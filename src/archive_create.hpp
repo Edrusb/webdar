@@ -59,7 +59,7 @@ public:
     archive_create(archive_create && ref) noexcept = default;
     archive_create & operator = (const archive_create & ref) = default;
     archive_create & operator = (archive_create && ref) noexcept = default;
-    ~archive_create() = default;
+    ~archive_create() { kill(); join(); };
 
 	// parameters expected by the libdar::archive constructor
 

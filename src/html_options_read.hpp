@@ -76,7 +76,7 @@ public:
     html_options_read(html_options_read && ref) noexcept = default;
     html_options_read & operator = (const html_options_read & ref) = default;
     html_options_read & operator = (html_options_read && ref) noexcept = default;
-    ~html_options_read() = default;
+    ~html_options_read() { kill(); join(); };
 
 	/// obtain the libdar archive_option_read object from the html filled fields
     libdar::archive_options_read get_options(std::shared_ptr<html_web_user_interaction> & webui) const;

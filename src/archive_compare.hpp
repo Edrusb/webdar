@@ -57,7 +57,7 @@ public:
     archive_compare(archive_compare && ref) noexcept = default;
     archive_compare & operator = (const archive_compare & ref) = default;
     archive_compare & operator = (archive_compare && ref) noexcept = default;
-    ~archive_compare() = default;
+    ~archive_compare() { kill(); join(); };
 
 	// parameters expected by the libdar::archive constructor
 	// and libdar::archive::op_diff method

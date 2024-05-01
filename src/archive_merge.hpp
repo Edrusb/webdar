@@ -47,7 +47,7 @@ public:
     archive_merge(archive_merge && ref) noexcept = default;
     archive_merge & operator = (const archive_merge & ref) = default;
     archive_merge & operator = (archive_merge && ref) noexcept = default;
-    ~archive_merge() = default;
+    ~archive_merge() { kill(); join(); };
 
     void set_user_interaction(const std::shared_ptr<html_web_user_interaction> ref) { ui = ref; };
     void set_parametrage(const saisie* x_param) { param = x_param; };

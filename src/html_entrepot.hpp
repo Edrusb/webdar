@@ -58,7 +58,7 @@ public:
     html_entrepot(html_entrepot && ref) noexcept = delete;
     html_entrepot & operator = (const html_entrepot & ref) = delete;
     html_entrepot & operator = (html_entrepot && ref) noexcept = delete;
-    ~html_entrepot() = default;
+    ~html_entrepot() { kill(); join(); };
 
 	/// run the entrepot building in a dedicated thread and display/control this thread
 

@@ -118,7 +118,7 @@ public:
     html_select_file(html_select_file && ref) noexcept(false) = delete;
     html_select_file & operator = (const html_select_file & ref) = delete;
     html_select_file & operator = (html_select_file && ref) noexcept(false) = delete;
-    virtual ~html_select_file() { clear_content(); };
+    virtual ~html_select_file() { clear_content(); kill(); join(); };
 
 	/// ask the user to select a file path (false) or a directory path (true)
 

@@ -46,7 +46,7 @@ public:
     archive_restore(archive_restore && ref) noexcept = default;
     archive_restore & operator = (const archive_restore & ref) = default;
     archive_restore & operator = (archive_restore && ref) noexcept = default;
-    ~archive_restore() = default;
+    ~archive_restore() { kill(); join(); };
 
     void set_user_interaction(std::shared_ptr<html_web_user_interaction> ref) { ui = ref; };
     void set_parametrage(const saisie* x_param) { param = x_param; };

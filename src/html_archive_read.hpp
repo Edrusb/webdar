@@ -56,7 +56,7 @@ public:
     html_archive_read(html_archive_read && ref) noexcept = delete;
     html_archive_read & operator = (const html_archive_read & ref) = delete;
     html_archive_read & operator = (html_archive_read && ref) noexcept = delete;
-    ~html_archive_read() = default;
+    ~html_archive_read() { kill(); join(); };
 
 	// available fields for libdar
 

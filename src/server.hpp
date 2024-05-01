@@ -68,7 +68,7 @@ private:
     server(server && ref) noexcept = delete;
     server & operator = (const server & ref) = delete;
     server & operator = (server && ref) noexcept = delete;
-    ~server() = default;
+    ~server() { kill(); join(); };
 
     parser src;              //< this object manages the given proto_connexion in constructor
     std::shared_ptr<central_report> rep; //< where do logs should go

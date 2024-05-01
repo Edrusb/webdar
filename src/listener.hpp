@@ -60,7 +60,7 @@ public:
     listener(listener && ref) noexcept = delete;
     listener & operator = (const listener & ref) = delete;
     listener & operator = (listener && ref) noexcept = delete;
-    ~listener() { close(sockfd); };
+    ~listener() { close(sockfd); kill(); join(); };
 
 protected:
 	// inherited from libthreadar::thread;

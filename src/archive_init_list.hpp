@@ -58,7 +58,7 @@ public:
     archive_init_list(archive_init_list && ref) noexcept = delete;
     archive_init_list & operator = (const archive_init_list & ref) = delete;
     archive_init_list & operator = (archive_init_list && ref) noexcept = delete;
-    ~archive_init_list() = default;
+    ~archive_init_list() { kill(); join(); };
 
 
 	/// set the user interaction to report on when running the thread

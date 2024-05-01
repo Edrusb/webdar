@@ -47,7 +47,7 @@ public:
     archive_isolate(archive_isolate && ref) noexcept = default;
     archive_isolate & operator = (const archive_isolate & ref) = default;
     archive_isolate & operator = (archive_isolate && ref) noexcept = default;
-    ~archive_isolate() = default;
+    ~archive_isolate() { kill(); join(); };
 
 	// needed to read the archive to isolate
 
