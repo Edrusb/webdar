@@ -371,9 +371,9 @@ void html_web_user_interaction::set_mode(mode_type m)
 	    // no break!
     case closed:
 	set_visible(false);
+	act(libdar_has_finished);
 	if(autohide && (!was_interrupted || !hide_unless_interrupted))
 	    act(dont_refresh);
-	act(libdar_has_finished);
 	break;
     default:
 	throw WEBDAR_BUG;
