@@ -680,6 +680,7 @@ void html_select_file::loading_mode(bool mode)
 	parentdir2.set_visible(false);
 	content.set_visible(false);
 	btn_box.set_visible(false);
+	webui.clear();
 	webui.set_visible(true);
 	content_placeholder.set_visible(true);
     }
