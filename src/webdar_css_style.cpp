@@ -76,7 +76,7 @@ namespace webdar_css_style
 		full_width.set_value(tmp_set);
 
 		tmp_set.clear();
-		tmp_set.css_width("8em", true, true);
+		tmp_set.css_width("8em", false, true);
 		width_8em.set_value(tmp_set);
 
                     // Common aspects
