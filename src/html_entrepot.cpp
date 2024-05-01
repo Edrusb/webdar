@@ -156,19 +156,19 @@ std::shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(std::shared_ptr<ht
     if(!dialog)
 	throw WEBDAR_BUG;
 
-    if(! webui->is_libdar_running())
-	webui->auto_hide(true, true);
+    if(! entrep || has_my_body_part_changed())
+    {
+	if(! webui->is_libdar_running())
+	    webui->auto_hide(true, true);
 
-    if(entrep && ! has_my_body_part_changed())
-	return entrep;
-
-    webui->run_and_control_thread(const_cast<html_entrepot*>(this)); // this launches a new thread running inherited_run() and the caller returns
-    join();
+	webui->run_and_control_thread(const_cast<html_entrepot*>(this)); // this launches a new thread running inherited_run() and the caller returns
+	join();
 	// we join() ourself, yes, we wait here for the thread launched above to complete or be interrupted
 	// multi-threading is needed here to pass a thread-id for libdar and html_web_user_interaction to be
 	// able to interrupt it gracefully. We cannot interrupt the calling/current thread which may be the
 	// program main thread. However webui should have it get_body_part() running from another thread to
 	// display and update the libdar::user_interaction it contains.
+    }
 
     if(!entrep)
 	throw WEBDAR_BUG;
