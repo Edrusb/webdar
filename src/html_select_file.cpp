@@ -164,6 +164,7 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
     set_visible(true);
     status = st_go_select;
     entr = x_entr;
+    path_loaded = "";
     if(mem_ui)
 	throw WEBDAR_BUG;
     mem_ui = entr->get_current_user_interaction();
