@@ -312,13 +312,12 @@ string html_select_file::inherited_get_body_part(const chemin & path,
     html_page* page = nullptr;
     closest_ancestor_of_type(page);
 
-    if(which_thread == run_nothing)
+    if(! webui.is_libdar_running())
     {
 	my_join(false); // possibly trigger exception from our previously running child thread
 
 	if(!entr)
 	    throw WEBDAR_BUG;
-
 	run_thread(run_fill_only);
     }
 
