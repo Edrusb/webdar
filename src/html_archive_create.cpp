@@ -55,6 +55,10 @@ html_archive_create::html_archive_create():
     fs_root.set_can_create_dir(false);
     sauv_path.set_select_mode(html_form_input_file::select_dir);
     sauv_path.set_can_create_dir(true);
+    if(repoxfer.get_html_user_interaction())
+	repoxfer.get_html_user_interaction()->auto_hide(true, false);
+    else
+	throw WEBDAR_BUG;
 
 	// adoption tree
 
@@ -65,10 +69,33 @@ html_archive_create::html_archive_create():
     deroule.adopt_in_section(sect_archive, &form);
     adopt(&deroule);
     adopt(&options);
+    adopt(&repoxfer);
+
+	// events
+    options.record_actor_on_event(this, html_options_create::entrepot_changed);
+    repoxfer.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
+
+	// visibility
+    repoxfer.set_visible(false);
 
     	// css stuff
 
     webdar_css_style::normal_button(deroule, true);
+}
+
+void html_archive_create::on_event(const std::string & event_name)
+{
+    if(event_name == html_options_create::entrepot_changed)
+    {
+	repoxfer.set_visible(true);
+	repoxfer.run_and_control_thread(this);
+    }
+    else if(event_name == html_libdar_running_popup::libdar_has_finished)
+    {
+	repoxfer.set_visible(false);
+    }
+    else
+	throw WEBDAR_BUG;
 }
 
 string html_archive_create::inherited_get_body_part(const chemin & path,
@@ -84,4 +111,13 @@ void html_archive_create::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
+}
+
+void html_archive_create::inherited_run()
+{
+    shared_ptr<html_web_user_interaction> ptr(repoxfer.get_html_user_interaction());
+
+    if(!ptr)
+	throw WEBDAR_BUG;
+    sauv_path.set_entrepot(options.get_entrepot(ptr));
 }

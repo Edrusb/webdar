@@ -39,6 +39,8 @@ extern "C"
 
 using namespace std;
 
+const string html_options_create::entrepot_changed = "html_options_create_entrep_changed";
+
 html_options_create::html_options_create():
     form_archtype("Update"),
     form_archgen("Update"),
@@ -268,13 +270,16 @@ html_options_create::html_options_create():
     deroule.adopt_in_section(sect_cipher, &form_crypto);
 
 	// events and visibility
+    register_name(entrepot_changed);
+
     archtype.record_actor_on_event(this, html_form_radio::changed);
     compression.record_actor_on_event(this, html_compression::changed);
     slicing.record_actor_on_event(this, html_form_input::changed);
     different_first_slice.record_actor_on_event(this, html_form_input::changed);
     crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
+    entrep.record_actor_on_event(this, html_entrepot::changed);
 
-    on_event("");
+    on_event(html_form_radio::changed); // used to initialize the html components visibility
 
 	// css
     webdar_css_style::grey_button(deroule, true);
@@ -373,106 +378,118 @@ string html_options_create::inherited_get_body_part(const chemin & path,
 
 void html_options_create::on_event(const std::string & event_name)
 {
-    switch(archtype.get_selected_num())
+    if(event_name == html_form_radio::changed
+       || event_name == html_compression::changed
+       || event_name == html_form_input::changed
+       || event_name == html_crypto_algo::changed)
     {
-    case 0: // full
-	reference.set_visible(false);
-	ref_placeholder.set_visible(true);
-	hourshift.set_visible(false);
-	fixed_date.set_visible(false);
-	what_to_check.set_visible(false);
-	break;
-    case 1: // diff
-	reference.set_visible(true);
-	ref_placeholder.set_visible(false);
-	hourshift.set_visible(true);
-	fixed_date.set_visible(false);
-	what_to_check.set_visible(true);
-	break;
-    case 2: // snapshot
-	reference.set_visible(false);
-	ref_placeholder.set_visible(true);
-	hourshift.set_visible(false);
-	fixed_date.set_visible(false);
-	what_to_check.set_visible(false);
-	break;
-    case 3: // date
-	reference.set_visible(false);
-	ref_placeholder.set_visible(true);
-	hourshift.set_visible(true);
-	fixed_date.set_visible(true);
-	what_to_check.set_visible(false);
-	break;
-    default:
-	throw WEBDAR_BUG;
-    }
-
-    switch(compression.get_value())
-    {
-    case libdar::compression::none:
-	compression_level.set_visible(false);
-	min_compr_size.set_visible(false);
-	min_compr_size_unit.set_visible(false);
-	break;
-    case libdar::compression::gzip:
-    case libdar::compression::bzip2:
-    case libdar::compression::lzo:
-	compression_level.set_visible(true);
-	min_compr_size.set_visible(true);
-	min_compr_size_unit.set_visible(true);
-	break;
-    default:
-	throw WEBDAR_BUG;
-    }
-
-    if(slicing.get_value_as_bool())
-    {
-	slice_size.set_visible(true);
-	slice_size_unit.set_visible(true);
-	different_first_slice.set_visible(true);
-	if(different_first_slice.get_value_as_bool())
+	switch(archtype.get_selected_num())
 	{
-	    first_slice_size.set_visible(true);
-	    first_slice_size_unit.set_visible(true);
+	case 0: // full
+	    reference.set_visible(false);
+	    ref_placeholder.set_visible(true);
+	    hourshift.set_visible(false);
+	    fixed_date.set_visible(false);
+	    what_to_check.set_visible(false);
+	    break;
+	case 1: // diff
+	    reference.set_visible(true);
+	    ref_placeholder.set_visible(false);
+	    hourshift.set_visible(true);
+	    fixed_date.set_visible(false);
+	    what_to_check.set_visible(true);
+	    break;
+	case 2: // snapshot
+	    reference.set_visible(false);
+	    ref_placeholder.set_visible(true);
+	    hourshift.set_visible(false);
+	    fixed_date.set_visible(false);
+	    what_to_check.set_visible(false);
+	    break;
+	case 3: // date
+	    reference.set_visible(false);
+	    ref_placeholder.set_visible(true);
+	    hourshift.set_visible(true);
+	    fixed_date.set_visible(true);
+	    what_to_check.set_visible(false);
+	    break;
+	default:
+	    throw WEBDAR_BUG;
 	}
-	else
+
+	switch(compression.get_value())
 	{
+	case libdar::compression::none:
+	    compression_level.set_visible(false);
+	    min_compr_size.set_visible(false);
+	    min_compr_size_unit.set_visible(false);
+	    break;
+	case libdar::compression::gzip:
+	case libdar::compression::bzip2:
+	case libdar::compression::lzo:
+	    compression_level.set_visible(true);
+	    min_compr_size.set_visible(true);
+	    min_compr_size_unit.set_visible(true);
+	    break;
+	default:
+	    throw WEBDAR_BUG;
+	}
+
+	if(slicing.get_value_as_bool())
+	{
+	    slice_size.set_visible(true);
+	    slice_size_unit.set_visible(true);
+	    different_first_slice.set_visible(true);
+	    if(different_first_slice.get_value_as_bool())
+	    {
+		first_slice_size.set_visible(true);
+		first_slice_size_unit.set_visible(true);
+	    }
+	    else
+	    {
+		first_slice_size.set_visible(false);
+		first_slice_size_unit.set_visible(false);
+	    }
+	}
+	else // no slicing requested
+	{
+	    slice_size.set_visible(false);
+	    slice_size_unit.set_visible(false);
+	    different_first_slice.set_visible(false);
 	    first_slice_size.set_visible(false);
 	    first_slice_size_unit.set_visible(false);
 	}
-    }
-    else // no slicing requested
-    {
-	slice_size.set_visible(false);
-	slice_size_unit.set_visible(false);
-	different_first_slice.set_visible(false);
-	first_slice_size.set_visible(false);
-	first_slice_size_unit.set_visible(false);
-    }
 
-    switch(crypto_algo.get_value())
-    {
-    case libdar::crypto_algo::none:
-	crypto_pass1.set_visible(false);
-	crypto_pass2.set_visible(false);
-	crypto_size.set_visible(false);
-	break;
-    case libdar::crypto_algo::scrambling:
-    case libdar::crypto_algo::blowfish:
-    case libdar::crypto_algo::aes256:
-    case libdar::crypto_algo::twofish256:
-    case libdar::crypto_algo::serpent256:
-    case libdar::crypto_algo::camellia256:
-	crypto_pass1.set_visible(true);
-	crypto_pass2.set_visible(true);
-	crypto_size.set_visible(true);
-	break;
-    default:
-	throw WEBDAR_BUG;
+	switch(crypto_algo.get_value())
+	{
+	case libdar::crypto_algo::none:
+	    crypto_pass1.set_visible(false);
+	    crypto_pass2.set_visible(false);
+	    crypto_size.set_visible(false);
+	    break;
+	case libdar::crypto_algo::scrambling:
+	case libdar::crypto_algo::blowfish:
+	case libdar::crypto_algo::aes256:
+	case libdar::crypto_algo::twofish256:
+	case libdar::crypto_algo::serpent256:
+	case libdar::crypto_algo::camellia256:
+	    crypto_pass1.set_visible(true);
+	    crypto_pass2.set_visible(true);
+	    crypto_size.set_visible(true);
+	    break;
+	default:
+	    throw WEBDAR_BUG;
+	}
+	    // no need to call my_body_part_has_changed()
+	    // because changed done in on_event concern
+	    // body_builder objects we have adopted
     }
-	// no need to call my_body_part_has_changed()
-	// because changed done in on_event concern
-	// body_builder objects we have adopted
+    else if(event_name == html_entrepot::changed)
+    {
+	act(entrepot_changed);
+    }
+    else
+	throw WEBDAR_BUG;
 }
 
 void html_options_create::new_css_library_available()

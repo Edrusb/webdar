@@ -31,7 +31,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
 #include "html_form_input_file.hpp"
@@ -39,8 +39,10 @@ extern "C"
 #include "html_options_create.hpp"
 #include "body_builder.hpp"
 #include "html_derouleur.hpp"
+#include "actor.hpp"
+#include "html_libdar_running_popup.hpp"
 
-class html_archive_create: public body_builder
+class html_archive_create: public body_builder, public libthreadar::thread, public actor
 {
 public:
     html_archive_create();
@@ -55,12 +57,18 @@ public:
     const std::string & get_fs_root() const { return fs_root.get_value(); };
     libdar::archive_options_create get_options_create(std::shared_ptr<html_web_user_interaction> dialog) const { return options.get_options(dialog); };
 
+	// inherited from actor
+    virtual void on_event(const std::string & event_name);
+
 protected:
     	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
     virtual void new_css_library_available() override;
+
+	/// inherited from libthreadar::thread
+    virtual void inherited_run();
 
 private:
     html_derouleur deroule;
@@ -70,7 +78,7 @@ private:
     html_form_input_file sauv_path;
     html_form_input basename;
     html_options_create options;
-
+    html_libdar_running_popup repoxfer;
 };
 
 #endif

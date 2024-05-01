@@ -36,6 +36,8 @@ extern "C"
 
     // webdar headers
 #include "body_builder.hpp"
+#include "actor.hpp"
+#include "events.hpp"
 #include "html_compression.hpp"
 #include "html_crypto_algo.hpp"
 #include "html_form_input.hpp"
@@ -51,9 +53,11 @@ extern "C"
 #include "html_entrepot.hpp"
 #include "html_web_user_interaction.hpp"
 
-class html_options_create : public body_builder , public actor
+class html_options_create : public body_builder, public actor, public events
 {
 public:
+    static const std::string entrepot_changed;
+
     html_options_create();
     html_options_create(const html_options_create & ref) = default;
     html_options_create(html_options_create && ref) noexcept = default;
@@ -70,6 +74,9 @@ public:
 	/// and feeding the libdar::archive_options_create::set_reference(libdar::archive *)
 	/// with the object built from this->get_reference().*
     libdar::archive_options_create get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
+
+	/// optain the current entrepot object where is expected to be create the archive
+    std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const { return entrep.get_entrepot(webui); };
 
 protected:
 

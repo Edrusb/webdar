@@ -31,6 +31,7 @@ extern "C"
 }
 
     // C++ system header files
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
 #include "html_popup.hpp"
