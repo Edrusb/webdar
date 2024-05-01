@@ -164,6 +164,10 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
     set_visible(true);
     status = st_go_select;
     entr = x_entr;
+    if(mem_ui)
+	throw WEBDAR_BUG;
+    mem_ui = entr->get_current_user_interaction();
+    entr->change_user_interaction(webui.get_user_interaction());
     fieldset.change_label(start_dir);
     createdir_form.set_visible(false);
     run_thread(run_init_fill);
@@ -182,17 +186,15 @@ void html_select_file::on_event(const std::string & event_name)
 	else
 	{
 	    status = st_completed;
-	    set_visible(false);
 	    act(entry_selected); // propagate the event to object that subscribed to us
-	    my_join();
+	    my_join(true);
 	}
     }
     else if(event_name == op_cancelled)
     {
 	status = st_init;
-	set_visible(false);
 	act(op_cancelled); // propagate the event to objects that subscribed to us
-	my_join();
+	my_join(true);
     }
     else if(event_name == op_chdir_parent)
     {
@@ -251,7 +253,7 @@ void html_select_file::on_event(const std::string & event_name)
     else if(event_name == html_web_user_interaction::libdar_has_finished)
     {
 	loading_mode(false);
-	    // webui is auto_hiding thus its visibility has
+	my_body_part_has_changed();
     }
     else // click on directory list entry?
     {
@@ -278,13 +280,10 @@ void html_select_file::on_event(const std::string & event_name)
 
 	    if(!fieldset_isdir)
 	    {
-		string prev_file;
-
 		    // if the current select item is not a directory we have not
 		    // changed directory into it, the current path is the dirname
 		    // of what fieldset points to, so we "pop" the current selected
 		    // filename from the current path to get back to the currentdir
-
 		curdir.pop_back();
 	    }
 
@@ -293,6 +292,13 @@ void html_select_file::on_event(const std::string & event_name)
 	    curdir += chemin((it->second.btn)->get_label());
 	    fieldset.change_label(curdir.display());
 	    fieldset_isdir = it->second.isdir;
+
+		// as we changed into a directory we have to update the 'listed' entries
+	    if(fieldset_isdir)
+		run_thread(run_fill_only);
+
+
+
 	}
 	else
 		// we avoid consulting listed as it may still be  under construction
@@ -312,12 +318,34 @@ string html_select_file::inherited_get_body_part(const chemin & path,
     closest_ancestor_of_type(page);
 
     if(which_thread == run_nothing)
-	my_join(); // possibly trigger exception from our previously running child thread
+    {
+	my_join(false); // possibly trigger exception from our previously running child thread
 
-    if(entr && which_thread == run_nothing)
+	if(!entr)
+	    throw WEBDAR_BUG;
+
 	run_thread(run_fill_only);
+    }
 
-    ret = html_popup::inherited_get_body_part(path, req);
+    bool lock_acquired = content_mutex.try_lock();
+
+    try
+    {
+	if(!lock_acquired && !is_loading_mode)
+	    throw WEBDAR_BUG;
+	    // ELSE as we are in loading mode or no thread will run until we release the mutex
+	    // either we will not read 'content' because it is hidden, or no subthread will
+	    // run during the time we proceed with html_popup::inherited_get_get_body_part()
+	ret = html_popup::inherited_get_body_part(path, req);
+    }
+    catch(...)
+    {
+	if(lock_acquired)
+	    content_mutex.unlock();
+	throw;
+    }
+    if(lock_acquired)
+	content_mutex.unlock();
 
     if(page != nullptr)
     {
@@ -330,7 +358,7 @@ string html_select_file::inherited_get_body_part(const chemin & path,
 	throw WEBDAR_BUG; // cannot set refresh mode
 
     warning.ignore_body_changed_from_my_children(true);
-    if(!should_refresh)
+    if(!should_refresh && ! has_my_body_part_changed())
 	warning.clear();
     warning.ignore_body_changed_from_my_children(false);
 
@@ -400,33 +428,43 @@ void html_select_file::new_css_library_available()
 
 void html_select_file::inherited_run()
 {
+    content_mutex.lock();
     try
     {
-	switch(which_thread)
+	try
 	{
-	case run_nothing:
-	    throw WEBDAR_BUG;
-	case run_create_dir:
-	    create_dir();
-	    break;
-	case run_init_fill:
-	    init_fieldset_isdir();
-		/* no break ! */
-	case run_fill_only:
-	    fill_content();
-	    break;
-	default:
-	    throw WEBDAR_BUG;
+	    switch(which_thread)
+	    {
+	    case run_nothing:
+		throw WEBDAR_BUG;
+	    case run_create_dir:
+		create_dir();
+		break;
+	    case run_init_fill:
+		init_fieldset_isdir();
+		    /* no break ! */
+	    case run_fill_only:
+		fill_content();
+		break;
+	    default:
+		throw WEBDAR_BUG;
+	    }
 	}
+	catch(...)
+	{
+
+	    which_thread = run_nothing;
+	    throw;
+	}
+
+	which_thread = run_nothing;
     }
     catch(...)
     {
-
-	which_thread = run_nothing;
+	content_mutex.unlock();
 	throw;
     }
-
-    which_thread = run_nothing;
+    content_mutex.unlock();
 }
 
 
@@ -499,60 +537,48 @@ void html_select_file::fill_content()
     if(!entr)
 	throw WEBDAR_BUG;
 
-    try
+    if(fieldset_isdir)
+	entr->set_location(fieldset.get_label());
+
+    entr->read_dir_reset_dirinfo();
+
+    while(entr->read_dir_next_dirinfo(entry, isdir))
     {
-	if(fieldset_isdir)
-	    entr->set_location(fieldset.get_label());
-
-	entr->read_dir_reset_dirinfo();
-
-	while(entr->read_dir_next_dirinfo(entry, isdir))
+	if(isdir || filter.empty() || fnmatch(filter.c_str(), entry.c_str(), FNM_PERIOD) == 0)
 	{
-	    if(isdir || filter.empty() || fnmatch(filter.c_str(), entry.c_str(), FNM_PERIOD) == 0)
-	    {
-		if(isdir)
-		    entry_dirs.push_back(entry);
-		else
-		    entry_files.push_back(entry);
-	    }
-		// else ignoring entry because
-		// this is not a directory
-		// and a mask filtering has been set
-		// and the entry does not match the filter
+	    if(isdir)
+		entry_dirs.push_back(entry);
+	    else
+		entry_files.push_back(entry);
 	}
-
-	sort(entry_dirs.begin(), entry_dirs.end());
-	sort(entry_files.begin(), entry_files.end());
-
-	deque<string>::iterator it = entry_dirs.begin();
-
-	while(it != entry_dirs.end())
-	{
-	    event_name = "x_" + to_string(count++);
-	    if(listed.find(event_name) != listed.end())
-		throw WEBDAR_BUG; // event already exists!?!
-	    add_content_entry(event_name, true, *it);
-	    ++it;
-	}
-
-	it = entry_files.begin();
-	while(it != entry_files.end())
-	{
-	    event_name = "x_" + to_string(count++);
-	    if(listed.find(event_name) != listed.end())
-		throw WEBDAR_BUG; // event already exists!?!
-	    add_content_entry(event_name, false, *it);
-	    ++it;
-	}
+	    // else ignoring entry because
+	    // this is not a directory
+	    // and a mask filtering has been set
+	    // and the entry does not match the filter
     }
-    catch(libdar::Ebug & e)
+
+    sort(entry_dirs.begin(), entry_dirs.end());
+    sort(entry_files.begin(), entry_files.end());
+
+    deque<string>::iterator it = entry_dirs.begin();
+
+    while(it != entry_dirs.end())
     {
-	throw;
+	event_name = "x_" + to_string(count++);
+	if(listed.find(event_name) != listed.end())
+	    throw WEBDAR_BUG; // event already exists!?!
+	add_content_entry(event_name, true, *it);
+	++it;
     }
-    catch(libdar::Egeneric & e)
+
+    it = entry_files.begin();
+    while(it != entry_files.end())
     {
-	warning.clear();
-	warning.add_text(3, e.get_message());
+	event_name = "x_" + to_string(count++);
+	if(listed.find(event_name) != listed.end())
+	    throw WEBDAR_BUG; // event already exists!?!
+	add_content_entry(event_name, false, *it);
+	++it;
     }
 }
 
@@ -596,12 +622,6 @@ void html_select_file::run_thread(thread_to_run val)
 	path_loaded = ""; // this will force reloading dir content
 	which_thread = val;
 	loading_mode(true);
-	if(mem_ui)
-	    throw WEBDAR_BUG;
-	mem_ui = entr->get_current_user_interaction();
-	if(!mem_ui)
-	    throw WEBDAR_BUG;
-	entr->change_user_interaction(webui.get_user_interaction());
 	webui.run_and_control_thread(this);
 	break;
     case run_init_fill:
@@ -612,12 +632,6 @@ void html_select_file::run_thread(thread_to_run val)
 	    path_loaded = fieldset.get_label();
 	    which_thread = val;
 	    loading_mode(true);
-	    if(mem_ui)
-		throw WEBDAR_BUG;
-	    mem_ui = entr->get_current_user_interaction();
-	    if(!mem_ui)
-		throw WEBDAR_BUG;
-	    entr->change_user_interaction(webui.get_user_interaction());
 	    webui.run_and_control_thread(this);
 	}
 	    // else we are already displaying the requested directory content
@@ -709,17 +723,39 @@ string html_select_file::get_parent_path(const string & somepath)
     return chem.display();
 }
 
-void html_select_file::my_join()
+void html_select_file::my_join(bool last)
 {
     try
     {
-	if(!mem_ui)
-	    throw WEBDAR_BUG;
-	entr->change_user_interaction(mem_ui);
-	entr.reset();   // forget about the go_select() provided entrepot
-	mem_ui.reset(); // forget about the user_interaction entr had
-		// not necessary to call my_body_part_has_changed() as we just changed our own visibility
-	join();
+	bool ok = false;
+	try
+	{
+	    if(last)
+		set_visible(false);
+	    join();
+	    ok = true;
+	    throw ok;
+	}
+	catch(...)
+	{
+	    if(last)
+	    {
+		if(entr)
+		{
+		    entr->change_user_interaction(mem_ui);
+		    entr.reset();   // forget about the go_select() provided entrepot
+		}
+		else
+		    throw WEBDAR_BUG;
+
+		mem_ui.reset(); // forget about the user_interaction entr had
+	    }
+	    should_refresh = false;
+	    loading_mode(false);
+
+	    if(!ok)
+		throw;
+	}
     }
     catch(exception_bug &)
     {
@@ -727,19 +763,17 @@ void html_select_file::my_join()
     }
     catch(exception_base & e)
     {
-	loading_mode(false);
-	warning.add_text(3, e.get_message());
+	if(last)
+	    throw; // cannot display the error in 'warning' is visible is now false
+	else
+	    warning.add_text(3, e.get_message());
     }
     catch(libdar::Egeneric & e)
     {
-	loading_mode(false);
-	warning.add_text(3, e.get_message());
+	if(last)
+	    throw; // cannot display the error in 'warning' is visible is now false
+	else
+	    warning.add_text(3, e.get_message());
     }
-    catch(...)
-    {
-	loading_mode(false);
-	throw;
-    }
-
 }
 

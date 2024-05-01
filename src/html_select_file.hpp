@@ -237,6 +237,8 @@ private:
     html_table content;               ///< parent of content objects
     std::map<std::string, item> listed; ///< associate a event message to each listed items
 
+    libthreadar::mutex content_mutex; ///< to avoid a subthread launched from on_event() to modify 'content' while also building body parts
+
     html_div btn_box;                 ///< box containing the bottom buttons
     html_button btn_cancel;           ///< triggers the entry_cancelled event
     html_button btn_validate;         ///< trigger the entry_selected event
@@ -289,8 +291,10 @@ private:
 
 	/// join() wrapper
 
-	/// \note cleanup and restore states changed by run_thread()
-    void my_join();
+	/// \param[in] last whether we have to set back entrepot and forget about it
+	/// \note when 'last' is false it only cleans up and restore states changed by run_thread()
+	/// but if 'last' is true, this cleans up and restore states changed by go_select()
+    void my_join(bool last);
 
 };
 
