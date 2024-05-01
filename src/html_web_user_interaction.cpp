@@ -364,13 +364,13 @@ void html_web_user_interaction::set_mode(mode_type m)
 	if(!autohide || (was_interrupted && hide_unless_interrupted))
 	{
 	    act(dont_refresh);
-	    break;
+	    break; // break for the 'case finished:' !!!
 	}
 	else // if auto hide is set, we go to the closed status, here below
 	    m = closed;
 	    // no break!
     case closed:
-	set_visible(false);
+	set_visible(false); // we hide ourself
 	act(libdar_has_finished);
 	if(autohide && (!was_interrupted || !hide_unless_interrupted))
 	    act(dont_refresh);
