@@ -57,6 +57,10 @@ html_archive_merge::html_archive_merge():
 
     sauv_path.set_select_mode(html_form_input_file::select_dir);
     sauv_path.set_can_create_dir(true);
+    if(repoxfer.get_html_user_interaction())
+	repoxfer.get_html_user_interaction()->auto_hide(true, false);
+    else
+	throw WEBDAR_BUG;
 
 	// adoption tree
 
@@ -67,10 +71,32 @@ html_archive_merge::html_archive_merge():
     deroule.adopt_in_section(sect_ref, &reference);
     deroule.adopt_in_section(sect_opt, &options);
     adopt(&deroule);
+    adopt(&repoxfer);
+
+	// events
+    options.record_actor_on_event(this, html_options_merge::entrepot_changed);
+    repoxfer.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
+
+	// visibility
+    repoxfer.set_visible(false);
 
 	// CSS
-
     webdar_css_style::normal_button(deroule, true);
+}
+
+void html_archive_merge::on_event(const string & event_name)
+{
+    if(event_name == html_options_merge::entrepot_changed)
+    {
+	repoxfer.set_visible(true);
+	repoxfer.run_and_control_thread(this);
+    }
+    else if(event_name == html_libdar_running_popup::libdar_has_finished)
+    {
+	repoxfer.set_visible(false);
+    }
+    else
+	throw WEBDAR_BUG;
 }
 
 string html_archive_merge::inherited_get_body_part(const chemin & path,
@@ -86,4 +112,13 @@ void html_archive_merge::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
+}
+
+void html_archive_merge::inherited_run()
+{
+    shared_ptr<html_web_user_interaction> ptr(repoxfer.get_html_user_interaction());
+
+    if(!ptr)
+	throw WEBDAR_BUG;
+    sauv_path.set_entrepot(options.get_entrepot(ptr));
 }

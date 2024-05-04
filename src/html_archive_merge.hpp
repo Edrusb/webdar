@@ -31,16 +31,19 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
+#include "body_builder.hpp"
+#include "actor.hpp"
 #include "html_form_input_file.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_options_merge.hpp"
 #include "body_builder.hpp"
 #include "html_derouleur.hpp"
+#include "html_libdar_running_popup.hpp"
 
-class html_archive_merge: public body_builder
+class html_archive_merge: public body_builder, public libthreadar::thread, public actor
 {
 public:
     html_archive_merge();
@@ -55,6 +58,9 @@ public:
     libdar::archive_options_merge get_options_merge(std::shared_ptr<html_web_user_interaction> dialog) const { return options.get_options(dialog); };
     const html_archive_read & get_reference() const { return reference; };
 
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
+
 protected:
 
 	/// inherited from body_builder
@@ -62,6 +68,9 @@ protected:
 						const request & req) override;
 
     virtual void new_css_library_available() override;
+
+	/// inherited from libthreadar::thread
+    virtual void inherited_run() override;
 
 private:
     html_derouleur deroule;
@@ -71,7 +80,7 @@ private:
     html_form_input basename;
     html_archive_read reference;
     html_options_merge options;
-
+    html_libdar_running_popup repoxfer;
 };
 
 #endif
