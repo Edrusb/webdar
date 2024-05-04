@@ -71,6 +71,10 @@ public:
 	/// with the object built from this->get_auxiliary()
     libdar::archive_options_merge get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
 
+	/// optain the current entrepot object where is expected to be create the archive
+    std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const { return entrep.get_entrepot(webui); };
+
+
 protected:
 
 	/// inherited from bdy_builder
@@ -78,6 +82,7 @@ protected:
 						const request & req) override;
 
     virtual void new_css_library_available() override;
+
 
 private:
     html_derouleur deroule;
