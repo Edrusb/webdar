@@ -45,14 +45,18 @@ html_archive_isolate::html_archive_isolate():
     sauv_path("Where to create the isolated catalogue", "/", 20, "Select the directory where to create the isolated catalog..."),
     basename("Archive basename", html_form_input::text, "", 10)
 {
-    sauv_path.set_can_create_dir(true);
-    sauv_path.set_select_mode(html_form_input_file::select_dir);
-
-	// adoption tree
-
     static const char* sect_archive = "isolation options";
     deroule.add_section(sect_archive, "Archive Isolation");
     deroule.set_active_section(0);
+
+    sauv_path.set_select_mode(html_form_input_file::select_dir);
+    sauv_path.set_can_create_dir(true);
+    if(repoxfer.get_html_user_interaction())
+	repoxfer.get_html_user_interaction()->auto_hide(true, false);
+    else
+	throw WEBDAR_BUG;
+
+	    // adoption tree
 
     fs.adopt(&sauv_path);
     fs.adopt(&basename);
@@ -60,9 +64,13 @@ html_archive_isolate::html_archive_isolate():
     deroule.adopt_in_section(sect_archive, &form);
     adopt(&deroule);
     adopt(&options);
+    adopt(&repoxfer);
 
 	// events
     options.record_actor_on_event(this, html_options_isolate::entrepot_changed);
+
+	/// visibility
+    repoxfer.set_visible(false);
 
 	// css
 
