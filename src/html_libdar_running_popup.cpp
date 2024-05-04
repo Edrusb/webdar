@@ -101,7 +101,7 @@ void html_libdar_running_popup::my_visibility_has_changed()
     web_ui->set_visible(get_visible());
 }
 
-void html_libdar_running_popup::on_event(const std::string & event_name)
+void html_libdar_running_popup::on_event(const string & event_name)
 {
     if(event_name == html_web_user_interaction::libdar_has_finished)
     {

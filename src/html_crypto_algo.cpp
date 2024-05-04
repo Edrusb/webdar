@@ -109,7 +109,7 @@ void html_crypto_algo::set_value(libdar::crypto_algo val)
     my_body_part_has_changed();
 }
 
-void html_crypto_algo::on_event(const std::string & event_name)
+void html_crypto_algo::on_event(const string & event_name)
 {
 	// when html_form_select changes, we propagate the change event to our own event name
     act(changed);

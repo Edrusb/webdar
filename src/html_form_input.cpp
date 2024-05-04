@@ -42,9 +42,9 @@ using namespace std;
 
 const string html_form_input::changed = "html_form_input_changed";
 
-html_form_input::html_form_input(const std::string & label,
+html_form_input::html_form_input(const string & label,
 				 input_type type,
-				 const std::string & initial_value,
+				 const string & initial_value,
 				 unsigned int size)
 {
     x_label = label;
@@ -72,7 +72,7 @@ void html_form_input::set_range(int min, int max)
     }
 }
 
-void html_form_input::change_label(const std::string & label)
+void html_form_input::change_label(const string & label)
 {
     if(label != x_label)
     {
@@ -92,7 +92,7 @@ void html_form_input::change_type(input_type type)
     }
 }
 
-void html_form_input::set_value(const std::string & val)
+void html_form_input::set_value(const string & val)
 {
     if(x_init != val)
     {
@@ -189,7 +189,7 @@ string html_form_input::inherited_get_body_part(const chemin & path,
     return ret;
 }
 
-void html_form_input::set_change_event_name(const std::string & name)
+void html_form_input::set_change_event_name(const string & name)
 {
     if(modif_change != "")
 	throw WEBDAR_BUG; // can only be used once, as unregistering an event name is not available

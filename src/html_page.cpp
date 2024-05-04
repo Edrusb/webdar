@@ -39,7 +39,7 @@ extern "C"
 
 using namespace std;
 
-void html_page::set_title(const std::string & title)
+void html_page::set_title(const string & title)
 {
     if(x_title != title)
     {
@@ -48,7 +48,7 @@ void html_page::set_title(const std::string & title)
     }
 }
 
-void html_page::set_refresh_redirection(unsigned int seconds, const std::string & url)
+void html_page::set_refresh_redirection(unsigned int seconds, const string & url)
 {
     if(url != "")
     {
@@ -69,7 +69,7 @@ string html_page::inherited_get_body_part(const chemin & path,
 
 string html_page::get_body_part_given_the_body(const chemin & path,
 					       const request & req,
-					       const std::string & body)
+					       const string & body)
 {
     string ret = "";
     string aux;

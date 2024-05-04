@@ -309,7 +309,7 @@ string saisie::inherited_get_body_part(const chemin & path,
     return ret;
 }
 
-void saisie::on_event(const std::string & event_name)
+void saisie::on_event(const string & event_name)
 {
     if(event_name == html_menu::changed
        || event_name == html_form_input::changed
@@ -493,7 +493,7 @@ libdar::archive_options_create saisie::get_creating_options(shared_ptr<html_web_
     return create.get_options_create(dialog);
 }
 
-libdar::archive_options_isolate saisie::get_isolating_options(std::shared_ptr<html_web_user_interaction> dialog) const
+libdar::archive_options_isolate saisie::get_isolating_options(shared_ptr<html_web_user_interaction> dialog) const
 {
     if(status != st_isolate)
 	throw WEBDAR_BUG;
@@ -501,7 +501,7 @@ libdar::archive_options_isolate saisie::get_isolating_options(std::shared_ptr<ht
     return isolate.get_options_isolate(dialog);
 }
 
-libdar::archive_options_merge saisie::get_merging_options(std::shared_ptr<html_web_user_interaction> dialog) const
+libdar::archive_options_merge saisie::get_merging_options(shared_ptr<html_web_user_interaction> dialog) const
 {
     if(status != st_merge)
 	throw WEBDAR_BUG;

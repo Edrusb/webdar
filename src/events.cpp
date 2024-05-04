@@ -136,7 +136,7 @@ void events::rename_name(const string & old_name, const string & new_name)
     carte.erase(it);
 }
 
-void events::act(const std::string & name)
+void events::act(const string & name)
 {
     map < string , list<actor *> >::iterator it = carte.find(name);
     list<actor *>::iterator ptr;

@@ -192,7 +192,7 @@ string html_web_user_interaction::inherited_get_body_part(const chemin & path,
     return ret;
 }
 
-void html_web_user_interaction::on_event(const std::string & event_name)
+void html_web_user_interaction::on_event(const string & event_name)
 {
     check_libdata();
 

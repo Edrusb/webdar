@@ -39,7 +39,7 @@ extern "C"
 
 using namespace std;
 
-exception_system::exception_system(const std::string & context, int error_code) : exception_base("")
+exception_system::exception_system(const string & context, int error_code) : exception_base("")
 {
 #if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
     const unsigned int SIZE = 300;

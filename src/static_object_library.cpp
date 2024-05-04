@@ -64,7 +64,7 @@ const static_object * static_object_library::find_object(const string & name)
 
 void static_object_library::release()
 {
-    std::map<string, static_object *>::iterator it = library.begin();
+    map<string, static_object *>::iterator it = library.begin();
 
     while(it != library.end())
     {

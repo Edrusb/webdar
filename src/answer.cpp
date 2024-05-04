@@ -50,7 +50,7 @@ void answer::clear()
     add_body(""); // this adds the Content-Lenght header
 };
 
-void answer::add_cookie(const std::string & key, const std::string & value)
+void answer::add_cookie(const string & key, const string & value)
 {
     string oldval;
     string xval = key+"="+value;
@@ -64,13 +64,13 @@ void answer::add_cookie(const std::string & key, const std::string & value)
         set_attribute(HDR_SET_COOKIE, xval);
 }
 
-void answer::add_body(const std::string & key)
+void answer::add_body(const string & key)
 {
     body = key;
     set_attribute(HDR_CONTENT_LENGTH, webdar_tools_convert_to_string(body.size()));
 }
 
-void answer::add_attribute_member(const std::string & key, const std::string & value)
+void answer::add_attribute_member(const string & key, const string & value)
 {
     string in_place;
     if(find_attribute(key, in_place))
@@ -142,7 +142,7 @@ void answer::reset_read_next_attribute() const
     next_read = attributes.begin();
 }
 
-bool answer::read_next_attribute(std::string & key, std::string & value) const
+bool answer::read_next_attribute(string & key, string & value) const
 {
     if(next_read != attributes.end())
     {

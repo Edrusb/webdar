@@ -40,7 +40,7 @@ extern "C"
 using namespace std;
 
 
-void html_text::add_text(unsigned int level, const std::string & text)
+void html_text::add_text(unsigned int level, const string & text)
 {
     string css_val = get_css_classes();
 

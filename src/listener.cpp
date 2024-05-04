@@ -49,8 +49,8 @@ extern "C"
 
 using namespace std;
 
-static struct in_addr string_to_network_IPv4(const std::string & ip);
-static struct in6_addr string_to_network_IPv6(const std::string & ip);
+static struct in_addr string_to_network_IPv4(const string & ip);
+static struct in6_addr string_to_network_IPv6(const string & ip);
 static string network_IPv4_to_string(const struct in_addr & ip);
 static string network_IPv6_to_string(const struct in6_addr & ip);
 
@@ -76,8 +76,8 @@ listener::listener(const shared_ptr<central_report> & log,
 
 listener::listener(const shared_ptr<central_report> & log,
 		   const shared_ptr<const authentication> & auth,
-		   std::unique_ptr<ssl_context> & ciphering,
-		   const std::string & ip,
+		   unique_ptr<ssl_context> & ciphering,
+		   const string & ip,
 		   unsigned int port)
 {
     init(log, auth, ciphering, ip, port);
@@ -85,8 +85,8 @@ listener::listener(const shared_ptr<central_report> & log,
 
 void listener::init(const shared_ptr<central_report> & log,
 		    const shared_ptr<const authentication> & auth,
-		    std::unique_ptr<ssl_context> & ciphering,
-		    const std::string & ip,
+		    unique_ptr<ssl_context> & ciphering,
+		    const string & ip,
 		    unsigned int port)
 {
     sigset_t sigs;
@@ -326,7 +326,7 @@ void listener::inherited_run()
     }
 }
 
-static struct in_addr string_to_network_IPv4(const std::string & ip)
+static struct in_addr string_to_network_IPv4(const string & ip)
 {
     struct in_addr ret;
 
@@ -345,7 +345,7 @@ static struct in_addr string_to_network_IPv4(const std::string & ip)
     return ret;
 }
 
-static struct in6_addr string_to_network_IPv6(const std::string & ip)
+static struct in6_addr string_to_network_IPv6(const string & ip)
 {
     struct in6_addr ret;
 

@@ -47,7 +47,7 @@ void html_aiguille::clear()
     my_body_part_has_changed();
 }
 
-signed int html_aiguille::add_section(const std::string & name, const std::string & title)
+signed int html_aiguille::add_section(const string & name, const string & title)
 {
     if(find(order.begin(), order.end(), name) != order.end())
 	throw exception_range("section name already used in this html_aiguille");
@@ -85,7 +85,7 @@ signed int html_aiguille::add_section(const std::string & name, const std::strin
     return sections.size() - 1;
 }
 
-void html_aiguille::adopt_in_section(const std::string & section_name, body_builder* obj)
+void html_aiguille::adopt_in_section(const string & section_name, body_builder* obj)
 {
     map<string, section>::iterator it = sections.find(section_name);
 
@@ -107,7 +107,7 @@ void html_aiguille::adopt_in_section(signed int num, body_builder* obj)
     adopt_in_section(order[num], obj);
 }
 
-void html_aiguille::clear_section(const std::string & section_name)
+void html_aiguille::clear_section(const string & section_name)
 {
     map<string, section>::iterator it = sections.find(section_name);
 
@@ -150,7 +150,7 @@ void html_aiguille::clear_section(signed int num)
     clear_section(order[num]);
 }
 
-void html_aiguille::remove_section(const std::string & section_name)
+void html_aiguille::remove_section(const string & section_name)
 {
     clear_section(section_name);
 
@@ -182,7 +182,7 @@ void html_aiguille::remove_section(signed int num)
     remove_section(order[num]);
 }
 
-void html_aiguille::set_active_section(const std::string & name)
+void html_aiguille::set_active_section(const string & name)
 {
    unsigned int i = 0;
 
@@ -265,7 +265,7 @@ string html_aiguille::inherited_get_body_part(const chemin & path,
     return ret;
 }
 
-unsigned int html_aiguille::section_name_to_num(const std::string & name) const
+unsigned int html_aiguille::section_name_to_num(const string & name) const
 {
     unsigned int size = order.size();
     unsigned int found = 0;

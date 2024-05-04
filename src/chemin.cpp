@@ -68,7 +68,7 @@ bool chemin::is_the_beginning_of(const chemin & ref) const
     return (me_it == members.end());
 }
 
-void chemin::push_back(const std::string & x)
+void chemin::push_back(const string & x)
 {
 	// must avoid adding a string that contains a /
     if(find(x.begin(), x.end(), '/') != x.end())
@@ -136,7 +136,7 @@ string chemin::display(bool relative) const
     return ret;
 }
 
-std::string chemin::namify() const
+string chemin::namify() const
 {
     string ret = "";
     deque<string>::const_iterator it = members.begin();

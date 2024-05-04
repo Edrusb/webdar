@@ -47,7 +47,7 @@ int webdar_tools_convert_to_int(const string & ref)
     buf.str(ref);
     buf >> ret;
     if(buf.rdstate() != ios_base::goodbit && buf.rdstate() != ios_base::eofbit)
-	throw exception_range(std::string("Cannot convert ") + ref + std::string(" to integer"));
+	throw exception_range(string("Cannot convert ") + ref + string(" to integer"));
 
     return ret;
 }
@@ -172,7 +172,7 @@ string webdar_tools_to_canonical_case(const string & ch)
     return ret;
 }
 
-string webdar_tools_decode_urlencoded(const std::string & ch)
+string webdar_tools_decode_urlencoded(const string & ch)
 {
     string ret = "";
     string::const_iterator it = ch.begin();
@@ -215,7 +215,7 @@ string webdar_tools_decode_urlencoded(const std::string & ch)
 }
 
 
-unsigned int webdar_tools_convert_hexa_to_int(const std::string & ref)
+unsigned int webdar_tools_convert_hexa_to_int(const string & ref)
 {
     unsigned int ret = 0;
     unsigned int val = 0;
@@ -240,7 +240,7 @@ unsigned int webdar_tools_convert_hexa_to_int(const std::string & ref)
     return ret;
 }
 
-string webdar_tools_get_title(const std::string & sessname, const string & status)
+string webdar_tools_get_title(const string & sessname, const string & status)
 {
     string ret = "Webdar - ";
     if(sessname == "")

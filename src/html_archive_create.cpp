@@ -83,7 +83,7 @@ html_archive_create::html_archive_create():
     webdar_css_style::normal_button(deroule, true);
 }
 
-void html_archive_create::on_event(const std::string & event_name)
+void html_archive_create::on_event(const string & event_name)
 {
     if(event_name == html_options_create::entrepot_changed)
     {

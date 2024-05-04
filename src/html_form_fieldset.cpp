@@ -39,7 +39,7 @@ extern "C"
 
 using namespace std;
 
-void html_form_fieldset::change_label(const std::string & label)
+void html_form_fieldset::change_label(const string & label)
 {
     if(x_label != label)
     {

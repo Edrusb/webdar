@@ -63,7 +63,7 @@ html_listing_page::html_listing_page():
     tree.set_drop_path(&title);
 }
 
-void html_listing_page::on_event(const std::string & event_name)
+void html_listing_page::on_event(const string & event_name)
 {
     if(event_name != event_close)
 	throw WEBDAR_BUG;

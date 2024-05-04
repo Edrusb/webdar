@@ -41,7 +41,7 @@ extern "C"
 using namespace std;
 
 error_page::error_page(unsigned int status_code,
-                       const std::string & reason):
+                       const string & reason):
     page(reason)
 {
     static const char* page_css_name = "page";
@@ -96,7 +96,7 @@ error_page::error_page(unsigned int status_code,
     text.add_css_class(text_css_name);
 }
 
-void error_page::set_message_body(const std::string & message)
+void error_page::set_message_body(const string & message)
 {
     body.clear();
     body.add_text(3, message);

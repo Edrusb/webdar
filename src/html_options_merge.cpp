@@ -225,7 +225,7 @@ html_options_merge::html_options_merge():
 }
 
 
-void html_options_merge::on_event(const std::string & event_name)
+void html_options_merge::on_event(const string & event_name)
 {
     auxiliary.set_visible(has_aux.get_value_as_bool());
     aux_placeholder.set_visible(! has_aux.get_value_as_bool());
@@ -311,7 +311,7 @@ void html_options_merge::on_event(const std::string & event_name)
 }
 
 
-libdar::archive_options_merge html_options_merge::get_options(std::shared_ptr<html_web_user_interaction> & webui) const
+libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_web_user_interaction> & webui) const
 {
     libdar::archive_options_merge ret;
     shared_ptr<libdar::archive> aux;

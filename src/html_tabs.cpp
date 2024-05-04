@@ -73,7 +73,7 @@ html_tabs::~html_tabs()
     }
 }
 
-void html_tabs::add_tab(const std::string & label)
+void html_tabs::add_tab(const string & label)
 {
     unsigned int tab_num = tabs.size();
     string event_name = to_string(tab_num);
@@ -114,7 +114,7 @@ void html_tabs::add_tab(const std::string & label)
     my_body_part_has_changed();
 }
 
-void html_tabs::on_event(const std::string & event_name)
+void html_tabs::on_event(const string & event_name)
 {
     map<string, unsigned int>::iterator it = corres.find(event_name);
 
@@ -165,7 +165,7 @@ string html_tabs::inherited_get_body_part(const chemin & path,
 
 void html_tabs::new_css_library_available()
 {
-    std::unique_ptr<css_library> & csslib = lookup_css_library();
+    unique_ptr<css_library> & csslib = lookup_css_library();
 
     if(!csslib)
 	throw WEBDAR_BUG;

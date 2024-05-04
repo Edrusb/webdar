@@ -181,7 +181,7 @@ html_options_isolate::html_options_isolate():
     webdar_css_style::grey_button(deroule, true);
 }
 
-void html_options_isolate::on_event(const std::string & event_name)
+void html_options_isolate::on_event(const string & event_name)
 {
     if(event_name == html_compression::changed
        || event_name == html_form_input::changed
@@ -258,7 +258,7 @@ void html_options_isolate::on_event(const std::string & event_name)
 }
 
 
-libdar::archive_options_isolate html_options_isolate::get_options(std::shared_ptr<html_web_user_interaction> & webui) const
+libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<html_web_user_interaction> & webui) const
 {
     libdar::archive_options_isolate ret;
 

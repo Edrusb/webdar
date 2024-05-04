@@ -198,7 +198,7 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
     return opts;
 }
 
-void html_options_read::set_webui(std::shared_ptr<html_web_user_interaction> x_webui)
+void html_options_read::set_webui(shared_ptr<html_web_user_interaction> x_webui)
 {
     if(!x_webui)
 	throw WEBDAR_BUG;
@@ -206,7 +206,7 @@ void html_options_read::set_webui(std::shared_ptr<html_web_user_interaction> x_w
     webui = x_webui;
 }
 
-void html_options_read::on_event(const std::string & event_name)
+void html_options_read::on_event(const string & event_name)
 {
     if(event_name == entrepot_has_changed)
 	act(entrepot_has_changed);

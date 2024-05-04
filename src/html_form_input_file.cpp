@@ -268,7 +268,7 @@ string html_form_input_file::inherited_get_body_part(const chemin & path,
     return ret;
 }
 
-string html_form_input_file::slicename_to_basename(const std::string & val)
+string html_form_input_file::slicename_to_basename(const string & val)
 {
     static const char sep = '.';
     vector<string> splitted;

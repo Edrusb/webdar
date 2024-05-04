@@ -61,7 +61,7 @@ void environment::feed(char** env)
     }
 }
 
-bool environment::get_value_of(const std::string & var, std::string & value) const
+bool environment::get_value_of(const string & var, string & value) const
 {
     map<string, string>::const_iterator it = envir.find(var);
 

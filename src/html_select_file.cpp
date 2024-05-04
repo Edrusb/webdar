@@ -56,7 +56,7 @@ const string html_select_file::css_warning = "html_select_warning";
 const string html_select_file::css_sticky_top = "html_select_sticky_top";
 const string html_select_file::css_sticky_bot = "html_select_sticky_bot";
 
-html_select_file::html_select_file(const std::string & message):
+html_select_file::html_select_file(const string & message):
     html_popup(width_pct,height_pct),
     status(st_init),
     which_thread(run_nothing),
@@ -147,7 +147,7 @@ html_select_file::html_select_file(const std::string & message):
 }
 
 void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
-				 const std::string & start_dir)
+				 const string & start_dir)
 {
     switch(status)
     {
@@ -175,7 +175,7 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
     my_body_part_has_changed();
 };
 
-void html_select_file::on_event(const std::string & event_name)
+void html_select_file::on_event(const string & event_name)
 {
     if(event_name == entry_selected)
     {

@@ -44,7 +44,7 @@ const string html_dir_tree::event_shrink = "html_dir_tree_shrink";
 const string html_dir_tree::event_expand = "html_dir_tree_expand";
 const string html_dir_tree::event_click = "html_dir_tree_click";
 
-html_dir_tree::html_dir_tree(const std::string & chemin):
+html_dir_tree::html_dir_tree(const string & chemin):
     shrink("-", event_shrink),
     expand("+", event_expand),
     nosubdir(" ",""),
@@ -54,7 +54,7 @@ html_dir_tree::html_dir_tree(const std::string & chemin):
     init(chemin);
 }
 
-html_dir_tree::html_dir_tree(const archive_init_list * ref, const std::string & chemin):
+html_dir_tree::html_dir_tree(const archive_init_list * ref, const string & chemin):
     shrink("-", event_shrink),
     expand("+", event_expand),
     nosubdir(" ",""),
@@ -65,7 +65,7 @@ html_dir_tree::html_dir_tree(const archive_init_list * ref, const std::string & 
     set_source(ref);
 }
 
-void html_dir_tree::init(const std::string & chemin)
+void html_dir_tree::init(const string & chemin)
 {
     my_path = chemin;
     src = nullptr;
@@ -187,7 +187,7 @@ void html_dir_tree::go_hide()
     visibility_has_changed = true;
 }
 
-void html_dir_tree::on_event(const std::string & event_name)
+void html_dir_tree::on_event(const string & event_name)
 {
     if(event_name == event_shrink)
 	go_shrink();

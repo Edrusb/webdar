@@ -41,7 +41,7 @@ using namespace std;
 
 const string html_form_select::changed = "html_form_select_changed";
 
-html_form_select::html_form_select(const std::string & label, const std::string & x_event_name)
+html_form_select::html_form_select(const string & label, const string & x_event_name)
 {
     x_label = label;
     if(x_event_name.empty())

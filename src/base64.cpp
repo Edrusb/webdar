@@ -39,7 +39,7 @@ extern "C"
 
 using namespace std;
 
-base64::base64(const std::string & str)
+base64::base64(const string & str)
 {
     unsigned int missing = str.size() % 4;
 

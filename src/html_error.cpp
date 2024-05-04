@@ -67,13 +67,13 @@ html_error::html_error():
     register_name(acknowledged);
 }
 
-void html_error::set_message(const std::string & msg)
+void html_error::set_message(const string & msg)
 {
     the_error.clear();
     the_error.add_text(3, msg);
 }
 
-void html_error::on_event(const std::string & event_name)
+void html_error::on_event(const string & event_name)
 {
     act(acknowledged);
 	// we propagate the event, but it does not
@@ -81,7 +81,7 @@ void html_error::on_event(const std::string & event_name)
 	// thus we dont call my_body_part_has_changed();
 }
 
-void html_error::set_session_name(const std::string & sessname)
+void html_error::set_session_name(const string & sessname)
 {
     set_title(fixed_title1 + sessname + " - " + fixed_title2);
 }

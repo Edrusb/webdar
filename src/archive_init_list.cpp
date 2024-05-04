@@ -39,14 +39,14 @@ extern "C"
 
 using namespace std;
 
-const vector<libdar::list_entry> archive_init_list::get_children_in_table(const std::string & dir) const
+const vector<libdar::list_entry> archive_init_list::get_children_in_table(const string & dir) const
 {
     if(!ptr)
 	throw WEBDAR_BUG;
     return ptr->get_children_in_table(dir);
 }
 
-bool archive_init_list::has_subdirectory(const std::string & dir) const
+bool archive_init_list::has_subdirectory(const string & dir) const
 {
     if(!ptr)
 	throw WEBDAR_BUG;

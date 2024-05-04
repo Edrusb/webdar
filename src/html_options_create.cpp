@@ -285,10 +285,10 @@ html_options_create::html_options_create():
     webdar_css_style::grey_button(deroule, true);
 }
 
-libdar::archive_options_create html_options_create::get_options(std::shared_ptr<html_web_user_interaction> & webui) const
+libdar::archive_options_create html_options_create::get_options(shared_ptr<html_web_user_interaction> & webui) const
 {
     libdar::archive_options_create ret;
-    std::shared_ptr<libdar::archive> ref_arch; // used locally to pass the archive of reference we may build for diff/incr backup
+    shared_ptr<libdar::archive> ref_arch; // used locally to pass the archive of reference we may build for diff/incr backup
 
     switch(archtype.get_selected_num())
     {
@@ -376,7 +376,7 @@ string html_options_create::inherited_get_body_part(const chemin & path,
     return get_body_part_from_all_children(path, req);
 }
 
-void html_options_create::on_event(const std::string & event_name)
+void html_options_create::on_event(const string & event_name)
 {
     if(event_name == html_form_radio::changed
        || event_name == html_compression::changed

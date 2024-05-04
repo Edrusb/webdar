@@ -187,12 +187,12 @@ map<string,string> request::get_body_form() const
     return ret;
 }
 
-void request::add_cookie(const std::string & key, const std::string & value) const
+void request::add_cookie(const string & key, const string & value) const
 {
     const_cast<request *>(this)->cookies[key] = value;
 }
 
-bool request::find_cookie(const std::string & key, std::string & value) const
+bool request::find_cookie(const string & key, string & value) const
 {
     map<string, string>::const_iterator it = cookies.find(key);
 
@@ -205,7 +205,7 @@ bool request::find_cookie(const std::string & key, std::string & value) const
 	return false;
 }
 
-bool request::find_attribute(const std::string & key, std::string & value) const
+bool request::find_attribute(const string & key, string & value) const
 {
     string lkey = webdar_tools_to_canonical_case(key);
     map<string, string>::const_iterator it = attributes.find(lkey);
@@ -294,7 +294,7 @@ bool request::read_method_uri(proto_connexion & input, bool blocking)
     return status == uri_read;
 }
 
-void request::drop_attribute(const std::string & key)
+void request::drop_attribute(const string & key)
 {
     map<string, string>::iterator it = attributes.find(key);
 

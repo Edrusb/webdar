@@ -145,7 +145,7 @@ html_entrepot::html_entrepot():
 }
 
 
-std::shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(std::shared_ptr<html_web_user_interaction> & webui) const
+shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(shared_ptr<html_web_user_interaction> & webui) const
 {
     if(!webui)
 	throw WEBDAR_BUG;
@@ -179,7 +179,7 @@ std::shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(std::shared_ptr<ht
     return entrep;
 }
 
-void html_entrepot::on_event(const std::string & event_name)
+void html_entrepot::on_event(const string & event_name)
 {
     update_visible();
 
@@ -191,7 +191,7 @@ void html_entrepot::on_event(const std::string & event_name)
 	// our body_builder changed status will be set accordingly
 }
 
-void html_entrepot::set_event_name(const std::string & name)
+void html_entrepot::set_event_name(const string & name)
 {
     if(!custom_event_name.empty())
 	throw WEBDAR_BUG; // only one alternative event name is allowed
@@ -200,8 +200,8 @@ void html_entrepot::set_event_name(const std::string & name)
     register_name(custom_event_name);
 }
 
-std::string html_entrepot::inherited_get_body_part(const chemin & path,
-						   const request & req)
+string html_entrepot::inherited_get_body_part(const chemin & path,
+					      const request & req)
 {
     string ret;
 

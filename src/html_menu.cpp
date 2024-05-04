@@ -61,7 +61,7 @@ html_menu::~html_menu()
     item.clear();
 }
 
-void html_menu::add_entry(const std::string & label, const std::string & tag)
+void html_menu::add_entry(const string & label, const string & tag)
 {
     unsigned int num = item.size();
     string event_name = std::to_string(num);
@@ -139,7 +139,7 @@ string html_menu::get_current_tag() const
     return item[current_mode].itag;
 }
 
-void html_menu::set_current_tag(const std::string & tag)
+void html_menu::set_current_tag(const string & tag)
 {
     unsigned int i = 0;
 

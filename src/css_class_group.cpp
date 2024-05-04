@@ -49,7 +49,7 @@ void css_class_group::add_css_class(const string & name)
 
 void css_class_group::add_css_class(const css_class_group & cg)
 {
-    std::set<std::string>::iterator it = cg.content.begin();
+    set<string>::iterator it = cg.content.begin();
 
     while(it != cg.content.end())
     {

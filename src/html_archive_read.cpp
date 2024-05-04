@@ -67,7 +67,7 @@ html_archive_read::html_archive_read(const string & archive_description):
     libdarexec.set_visible(false);
 }
 
-void html_archive_read::on_event(const std::string & event_name)
+void html_archive_read::on_event(const string & event_name)
 {
     if(event_name == html_options_read::entrepot_has_changed)
     {

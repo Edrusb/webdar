@@ -74,7 +74,7 @@ libdar::infinint html_size_unit::get_value() const
     return ret;
 }
 
-void html_size_unit::on_event(const std::string & event_name)
+void html_size_unit::on_event(const string & event_name)
 {
     set_fields();
 	// no need to call my_body_part_has_changed()

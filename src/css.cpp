@@ -645,16 +645,16 @@ void css::css_border_style(border which, bd_style val, bool inherit)
     css_updated(inherit);
 }
 
-void css::css_corner_radius(const std::string & all, bool inherit)
+void css::css_corner_radius(const string & all, bool inherit)
 {
     css_corner_radius(all, all, all, all, inherit);
 }
 
 
-void css::css_corner_radius(const std::string & topleft,
-			    const std::string & topright,
-			    const std::string & botright,
-			    const std::string & botleft,
+void css::css_corner_radius(const string & topleft,
+			    const string & topright,
+			    const string & botright,
+			    const string & botleft,
 			    bool inherit)
 {
     string arg = " border-radius: ";

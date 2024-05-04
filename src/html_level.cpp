@@ -46,7 +46,7 @@ html_level::html_level()
 }
 
 
-void html_level::adopt_static_html(const std::string & html)
+void html_level::adopt_static_html(const string & html)
 {
     bundle tmp;
 

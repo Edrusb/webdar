@@ -37,7 +37,7 @@ extern "C"
 
 using namespace std;
 
-pipe_connexion::pipe_connexion(int read_fd, int write_fd, const std::string & peerip, unsigned int peerport):
+pipe_connexion::pipe_connexion(int read_fd, int write_fd, const string & peerip, unsigned int peerport):
     proto_connexion(peerip, peerport)
 {
     readfd = read_fd;

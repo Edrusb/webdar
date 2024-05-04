@@ -205,7 +205,7 @@ void body_builder::set_visible(bool mode)
     }
 }
 
-void body_builder::add_css_class(const std::string & name)
+void body_builder::add_css_class(const string & name)
 {
     if(css_class_names.find(name) != css_class_names.end())
         throw exception_range(string("the css_class name to add is already present: ") + name);
@@ -231,7 +231,7 @@ bool body_builder::has_css_class(const string & name) const
     return css_class_names.find(name) != css_class_names.end();
 }
 
-void body_builder::remove_css_class(const std::string & name)
+void body_builder::remove_css_class(const string & name)
 {
     if(css_class_names.find(name) == css_class_names.end())
         throw exception_range(string("the css_class name to remove is not present in the list: ") + name);
@@ -364,7 +364,7 @@ void body_builder::my_body_part_has_changed()
 chemin body_builder::get_path() const
 {
     chemin ret;
-    std::map<body_builder *, string>::const_iterator it;
+    map<body_builder *, string>::const_iterator it;
 
     if(parent != nullptr)
     {
@@ -565,7 +565,7 @@ void body_builder::create_css_lib_if_needed()
 
 void body_builder::flush_all_cached_body_part()
 {
-    std::vector<body_builder*>::iterator it = order.begin();
+    vector<body_builder*>::iterator it = order.begin();
 
     body_changed = true;
     while(it != order.end())

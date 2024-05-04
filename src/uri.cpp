@@ -48,9 +48,9 @@ bool uri::operator == (const uri & arg) const
 }
 
 
-const std::string uri::get_string() const
+const string uri::get_string() const
 {
-    std::string ret = "";
+    string ret = "";
 
     if(scheme != "")
 	ret += scheme + ":";

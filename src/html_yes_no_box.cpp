@@ -39,7 +39,7 @@ extern "C"
 
 using namespace std;
 
-html_yes_no_box::html_yes_no_box(const std::string & message, bool default_value)
+html_yes_no_box::html_yes_no_box(const string & message, bool default_value)
     : form("Confirm"),
       form_fs(message)
 {

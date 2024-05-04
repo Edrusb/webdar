@@ -41,7 +41,7 @@ void archive_isolate::inherited_run()
 {
     try
     {
-	std::shared_ptr<libdar::archive> source;
+	shared_ptr<libdar::archive> source;
 
 	if(!ui && ! ui->get_user_interaction())
 	    throw WEBDAR_BUG;

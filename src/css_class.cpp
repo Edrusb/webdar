@@ -39,14 +39,14 @@ extern "C"
 
 using namespace std;
 
-css_class::css_class(const std::string & name):
+css_class::css_class(const string & name):
     class_name(name)
 {
     if(name.empty())
 	throw WEBDAR_BUG;
 }
 
-css_class::css_class(const std::string & name, const css & ref)
+css_class::css_class(const string & name, const css & ref)
 {
     if(name.empty())
 	throw WEBDAR_BUG;
@@ -100,7 +100,7 @@ string css_class::get_definition() const
 }
 
 
-std::string css_class::get_selector_name(selector_type sel)
+string css_class::get_selector_name(selector_type sel)
 {
     switch(sel)
     {

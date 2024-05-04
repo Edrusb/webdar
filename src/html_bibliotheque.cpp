@@ -156,7 +156,7 @@ string html_bibliotheque::inherited_get_body_part(const chemin & path,
 
 void html_bibliotheque::new_css_library_available()
 {
-    std::unique_ptr<css_library> & csslib = lookup_css_library();
+    unique_ptr<css_library> & csslib = lookup_css_library();
 
     if(!csslib)
 	throw WEBDAR_BUG;

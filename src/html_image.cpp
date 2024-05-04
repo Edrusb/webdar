@@ -39,7 +39,7 @@ extern "C"
 
 using namespace std;
 
-html_image::html_image(const std::string & url, const std::string & alt)
+html_image::html_image(const string & url, const string & alt)
 {
     x_url = url;
     x_alt = alt;
@@ -47,7 +47,7 @@ html_image::html_image(const std::string & url, const std::string & alt)
     dim_y = "";
 }
 
-void html_image::set_dimensions(const std::string x, const std::string y)
+void html_image::set_dimensions(const string x, const string y)
 {
     if(dim_x != x
        || dim_y != y)

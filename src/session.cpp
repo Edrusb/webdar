@@ -77,7 +77,7 @@ answer session::give_answer(const request & req)
     return wui.give_answer(req);
 }
 
-void session::on_event(const std::string & event_name)
+void session::on_event(const string & event_name)
 {
     if(event_name == user_interface::closing)
 	close_session(get_session_ID()); // will kill libdar thread if running
@@ -165,7 +165,7 @@ vector<session::session_summary> session::get_summary()
     return ret;
 }
 
-bool session::get_session_info(const std::string & session_ID, session_summary & val)
+bool session::get_session_info(const string & session_ID, session_summary & val)
 {
     bool ret = false;
     map<string, table>::iterator it;
@@ -252,7 +252,7 @@ string session::create_new(const string & owner)
     return sessID;
 }
 
-session *session::acquire_session(const std::string & session_ID)
+session *session::acquire_session(const string & session_ID)
 {
     session *ret = nullptr;
     map<string,table>::iterator it;
@@ -381,7 +381,7 @@ bool session::close_session(const string & session_ID)
     return ret;
 }
 
-session::session_summary session::publish(std::map<std::string, table>::iterator it)
+session::session_summary session::publish(map<string, table>::iterator it)
 {
     session_summary ret;
 

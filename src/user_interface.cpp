@@ -138,7 +138,7 @@ answer user_interface::give_answer(const request & req)
     return ret;
 }
 
-void user_interface::on_event(const std::string & event_name)
+void user_interface::on_event(const string & event_name)
 {
     if(event_name == saisie::event_closing)
     {
@@ -284,7 +284,7 @@ string user_interface::get_session_name() const
 };
 
 
-void user_interface::set_session_name(const std::string & name)
+void user_interface::set_session_name(const string & name)
 {
     mut_sessname.lock();
     try

@@ -37,7 +37,7 @@ using namespace std;
 
 libthreadar::mutex central_report::access;
 
-void central_report::report(priority_t priority, const std::string & message)
+void central_report::report(priority_t priority, const string & message)
 {
     if(priority > min)
 	return; // not logging "below" priority min
@@ -58,7 +58,7 @@ void central_report::report(priority_t priority, const std::string & message)
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void central_report_stdout::inherited_report(priority_t priority, const std::string & message)
+void central_report_stdout::inherited_report(priority_t priority, const string & message)
 {
     cout << "[thead " << pthread_self() << "][" << priority2string(priority) << "]   " << message << endl;
 }
@@ -68,7 +68,7 @@ void central_report_stdout::inherited_report(priority_t priority, const std::str
 unsigned int central_report_syslog::num_obj = 0;
 libthreadar::mutex central_report_syslog::num_obj_mod;
 
-central_report_syslog::central_report_syslog(priority_t min_logged, const std::string & fixed_label, int facility): central_report(min_logged)
+central_report_syslog::central_report_syslog(priority_t min_logged, const string & fixed_label, int facility): central_report(min_logged)
 {
     num_obj_mod.lock();
     try
@@ -109,9 +109,9 @@ central_report_syslog::~central_report_syslog() noexcept(false)
     num_obj_mod.unlock();
 }
 
-void central_report_syslog::inherited_report(priority_t priority, const std::string & message)
+void central_report_syslog::inherited_report(priority_t priority, const string & message)
 {
-    std::string tmp = string("[") + label + "][" + webdar_tools_convert_to_string(pthread_self()) +"]  " + message;
+    string tmp = string("[") + label + "][" + webdar_tools_convert_to_string(pthread_self()) +"]  " + message;
     syslog(priority2syslogprio(priority), "%s", tmp.c_str());
 }
 

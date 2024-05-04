@@ -41,7 +41,7 @@ using namespace std;
 
 const string html_button::action = "click";
 
-html_button::html_button(const std::string & label, const std::string & x_event_name):
+html_button::html_button(const string & label, const string & x_event_name):
     inside("", label)
 {
     adopt(&inside);

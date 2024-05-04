@@ -46,7 +46,7 @@ void html_derouleur::clear()
     css_url.clear_css_classes();
 }
 
-void html_derouleur::url_add_css_class(const std::string & name)
+void html_derouleur::url_add_css_class(const string & name)
 {
     css_url.add_css_class(name); // record this new class for future sections
     map<string, section>::iterator it = sections.begin();
@@ -84,7 +84,7 @@ void html_derouleur::url_add_css_class(const css_class_group & cg)
     my_body_part_has_changed();
 }
 
-void html_derouleur::on_event(const std::string & event_name)
+void html_derouleur::on_event(const string & event_name)
 {
     if(event_name == shrink_event)
 	set_active_section(noactive);
@@ -124,7 +124,7 @@ string html_derouleur::inherited_get_body_part(const chemin & path,
 }
 
 
-void html_derouleur::section_added(const std::string & name, const std::string & title)
+void html_derouleur::section_added(const string & name, const string & title)
 {
     sections[name] = section();
 
@@ -175,7 +175,7 @@ void html_derouleur::section_added(const std::string & name, const std::string &
     }
 }
 
-void html_derouleur::section_removed(const std::string & section_name)
+void html_derouleur::section_removed(const string & section_name)
 {
     map<string, section>::iterator it = sections.find(section_name);
 

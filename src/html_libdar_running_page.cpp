@@ -72,7 +72,7 @@ string html_libdar_running_page::inherited_get_body_part(const chemin & path,
     return get_body_part_given_the_body(path, req, body);
 }
 
-void html_libdar_running_page::on_event(const std::string & event_name)
+void html_libdar_running_page::on_event(const string & event_name)
 {
     if(event_name == html_web_user_interaction::libdar_has_finished)
     {

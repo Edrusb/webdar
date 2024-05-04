@@ -70,7 +70,7 @@ using namespace std;
 
 struct interface_port
 {
-    std::string interface; //< if empty means any interface
+    string interface; //< if empty means any interface
     unsigned int port;
     interface_port() { interface = ""; port = DEFAULT_TCP_PORT; };
 };
@@ -151,9 +151,9 @@ int main(int argc, char *argv[], char** env)
 	    if(signal(*sl_it, signal_handler) == SIG_ERR)
 	    {
 		if(signal_name != nullptr)
-		    throw exception_system(std::string("Cannot set signal handle for ") + std::string(strsignal(*sl_it)), errno);
+		    throw exception_system(string("Cannot set signal handle for ") + string(strsignal(*sl_it)), errno);
 		else
-		    throw exception_system(std::string("Cannot set signal handle for ") + std::to_string(*sl_it), errno);
+		    throw exception_system(string("Cannot set signal handle for ") + to_string(*sl_it), errno);
 	    }
 	    ++sl_it;
 	}
@@ -419,9 +419,9 @@ static void parse_cmd(int argc, char *argv[],
 		throw exception_range("-K option needs a filename");
 	    break;
 	case 'h':
-	    throw exception_range(std::string("Usage: ")
-				  + std::string(argv[0])
-				  + std::string(" [-l <IP>[:port]] [-v] [-b] [-C <certificate file> -K <private key file>]\n"));
+	    throw exception_range(string("Usage: ")
+				  + string(argv[0])
+				  + string(" [-l <IP>[:port]] [-v] [-b] [-C <certificate file> -K <private key file>]\n"));
 	case '?':
 	    cerr << "Ignoring Unknown argument given on command line: " << lu << endl;
 	    break;
