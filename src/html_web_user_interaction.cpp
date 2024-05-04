@@ -68,8 +68,7 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     force_close("Immediately stop libdar", force_end_libdar),
     kill_close("Kill libdar thread", kill_libdar_thread),
     finish("Close", close_libdar_screen),
-    ignore_event(false),
-    just_set(false)
+    ignore_event(false)
 {
     lib_data.reset(new (nothrow) web_user_interaction(x_warn_size));
     if(!lib_data)
@@ -98,11 +97,12 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     h_global.adopt(&finish);
     adopt(&h_global);
 
-	// events
+	// events we provide
     register_name(libdar_has_finished);
     register_name(can_refresh);
     register_name(dont_refresh);
 
+	// events we act upon
     h_pause.record_actor_on_event(this, html_form_radio::changed);
     h_get_string.record_actor_on_event(this, html_form_input::changed);
     ask_close.record_actor_on_event(this, ask_end_libdar);
@@ -110,11 +110,11 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     kill_close.record_actor_on_event(this, kill_libdar_thread);
     finish.record_actor_on_event(this, close_libdar_screen);
 
-	// visibility and object status
-    clear();
-
     	// setup button visibility
     set_mode(normal);
+
+	// visibility and object status
+    clear();
 
 	// css
     h_inter_text.add_css_class(class_inter);
@@ -178,24 +178,15 @@ string html_web_user_interaction::inherited_get_body_part(const chemin & path,
 {
     string ret;
 
-	// keep trace of these libdar side component changes
-    just_set = false;
-	// just set is read on_events() which can be triggered by get_body_part_from_all_children() invoked below
-	// and also read by adjust_visibility() also invoked below.
-
-	// updating components from libdar status (may set just_set field)
-
+	// updating components from libdar status
     update_html_from_libdar_status();
 
 	// monitoring libdar thread status
-
     check_thread_status();
 
 	// now we return to the user the updated html interface
 	// any event triggered during that first generation may
 	// need further re-display (rebuild_body_part is set to true in that case)
-
-    adjust_visibility();
     ret = get_body_part_from_all_children(path, req);
 
     return ret;
@@ -207,10 +198,9 @@ void html_web_user_interaction::on_event(const std::string & event_name)
 
     if(!ignore_event)
     {
-	if(event_name == html_form_radio::changed
-	   || event_name == html_form_input::changed)
+	if(event_name == html_form_radio::changed)
 	{
-	    if(h_inter.get_visible() && !just_set)
+	    if(h_inter.get_visible())
 	    {
 		if(h_pause.get_selected_num() != 0)
 		{
@@ -220,29 +210,31 @@ void html_web_user_interaction::on_event(const std::string & event_name)
 		}
 		    // else we do nothing here
 	    }
-
-	    if(h_get_string.get_visible() && !just_set)
+	    else
+		throw WEBDAR_BUG;
+		// how could we get an event from h_pause
+		// if its parent h_inter is hidden?
+	}
+	else if(event_name == html_form_input::changed)
+	{
+	    if(h_get_string.get_visible())
 	    {
 		string tmpm;
 		bool tmpe;
 		if(lib_data->pending_get_string(tmpm, tmpe))
-		{
 		    lib_data->set_get_string_answer(h_get_string.get_value());
-		    h_get_string.set_visible(false);
-		    my_body_part_has_changed();
-		}
+		else if(lib_data->pending_get_secu_string(tmpm, tmpe))
+		    lib_data->set_get_secu_string_answer(libdar::secu_string(h_get_string.get_value().c_str(), h_get_string.get_value().size()));
 		else
-		{
-		    if(lib_data->pending_get_secu_string(tmpm, tmpe))
-		    {
-			lib_data->set_get_secu_string_answer(libdar::secu_string(h_get_string.get_value().c_str(), h_get_string.get_value().size()));
-			h_get_string.set_visible(false);
-			my_body_part_has_changed();
-		    }
-		    else
-			throw WEBDAR_BUG;
-		}
+		    throw WEBDAR_BUG;
+
+		h_get_string.set_visible(false);
+		my_body_part_has_changed();
 	    }
+	    else
+		throw WEBDAR_BUG;
+		// how could we get an event from h_get_string
+		// if it is not visible?
 	}
 	else if(event_name == ask_end_libdar)
 	    set_mode(end_asked); // eventually calls my_body_part_has_changed()
@@ -306,16 +298,24 @@ void html_web_user_interaction::new_css_library_available()
 
 void html_web_user_interaction::adjust_visibility()
 {
-    if(h_get_string.get_visible() || just_set)
+    if(h_get_string.get_visible() || h_inter.get_visible())
     {
-	h_form.set_visible(true);
-	act(dont_refresh);
+	if(!h_form.get_visible())
+	{
+	    h_form.set_visible(true);
+	    act(dont_refresh);
+	}
+	    // else nothing new to perform
     }
     else
     {
-	h_form.set_visible(false);
-	if(mode != finished && mode != closed)
-	    act(can_refresh);
+	if(h_form.get_visible())
+	{
+	    h_form.set_visible(false);
+	    if(mode != finished && mode != closed)
+		act(can_refresh);
+	}
+	    // else nothing new to perform
     }
 }
 
@@ -415,7 +415,6 @@ void html_web_user_interaction::update_html_from_libdar_status()
 		h_inter_text.clear();
 		h_inter_text.add_text(0, msg);
 		h_pause.set_selected(0);
-		just_set = true;
 	    }
 	}
 
@@ -431,9 +430,10 @@ void html_web_user_interaction::update_html_from_libdar_status()
 		else
 		    h_get_string.change_type(html_form_input::password);
 		h_get_string.set_value("");
-		just_set = true;
 	    }
 	}
+
+	adjust_visibility();
     }
     catch(...)
     {
