@@ -53,7 +53,7 @@ public:
 
 protected:
 	/// inherited from class thread
-    virtual void inherited_run();
+    virtual void inherited_run() override;
 
 private:
     std::shared_ptr<html_web_user_interaction> ui;

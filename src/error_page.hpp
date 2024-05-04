@@ -56,7 +56,7 @@ public:
     answer give_answer(const request & req);
 
 protected:
-    virtual void prefix_has_changed();
+    virtual void prefix_has_changed() override;
 
 private:
     unsigned int status;  //< return code of the answer (seen by browser, rarely visibile by the user)

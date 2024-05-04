@@ -98,7 +98,7 @@ public:
     void record_actor_on_event(actor *ptr) { events::record_actor_on_event(ptr, changed); };
 
 	/// inherited from class actor
-    virtual void on_event(const std::string & event_name);
+    virtual void on_event(const std::string & event_name) override;
 
 protected:
 	/// inherited from body_builder

@@ -66,7 +66,7 @@ public:
     exception_memory() : exception_base("lack of memory") {};
 
 protected:
-    virtual exception_base *clone() const;
+    virtual exception_base *clone() const override;
 };
 
 template<class T> exception_base *cloner(void * const ptr) { exception_base *ret = new (std::nothrow) T(*(reinterpret_cast<T const *>(ptr))); if(ret == nullptr) throw exception_memory(); return ret; };
@@ -83,7 +83,7 @@ public:
     exception_bug(const std::string & file, int line) : exception_base(std::string("WEBDAR: BUG MET IN File ") + file + std::string(" line ") + std::to_string(line)) {};
 
 protected:
-    virtual exception_base *clone() const { return cloner<exception_bug>((void *)this); };
+    virtual exception_base *clone() const override { return cloner<exception_bug>((void *)this); };
 };
 
 
@@ -95,7 +95,7 @@ public:
     exception_system(const std::string & context, int error_code);
 
 protected:
-    virtual exception_base *clone() const { return cloner<exception_system>((void *)this); };
+    virtual exception_base *clone() const override { return cloner<exception_system>((void *)this); };
 };
 
     /// exception used to report out or range value or argument
@@ -106,7 +106,7 @@ public:
     exception_range(const std::string & msg): exception_base(msg) {};
 
 protected:
-    virtual exception_base *clone() const { return cloner<exception_range>((void *)this); };
+    virtual exception_base *clone() const override { return cloner<exception_range>((void *)this); };
 };
 
     /// exception used to report an request error from the http client
@@ -123,7 +123,7 @@ public:
     unsigned int get_error_code() const { return err; };
 
 protected:
-    virtual exception_base *clone() const { return cloner<exception_input>((void *)this); };
+    virtual exception_base *clone() const override { return cloner<exception_input>((void *)this); };
 
 private:
     unsigned int err;
@@ -138,7 +138,7 @@ public:
     exception_feature(const std::string & feature_name): exception_base(std::string("Unimplemented feature: ") + feature_name) {};
 
 protected:
-    virtual exception_base *clone() const { return cloner<exception_feature>((void *)this); };
+    virtual exception_base *clone() const override { return cloner<exception_feature>((void *)this); };
 };
 
     /// transcription of libdar exception into the webdar exception type
@@ -149,7 +149,7 @@ public:
     exception_libcall(const libdar::Egeneric & e);
 
 protected:
-    virtual exception_base *clone() const { return cloner<exception_libcall>((void *)this); };
+    virtual exception_base *clone() const override { return cloner<exception_libcall>((void *)this); };
 };
 
 class exception_openssl : public exception_base
@@ -158,7 +158,7 @@ public:
     exception_openssl();
 
 protected:
-    virtual exception_base *clone() const { return cloner<exception_openssl>((void *)this); };
+    virtual exception_base *clone() const override { return cloner<exception_openssl>((void *)this); };
 
 private:
     static constexpr unsigned int ERR_BUF_LEN = 1024;

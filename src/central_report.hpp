@@ -68,7 +68,7 @@ public:
     central_report_stdout(priority_t min_logged): central_report(min_logged) {};
 
 protected:
-    virtual void inherited_report(priority_t priority, const std::string & message);
+    virtual void inherited_report(priority_t priority, const std::string & message) override;
 };
 
 class central_report_syslog : public central_report
@@ -78,7 +78,7 @@ public:
     ~central_report_syslog();
 
 protected:
-    virtual void inherited_report(priority_t priority, const std::string & message);
+    virtual void inherited_report(priority_t priority, const std::string & message) override;
 
 private:
     std::string label; //< need to exist during the whole life of the object for syslog(3) to work as expected

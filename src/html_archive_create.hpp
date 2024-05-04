@@ -58,7 +58,7 @@ public:
     libdar::archive_options_create get_options_create(std::shared_ptr<html_web_user_interaction> dialog) const { return options.get_options(dialog); };
 
 	// inherited from actor
-    virtual void on_event(const std::string & event_name);
+    virtual void on_event(const std::string & event_name) override;
 
 protected:
     	/// inherited from body_builder
@@ -68,7 +68,7 @@ protected:
     virtual void new_css_library_available() override;
 
 	/// inherited from libthreadar::thread
-    virtual void inherited_run();
+    virtual void inherited_run() override;
 
 private:
     html_derouleur deroule;
