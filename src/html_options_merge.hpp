@@ -35,6 +35,8 @@ extern "C"
 
     // webdar headers
 #include "body_builder.hpp"
+#include "actor.hpp"
+#include "events.hpp"
 #include "html_form.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_form_input.hpp"
@@ -44,10 +46,14 @@ extern "C"
 #include "html_crypto_algo.hpp"
 #include "html_archive_read.hpp"
 #include "html_derouleur.hpp"
+#include "html_entrepot.hpp"
 
-class html_options_merge : public body_builder, public actor
+
+class html_options_merge : public body_builder, public actor, public events
 {
 public:
+    static const std::string entrepot_changed;
+
     html_options_merge();
     html_options_merge(const html_options_merge & ref) = default;
     html_options_merge(html_options_merge && ref) noexcept = default;
@@ -77,6 +83,7 @@ private:
     html_derouleur deroule;
 
     html_form form_archgen;
+    html_entrepot entrep;
     html_form_fieldset fs_archgen;
     html_form_input allow_over;
     html_form_input warn_over;
