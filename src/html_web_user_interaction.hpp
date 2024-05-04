@@ -129,7 +129,7 @@ public:
 	/// the autohide feature is disabled and a "close" button shows.
     void auto_hide(bool mode, bool unless_interrupted) { autohide = mode; hide_unless_interrupted = unless_interrupted; };
 
-	/// clear counters, logs and reset html interface
+	/// clear counters, logs and reset html interface and make the component become visible if it was not already
 
 	/// \note this implies hide_statistics, but counters labels stay untouched
     void clear();
@@ -188,6 +188,10 @@ protected:
 						const request & req) override;
 	// inherited from body_builder
     virtual void new_css_library_available() override;
+
+	// inherited from body_builder
+    virtual void my_visibility_has_changed() override;
+
 
 private:
     static const std::string class_button;
@@ -248,6 +252,7 @@ private:
     void clean_end_threads(bool force);
     void kill_threads();
     void join_all_threads();
+    void trigger_refresh();
 
 };
 

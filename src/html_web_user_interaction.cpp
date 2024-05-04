@@ -110,9 +110,6 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     kill_close.record_actor_on_event(this, kill_libdar_thread);
     finish.record_actor_on_event(this, close_libdar_screen);
 
-    	// setup button visibility
-    set_mode(normal);
-
 	// visibility and object status
     clear();
 
@@ -152,6 +149,7 @@ void html_web_user_interaction::run_and_control_thread(libthreadar::thread* arg)
     if(arg == nullptr)
 	throw WEBDAR_BUG;
     managed_threads.push_back(arg);
+    set_visible(true);
     arg->run();
 }
 
@@ -296,6 +294,12 @@ void html_web_user_interaction::new_css_library_available()
     webdar_css_style::update_library(*csslib);
 }
 
+void html_web_user_interaction::my_visibility_has_changed()
+{
+    if(get_visible())
+	trigger_refresh();
+}
+
 void html_web_user_interaction::adjust_visibility()
 {
     if(h_get_string.get_visible() || h_inter.get_visible())
@@ -333,6 +337,7 @@ void html_web_user_interaction::set_mode(mode_type m)
 	finish.set_visible(false);
 	set_visible(true);
 	was_interrupted = false;
+	trigger_refresh();
 	break;
     case end_asked:
 	ask_close.set_visible(false);
@@ -354,7 +359,7 @@ void html_web_user_interaction::set_mode(mode_type m)
 	kill_close.set_visible(false);
 	finish.set_visible(false);
 	kill_threads();
-	act(can_refresh);
+	trigger_refresh();
 	break;
     case finished:
 	ask_close.set_visible(false);
@@ -542,4 +547,12 @@ void html_web_user_interaction::join_all_threads()
 
 	rit++;
     }
+}
+
+void html_web_user_interaction::trigger_refresh()
+{
+    if(h_form.get_visible())
+	act(dont_refresh);
+    else
+	act(can_refresh);
 }
