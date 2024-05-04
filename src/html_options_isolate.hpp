@@ -45,9 +45,11 @@ extern "C"
 #include "html_derouleur.hpp"
 #include "html_entrepot.hpp"
 
-class html_options_isolate : public body_builder, public actor
+class html_options_isolate : public body_builder, public actor, public events
 {
 public:
+    static const std::string entrepot_changed;
+
     html_options_isolate();
     html_options_isolate(const html_options_isolate & ref) = default;
     html_options_isolate(html_options_isolate && ref) noexcept = default;
@@ -58,7 +60,13 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
+
+	/// informations available for libdar
+
     libdar::archive_options_isolate get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
+
+	/// optain the current entrepot object where is expected to be create the archive
+    std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const { return entrep.get_entrepot(webui); };
 
 protected:
 

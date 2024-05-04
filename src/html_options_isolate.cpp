@@ -39,6 +39,8 @@ extern "C"
 
 using namespace std;
 
+const string html_options_isolate::entrepot_changed = "html_options_isolate_entrep_changed";
+
 html_options_isolate::html_options_isolate():
     form_archgen("Update"),
     fs_archgen("General archive isolation options"),
@@ -171,6 +173,7 @@ html_options_isolate::html_options_isolate():
     slicing.record_actor_on_event(this, html_form_input::changed);
     different_first_slice.record_actor_on_event(this, html_form_input::changed);
     crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
+    entrep.record_actor_on_event(this, html_entrepot::changed);
 
     on_event("");
 
@@ -180,69 +183,78 @@ html_options_isolate::html_options_isolate():
 
 void html_options_isolate::on_event(const std::string & event_name)
 {
-    switch(compression.get_value())
+    if(event_name == html_compression::changed
+       || event_name == html_form_input::changed
+       || event_name == html_crypto_algo::changed)
     {
-    case libdar::compression::none:
-	compression_level.set_visible(false);
-	break;
-    case libdar::compression::gzip:
-    case libdar::compression::bzip2:
-    case libdar::compression::lzo:
-	compression_level.set_visible(true);
-	break;
-    default:
-	throw WEBDAR_BUG;
-    }
-
-    if(slicing.get_value_as_bool())
-    {
-	slice_size.set_visible(true);
-	slice_size_unit.set_visible(true);
-	different_first_slice.set_visible(true);
-	if(different_first_slice.get_value_as_bool())
+	switch(compression.get_value())
 	{
-	    first_slice_size.set_visible(true);
-	    first_slice_size_unit.set_visible(true);
+	case libdar::compression::none:
+	    compression_level.set_visible(false);
+	    break;
+	case libdar::compression::gzip:
+	case libdar::compression::bzip2:
+	case libdar::compression::lzo:
+	    compression_level.set_visible(true);
+	    break;
+	default:
+	    throw WEBDAR_BUG;
 	}
-	else
+
+	if(slicing.get_value_as_bool())
 	{
+	    slice_size.set_visible(true);
+	    slice_size_unit.set_visible(true);
+	    different_first_slice.set_visible(true);
+	    if(different_first_slice.get_value_as_bool())
+	    {
+		first_slice_size.set_visible(true);
+		first_slice_size_unit.set_visible(true);
+	    }
+	    else
+	    {
+		first_slice_size.set_visible(false);
+		first_slice_size_unit.set_visible(false);
+	    }
+	}
+	else // no slicing requested
+	{
+	    slice_size.set_visible(false);
+	    slice_size_unit.set_visible(false);
+	    different_first_slice.set_visible(false);
 	    first_slice_size.set_visible(false);
 	    first_slice_size_unit.set_visible(false);
 	}
-    }
-    else // no slicing requested
-    {
-	slice_size.set_visible(false);
-	slice_size_unit.set_visible(false);
-	different_first_slice.set_visible(false);
-	first_slice_size.set_visible(false);
-	first_slice_size_unit.set_visible(false);
-    }
 
-    switch(crypto_algo.get_value())
-    {
-    case libdar::crypto_algo::none:
-	crypto_pass1.set_visible(false);
-	crypto_pass2.set_visible(false);
-	crypto_size.set_visible(false);
-	break;
-    case libdar::crypto_algo::scrambling:
-    case libdar::crypto_algo::blowfish:
-    case libdar::crypto_algo::aes256:
-    case libdar::crypto_algo::twofish256:
-    case libdar::crypto_algo::serpent256:
-    case libdar::crypto_algo::camellia256:
-	crypto_pass1.set_visible(true);
-	crypto_pass2.set_visible(true);
-	crypto_size.set_visible(true);
-	break;
-    default:
+	switch(crypto_algo.get_value())
+	{
+	case libdar::crypto_algo::none:
+	    crypto_pass1.set_visible(false);
+	    crypto_pass2.set_visible(false);
+	    crypto_size.set_visible(false);
+	    break;
+	case libdar::crypto_algo::scrambling:
+	case libdar::crypto_algo::blowfish:
+	case libdar::crypto_algo::aes256:
+	case libdar::crypto_algo::twofish256:
+	case libdar::crypto_algo::serpent256:
+	case libdar::crypto_algo::camellia256:
+	    crypto_pass1.set_visible(true);
+	    crypto_pass2.set_visible(true);
+	    crypto_size.set_visible(true);
+	    break;
+	default:
+	    throw WEBDAR_BUG;
+	}
+
+	    // no need to call my_body_part_has_changed()
+	    // because changed done in on_event concern
+	    // body_builder objects we have adopted
+    }
+    else if(event_name == html_entrepot::changed)
+	act(entrepot_changed);
+    else
 	throw WEBDAR_BUG;
-    }
-
-	// no need to call my_body_part_has_changed()
-	// because changed done in on_event concern
-	// body_builder objects we have adopted
 }
 
 
