@@ -44,32 +44,41 @@ extern "C"
 
     /// class body_builder is the root class of object generating HTML body
 
-    /// - the get_body_part() method let inherited class define what is the HTML
+    /// - the inherited_get_body_part() method let inherited class define what is the HTML
     ///   body to be generated based on the request passed in argument. Also passed
     ///   in argument is the path, which is comes from the URI of the request.
-    /// - A body_builder object is expected to be located a given path and this
-    ///   let define its behavior according to the path of the request and its own
-    ///   place in the path tree.
+    ///   From the outside, this is the get_body_part() that is to be used it implements
+    ///   a caching layout over inherited_get_body_part(), manage visibility() attribute.
+    ///   About the caching layout, an inherited class can flush cache and force a new
+    ///   evaluation of its generated body by calling my_body_part_has_changed().
+    /// - A body_builder object is expected to be located at given path of the requested URL
+    ///   and this let define its behavior according to the path of the request and its own
+    ///   place in the path tree. This place is defined by the adoption() mechanism:
     /// - body_builder objects can adopt other body_builder object creating a tree
     ///   topology of body_builder. The path of an object adopted by a parent object
     ///   is a subdirectory of the parent's path. It is a unique name randomly chosen
-    ///   by the parent at adoption time.
+    ///   by the parent at adoption time. See get_path(), get_recorded_name()
     /// - the visibility property of an body_builder let it keep its place in the
     ///   path and adoption tree without returning any HTML code temporarily, this is
-    ///   set using set_visible() method and managed inside get_body_part() after
-    ///   calling inherited_get_body_part() where inherited classes define the body the
-    ///   generate.
+    ///   set using set_visible() method and managed inside get_body_part()
     /// - the get_body_part() of a parent can thus rely on the get_body_part() of its
     ///   adopted children, this is the freedom of the parent class do decide how to
-    ///   compose or ignore its childen and the possible HTML code they can return
+    ///   compose or ignore its childen and the possible HTML code they can return, but several
+    ///   method are provided for common tasks: get_body_part_from_target_child() as well
+    ///   as get_body_part_from_all_children().
     /// - Several protected hooks and methods are provided for inherited class to be
-    ///   informed of their adoption or foresake.
-    /// - defines a hierarchy of objects by mean of adoption (the parent adopts the childs)
-    ///   and associate each child a random but unique subdirectory (used to setup the URI)
+    ///   informed of their adoption or foresake: has_adopted() has_been_adopted_by(),
+    ///   will_foresake(), will_be_foresaken_by()
     /// - the class also handle the CSS components associated to HTML objects or to child objects
     ///   by mean of a css_library (usually only present in the root object of the tree)
-    ///   and accessible by any children to store class name+definition and refer to them when
-    ///   needed.
+    ///   and accessible by any children to store CSS class name+definition and refer to them when
+    ///   needed. See store_css_library(), has_local_css_library(), lookup_css_library() and
+    ///   new_css_library_available() to manage and access to a css_library global to the adoption
+    ///   tree. See add_css_class() has_css_class() remove_css_class() clear_css_classes()
+    ///   get_css_classes_as_a_set(), get_css_class_group(), get_css_classes() to assign one or more
+    ///   css classes to a body_builder inherited object. See define_css_class_in_library() to
+    ///   associate a CSS class name to its definition and store this in the closest css_library
+    ///   available in the adoption tree (it is advised to only have one at the root of the tree)
     /// - objects of this class also produce HTML code referring to what should be displayed on
     ///   on the browser (get_body_part())
     /// \note more details about css. body_builder object can be associated to the name of one
