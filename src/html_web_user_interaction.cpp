@@ -38,15 +38,15 @@ extern "C"
 #include "html_web_user_interaction.hpp"
 
 using namespace std;
-
+    // public events:
 const string html_web_user_interaction::libdar_has_finished = "html_web_user_interaction_libdarfinished";
 const string html_web_user_interaction::can_refresh = "html_web_user_interaction_canrefresh";
 const string html_web_user_interaction::dont_refresh = "html_web_user_interaction_dontrefresh";
-
+    // local css class names:
 const string html_web_user_interaction::class_button = "html_web_user_interaction_button";
 const string html_web_user_interaction::class_web = "html_web_user_interaction_web";
 const string html_web_user_interaction::class_inter = "html_web_user_interaction_inter";
-
+    // internal events:
 const string html_web_user_interaction::ask_end_libdar = "html_web_user_interaction_ask_end_libdar";
 const string html_web_user_interaction::force_end_libdar = "html_web_user_interaction_force_end_libdar";
 const string html_web_user_interaction::kill_libdar_thread = "html_web_user_interaction_kill_libdar_thread";
