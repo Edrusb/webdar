@@ -61,9 +61,27 @@ html_archive_isolate::html_archive_isolate():
     adopt(&deroule);
     adopt(&options);
 
+	// events
+    options.record_actor_on_event(this, html_options_isolate::entrepot_changed);
+
 	// css
 
     webdar_css_style::normal_button(deroule, true);
+}
+
+void html_archive_isolate::on_event(const string & event_name)
+{
+    if(event_name == html_options_isolate::entrepot_changed)
+    {
+	repoxfer.set_visible(true);
+	repoxfer.run_and_control_thread(this);
+    }
+    else if(event_name == html_libdar_running_popup::libdar_has_finished)
+    {
+	repoxfer.set_visible(false);
+    }
+    else
+	throw WEBDAR_BUG;
 }
 
 string html_archive_isolate::inherited_get_body_part(const chemin & path,
@@ -79,4 +97,13 @@ void html_archive_isolate::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
+}
+
+void html_archive_isolate::inherited_run()
+{
+    shared_ptr<html_web_user_interaction> ptr(repoxfer.get_html_user_interaction());
+
+    if(!ptr)
+	throw WEBDAR_BUG;
+    sauv_path.set_entrepot(options.get_entrepot(ptr));
 }

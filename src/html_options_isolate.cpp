@@ -169,13 +169,15 @@ html_options_isolate::html_options_isolate():
     adopt(&deroule);
 
 	// events and visibility
+    register_name(entrepot_changed);
+
     compression.record_actor_on_event(this, html_compression::changed);
     slicing.record_actor_on_event(this, html_form_input::changed);
     different_first_slice.record_actor_on_event(this, html_form_input::changed);
     crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
     entrep.record_actor_on_event(this, html_entrepot::changed);
 
-    on_event("");
+    on_event(html_compression::changed);
 
 	// css
     webdar_css_style::grey_button(deroule, true);
