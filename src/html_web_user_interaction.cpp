@@ -419,22 +419,8 @@ void html_web_user_interaction::update_html_from_libdar_status()
 	    }
 	}
 
-	if(lib_data->pending_get_string(msg, echo))
-	{
-	    if(!h_get_string.get_visible())
-	    {
-		h_get_string.set_visible(true);
-		h_get_string.change_label(msg);
-		if(echo)
-		    h_get_string.change_type(html_form_input::text);
-		else
-		    h_get_string.change_type(html_form_input::password);
-		h_get_string.set_value("");
-		just_set = true;
-	    }
-	}
-
-	if(lib_data->pending_get_secu_string(msg, echo))
+	if(lib_data->pending_get_string(msg, echo)
+	   || lib_data->pending_get_secu_string(msg, echo))
 	{
 	    if(!h_get_string.get_visible())
 	    {
