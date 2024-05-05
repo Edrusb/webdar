@@ -54,9 +54,10 @@ html_libdar_running_popup::html_libdar_running_popup():
 	// signals and events
     register_name(libdar_has_finished);
 
-    web_ui->record_actor_on_event(this, html_web_user_interaction::libdar_has_finished);
+    web_ui->record_actor_on_event(this, html_web_user_interaction::display_started);
     web_ui->record_actor_on_event(this, html_web_user_interaction::can_refresh);
     web_ui->record_actor_on_event(this, html_web_user_interaction::dont_refresh);
+    web_ui->record_actor_on_event(this, html_web_user_interaction::libdar_has_finished);
 }
 
 string html_libdar_running_popup::inherited_get_body_part(const chemin & path,
@@ -74,11 +75,16 @@ string html_libdar_running_popup::inherited_get_body_part(const chemin & path,
 	// such a way that changing either ours or this component
 	// which we provide direct access to, to stay identical at anytime
 
-	// the first direction is done by the virtual method my_visibility_has_changed()
-	// that we overwrote from body_builder, see right after the current method below
+	// the first direction webui -> this is done by the events
+	// html_web_user_interaction::display_started we act upon
+	// and html_web_user_interaction::libdar_has_finished in regard
+	// to the auto_hide property
 
 	// second, our component's visibilty should change ours accordingly
-    if(get_visible() != web_ui->get_visible())
+	// if we get running inherited_get_body_part, we are visible, web_ui
+	// should also be set accordingly. If not, web_ui our adopted children
+	// is neither called and nor visibile.
+    if(!web_ui->get_visible())
 	set_visible(web_ui->get_visible());
 	// our component visibility has changed
 	// we have to propagate this to ourself for
@@ -103,7 +109,12 @@ void html_libdar_running_popup::my_visibility_has_changed()
 
 void html_libdar_running_popup::on_event(const string & event_name)
 {
-    if(event_name == html_web_user_interaction::libdar_has_finished)
+    if(event_name == html_web_user_interaction::display_started)
+    {
+	set_visible(true);
+	my_body_part_has_changed(); // in case we were already visible
+    }
+    else if(event_name == html_web_user_interaction::libdar_has_finished)
     {
 	my_body_part_has_changed();
 	act(libdar_has_finished); // propagating the event
