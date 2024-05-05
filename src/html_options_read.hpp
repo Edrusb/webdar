@@ -109,6 +109,11 @@ protected:
 
 private:
     static const std::string ref_entrepot_has_changed;
+    static constexpr const char* sect_entrep = "entrep";
+    static constexpr const char* sect_opt = "options";
+    static constexpr const char* sect_ref_entrep = "ref_entrep";
+    static constexpr const char* sect_extcat = "externalcat";
+
 
     html_derouleur deroule;
     html_form form_src;

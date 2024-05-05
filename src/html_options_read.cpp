@@ -89,10 +89,6 @@ html_options_read::html_options_read():
     ref_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_ref_slice_min_digits()));
 
 	// build the adoption tree
-    static const char* sect_entrep = "entrep";
-    static const char* sect_opt = "options";
-    static const char* sect_ref_entrep = "ref_entrep";
-    static const char* sect_extcat = "externalcat";
     deroule.add_section(sect_entrep, "Archive location");
     deroule.add_section(sect_opt, "Reading options");
     deroule.add_section(sect_ref_entrep, "External Catalog location");
@@ -249,6 +245,7 @@ void html_options_read::on_event(const string & event_name)
 	    ref_crypto_algo.set_visible(true);
 	    ref_execute.set_visible(true);
 	    ref_slice_min_digits.set_visible(true);
+	    deroule.section_set_visible(sect_ref_entrep, true);
 	}
 	else
 	{
@@ -258,6 +255,7 @@ void html_options_read::on_event(const string & event_name)
 	    ref_slice_min_digits.set_visible(false);
 	    ref_crypto_pass.set_visible(false);
 	    ref_crypto_size.set_visible(false);
+	    deroule.section_set_visible(sect_ref_entrep, false);
 	}
 
 	    // no need to call my_body_part_has_changed()
