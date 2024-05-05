@@ -47,11 +47,9 @@ html_archive_read::html_archive_read(const string & archive_description):
 	      50,
 	      "Select the backup to read...")
 {
-	// used when listing content of defined entrepot for the archive of reference
-	// which is also a read option and inside opt_read
-    opt_read.set_webui(libdarexec.get_html_user_interaction());
 
 	// web components layout
+
     fs.adopt(&arch_path);
     form.adopt(&fs);
     adopt(&form);

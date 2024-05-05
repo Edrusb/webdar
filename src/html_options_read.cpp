@@ -124,20 +124,20 @@ html_options_read::html_options_read():
     deroule.adopt_in_section(sect_extcat, &form_ref);
 
     adopt(&deroule);
-
-	// binding the events
-
-    src_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
-    ref_use_external_catalogue.record_actor_on_event(this, html_form_input::changed);
-    ref_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
+    adopt(&ref_webui);
 
 	// modyfing entrepot objects to be able to differentiate which one has changed:
     entrep.set_event_name(entrepot_has_changed);
     ref_entrep.set_event_name(ref_entrepot_has_changed);
+
 	// these are the same event name as the ones we used for ourself
     entrep.record_actor_on_event(this, entrepot_has_changed);
     ref_entrep.record_actor_on_event(this, ref_entrepot_has_changed);
     ref_path.record_actor_on_event(this, html_form_input_file::changed_entrepot);
+    ref_webui.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
+    src_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
+    ref_use_external_catalogue.record_actor_on_event(this, html_form_input::changed);
+    ref_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
 
 	// setting up our own events
     register_name(entrepot_has_changed);
@@ -145,6 +145,9 @@ html_options_read::html_options_read():
 
 	// manually launching on event to have coherent visibility between fields
     on_event(html_crypto_algo::changed);
+
+	// visible
+    ref_webui.set_visible(false);
 
 	// css
 
@@ -198,30 +201,28 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
     return opts;
 }
 
-void html_options_read::set_webui(shared_ptr<html_web_user_interaction> x_webui)
-{
-    if(!x_webui)
-	throw WEBDAR_BUG;
-
-    webui = x_webui;
-}
-
 void html_options_read::on_event(const string & event_name)
 {
     if(event_name == entrepot_has_changed)
 	act(entrepot_has_changed);
     else if(event_name == ref_entrepot_has_changed)
     {
-	if(!webui)
+	shared_ptr<html_web_user_interaction> localui = ref_webui.get_html_user_interaction();
+	if(!localui)
 	    throw WEBDAR_BUG;
-	webui->auto_hide(true, true);
-	webui->run_and_control_thread(this);
+	localui->auto_hide(true, true);
+	localui->clear();
+	localui->run_and_control_thread(this);
 	my_body_part_has_changed();
     }
-    else if(event_name == html_form_input_file::changed_entrepot)
+    else if(event_name == html_libdar_running_popup::libdar_has_finished)
+    {
+	join();
 	act(ref_entrepot_has_changed);
+    }
     else if(event_name == html_crypto_algo::changed
-	    || event_name == html_form_input::changed)
+	    || event_name == html_form_input::changed
+	    || event_name == html_form_input_file::changed_entrepot)
     {
 
 	if(src_crypto_algo.get_value() == libdar::crypto_algo::none)
@@ -285,4 +286,14 @@ void html_options_read::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
+}
+
+void html_options_read::inherited_run()
+{
+	// below is a shortcut to the webui owned by ref_webui
+    shared_ptr<html_web_user_interaction> localui = ref_webui.get_html_user_interaction();
+    if(!localui)
+	throw WEBDAR_BUG;
+
+    ref_path.set_entrepot(ref_entrep.get_entrepot(localui));
 }

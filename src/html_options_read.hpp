@@ -48,16 +48,23 @@ extern "C"
 #include "html_derouleur.hpp"
 #include "html_text.hpp"
 #include "html_entrepot.hpp"
+#include "html_libdar_running_popup.hpp"
 
     /// class html_options_read implementes the html components to setup optional parameters while reading an archive
 
     /// most of the components are simple ones, except two couples that depends on each others:
-    ///- the archive selection path that depends on the entrepot user-defined parameters
-    ///- the ref_archive selection path that depends on the ref_entrepot user-defined parameters
+    /// - the archive selection path that depends on the entrepot user-defined parameters
+    /// - the ref_archive selection path that depends on the ref_entrepot user-defined parameters
     /// in both cases, the creation of the new entrepot requires html_web_user_interaction component and separated thread
-    /// to continue displaying the status and let the user interrupt the thread. This one is provided
-    /// during the html_options_read setup by mean the set_webui() method.
-    /// Two events are generated upon entrepot and ref_entrepot change.
+    /// to continue displaying the status and let the user interrupt the thread:
+    /// - For the first entrepot, this is left to the parent component to call get_entrepot() when we generate the
+    ///   entrepot_has_changed event, providing the needed html_web_user_interaction component in argument, because the
+    ///   archive selection path that depends of this entrepot is not an read option but a parameter and stored outside
+    ///   html_options_read.
+    /// - For external catalogue things are different as ref_archive is part of html_options_read (field ref_path) and
+    ///   need to be updated as soon as the ref_entrepot changes and this is internal to this component. For that we
+    ///   use our own html_web_user_interaction from the html_running_libdar_popup (ref_webui) that shows during
+    ///   entrepot creation.
     /// The ref_entrepot related event is probably useless as there is not external components to read options that
     /// depends on it. But the entrepot_has_changed event is needed by the html_archive_read
     /// of which we are a component, in order to browse the new entrepot when selecting the archive basename to read.
@@ -89,13 +96,6 @@ public:
     std::shared_ptr<libdar::entrepot> get_ref_entrepot(std::shared_ptr<html_web_user_interaction> webui) const
     { return ref_entrep.get_entrepot(webui); };
 
-	/// provide a webui ref, to be able to let the user control ref_catalog opening
-
-	/// \note that this webui is used during html user interaction
-	/// the get_options(), get_entrepot() and get_ref_entrepot() methods
-	/// do not use this one but use the webui given to their argument
-    void set_webui(std::shared_ptr<html_web_user_interaction> webui);
-
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -108,13 +108,11 @@ protected:
 	// inheroted from body_builder
     virtual void new_css_library_available() override;
 
-	/// inherited from class libthreadar::thread
-    virtual void inherited_run() override { ref_path.set_entrepot(ref_entrep.get_entrepot(webui)); };
+	// inherited from class libthreadar::thread
+    virtual void inherited_run() override;
 
 
 private:
-    std::shared_ptr<html_web_user_interaction> webui; ///< obtained from set_webui()
-
     html_derouleur deroule;
     html_form form_src;
     html_form_fieldset fs_src;
@@ -144,8 +142,9 @@ private:
     html_form_input ref_crypto_size;
     html_form_input ref_execute;
     html_form_input ref_slice_min_digits;
-	// html_select ref_entrepot;
 
+	// used to create ref_entrep during html interaction
+    html_libdar_running_popup ref_webui;
 };
 
 #endif
