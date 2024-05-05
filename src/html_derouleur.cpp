@@ -46,6 +46,27 @@ void html_derouleur::clear()
     css_url.clear_css_classes();
 }
 
+void html_derouleur::section_set_visible(const string & name, bool visible)
+{
+    map<string, section>::iterator it = sections.find(name);
+
+    if(it == sections.end())
+	throw WEBDAR_BUG; // unknown section
+
+    it->second.visible = visible;
+    if(!visible)
+    {
+	unsigned int active = get_active_section();
+	unsigned int modified = section_name_to_num(name);
+
+	if(active == modified)
+	    set_active_section(noactive);
+	    // we hidded the current active section
+	    // by coherence we set the parent class
+	    // with no active section
+    }
+}
+
 void html_derouleur::url_add_css_class(const string & name)
 {
     css_url.add_css_class(name); // record this new class for future sections
@@ -205,13 +226,24 @@ string html_derouleur::generate_html(const chemin & path,
 	    throw WEBDAR_BUG;
 
 	    // if section is active, display its content
-	if(i == get_active_section())
+	if(sect->second.visible)
 	{
-	    ret += sect->second.shrinker->get_body_part(path, req);
-	    ret += html_aiguille::inherited_get_body_part(path, req);
+	    if(i == get_active_section())
+	    {
+		ret += sect->second.shrinker->get_body_part(path, req);
+		ret += html_aiguille::inherited_get_body_part(path, req);
+	    }
+	    else
+		ret += sect->second.title->get_body_part(path, req);
 	}
 	else
-	    ret += sect->second.title->get_body_part(path, req);
+	{
+	    if(i == get_active_section())
+		throw WEBDAR_BUG;
+		// active section is set as invisible!!!
+
+	    // else we skip the section title and content
+	}
     }
 
     return ret;

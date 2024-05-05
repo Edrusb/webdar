@@ -61,6 +61,11 @@ public:
 	/// clear all adopted data and remove all sections
     void clear();
 
+	/// hide/unhide  a section
+
+	/// \note by default all created sections are visible
+    void section_set_visible(const std::string & name, bool visible);
+
 	/// set css of URL titles
     void url_clear_css_classes() { css_url.clear_css_classes(); };
     void url_add_css_class(const std::string & name);
@@ -92,6 +97,7 @@ private:
     {
 	html_button* title;
 	html_button* shrinker;
+	bool visible;
 
 	    // by default shrinker is hidden and title is
 	    // visible (when the section is not expanded)
@@ -99,7 +105,7 @@ private:
 	    // and leads the shrinker button to show while
 	    // title get invisible, and so on...
 
-	section() { title = nullptr; shrinker = nullptr; };
+	section() { title = nullptr; shrinker = nullptr; visible = true; };
 	section(const section & arg) = delete;
 	section(section && arg) = default;
 	section & operator = (const section & arg) = delete;
