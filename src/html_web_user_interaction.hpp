@@ -103,9 +103,10 @@ class html_web_user_interaction: public body_builder, public actor, public event
 {
 public:
     	// this class generates the following events:
-    static const std::string libdar_has_finished; ///< inform the caller that libdar has finished and user asked to close the "window" (or autohide was set)
+    static const std::string display_started;     ///< when the object has been set visible
     static const std::string can_refresh;         ///< last changes makes the object html refreshable
     static const std::string dont_refresh;        ///< last changes forbid html refresh
+    static const std::string libdar_has_finished; ///< inform the caller that libdar has finished and user asked to close the "window" (or autohide was set)
 
 	// class constructor assignment ops and destructors
     html_web_user_interaction(unsigned int x_warn_size = 25);

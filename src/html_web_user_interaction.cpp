@@ -39,9 +39,10 @@ extern "C"
 
 using namespace std;
     // public events:
-const string html_web_user_interaction::libdar_has_finished = "html_web_user_interaction_libdarfinished";
+const string html_web_user_interaction::display_started = "html_web_user_interaction_displaystarted";
 const string html_web_user_interaction::can_refresh = "html_web_user_interaction_canrefresh";
 const string html_web_user_interaction::dont_refresh = "html_web_user_interaction_dontrefresh";
+const string html_web_user_interaction::libdar_has_finished = "html_web_user_interaction_libdarfinished";
     // local css class names:
 const string html_web_user_interaction::class_button = "html_web_user_interaction_button";
 const string html_web_user_interaction::class_web = "html_web_user_interaction_web";
@@ -98,9 +99,10 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     adopt(&h_global);
 
 	// events we provide
-    register_name(libdar_has_finished);
+    register_name(display_started);
     register_name(can_refresh);
     register_name(dont_refresh);
+    register_name(libdar_has_finished);
 
 	// events we act upon
     h_pause.record_actor_on_event(this, html_form_radio::changed);
@@ -297,7 +299,10 @@ void html_web_user_interaction::new_css_library_available()
 void html_web_user_interaction::my_visibility_has_changed()
 {
     if(get_visible())
+    {
+	act(display_started);
 	trigger_refresh();
+    }
 }
 
 void html_web_user_interaction::adjust_visibility()
