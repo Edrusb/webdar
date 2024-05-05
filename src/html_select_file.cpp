@@ -436,7 +436,9 @@ void html_select_file::inherited_run()
 		create_dir();
 		break;
 	    case run_init_fill:
-		init_fieldset_isdir();
+		if(!init_fieldset_isdir())
+		    break;
+		    // else
 		    /* no break ! */
 	    case run_fill_only:
 		fill_content();
@@ -463,8 +465,10 @@ void html_select_file::inherited_run()
 }
 
 
-void html_select_file::init_fieldset_isdir()
+bool html_select_file::init_fieldset_isdir()
 {
+    bool ret = false;
+
     chemin target(fieldset.get_label());
 
     if(!entr)
@@ -509,6 +513,8 @@ void html_select_file::init_fieldset_isdir()
 	    warning.clear();
 	    warning.add_text(3, f.get_message());
 	}
+
+	ret = true;
     }
     catch(libdar::Egeneric & e)
     {
@@ -516,6 +522,8 @@ void html_select_file::init_fieldset_isdir()
 	warning.add_text(3, string("Unexpected error returned by libdar:"));
 	warning.add_text(4, e.get_message());
     }
+
+    return ret;
 }
 
 void html_select_file::fill_content()
