@@ -76,7 +76,6 @@ class html_options_read : public body_builder, public actor, public events, publ
 {
 public:
     static const std::string entrepot_has_changed;
-    static const std::string ref_entrepot_has_changed;
 
     html_options_read();
     html_options_read(const html_options_read & ref) = default;
@@ -91,10 +90,6 @@ public:
 	/// obtain just the entrepot object from the option fields
     std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const
     { return entrep.get_entrepot(webui); };
-
-	/// obtain just the reference entrepot object from the option fields
-    std::shared_ptr<libdar::entrepot> get_ref_entrepot(std::shared_ptr<html_web_user_interaction> webui) const
-    { return ref_entrep.get_entrepot(webui); };
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -113,6 +108,8 @@ protected:
 
 
 private:
+    static const std::string ref_entrepot_has_changed;
+
     html_derouleur deroule;
     html_form form_src;
     html_form_fieldset fs_src;

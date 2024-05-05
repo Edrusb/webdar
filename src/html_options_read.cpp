@@ -141,7 +141,6 @@ html_options_read::html_options_read():
 
 	// setting up our own events
     register_name(entrepot_has_changed);
-    register_name(ref_entrepot_has_changed);
 
 	// manually launching on event to have coherent visibility between fields
     on_event(html_crypto_algo::changed);
@@ -216,10 +215,7 @@ void html_options_read::on_event(const string & event_name)
 	my_body_part_has_changed();
     }
     else if(event_name == html_libdar_running_popup::libdar_has_finished)
-    {
 	join();
-	act(ref_entrepot_has_changed);
-    }
     else if(event_name == html_crypto_algo::changed
 	    || event_name == html_form_input::changed
 	    || event_name == html_form_input_file::changed_entrepot)
