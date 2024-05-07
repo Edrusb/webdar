@@ -132,7 +132,7 @@ int main(int argc, char *argv[], char** env)
 	    // set signal handlers for type 1 and type 2
 
 	libthreadar::thread_signal::change_default_signal(THREAD_SIGNAL);
-	    // SIGUSR2 is used by libthread::thread_signa
+	    // SIGUSR2 is used by libthread::thread_signal
 
 	set<int> signals_list;
 	set<int>::iterator sl_it;
