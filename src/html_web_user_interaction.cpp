@@ -469,7 +469,7 @@ void html_web_user_interaction::check_thread_status()
 
 void html_web_user_interaction::clean_end_threads(bool force)
 {
-    if( ! managed_threads.empty()
+    while( ! managed_threads.empty()
 	&& managed_threads.back() != nullptr)
     {
 	pthread_t libdar_tid;
@@ -477,8 +477,11 @@ void html_web_user_interaction::clean_end_threads(bool force)
 	{
 	    libdar::thread_cancellation th;
 	    th.cancel(libdar_tid, force, 0);
+	    managed_threads.back()->join();
 	    was_interrupted = true;
 	}
+	else
+	    managed_threads.pop_back();
     }
 
     if(! managed_threads.empty()
