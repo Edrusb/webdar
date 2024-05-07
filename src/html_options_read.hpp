@@ -72,7 +72,7 @@ extern "C"
     /// is the one provided as argument of those methods, not the one given to set_webui() which is only used
     /// when representing the html components during the configuration phase of webdar.
 
-class html_options_read : public body_builder, public actor, public events, public libthreadar::thread
+class html_options_read : public body_builder, public actor, public events, public libthreadar::thread_signal
 {
 public:
     static const std::string entrepot_has_changed;
@@ -107,7 +107,7 @@ protected:
     virtual void inherited_run() override;
 
 	/// inherited from libthreadar::thread
-    virtual void inherited_cancel() override;
+    virtual void signaled_inherited_cancel() override;
 
 
 private:

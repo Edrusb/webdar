@@ -43,7 +43,7 @@ extern "C"
 #include "html_derouleur.hpp"
 #include "html_libdar_running_popup.hpp"
 
-class html_archive_merge: public body_builder, public libthreadar::thread, public actor
+class html_archive_merge: public body_builder, public libthreadar::thread_signal, public actor
 {
 public:
     html_archive_merge();
@@ -73,7 +73,7 @@ protected:
     virtual void inherited_run() override;
 
 	/// inherited from libthreadar::thread
-    virtual void inherited_cancel() override;
+    virtual void signaled_inherited_cancel() override;
 
 private:
     html_derouleur deroule;

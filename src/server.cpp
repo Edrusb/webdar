@@ -44,6 +44,7 @@ extern "C"
 #include "challenge.hpp"
 #include "choose.hpp"
 #include "static_object_library.hpp"
+#include "global_parameters.hpp"
 
 using namespace std;
 
@@ -80,6 +81,8 @@ bool server::run_new_server(const shared_ptr<central_report> & log,
 
 	    if(sigfillset(&sigs) != 0)
 		throw exception_system("failed creating a full signal set", errno);
+	    if(sigdelset(&sigs, THREAD_SIGNAL) != 0)
+		throw exception_system("failed removing the THREAD_SIGNAL from signal set", errno);
 
 	    tmp->set_signal_mask(sigs);
 	    tmp->run();

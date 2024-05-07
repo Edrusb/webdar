@@ -40,7 +40,7 @@ extern "C"
 #include "html_derouleur.hpp"
 #include "actor.hpp"
 
-class html_archive_isolate: public body_builder, public libthreadar::thread, public actor
+class html_archive_isolate: public body_builder, public libthreadar::thread_signal, public actor
 {
 public:
     html_archive_isolate();
@@ -70,7 +70,7 @@ protected:
     virtual void inherited_run() override;
 
 	/// inherited from libthreadar::thread
-    virtual void inherited_cancel() override;
+    virtual void signaled_inherited_cancel() override;
 
 
 private:

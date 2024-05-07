@@ -21,49 +21,21 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
-#ifndef ARCHIVE_MERGE_HPP
-#define ARCHIVE_MERGE_HPP
+#ifndef GLOBAL_PARAMETERS_HPP
+#define GLOBAL_PARAMETERS_HPP
+
+    /// \file parameters global to the webdar application
 
     // C system header files
 extern "C"
 {
-
+#include <signal.h>
 }
 
     // C++ system header files
-#include <dar/libdar.hpp>
-#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
-#include "web_user_interaction.hpp"
-#include "html_options_merge.hpp"
-#include "saisie.hpp"
 
-class archive_merge : public libthreadar::thread_signal
-{
-public:
-    archive_merge(): param(nullptr) {};
-    archive_merge(const archive_merge & ref) = default;
-    archive_merge(archive_merge && ref) noexcept = default;
-    archive_merge & operator = (const archive_merge & ref) = default;
-    archive_merge & operator = (archive_merge && ref) noexcept = default;
-    ~archive_merge() { cancel(); join(); };
-
-    void set_user_interaction(const std::shared_ptr<html_web_user_interaction> ref) { ui = ref; };
-    void set_parametrage(const saisie* x_param) { param = x_param; };
-
-protected:
-
-	/// inherited from class libthreadar::thread
-    virtual void inherited_run() override;
-
-	/// inherited from libthreadar::thread
-    virtual void signaled_inherited_cancel() override;
-
-private:
-    std::shared_ptr<html_web_user_interaction> ui;
-    const saisie* param;
-
-};
+#define THREAD_SIGNAL SIGUSR2
 
 #endif

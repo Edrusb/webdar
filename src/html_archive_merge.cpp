@@ -123,7 +123,7 @@ void html_archive_merge::inherited_run()
     sauv_path.set_entrepot(options.get_entrepot(ptr));
 }
 
-void html_archive_merge::inherited_cancel()
+void html_archive_merge::signaled_inherited_cancel()
 {
     pthread_t libdar_tid;
     libdar::thread_cancellation th;

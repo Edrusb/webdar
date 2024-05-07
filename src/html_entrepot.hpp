@@ -47,7 +47,7 @@ extern "C"
 
     /// class html_entrepot let user define an entrepot parameters
 
-class html_entrepot: public body_builder, public actor, public events, public libthreadar::thread
+class html_entrepot: public body_builder, public actor, public events, public libthreadar::thread_signal
 {
 public:
     static const std::string changed; ///< triggered when the entrepot parameters has changed
@@ -81,7 +81,7 @@ protected:
     virtual void inherited_run() override;
 
 	/// inherited from libthreadar::thread
-    virtual void inherited_cancel() override;
+    virtual void signaled_inherited_cancel() override;
 
 
 private:

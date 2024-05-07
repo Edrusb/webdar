@@ -79,7 +79,7 @@ void archive_test::inherited_run()
     }
 }
 
-void archive_test::inherited_cancel()
+void archive_test::signaled_inherited_cancel()
 {
     pthread_t libdar_tid;
     libdar::thread_cancellation th;

@@ -41,7 +41,7 @@
     /// for authentication validation and request, and session class to find and interrogate
     /// the proper session
 
-class server: public libthreadar::thread
+class server: public libthreadar::thread_signal
 {
 public:
 	// constructor & Destructor are intentionally set as private methods
@@ -61,7 +61,7 @@ protected:
 	/// inherited from libthreadar::thread
     virtual void inherited_run() override;
 
-	// no need to override thread::inherited_cancel();
+	// no need to override thread::signaled_inherited_cancel();
 
 private:
     server(const std::shared_ptr<central_report> & log,

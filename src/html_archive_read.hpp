@@ -48,7 +48,7 @@ extern "C"
 
     /// it is mainly used in class saisie
 
-class html_archive_read: public body_builder, public actor, public libthreadar::thread
+class html_archive_read: public body_builder, public actor, public libthreadar::thread_signal
 {
 public:
     html_archive_read(const std::string & archive_description);
@@ -76,7 +76,7 @@ protected:
     virtual void inherited_run() override;
 
 	/// inherited from libthreadar::thread
-    virtual void inherited_cancel() override;
+    virtual void signaled_inherited_cancel() override;
 
 private:
     html_form form;

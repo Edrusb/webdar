@@ -85,6 +85,8 @@ void archive_init_list::inherited_run()
 
 	try
 	{
+	    cancellation_checkpoint();
+
 		// this is necessary before calling  get_children_in_table
 	    ptr->init_catalogue();
 	}
@@ -102,7 +104,7 @@ void archive_init_list::inherited_run()
     }
 }
 
-void archive_init_list::inherited_cancel()
+void archive_init_list::signaled_inherited_cancel()
 {
     pthread_t libdar_tid;
     libdar::thread_cancellation th;

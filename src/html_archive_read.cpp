@@ -137,7 +137,7 @@ void html_archive_read::inherited_run()
     arch_path.set_entrepot(opt_read.get_entrepot(libdarexec.get_html_user_interaction()));
 }
 
-void html_archive_read::inherited_cancel()
+void html_archive_read::signaled_inherited_cancel()
 {
     pthread_t libdar_tid;
     libdar::thread_cancellation th;

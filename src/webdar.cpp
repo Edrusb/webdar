@@ -55,6 +55,7 @@ extern "C"
 #include "choose.hpp"
 #include "static_object_library.hpp"
 #include "environment.hpp"
+#include "global_parameters.hpp"
 
 #define WEBDAR_EXIT_OK 0
 #define WEBDAR_EXIT_SYNTAX 1
@@ -130,6 +131,9 @@ int main(int argc, char *argv[], char** env)
 	    /////////////////////////////////////////////////
 	    // set signal handlers for type 1 and type 2
 
+	libthreadar::thread_signal::change_default_signal(THREAD_SIGNAL);
+	    // SIGUSR2 is used by libthread::thread_signa
+
 	set<int> signals_list;
 	set<int>::iterator sl_it;
 
@@ -138,7 +142,6 @@ int main(int argc, char *argv[], char** env)
 	signals_list.insert(SIGALRM);
 	signals_list.insert(SIGTERM);
 	signals_list.insert(SIGUSR1);
-	signals_list.insert(SIGUSR2);
 
 	sl_it = signals_list.begin();
 	while(sl_it != signals_list.end())
@@ -333,6 +336,11 @@ int main(int argc, char *argv[], char** env)
     catch(libthreadar::exception_thread & e)
     {
 	cerr << "Uncaught exception_thread reached program boundary! " << e.get_message(": ") << endl;
+	ret = WEBDAR_EXIT_WEBDAR_BUG;
+    }
+    catch(libthreadar::exception_base & e)
+    {
+	cerr << "Uncaught libthreadar exception: " << e.get_message(": ") << endl;
 	ret = WEBDAR_EXIT_WEBDAR_BUG;
     }
     catch(exception_system & e)

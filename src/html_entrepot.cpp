@@ -271,7 +271,7 @@ void html_entrepot::inherited_run()
     dialog.reset();
 }
 
-void html_entrepot::inherited_cancel()
+void html_entrepot::signaled_inherited_cancel()
 {
     pthread_t libdar_tid;
     libdar::thread_cancellation th;

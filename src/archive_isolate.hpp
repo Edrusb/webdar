@@ -39,7 +39,7 @@ extern "C"
 #include "html_options_isolate.hpp"
 #include "saisie.hpp"
 
-class archive_isolate : public libthreadar::thread
+class archive_isolate : public libthreadar::thread_signal
 {
 public:
     archive_isolate(): param(nullptr) {};
@@ -59,7 +59,7 @@ protected:
     virtual void inherited_run() override;
 
 	/// inherited from libthreadar::thread
-    virtual void inherited_cancel() override;
+    virtual void signaled_inherited_cancel() override;
 
 
 private:

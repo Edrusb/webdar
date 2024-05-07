@@ -49,7 +49,7 @@ extern "C"
     /// on aprovided web_user_interaction object to report status and
     /// intermediate information about the operation under process
 
-class archive_compare : public libthreadar::thread
+class archive_compare : public libthreadar::thread_signal
 {
 public:
     archive_compare(): param(nullptr) {};
@@ -74,8 +74,7 @@ protected:
     virtual void inherited_run() override;
 
 	/// inherited from libthreadar::thread
-    virtual void inherited_cancel() override;
-
+    virtual void signaled_inherited_cancel() override;
 
 private:
     std::shared_ptr<html_web_user_interaction> ui;

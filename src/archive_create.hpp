@@ -51,7 +51,7 @@ extern "C"
     /// intermediate information about the operation under process
 
 
-class archive_create : public libthreadar::thread
+class archive_create : public libthreadar::thread_signal
 {
 public:
     archive_create(): param(nullptr) {};
@@ -72,7 +72,7 @@ protected:
     virtual void inherited_run() override;
 
 	/// inherited from libthreadar::thread
-    virtual void inherited_cancel() override;
+    virtual void signaled_inherited_cancel() override;
 
 private:
     std::shared_ptr<html_web_user_interaction> ui;

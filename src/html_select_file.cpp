@@ -590,7 +590,7 @@ void html_select_file::fill_content()
     }
 }
 
-void html_select_file::inherited_cancel()
+void html_select_file::signaled_inherited_cancel()
 {
     pthread_t libdar_tid;
     libdar::thread_cancellation th;

@@ -46,6 +46,7 @@ extern "C"
 #include "server.hpp"
 #include "webdar_tools.hpp"
 #include "ssl_connexion.hpp"
+#include "global_parameters.hpp"
 
 using namespace std;
 
@@ -95,6 +96,8 @@ void listener::init(const shared_ptr<central_report> & log,
     l_port = webdar_tools_convert_to_string(port);
     if(sigfillset(&sigs) != 0)
 	throw exception_system("failed creating a full signal set", errno);
+    if(sigdelset(&sigs, THREAD_SIGNAL) != 0)
+	throw exception_system("failed removing the THREAD_SIGNAL from signal set", errno);
     set_signal_mask(sigs);
 
     sockfd = -1;

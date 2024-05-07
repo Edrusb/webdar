@@ -109,7 +109,7 @@ void archive_merge::inherited_run()
 
 }
 
-void archive_merge::inherited_cancel()
+void archive_merge::signaled_inherited_cancel()
 {
     pthread_t libdar_tid;
     libdar::thread_cancellation th;

@@ -50,7 +50,7 @@ extern "C"
     /// calling get_children_in_table() or has_subdirectory(). Once completed close_archive() can be called
     /// or the object deleted.
 
-class archive_init_list : public libthreadar::thread
+class archive_init_list : public libthreadar::thread_signal
 {
 public:
     archive_init_list(): param(nullptr) {};
@@ -83,7 +83,7 @@ protected:
     virtual void inherited_run() override;
 
 	/// inherited from libthreadar::thread
-    virtual void inherited_cancel() override;
+    virtual void signaled_inherited_cancel() override;
 
 
 private:

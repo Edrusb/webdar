@@ -100,7 +100,7 @@ extern "C"
 
 
 
-class html_select_file: public html_popup, public events, public actor, public libthreadar::thread
+class html_select_file: public html_popup, public events, public actor, public libthreadar::thread_signal
 {
 public:
 	/// event when user selected a file
@@ -163,7 +163,7 @@ protected:
     virtual void inherited_run() override;
 
 	/// inherited from libthreadar::thread
-    virtual void inherited_cancel() override;
+    virtual void signaled_inherited_cancel() override;
 
 private:
 	// event name for the 'change to parent directory' button (parentdir)

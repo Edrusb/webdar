@@ -59,6 +59,7 @@ void archive_compare::inherited_run()
 	libdar::archive_options_diff diff_opt(param->get_comparison_options());
 	libdar::statistics* progressive_report = ui->get_statistics().get_libdar_statistics();
 
+	cancellation_checkpoint();
 	libdar::archive arch(ui->get_user_interaction(),
 			     archpath,
 			     basename,
@@ -89,7 +90,7 @@ void archive_compare::inherited_run()
     }
 }
 
-void archive_compare::inherited_cancel()
+void archive_compare::signaled_inherited_cancel()
 {
     pthread_t libdar_tid;
     libdar::thread_cancellation th;

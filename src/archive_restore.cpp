@@ -88,7 +88,7 @@ void archive_restore::inherited_run()
     }
 }
 
-void archive_restore::inherited_cancel()
+void archive_restore::signaled_inherited_cancel()
 {
     pthread_t libdar_tid;
     libdar::thread_cancellation th;

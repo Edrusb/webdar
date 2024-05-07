@@ -93,7 +93,7 @@ void archive_isolate::inherited_run()
 }
 
 
-void archive_isolate::inherited_cancel()
+void archive_isolate::signaled_inherited_cancel()
 {
     pthread_t libdar_tid;
     libdar::thread_cancellation th;

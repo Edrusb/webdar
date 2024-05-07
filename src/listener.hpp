@@ -42,7 +42,7 @@
     /// manage incoming request on this proto_connexion accordingly
 
 
-class listener : public libthreadar::thread
+class listener : public libthreadar::thread_signal
 {
 public:
     listener(const std::shared_ptr<central_report> & log,        //< where to send reports
@@ -66,7 +66,7 @@ protected:
 	// inherited from libthreadar::thread;
     virtual void inherited_run() override;
 
-	// no need to override thread::inherited_cancel()
+	// no need to override thread::signaled_inherited_cancel()
 	// we rely on the cancellation_checkpoint() mechanism
 	// in inherited_run()
 
