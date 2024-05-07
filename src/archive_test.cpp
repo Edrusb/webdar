@@ -55,6 +55,7 @@ void archive_test::inherited_run()
 	libdar::archive_options_test test_opt(param->get_testing_options());
 	libdar::statistics* progressive_report = ui->get_statistics().get_libdar_statistics();
 
+	cancellation_checkpoint();
 	libdar::archive arch(ui->get_user_interaction(),
 			     archpath,
 			     basename,
@@ -68,6 +69,7 @@ void archive_test::inherited_run()
 	ui->get_statistics().set_skipped_label("item(s) excluded by filters");
 	ui->get_statistics().set_errored_label("items(s) with error");
 
+	cancellation_checkpoint();
 	libdar::statistics final = arch.op_test(test_opt,
 						progressive_report);
     }
@@ -75,4 +77,13 @@ void archive_test::inherited_run()
     {
 	throw exception_libcall(e);
     }
+}
+
+void archive_test::inherited_cancel()
+{
+    pthread_t libdar_tid;
+    libdar::thread_cancellation th;
+
+    if(is_running(libdar_tid))
+	th.cancel(libdar_tid, true, 0);
 }

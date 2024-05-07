@@ -115,3 +115,12 @@ void html_archive_isolate::inherited_run()
 	throw WEBDAR_BUG;
     sauv_path.set_entrepot(options.get_entrepot(ptr));
 }
+
+void html_archive_isolate::inherited_cancel()
+{
+    pthread_t libdar_tid;
+    libdar::thread_cancellation th;
+
+    if(is_running(libdar_tid))
+	th.cancel(libdar_tid, true, 0);
+}

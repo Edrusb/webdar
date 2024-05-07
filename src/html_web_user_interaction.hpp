@@ -72,10 +72,10 @@ extern "C"
     /// || stats (libdar::statistics)              ||
     /// |+-----------------------------------------+|
     /// |                                           |
-    /// | +-------+  +-------+  +-------+  +-------+|
-    /// | | ask   |  | force |  | kill  |  |finish ||
-    /// | | close |  | close |  | close |  |       ||
-    /// | +-------+  +-------+  +-------+  +-------+|
+    /// | +-------+  +-------+             +-------+|
+    /// | | ask   |  | force |             |finish ||
+    /// | | close |  | close |             |       ||
+    /// | +-------+  +-------+             +-------+|
     /// +-------------------------------------------+
 
     /// usage: once created, this component can be adopted from another body_builder
@@ -146,14 +146,14 @@ public:
 	/// \note get_statistics() unhides the field and it is hidden again, when calling clear()
     void hide_statistics() { stats.set_visible(false); };
 
-	/// provide a libdar thread to be managed by this html_web_component (stop, kill, actions)
+	/// provide a libdar thread to be managed by this html_web_component (stop actions)
 
 	/// \param[in] arg is the thread to be managed, it must have been setup but not run() by the caller
 	/// this method will run() the thread, monitor its liveness then join() it when it has completed.
 	/// The caller must have registered to the event libdar_has_finished to be informed when the thread
 	/// will have completed. The caller can also/instead join() the corresponding thread, but is then
 	/// stuck until the thread ends.
-	/// During the life of the thread, this body_builder component displays buttons to stop/kill the
+	/// During the life of the thread, this body_builder component displays buttons to stop the
 	/// provided thread, as well as the output of the get_user_interaction() returned component (which
 	/// is a libdar::user_interaction object).
 	///
@@ -163,7 +163,7 @@ public:
 	/// on the "close" button (or all thread have ended and auto_hide() was set. This does not prevent
 	/// the caller to join() any thread it need to wait for its termination. Of course if the user
 	/// asks to abort the libdar process, first only the last provided thread is requested to stop or
-	/// in a second time (upon user action) all threads are killed in reverse order they have been
+	/// in a second time (upon user action) all threads are stopped in reverse order they have been
 	/// given to management.
 
 	///
@@ -202,7 +202,6 @@ private:
 	// internal event names (assigned to control buttons and on which we registered)
     static const std::string ask_end_libdar;      ///< ask_close button has been pressed (graceful ending requested)
     static const std::string force_end_libdar;    ///< force_close button has been pressed (immediate ending requested)
-    static const std::string kill_libdar_thread;  ///< kill_close button has been pressed (kill thread requested)
     static const std::string close_libdar_screen; ///< finish button has been pressed
 
     enum mode_type
@@ -210,7 +209,6 @@ private:
 	normal,        ///< managed thread may be running (then managed_thread != nullptr)
 	end_asked,     ///< thread pending graceful stop
 	end_forced,    ///< thread pending graceful immediate stop
-	kill_forced,   ///< thread killed waiting for the thread to end
 	finished,      ///< thread has finished, display kept for user to ack the status
 	closed         ///< user has acked the status or auto_hide was set
     };
@@ -238,7 +236,6 @@ private:
     html_statistics stats;        ///< holds a libdar::statistics for progressive report of libdar operations on archives
     html_button ask_close;        ///< button that shows to query libdar clean shutdown
     html_button force_close;      ///< button that shows to query libdar immediate shutdown
-    html_button kill_close;       ///< button that shows to query libdar thread kill
     html_button finish;           ///< button that shows to let the user read last logs before closing
 
     bool ignore_event;      ///< if true the on_event() method does not take any action
@@ -251,7 +248,6 @@ private:
     void update_html_from_libdar_status();
     void check_thread_status();
     void clean_end_threads(bool force);
-    void kill_threads();
     void join_all_threads();
     void trigger_refresh();
 

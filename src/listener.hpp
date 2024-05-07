@@ -60,11 +60,15 @@ public:
     listener(listener && ref) noexcept = delete;
     listener & operator = (const listener & ref) = delete;
     listener & operator = (listener && ref) noexcept = delete;
-    ~listener() { close(sockfd); kill(); join(); };
+    ~listener() { close(sockfd); cancel(); join(); };
 
 protected:
 	// inherited from libthreadar::thread;
     virtual void inherited_run() override;
+
+	// no need to override thread::inherited_cancel()
+	// we rely on the cancellation_checkpoint() mechanism
+	// in inherited_run()
 
 private:
     std::shared_ptr<central_report> rep;       ///< where to report events

@@ -58,7 +58,10 @@ public:
     void release_session() { can_keep_session = false; }; // no need of mutex here, several concurrent call will lead to the same result.
 
 protected:
+	/// inherited from libthreadar::thread
     virtual void inherited_run() override;
+
+	// no need to override thread::inherited_cancel();
 
 private:
     server(const std::shared_ptr<central_report> & log,
@@ -68,7 +71,7 @@ private:
     server(server && ref) noexcept = delete;
     server & operator = (const server & ref) = delete;
     server & operator = (server && ref) noexcept = delete;
-    ~server() { kill(); join(); };
+    ~server() { cancel(); join(); };
 
     parser src;              //< this object manages the given proto_connexion in constructor
     std::shared_ptr<central_report> rep; //< where do logs should go

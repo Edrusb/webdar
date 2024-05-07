@@ -58,7 +58,7 @@ public:
     archive_init_list(archive_init_list && ref) noexcept = delete;
     archive_init_list & operator = (const archive_init_list & ref) = delete;
     archive_init_list & operator = (archive_init_list && ref) noexcept = delete;
-    ~archive_init_list() { kill(); join(); };
+    ~archive_init_list() { cancel(); join(); };
 
 
 	/// set the user interaction to report on when running the thread
@@ -81,6 +81,10 @@ protected:
 
 	/// inherited from class libthreadar::thread
     virtual void inherited_run() override;
+
+	/// inherited from libthreadar::thread
+    virtual void inherited_cancel() override;
+
 
 private:
     std::shared_ptr<html_web_user_interaction> ui;

@@ -58,6 +58,7 @@ void archive_isolate::inherited_run()
 
 	    // first creating the archive object to isolate
 
+	cancellation_checkpoint();
 	source.reset(new (nothrow) libdar::archive(ui->get_user_interaction(),
 						   archpath,
 						   basename,
@@ -75,6 +76,7 @@ void archive_isolate::inherited_run()
 
 	    // now we can isolate the archive
 
+	cancellation_checkpoint();
 	source->op_isolate(dest_path,
 			   dest_basename,
 			   EXTENSION,
@@ -90,3 +92,12 @@ void archive_isolate::inherited_run()
     }
 }
 
+
+void archive_isolate::inherited_cancel()
+{
+    pthread_t libdar_tid;
+    libdar::thread_cancellation th;
+
+    if(is_running(libdar_tid))
+	th.cancel(libdar_tid, true, 0);
+}

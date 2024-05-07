@@ -59,7 +59,7 @@ public:
     archive_create(archive_create && ref) noexcept = default;
     archive_create & operator = (const archive_create & ref) = default;
     archive_create & operator = (archive_create && ref) noexcept = default;
-    ~archive_create() { kill(); join(); };
+    ~archive_create() { cancel(); join(); };
 
 	// parameters expected by the libdar::archive constructor
 
@@ -70,6 +70,9 @@ protected:
 
 	/// inherited from class libthreadar::thread
     virtual void inherited_run() override;
+
+	/// inherited from libthreadar::thread
+    virtual void inherited_cancel() override;
 
 private:
     std::shared_ptr<html_web_user_interaction> ui;

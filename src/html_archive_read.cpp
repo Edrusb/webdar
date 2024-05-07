@@ -131,3 +131,17 @@ string html_archive_read::get_archive_basename() const
 
     return ret;
 }
+
+void html_archive_read::inherited_run()
+{
+    arch_path.set_entrepot(opt_read.get_entrepot(libdarexec.get_html_user_interaction()));
+}
+
+void html_archive_read::inherited_cancel()
+{
+    pthread_t libdar_tid;
+    libdar::thread_cancellation th;
+
+    if(is_running(libdar_tid))
+	th.cancel(libdar_tid, true, 0);
+}

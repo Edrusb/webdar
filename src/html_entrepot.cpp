@@ -242,6 +242,7 @@ void html_entrepot::inherited_run()
 		throw WEBDAR_BUG;
 	    }
 
+	    cancellation_checkpoint();
 	    entrep.reset(new (nothrow) libdar::entrepot_libcurl(dialog,
 								proto,
 								login.get_value(),
@@ -268,6 +269,15 @@ void html_entrepot::inherited_run()
 	throw;
     }
     dialog.reset();
+}
+
+void html_entrepot::inherited_cancel()
+{
+    pthread_t libdar_tid;
+    libdar::thread_cancellation th;
+
+    if(is_running(libdar_tid))
+	th.cancel(libdar_tid, true, 0);
 }
 
 void html_entrepot::update_visible()

@@ -50,7 +50,6 @@ const string html_web_user_interaction::class_inter = "html_web_user_interaction
     // internal events:
 const string html_web_user_interaction::ask_end_libdar = "html_web_user_interaction_ask_end_libdar";
 const string html_web_user_interaction::force_end_libdar = "html_web_user_interaction_force_end_libdar";
-const string html_web_user_interaction::kill_libdar_thread = "html_web_user_interaction_kill_libdar_thread";
 const string html_web_user_interaction::close_libdar_screen = "html_web_user_interaction_close_libdar_screen";
 
 
@@ -67,7 +66,6 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     h_global("Interaction with libdar"),
     ask_close("Gracefully stop libdar", ask_end_libdar),
     force_close("Immediately stop libdar", force_end_libdar),
-    kill_close("Kill libdar thread", kill_libdar_thread),
     finish("Close", close_libdar_screen),
     ignore_event(false)
 {
@@ -94,7 +92,6 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     h_global.adopt(&stats);
     h_global.adopt(&ask_close);
     h_global.adopt(&force_close);
-    h_global.adopt(&kill_close);
     h_global.adopt(&finish);
     adopt(&h_global);
 
@@ -109,7 +106,6 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     h_get_string.record_actor_on_event(this, html_form_input::changed);
     ask_close.record_actor_on_event(this, ask_end_libdar);
     force_close.record_actor_on_event(this, force_end_libdar);
-    kill_close.record_actor_on_event(this, kill_libdar_thread);
     finish.record_actor_on_event(this, close_libdar_screen);
 
 	// visibility and object status
@@ -125,9 +121,6 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     webdar_css_style::active_button(force_close);
     force_close.add_css_class(class_button);
 
-    webdar_css_style::active_button(kill_close);
-    kill_close.add_css_class(class_button);
-
     webdar_css_style::normal_button(finish);
     finish.add_css_class(class_button);
 }
@@ -136,7 +129,7 @@ html_web_user_interaction::~html_web_user_interaction()
 {
     try
     {
-	kill_threads();
+	clean_end_threads(true);
 	join_all_threads();
     }
     catch(...)
@@ -240,8 +233,6 @@ void html_web_user_interaction::on_event(const string & event_name)
 	    set_mode(end_asked); // eventually calls my_body_part_has_changed()
 	else if(event_name == force_end_libdar)
 	    set_mode(end_forced); // eventually calls my_body_part_has_changed()
-	else if(event_name == kill_libdar_thread)
-	    set_mode(kill_forced); // eventually calls my_body_part_has_changed()
 	else if(event_name == close_libdar_screen)
 	    set_mode(closed); // eventually calls my_body_part_has_changed()
 	else
@@ -338,7 +329,6 @@ void html_web_user_interaction::set_mode(mode_type m)
     case normal:
 	ask_close.set_visible(true);
 	force_close.set_visible(false);
-	kill_close.set_visible(false);
 	finish.set_visible(false);
 	set_visible(true);
 	was_interrupted = false;
@@ -347,29 +337,19 @@ void html_web_user_interaction::set_mode(mode_type m)
     case end_asked:
 	ask_close.set_visible(false);
 	force_close.set_visible(true);
-	kill_close.set_visible(false);
 	finish.set_visible(false);
 	clean_end_threads(false);
 	break;
     case end_forced:
 	ask_close.set_visible(false);
 	force_close.set_visible(false);
-	kill_close.set_visible(true);
 	finish.set_visible(false);
 	clean_end_threads(true);
-	break;
-    case kill_forced:
-	ask_close.set_visible(false);
-	force_close.set_visible(false);
-	kill_close.set_visible(false);
-	finish.set_visible(false);
-	kill_threads();
 	trigger_refresh();
 	break;
     case finished:
 	ask_close.set_visible(false);
 	force_close.set_visible(false);
-	kill_close.set_visible(false);
 	finish.set_visible(true);
 	if(!autohide || (was_interrupted && hide_unless_interrupted))
 	{
@@ -505,29 +485,6 @@ void html_web_user_interaction::clean_end_threads(bool force)
        && managed_threads.back() == nullptr)
 	throw WEBDAR_BUG;
 }
-
-void html_web_user_interaction::kill_threads()
-{
-    bool bug = false;
-    deque<libthreadar::thread*>::reverse_iterator rit = managed_threads.rbegin();
-
-    while(rit != managed_threads.rend())
-    {
-	if(*rit == nullptr)
-	    bug = true;
-	else
-	{
-	    if((*rit)->is_running())
-		(*rit)->kill();
-	}
-
-	rit++;
-    }
-
-    if(bug)
-	throw WEBDAR_BUG;
-}
-
 
 void html_web_user_interaction::join_all_threads()
 {

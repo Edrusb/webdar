@@ -56,7 +56,7 @@ public:
     html_archive_read(html_archive_read && ref) noexcept = delete;
     html_archive_read & operator = (const html_archive_read & ref) = delete;
     html_archive_read & operator = (html_archive_read && ref) noexcept = delete;
-    ~html_archive_read() { kill(); join(); };
+    ~html_archive_read() { cancel(); join(); };
 
 	// available fields for libdar
 
@@ -73,8 +73,10 @@ protected:
 						const request & req) override;
 
 	/// inherited from class libthreadar::thread
-    virtual void inherited_run() override { arch_path.set_entrepot(opt_read.get_entrepot(libdarexec.get_html_user_interaction())); };
+    virtual void inherited_run() override;
 
+	/// inherited from libthreadar::thread
+    virtual void inherited_cancel() override;
 
 private:
     html_form form;

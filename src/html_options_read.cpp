@@ -291,3 +291,12 @@ void html_options_read::inherited_run()
 
     ref_path.set_entrepot(ref_entrep.get_entrepot(localui));
 }
+
+void html_options_read::inherited_cancel()
+{
+    pthread_t libdar_tid;
+    libdar::thread_cancellation th;
+
+    if(is_running(libdar_tid))
+	th.cancel(libdar_tid, true, 0);
+}

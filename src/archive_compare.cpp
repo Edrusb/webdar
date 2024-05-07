@@ -76,6 +76,7 @@ void archive_compare::inherited_run()
 	ui->get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
 	ui->get_statistics().set_total_label("inode(s) considered");
 
+	cancellation_checkpoint();
 	libdar::statistics final = arch.op_diff(fs_root,
 						diff_opt,
 						progressive_report);
@@ -86,4 +87,13 @@ void archive_compare::inherited_run()
 	    // used within webdar
 	throw exception_libcall(e);
     }
+}
+
+void archive_compare::inherited_cancel()
+{
+    pthread_t libdar_tid;
+    libdar::thread_cancellation th;
+
+    if(is_running(libdar_tid))
+	th.cancel(libdar_tid, true, 0);
 }

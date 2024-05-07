@@ -64,6 +64,7 @@ void archive_merge::inherited_run()
 	    // constructor
 
 	ui->get_user_interaction()->message("--- Opening the archive of reference...");
+	cancellation_checkpoint();
 	ref.reset(new (nothrow) libdar::archive(ui->get_user_interaction(),
 						libdar::path(ref_path),
 						ref_basename,
@@ -86,6 +87,7 @@ void archive_merge::inherited_run()
 	ui->get_statistics().set_total_label("item(s) considered");
 
 	ui->get_user_interaction()->message("--- Proceeding to the merging operation...");
+	cancellation_checkpoint();
 	libdar::archive(ui->get_user_interaction(),
 			archpath,
 			ref,
@@ -105,4 +107,13 @@ void archive_merge::inherited_run()
 	throw exception_libcall(e);
     }
 
+}
+
+void archive_merge::inherited_cancel()
+{
+    pthread_t libdar_tid;
+    libdar::thread_cancellation th;
+
+    if(is_running(libdar_tid))
+	th.cancel(libdar_tid, true, 0);
 }

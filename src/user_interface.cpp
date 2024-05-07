@@ -81,7 +81,7 @@ user_interface::~user_interface()
 	if(current_thread != nullptr)
 	{
 	    if(current_thread->is_running())
-		current_thread->kill();
+		current_thread->cancel();
 	    current_thread->join(); // this later call may propagate exceptions
 	    current_thread = nullptr;
 	}

@@ -571,7 +571,7 @@ static void close_all_listeners(int sig)
 	    if(*it == nullptr)
 		throw WEBDAR_BUG;
 	    else
-		(*it)->kill();
+		(*it)->cancel();
 	}
 	server::kill_all_servers();
 

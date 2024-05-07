@@ -46,7 +46,7 @@ public:
     archive_test(archive_test && ref) noexcept = default;
     archive_test & operator = (const archive_test & ref) = default;
     archive_test & operator = (archive_test && ref) noexcept = default;
-    ~archive_test() { kill(); join(); };
+    ~archive_test() { cancel(); join(); };
 
     void set_user_interaction(const std::shared_ptr<html_web_user_interaction> ref) { ui = ref; };
     void set_parametrage(const saisie* x_param) { param = x_param; };
@@ -54,6 +54,9 @@ public:
 protected:
 	/// inherited from class thread
     virtual void inherited_run() override;
+
+	/// inherited from libthreadar::thread
+    virtual void inherited_cancel() override;
 
 private:
     std::shared_ptr<html_web_user_interaction> ui;

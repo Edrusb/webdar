@@ -58,7 +58,7 @@ public:
     html_entrepot(html_entrepot && ref) noexcept = delete;
     html_entrepot & operator = (const html_entrepot & ref) = delete;
     html_entrepot & operator = (html_entrepot && ref) noexcept = delete;
-    ~html_entrepot() { kill(); join(); };
+    ~html_entrepot() { cancel(); join(); };
 
 	/// run the entrepot building in a dedicated thread and display/control this thread
 
@@ -79,6 +79,10 @@ protected:
 
 	/// inherited from libthreadar::thread
     virtual void inherited_run() override;
+
+	/// inherited from libthreadar::thread
+    virtual void inherited_cancel() override;
+
 
 private:
     static constexpr const char* type_local = "local";

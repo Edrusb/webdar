@@ -74,6 +74,7 @@ void archive_init_list::inherited_run()
 	libdar::archive_options_read read_opt(param->get_read_options(ui));
 
 	ui->auto_hide(true, true);
+	cancellation_checkpoint();
 	ptr.reset(new (nothrow) libdar::archive(ui->get_user_interaction(),
 						archpath,
 						basename,
@@ -99,4 +100,13 @@ void archive_init_list::inherited_run()
 	    throw WEBDAR_BUG;
 	throw exception_libcall(e);
     }
+}
+
+void archive_init_list::inherited_cancel()
+{
+    pthread_t libdar_tid;
+    libdar::thread_cancellation th;
+
+    if(is_running(libdar_tid))
+	th.cancel(libdar_tid, true, 0);
 }

@@ -438,7 +438,8 @@ void html_select_file::inherited_run()
 	    case run_init_fill:
 		if(!init_fieldset_isdir())
 		    break;
-		    // else
+		else
+		    cancellation_checkpoint();
 		    /* no break ! */
 	    case run_fill_only:
 		fill_content();
@@ -543,10 +544,12 @@ void html_select_file::fill_content()
     if(fieldset_isdir)
 	entr->set_location(fieldset.get_label());
 
+    cancellation_checkpoint();
     entr->read_dir_reset_dirinfo();
 
     while(entr->read_dir_next_dirinfo(entry, isdir))
     {
+	cancellation_checkpoint();
 	if(isdir || filter.empty() || fnmatch(filter.c_str(), entry.c_str(), FNM_PERIOD) == 0)
 	{
 	    if(isdir)
@@ -567,6 +570,7 @@ void html_select_file::fill_content()
 
     while(it != entry_dirs.end())
     {
+	cancellation_checkpoint();
 	event_name = "x_" + to_string(count++);
 	if(listed.find(event_name) != listed.end())
 	    throw WEBDAR_BUG; // event already exists!?!
@@ -577,12 +581,22 @@ void html_select_file::fill_content()
     it = entry_files.begin();
     while(it != entry_files.end())
     {
+	cancellation_checkpoint();
 	event_name = "x_" + to_string(count++);
 	if(listed.find(event_name) != listed.end())
 	    throw WEBDAR_BUG; // event already exists!?!
 	add_content_entry(event_name, false, *it);
 	++it;
     }
+}
+
+void html_select_file::inherited_cancel()
+{
+    pthread_t libdar_tid;
+    libdar::thread_cancellation th;
+
+    if(is_running(libdar_tid))
+	th.cancel(libdar_tid, true, 0);
 }
 
 void html_select_file::create_dir()

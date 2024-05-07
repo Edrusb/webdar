@@ -69,6 +69,9 @@ protected:
 	/// inherited from libthreadar::thread
     virtual void inherited_run() override;
 
+	/// inherited from libthreadar::thread
+    virtual void inherited_cancel() override;
+
 
 private:
     html_derouleur deroule;

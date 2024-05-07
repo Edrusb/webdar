@@ -57,7 +57,7 @@ public:
     archive_compare(archive_compare && ref) noexcept = default;
     archive_compare & operator = (const archive_compare & ref) = default;
     archive_compare & operator = (archive_compare && ref) noexcept = default;
-    ~archive_compare() { kill(); join(); };
+    ~archive_compare() { cancel(); join(); };
 
 	// parameters expected by the libdar::archive constructor
 	// and libdar::archive::op_diff method
@@ -72,6 +72,10 @@ protected:
 	/// this fires the libdar comparison operation with the so far
 	/// provided parameters
     virtual void inherited_run() override;
+
+	/// inherited from libthreadar::thread
+    virtual void inherited_cancel() override;
+
 
 private:
     std::shared_ptr<html_web_user_interaction> ui;

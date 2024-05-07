@@ -78,6 +78,7 @@ void archive_create::inherited_run()
 
 	    // let's now create the archive
 
+	cancellation_checkpoint();
 	libdar::archive target(ui->get_user_interaction(),
 			       fs_root,
 			       archpath,
@@ -94,4 +95,13 @@ void archive_create::inherited_run()
     {
 	throw exception_libcall(e);
     }
+}
+
+void archive_create::inherited_cancel()
+{
+    pthread_t libdar_tid;
+    libdar::thread_cancellation th;
+
+    if(is_running(libdar_tid))
+	th.cancel(libdar_tid, true, 0);
 }

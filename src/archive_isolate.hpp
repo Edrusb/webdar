@@ -47,7 +47,7 @@ public:
     archive_isolate(archive_isolate && ref) noexcept = default;
     archive_isolate & operator = (const archive_isolate & ref) = default;
     archive_isolate & operator = (archive_isolate && ref) noexcept = default;
-    ~archive_isolate() { kill(); join(); };
+    ~archive_isolate() { cancel(); join(); };
 
 	// needed to read the archive to isolate
 
@@ -57,6 +57,10 @@ public:
 protected:
 	/// inherited from class libthreadar::thread
     virtual void inherited_run() override;
+
+	/// inherited from libthreadar::thread
+    virtual void inherited_cancel() override;
+
 
 private:
     std::shared_ptr<html_web_user_interaction> ui;

@@ -195,6 +195,7 @@ void server::inherited_run()
 		      (src.get_next_request_uri(url)
 		       && webdar_tools_get_session_ID_from_URI(url) == sess->get_session_ID()))
 		{
+		    cancellation_checkpoint();
 		    try
 		    {
 			const request & req = src.get_request();

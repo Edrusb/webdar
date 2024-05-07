@@ -206,6 +206,7 @@ void listener::inherited_run()
 
     while(true)
     {
+	cancellation_checkpoint();
 	rep->report(info, "listener object: waiting for incoming connections on " + l_ip + " port " + l_port);
 	(void)memset(addr, 0, addrlen);
 	ret = accept(sockfd, addr, &addrlen);
@@ -271,6 +272,7 @@ void listener::inherited_run()
 	{
 	    try
 	    {
+		cancellation_checkpoint();
 		server::throw_a_pending_exception();
 		loop = false;
 	    }
@@ -325,6 +327,7 @@ void listener::inherited_run()
 	}
     }
 }
+
 
 static struct in_addr string_to_network_IPv4(const string & ip)
 {

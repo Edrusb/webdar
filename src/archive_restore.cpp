@@ -58,6 +58,7 @@ void archive_restore::inherited_run()
 	libdar::archive_options_read read_opt(param->get_read_options(ui));
 	libdar::statistics* progressive_report = ui->get_statistics().get_libdar_statistics();
 
+	cancellation_checkpoint();
 	libdar::archive arch(ui->get_user_interaction(),
 			     archpath,
 			     basename,
@@ -76,6 +77,7 @@ void archive_restore::inherited_run()
 	ui->get_statistics().set_ea_treated_label("item(s) having their EA restored");
 	ui->get_statistics().set_total_label("item(s) considered");
 
+	cancellation_checkpoint();
 	libdar::statistics final = arch.op_extract(fs_root,
 						   extract_opt,
 						   progressive_report);
@@ -84,4 +86,13 @@ void archive_restore::inherited_run()
     {
 	throw exception_libcall(e);
     }
+}
+
+void archive_restore::inherited_cancel()
+{
+    pthread_t libdar_tid;
+    libdar::thread_cancellation th;
+
+    if(is_running(libdar_tid))
+	th.cancel(libdar_tid, true, 0);
 }
