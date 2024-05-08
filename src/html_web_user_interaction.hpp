@@ -33,7 +33,7 @@ extern "C"
     // C++ system header files
 #include <libthreadar/libthreadar.hpp>
 #include <memory>
-#include <deque>
+#include <list>
 
     // webdar headers
 #include "body_builder.hpp"
@@ -206,7 +206,7 @@ private:
 
     enum mode_type
     {
-	normal,        ///< managed thread may be running (then managed_thread != nullptr)
+	normal,        ///< managed thread may be running (then managed_threads.empty() == false)
 	end_asked,     ///< thread pending graceful stop
 	end_forced,    ///< thread pending graceful immediate stop
 	finished,      ///< thread has finished, display kept for user to ack the status
@@ -240,16 +240,17 @@ private:
 
     bool ignore_event;      ///< if true the on_event() method does not take any action
 
-    std::deque<libthreadar::thread*> managed_threads;
+    std::list<libthreadar::thread*> managed_threads;
+
 
     void adjust_visibility();
     void check_libdata() { if(!lib_data) throw WEBDAR_BUG; };
     void set_mode(mode_type m);
     void update_html_from_libdar_status();
-    void check_thread_status();
+    void check_thread_status();           ///< trigger the finished mode if no thread still runs
     void clean_end_threads(bool force);
-    void join_all_threads();
     void trigger_refresh();
+    void remove_nullptr_from_managed_threads();
 
 };
 

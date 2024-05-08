@@ -129,8 +129,18 @@ html_web_user_interaction::~html_web_user_interaction()
 {
     try
     {
-	clean_end_threads(true);
-	join_all_threads();
+	bool completed = false;
+	while(!completed)
+	{
+	    try
+	    {
+		clean_end_threads(true);
+		completed = true;
+	    }
+	    catch(...)
+	    {
+	    }
+	}
     }
     catch(...)
     {
@@ -152,15 +162,15 @@ bool html_web_user_interaction::is_libdar_running() const
 {
     bool ret = false;
 
-    deque<libthreadar::thread*>::const_iterator it = managed_threads.begin();
+    list<libthreadar::thread*>::const_reverse_iterator rit = managed_threads.rbegin();
 
-    while(it != managed_threads.end() && !ret)
+    while(rit != managed_threads.rend() && !ret)
     {
-	if(*it == nullptr)
+	if(*rit == nullptr)
 	    throw WEBDAR_BUG;
-	if((*it)->is_running())
+	if((*rit)->is_running())
 	    ret = true;
-	++it;
+	++rit;
     }
 
     return ret;
@@ -439,12 +449,18 @@ void html_web_user_interaction::check_thread_status()
 	  && managed_threads.back() != nullptr
 	  && ! managed_threads.back()->is_running())
     {
-	libthreadar::thread* tmp = managed_threads.back();
-	managed_threads.pop_back(); // doing that before join in case join triggers an exception
-
 	try
 	{
-	    tmp->join();
+	    try
+	    {
+		managed_threads.back()->join();
+	    }
+	    catch(...)
+	    {
+		managed_threads.pop_back();
+		throw;
+	    }
+	    managed_threads.pop_back();
 	}
 	catch(exception_base & e)
 	{
@@ -467,53 +483,85 @@ void html_web_user_interaction::check_thread_status()
 	set_mode(finished);
 }
 
-void html_web_user_interaction::clean_end_threads(bool force)
+void html_web_user_interaction::remove_nullptr_from_managed_threads()
 {
-    while( ! managed_threads.empty()
-	&& managed_threads.back() != nullptr)
+    list<libthreadar::thread*>::iterator it = managed_threads.begin();
+    list<libthreadar::thread*>::iterator tmp;
+
+    while(it != managed_threads.end())
     {
-	pthread_t libdar_tid;
-	if(managed_threads.back()->is_running(libdar_tid))
+	if((*it) == nullptr)
 	{
-	    libdar::thread_cancellation th;
-	    th.cancel(libdar_tid, force, 0);
-	    managed_threads.back()->join();
-	    was_interrupted = true;
+	    tmp = it;
+	    ++it;
+	    managed_threads.erase(tmp);
 	}
 	else
-	    managed_threads.pop_back();
+	    ++it;
     }
-
-    if(! managed_threads.empty()
-       && managed_threads.back() == nullptr)
-	throw WEBDAR_BUG;
 }
 
-void html_web_user_interaction::join_all_threads()
+void html_web_user_interaction::clean_end_threads(bool force)
 {
-    deque<libthreadar::thread*>::reverse_iterator rit = managed_threads.rbegin();
+    list<libthreadar::thread*>::reverse_iterator rit = managed_threads.rbegin();
 
-    while(rit != managed_threads.rend())
+	// first we end (cancel or libdar::thread_cancellation) all still running
+	// threads. For those that are no more running, we set their pointer to nullptr
+	// in case of exception or when exiting normally from this loop we
+	// remove all entries that have a nullptr value.
+	// Doing that way is because std::list::erase() only receive forward interators
+	// and we do not want to dig into what could one day become not portable relying
+	// on the way interators are implemented. So the first pass is done backward from
+	// the end to the beginning. The second (cleanup of nullptr entries) is done in
+	// the forward direction
+
+    try
     {
-	if(*rit != nullptr)
+	while(rit != managed_threads.rend())
 	{
-	    if((*rit)->is_running())
+	    if(*rit != nullptr)
 	    {
-		try
+		if(force)
 		{
-		    (*rit)->join();
+		    if((*rit)->is_running())
+		    {
+			(*rit)->cancel();
+			was_interrupted = true;
+			(*rit)->join();
+			    // may throw exception and interrupt
+			    // the thread cleaning process
+		    }
+
+		    (*rit) = nullptr;
 		}
-		catch(...)
+		else
 		{
-			// we do not propagate any exception
+		    pthread_t libdar_tid;
+
+		    if((*rit)->is_running(libdar_tid))
+		    {
+			libdar::thread_cancellation th;
+			th.cancel(libdar_tid, false, 0);
+			was_interrupted = true;
+			    // cannot set (*rit) to nullptr as the thread
+			    // may still be running and has not been join()
+			    // neither.
+		    }
+		    else
+			(*rit) = nullptr;
 		}
 	    }
+	    ++rit;
 	}
-
-	rit++;
     }
-}
+    catch(...)
+    {
+	remove_nullptr_from_managed_threads();
+	throw;
+    }
 
+    remove_nullptr_from_managed_threads();
+}
 void html_web_user_interaction::trigger_refresh()
 {
     if(h_form.get_visible())
