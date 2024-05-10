@@ -61,6 +61,7 @@ html_entrepot::html_entrepot():
     wait_time("Network retry delay (s)", html_form_input::number, "30", 5),
     verbose("Verbose network connection", html_form_input::check, "", 1),
     custom_event_name(""),
+    ignore_events(false),
     entrep_type_has_changed(false),
     entrep_need_update(false)
 {
@@ -119,7 +120,6 @@ html_entrepot::html_entrepot():
     	// adoption tree
     fs.adopt(&repo_type);
     fs.adopt(&host);
-    fs.adopt(&port_warning);
     fs.adopt(&port);
     fs.adopt(&login);
     fs.adopt(&auth_type);
@@ -144,8 +144,6 @@ html_entrepot::html_entrepot():
     register_name(changed);
 
 	// css
-    port_warning.add_css_class(css_warning);
-    port_warning.add_text(0, "Warning, non standard port for this protocol: ");
 
 	// update components visibility
     update_visible();
@@ -189,18 +187,48 @@ shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(shared_ptr<html_web_use
 
 void html_entrepot::on_event(const string & event_name)
 {
-    update_visible();
+    if(ignore_events)
+	return;
 
     if(event_name == repo_type_changed)
+    {
 	entrep_type_has_changed = true;
-	// no need to trigger my_body_part_has_changed()
-	// if the body_builder objects we adopted changed,
-	// our body_builder changed status will be set accordingly
+	    // no need to trigger my_body_part_has_changed()
+	    // if the body_builder objects we adopted changed,
+	    // our body_builder changed status will be set accordingly
+
+	ignore_events = true;
+	try
+	{
+	    switch(repo_type.get_selected_num())
+	    {
+	    case 0:
+		    // nothing to do
+		break;
+	    case 1:
+		port.set_value("21");
+		break;
+	    case 2:
+		port.set_value("22");
+		break;
+	    default:
+		throw WEBDAR_BUG;
+	    }
+	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
+    }
     else if(event_name == html_form_select::changed
 	    || event_name == html_form_input::changed)
-	update_visible();
+	entrep_type_has_changed = true;
     else
 	throw WEBDAR_BUG;
+
+    update_visible();
 }
 
 void html_entrepot::set_event_name(const string & name)
@@ -326,7 +354,6 @@ void html_entrepot::update_visible()
     case 0: // local
 	host.set_visible(false);
 	port.set_visible(false);
-	port_warning.set_visible(false);
 	login.set_visible(false);
 	auth_type.set_visible(false);
 	pass.set_visible(false);
@@ -342,42 +369,6 @@ void html_entrepot::update_visible()
     case 2: // sftp
 	host.set_visible(true);
 	port.set_visible(true);
-	if(port.get_value().empty() || port.get_value() == "0")
-	{
-	    switch(repo_type.get_selected_num())
-	    {
-	    case 1:
-		port.set_value("21");
-		break;
-	    case 2:
-		port.set_value("22");
-		break;
-	    default:
-		throw WEBDAR_BUG;
-	    }
-	    port_warning.set_visible(false);
-	}
-	else
-	{
-	    switch(repo_type.get_selected_num())
-	    {
-	    case 1:
-		if(port.get_value() != "21")
-		    port_warning.set_visible(true);
-		else
-		    port_warning.set_visible(false);
-		break;
-	    case 2:
-		if(port.get_value() != "22")
-		    port_warning.set_visible(true);
-		else
-		    port_warning.set_visible(false);
-		break;
-	    default:
-		throw WEBDAR_BUG;
-	    }
-	}
-
 	login.set_visible(true);
 	if(repo_type.get_selected_num() == 1) // ftp
 	{

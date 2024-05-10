@@ -102,7 +102,6 @@ private:
     html_form_select repo_type; // local, ftp or sftp
     html_form_input host;      // ftp and sftp
     html_form_input port;      // ftp and sftp
-    html_text port_warning;    // ftp and sftp if non standard port
     html_form_input login;     // ftp and sftp
     html_form_select auth_type; // (sftp only) login or keyfile
     html_form_input pass;      // ftp and sftp
@@ -115,7 +114,7 @@ private:
     html_form_input verbose;   // ftp and sftp
 
     std::string custom_event_name;
-
+    bool ignore_events;
     mutable std::shared_ptr<libdar::user_interaction> dialog; ///< used by inherited_run
     mutable std::shared_ptr<libdar::entrepot> entrep;         ///< set by inherited_run
     mutable bool entrep_type_has_changed;
