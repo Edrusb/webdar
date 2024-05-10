@@ -536,8 +536,6 @@ void html_select_file::fill_content()
     deque<string> entry_dirs;
     deque<string> entry_files;
 
-    clear_content();
-
     if(!entr)
 	throw WEBDAR_BUG;
 
@@ -649,6 +647,7 @@ void html_select_file::run_thread(thread_to_run val)
 	    path_loaded = fieldset.get_label();
 	    which_thread = val;
 	    loading_mode(true);
+	    clear_content();
 	    webui.run_and_control_thread(this);
 	}
 	    // else we are already displaying the requested directory content
