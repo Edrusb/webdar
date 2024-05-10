@@ -484,6 +484,7 @@ bool html_select_file::init_fieldset_isdir()
 	entr->set_location(target.display());
 	entr->read_dir_reset_dirinfo();
 	fieldset_isdir = true;
+	ret = true;
     }
     catch(libdar::Erange & e)
     {
@@ -496,6 +497,7 @@ bool html_select_file::init_fieldset_isdir()
 	    entr->set_location(target.display());
 	    entr->read_dir_reset_dirinfo();
 	    fieldset_isdir = false;
+	    ret = true;
 	}
 	catch(exception_range & f)
 	{
@@ -514,8 +516,6 @@ bool html_select_file::init_fieldset_isdir()
 	    warning.clear();
 	    warning.add_text(3, f.get_message());
 	}
-
-	ret = true;
     }
     catch(libdar::Egeneric & e)
     {
