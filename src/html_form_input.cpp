@@ -45,16 +45,17 @@ const string html_form_input::changed = "html_form_input_changed";
 html_form_input::html_form_input(const string & label,
 				 input_type type,
 				 const string & initial_value,
-				 unsigned int size)
+				 unsigned int size):
+    enabled(true),
+    x_label(label),
+    x_type(string_for_type(type)),
+    x_init(initial_value),
+    x_size(webdar_tools_convert_to_string(size)),
+    x_min(""),
+    x_max(""),
+    value_set(false),
+    modif_change("")
 {
-    x_label = label;
-    x_type = string_for_type(type);
-    x_init = initial_value;
-    x_size = webdar_tools_convert_to_string(size);
-    x_min = x_max = "";
-    modif_change = "";
-    enabled = true;
-
     register_name(changed);
 }
 
@@ -69,6 +70,7 @@ void html_form_input::set_range(int min, int max)
 	my_body_part_has_changed();
 	x_min = next_min;
 	x_max = next_max;
+	value_set = true;
     }
 }
 
@@ -78,6 +80,7 @@ void html_form_input::change_label(const string & label)
     {
 	x_label = label;
 	my_body_part_has_changed();
+	value_set = true;
     }
 }
 
@@ -89,6 +92,7 @@ void html_form_input::change_type(input_type type)
     {
 	x_type = next_type;
 	my_body_part_has_changed();
+	value_set = true;
     }
 }
 
@@ -99,6 +103,7 @@ void html_form_input::set_value(const string & val)
 	x_init = val;
 	act(changed);
 	my_body_part_has_changed();
+	value_set = true;
     }
 }
 
@@ -109,6 +114,7 @@ void html_form_input::set_value_as_bool(bool val)
 	x_init = val ? "x" : "";
 	act(changed);
 	my_body_part_has_changed();
+	value_set = true;
     }
 }
 
@@ -119,6 +125,7 @@ void html_form_input::set_enabled(bool val)
 	enabled = val;
 	act(changed);
 	my_body_part_has_changed();
+	value_set = true;
     }
 }
 
@@ -132,7 +139,11 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 	// first we extract informations from the returned form in
 	// the body of the request
 
-    if(req.get_method() == "POST" && path.empty() && get_visible() && enabled)
+    if(req.get_method() == "POST"
+       && path.empty()
+       && get_visible()
+       && enabled
+       && !value_set)
     {
 	string old = x_init;
 
@@ -185,6 +196,9 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 	ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
     if(!get_no_CR())
 	ret += "<br />\n";
+
+    if(!has_my_body_part_changed())
+	value_set = false;
 
     return ret;
 }

@@ -85,13 +85,14 @@ protected:
 						const request & req) override;
 
 private:
-    bool enabled;        //< whether the control is enabled or disabled
-    std::string x_label; //< field text shown to the user
-    std::string x_type;  //< type of HTML input field
-    std::string x_init;  //< current value / initial value of the field
-    std::string x_size;  //< width of the field in number of characterds
-    std::string x_min;   //< minimum value of the field (for type = number)
-    std::string x_max;   //< maximum value of the field (for type = number)
+    bool enabled;        ///< whether the control is enabled or disabled
+    std::string x_label; ///< field text shown to the user
+    std::string x_type;  ///< type of HTML input field
+    std::string x_init;  ///< current value / initial value of the field
+    std::string x_size;  ///< width of the field in number of characterds
+    std::string x_min;   ///< minimum value of the field (for type = number)
+    std::string x_max;   ///< maximum value of the field (for type = number)
+    bool value_set;      ///< record that a manual set_value has been done and POST request received from body_part should not overwrite the change
 
     std::string modif_change; //< name of the event "changed" to use, if set to an empty string default behavior is used
 
