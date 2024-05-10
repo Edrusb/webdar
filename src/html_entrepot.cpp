@@ -247,7 +247,17 @@ string html_entrepot::inherited_get_body_part(const chemin & path,
     entrep_type_has_changed = false;
 
     ret = get_body_part_from_all_children(path, req);
-    entrep_need_update |= has_my_body_part_changed();
+
+	// When a change has just been received:
+
+	// we must record that the entrep will have
+	// to be recreated when it will be requested
+	// note: entrep_type_has_changed is local to the call
+	// and needed to avoid generating the event in all case
+	// read the comments below... entrep_need_update is
+	// an object field and survives this method.
+    entrep_need_update |= has_my_body_part_changed(); // reset by get_entrepot()
+
     if(has_my_body_part_changed()
        && (! entrep_type_has_changed || repo_type.get_selected_num() == 0))
 	    // we trigger an event only if:
