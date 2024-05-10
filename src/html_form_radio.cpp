@@ -91,8 +91,7 @@ string html_form_radio::inherited_get_body_part(const chemin & path,
 	// for POST method only, extract user choice from the body of the request
 	// and update this object's fields
 
-    if(!value_set)
-	update_field_from_request(req);
+    update_field_from_request(req);
 
 	// for any request provide an updated HMTL content in response
 
@@ -109,15 +108,17 @@ string html_form_radio::inherited_get_body_part(const chemin & path,
 	    ret += "\n";
     }
 
-    if(!has_my_body_part_changed())
-	value_set = false;
+	// now unlocking the update_field_from_request()
+	// if it was locked due to a call to set_selected()
+
+    void unlock_update_field_from_request();
 
     return ret;
 }
 
 void html_form_radio::update_field_from_request(const request & req)
 {
-    if(req.get_method() == "POST")
+    if(req.get_method() == "POST" && ! value_set)
     {
 	map<string, string> bd = req.get_body_form();
 	map<string, string>::const_iterator it = bd.find(get_path().namify());
@@ -139,4 +140,10 @@ void html_form_radio::update_field_from_request(const request & req)
 	    }
 	}
     }
+}
+
+void html_form_radio::unlock_update_field_from_request()
+{
+    if(!has_my_body_part_changed())
+	value_set = false;
 }

@@ -82,6 +82,16 @@ protected:
     const std::vector<record> & get_choices() const { return choices; };
     void update_field_from_request(const request & req);
 
+	/// unlock update_field_from_request()
+
+	/// \note when a set_select() call is invoked to avoid
+	/// a POST request to overwrite at the time of inherited_get_body_part(),
+	/// update_field_from_request() is ignored and the POST
+	/// request is not taken into account, until an call to
+	/// unlock_update_field_from_request() is done. This should
+	/// be done at the end of inherited_get_body_part()
+    void unlock_update_field_from_request();
+
 private:
     std::vector<record> choices;
     unsigned int selected;
