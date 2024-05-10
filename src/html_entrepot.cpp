@@ -190,6 +190,9 @@ void html_entrepot::on_event(const string & event_name)
 	// no need to trigger my_body_part_has_changed()
 	// if the body_builder objects we adopted changed,
 	// our body_builder changed status will be set accordingly
+    else if(event_name == html_form_select::changed
+	    || event_name == html_form_input::changed)
+	update_visible();
     else
 	throw WEBDAR_BUG;
 }
