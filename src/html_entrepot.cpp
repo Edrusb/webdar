@@ -33,6 +33,8 @@ extern "C"
     // webdar headers
 #include "environment.hpp"
 #include "webdar_tools.hpp"
+#include "css.hpp"
+#include "tokens.hpp"
 
     //
 #include "html_entrepot.hpp"
@@ -117,6 +119,7 @@ html_entrepot::html_entrepot():
     	// adoption tree
     fs.adopt(&repo_type);
     fs.adopt(&host);
+    fs.adopt(&port_warning);
     fs.adopt(&port);
     fs.adopt(&login);
     fs.adopt(&auth_type);
@@ -135,11 +138,14 @@ html_entrepot::html_entrepot():
     repo_type.record_actor_on_event(this, repo_type_changed);
     auth_type.record_actor_on_event(this, html_form_select::changed);
     knownhosts_check.record_actor_on_event(this, html_form_input::changed);
+    port.record_actor_on_event(this, html_form_input::changed);
 
 	// my own events
     register_name(changed);
 
-	// css if needed
+	// css
+    port_warning.add_css_class(css_warning);
+    port_warning.add_text(0, "Warning, non standard port for this protocol: ");
 
 	// update components visibility
     update_visible();
@@ -294,6 +300,25 @@ void html_entrepot::signaled_inherited_cancel()
 	th.cancel(libdar_tid, true, 0);
 }
 
+void html_entrepot::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    css tmp;
+
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    if(! csslib->class_exists(css_warning))
+    {
+	tmp.clear();
+	tmp.css_font_weight_bold();
+	tmp.css_color(RED);
+	tmp.css_float(css::fl_left);
+
+	csslib->add(css_warning, tmp);
+    }
+}
+
 void html_entrepot::update_visible()
 {
     switch(repo_type.get_selected_num())
@@ -301,6 +326,7 @@ void html_entrepot::update_visible()
     case 0: // local
 	host.set_visible(false);
 	port.set_visible(false);
+	port_warning.set_visible(false);
 	login.set_visible(false);
 	auth_type.set_visible(false);
 	pass.set_visible(false);
@@ -325,6 +351,27 @@ void html_entrepot::update_visible()
 		break;
 	    case 2:
 		port.set_value("22");
+		break;
+	    default:
+		throw WEBDAR_BUG;
+	    }
+	    port_warning.set_visible(false);
+	}
+	else
+	{
+	    switch(repo_type.get_selected_num())
+	    {
+	    case 1:
+		if(port.get_value() != "21")
+		    port_warning.set_visible(true);
+		else
+		    port_warning.set_visible(false);
+		break;
+	    case 2:
+		if(port.get_value() != "22")
+		    port_warning.set_visible(true);
+		else
+		    port_warning.set_visible(false);
 		break;
 	    default:
 		throw WEBDAR_BUG;

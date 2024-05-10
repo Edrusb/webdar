@@ -83,6 +83,9 @@ protected:
 	/// inherited from libthreadar::thread
     virtual void signaled_inherited_cancel() override;
 
+	/// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 
 private:
     static constexpr const char* type_local = "local";
@@ -90,6 +93,7 @@ private:
     static constexpr const char* type_sftp  = "sftp";
     static constexpr const char* auth_pass = "password";
     static constexpr const char* auth_key  = "keyfile";
+    static constexpr const char* css_warning = "html_entrepot_warn";
 
     static const std::string repo_type_changed;
 
@@ -98,6 +102,7 @@ private:
     html_form_select repo_type; // local, ftp or sftp
     html_form_input host;      // ftp and sftp
     html_form_input port;      // ftp and sftp
+    html_text port_warning;    // ftp and sftp if non standard port
     html_form_input login;     // ftp and sftp
     html_form_select auth_type; // (sftp only) login or keyfile
     html_form_input pass;      // ftp and sftp
