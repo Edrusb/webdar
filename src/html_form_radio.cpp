@@ -111,7 +111,7 @@ string html_form_radio::inherited_get_body_part(const chemin & path,
 	// now unlocking the update_field_from_request()
 	// if it was locked due to a call to set_selected()
 
-    void unlock_update_field_from_request();
+    unlock_update_field_from_request();
 
     return ret;
 }
