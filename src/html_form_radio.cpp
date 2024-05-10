@@ -41,6 +41,13 @@ using namespace std;
 
 const string html_form_radio::changed = "html_form_radio::changed";
 
+html_form_radio::html_form_radio():
+    selected(0),
+    value_set(false)
+{
+    register_name(changed);
+}
+
 void html_form_radio::add_choice(const string & id, const string & label)
 {
     record x;
@@ -71,6 +78,8 @@ void html_form_radio::set_selected(unsigned int x)
 	    my_body_part_has_changed();
 	}
     }
+
+    value_set = true;
 }
 
 string html_form_radio::inherited_get_body_part(const chemin & path,
@@ -82,7 +91,8 @@ string html_form_radio::inherited_get_body_part(const chemin & path,
 	// for POST method only, extract user choice from the body of the request
 	// and update this object's fields
 
-    update_field_from_request(req);
+    if(!value_set)
+	update_field_from_request(req);
 
 	// for any request provide an updated HMTL content in response
 
@@ -98,6 +108,9 @@ string html_form_radio::inherited_get_body_part(const chemin & path,
 	else
 	    ret += "\n";
     }
+
+    if(!has_my_body_part_changed())
+	value_set = false;
 
     return ret;
 }

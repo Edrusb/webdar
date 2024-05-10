@@ -52,7 +52,7 @@ class html_form_radio : public body_builder, public events
 public:
     static const std::string changed; /// common event name for all object of this class
 
-    html_form_radio() { selected = 0; register_name(changed); };
+    html_form_radio();
     html_form_radio(const html_form_radio & ref) = default;
     html_form_radio(html_form_radio && ref) noexcept = default;
     html_form_radio & operator = (const html_form_radio & ref) = default;
@@ -85,6 +85,7 @@ protected:
 private:
     std::vector<record> choices;
     unsigned int selected;
+    bool value_set; ///< avoid POST request to overwrite set_seleected*()
 };
 
 
