@@ -59,13 +59,9 @@ string html_form_select::inherited_get_body_part(const chemin & path, const requ
     const vector<record> & choices = get_choices();
     vector<record>::const_iterator it = choices.begin();
 
-    if(get_visible())
-    {
-	    // for POST method only, extract used choice from the body of the request
-	    // and update this object's fields;
-
-	update_field_from_request(req);
-    }
+	// for POST method only, extract used choice from the body of the request
+	// and update this object's fields;
+    update_field_from_request(req);
 
 	// for any request provide an updated HTML content in response
 
@@ -83,6 +79,8 @@ string html_form_select::inherited_get_body_part(const chemin & path, const requ
 
     if(!get_no_CR())
 	ret += "<br />\n";
+
+    unlock_update_field_from_request();
 
     return ret;
 };
