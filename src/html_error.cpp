@@ -100,7 +100,7 @@ void html_error::new_css_library_available()
 	try
 	{
 	    tmp.clear();
-	    tmp.css_color("#FF0000");
+	    tmp.css_color(RED);
 	    tmp.css_text_align(css::al_center);
 	    tmp.css_font_weight_bold();
 	    csslib->add(class_message, tmp);

@@ -274,7 +274,7 @@ void html_web_user_interaction::new_css_library_available()
     if(! csslib->class_exists(class_inter))
     {
 	tmp.css_font_weight_bold();
-	tmp.css_color("blue");
+	tmp.css_color(COLOR_TEXT);
 	define_css_class_in_library(class_inter, tmp);
 
 	tmp.clear();

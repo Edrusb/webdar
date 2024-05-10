@@ -35,7 +35,7 @@ extern "C"
     // webdar headers
 #include "webdar_css_style.hpp"
 #include "html_page.hpp"
-
+#include "tokens.hpp"
     //
 #include "html_select_file.hpp"
 
@@ -386,7 +386,7 @@ void html_select_file::new_css_library_available()
     tmp.clear();
 
     tmp.css_font_weight_bold();
-    tmp.css_color("rgb(255,30,10)");
+    tmp.css_color(COLOR_ARED);
     if(!csslib->class_exists(css_warning))
 	csslib->add(css_warning, tmp);
 

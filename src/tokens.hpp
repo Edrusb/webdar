@@ -32,10 +32,10 @@ extern "C"
     // C++ system header files
 
     // WEBDAR Version
-extern const char * WEBDAR_VERSION;
+extern const char* WEBDAR_VERSION;
 
     // DAR archive extension
-extern const char * EXTENSION;
+extern const char* EXTENSION;
 
     // the different answer codes
 const unsigned int STATUS_CODE_CONTINUE = 101;
@@ -77,47 +77,50 @@ const unsigned int STATUS_CODE_HTTP_VERSION_NOT_SUPPORTED = 505;
 
     // HTTP headers
 
-extern const char *HDR_CONTENT_LENGTH;
-extern const char *HDR_IF_MODIFIED_SINCE;
-extern const char *HDR_LAST_MODIFIED;
-extern const char *HDR_CONTENT_TYPE;
-extern const char *HDR_DATE;
-extern const char *HDR_EXPIRES;
-extern const char *HDR_SERVER;
-extern const char *HDR_WWW_AUTHENTICATE;
-extern const char *HDR_AUTHORIZATION;
-extern const char *HDR_SET_COOKIE;
-extern const char *HDR_COOKIE;
-extern const char *HDR_LOCATION;
+extern const char* HDR_CONTENT_LENGTH;
+extern const char* HDR_IF_MODIFIED_SINCE;
+extern const char* HDR_LAST_MODIFIED;
+extern const char* HDR_CONTENT_TYPE;
+extern const char* HDR_DATE;
+extern const char* HDR_EXPIRES;
+extern const char* HDR_SERVER;
+extern const char* HDR_WWW_AUTHENTICATE;
+extern const char* HDR_AUTHORIZATION;
+extern const char* HDR_SET_COOKIE;
+extern const char* HDR_COOKIE;
+extern const char* HDR_LOCATION;
 
     // HTTP header values
-extern const char *VAL_CONTENT_TYPE_FORM;
+extern const char* VAL_CONTENT_TYPE_FORM;
 
 
     // HTML CSS colors by fonction
-extern const char *COLOR_BACK;
-extern const char *COLOR_TEXT;
-extern const char *COLOR_PADBACK;
-extern const char *COLOR_PADFRONT;
-extern const char *COLOR_PADBORD;
-extern const char *COLOR_MENU_FRONT_ON;
-extern const char *COLOR_MENU_BACK_ON;
-extern const char *COLOR_MENU_BORDER_ON;
-extern const char *COLOR_MENU_FRONT_OFF;
-extern const char *COLOR_MENU_BACK_OFF;
-extern const char *COLOR_MENU_BORDER_OFF;
+extern const char* COLOR_BACK;
+extern const char* COLOR_TEXT;
+extern const char* COLOR_PADBACK;
+extern const char* COLOR_PADFRONT;
+extern const char* COLOR_PADBORD;
+extern const char* COLOR_MENU_FRONT_ON;
+extern const char* COLOR_MENU_BACK_ON;
+extern const char* COLOR_MENU_BORDER_ON;
+extern const char* COLOR_MENU_FRONT_OFF;
+extern const char* COLOR_MENU_BACK_OFF;
+extern const char* COLOR_MENU_BORDER_OFF;
 extern const char* COLOR_MENU_FRONT_GREY;
 extern const char* COLOR_MENU_BACK_GREY;
 extern const char* COLOR_MENU_BORDER_GREY;
-extern const char *COLOR_MENU_FRONT_HOVER_ON;
-extern const char *COLOR_MENU_FRONT_HOVER_OFF;
+extern const char* COLOR_MENU_FRONT_HOVER_ON;
+extern const char* COLOR_MENU_FRONT_HOVER_OFF;
 extern const char* COLOR_MENU_FRONT_HOVER_GREY;
-extern const char *COLOR_MENU_FRONT_ACTIVE_ON;
-extern const char *COLOR_MENU_FRONT_ACTIVE_OFF;
+extern const char* COLOR_MENU_FRONT_ACTIVE_ON;
+extern const char* COLOR_MENU_FRONT_ACTIVE_OFF;
 extern const char* COLOR_MENU_FRONT_ACTIVE_GREY;
 
+extern const char* COLOR_ARED; // almost red
+extern const char* RED;
+extern const char* WHITE;
 
-extern const char *STATIC_PATH_ID;
-extern const char *STATIC_OBJ_LICENSING;
+extern const char* STATIC_PATH_ID;
+extern const char* STATIC_OBJ_LICENSING;
 
 #endif

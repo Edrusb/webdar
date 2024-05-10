@@ -127,7 +127,7 @@ choose::choose(const string & user):
     	/// defining but not using yet the css_class_error_msg for html_page "page"
 
     tmpcss.clear();
-    tmpcss.css_color("#FF0000");
+    tmpcss.css_color(RED);
     tmpcss.css_text_align(css::al_center);
     tmpcss.css_font_weight_bold();
     page.define_css_class_in_library(css_class_error_msg, tmpcss);
