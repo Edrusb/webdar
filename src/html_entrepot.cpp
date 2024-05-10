@@ -59,7 +59,8 @@ html_entrepot::html_entrepot():
     wait_time("Network retry delay (s)", html_form_input::number, "30", 5),
     verbose("Verbose network connection", html_form_input::check, "", 1),
     custom_event_name(""),
-    repo_type_has_changed(false)
+    entrep_type_has_changed(false),
+    entrep_need_update(false)
 {
     chemin home = global_envir.get_value_with_default("HOME", "/");
     chemin tmp;
@@ -156,7 +157,7 @@ shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(shared_ptr<html_web_use
     if(!dialog)
 	throw WEBDAR_BUG;
 
-    if(! entrep || has_my_body_part_changed())
+    if(! entrep || entrep_need_update)
     {
 	if(! webui->is_libdar_running())
 	    webui->auto_hide(true, true);
@@ -169,6 +170,7 @@ shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(shared_ptr<html_web_use
 	// program main thread. However webui should have it get_body_part() running from another thread to
 	// display and update the libdar::user_interaction it contains.
     }
+    entrep_need_update = false;
 
     if(!entrep)
 	throw WEBDAR_BUG;
@@ -184,11 +186,12 @@ void html_entrepot::on_event(const string & event_name)
     update_visible();
 
     if(event_name == repo_type_changed)
-	repo_type_has_changed = true;
-
+	entrep_type_has_changed = true;
 	// no need to trigger my_body_part_has_changed()
-	// if the body_builder objects we adopted change,
+	// if the body_builder objects we adopted changed,
 	// our body_builder changed status will be set accordingly
+    else
+	throw WEBDAR_BUG;
 }
 
 void html_entrepot::set_event_name(const string & name)
@@ -204,12 +207,20 @@ string html_entrepot::inherited_get_body_part(const chemin & path,
 					      const request & req)
 {
     string ret;
+    entrep_type_has_changed = false;
 
-    repo_type_has_changed = false;
     ret = get_body_part_from_all_children(path, req);
+    entrep_need_update |= has_my_body_part_changed();
     if(has_my_body_part_changed()
-       && (! repo_type_has_changed        // form has been submitted without repo type change
-	   || repo_type.get_selected_num() == 0)) // repo type changed to local filesystem
+       && (! entrep_type_has_changed || repo_type.get_selected_num() == 0))
+	    // we trigger an event only if:
+	    // there was some change in the html parameters but if the
+	    // repo type has changed we only trigger if the new type is of
+	    // local filesystem. The reason is to avoid trying to generate
+	    // sftp or ftp entrepot while the user has just changed the type
+	    // to theses but has not yet got the opportunity to provide
+	    // parameters. Local filesystem is different because it has no
+	    // parameters to be set.
 	trigger_event();
 
     return ret;

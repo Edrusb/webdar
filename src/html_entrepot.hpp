@@ -113,7 +113,8 @@ private:
 
     mutable std::shared_ptr<libdar::user_interaction> dialog; ///< used by inherited_run
     mutable std::shared_ptr<libdar::entrepot> entrep;         ///< set by inherited_run
-    bool repo_type_has_changed;
+    mutable bool entrep_type_has_changed;
+    mutable bool entrep_need_update;
 
     void update_visible();
     void trigger_event();
