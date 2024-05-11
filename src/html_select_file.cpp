@@ -294,6 +294,10 @@ void html_select_file::on_event(const string & event_name)
 	    fieldset.change_label(curdir.display());
 	    fieldset_isdir = it->second.isdir;
 
+		// Warning: clearing content here will delete
+		// the object which generated the event we
+		// act on... leading to a SEGFAULT as at return
+		// of on_event() the object will no more exist.
 	    run_thread(run_fill_only);
 	}
 	else
@@ -536,12 +540,13 @@ void html_select_file::fill_content()
     deque<string> entry_dirs;
     deque<string> entry_files;
 
+    clear_content();
+
     if(!entr)
 	throw WEBDAR_BUG;
 
     if(fieldset_isdir)
 	entr->set_location(fieldset.get_label());
-
     cancellation_checkpoint();
     entr->read_dir_reset_dirinfo();
 
@@ -647,7 +652,6 @@ void html_select_file::run_thread(thread_to_run val)
 	    path_loaded = fieldset.get_label();
 	    which_thread = val;
 	    loading_mode(true);
-	    clear_content();
 	    webui.run_and_control_thread(this);
 	}
 	    // else we are already displaying the requested directory content
