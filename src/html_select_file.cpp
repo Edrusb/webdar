@@ -104,6 +104,7 @@ html_select_file::html_select_file(const string & message):
 	// setting up the adoption tree (the fixed part)
     adopt(&title_box);
     title_box.adopt(&title);
+    title_box.adopt(&entrepot_url);
     title_box.adopt(&warning);
     adopt(&fieldset);
     fieldset.adopt(&parentdir1);
@@ -169,6 +170,8 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
 	throw WEBDAR_BUG;
     mem_ui = entr->get_current_user_interaction();
     entr->change_user_interaction(webui.get_user_interaction());
+    entrepot_url.clear();
+    entrepot_url.add_text(0, entr->get_url());
     fieldset.change_label(start_dir);
     createdir_form.set_visible(false);
     run_thread(run_init_fill);
@@ -696,6 +699,7 @@ void html_select_file::loading_mode(bool mode)
 	    // method is not designed to be re-entrant
 	    // and does not need to be.
 	title.set_visible(false);
+	entrepot_url.set_visible(false);
 	parentdir1.set_visible(false);
 	parentdir2.set_visible(false);
 	content.set_visible(false);
@@ -707,6 +711,7 @@ void html_select_file::loading_mode(bool mode)
     else
     {
 	title.set_visible(true);
+	entrepot_url.set_visible(true);
 	set_parentdir_visible();
 	content.set_visible(true);
 	btn_box.set_visible(true);
