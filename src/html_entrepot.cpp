@@ -206,9 +206,11 @@ void html_entrepot::on_event(const string & event_name)
 		    // nothing to do
 		break;
 	    case 1:
+		clear_form();
 		port.set_value("21");
 		break;
 	    case 2:
+		clear_form();
 		port.set_value("22");
 		break;
 	    default:
@@ -427,4 +429,14 @@ void html_entrepot::trigger_event()
 	act(changed);
     else
 	act(custom_event_name);
+}
+
+void html_entrepot::clear_form()
+{
+    host.set_value("");
+    port.set_value("0");
+    login.set_value("");
+    auth_type.set_selected(0);
+    pass.set_value("");
+    auth_from_file.set_value("");
 }

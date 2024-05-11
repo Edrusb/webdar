@@ -122,6 +122,7 @@ private:
 
     void update_visible();
     void trigger_event();
+    void clear_form();
 };
 
 #endif
