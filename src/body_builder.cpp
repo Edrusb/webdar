@@ -315,7 +315,7 @@ bool body_builder::is_css_class_defined_in_library(const string & name) const
 string body_builder::get_body_part(const chemin & path,
 				   const request & req)
 {
-    static const unsigned int maxloop = 10;
+    static const unsigned int maxloop = 100;
     string ret;
 
     create_css_lib_if_needed();
