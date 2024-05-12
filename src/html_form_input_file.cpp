@@ -145,7 +145,6 @@ void html_form_input_file::on_event(const string & event_name)
     else if(event_name == triggered_event)
     {
 	user_select.go_select(entrep, input.get_value());
-	my_body_part_has_changed();
     }
     else if(event_name == html_select_file::entry_selected)
     {
