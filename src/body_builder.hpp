@@ -218,6 +218,9 @@ public:
 	/// toward the parents and set the caller as if it was a static, never changing, object.
     void ignore_body_changed_from_my_children(bool mode) { ignore_children_body_changed = mode; };
 
+	/// get the current status of ignore_body_changed_from_my_children()
+    bool get_ignore_body_changed_from_my_children() const { return ignore_children_body_changed; };
+
         /// ask for the implementation not to add a new line after this control
     void set_no_CR() { no_CR = true; };
 
