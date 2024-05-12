@@ -174,6 +174,7 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
     entrepot_url.add_text(0, entr->get_url());
     fieldset.change_label(start_dir);
     createdir_form.set_visible(false);
+    clear_content();
     run_thread(run_init_fill);
     my_body_part_has_changed();
 };
