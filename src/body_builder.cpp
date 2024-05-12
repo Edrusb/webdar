@@ -98,7 +98,7 @@ void body_builder::set_prefix(const chemin & prefix)
         throw WEBDAR_BUG;
     x_prefix = prefix;
     recursive_path_has_changed();
-    body_changed = true; // force reevaluation
+    my_body_part_has_changed(); // force reevaluation
 }
 
 void body_builder::adopt(body_builder *obj)
@@ -593,13 +593,28 @@ string body_builder::get_body_part_or_cache(const chemin & path,
     {
 	body_changed = false; // set before to track any changes implied by the following line
 	if(visible)
+	{
 	    ret = inherited_get_body_part(path, req);
+	    if(! body_changed)
+	    {
+		last_body_path = path;
+		last_body_req_uri = req.get_uri();
+		last_body_req_body = req.get_body();
+		last_body_part = ret;
+	    }
+		// else, if body_changed is already true
+		// whatever we would store in last_* fields
+		// would not be used
+	}
 	else
 	    ret = "";
-	last_body_path = path;
-	last_body_req_uri = req.get_uri();
-	last_body_req_body = req.get_body();
-	last_body_part = ret;
+	    // we don't record the current status
+	    // as the object is not visible, and
+	    // when it will become visible, set_visible()
+	    // will set body_changed to true
+	    // calling my_body_part_has_changed()
+	    // so whatever we would have stored in last_*
+	    // field would not be used anyway.
     }
 
     return ret;
