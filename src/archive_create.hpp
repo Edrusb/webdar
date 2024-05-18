@@ -47,7 +47,7 @@ extern "C"
     /// is run at that time, but once all parameter have been set by
     /// invoking the libthreadar::run() method
     /// \note this class is not a graphical class at all but relies
-    /// on aprovided web_user_interaction object to report status and
+    /// on a provided web_user_interaction object to report status and
     /// intermediate information about the operation under process
 
 
