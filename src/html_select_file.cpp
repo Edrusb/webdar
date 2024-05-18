@@ -323,7 +323,7 @@ string html_select_file::inherited_get_body_part(const chemin & path,
 
     if(! webui.is_libdar_running())
     {
-	my_join(false); // possibly trigger exception from our previously running child thread
+	join(); // possibly triggers exception from our previously running child thread
 
 	if(!entr)
 	    throw WEBDAR_BUG;
@@ -719,7 +719,7 @@ void html_select_file::loading_mode(bool mode)
 	    // not necessary to set webui.set_visible(false) in the
 	    // present condition webui has already finished and hide
 	    // itself (auto_hide)
-	webui.set_visible(false);
+
 	content_placeholder.set_visible(false);
     }
 
@@ -778,8 +778,6 @@ void html_select_file::my_join(bool last)
 
 		mem_ui.reset(); // forget about the user_interaction entr had
 	    }
-	    should_refresh = false;
-	    loading_mode(false);
 
 	    if(!ok)
 		throw;
