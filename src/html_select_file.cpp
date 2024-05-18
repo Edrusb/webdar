@@ -787,6 +787,13 @@ void html_select_file::my_join(bool last)
     {
 	throw;
     }
+    catch(libthreadar::exception_base & e)
+    {
+	if(last)
+	    throw;
+	else
+	    warning.add_text(3, e.get_message(": "));
+    }
     catch(exception_base & e)
     {
 	if(last)

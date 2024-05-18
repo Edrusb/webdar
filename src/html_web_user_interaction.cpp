@@ -464,10 +464,20 @@ void html_web_user_interaction::check_thread_status()
 	    was_interrupted = true;
 	    throw;
 	}
+	catch(libthreadar::exception_base & e)
+	{
+	    was_interrupted = true;
+	    throw;
+	}
 	catch(libdar::Egeneric & e)
 	{
 	    was_interrupted = true;
 	    throw exception_libcall(e);
+	}
+	catch(...)
+	{
+	    was_interrupted = true;
+	    throw;
 	}
     }
 

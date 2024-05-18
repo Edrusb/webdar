@@ -213,6 +213,11 @@ answer choose::give_answer(const request & req)
 		{
 		    throw;
 		}
+		catch(libthreadar::exception_base & e)
+		{
+		    e.push_message("Error met while killing a session");
+		    error_msg = e.get_message(": ");
+		}
 		catch(exception_base & e)
 		{
 		    error_msg = string("Error met while killing a session: ") + e.get_message();

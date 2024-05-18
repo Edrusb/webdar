@@ -123,6 +123,15 @@ answer user_interface::give_answer(const request & req)
 	{
 	    throw;
 	}
+	catch(libthreadar::exception_base & e)
+	{
+	    if(mode == error)
+		throw; // cannot handle an exception in error mode
+	    return_mode = mode;
+	    mode = error;
+	    mode_changed = true;
+	    in_error.set_message(e.get_message(": "));
+	}
 	catch(exception_base & e)
 	{
 	    if(mode == error)
