@@ -327,7 +327,6 @@ string html_select_file::inherited_get_body_part(const chemin & path,
 
 	if(!entr)
 	    throw WEBDAR_BUG;
-	run_thread(run_fill_only);
     }
 
     bool lock_acquired = content_mutex.try_lock();
