@@ -323,7 +323,7 @@ string html_select_file::inherited_get_body_part(const chemin & path,
 
     if(! webui.is_libdar_running())
     {
-	join(); // possibly triggers exception from our previously running child thread
+	my_join(false);
 
 	if(!entr)
 	    throw WEBDAR_BUG;
