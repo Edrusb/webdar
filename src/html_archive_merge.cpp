@@ -48,11 +48,9 @@ html_archive_merge::html_archive_merge():
 {
     static const char* sect_archive = "archive";
     static const char* sect_ref = "reference";
-    static const char* sect_opt = "options";
 
     deroule.add_section(sect_archive, "Archive Merging");
     deroule.add_section(sect_ref, "Reference Archive");
-    deroule.add_section(sect_opt, "Merging Options");
     deroule.set_active_section(0);
 
     sauv_path.set_select_mode(html_form_input_file::select_dir);
@@ -68,8 +66,8 @@ html_archive_merge::html_archive_merge():
     fs.adopt(&basename);
     form.adopt(&fs);
     deroule.adopt_in_section(sect_archive, &form);
+    deroule.adopt_in_section(sect_archive, &options);
     deroule.adopt_in_section(sect_ref, &reference);
-    deroule.adopt_in_section(sect_opt, &options);
     adopt(&deroule);
     adopt(&repoxfer);
 
