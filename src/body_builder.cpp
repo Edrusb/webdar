@@ -356,6 +356,13 @@ void body_builder::my_body_part_has_changed()
     if(ignore_children_body_changed)
 	return; // we just ignore this call
 
+    if(! visible)
+	return;
+	// we are not visible so display
+	// need to be redisplayed. And if we
+	// later become visible, the change of
+	// visibility does trigger my_body_part_has_changed()
+
     body_changed = true;
     if(parent != nullptr)
 	parent->my_body_part_has_changed();
