@@ -58,6 +58,7 @@ html_archive_read::html_archive_read(const string & archive_description):
 
 	// events and actor
     opt_read.record_actor_on_event(this, html_options_read::entrepot_has_changed);
+    arch_path.record_actor_on_event(this, html_form_input_file::changed_event);
     libdarexec.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
 
 	// initial values
@@ -88,6 +89,11 @@ void html_archive_read::on_event(const string & event_name)
 		// and only vanish once the subtread has completed
 		// while the popup forbids any change of entrepot configuration
 	}
+    }
+    else if(event_name == html_form_input_file::changed_event)
+    {
+	if(! arch_path.get_min_digits().empty())
+	    opt_read.set_src_min_digits(arch_path.get_min_digits());
     }
     else if(event_name == html_libdar_running_popup::libdar_has_finished)
     {

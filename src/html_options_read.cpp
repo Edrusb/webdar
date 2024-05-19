@@ -130,6 +130,7 @@ html_options_read::html_options_read():
     entrep.record_actor_on_event(this, entrepot_has_changed);
     ref_entrep.record_actor_on_event(this, ref_entrepot_has_changed);
     ref_path.record_actor_on_event(this, html_form_input_file::changed_entrepot);
+    ref_path.record_actor_on_event(this, html_form_input_file::changed_event);
     ref_webui.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
     src_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
     ref_use_external_catalogue.record_actor_on_event(this, html_form_input::changed);
@@ -194,6 +195,22 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
 	opts.unset_external_catalogue();
 
     return opts;
+}
+
+
+void html_options_read::set_src_min_digits(const string & val)
+{
+    try
+    {
+	webdar_tools_convert_to_int(val);
+    }
+    catch(exception_base & e)
+    {
+	e.change_message(string("Invalid min-digits: ") + e.get_message());
+	throw;
+    }
+
+    src_slice_min_digits.set_value(val);
 }
 
 void html_options_read::on_event(const string & event_name)
@@ -261,6 +278,11 @@ void html_options_read::on_event(const string & event_name)
 	    // no need to call my_body_part_has_changed()
 	    // because changed done in on_event concern
 	    // body_builder objects we have adopted
+    }
+    else if(event_name == html_form_input_file::changed_event)
+    {
+	if(! ref_path.get_min_digits().empty())
+	    ref_slice_min_digits.set_value(ref_path.get_min_digits());
     }
     else
 	throw WEBDAR_BUG; // unexpected event

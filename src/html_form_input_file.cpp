@@ -33,6 +33,7 @@ extern "C"
     // webdar headers
 #include "webdar_css_style.hpp"
 #include "webdar_css_style.hpp"
+#include "webdar_tools.hpp"
 
     //
 #include "html_form_input_file.hpp"
@@ -127,6 +128,7 @@ void html_form_input_file::set_select_mode(select_mode val)
     default:
 	throw WEBDAR_BUG;
     }
+    min_digits.clear();
     selmode = val;
 };
 
@@ -138,10 +140,29 @@ void html_form_input_file::set_entrepot(shared_ptr<libdar::entrepot> entrepot)
     act(changed_entrepot);
 }
 
+string html_form_input_file::get_min_digits() const
+{
+    if(selmode != select_slice)
+	throw WEBDAR_BUG;
+
+    return min_digits;
+}
+
 void html_form_input_file::on_event(const string & event_name)
 {
     if(event_name == html_form_input::changed)
+    {
+	min_digits.clear();
+	    // this is to avoid having min-digits
+	    // changed in the parent object to something
+	    // that would not be related to the new
+	    // value the user has set manually in the
+	    // html form. The user might have well also
+	    // manually set the min-digit field just before
+
 	act(changed_event_name);
+
+    }
     else if(event_name == triggered_event)
     {
 	user_select.go_select(entrep, input.get_value());
@@ -155,13 +176,14 @@ void html_form_input_file::on_event(const string & event_name)
 	    input.set_value(user_select.get_selected_path());
 	    break;
 	case select_slice:
-	    input.set_value(slicename_to_basename(user_select.get_selected_path()));
+	    input.set_value(slicename_to_basename_update_min_digits(user_select.get_selected_path()));
 	    break;
 	default:
 	    throw WEBDAR_BUG;
 	}
 	refresh_get_body = true;
 	my_body_part_has_changed();
+	act(changed_event_name);
     }
     else
 	throw WEBDAR_BUG;
@@ -267,11 +289,12 @@ string html_form_input_file::inherited_get_body_part(const chemin & path,
     return ret;
 }
 
-string html_form_input_file::slicename_to_basename(const string & val)
+string html_form_input_file::slicename_to_basename_update_min_digits(const string & val)
 {
     static const char sep = '.';
     vector<string> splitted;
 
+    min_digits.clear();
     webdar_tools_split_by(sep, val, splitted);
 
     if(splitted.size() < 3)
@@ -280,20 +303,31 @@ string html_form_input_file::slicename_to_basename(const string & val)
     if(splitted[splitted.size() - 1] != "dar")
 	return val; // not a dar slice
 
-    string tmp = splitted[splitted.size() - 2];
+    string & tmp = splitted[splitted.size() - 2];
+    if(tmp.empty())
+	return val; // not a dar slice
+
     string::iterator it = tmp.begin();
     while(it != tmp.end() && *it >= '0' && *it <= '9')
 	++it;
     if(it != tmp.end()) // not a slice number found before the dar extension
 	return val;
 
+    if(tmp.begin() != tmp.end()
+       && *(tmp.begin()) == '0')
+	min_digits = webdar_tools_convert_to_string(tmp.size());
+    else
+	min_digits = "0";
+
 	// we have a well formated slice name
 
     string ret = splitted[0];
     unsigned int stopat = splitted.size() - 2;
+    const string sep_str(webdar_tools_convert_to_string(sep));
+
 
     for(unsigned int i = 1; i < stopat ; ++i)
-	ret += string(1, sep) + splitted[i];
+	ret += sep_str + splitted[i];
 
     return ret;
 }
