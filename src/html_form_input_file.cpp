@@ -63,7 +63,8 @@ html_form_input_file::html_form_input_file(const string & label,
     changed_event_name(changed_event),
     entrep(nullptr),
     refresh_get_body(false),
-    selmode(select_file)
+    selmode(select_file),
+    internal_change(false)
 {
 	// html adoption tree
 
@@ -152,16 +153,18 @@ void html_form_input_file::on_event(const string & event_name)
 {
     if(event_name == html_form_input::changed)
     {
-	min_digits.clear();
-	    // this is to avoid having min-digits
-	    // changed in the parent object to something
-	    // that would not be related to the new
-	    // value the user has set manually in the
-	    // html form. The user might have well also
-	    // manually set the min-digit field just before
+	if(selmode == select_slice && !internal_change)
+	{
+	    min_digits.clear();
+		// this is to avoid having min-digits
+		// changed in the parent object to something
+		// that would not be related to the new
+		// value the user has set manually in the
+		// html form. The user might have well also
+		// manually set the min-digit field just before
+	}
 
 	act(changed_event_name);
-
     }
     else if(event_name == triggered_event)
     {
@@ -176,13 +179,23 @@ void html_form_input_file::on_event(const string & event_name)
 	    input.set_value(user_select.get_selected_path());
 	    break;
 	case select_slice:
-	    input.set_value(slicename_to_basename_update_min_digits(user_select.get_selected_path()));
+	    internal_change = true; // avoid html_form_input::change to reset min_digits
+	    try
+	    {
+		input.set_value(slicename_to_basename_update_min_digits(user_select.get_selected_path()));
+	    }
+	    catch(...)
+	    {
+		internal_change = false;
+		throw;
+	    }
+	    internal_change = false;
 	    break;
 	default:
 	    throw WEBDAR_BUG;
 	}
 	refresh_get_body = true;
-	my_body_part_has_changed();
+	my_body_part_has_changed(); // needed also to remove the selection popup
 	act(changed_event_name);
     }
     else

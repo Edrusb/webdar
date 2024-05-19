@@ -129,6 +129,7 @@ private:
     bool refresh_get_body;
     select_mode selmode;
     std::string min_digits;
+    bool internal_change;
 
     std::string slicename_to_basename_update_min_digits(const std::string & val);
 
