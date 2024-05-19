@@ -198,6 +198,7 @@ private:
     html_options_compare compare;
     html_button go_compare;
 	//
+    html_derouleur test_params;
     html_options_test test;
     html_button go_test;
 	//

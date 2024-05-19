@@ -188,15 +188,21 @@ saisie::saisie():
     diff_fs_root_fs.adopt(&diff_fs_root);
     diff_fs_root_form.adopt(&diff_fs_root_fs);
     diff_params.adopt_in_section(sect_diff_params, &diff_fs_root_form);
+    diff_params.adopt_in_section(sect_diff_params, &compare);
+
     select.adopt_in_section(menu_compare, &diff_params);
-    select.adopt_in_section(menu_compare, &compare);
     select.adopt_in_section(menu_compare, &go_compare);
 
     diff_fs_root.set_select_mode(html_form_input_file::select_dir);
     diff_fs_root.set_can_create_dir(false);
 
 	// testing sub-page
-    select.adopt_in_section(menu_test, &test);
+    static const char* sect_test_params = "tparams";
+    test_params.add_section(sect_test_params, "Testing parameters");
+    test_params.set_active_section(sect_test_params);
+
+    test_params.adopt_in_section(sect_test_params, &test);
+    select.adopt_in_section(menu_test, &test_params);
     select.adopt_in_section(menu_test, &go_test);
 
 	// listing sub-page
@@ -259,6 +265,7 @@ saisie::saisie():
 	// css
     webdar_css_style::normal_button(extract_params, true);
     webdar_css_style::normal_button(diff_params, true);
+    webdar_css_style::normal_button(test_params, true);
 }
 
 string saisie::inherited_get_body_part(const chemin & path,
