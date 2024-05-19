@@ -189,9 +189,9 @@ private:
     struct item
     {
 	html_button* btn;
-	bool isdir;
-	item() { btn = nullptr; isdir = false; };
-	item(html_button* ptr) { btn = ptr; isdir = false; };
+	libdar::inode_type type;
+	item() { btn = nullptr; type = libdar::inode_type::unknown; };
+	item(html_button* ptr) { btn = ptr; type = libdar::inode_type::unknown; };
     };
 
 
@@ -271,7 +271,7 @@ private:
 
 	/// used by fill_content() to add a single entry to the "listed" field
     void add_content_entry(const std::string & event_name,
-			   bool isdir,
+			   libdar::inode_type pt,
 			   const std::string & entry);
 
 	/// run requested thread after sanity checks

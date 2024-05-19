@@ -296,13 +296,30 @@ void html_select_file::on_event(const string & event_name)
 
 	    curdir += chemin((it->second.btn)->get_label());
 	    fieldset.change_label(curdir.display());
-	    fieldset_isdir = it->second.isdir;
+	    if(it->second.type == libdar::inode_type::unknown)
+	    {
+		    // we must determine whether this a directory or not
+		try
+		{
+		    entr->set_location(fieldset.get_label());
+		    entr->read_dir_reset_dirinfo();
+		    it->second.type = libdar::inode_type::isdir;
+		}
+		catch(...)
+		{
+		    it->second.type = libdar::inode_type::nondir;
+		}
+	    }
+
+
+	    fieldset_isdir = (it->second.type == libdar::inode_type::isdir);
 
 		// Warning: clearing content here will delete
 		// the object which generated the event we
 		// act on... leading to a SEGFAULT as at return
 		// of on_event() the object will no more exist.
-	    run_thread(run_fill_only);
+	    if(fieldset_isdir)
+		run_thread(run_fill_only);
 	}
 	else
 		// we avoid consulting listed as it may still be  under construction
@@ -542,6 +559,8 @@ void html_select_file::fill_content()
     unsigned int count = 0;
     deque<string> entry_dirs;
     deque<string> entry_files;
+    deque<string> entry_unknown;
+    libdar::inode_type tp;
 
     clear_content();
 
@@ -553,15 +572,28 @@ void html_select_file::fill_content()
     cancellation_checkpoint();
     entr->read_dir_reset_dirinfo();
 
-    while(entr->read_dir_next_dirinfo(entry, isdir))
+    while(entr->read_dir_next_dirinfo(entry, tp))
     {
 	cancellation_checkpoint();
-	if(isdir || filter.empty() || fnmatch(filter.c_str(), entry.c_str(), FNM_PERIOD) == 0)
+	if(tp == libdar::inode_type::isdir
+	   || tp == libdar::inode_type::unknown
+	   || filter.empty()
+	   || fnmatch(filter.c_str(), entry.c_str(), FNM_PERIOD) == 0)
 	{
-	    if(isdir)
+	    switch(tp)
+	    {
+	    case libdar::inode_type::isdir:
 		entry_dirs.push_back(entry);
-	    else
+		break;
+	    case libdar::inode_type::nondir:
 		entry_files.push_back(entry);
+		break;
+	    case libdar::inode_type::unknown:
+		entry_unknown.push_back(entry);
+		break;
+	    default:
+		throw WEBDAR_BUG;
+	    }
 	}
 	    // else ignoring entry because
 	    // this is not a directory
@@ -571,8 +603,14 @@ void html_select_file::fill_content()
 
     sort(entry_dirs.begin(), entry_dirs.end());
     sort(entry_files.begin(), entry_files.end());
+    sort(entry_unknown.begin(), entry_unknown.end());
 
     deque<string>::iterator it = entry_dirs.begin();
+
+	// we do the following complicated thing to
+	// have the listing starting with directories
+	// then non directories followed by those we
+	// don't even know what's their type is.
 
     while(it != entry_dirs.end())
     {
@@ -580,7 +618,7 @@ void html_select_file::fill_content()
 	event_name = "x_" + to_string(count++);
 	if(listed.find(event_name) != listed.end())
 	    throw WEBDAR_BUG; // event already exists!?!
-	add_content_entry(event_name, true, *it);
+	add_content_entry(event_name, libdar::inode_type::isdir, *it);
 	++it;
     }
 
@@ -591,9 +629,21 @@ void html_select_file::fill_content()
 	event_name = "x_" + to_string(count++);
 	if(listed.find(event_name) != listed.end())
 	    throw WEBDAR_BUG; // event already exists!?!
-	add_content_entry(event_name, false, *it);
+	add_content_entry(event_name, libdar::inode_type::nondir, *it);
 	++it;
     }
+
+    it = entry_unknown.begin();
+    while(it != entry_unknown.end())
+    {
+	cancellation_checkpoint();
+	event_name = "x_" + to_string(count++);
+	if(listed.find(event_name) != listed.end())
+	    throw WEBDAR_BUG; // event already exists!?!
+	add_content_entry(event_name, libdar::inode_type::unknown, *it);
+	++it;
+    }
+
 }
 
 void html_select_file::signaled_inherited_cancel()
@@ -610,14 +660,29 @@ void html_select_file::create_dir()
     entr->create_dir(createdir_input.get_value(), 0700);
 }
 
-void html_select_file::add_content_entry(const string & event_name, bool isdir, const string & entry)
+void html_select_file::add_content_entry(const string & event_name, libdar::inode_type tp, const string & entry)
 {
     item current;
 
-    content.adopt_static_html(isdir ? " DIR " : "");
+    switch(tp)
+    {
+    case libdar::inode_type::isdir:
+	content.adopt_static_html(" DIR ");
+	break;
+    case libdar::inode_type::nondir:
+	content.adopt_static_html("");
+	break;
+    case libdar::inode_type::unknown:
+	content.adopt_static_html("?");
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
 
-    current.isdir = isdir;
-    if(!select_dir || isdir)
+    current.type = tp;
+    if(!select_dir
+       || tp == libdar::inode_type::isdir
+       || tp == libdar::inode_type::unknown)
     {
 	current.btn = new (nothrow) html_button(entry, event_name);
 	if(current.btn == nullptr)
