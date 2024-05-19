@@ -199,8 +199,23 @@ void body_builder::set_visible(bool mode)
 {
     if(visible != mode)
     {
-	visible = mode;
-	my_body_part_has_changed();  // keep trace of the change at body_builder level
+	if(visible)
+	{
+		// we must first propage the body_builder change
+		// to parent before setting to non-visible
+	    my_body_part_has_changed(); // keep trace of the change at body_builder level
+	    visible = mode;
+	}
+	else
+	{
+		// we must first set to visibile in order
+		// for the body_builder change to be possible
+		// to be propagated to parents (invisibile objects
+		// cannot propagate body change to parents
+	    visible = mode;
+	    my_body_part_has_changed(); // keep trace of the change at body_builder level
+	}
+
 	my_visibility_has_changed(); // inform inherited class that overwrote this method
     }
 }
