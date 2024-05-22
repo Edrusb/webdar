@@ -31,8 +31,13 @@ extern "C"
 }
     // C++ system header files
 
+    // webdar headers
+#include "my_config.h"
+
     // WEBDAR Version
-extern const char* WEBDAR_VERSION;
+#ifndef WEBDAR_VERSION
+#define WEBDAR_VERSION "unknown (BUG at compilation time?)"
+#endif
 
     // DAR archive extension
 extern const char* EXTENSION;
