@@ -23,7 +23,7 @@
 
 #include "tokens.hpp"
 
-const char* WEBDAR_VERSION = "0.2.0";
+const char* WEBDAR_VERSION = "0.2.1";
 
 const char* EXTENSION = "dar";
 
