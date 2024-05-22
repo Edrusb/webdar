@@ -36,7 +36,11 @@ extern "C"
 #include "reference.hpp"
 
     /// \file bibli_referable.hpp defines bibli_referable class
-    ///
+
+
+
+    /// class bibli_referable
+
     /// bibli_referable is an interface own by objects a bibliotheque
     /// is able to store and associate to a name. There can be referred
     /// by objects of type bibli_renvoi (sort of pointer with reference

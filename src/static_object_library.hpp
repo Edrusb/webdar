@@ -37,6 +37,12 @@ extern "C"
     // webdar headers
 #include "static_object.hpp"
 
+    /// library storing static objects in memory
+
+    /// \note this is a class without objects, it receives at compilation
+    /// time a C/C++ generated code from binary objects and associate those
+    /// to a name and provide with the static find_object() method a pointer
+    /// to compilation time defined (and thus static) objects.
 
 class static_object_library
 {

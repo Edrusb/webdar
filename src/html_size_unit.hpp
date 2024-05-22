@@ -36,6 +36,8 @@ extern "C"
     // webdar headers
 #include "html_form_select.hpp"
 
+    /// html component in a form a couple of dropdown list for user to define a size in byte or larger units
+
 class html_size_unit : public body_builder, public actor
 {
 public:

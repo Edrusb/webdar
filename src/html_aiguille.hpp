@@ -41,7 +41,7 @@ extern "C"
 #include "html_button.hpp"
 
     /// class html_aiguille is a pure virtual class
-    ///
+
     /// it groups adopted objets under several labeled sections
     /// at moste one section is visible at a time and can be changed
     /// calling set_active_section(). If given "noactive" to set_active_section()
@@ -135,6 +135,8 @@ protected:
     std::string num_to_section_name(unsigned int num) const { return order[num]; };
 
 private:
+
+	/// used to store the objects adopted in each section
     struct section
     {
 	std::string title;

@@ -41,6 +41,8 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_derouleur.hpp"
 
+    /// html components used for the user to provide parameters of libdar archive restoration operation
+
 class html_options_extract : public body_builder
 {
 public:

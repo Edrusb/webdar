@@ -42,6 +42,8 @@ extern "C"
 #include "actor.hpp"
 #include "html_libdar_running_popup.hpp"
 
+    /// object providing html user interface component for the user to provide options to create a new archive
+
 class html_archive_create: public body_builder, public libthreadar::thread_signal, public actor
 {
 public:

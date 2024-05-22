@@ -40,6 +40,8 @@ extern "C"
 #include "html_table.hpp"
 #include "html_text.hpp"
 
+    /// html component to display libdar returned statistics object
+
 class html_statistics : public body_builder
 {
 public:

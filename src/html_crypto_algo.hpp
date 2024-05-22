@@ -39,6 +39,8 @@ extern "C"
 #include "html_form_select.hpp"
 #include "body_builder.hpp"
 
+    /// html component in the form of a drop-down list used to let the user define the crypto algo
+
 class html_crypto_algo : public html_form_select
 {
 public:

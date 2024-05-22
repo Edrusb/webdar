@@ -35,6 +35,8 @@ extern "C"
 
     // webdar headers
 
+    /// pure virtual class defining the interface for current and future authentication methods
+
 class authentication
 {
 public:
@@ -55,6 +57,8 @@ class authentication_unix : public authentication
 /// A IMPLEMENTER
 
 };
+
+    /// authentication_cli implements an authentication method based on a fixed login and password
 
 class authentication_cli : public authentication
 {

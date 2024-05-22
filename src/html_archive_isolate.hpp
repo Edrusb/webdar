@@ -40,6 +40,8 @@ extern "C"
 #include "html_derouleur.hpp"
 #include "actor.hpp"
 
+    /// html component used to let the user provide parameters for an isolation operation
+
 class html_archive_isolate: public body_builder, public libthreadar::thread_signal, public actor
 {
 public:

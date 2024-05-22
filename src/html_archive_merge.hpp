@@ -43,6 +43,8 @@ extern "C"
 #include "html_derouleur.hpp"
 #include "html_libdar_running_popup.hpp"
 
+    /// html component used to collect merging operation parameters from the user
+
 class html_archive_merge: public body_builder, public libthreadar::thread_signal, public actor
 {
 public:

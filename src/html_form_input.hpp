@@ -37,7 +37,7 @@ extern "C"
 #include "body_builder.hpp"
 #include "events.hpp"
 
-    /// class html_form_input implements HTML <input>
+    /// class html_form_input implements HTML input feature
 
     /// it is expected to be adopted by an html_form directory
     /// or through an html_form_fieldset, to provide a mean for

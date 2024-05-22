@@ -53,6 +53,8 @@ extern "C"
 #include "html_entrepot.hpp"
 #include "html_web_user_interaction.hpp"
 
+    /// html component used for the user to provide the parameters to create a new archive
+
 class html_options_create : public body_builder, public actor, public events
 {
 public:

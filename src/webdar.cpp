@@ -69,6 +69,8 @@ extern "C"
 
 using namespace std;
 
+    /// struct used to store TCP port and network interface
+
 struct interface_port
 {
     string interface; //< if empty means any interface

@@ -36,6 +36,8 @@ extern "C"
 
     // webdar headers
 
+    /// html component implementing the usual hyperlink component
+
 class html_url : public body_builder, public static_body_builder
 {
 public:

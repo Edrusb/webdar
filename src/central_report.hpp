@@ -41,6 +41,8 @@ extern "C"
 
 enum priority_t { crit, err, warning, notice, info, debug };
 
+    /// pure virtual class defining the common interface of log centralization implementations
+
 class central_report
 {
 public:
@@ -61,6 +63,7 @@ private:
     static libthreadar::mutex access; //< caller must acquire mutex before reporting
 };
 
+    /// implements a central_report logging centralization which output the logs on stdout
 
 class central_report_stdout : public central_report
 {
@@ -70,6 +73,8 @@ public:
 protected:
     virtual void inherited_report(priority_t priority, const std::string & message) override;
 };
+
+    /// implements a central_report logging centralization which send logs to syslog
 
 class central_report_syslog : public central_report
 {

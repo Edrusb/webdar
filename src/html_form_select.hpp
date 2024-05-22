@@ -32,7 +32,7 @@ extern "C"
 
     // C++ system header files
 
-    /// class html_form_select implements HTML <select>
+    /// class html_form_select implements HTML input of type "select"
 
     /// It should be adopted directly or not by an html_form
     /// object. It shows a dropdown list of choices the user

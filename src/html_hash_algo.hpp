@@ -36,6 +36,8 @@ extern "C"
     // webdar headers
 #include "html_form_select.hpp"
 
+    /// html component used for the user to define a has algorithm
+
 class html_hash_algo : public html_form_select
 {
 public:

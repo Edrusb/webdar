@@ -71,6 +71,7 @@ public:
 	// Class types and methods
 	//
 
+	/// summary information of sessions
     struct session_summary
     {
 	std::string owner;        //< owner of the session
@@ -115,6 +116,7 @@ private:
 	// static types, variables and methods
 	//
 
+	/// wraps a session object with some metadata
     struct table
     {
 	std::string owner;      //< to whom the session is

@@ -77,6 +77,8 @@ inline exception_base * exception_memory::clone() const { return cloner<exceptio
 
 #define WEBDAR_BUG exception_bug(__FILE__, __LINE__)
 
+    /// class used to signal bug condition
+
 class exception_bug : public exception_base
 {
 public:
@@ -151,6 +153,8 @@ public:
 protected:
     virtual exception_base *clone() const override { return cloner<exception_libcall>((void *)this); };
 };
+
+    /// class used to signal SSL related errors
 
 class exception_openssl : public exception_base
 {

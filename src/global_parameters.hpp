@@ -24,7 +24,7 @@
 #ifndef GLOBAL_PARAMETERS_HPP
 #define GLOBAL_PARAMETERS_HPP
 
-    /// \file parameters global to the webdar application
+    /// \file global_parameters.hpp parameters global to the webdar application
 
     // C system header files
 extern "C"
@@ -36,6 +36,7 @@ extern "C"
 
     // webdar headers
 
+    /// default signal used to cancel threads (provided to libthreadar)
 #define THREAD_SIGNAL SIGUSR2
 
 #endif

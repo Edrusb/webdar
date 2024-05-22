@@ -40,6 +40,8 @@ extern "C"
 #include "html_form_radio.hpp"
 #include "html_form_fieldset.hpp"
 
+    /// html component for user to answer by yes or no to a provided question
+
 class html_yes_no_box : public body_builder
 {
 public:

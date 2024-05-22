@@ -37,7 +37,9 @@ extern "C"
 
 
     /// \file libdarer.hpp defines libdarer class
-    ///
+
+    /// class libdarer
+
     /// libdarer class is the ancestor of all class that generate
     /// libdar components that are hold in a bibliotheque
     /// for now the libdarer class has not use, but is a place holder

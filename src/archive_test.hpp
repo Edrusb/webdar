@@ -38,6 +38,8 @@ extern "C"
 #include "html_web_user_interaction.hpp"
 #include "saisie.hpp"
 
+    /// class archive_test wraps libdar archive testing operation in a dedicated thread
+
 class archive_test : public libthreadar::thread_signal
 {
 public:

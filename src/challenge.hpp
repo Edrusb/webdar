@@ -37,6 +37,8 @@ extern "C"
 #include "authentication.hpp"
 
 
+    /// HTML responder driving the user authentication through the web interface
+
 class challenge: public responder
 {
 public:

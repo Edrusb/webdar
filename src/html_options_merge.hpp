@@ -48,6 +48,7 @@ extern "C"
 #include "html_derouleur.hpp"
 #include "html_entrepot.hpp"
 
+    /// html component for the user to provided parameters of a libdar merging operation
 
 class html_options_merge : public body_builder, public actor, public events
 {

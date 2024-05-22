@@ -38,6 +38,7 @@ extern "C"
 #include "html_level.hpp"
 #include "exceptions.hpp"
 
+    /// html page root component
 
 class html_page : public html_level
 {

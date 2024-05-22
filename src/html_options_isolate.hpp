@@ -45,6 +45,8 @@ extern "C"
 #include "html_derouleur.hpp"
 #include "html_entrepot.hpp"
 
+    /// html components for the user to provide parameters of a isolation operation
+
 class html_options_isolate : public body_builder, public actor, public events
 {
 public:

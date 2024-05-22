@@ -38,6 +38,8 @@ extern "C"
     // webdar headers
 #include "html_form_select.hpp"
 
+    /// html component in the form of a drop-down list to let the user define a libdar comparison field value
+
 class html_comparison_fields : public html_form_select
 {
 public:

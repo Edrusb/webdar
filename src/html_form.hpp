@@ -36,7 +36,7 @@ extern "C"
     // webdar headers
 #include "body_builder.hpp"
 
-    /// class html_form implements HTML <form>
+    /// class html_form implements HTML form feature
 
     /// html_form object should adopt html_form_fieldset
     /// or directly html_form_input, html_datetime, html_form_radio

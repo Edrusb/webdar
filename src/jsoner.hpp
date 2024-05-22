@@ -37,7 +37,9 @@ extern "C"
 
 
     /// \file jsoner.hpp defines jsoner class
-    ///
+
+    /// class jsoner
+
     /// jsoner class is the base class of all others that
     /// are able to save their status and read their status
     /// from a configuration file (json formated)

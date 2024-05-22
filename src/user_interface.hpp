@@ -49,6 +49,8 @@ extern "C"
 #include "archive_merge.hpp"
 #include "archive_init_list.hpp"
 
+    /// main webdar html components that defines for a given session the type of output (config pages, libdar output, error, etc.)
+
 class user_interface : public responder, public events, public actor
 {
 public:

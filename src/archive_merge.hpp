@@ -39,6 +39,9 @@ extern "C"
 #include "html_options_merge.hpp"
 #include "saisie.hpp"
 
+
+    /// class archive_merge runs libdar merging operation in a dedicated thread
+
 class archive_merge : public libthreadar::thread_signal
 {
 public:

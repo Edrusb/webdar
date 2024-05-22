@@ -35,6 +35,13 @@ extern "C"
 
     // webdar headers
 
+    /// base class of html components that are static
+
+    /// \note the difference from dynamic html components resided in the
+    /// get_body_part() method that here dot receive any argument,
+    /// while for dynamic html objects (see class body_builder) the
+    /// same method receive the request received from the browser
+
 class static_body_builder
 {
 public:

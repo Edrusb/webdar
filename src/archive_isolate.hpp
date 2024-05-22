@@ -39,6 +39,8 @@ extern "C"
 #include "html_options_isolate.hpp"
 #include "saisie.hpp"
 
+    /// class archive_isolate gather parameters and libdar isolation in a dedicated thread
+
 class archive_isolate : public libthreadar::thread_signal
 {
 public:

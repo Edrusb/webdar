@@ -38,6 +38,8 @@ extern "C"
 #include "html_web_user_interaction.hpp"
 #include "saisie.hpp"
 
+    /// class archive_restore wraps libdar restoration operation in a dedicated thread
+
 class archive_restore : public libthreadar::thread_signal
 {
 public:

@@ -39,6 +39,10 @@ extern "C"
 #include "html_div.hpp"
 #include "css_class_group.hpp"
 
+    /// simple html component providing the usual button feature of GUIs
+
+    /// \note upon user 'click' on the button a event is generated that
+    /// can be used for actors that registered to it, to perform some action
 class html_button : public html_div, public events
 {
 public:

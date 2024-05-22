@@ -51,7 +51,10 @@ extern "C"
 
 
     /// \file html_select_file.hpp defines html_select_file class
-    ///
+
+
+    /// class html_select_file
+
     /// given a libdar::entrepot object, the class html_select_file
     /// shows a popup for the user to navigate in the directory tree
     /// and select a file or a directory depending on the parameter set
@@ -97,9 +100,6 @@ extern "C"
     ///  |+-------------------------------------------------------+|
     ///  |                                                         |
     ///  +---------------------------------------------------------+
-
-
-
 
 class html_select_file: public html_popup, public events, public actor, public libthreadar::thread_signal
 {
@@ -184,8 +184,7 @@ private:
     static constexpr const unsigned int height_pct = 80;
 
 
-	// internal datastructure
-
+	/// internal datastructure
     struct item
     {
 	html_button* btn;

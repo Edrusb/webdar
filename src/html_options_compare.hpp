@@ -41,6 +41,8 @@ extern "C"
 #include "html_form.hpp"
 #include "html_derouleur.hpp"
 
+    /// html component providing a way for the user to set the parameter of libdar comparison operation
+
 class html_options_compare : public body_builder
 {
 public:

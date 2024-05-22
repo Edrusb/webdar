@@ -40,6 +40,8 @@ extern "C"
 #include "html_button.hpp"
 
 
+    /// html page reporting an error
+
 class html_error : public html_page, public events, public actor
 {
 public:

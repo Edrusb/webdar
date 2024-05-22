@@ -93,6 +93,8 @@ protected:
 private:
     static const std::string shrink_event;
 
+
+	/// struct used to store for each section the title components and status
     struct section
     {
 	html_button* title;

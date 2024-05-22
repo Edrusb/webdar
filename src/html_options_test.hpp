@@ -40,6 +40,8 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_derouleur.hpp"
 
+    /// html component for the user to provide parameters of libdar archive testing operation
+
 class html_options_test : public body_builder
 {
 public:

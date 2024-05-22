@@ -40,7 +40,9 @@ extern "C"
 #include "actor.hpp"
 
     /// \file events.hpp defines the event class
-    ///
+
+    /// class events
+
     /// an events object contains a set of labelled events, each one having a name.
     /// an actor object must register for one or more named event of a events object
     /// (or of different events objects) to be triggered by a named event

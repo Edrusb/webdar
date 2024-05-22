@@ -34,6 +34,8 @@
 #include "request.hpp"
 #include "answer.hpp"
 
+    /// parser class is given a connection object and format the incoming byte flow in structured request objects
+
 class parser
 {
 public:

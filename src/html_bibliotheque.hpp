@@ -44,12 +44,14 @@ extern "C"
 #include "html_tabs.hpp"
 
     /// \file html_bibliotheque.hpp defines html_bibliotheque class
-    ///
-    /// class blibliotheque purpose is to assign a label per category
+
+
+    /// class html_bibliotheque
+
+    /// class html_bibliotheque purpose is to assign a label per category
     /// to jsoner objects that constitue a given configuration set.
     /// Being itself a jsoner this object is in charge of the global
     /// format of the configuration file, calling in turn the different
-    ///
 
 class html_bibliotheque : public jsoner, public body_builder
 {
@@ -98,6 +100,8 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+
+	/// structure used to record components stored in the bibliotheque
     struct referable_list
     {
 	std::map<std::string, bibli_referable> refs;

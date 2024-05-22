@@ -110,6 +110,7 @@ protected:
 
 private:
 
+	/// struct used to store the html components of the html_menu
     struct cell
     {
 	std::string itag;  ///< used in implementation

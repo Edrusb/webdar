@@ -37,6 +37,7 @@
 #include "central_report.hpp"
 #include "connexion.hpp"
 
+    /// class holding fields of an HTTP request (method, URI, header, cookies, and so on)
 
 class request
 {

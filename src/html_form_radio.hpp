@@ -37,7 +37,7 @@ extern "C"
 #include "body_builder.hpp"
 #include "events.hpp"
 
-    /// class html_form_radio implements HTML <input> of type "radio"
+    /// class html_form_radio implements HTML "input" of type "radio"
 
     /// these html_form_field objects are set calling add_choice(), clear()
     /// set_selected() methods and provide in return the menu selected by
@@ -73,6 +73,7 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// used to record parameters of each option of the radio button
     struct record
     {
 	std::string id;

@@ -39,6 +39,8 @@ extern "C"
 #include "webdar_tools.hpp"
 #include "exceptions.hpp"
 
+    /// html component implementing the html table structure
+
 class html_table: public html_level
 {
 public:

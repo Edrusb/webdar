@@ -36,6 +36,8 @@ extern "C"
     // webdar headers
 #include "exceptions.hpp"
 
+    /// implements the encoding to and decoding from base64
+
 class base64
 {
 public:

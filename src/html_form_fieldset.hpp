@@ -36,7 +36,7 @@ extern "C"
     // webdar headers
 #include "body_builder.hpp"
 
-    /// class html_form_fieldset implements HTML <fieldset>
+    /// class html_form_fieldset implements HTML fieldset feature
 
     /// it is expected to be adopted by an html_form and to
     /// adopt itself some html_form_field objects like html_form_input

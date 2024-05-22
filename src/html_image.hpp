@@ -37,6 +37,7 @@ extern "C"
 #include "body_builder.hpp"
 #include "static_body_builder.hpp"
 
+    /// html static component displaying an image from a given URL
 
 class html_image : public body_builder, public static_body_builder
 {

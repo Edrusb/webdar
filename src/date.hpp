@@ -37,6 +37,8 @@ extern "C"
     // webdar headers
 
 
+    /// stores and manipulates date-time and its formatting to human representation
+
 class date
 {
 public:

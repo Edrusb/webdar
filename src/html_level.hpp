@@ -67,6 +67,7 @@ protected:
 	/// inherited from body_builder
     virtual void will_foresake(body_builder *obj) override;
 
+	/// struct recording the content of each level (dynamic or static html component)
     struct bundle
     {
 	body_builder *obj;       //< if set to nullptr, using static_text instead
