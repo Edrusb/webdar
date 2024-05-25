@@ -43,7 +43,7 @@ const string html_options_merge::entrepot_changed = "html_options_merge_entrep_c
 
 html_options_merge::html_options_merge():
     form_archgen("Update"),
-    fs_archgen("General archive merging options"),
+    fs_archgen(""),
     allow_over("Allow slice overwriting", html_form_input::check, "", 1),
     warn_over("Warn before overwriting", html_form_input::check, "", 1),
     pause("Pause at each N slices (zero = no pause)", html_form_input::number, "", 3),
@@ -57,31 +57,33 @@ html_options_merge::html_options_merge():
     hash_algo("Hashing algorithm"),
     execute("Command to execute after each slice", html_form_input::text, "", 30),
     empty("Dry run execution", html_form_input::check, "", 1),
+    has_aux_fs(""),
     has_aux("Use an auxiliary archive", html_form_input::check, "", 1),
-    aux_block("Auxiliary archive related information"),
+    aux_form("Update"),
+    aux_block(""),
     auxiliary("Auxiliary archive of reference"),
     form_shown("Update"),
-    fs_shown("What to show during the operation"),
-    info_details("Detailed informations", html_form_input::check, "", 1),
-    display_skipped("Display skipped files", html_form_input::check, "", 1),
+    fs_shown(""),
+    info_details("Detailed informations", html_form_input::check, "1", 1),
+    display_skipped("Display skipped files", html_form_input::check, "1", 1),
     form_perimeter("Update"),
-    fs_perimeter("What to take into consideration for backup"),
+    fs_perimeter(""),
     empty_dir("Store ignored directories as empty directories", html_form_input::check, "", 1),
     decremental_mode("Decremental mode", html_form_input::check, "", 1),
     form_compr("Update"),
-    fs_compr("Compression options"),
+    fs_compr(""),
     keep_compressed("Keep file compressed", html_form_input::check, "", 1),
     compression("Compression algorithm"),
     compression_level("Compression level", html_form_input::range, "", 3),
     min_compr_size("Minimum file sized compressed", html_form_input::number, "", 30),
     form_slicing("Update"),
-    fs_slicing("Slicing options"),
+    fs_slicing(""),
     slicing("Sliced archive", html_form_input::check, "", 1),
     slice_size("Slice size", html_form_input::number, "", 6),
     different_first_slice("Specific size for first slice", html_form_input::check, "", 1),
     first_slice_size("Slice size", html_form_input::number, "", 6),
     form_crypto("Update"),
-    fs_crypto("Encryption options"),
+    fs_crypto(""),
     crypto_algo("Cipher used"),
     crypto_pass1("Pass phrase", html_form_input::password, "", 30),
     crypto_pass2("Confirm pass phrase", html_form_input::password, "", 30),
@@ -114,9 +116,6 @@ html_options_merge::html_options_merge():
     execute.set_value(defaults.get_execute());
     empty.set_value_as_bool(defaults.get_empty());
 
-    info_details.set_value_as_bool(defaults.get_info_details());
-    display_skipped.set_value_as_bool(defaults.get_display_skipped());
-
     empty_dir.set_value_as_bool(defaults.get_empty_dir());
     decremental_mode.set_value_as_bool(defaults.get_decremental_mode());
 
@@ -146,14 +145,14 @@ html_options_merge::html_options_merge():
     static const char* sect_slice = "compression";
     static const char* sect_cipher = "ciphering";
 
-    deroule.add_section(sect_entrep, "Archive repository");
-    deroule.add_section(sect_general, "General archive merging options");
-    deroule.add_section(sect_aux, "Auxiliary archive of reference");
+    deroule.add_section(sect_entrep, "Backup Repository");
+    deroule.add_section(sect_general, "General Merging Options");
+    deroule.add_section(sect_aux, "Auxiliary Backup of Reference");
     deroule.add_section(sect_show, "What to show during the operation");
-    deroule.add_section(sect_filter, "Filtering options");
-    deroule.add_section(sect_compr, "Compression options");
-    deroule.add_section(sect_slice, "Slicing options");
-    deroule.add_section(sect_cipher, "Encryption options");
+    deroule.add_section(sect_filter, "Filtering Options");
+    deroule.add_section(sect_compr, "Compression Options");
+    deroule.add_section(sect_slice, "Slicing Options");
+    deroule.add_section(sect_cipher, "Encryption Options");
 
     deroule.adopt_in_section(sect_entrep, &entrep);
 
@@ -171,13 +170,13 @@ html_options_merge::html_options_merge():
     fs_archgen.adopt(&hash_algo);
     fs_archgen.adopt(&execute);
     fs_archgen.adopt(&empty);
-    fs_archgen.adopt(&has_aux);
     form_archgen.adopt(&fs_archgen);
     deroule.adopt_in_section(sect_general, &form_archgen);
 
-    aux_placeholder.add_text(2, "Auxiliary archive disabled");
+    has_aux_fs.adopt(&has_aux);
+    aux_form.adopt(&has_aux_fs);
+    aux_block.adopt(&aux_form);
     aux_block.adopt(&auxiliary);
-    aux_block.adopt(&aux_placeholder);
     deroule.adopt_in_section(sect_aux, &aux_block);
 
     fs_shown.adopt(&info_details);
@@ -241,7 +240,6 @@ void html_options_merge::on_event(const string & event_name)
        || event_name == html_crypto_algo::changed)
     {
 	auxiliary.set_visible(has_aux.get_value_as_bool());
-	aux_placeholder.set_visible(! has_aux.get_value_as_bool());
 
 	if(keep_compressed.get_value_as_bool())
 	{

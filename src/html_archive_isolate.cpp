@@ -41,12 +41,12 @@ using namespace std;
 
 html_archive_isolate::html_archive_isolate():
     form("Update"),
-    fs("Isolated catalog to create"),
-    sauv_path("Where to create the isolated catalogue", "/", 20, "Select the directory where to create the isolated catalog..."),
-    basename("Archive basename", html_form_input::text, "", 10)
+    fs(""),
+    sauv_path("Where to create the isolated catalog", "/", 20, "Select the directory where to create the isolated catalog..."),
+    basename("Isolated Catalog basename", html_form_input::text, "", 10)
 {
     static const char* sect_archive = "isolation options";
-    deroule.add_section(sect_archive, "Archive Isolation");
+    deroule.add_section(sect_archive, "Backup Isolation");
     deroule.set_active_section(0);
 
     sauv_path.set_select_mode(html_form_input_file::select_dir);

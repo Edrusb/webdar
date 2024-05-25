@@ -105,11 +105,13 @@ private:
     html_hash_algo hash_algo;
     html_form_input execute;
     html_form_input empty;
+
+    html_form_fieldset has_aux_fs;
     html_form_input has_aux;
+    html_form aux_form;
 
     html_form_fieldset aux_block;
     html_archive_read auxiliary;
-    html_text aux_placeholder;
 
     html_form form_shown;
     html_form_fieldset fs_shown;

@@ -42,7 +42,7 @@ using namespace std;
 html_archive_read::html_archive_read(const string & archive_description):
     form("Update"),
     fs(archive_description),
-    arch_path("Archive path",
+    arch_path("Backup Path",
 	      "/",
 	      50,
 	      "Select the backup to read...")

@@ -66,7 +66,7 @@ const string saisie::menu_sessions = "sessions";
 const string saisie::menu_close = "close";
 
 saisie::saisie():
-    archread("Source archive"),
+    archread(""),
     licensing((chemin(STATIC_PATH_ID) + chemin(STATIC_OBJ_LICENSING)).display(false), "Webdar is released under the GNU Public License v3"),
     session_name("Session name",
 		 html_form_input::text,
@@ -74,12 +74,12 @@ saisie::saisie():
 		 20),
     about_fs(""),
     about_form("Change"),
-    extract_fs_root_fs("Restoration parameters"),
+    extract_fs_root_fs(""),
     extract_fs_root("Directory to take as root for restoration", "/", 30, "Select a directory where to restore to..."),
     extract_fs_root_form("Update"),
     go_extract("Restore", event_restore),
-    diff_fs_root_fs("Comparison parameters"),
-    diff_fs_root("Directory to compare the archive with", "/", 30, "Select the directory to compare with..."),
+    diff_fs_root_fs(""),
+    diff_fs_root("Directory to compare the backup against", "/", 30, "Select the directory to compare with..."),
     diff_fs_root_form("Update"),
     go_compare("Compare", event_compare),
     go_test("Test", event_test),
@@ -139,7 +139,7 @@ saisie::saisie():
 
     static const char* sect_archshow = "show";
 
-    archive_show.add_section(sect_archshow, "Archive to read");
+    archive_show.add_section(sect_archshow, "Backup to Read");
     archive_show.set_active_section(0);
 
     archive_show.adopt_in_section(sect_archshow, &archread);

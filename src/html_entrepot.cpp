@@ -46,8 +46,8 @@ const string html_entrepot::repo_type_changed = html_form_select::changed + "typ
 
 html_entrepot::html_entrepot():
     form("Apply changes"),
-    fs("Entrepot parameters"),
-    repo_type("Entrepot type", repo_type_changed),
+    fs(""),
+    repo_type("Repository type", repo_type_changed),
     host("Remote host", html_form_input::text, "", 30),
     port("Port", html_form_input::number, "0", 7),
     login("Login", html_form_input::text, "", 30),
@@ -405,7 +405,7 @@ void html_entrepot::update_visible()
 		break;
 	    case 1: // auth key
 		pass.set_visible(false);
-		auth_from_file.set_visible(true);
+		auth_from_file.set_visible(false);
 		pub_keyfile.set_visible(true);
 		prv_keyfile.set_visible(true);
 		break;

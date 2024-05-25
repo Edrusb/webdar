@@ -41,10 +41,10 @@ using namespace std;
 
 html_options_compare::html_options_compare():
     form("Update options"),
-    fs("Comparison options"),
+    fs(""),
     info_details("Detailed information",
 		 html_form_input::check,
-		 "",
+		 "1",
 		 1),
     alter_atime("Modify atime",
 		html_form_input::check,
@@ -56,7 +56,7 @@ html_options_compare::html_options_compare():
 		      1),
     display_skipped("Display skipped files",
 		    html_form_input::check,
-		    "",
+		    "1",
 		    1),
     hourshift("Ignore difference of exactly +/- N hour(s)",
 	      html_form_input::number,
@@ -70,11 +70,9 @@ html_options_compare::html_options_compare():
     libdar::archive_options_diff defaults;
 
 	/// default values
-    info_details.set_value_as_bool(defaults.get_info_details());
     what_to_check.set_value(defaults.get_what_to_check());
     alter_atime.set_value_as_bool(defaults.get_alter_atime());
     furtive_read_mode.set_value_as_bool(defaults.get_furtive_read_mode());
-    display_skipped.set_value_as_bool(defaults.get_display_skipped());
     hourshift.set_value(webdar_tools_convert_to_string(defaults.get_hourshift()));
     compare_symlink_date.set_value_as_bool(defaults.get_compare_symlink_date());
 

@@ -43,7 +43,7 @@ const string html_options_isolate::entrepot_changed = "html_options_isolate_entr
 
 html_options_isolate::html_options_isolate():
     form_archgen("Update"),
-    fs_archgen("General archive isolation options"),
+    fs_archgen(""),
     allow_over("Allow slice overwriting", html_form_input::check, "", 1),
     warn_over("Warn before overwriting", html_form_input::check, "", 1),
     pause("Pause at each N slices (zero = no pause)", html_form_input::number, "", 3),
@@ -57,20 +57,20 @@ html_options_isolate::html_options_isolate():
     execute("Command to execute after each slice", html_form_input::text, "", 30),
     empty("Dry run execution", html_form_input::check, "", 1),
     form_shown("Update"),
-    fs_shown("What to show during the operation"),
-    info_details("Detailed informations", html_form_input::check, "", 1),
+    fs_shown(""),
+    info_details("Detailed informations", html_form_input::check, "1", 1),
     form_compr("Update"),
-    fs_compr("Compression options"),
+    fs_compr(""),
     compression("Compression algorithm"),
-    compression_level("Compression level", html_form_input::range, "", 3),
+    compression_level("Compression level", html_form_input::number, "", 3),
     form_slicing("Update"),
-    fs_slicing("Slicing options"),
+    fs_slicing(""),
     slicing("Sliced archive", html_form_input::check, "", 1),
     slice_size("Slice size", html_form_input::number, "", 6),
     different_first_slice("Specific size for first slice", html_form_input::check, "", 1),
     first_slice_size("Slice size", html_form_input::number, "", 6),
     form_crypto("Update"),
-    fs_crypto("Encryption options"),
+    fs_crypto(""),
     crypto_algo("Cipher used"),
     crypto_pass1("Pass phrase", html_form_input::password, "", 30),
     crypto_pass2("Confirm pass phrase", html_form_input::password, "", 30),
@@ -96,7 +96,6 @@ html_options_isolate::html_options_isolate():
     hash_algo.set_value(defaults.get_hash_algo());
     execute.set_value(defaults.get_execute());
     empty.set_value_as_bool(defaults.get_empty());
-    info_details.set_value_as_bool(defaults.get_info_details());
     compression.set_value(defaults.get_compression());
     compression_level.set_value(webdar_tools_convert_to_string(defaults.get_compression_level()));
     slicing.set_value_as_bool(defaults.get_slice_size() != 0);
@@ -118,8 +117,8 @@ html_options_isolate::html_options_isolate():
     static const char* sect_slice = "slicing";
     static const char* sect_cipher = "ciphering";
 
-    deroule.add_section(sect_entrep, "Archive repository");
-    deroule.add_section(sect_general, "General archive isolation options");
+    deroule.add_section(sect_entrep, "Isolated Catalog Repository");
+    deroule.add_section(sect_general, "General Isolation Options");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_compr, "Compression options");
     deroule.add_section(sect_slice, "Slicing options");

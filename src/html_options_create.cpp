@@ -50,46 +50,53 @@ html_options_create::html_options_create():
     form_compr("Update"),
     form_slicing("Update"),
     form_crypto("Update"),
-    wrap_ref("Archive of reference related parameters"),
+    archtype_fs(""),
+    fixed_date("Only record files changed since:"),
+    wrap_ref(""),
     reference("Archive of reference"),
+    archgen_fs(""),
     allow_over("Allow slice overwriting", html_form_input::check, "", 1),
     warn_over("Warn before overwriting", html_form_input::check, "", 1),
-    info_details("Detailed informations", html_form_input::check, "", 1),
     pause("Pause at each N slices (zero = no pause)", html_form_input::number, "", 3),
-    empty_dir("Store ignored directories as empty directories", html_form_input::check, "", 1),
-    compression("Compression algorithm"),
-    compression_level("Compression level", html_form_input::range, "", 3),
-    slicing("Sliced archive", html_form_input::check, "", 1),
-    slice_size("Slice size", html_form_input::number, "", 6),
-    different_first_slice("Specific size for first slice", html_form_input::check, "", 1),
-    first_slice_size("Slice size", html_form_input::number, "", 6),
-    execute("Command to execute after each slice", html_form_input::text, "", 30),
-    crypto_algo("Cipher used"),
-    crypto_pass1("Pass phrase", html_form_input::password, "", 30),
-    crypto_pass2("Confirm pass phrase", html_form_input::password, "", 30),
-    crypto_size("Cipher Block size", html_form_input::number, "", 30),
-    min_compr_size("Minimum file sized compressed", html_form_input::number, "", 30),
-    nodump("Avoid saving files having the 'Nodump' flag set", html_form_input::check, "", 1),
-    hourshift("Hour shift", html_form_input::number, "", 5),
-    empty("Dry run execution", html_form_input::check, "", 1),
-    fs_alter_atime("What to alter if furtive read mode is not used"),
-    furtive_read_mode("Furtive read mode (if available)", html_form_input::check, "", 1),
-    same_fs("Only consider files located on the same filesystem as the rooted directory", html_form_input::check, "", 1),
-    cache_directory_tagging("Ignore directories that use a cache directory tag", html_form_input::check, "", 1),
-    display_skipped("Display skipped files", html_form_input::check, "", 1),
-    fixed_date("Only record files changed since:"),
     slice_permission("Slice permission (octal)", html_form_input::text, "", 10),
     slice_user_ownership("Slice user ownership", html_form_input::text, "", 10),
     slice_group_ownership("slice group ownership", html_form_input::text, "", 10),
     retry_on_change_times("Max retries saving files that changed", html_form_input::number, "", 3),
     retry_on_change_overhead("Max wasted bytes retrying saving changed files", html_form_input::number, "", 10),
     sequential_marks("Add sequential marks", html_form_input::check, "", 1),
-    sparse_file_min_size("Minimum size of holes to lookup in sparse files", html_form_input::number, "", 10),
-    security_check("Security warning", html_form_input::check, "", 1),
     user_comment("User comment in slice header", html_form_input::text, "", 40),
-    hash_algo("Hashing algorithm"),
     slice_min_digits("Minimum digits in slice filenames", html_form_input::number, "", 3),
-    ignore_unknown_inode_type("Ignore unknown inode type instead of warning", html_form_input::check, "", 1)
+    sparse_file_min_size("Minimum size of holes to lookup in sparse files", html_form_input::number, "", 10),
+    hash_algo("Hashing algorithm"),
+    execute("Command to execute after each slice", html_form_input::text, "", 30),
+    hourshift("Hour shift", html_form_input::number, "", 5),
+    shown_fs(""),
+    info_details("Detailed informations", html_form_input::check, "1", 1),
+    empty("Dry run execution", html_form_input::check, "", 1),
+    display_skipped("Display skipped files", html_form_input::check, "1", 1),
+    security_check("Security warning", html_form_input::check, "", 1),
+    ignore_unknown_inode_type("Ignore unknown inode type instead of warning", html_form_input::check, "", 1),
+    perimeter_fs(""),
+    empty_dir("Store ignored directories as empty directories", html_form_input::check, "1", 1),
+    nodump("Avoid saving files having the 'Nodump' flag set", html_form_input::check, "1", 1),
+    same_fs("Only consider files located on the same filesystem as the rooted directory", html_form_input::check, "", 1),
+    cache_directory_tagging("Ignore directories that use a cache directory tag", html_form_input::check, "1", 1),
+    fs_alter_atime("What to alter if furtive read mode is not used"),
+    furtive_read_mode("Furtive read mode (if available)", html_form_input::check, "", 1),
+    compr_fs(""),
+    compression("Compression algorithm"),
+    compression_level("Compression level", html_form_input::number, "", 3),
+    min_compr_size("Minimum file sized compressed", html_form_input::number, "", 30),
+    slicing_fs(""),
+    slicing("Sliced archive", html_form_input::check, "", 1),
+    slice_size("Slice size", html_form_input::number, "", 6),
+    different_first_slice("Specific size for first slice", html_form_input::check, "", 1),
+    first_slice_size("Slice size", html_form_input::number, "", 6),
+    crypto_fs(""),
+    crypto_algo("Cipher used"),
+    crypto_pass1("Pass phrase", html_form_input::password, "", 30),
+    crypto_pass2("Confirm pass phrase", html_form_input::password, "", 30),
+    crypto_size("Cipher Block size", html_form_input::number, "", 30)
 {
     libdar::archive_options_create defaults;
 
@@ -123,9 +130,7 @@ html_options_create::html_options_create():
 	// set default values
     allow_over.set_value_as_bool(defaults.get_allow_over());
     warn_over.set_value_as_bool(defaults.get_warn_over());
-    info_details.set_value_as_bool(defaults.get_info_details());
     pause.set_value(libdar::deci(defaults.get_pause()).human());
-    empty_dir.set_value_as_bool(defaults.get_empty_dir());
     compression.set_value(defaults.get_compression());
     compression_level.set_value(webdar_tools_convert_to_string(defaults.get_compression_level()));
     slicing.set_value_as_bool(defaults.get_slice_size() != 0);
@@ -138,7 +143,6 @@ html_options_create::html_options_create():
     crypto_pass2.set_value("");
     crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
     min_compr_size.set_value(libdar::deci(defaults.get_min_compr_size()).human());
-    nodump.set_value_as_bool(defaults.get_nodump());
     what_to_check.set_value(defaults.get_comparison_fields());
     hourshift.set_value(libdar::deci(defaults.get_hourshift()).human());
     empty.set_value_as_bool(defaults.get_empty());
@@ -148,8 +152,6 @@ html_options_create::html_options_create():
 	alter_atime.set_selected(1);
     furtive_read_mode.set_value_as_bool(defaults.get_furtive_read_mode());
     same_fs.set_value_as_bool(defaults.get_same_fs());
-    cache_directory_tagging.set_value_as_bool(defaults.get_cache_directory_tagging());
-    display_skipped.set_value_as_bool(defaults.get_display_skipped());
     fixed_date.set_value(defaults.get_fixed_date());
     slice_permission.set_value(defaults.get_slice_permission());
     slice_user_ownership.set_value(defaults.get_slice_user_ownership());
@@ -177,10 +179,10 @@ html_options_create::html_options_create():
     static const char* sect_slice = "slicing";
     static const char* sect_cipher = "ciphering";
 
-    deroule.add_section(sect_repo, "Archive repository");
-    deroule.add_section(sect_type, "Archive type");
-    deroule.add_section(sect_ref, "Archive of Reference");
-    deroule.add_section(sect_gen, "Archive generation options");
+    deroule.add_section(sect_repo, "Backup Repository");
+    deroule.add_section(sect_type, "Backup Type");
+    deroule.add_section(sect_ref, "Backup of Reference");
+    deroule.add_section(sect_gen, "Backup General Options");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_perimeter, "What to take into consideration for backup");
     deroule.add_section(sect_source, "Source file reading mode");
@@ -193,10 +195,11 @@ html_options_create::html_options_create():
     deroule.adopt_in_section(sect_repo, &entrep);
 
 	// archive type and associated optional fields
-    form_archtype.adopt(&archtype);
-    form_archtype.adopt(&what_to_check);
-    form_archtype.adopt(&hourshift);
-    form_archtype.adopt(&fixed_date);
+    archtype_fs.adopt(&archtype);
+    archtype_fs.adopt(&what_to_check);
+    archtype_fs.adopt(&hourshift);
+    archtype_fs.adopt(&fixed_date);
+    form_archtype.adopt(&archtype_fs);
     deroule.adopt_in_section(sect_type, &form_archtype);
 
 	// archive ref
@@ -206,38 +209,41 @@ html_options_create::html_options_create():
     deroule.adopt_in_section(sect_ref, &wrap_ref);
 
 	// archive generation
-    form_archgen.adopt(&allow_over);
-    form_archgen.adopt(&warn_over);
-    form_archgen.adopt(&pause);
-    form_archgen.adopt(&slice_permission);
-    form_archgen.adopt(&slice_user_ownership);
-    form_archgen.adopt(&slice_group_ownership);
-    form_archgen.adopt(&retry_on_change_times);
-    form_archgen.adopt(&retry_on_change_overhead);
-    form_archgen.adopt(&retry_on_change_overhead_unit);
-    form_archgen.adopt(&sequential_marks);
-    form_archgen.adopt(&sparse_file_min_size);
-    form_archgen.adopt(&sparse_file_min_size_unit);
-    form_archgen.adopt(&user_comment);
-    form_archgen.adopt(&slice_min_digits);
-    form_archgen.adopt(&hash_algo);
-    form_archgen.adopt(&execute);
-    form_archgen.adopt(&empty);
+    archgen_fs.adopt(&allow_over);
+    archgen_fs.adopt(&warn_over);
+    archgen_fs.adopt(&pause);
+    archgen_fs.adopt(&slice_permission);
+    archgen_fs.adopt(&slice_user_ownership);
+    archgen_fs.adopt(&slice_group_ownership);
+    archgen_fs.adopt(&retry_on_change_times);
+    archgen_fs.adopt(&retry_on_change_overhead);
+    archgen_fs.adopt(&retry_on_change_overhead_unit);
+    archgen_fs.adopt(&sequential_marks);
+    archgen_fs.adopt(&sparse_file_min_size);
+    archgen_fs.adopt(&sparse_file_min_size_unit);
+    archgen_fs.adopt(&user_comment);
+    archgen_fs.adopt(&slice_min_digits);
+    archgen_fs.adopt(&hash_algo);
+    archgen_fs.adopt(&execute);
+    archgen_fs.adopt(&empty);
+    form_archgen.adopt(&archgen_fs);
     deroule.adopt_in_section(sect_gen, &form_archgen);
 
 
 	// operation visibility
-    form_shown.adopt(&info_details);
-    form_shown.adopt(&display_skipped);
-    form_shown.adopt(&security_check);
-    form_shown.adopt(&ignore_unknown_inode_type);
+    shown_fs.adopt(&info_details);
+    shown_fs.adopt(&display_skipped);
+    shown_fs.adopt(&security_check);
+    shown_fs.adopt(&ignore_unknown_inode_type);
+    form_shown.adopt(&shown_fs);
     deroule.adopt_in_section(sect_show, &form_shown);
 
 	// perimeter
-    form_perimeter.adopt(&empty_dir);
-    form_perimeter.adopt(&nodump);
-    form_perimeter.adopt(&same_fs);
-    form_perimeter.adopt(&cache_directory_tagging);
+    perimeter_fs.adopt(&empty_dir);
+    perimeter_fs.adopt(&nodump);
+    perimeter_fs.adopt(&same_fs);
+    perimeter_fs.adopt(&cache_directory_tagging);
+    form_perimeter.adopt(&perimeter_fs);
     deroule.adopt_in_section(sect_perimeter, &form_perimeter);
 
 	// source data
@@ -247,26 +253,29 @@ html_options_create::html_options_create():
     deroule.adopt_in_section(sect_source, &form_reading);
 
 	// compression
-    form_compr.adopt(&compression);
-    form_compr.adopt(&compression_level);
-    form_compr.adopt(&min_compr_size);
-    form_compr.adopt(&min_compr_size_unit);
+    compr_fs.adopt(&compression);
+    compr_fs.adopt(&compression_level);
+    compr_fs.adopt(&min_compr_size);
+    compr_fs.adopt(&min_compr_size_unit);
+    form_compr.adopt(&compr_fs);
     deroule.adopt_in_section(sect_compr, &form_compr);
 
 	// slicing
-    form_slicing.adopt(&slicing);
-    form_slicing.adopt(&slice_size);
-    form_slicing.adopt(&slice_size_unit);
-    form_slicing.adopt(&different_first_slice);
-    form_slicing.adopt(&first_slice_size);
-    form_slicing.adopt(&first_slice_size_unit);
+    slicing_fs.adopt(&slicing);
+    slicing_fs.adopt(&slice_size);
+    slicing_fs.adopt(&slice_size_unit);
+    slicing_fs.adopt(&different_first_slice);
+    slicing_fs.adopt(&first_slice_size);
+    slicing_fs.adopt(&first_slice_size_unit);
+    form_slicing.adopt(&slicing_fs);
     deroule.adopt_in_section(sect_slice, &form_slicing);
 
 	// ciphering
-    form_crypto.adopt(&crypto_algo);
-    form_crypto.adopt(&crypto_pass1);
-    form_crypto.adopt(&crypto_pass2);
-    form_crypto.adopt(&crypto_size);
+    crypto_fs.adopt(&crypto_algo);
+    crypto_fs.adopt(&crypto_pass1);
+    crypto_fs.adopt(&crypto_pass2);
+    crypto_fs.adopt(&crypto_size);
+    form_crypto.adopt(&crypto_fs);
     deroule.adopt_in_section(sect_cipher, &form_crypto);
 
 	// events and visibility

@@ -41,10 +41,10 @@ using namespace std;
 
 html_options_test::html_options_test():
     form("Update options"),
-    fs("Testing options"),
+    fs(""),
     info_details("Detailed informations",
 		 html_form_input::check,
-		 "",
+		 "1",
 		 1),
     empty("Dry-run execution",
 	  html_form_input::check,
@@ -52,16 +52,13 @@ html_options_test::html_options_test():
 	  1),
     display_skipped("Display skipped files",
 		    html_form_input::check,
-		    "",
+		    "1",
 		    1)
 {
     libdar::archive_options_test defaults;
 
 	// default values
-
-    info_details.set_value_as_bool(defaults.get_display_treated());
     empty.set_value_as_bool(defaults.get_empty());
-    display_skipped.set_value_as_bool(defaults.get_display_skipped());
 
 	// building HTML structure
 

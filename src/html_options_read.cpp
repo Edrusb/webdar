@@ -45,14 +45,14 @@ const string html_options_read::ref_entrepot_has_changed = "ref_entrep_has_chang
 
 html_options_read::html_options_read():
     form_src("Update Options"),
-    fs_src("Archive Options"),
-    fs_ref("External catalog Options"),
+    fs_src(""),
+    fs_ref(""),
     src_crypto_algo("Cipher (for recent archives/backups, this is autodetected)"),
     src_crypto_pass("Passphrase", html_form_input::password, "", 30),
     src_crypto_size("Cipher block size", html_form_input::number, "0", 8),
     src_execute("Command to execute locally before reading each slice", html_form_input::text, "", 30),
     src_slice_min_digits("Slice minimum digit", html_form_input::number, "0", 8),
-    info_details("Detailed information", html_form_input::check, "", 1),
+    info_details("Detailed information", html_form_input::check, "1", 1),
     lax("Laxist check mode", html_form_input::check, "", 1),
     sequential_read("Sequential read", html_form_input::check, "", 1),
     ref_use_external_catalogue("Use external catalog to open the archive", html_form_input::check, "", 1),
@@ -76,7 +76,6 @@ html_options_read::html_options_read():
     src_crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
     src_execute.set_value(defaults.get_execute());
     src_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_slice_min_digits()));
-    info_details.set_value_as_bool(defaults.get_info_details());
     lax.set_value_as_bool(defaults.get_lax());
     sequential_read.set_value_as_bool(defaults.get_sequential_read());
     ref_use_external_catalogue.set_value_as_bool(defaults.is_external_catalogue_set());
@@ -89,10 +88,10 @@ html_options_read::html_options_read():
     ref_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_ref_slice_min_digits()));
 
 	// build the adoption tree
-    deroule.add_section(sect_entrep, "Archive location");
+    deroule.add_section(sect_entrep, "Backup Location");
     deroule.add_section(sect_opt, "Reading options");
-    deroule.add_section(sect_ref_entrep, "External Catalog location");
     deroule.add_section(sect_extcat, "External Catalog");
+    deroule.add_section(sect_ref_entrep, "External Catalog location");
 
     deroule.adopt_in_section(sect_entrep, &entrep);
 

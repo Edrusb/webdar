@@ -41,14 +41,14 @@ using namespace std;
 
 html_archive_create::html_archive_create():
     form("Update"),
-    fs("Archive to create"),
+    fs(""),
     fs_root("Directory to take as root for the backup", "/", 20, "Select root directory to backup..."),
-    sauv_path("Where to create the archive", "/", 20, "Select path where to create the backup..."),
-    basename("Archive basename", html_form_input::text, "", 10)
+    sauv_path("Where to create the backup", "/", 20, "Select path where to create the backup..."),
+    basename("Backup basename", html_form_input::text, "", 10)
 {
     static const char* sect_archive = "archive";
 
-    deroule.add_section(sect_archive, "Archive Creation");
+    deroule.add_section(sect_archive, "Backup Creation");
     deroule.set_active_section(0);
 
     fs_root.set_select_mode(html_form_input_file::select_dir);

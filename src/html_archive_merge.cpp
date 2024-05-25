@@ -41,16 +41,16 @@ using namespace std;
 
 html_archive_merge::html_archive_merge():
     form("Update"),
-    fs("Resulting archive"),
-    sauv_path("Where to create the archive", "/", 20, "Select directory where to create the archive..."),
-    basename("Archive basename", html_form_input::text, "", 10),
-    reference("Archive of reference")
+    fs(""),
+    sauv_path("Where to create the backup", "/", 20, "Select directory where to create the backup..."),
+    basename("Backup Basename", html_form_input::text, "", 10),
+    reference("")
 {
     static const char* sect_archive = "archive";
     static const char* sect_ref = "reference";
 
-    deroule.add_section(sect_archive, "Archive Merging");
-    deroule.add_section(sect_ref, "Reference Archive");
+    deroule.add_section(sect_archive, "Backup Merging");
+    deroule.add_section(sect_ref, "Backup of Reference");
     deroule.set_active_section(0);
 
     sauv_path.set_select_mode(html_form_input_file::select_dir);
