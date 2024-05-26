@@ -86,4 +86,6 @@ extern std::string webdar_tools_to_canonical_case(const std::string & ch);
 extern std::string webdar_tools_decode_urlencoded(const std::string & ch);
 extern std::string webdar_tools_get_title(const std::string & sessname, const std::string & status);
 
+extern std::string webdar_tools_html_display(const std::string & arg);
+
 #endif

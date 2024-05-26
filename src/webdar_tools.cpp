@@ -250,3 +250,28 @@ string webdar_tools_get_title(const string & sessname, const string & status)
 
     return ret;
 }
+
+
+string webdar_tools_html_display(const std::string & arg)
+{
+    string ret;
+    string::const_iterator it = arg.begin();
+
+    while(it != arg.end())
+    {
+	switch(*it)
+	{
+	case '<':
+	    ret += "&lt;";
+	    break;
+	case '>':
+	    ret += "&gt";
+	    break;
+	default:
+	    ret += *it;
+	}
+	++it;
+    }
+
+    return ret;
+}

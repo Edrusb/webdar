@@ -185,7 +185,7 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 	if(x_type == "checkbox")
 	    ret += "checked ";
 	else
-	    ret += "value=\"" + x_init +"\" ";
+	    ret += "value=\"" + webdar_tools_html_display(x_init) +"\" ";
     }
     if(x_size != "")
 	ret += "size=\"" + x_size + "\" ";
