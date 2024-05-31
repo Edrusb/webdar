@@ -35,12 +35,12 @@ extern "C"
 
 
     //
-#include "html_filename_mask.hpp"
+#include "html_form_filename_mask.hpp"
 
 using namespace std;
 
 
-html_filename_mask::html_filename_mask():
+html_form_filename_mask::html_form_filename_mask():
     fs(""),
     mask_type("Mask Type",
 	      "unused_event"),
@@ -80,7 +80,7 @@ html_filename_mask::html_filename_mask():
 }
 
 
-unique_ptr<libdar::mask> html_filename_mask::get_mask() const
+unique_ptr<libdar::mask> html_form_filename_mask::get_mask() const
 {
     bool neg = negate.get_value_as_bool();
     bool casesensit = casesensitivity.get_value_as_bool();
@@ -119,7 +119,7 @@ unique_ptr<libdar::mask> html_filename_mask::get_mask() const
 }
 
 
-string html_filename_mask::inherited_get_body_part(const chemin & path,
+string html_form_filename_mask::inherited_get_body_part(const chemin & path,
 						   const request & req)
 {
     return get_body_part_from_all_children(path, req);

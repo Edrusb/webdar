@@ -21,8 +21,8 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
-#ifndef HTML_FILENAME_MASK_HPP
-#define HTML_FILENAME_MASK_HPP
+#ifndef HTML_FORM_FILENAME_MASK_HPP
+#define HTML_FORM_FILENAME_MASK_HPP
 
     // C system header files
 extern "C"
@@ -41,7 +41,7 @@ extern "C"
 #include "html_form_select.hpp"
 
 
-    /// class html_filename_mask provide mean to setup libdar::mask component for filename filtering
+    /// class html_form_filename_mask provide mean to setup libdar::mask component for filename filtering
 
     /// this html components is consitued of:
     ///
@@ -63,21 +63,22 @@ extern "C"
     /// |             +----------------------------+        |
     /// +---------------------------------------------------+
     ///
-    /// \note: this component does not include the html_form
-    /// but must have such component as parent or ancestor for
-    /// validation to be processed. In particular if used inside
-    /// other components like *and*, *not* or *or* components.
+    /// \note: this component does must have an html_form object
+    /// as parent or ancestor for validation to be processed and
+    /// changes to be recorded. Avoiding including the html_form
+    /// in that component let it be part of more complex masks
+    /// like *and* and *or* combinasons.
 
 
-class html_filename_mask : public html_mask
+class html_form_filename_mask : public html_mask
 {
 public:
-    html_filename_mask();
-    html_filename_mask(const html_filename_mask & ref) = default;
-    html_filename_mask(html_filename_mask && ref) noexcept = default;
-    html_filename_mask & operator = (const html_filename_mask & ref) = default;
-    html_filename_mask & operator = (html_filename_mask && ref) noexcept = default;
-    ~html_filename_mask() = default;
+    html_form_filename_mask();
+    html_form_filename_mask(const html_form_filename_mask & ref) = default;
+    html_form_filename_mask(html_form_filename_mask && ref) noexcept = default;
+    html_form_filename_mask & operator = (const html_form_filename_mask & ref) = default;
+    html_form_filename_mask & operator = (html_form_filename_mask && ref) noexcept = default;
+    ~html_form_filename_mask() = default;
 
 	/// inherited from html_mask
     std::unique_ptr<libdar::mask> get_mask() const override;
