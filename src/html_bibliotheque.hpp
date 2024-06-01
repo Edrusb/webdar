@@ -119,7 +119,7 @@ private:
     std::map<category, referable_list> content;
 
     html_tabs tabs;
-    static constexpr unsigned int numtabs = EOE;
+    static constexpr unsigned int numtabs = EOE; // EOE for End Of Enumeration
     html_text text[numtabs];
 
     void initialize_content_and_indexes();
