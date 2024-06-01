@@ -146,7 +146,7 @@ string html_table::inherited_get_body_part(const chemin & path,
 
 	ret += "</td>\n";
 
-	    /// counting cell to known when to close and start a new raw
+	    /// counting cell to known when to close and start a new row
 
 	++line_length;
 	if(line_length == dim_x)

@@ -41,6 +41,12 @@ extern "C"
 
     /// html component implementing the html table structure
 
+    /// this class inherit from html_level::adopt_static_html()
+    /// and body_builder::adopt() methods. The adopted objects
+    /// by either of these forms are placed one by one in a cell
+    /// from the top row to the bottom and in each row from the
+    /// left most cell to the right most cell.
+
 class html_table: public html_level
 {
 public:
@@ -60,10 +66,10 @@ public:
 	/// clear apreviously assigned css object to the title row
     void set_css_class_first_row();
 
-	/// assigned to all celles except those of the first raw if set_css_cells_first_raw was set
+	/// assigned to all cells except those of the first raw if set_css_cells_first_raw was set
     void set_css_class_cells(const std::string & val);
 
-	/// clear apreviously assigned css object to the title raw
+	/// clears a previously assigned css object to the non-title rows
     void set_css_class_cells();
 
 	/// clear table content
