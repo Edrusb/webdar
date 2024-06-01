@@ -78,7 +78,7 @@ public:
 
 	/// change the name of the event generated when this control changes
     void set_change_event_name(const std::string & name);
-    std::string get_event_name() const { modif_changed.empty()? changed: modif_changed; };
+    std::string get_event_name() const { return modif_change.empty()? changed: modif_change; };
 
 protected:
 	/// inherited from body_builder
