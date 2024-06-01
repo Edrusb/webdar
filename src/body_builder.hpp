@@ -134,14 +134,14 @@ public:
         /// of dependant objects using one another to provide a body_part (see get_body_part() method).
         /// this tree is automatically broken when an object is destroyed in the way that all recorded
         /// children exists (the recorded addresses always points to real existing objects)
-    void adopt(body_builder *obj);
+    void adopt(body_builder* obj);
 
         /// Common interface for class that have to ask other body_builder to provide their own body_part()
         ///
         /// this call is not mandatory, it is the opposite action of adopt(). After this call
         /// the given object is no more sollicited to build a body part.
         /// \note if the requested object is not known an exception is thrown
-    void foresake(body_builder *obj);
+    void foresake(body_builder* obj);
 
         /// ask for the object to become visible in HTML page or temporarily hidden
 
