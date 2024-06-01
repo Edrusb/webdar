@@ -101,7 +101,7 @@ void html_form_input::set_value(const string & val)
     if(x_init != val)
     {
 	x_init = val;
-	act(changed);
+	my_act();
 	my_body_part_has_changed();
 	value_set = true;
     }
@@ -112,7 +112,7 @@ void html_form_input::set_value_as_bool(bool val)
     if(val != get_value_as_bool())
     {
 	x_init = val ? "x" : "";
-	act(changed);
+	my_act();
 	my_body_part_has_changed();
 	value_set = true;
     }
@@ -123,7 +123,7 @@ void html_form_input::set_enabled(bool val)
     if(enabled != val)
     {
 	enabled = val;
-	act(changed);
+	my_act();
 	my_body_part_has_changed();
 	value_set = true;
     }
@@ -162,12 +162,7 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 
 	if(x_init != old)
 	{
-	    act(changed);
-	    if(modif_change != "")
-		act(modif_change);
-		// yes we have to trigger both events,
-		// the default, on which some objects might
-		// have registered and the modifed one too.
+	    my_act();
 	    my_body_part_has_changed();
 	}
     }

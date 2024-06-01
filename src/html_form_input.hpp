@@ -104,6 +104,8 @@ private:
 
     std::string modif_change; //< name of the event "changed" to use, if set to an empty string default behavior is used
 
+    void my_act() { act(modif_change.empty() ? changed: modif_change); };
+
     static std::string string_for_type(input_type type);
 };
 
