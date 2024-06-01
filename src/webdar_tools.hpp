@@ -46,7 +46,8 @@ template <class T> std::string webdar_tools_convert_to_string(T val)
     /// \param[in] a first member of the comparison
     /// \param[in] b second member of the comparision
     /// \param[out] result result of the comparision (true if a < b, false if b < a)
-    /// \return true if a < b or b < a else false
+    /// \return true if either a < b or b < a, else false is returned and 'result' is
+    ///  undefined
 template <class T> bool webdar_tools_semi_less_than(T a, T b, bool & result)
 {
     if(a < b)
@@ -59,7 +60,7 @@ template <class T> bool webdar_tools_semi_less_than(T a, T b, bool & result)
 	result = false;
 	return true;
     }
-    return false; // assu
+    return false;
 }
 
 template <class T> void webdar_tools_concat_vectors(std::vector<T> & op1,
