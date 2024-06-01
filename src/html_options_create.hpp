@@ -52,6 +52,7 @@ extern "C"
 #include "html_text.hpp"
 #include "html_entrepot.hpp"
 #include "html_web_user_interaction.hpp"
+#include "html_form_bool_mask.hpp"
 
     /// html component used for the user to provide the parameters to create a new archive
 
@@ -101,6 +102,8 @@ private:
     html_form form_shown;
 
     html_form form_perimeter;
+
+    html_form_bool_mask filename_mask;
 
     html_form form_reading;
 

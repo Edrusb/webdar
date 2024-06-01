@@ -174,6 +174,7 @@ html_options_create::html_options_create():
     static const char* sect_gen = "archive_gen_opt";
     static const char* sect_show = "archive show opt";
     static const char* sect_perimeter = "backup perimeter";
+    static const char* sect_mask = "backup filename masks";
     static const char* sect_source = "source reading mode";
     static const char* sect_compr = "compression";
     static const char* sect_slice = "slicing";
@@ -185,6 +186,7 @@ html_options_create::html_options_create():
     deroule.add_section(sect_gen, "Backup General Options");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_perimeter, "What to take into consideration for backup");
+    deroule.add_section(sect_mask, "Filename based filtering");
     deroule.add_section(sect_source, "Source file reading mode");
     deroule.add_section(sect_compr, "Compression options");
     deroule.add_section(sect_slice, "Slicing options");
@@ -245,6 +247,9 @@ html_options_create::html_options_create():
     perimeter_fs.adopt(&cache_directory_tagging);
     form_perimeter.adopt(&perimeter_fs);
     deroule.adopt_in_section(sect_perimeter, &form_perimeter);
+
+	// masks
+    deroule.adopt_in_section(sect_mask, &filename_mask);
 
 	// source data
     fs_alter_atime.adopt(&alter_atime);
@@ -374,6 +379,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_ignore_unknown_inode_type(ignore_unknown_inode_type.get_value_as_bool());
     ret.set_execute(execute.get_value());
     ret.set_entrepot(entrep.get_entrepot(webui));
+    ret.set_selection(*(filename_mask.get_mask()));
 
     return ret;
 }
