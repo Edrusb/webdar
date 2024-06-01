@@ -205,10 +205,17 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 
 void html_form_input::set_change_event_name(const string & name)
 {
-    if(modif_change != "")
-	throw WEBDAR_BUG; // can only be used once, as unregistering an event name is not available
+    if(name == "")
+	throw WEBDAR_BUG;
+	// we expect non-empty string as valid event name
+
+    if(modif_change.empty())
+	modif_change = changed;
+
+	// leveraging new featur from events class
+	// all registered actors are kept:
+    rename_name(modif_change, name);
     modif_change = name;
-    register_name(modif_change); // this is in addition to the default event name
 }
 
 string html_form_input::string_for_type(input_type type)

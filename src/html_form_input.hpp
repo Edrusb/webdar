@@ -77,6 +77,13 @@ public:
     void set_enabled(bool val);
 
 	/// change the name of the event generated when this control changes
+
+	/// \param[in] name must not be an empty string
+	/// \note all actors already recorded on the changed event will be kept
+	/// registered on this new event name. The old event will no more be triggered
+	/// In consequences actor should be aware of the event name change asked to this
+	/// component here.
+	/// \note this call can be used any number of time, all actors will be kept
     void set_change_event_name(const std::string & name);
     std::string get_event_name() const { return modif_change.empty()? changed: modif_change; };
 
