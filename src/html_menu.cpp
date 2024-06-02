@@ -239,7 +239,7 @@ void html_menu::new_css_library_available()
     tmp_set.css_width("8em", true, true);
     tmp_set.css_padding("0.5em", true);
     tmp_set.css_margin("0.2em", true);
-    tmp_set.css_text_align(css::al_center, true);
+    tmp_set.css_text_h_align(css::al_center, true);
 
 	// copy common aspects to box_on, box_off and box_void
     box_off.css_inherit_from(tmp_set);

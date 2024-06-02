@@ -353,7 +353,7 @@ void html_dir_tree::new_css_library_available()
 	tmpcss.css_float_clear(css::fc_both, true);
 	tmpcss.css_width("2em", false, true);
 	tmpcss.css_height("1em", false, true);
-	tmpcss.css_text_align(css::al_center, true);
+	tmpcss.css_text_h_align(css::al_center, true);
 	tmpcss.css_margin_right("1em", true);
 	tmpcss.css_border_width(css::bd_all, css::bd_medium, true);
 	tmpcss.css_border_style(css::bd_all, css::bd_solid, true);
@@ -365,7 +365,7 @@ void html_dir_tree::new_css_library_available()
 	define_css_class_in_library(name_css_nosub, tmpcss);
 
 	tmpcss.clear();
-	tmpcss.css_text_align(css::al_left);
+	tmpcss.css_text_h_align(css::al_left);
 	tmpcss.css_text_decoration(css::dc_none);
 	tmpclass.set_value(tmpcss);
 	tmpclass.set_selector(css_class::link, tmpcss);
@@ -390,7 +390,7 @@ void html_dir_tree::new_css_library_available()
 	define_css_class_in_library(name_css_forsubdirs, tmpcss);
 
 	tmpcss.clear();
-	tmpcss.css_text_align(css::al_center);
+	tmpcss.css_text_h_align(css::al_center);
 	tmpcss.css_border_width(css::bd_all, css::bd_thin);
 	tmpcss.css_border_style(css::bd_all, css::bd_dashed);
 	tmpcss.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);

@@ -203,15 +203,33 @@ public:
 
 	// text
 
-    enum align { al_right,
-		 al_left,
-		 al_center,
-		 al_justify };
+    enum h_align
+    {
+	al_right,
+	al_left,
+	al_center,
+	al_justify
+    };
 
-    enum decoration { dc_underline,
-		      dc_overline,
-		      dc_line_through,
-		      dc_none };
+    enum v_align
+    {
+	al_top,
+	al_middle,
+	al_bottom,
+	al_baseline,
+	al_sub,
+	al_super,
+	al_text_top,
+	al_text_bottom
+    };
+
+    enum decoration
+    {
+	dc_underline,
+	dc_overline,
+	dc_line_through,
+	dc_none
+    };
 
     void css_font_style_italic(bool inherit=false);
     void css_font_style_normal(bool inherit=false);
@@ -219,8 +237,10 @@ public:
     void css_font_weight_bold(bool inherit=false);
     void css_font_weight_normal(bool inherit=false);
     void css_font_weight() { font_weight.clear(); };
-    void css_text_align(align val, bool inherit=false);
-    void css_text_align() { text_align.clear(); };
+    void css_text_h_align(h_align val, bool inherit=false);
+    void css_text_h_align() { text_h_align.clear(); };
+    void css_text_v_align(v_align val, bool inherit=false);
+    void css_text_v_align() { text_v_align.clear(); };
     void css_text_decoration(decoration val, bool inherit=false);
     void css_text_decoration() { text_deco.clear(); };
 
@@ -352,7 +372,8 @@ private:
 	// text properties
     css_property font_style;
     css_property font_weight;
-    css_property text_align;
+    css_property text_h_align;
+    css_property text_v_align;
     css_property text_deco;
 
 	// border properties

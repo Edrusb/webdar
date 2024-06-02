@@ -79,7 +79,7 @@ choose::choose(const string & user):
     tmpcss.css_background_color(COLOR_BACK);
     tmpcss.css_color(COLOR_TEXT);
     tmpcss.css_padding("1em");
-    tmpcss.css_text_align(css::al_center);
+    tmpcss.css_text_h_align(css::al_center);
     page.define_css_class_in_library(css_class_page, tmpcss);
     page.add_css_class(css_class_page);
 
@@ -128,7 +128,7 @@ choose::choose(const string & user):
 
     tmpcss.clear();
     tmpcss.css_color(RED);
-    tmpcss.css_text_align(css::al_center);
+    tmpcss.css_text_h_align(css::al_center);
     tmpcss.css_font_weight_bold();
     page.define_css_class_in_library(css_class_error_msg, tmpcss);
 
@@ -151,7 +151,7 @@ choose::choose(const string & user):
     tmpcss.clear();
     tmpcss.css_background_color(COLOR_BACK);
     tmpcss.css_color(COLOR_TEXT, true);
-    tmpcss.css_text_align(css::al_center);
+    tmpcss.css_text_h_align(css::al_center);
     confirm.define_css_class_in_library(css_class_page, tmpcss);
     confirm.add_css_class(css_class_page);
 
@@ -161,7 +161,7 @@ choose::choose(const string & user):
     ctable.add_css_class(css_class_table);
 
     tmpcss.clear();
-    tmpcss.css_text_align(css::al_left, true);
+    tmpcss.css_text_h_align(css::al_left, true);
     confirm.define_css_class_in_library(css_class_form, tmpcss);
     confirmed.add_css_class(css_class_form);
 

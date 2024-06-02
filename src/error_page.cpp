@@ -73,7 +73,7 @@ error_page::error_page(unsigned int status_code,
     mystyle.css_font_weight_bold();
     mystyle.css_color(WHITE);
     mystyle.css_background_color(RED);
-    mystyle.css_text_align(css::al_center);
+    mystyle.css_text_h_align(css::al_center);
     mystyle.css_padding("1em");
     mystyle.css_float(css::fl_left);
     mystyle.css_border_width(css::bd_all, css::bd_thick);

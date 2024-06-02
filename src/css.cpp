@@ -73,7 +73,8 @@ void css::clear()
     padding_left.clear();
     font_style.clear();
     font_weight.clear();
-    text_align.clear();
+    text_h_align.clear();
+    text_v_align.clear();
     text_deco.clear();
     border_width.clear();
     border_color.clear();
@@ -484,7 +485,7 @@ void css::css_font_weight_normal(bool inherit)
     css_updated(inherit);
 }
 
-void css::css_text_align(align val, bool inherit)
+void css::css_text_h_align(h_align val, bool inherit)
 {
     string arg = " text-align: ";
     switch(val)
@@ -504,8 +505,45 @@ void css::css_text_align(align val, bool inherit)
     default:
 	throw WEBDAR_BUG;
     }
-    text_align.set_value(arg);
-    text_align.set_inheritance(inherit);
+    text_h_align.set_value(arg);
+    text_h_align.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
+void css::css_text_v_align(v_align val, bool inherit)
+{
+    string arg = " vertical-align: ";
+    switch(val)
+    {
+    case al_top:
+	arg += "top;";
+	break;
+    case al_middle:
+	arg += "middle;";
+	break;
+    case al_bottom:
+	arg += "bottom;";
+	break;
+    case al_baseline:
+	arg += "baseline;";
+	break;
+    case al_sub:
+	arg += "sub;";
+	break;
+    case al_super:
+	arg += "super;";
+	break;
+    case al_text_top:
+	arg += "text-top;";
+	break;
+    case al_text_bottom:
+	arg += "text-bottom;";
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+    text_v_align.set_value(arg);
+    text_v_align.set_inheritance(inherit);
     css_updated(inherit);
 }
 
@@ -712,7 +750,8 @@ void css::css_inherit_from(const css & ref, bool all, bool force)
     padding_left.inherit_from(ref.padding_left, all, force);
     font_style.inherit_from(ref.font_style, all, force);
     font_weight.inherit_from(ref.font_weight, all, force);
-    text_align.inherit_from(ref.text_align, all, force);
+    text_h_align.inherit_from(ref.text_h_align, all, force);
+    text_v_align.inherit_from(ref.text_v_align, all, force);
     text_deco.inherit_from(ref.text_deco, all, force);
     border_width.inherit_from(ref.border_width, all, force);
     border_color.inherit_from(ref.border_color, all, force);
@@ -791,7 +830,8 @@ string css::css_get_raw_string() const
     ret += padding_left.get_value();
     ret += font_style.get_value();
     ret += font_weight.get_value();
-    ret += text_align.get_value();
+    ret += text_h_align.get_value();
+    ret += text_v_align.get_value();
     ret += text_deco.get_value();
     ret += border_width.get_value();
     ret += border_color.get_value();

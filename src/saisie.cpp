@@ -553,12 +553,12 @@ void saisie::new_css_library_available()
     tmp.css_width("90%", true);
     tmp.css_margin_bottom("1em");
     tmp.css_margin_top("1em");
-    tmp.css_text_align(css::al_center);
+    tmp.css_text_h_align(css::al_center);
     csslib->add(css_class_license, tmp);
     around_licensing.add_css_class(css_class_license);
 
     tmp.clear();
-    tmp.css_text_align(css::al_center, true);
+    tmp.css_text_h_align(css::al_center, true);
     tmp.css_margin("2em", true);
     csslib->add(css_class_text, tmp);
 

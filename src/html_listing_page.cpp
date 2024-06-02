@@ -125,7 +125,7 @@ void html_listing_page::new_css_library_available()
     tmp.css_padding_bottom("1em");
     tmp.css_font_weight_bold();
     tmp.css_font_style_italic();
-    tmp.css_text_align(css::al_center);
+    tmp.css_text_h_align(css::al_center);
     tmp.css_border_width(css::bd_all, css::bd_medium);
     tmp.css_border_style(css::bd_all, css::bd_solid);
     tmp.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);

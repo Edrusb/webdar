@@ -84,7 +84,7 @@ namespace webdar_css_style
                 box_off.css_border_width(css::bd_all, css::bd_medium, true);
                 box_off.css_padding("0.5em", true);
                 box_off.css_margin("0.2em", true);
-                box_off.css_text_align(css::al_center, true);
+                box_off.css_text_h_align(css::al_center, true);
 
                     // copy common aspects to box_off and box_void
                 box_on.css_inherit_from(box_off);

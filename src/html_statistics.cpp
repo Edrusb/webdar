@@ -101,7 +101,7 @@ void html_statistics::new_css_library_available()
 	    throw WEBDAR_BUG;
     }
 
-    css_right.css_text_align(css::al_right);
+    css_right.css_text_h_align(css::al_right);
     css_bold.css_font_weight_bold();
 
     csslib->add(css_right_name, css_right);

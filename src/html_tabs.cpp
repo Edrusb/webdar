@@ -209,7 +209,7 @@ void html_tabs::new_css_library_available()
 	tmp.css_margin_right("0.2em", true);
 	tmp.css_margin_left("0.2em", true);
 	tmp.css_margin_bottom("0", true);
-	tmp.css_text_align(css::al_center, true);
+	tmp.css_text_h_align(css::al_center, true);
 	tmp.css_corner_radius("20%", "20%", "0", "0");
 	csslib->add(tab_on, tmp);
 
