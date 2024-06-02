@@ -111,12 +111,6 @@ private:
     {
 	entry() { mask.reset(); del.reset(); };
 
-	    /// obtain the ownership of all objects pointed by the unique_ptr of the entry provided in argument
-
-	    /// \note after the call, the argument ref does not hold any object, and the object previously
-	    /// held by "this" are deleted in order to hold
-	entry && vampire(entry & ref) &&;
-
 	std::unique_ptr<html_text> logic;
 	std::unique_ptr<html_mask> mask;
 	std::unique_ptr<html_form_input> del;

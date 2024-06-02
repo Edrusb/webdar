@@ -180,14 +180,6 @@ void html_form_bool_mask::new_css_library_available()
     }
 }
 
-html_form_bool_mask::entry && html_form_bool_mask::entry::vampire(entry & ref) &&
-{
-    logic.reset(ref.logic.release());
-    mask.reset(ref.mask.release());
-    del.reset(ref.del.release());
-    return std::move(*this);
-}
-
 void html_form_bool_mask::add_mask(const string & mask_type)
 {
     entry new_mask;
@@ -228,7 +220,7 @@ void html_form_bool_mask::add_mask(const string & mask_type)
     table.adopt(&(*new_mask.mask));
     table.adopt(&(*new_mask.del));
     list<entry>::iterator pos = table_content.insert(table_content.end(),
-						     entry().vampire(new_mask));
+						     std::move(new_mask));
     del_event_to_content[event_name] = pos;
     update_table_content_logic();
 }
