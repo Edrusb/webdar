@@ -79,7 +79,9 @@ html_options_compare::html_options_compare():
 	// building adoption tree
 
     static const char* sect_opt = "options";
+    static const char* sect_mask = "mask";
     deroule.add_section(sect_opt, "Comparison options");
+    deroule.add_section(sect_mask, "Filename based filtering");
 
     fs.adopt(&info_details);
     fs.adopt(&what_to_check);
@@ -90,6 +92,7 @@ html_options_compare::html_options_compare():
     fs.adopt(&compare_symlink_date);
     form.adopt(&fs);
     deroule.adopt_in_section(sect_opt, &form);
+    deroule.adopt_in_section(sect_mask, &filename_mask);
     adopt(&deroule);
 
 	// css
@@ -108,6 +111,7 @@ libdar::archive_options_diff html_options_compare::get_options() const
     ret.set_display_skipped(display_skipped.get_value_as_bool());
     ret.set_hourshift(libdar::infinint(webdar_tools_convert_to_int(hourshift.get_value())));
     ret.set_compare_symlink_date(compare_symlink_date.get_value_as_bool());
+    ret.set_selection(*(filename_mask.get_mask()));
 
     return ret;
 }
