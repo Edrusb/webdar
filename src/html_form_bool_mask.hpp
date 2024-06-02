@@ -44,6 +44,7 @@ extern "C"
 #include "html_table.hpp"
 #include "html_form_input.hpp"
 #include "html_form.hpp"
+#include "html_text.hpp"
 
 
     /// class html_form_bool_mask provide mean to combines with OR and AND different html_masks
@@ -92,19 +93,31 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 private:
     static constexpr const char* new_mask_to_add = "new_mask";
-    static constexpr const char* and_op = "and";
-    static constexpr const char* or_op = "or";
+    static constexpr const char* and_op = "and_op";
+    static constexpr const char* or_op = "or_op";
     static constexpr const char* type_undefined = "undefined";
     static constexpr const char* type_filename = "filename";
     static constexpr const char* type_bool = "bool";
 
+    static constexpr const char* bool_changed_event = "bool_changed";
+    static constexpr const char* css_class_bool_text = "html_form_bool_mask_bool_text";
+
     struct entry
     {
 	entry() { mask.reset(); del.reset(); };
-	entry && vampire(entry & ref) && { mask.reset(ref.mask.release()); del.reset(ref.del.release()); return std::move(*this); };
 
+	    /// obtain the ownership of all objects pointed by the unique_ptr of the entry provided in argument
+
+	    /// \note after the call, the argument ref does not hold any object, and the object previously
+	    /// held by "this" are deleted in order to hold
+	entry && vampire(entry & ref) &&;
+
+	std::unique_ptr<html_text> logic;
 	std::unique_ptr<html_mask> mask;
 	std::unique_ptr<html_form_input> del;
     };
@@ -120,11 +133,14 @@ private:
     unsigned int event_del_count;
     std::deque<std::string> events_to_delete; ///< components that will be deleted once the inherited_get_body_part will have finished
 	/// \note cannot delete an object (mask and del) from an on_event() actor method triggered by the object itself
+    std::string current_bool_mode; ///< currently displayed logic in table
+    unsigned int current_table_size; ///< size at which the displayed logic was last done
 
     void add_mask(const std::string & mask_type);
     void del_mask(const std::string & event_name);
     void purge_to_delete();
-
+    std::string bool_op_to_name(const std::string & op);
+    void update_table_content_logic(); // update labels in the first column in regard to the current AND/OR selected logic
 };
 
 #endif
