@@ -40,6 +40,7 @@ extern "C"
 #include "html_form.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_derouleur.hpp"
+#include "html_form_bool_mask.hpp"
 
     /// html components used for the user to provide parameters of libdar archive restoration operation
 
@@ -68,7 +69,6 @@ private:
     html_derouleur deroule;
     html_form form;
     html_form_fieldset fs;
-	// selection (filter)
 	// subtree (filter)
     html_form_input warn_over;
     html_form_input info_details;
@@ -83,6 +83,7 @@ private:
 	// overwriting_rules (policy)
     html_form_input only_deleted;
     html_form_input ignore_deleted;
+    html_form_bool_mask filename_mask;
 };
 
 #endif

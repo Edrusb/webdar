@@ -116,7 +116,9 @@ html_options_extract::html_options_extract():
 	// build the adoption tree
 
     static const char* sect_opt = "options";
+    static const char* sect_mask = "mask";
     deroule.add_section(sect_opt, "Restoration options");
+    deroule.add_section(sect_mask, "Filename based filtering");
 
     fs.adopt(&warn_over);
     fs.adopt(&info_details);
@@ -131,6 +133,7 @@ html_options_extract::html_options_extract():
     fs.adopt(&ignore_deleted);
     form.adopt(&fs);
     deroule.adopt_in_section(sect_opt, &form);
+    deroule.adopt_in_section(sect_mask, &filename_mask);
     adopt(&deroule);
 
 	// css
@@ -168,6 +171,7 @@ libdar::archive_options_extract html_options_extract::get_options() const
 	throw WEBDAR_BUG;
     ret.set_only_deleted(only_deleted.get_value_as_bool());
     ret.set_ignore_deleted(ignore_deleted.get_value_as_bool());
+    ret.set_selection(*(filename_mask.get_mask()));
 
     return ret;
 }
