@@ -141,6 +141,7 @@ html_options_merge::html_options_merge():
     static const char* sect_aux = "auxiliary";
     static const char* sect_show = "show";
     static const char* sect_filter = "filter";
+    static const char* sect_mask = "mask";
     static const char* sect_compr = "slicing";
     static const char* sect_slice = "compression";
     static const char* sect_cipher = "ciphering";
@@ -149,7 +150,8 @@ html_options_merge::html_options_merge():
     deroule.add_section(sect_general, "General Merging Options");
     deroule.add_section(sect_aux, "Auxiliary Backup of Reference");
     deroule.add_section(sect_show, "What to show during the operation");
-    deroule.add_section(sect_filter, "Filtering Options");
+    deroule.add_section(sect_filter, "What to take into consideration for Merging");
+    deroule.add_section(sect_mask, "Filename based filtering");
     deroule.add_section(sect_compr, "Compression Options");
     deroule.add_section(sect_slice, "Slicing Options");
     deroule.add_section(sect_cipher, "Encryption Options");
@@ -188,6 +190,8 @@ html_options_merge::html_options_merge():
     fs_perimeter.adopt(&decremental_mode);
     form_perimeter.adopt(&fs_perimeter);
     deroule.adopt_in_section(sect_filter, &form_perimeter);
+
+    deroule.adopt_in_section(sect_mask, &filename_mask);
 
     fs_compr.adopt(&keep_compressed);
     fs_compr.adopt(&compression);
@@ -352,6 +356,7 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
     ret.set_display_skipped(display_skipped.get_value_as_bool());
     ret.set_empty_dir(empty_dir.get_value_as_bool());
     ret.set_decremental_mode(decremental_mode.get_value_as_bool());
+    ret.set_selection(*(filename_mask.get_mask()));
     ret.set_keep_compressed(keep_compressed.get_value_as_bool());
     ret.set_compression(compression.get_value());
     ret.set_compression_level(webdar_tools_convert_to_int(compression_level.get_value()));

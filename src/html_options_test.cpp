@@ -63,13 +63,16 @@ html_options_test::html_options_test():
 	// building HTML structure
 
     static const char* sect_opt = "options";
+    static const char* sect_mask = "mask";
     deroule.add_section(sect_opt, "Testing options");
+    deroule.add_section(sect_mask, "Filename based filtering");
 
     fs.adopt(&info_details);
     fs.adopt(&empty);
     fs.adopt(&display_skipped);
     form.adopt(&fs);
     deroule.adopt_in_section(sect_opt, &form);
+    deroule.adopt_in_section(sect_mask, &filename_mask);
     adopt(&deroule);
 
 	// css
@@ -84,6 +87,7 @@ libdar::archive_options_test html_options_test::get_options() const
     ret.set_display_treated(info_details.get_value_as_bool(), false);
     ret.set_empty(empty.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
+    ret.set_selection(*(filename_mask.get_mask()));
 
     return ret;
 }
