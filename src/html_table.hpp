@@ -63,8 +63,14 @@ public:
 	/// define a specific css object for the _cells_ first row
     void set_css_class_first_row(const std::string & val);
 
-	/// clear apreviously assigned css object to the title row
+	/// clear a previously assigned css object to the title row
     void set_css_class_first_row();
+
+	/// define a specific css class for the _cells_ first column
+    void set_css_class_first_column(const std::string & val);
+
+	/// clears a previously assigned css object to the first column
+    void set_css_class_first_column();
 
 	/// assigned to all cells except those of the first raw if set_css_cells_first_raw was set
     void set_css_class_cells(const std::string & val);
@@ -85,8 +91,10 @@ private:
     unsigned int dim_x;
     std::string border_collapsed;
     bool cells_title_set;
+    bool cells_first_column_set;
     std::string css_class_title;
     std::string css_class_cells;
+    std::string css_class_column1;
 };
 
 #endif

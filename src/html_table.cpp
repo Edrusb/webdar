@@ -79,6 +79,27 @@ void html_table::set_css_class_first_row()
     }
 }
 
+
+void html_table::set_css_class_first_column(const std::string & val)
+{
+    if(!cells_first_column_set || css_class_column1 != val)
+    {
+	cells_first_column_set = true;
+	css_class_column1 = val;
+	my_body_part_has_changed();
+    }
+}
+
+void html_table::set_css_class_first_column()
+{
+    if(cells_first_column_set)
+    {
+	cells_first_column_set = false;
+	css_class_column1 = "";
+	my_body_part_has_changed();
+    }
+}
+
 void html_table::set_css_class_cells(const string & val)
 {
     if(css_class_cells != val)
@@ -106,6 +127,7 @@ string html_table::inherited_get_body_part(const chemin & path,
     unsigned int line_length = 0;
     bool first_line = true;
     string table_css = "";
+    string class_set;
 
     if(border_collapsed != "")
 	table_css = "style=\"" + border_collapsed + "\"";
@@ -127,16 +149,32 @@ string html_table::inherited_get_body_part(const chemin & path,
 
 	    /// the <td> ... cell ... </td>
 	ret += "<td";
+	class_set = "";
+
+	    // first line
 	if(first_line)
 	{
 	    if(!css_class_title.empty())
-		ret += " class=\"" + css_class_title +"\"";
+		class_set = css_class_title;
 	}
 	else
 	{
 	    if(!css_class_cells.empty())
-		ret += " class=\"" + css_class_cells +"\"";
+		class_set = css_class_cells;
 	}
+
+	    // first column
+	if(line_length == 0 && cells_first_column_set && ! css_class_column1.empty())
+	{
+	    if(class_set.empty())
+		class_set = css_class_column1;
+	    else
+		class_set += " " + css_class_column1;
+	}
+
+	if(!class_set.empty())
+	    ret += " class=\"" + class_set + "\"";
+
 	ret += ">\n";
 
 	if(bdl.obj != nullptr)
