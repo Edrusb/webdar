@@ -208,6 +208,7 @@ void html_select_file::on_event(const string & event_name)
 	parentdir1_visible = ! parentdir1_visible;
 	set_parentdir_visible();
 	    // not necessary to call my_body_part_has_changed() as we just changed a child visibility
+	run_thread(run_fill_only);
     }
     else if(event_name == op_createdir)
     {
