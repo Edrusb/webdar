@@ -104,11 +104,10 @@ html_form_input_file::html_form_input_file(const string & label,
 	throw exception_memory();
 }
 
-
 void html_form_input_file::set_change_event_name(const string & name)
 {
+    rename_name(changed_event_name, name);
     changed_event_name = name;
-    register_name(changed_event_name);
 }
 
 void html_form_input_file::set_select_mode(select_mode val)

@@ -76,6 +76,11 @@ public:
     void set_value(const std::string & val) { input.set_value(val); };
 
 	/// change the name of the "changed" event
+
+	/// \note actor registered on the even stay registered to the renamed
+	/// event, they must be aware of this event name change as they will
+	/// be triggered only on the new event name, not the one they would have
+	/// been registered on before the change.
     void set_change_event_name(const std::string & name);
 
 	// relayed from html_select_file
