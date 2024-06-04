@@ -59,6 +59,12 @@ public:
 	/// activate HTML redirection
 	///
 	/// \note if url is set to an empty string redirection is disabled
+	/// \note the change of refresh info does not lead to a body_change
+	/// of the html page, which would break the no refresh request or
+	/// would be useless if referesh was request. This tranparency to the
+	/// body_builder changed status is also used in class saisie to be able
+	/// to get back to that session later when user requests to see the list
+	/// of existing sessions
     void set_refresh_redirection(unsigned int seconds, const std::string & url);
 
 protected:
