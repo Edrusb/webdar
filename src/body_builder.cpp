@@ -44,8 +44,14 @@ const unsigned int NAME_WIDTH = 4;
 body_builder::body_builder(const body_builder & ref)
 {
     clear();
-    if(ref.parent != nullptr || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty())
+    if(ref.parent != nullptr)
         throw WEBDAR_BUG;
+    if(!ref.order.empty())
+	throw WEBDAR_BUG;
+    if(!ref.children.empty())
+	throw WEBDAR_BUG;
+    if(!ref.revert_child.empty())
+	throw WEBDAR_BUG;
     visible = ref.visible;
 	// x_prefix cannot be the same as ref so it stays to the default value
     no_CR = ref.no_CR;
