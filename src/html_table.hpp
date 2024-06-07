@@ -51,7 +51,7 @@ class html_table: public html_level
 {
 public:
     html_table(unsigned int width);
-    html_table(const html_table & ref)  = delete;
+    html_table(const html_table & ref) = delete;
     html_table(html_table && ref) noexcept = delete;
     const html_table & operator = (const html_table & ref) = delete;
     html_table & operator = (html_table && ref) noexcept = delete;
@@ -80,6 +80,9 @@ public:
 
 	/// clear table content
     void clear() { clear_children(); };
+
+	/// get value provided at construction time
+    unsigned int get_width() const { return dim_x; };
 
 protected:
 
