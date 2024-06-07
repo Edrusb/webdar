@@ -65,11 +65,9 @@ extern "C"
     /// |                                                   |
     /// +---------------------------------------------------+
     ///
-    /// \note: this component does must have an html_form object
-    /// as parent or ancestor for validation to be processed and
-    /// changes to be recorded. Avoiding including the html_form
-    /// in that component let it be part of more complex masks
-    /// like *and* and *or* combinasons.
+    /// \note this component includes an html_form by default
+    /// (see constructor argument), but should not when used
+    /// recursively from another html_form_bool_mask
 
 
 class html_form_bool_mask : public html_mask, public actor
