@@ -35,6 +35,7 @@ extern "C"
 #include <memory>
 #include <list>
 #include <map>
+#include <deque>
 
     // webdar headers
 #include "html_mask.hpp"
@@ -81,11 +82,23 @@ public:
     html_form_bool_mask & operator = (html_form_bool_mask && ref) noexcept = default;
     ~html_form_bool_mask() = default;
 
+	/// component that will provided as possible to add in the logic operation of the current mask
+    void add_mask_type(const std::string & label, const html_mask & tobecloned);
+
+	/// add recursion with object of the same configuration as "*this" in the list of available masks
+
+	/// \note if you want other masks to be available recursively this call must be invoked
+	/// after all add_mask_type() with two arguments.
+    void add_mask_myself(const std::string & label);
+
 	/// inherited from html_mask
     std::unique_ptr<libdar::mask> get_mask() const override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
+
+	/// clone() implementation
+    MASK_CLONER_MACRO;
 
 
 protected:
@@ -96,8 +109,6 @@ protected:
 	/// inherited from body_builder
     virtual void new_css_library_available() override;
 
-	/// clone() implementation
-    MASK_CLONER_MACRO;
 
 private:
     static constexpr const char* new_mask_to_add = "new_mask";
@@ -109,6 +120,16 @@ private:
 
     static constexpr const char* bool_changed_event = "bool_changed";
     static constexpr const char* css_class_bool_text = "html_form_bool_mask_bool_text";
+
+    struct available_mask
+    {
+	std::string label;
+	std::unique_ptr<html_mask> mask_type;
+
+	available_mask(const std::string & label,
+		       const html_mask & tobecloned);
+	available_mask(const available_mask &arg);
+    };
 
     struct entry
     {
@@ -124,6 +145,8 @@ private:
     html_table table;
     html_form_select adder;
     html_form papillotte;
+
+    std::deque<available_mask> list_of_mask_types;
 
     std::list<entry> table_content;
     std::map<std::string, std::list<entry>::iterator> del_event_to_content;

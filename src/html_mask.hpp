@@ -32,12 +32,12 @@ extern "C"
 
     // C++ system header files
 #include <memory>
+#include <dar/libdar.hpp>
 
     // webdar headers
 #include "body_builder.hpp"
 
     /// class html_mask defines the interface of all masks
-
 
 class html_mask : public body_builder
 {
@@ -52,12 +52,14 @@ public:
 	/// obtain the mask for libdar
     virtual std::unique_ptr<libdar::mask> get_mask() const = 0;
 
-protected:
 
 	/// need to be implemented in *each* inherited class
 
 	/// \note this can be done using the MASK_CLONER_MACRO
     virtual std::unique_ptr<html_mask> clone() const = 0;
+
+protected:
+
 };
 
 template <class T> std::unique_ptr<html_mask> mask_cloner(const T & ceci)

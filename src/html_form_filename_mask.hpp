@@ -83,13 +83,14 @@ public:
 	/// inherited from html_mask
     std::unique_ptr<libdar::mask> get_mask() const override;
 
+	/// clone() implementation
+    MASK_CLONER_MACRO;
+
 protected:
 	/// inherited methods from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
-	/// clone() implementation
-    MASK_CLONER_MACRO;
 
 private:
     html_form_fieldset fs;

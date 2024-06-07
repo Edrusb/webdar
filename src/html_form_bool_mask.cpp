@@ -69,7 +69,9 @@ html_form_bool_mask::html_form_bool_mask(const html_form_bool_mask & ref):
     table(ref.table.get_width()),
     adder(ref.adder),
     papillotte(ref.papillotte),
-    current_bool_mode(ref.current_bool_mode)
+    current_bool_mode(ref.current_bool_mode),
+    list_of_mask_types(ref.list_of_mask_types)
+
 {
     table_content.clear(); // starts empty for a new object
     del_event_to_content.clear(); // starts empty for a new object
@@ -80,8 +82,16 @@ html_form_bool_mask::html_form_bool_mask(const html_form_bool_mask & ref):
     init(ref.papillotte.is_adopted());
 }
 
+void html_form_bool_mask::add_mask_type(const string & label,
+					const html_mask & tobecloned)
+{
+    list_of_mask_types.push_back(available_mask(label, tobecloned));
 }
-*/
+
+void html_form_bool_mask::add_mask_myself(const std::string & label)
+{
+    list_of_mask_types.push_back(available_mask(label, *this));
+}
 
 unique_ptr<libdar::mask> html_form_bool_mask::get_mask() const
 {
@@ -176,6 +186,24 @@ void html_form_bool_mask::new_css_library_available()
 	csslib->add(css_class_bool_text, tmp);
     }
 }
+
+
+html_form_bool_mask::available_mask::available_mask(const string & lab,
+						    const html_mask & tobecloned):
+    label(lab)
+{
+    mask_type = tobecloned.clone();
+}
+
+html_form_bool_mask::available_mask::available_mask(const available_mask & ref):
+    label(ref.label)
+{
+    if(ref.mask_type)
+	mask_type = ref.mask_type->clone();
+    else
+	mask_type.reset();
+}
+
 
 
 void html_form_bool_mask::init(bool include_html_form)
@@ -340,3 +368,4 @@ void html_form_bool_mask::update_table_content_logic()
 	current_table_size = target_table_size;
     }
 }
+
