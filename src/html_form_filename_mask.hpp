@@ -88,6 +88,9 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// clone() implementation
+    MASK_CLONER_MACRO;
+
 private:
     html_form_fieldset fs;
     html_form_select mask_type;

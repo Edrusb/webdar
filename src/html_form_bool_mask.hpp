@@ -75,7 +75,7 @@ class html_form_bool_mask : public html_mask, public actor
 {
 public:
     html_form_bool_mask(bool include_html_form = true);
-    html_form_bool_mask(const html_form_bool_mask & ref) = default;
+    html_form_bool_mask(const html_form_bool_mask & ref);
     html_form_bool_mask(html_form_bool_mask && ref) noexcept = default;
     html_form_bool_mask & operator = (const html_form_bool_mask & ref) = default;
     html_form_bool_mask & operator = (html_form_bool_mask && ref) noexcept = default;
@@ -95,6 +95,9 @@ protected:
 
 	/// inherited from body_builder
     virtual void new_css_library_available() override;
+
+	/// clone() implementation
+    MASK_CLONER_MACRO;
 
 private:
     static constexpr const char* new_mask_to_add = "new_mask";
@@ -130,6 +133,7 @@ private:
     std::string current_bool_mode; ///< currently displayed logic in table
     unsigned int current_table_size; ///< size at which the displayed logic was last done
 
+    void init(bool include_form);
     void add_mask(const std::string & mask_type);
     void del_mask(const std::string & event_name);
     void purge_to_delete();

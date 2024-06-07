@@ -60,31 +60,28 @@ html_form_bool_mask::html_form_bool_mask(bool include_html_form):
     adder.add_choice(type_bool, "boolean combinaison");
     adder.set_selected(0);
 
-	// adoption tree
-
-    table.adopt(&mask_type);
-    table.adopt_static_html(""); // second colum first line
-    table.adopt_static_html(""); // third colum first line
-    fs.adopt(&table);
-    fs.adopt(&adder);
-    if(include_html_form)
-    {
-	papillotte.adopt(&fs);
-	adopt(&papillotte);
-    }
-    else
-	adopt(&fs);
-
-	// events
-    adder.record_actor_on_event(this, new_mask_to_add);
-
-
-	// visibility
-
-
-	// css stuff
-    table.set_css_class_first_column(css_class_bool_text);
+    init(include_html_form);
 }
+
+html_form_bool_mask::html_form_bool_mask(const html_form_bool_mask & ref):
+    fs(ref.fs),
+    mask_type(ref.mask_type),
+    table(ref.table.get_width()),
+    adder(ref.adder),
+    papillotte(ref.papillotte),
+    current_bool_mode(ref.current_bool_mode)
+{
+    table_content.clear(); // starts empty for a new object
+    del_event_to_content.clear(); // starts empty for a new object
+    event_del_count = 0;
+    events_to_delete.clear(); // starts empty for a new object
+    current_table_size = table_content.size();
+
+    init(ref.papillotte.is_adopted());
+}
+
+}
+*/
 
 unique_ptr<libdar::mask> html_form_bool_mask::get_mask() const
 {
@@ -179,6 +176,36 @@ void html_form_bool_mask::new_css_library_available()
 	csslib->add(css_class_bool_text, tmp);
     }
 }
+
+
+void html_form_bool_mask::init(bool include_html_form)
+{
+	// adoption tree
+
+    table.adopt(&mask_type);
+    table.adopt_static_html(""); // second colum first line
+    table.adopt_static_html(""); // third colum first line
+    fs.adopt(&table);
+    fs.adopt(&adder);
+    if(include_html_form)
+    {
+	papillotte.adopt(&fs);
+	adopt(&papillotte);
+    }
+    else
+	adopt(&fs);
+
+	// events
+    adder.record_actor_on_event(this, new_mask_to_add);
+
+	// visibility
+
+
+	// css stuff
+    table.set_css_class_first_column(css_class_bool_text);
+
+}
+
 
 void html_form_bool_mask::add_mask(const string & mask_type)
 {
