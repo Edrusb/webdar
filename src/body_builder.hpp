@@ -124,17 +124,20 @@ public:
     void set_prefix(const chemin & prefix);
 
 
-        /// Common interface for class that have to ask other body_builder to provide their own body_part()
+        /// Common interface for classes that have to ask other body_builder to contribute in building their body_part()
         ///
-        /// this call is not mandatory, but let a body_builder the possibility to rely on a set of
-        /// body_builder protected routines that will build the body part recursively from the children
-        /// adopted this way.
+        /// this call is not mandatory, but let a body_builder object the possibility to rely on the set of
+        /// body_builder available protected routines to recursively build the body part from the list of
+        /// adopted children. An object can only have one parent.
         /// \note this call semantic is that the adopted object becomes a child of the body_builder.
         /// The adopted child stays managed by its real parent, the adoption relationship builds a tree
         /// of dependant objects using one another to provide a body_part (see get_body_part() method).
-        /// this tree is automatically broken when an object is destroyed in the way that all recorded
-        /// children exists (the recorded addresses always points to real existing objects)
+        /// this tree is automatically broken when an object is destroyed, in that way all recorded
+        /// children exist (the recorded addresses always points to real existing objects)
     void adopt(body_builder* obj);
+
+	/// whether the object has currently a parent (= is adopted)
+    bool is_adopted() const { return parent != nullptr; };
 
         /// Common interface for class that have to ask other body_builder to provide their own body_part()
         ///
