@@ -42,10 +42,10 @@ class html_size_unit : public body_builder, public actor
 {
 public:
     html_size_unit();
-    html_size_unit(const html_size_unit & ref) = default;
-    html_size_unit(html_size_unit && ref) noexcept = default;
-    html_size_unit & operator = (const html_size_unit & ref) = default;
-    html_size_unit & operator = (html_size_unit && ref) noexcept = default;
+    html_size_unit(const html_size_unit & ref) = delete;
+    html_size_unit(html_size_unit && ref) noexcept = delete;
+    html_size_unit & operator = (const html_size_unit & ref) = delete;
+    html_size_unit & operator = (html_size_unit && ref) noexcept = delete;
     ~html_size_unit() = default;
 
     libdar::infinint get_value() const;

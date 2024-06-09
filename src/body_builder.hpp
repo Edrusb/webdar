@@ -103,11 +103,11 @@ public:
         /// copy constructor
 
 	/// \note the created object cannot have any equivalent children as the source
-	/// may have because those are not memory managed by the body_builder class but
-	/// by an derived class. This is thus the duty or derived class to rebuild
+	/// may have, because those are not memory managed by the body_builder class but
+	/// by a derived class. This is thus the duty or derived class to rebuild
 	/// a children equivalent tree if that makes sense. The newly created object
-	/// should however stay orphaned, even if the source had a parent. This will
-	/// ease copy-construction of derived class having body_builder inherited
+	/// should however stay orphaned (no parent), even if the source had a parent.
+	/// This will ease copy-construction of derived class having body_builder inherited
 	/// objects as fields and children.
     body_builder(const body_builder & ref);
 

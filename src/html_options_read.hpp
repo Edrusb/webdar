@@ -78,10 +78,10 @@ public:
     static const std::string entrepot_has_changed;
 
     html_options_read();
-    html_options_read(const html_options_read & ref) = default;
-    html_options_read(html_options_read && ref) noexcept = default;
-    html_options_read & operator = (const html_options_read & ref) = default;
-    html_options_read & operator = (html_options_read && ref) noexcept = default;
+    html_options_read(const html_options_read & ref) = delete;
+    html_options_read(html_options_read && ref) noexcept = delete;
+    html_options_read & operator = (const html_options_read & ref) = delete;
+    html_options_read & operator = (html_options_read && ref) noexcept = delete;
     ~html_options_read() { cancel(); join(); };
 
 	/// obtain the libdar archive_option_read object from the html filled fields

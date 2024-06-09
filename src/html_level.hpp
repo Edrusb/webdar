@@ -70,7 +70,7 @@ protected:
 	/// struct recording the content of each level (dynamic or static html component)
     struct bundle
     {
-	body_builder *obj;       //< if set to nullptr, using static_text instead
+	body_builder* obj;       //< if set to nullptr, using static_text instead
 	std::string static_text; //< used if obj is nullptr
 	bundle() { obj = nullptr; };
     };

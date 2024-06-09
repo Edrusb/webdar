@@ -48,10 +48,10 @@ class html_options_extract : public body_builder
 {
 public:
     html_options_extract();
-    html_options_extract(const html_options_extract & ref) = default;
-    html_options_extract(html_options_extract && ref) noexcept = default;
-    html_options_extract & operator = (const html_options_extract & ref) = default;
-    html_options_extract & operator = (html_options_extract && ref) noexcept = default;
+    html_options_extract(const html_options_extract & ref) = delete;
+    html_options_extract(html_options_extract && ref) noexcept = delete;
+    html_options_extract & operator = (const html_options_extract & ref) = delete;
+    html_options_extract & operator = (html_options_extract && ref) noexcept = delete;
     ~html_options_extract() = default;
 
     libdar::archive_options_extract get_options() const;

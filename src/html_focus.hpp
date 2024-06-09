@@ -49,10 +49,10 @@ class html_focus: public body_builder
 {
 public:
     html_focus() { adopted = nullptr; };
-    html_focus(const html_focus & ref) = default;
-    html_focus(html_focus && ref) noexcept = default;
-    html_focus & operator = (const html_focus & ref) = default;
-    html_focus & operator = (html_focus && ref) noexcept = default;
+    html_focus(const html_focus & ref) = delete;
+    html_focus(html_focus && ref) noexcept = delete;
+    html_focus & operator = (const html_focus & ref) = delete;
+    html_focus & operator = (html_focus && ref) noexcept = delete;
     ~html_focus() = default;
 
 	/// define what to display under the focus

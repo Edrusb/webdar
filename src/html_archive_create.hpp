@@ -48,7 +48,7 @@ class html_archive_create: public body_builder, public libthreadar::thread_signa
 {
 public:
     html_archive_create();
-    html_archive_create(const html_archive_create & ref);
+    html_archive_create(const html_archive_create & ref) = delete;
     html_archive_create(html_archive_create && ref) noexcept = delete;
     html_archive_create & operator = (const html_archive_create & ref) = delete;
     html_archive_create & operator = (html_archive_create && ref) noexcept = delete;

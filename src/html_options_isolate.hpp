@@ -53,10 +53,10 @@ public:
     static const std::string entrepot_changed;
 
     html_options_isolate();
-    html_options_isolate(const html_options_isolate & ref) = default;
-    html_options_isolate(html_options_isolate && ref) noexcept = default;
-    html_options_isolate & operator = (const html_options_isolate & ref) = default;
-    html_options_isolate & operator = (html_options_isolate && ref) noexcept = default;
+    html_options_isolate(const html_options_isolate & ref) = delete;
+    html_options_isolate(html_options_isolate && ref) noexcept = delete;
+    html_options_isolate & operator = (const html_options_isolate & ref) = delete;
+    html_options_isolate & operator = (html_options_isolate && ref) noexcept = delete;
     ~html_options_isolate() = default;
 
 	/// inherited from actor

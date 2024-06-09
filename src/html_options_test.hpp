@@ -47,10 +47,10 @@ class html_options_test : public body_builder
 {
 public:
     html_options_test();
-    html_options_test(const html_options_test & ref) = default;
-    html_options_test(html_options_test && ref) noexcept = default;
-    html_options_test & operator = (const html_options_test & ref) = default;
-    html_options_test & operator = (html_options_test && ref) noexcept = default;
+    html_options_test(const html_options_test & ref) = delete;
+    html_options_test(html_options_test && ref) noexcept = delete;
+    html_options_test & operator = (const html_options_test & ref) = delete;
+    html_options_test & operator = (html_options_test && ref) noexcept = delete;
     ~html_options_test() = default;
 
     libdar::archive_options_test get_options() const;
