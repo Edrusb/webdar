@@ -113,9 +113,6 @@ html_options_extract::html_options_extract():
     only_deleted.set_value_as_bool(defaults.get_only_deleted());
     ignore_deleted.set_value_as_bool(defaults.get_ignore_deleted());
 
-    filename_mask.add_mask_type("Filename expression", html_form_mask_expression());
-    filename_mask.add_mask_myself("Logical combination");
-
 	// build the adoption tree
 
     static const char* sect_opt = "options";

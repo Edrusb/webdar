@@ -135,9 +135,6 @@ html_options_merge::html_options_merge():
     crypto_pass2.set_value("");
     crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
 
-    filename_mask.add_mask_type("Filename expression", html_form_mask_expression());
-    filename_mask.add_mask_myself("Logical combination");
-
 	// building HTML structure
 
     static const char* sect_entrep = "entrepot";

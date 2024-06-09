@@ -37,12 +37,11 @@ extern "C"
 
 using namespace std;
 
-html_form_mask_bool::html_form_mask_bool(bool include_html_form):
+html_form_mask_bool::html_form_mask_bool():
     fs(""),
     mask_type("Combining with", bool_changed_event),
     table(3),
     adder("Add a new mask", new_mask_to_add),
-    papillotte("Update"),
     event_del_count(0)
 {
 
@@ -58,7 +57,7 @@ html_form_mask_bool::html_form_mask_bool(bool include_html_form):
     adder.add_choice("", "select a mask type");
     adder.set_selected(0);
 
-    init(include_html_form);
+    init();
 }
 
 html_form_mask_bool::html_form_mask_bool(const html_form_mask_bool & ref):
@@ -68,7 +67,6 @@ html_form_mask_bool::html_form_mask_bool(const html_form_mask_bool & ref):
     mask_type(ref.mask_type),
     table(ref.table.get_width()),
     adder(ref.adder),
-    papillotte(ref.papillotte),
     list_of_mask_types(ref.list_of_mask_types),
     event_del_count(0)
 
@@ -90,7 +88,7 @@ html_form_mask_bool::html_form_mask_bool(const html_form_mask_bool & ref):
     current_table_size = table_content.size();
     adder.set_selected(0);
 
-    init(false); // <<<< virer include_html_form
+    init();
 }
 
 void html_form_mask_bool::add_mask_type(const string & label,
@@ -226,7 +224,7 @@ html_form_mask_bool::available_mask::available_mask(const available_mask & ref):
 	mask_type.reset();
 }
 
-void html_form_mask_bool::init(bool include_html_form)
+void html_form_mask_bool::init()
 {
 	// adoption tree
 
@@ -235,13 +233,7 @@ void html_form_mask_bool::init(bool include_html_form)
     table.adopt_static_html(""); // third colum first line
     fs.adopt(&table);
     fs.adopt(&adder);
-    if(include_html_form)
-    {
-	papillotte.adopt(&fs);
-	adopt(&papillotte);
-    }
-    else
-	adopt(&fs);
+    adopt(&fs);
 
 	// events
     adder.record_actor_on_event(this, new_mask_to_add);

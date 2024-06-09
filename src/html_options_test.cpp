@@ -60,9 +60,6 @@ html_options_test::html_options_test():
 	// default values
     empty.set_value_as_bool(defaults.get_empty());
 
-    filename_mask.add_mask_type("Filename expression", html_form_mask_expression());
-    filename_mask.add_mask_myself("Logical combination");
-
 	// building HTML structure
 
     static const char* sect_opt = "options";

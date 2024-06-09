@@ -73,7 +73,7 @@ extern "C"
 class html_form_mask_bool : public html_mask, public actor
 {
 public:
-    html_form_mask_bool(bool include_html_form = true);
+    html_form_mask_bool();
     html_form_mask_bool(const html_form_mask_bool & ref);
     html_form_mask_bool(html_form_mask_bool && ref) noexcept = delete;
     html_form_mask_bool & operator = (const html_form_mask_bool & ref) = delete;
@@ -90,7 +90,7 @@ public:
     void add_mask_myself(const std::string & label);
 
 	/// inherited from html_mask
-    std::unique_ptr<libdar::mask> get_mask() const override;
+    virtual std::unique_ptr<libdar::mask> get_mask() const override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -150,7 +150,6 @@ private:
     html_form_select mask_type;
     html_table table;
     html_form_select adder;
-    html_form papillotte;
 
     std::map<std::string, std::list<entry>::iterator> del_event_to_content;
     unsigned int event_del_count;
@@ -159,7 +158,7 @@ private:
     std::string current_bool_mode; ///< currently displayed logic in table
     unsigned int current_table_size; ///< size at which the displayed logic was last updated
 
-    void init(bool include_form);
+    void init();
     void add_mask(unsigned int num); ///< \param[in] num is the index in list_of_mask_types
     void del_mask(const std::string & event_name);
     void purge_to_delete();
