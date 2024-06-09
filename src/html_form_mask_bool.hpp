@@ -21,8 +21,8 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
-#ifndef HTML_FORM_BOOL_MASK_HPP
-#define HTML_FORM_BOOL_MASK_HPP
+#ifndef HTML_FORM_MASK_BOOL_HPP
+#define HTML_FORM_MASK_BOOL_HPP
 
     // C system header files
 extern "C"
@@ -48,7 +48,7 @@ extern "C"
 #include "html_text.hpp"
 
 
-    /// class html_form_bool_mask provide mean to combines with OR and AND different html_masks
+    /// class html_form_mask_bool provide mean to combines with OR and AND different html_masks
 
     /// this html components is consitued of:
     ///
@@ -67,18 +67,18 @@ extern "C"
     ///
     /// \note this component includes an html_form by default
     /// (see constructor argument), but should not when used
-    /// recursively from another html_form_bool_mask
+    /// recursively from another html_form_mask_bool
 
 
-class html_form_bool_mask : public html_mask, public actor
+class html_form_mask_bool : public html_mask, public actor
 {
 public:
-    html_form_bool_mask(bool include_html_form = true);
-    html_form_bool_mask(const html_form_bool_mask & ref);
-    html_form_bool_mask(html_form_bool_mask && ref) noexcept = delete;
-    html_form_bool_mask & operator = (const html_form_bool_mask & ref) = delete;
-    html_form_bool_mask & operator = (html_form_bool_mask && ref) noexcept = delete;
-    ~html_form_bool_mask() = default;
+    html_form_mask_bool(bool include_html_form = true);
+    html_form_mask_bool(const html_form_mask_bool & ref);
+    html_form_mask_bool(html_form_mask_bool && ref) noexcept = delete;
+    html_form_mask_bool & operator = (const html_form_mask_bool & ref) = delete;
+    html_form_mask_bool & operator = (html_form_mask_bool && ref) noexcept = delete;
+    ~html_form_mask_bool() = default;
 
 	/// component that will provided as possible to add in the logic operation of the current mask
     void add_mask_type(const std::string & label, const html_mask & tobecloned);
@@ -114,18 +114,18 @@ private:
     static constexpr const char* or_op = "or_op";
 
     static constexpr const char* bool_changed_event = "bool_changed";
-    static constexpr const char* css_class_bool_text = "html_form_bool_mask_bool_text";
+    static constexpr const char* css_class_bool_text = "html_form_mask_bool_bool_text";
 
 	//
 
     struct available_mask
     {
 	std::string label;
-	std::unique_ptr<html_mask> mask_type; // mask_type is not set to refer to this html_form_bool_mask
+	std::unique_ptr<html_mask> mask_type; // mask_type is not set to refer to this html_form_mask_bool
 
 	available_mask(const std::string & label,
 		       const html_mask & tobecloned);
-	available_mask(const std::string & label); // to refer to this html_form_bool_mask
+	available_mask(const std::string & label); // to refer to this html_form_mask_bool
 	available_mask(const available_mask & arg);
     };
 

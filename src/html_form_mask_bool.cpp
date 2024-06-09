@@ -33,11 +33,11 @@ extern "C"
     // webdar headers
 
     //
-#include "html_form_bool_mask.hpp"
+#include "html_form_mask_bool.hpp"
 
 using namespace std;
 
-html_form_bool_mask::html_form_bool_mask(bool include_html_form):
+html_form_mask_bool::html_form_mask_bool(bool include_html_form):
     fs(""),
     mask_type("Combining with", bool_changed_event),
     table(3),
@@ -61,7 +61,7 @@ html_form_bool_mask::html_form_bool_mask(bool include_html_form):
     init(include_html_form);
 }
 
-html_form_bool_mask::html_form_bool_mask(const html_form_bool_mask & ref):
+html_form_mask_bool::html_form_mask_bool(const html_form_mask_bool & ref):
     html_mask(ref), // parent class
     actor(ref),     // parent class
     fs(ref.fs),
@@ -93,20 +93,20 @@ html_form_bool_mask::html_form_bool_mask(const html_form_bool_mask & ref):
     init(false); // <<<< virer include_html_form
 }
 
-void html_form_bool_mask::add_mask_type(const string & label,
+void html_form_mask_bool::add_mask_type(const string & label,
 					const html_mask & tobecloned)
 {
     adder.add_choice(webdar_tools_convert_to_string(list_of_mask_types.size()), label);
     list_of_mask_types.push_back(available_mask(label, tobecloned));
 }
 
-void html_form_bool_mask::add_mask_myself(const std::string & label)
+void html_form_mask_bool::add_mask_myself(const std::string & label)
 {
     adder.add_choice(webdar_tools_convert_to_string(list_of_mask_types.size()), label);
     list_of_mask_types.push_back(available_mask(label));
 }
 
-unique_ptr<libdar::mask> html_form_bool_mask::get_mask() const
+unique_ptr<libdar::mask> html_form_mask_bool::get_mask() const
 {
     unique_ptr<libdar::mask> ret;
     bool and_mode;
@@ -158,7 +158,7 @@ unique_ptr<libdar::mask> html_form_bool_mask::get_mask() const
     return ret;
 }
 
-void html_form_bool_mask::on_event(const string & event_name)
+void html_form_mask_bool::on_event(const string & event_name)
 {
     if(event_name == new_mask_to_add)
     {
@@ -177,7 +177,7 @@ void html_form_bool_mask::on_event(const string & event_name)
 	del_mask(event_name); // may throw exception if event_name is not a del event
 }
 
-string html_form_bool_mask::inherited_get_body_part(const chemin & path,
+string html_form_mask_bool::inherited_get_body_part(const chemin & path,
 						    const request & req)
 {
     string ret = get_body_part_from_all_children(path, req);
@@ -185,7 +185,7 @@ string html_form_bool_mask::inherited_get_body_part(const chemin & path,
     return ret;
 }
 
-void html_form_bool_mask::new_css_library_available()
+void html_form_mask_bool::new_css_library_available()
 {
     unique_ptr<css_library> & csslib = lookup_css_library();
     if(!csslib)
@@ -204,20 +204,20 @@ void html_form_bool_mask::new_css_library_available()
 }
 
 
-html_form_bool_mask::available_mask::available_mask(const string & lab,
+html_form_mask_bool::available_mask::available_mask(const string & lab,
 						    const html_mask & tobecloned):
     label(lab)
 {
     mask_type = tobecloned.clone();
 }
 
-html_form_bool_mask::available_mask::available_mask(const string & lab):
+html_form_mask_bool::available_mask::available_mask(const string & lab):
     label(lab)
 {
     mask_type.reset();
 }
 
-html_form_bool_mask::available_mask::available_mask(const available_mask & ref):
+html_form_mask_bool::available_mask::available_mask(const available_mask & ref):
     label(ref.label)
 {
     if(ref.mask_type)
@@ -226,7 +226,7 @@ html_form_bool_mask::available_mask::available_mask(const available_mask & ref):
 	mask_type.reset();
 }
 
-void html_form_bool_mask::init(bool include_html_form)
+void html_form_mask_bool::init(bool include_html_form)
 {
 	// adoption tree
 
@@ -255,7 +255,7 @@ void html_form_bool_mask::init(bool include_html_form)
 }
 
 
-void html_form_bool_mask::add_mask(unsigned int num)
+void html_form_mask_bool::add_mask(unsigned int num)
 {
     entry new_mask;
 
@@ -296,7 +296,7 @@ void html_form_bool_mask::add_mask(unsigned int num)
 }
 
 
-void html_form_bool_mask::del_mask(const string & event_name)
+void html_form_mask_bool::del_mask(const string & event_name)
 {
     map<string, list<entry>::iterator>::iterator mit = del_event_to_content.find(event_name);
 
@@ -317,7 +317,7 @@ void html_form_bool_mask::del_mask(const string & event_name)
 	// we would not be able to return from this call if deleted from here
 }
 
-void html_form_bool_mask::purge_to_delete()
+void html_form_mask_bool::purge_to_delete()
 {
     deque<string>::iterator evit = events_to_delete.begin();
 
@@ -340,7 +340,7 @@ void html_form_bool_mask::purge_to_delete()
     update_table_content_logic();
 }
 
-std::string html_form_bool_mask::bool_op_to_name(const std::string & op)
+std::string html_form_mask_bool::bool_op_to_name(const std::string & op)
 {
     if(op == and_op)
 	return "and";
@@ -350,7 +350,7 @@ std::string html_form_bool_mask::bool_op_to_name(const std::string & op)
 	throw WEBDAR_BUG;
 }
 
-void html_form_bool_mask::update_table_content_logic()
+void html_form_mask_bool::update_table_content_logic()
 {
     std::string target_bool_mode = mask_type.get_selected_id();
     unsigned int target_table_size = table_content.size();

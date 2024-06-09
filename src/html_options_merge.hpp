@@ -47,7 +47,7 @@ extern "C"
 #include "html_archive_read.hpp"
 #include "html_derouleur.hpp"
 #include "html_entrepot.hpp"
-#include "html_form_bool_mask.hpp"
+#include "html_form_mask_bool.hpp"
 
     /// html component for the user to provided parameters of a libdar merging operation
 
@@ -124,7 +124,7 @@ private:
     html_form_input empty_dir;
     html_form_input decremental_mode;
 
-    html_form_bool_mask filename_mask;
+    html_form_mask_bool filename_mask;
 
     html_form form_compr;
     html_form_fieldset fs_compr;
