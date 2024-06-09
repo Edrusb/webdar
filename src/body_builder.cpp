@@ -44,14 +44,6 @@ const unsigned int NAME_WIDTH = 4;
 body_builder::body_builder(const body_builder & ref)
 {
     clear();
-    if(ref.parent != nullptr)
-        throw WEBDAR_BUG;
-    if(!ref.order.empty())
-	throw WEBDAR_BUG;
-    if(!ref.children.empty())
-	throw WEBDAR_BUG;
-    if(!ref.revert_child.empty())
-	throw WEBDAR_BUG;
     visible = ref.visible;
 	// x_prefix cannot be the same as ref so it stays to the default value
     no_CR = ref.no_CR;
@@ -72,14 +64,18 @@ body_builder::body_builder(const body_builder & ref)
 
 body_builder & body_builder::operator = (const body_builder & ref)
 {
-    if(parent != nullptr || !order.empty() || !children.empty() || !revert_child.empty() || library)
-        throw WEBDAR_BUG;
-    if(ref.parent != nullptr || !ref.order.empty() || !ref.children.empty() || !ref.revert_child.empty() || ref.library)
-        throw WEBDAR_BUG;
+    orphan_all_children();
+    if(parent != nullptr)
+	parent->foresake(this);
+    if(parent != nullptr)
+	throw WEBDAR_BUG;
 
     visible = ref.visible;
     no_CR = ref.no_CR;
-    css_class_names = ref.css_class_names;
+    last_body_path.clear();
+    last_body_req_uri.clear();
+    last_body_req_body.clear();
+    last_body_part.clear();
     library_asked = ref.library_asked;
     if(ref.library)
     {
@@ -89,10 +85,8 @@ body_builder & body_builder::operator = (const body_builder & ref)
     }
     else
         library.reset(); // drop possibly existing css_library
-    last_body_path = ref.last_body_path;
-    last_body_req_uri = ref.last_body_req_uri;
-    last_body_req_body = ref.last_body_req_body;
-    body_changed = ref.body_changed;
+    css_class_names = ref.css_class_names;
+    body_changed = true; // force ignoring last_* fields which we clear()ed above
     ignore_children_body_changed = ref.ignore_children_body_changed;
 
     return *this;

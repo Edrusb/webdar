@@ -100,17 +100,38 @@ public:
         /// constructor
     body_builder() { clear(); };
 
-        /// copy constructor allowed only if the object has no parent nor child
+        /// copy constructor
+
+	/// \note the created object cannot have any equivalent children as the source
+	/// may have because those are not memory managed by the body_builder class but
+	/// by an derived class. This is thus the duty or derived class to rebuild
+	/// a children equivalent tree if that makes sense. The newly created object
+	/// should however stay orphaned, even if the source had a parent. This will
+	/// ease copy-construction of derived class having body_builder inherited
+	/// objects as fields and children.
     body_builder(const body_builder & ref);
 
         /// move constructor
-    body_builder(body_builder && ref) noexcept = default;
 
-        /// assignment operator copy constructor allowed only if the object has no parent nor child
+	/// \note if move operation (constructor or assignment) have to be implemented in the
+	/// future, care should be taken not to copy parent and children pointer values but to
+	/// have source object foresaken() from parent and new one adopted() by the same parent,
+	/// as source and moved objects have different addresses. Children adoption should also
+	/// be taken care the same as parent children would change due to the move operation. Worse
+	/// as the child-parent relationship is independent from the memory allocation responsibility
+	/// of children objects, this is the inherited classes that should manage the move operation
+	/// of the children to the their own field and reset the parent-child relationship accordingly
+    body_builder(body_builder && ref) noexcept = delete;
+
+        /// assignment operator drops all existing children
+
+	/// \note see the note of the copy constructor
     body_builder & operator = (const body_builder & ref);
 
         /// move operator
-    body_builder & operator = (body_builder && ref) noexcept = default;
+
+	/// \note see the note of the move constructor
+    body_builder & operator = (body_builder && ref) noexcept = delete;
 
         /// the (virtual) destructor
     virtual ~body_builder() { orphan_all_children(); unrecord_from_parent(); };
