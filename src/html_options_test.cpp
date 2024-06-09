@@ -32,7 +32,6 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
-#include "html_form_mask_expression.hpp"
 
     //
 #include "html_options_test.hpp"
@@ -64,8 +63,10 @@ html_options_test::html_options_test():
 
     static const char* sect_opt = "options";
     static const char* sect_mask = "mask";
+    static const char* sect_path = "path";
     deroule.add_section(sect_opt, "Testing options");
     deroule.add_section(sect_mask, "Filename based filtering");
+    deroule.add_section(sect_path, "Path based filtering");
 
     fs.adopt(&info_details);
     fs.adopt(&empty);
@@ -73,6 +74,7 @@ html_options_test::html_options_test():
     form.adopt(&fs);
     deroule.adopt_in_section(sect_opt, &form);
     deroule.adopt_in_section(sect_mask, &filename_mask);
+    deroule.adopt_in_section(sect_path, &path_mask);
     adopt(&deroule);
 
 	// css
@@ -88,6 +90,7 @@ libdar::archive_options_test html_options_test::get_options() const
     ret.set_empty(empty.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
     ret.set_selection(*(filename_mask.get_mask()));
+    ret.set_subtree(*(path_mask.get_mask()));
 
     return ret;
 }

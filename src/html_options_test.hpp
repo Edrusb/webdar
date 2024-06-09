@@ -40,6 +40,7 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_derouleur.hpp"
 #include "html_mask_form_filename.hpp"
+#include "html_mask_form_path.hpp"
 
     /// html component for the user to provide parameters of libdar archive testing operation
 
@@ -72,6 +73,7 @@ private:
     html_form_input empty;
     html_form_input display_skipped;
     html_mask_form_filename filename_mask;
+    html_mask_form_path path_mask;
 };
 
 #endif
