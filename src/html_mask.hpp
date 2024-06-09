@@ -58,8 +58,6 @@ public:
 	/// \note this can be done using the MASK_CLONER_MACRO
     virtual std::unique_ptr<html_mask> clone() const = 0;
 
-protected:
-
 };
 
 template <class T> std::unique_ptr<html_mask> mask_cloner(const T & ceci)
