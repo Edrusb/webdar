@@ -50,7 +50,7 @@ extern "C"
     ///
     /// and that informs these pointers about their imminent death in order
     /// to be removed from the pointed objects list
-class actor : virtual public reference
+class actor : public reference
 {
 public:
     actor() = default;

@@ -50,11 +50,8 @@ reference::reference(reference && ref) noexcept(false)
 
 reference & reference::operator = (const reference & ref)
 {
-     if(ref.is_empty())
-    {
+    if(ref.is_empty())
 	shut_all_peerings();
-	reset();
-    }
     else
 	throw WEBDAR_BUG;
 
@@ -63,16 +60,8 @@ reference & reference::operator = (const reference & ref)
 
 reference & reference::operator = (reference && ref) noexcept(false)
 {
-    if(ref.already_moved)
-	return *this;
-	// avoiding copying from an already moved object
-	// class reference is virtually multi-inherited
     if(ref.is_empty())
-    {
 	shut_all_peerings();
-	reset();
-	ref.already_moved = true; // not really useful as we don't use the value of ref...
-    }
     else
 	throw WEBDAR_BUG;
 
@@ -145,7 +134,6 @@ void reference::reset()
 {
     peers.clear();
     next_to_read = peers.begin();
-    already_moved = false;
 }
 
 

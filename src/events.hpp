@@ -47,7 +47,7 @@ extern "C"
     /// an actor object must register for one or more named event of a events object
     /// (or of different events objects) to be triggered by a named event
 
-class events : virtual public reference
+class events : public reference
 {
 public:
     events() = default;

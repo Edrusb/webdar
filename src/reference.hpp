@@ -113,7 +113,6 @@ protected:
 private:
     mutable std::set<reference *>::iterator next_to_read; ///< pointer to the next peer to read from the list
     std::set<reference *> peers;                          ///< list of peers
-    bool already_moved;                                   ///< flag objects std::move(d) (multi inheritance possible)
 
     void reset();             ///< clear object status (ignoring possibily existing peers)
     void shut_all_peerings(); ///< break link with all peers
