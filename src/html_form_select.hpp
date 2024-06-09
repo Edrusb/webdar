@@ -59,10 +59,10 @@ public:
 	/// \note if x_event_name is not given or is an empty string the even to register is
 	/// given by the value of html_form_select::changed
     html_form_select(const std::string & label, const std::string & x_event_name = "");
-    html_form_select(const html_form_select & ref) = default;
-    html_form_select(html_form_select && ref) noexcept = default;
-    html_form_select & operator = (const html_form_select & ref) = default;
-    html_form_select & operator = (html_form_select && ref) noexcept = default;
+    html_form_select(const html_form_select & ref);
+    html_form_select(html_form_select && ref) noexcept = delete;
+    html_form_select & operator = (const html_form_select & ref) = delete;
+    html_form_select & operator = (html_form_select && ref) noexcept = delete;
     ~html_form_select() = default;
 
     void change_label(const std::string & label) { x_label = label; my_body_part_has_changed(); };

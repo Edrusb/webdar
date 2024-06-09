@@ -52,6 +52,17 @@ html_form_select::html_form_select(const string & label, const string & x_event_
     record_actor_on_event(this, html_form_radio::changed);
 }
 
+html_form_select::html_form_select(const html_form_select & ref):
+    html_form_radio(ref),
+    actor(ref),
+    x_label(ref.x_label),
+    event_name(ref.event_name)
+{
+	// no need to register_name(event_name), this has been copied (without
+	// the referred actors to these events) by the copy constructor of class events
+    record_actor_on_event(this, html_form_radio::changed);
+}
+
 string html_form_select::inherited_get_body_part(const chemin & path, const request & req)
 {
     string ret = "";
