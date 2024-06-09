@@ -39,6 +39,17 @@ extern "C"
 
 using namespace std;
 
+events::events(const events & ref)
+{
+    map<string, list<actor*> >::const_iterator it = ref.carte.begin();
+
+    while(it != ref.carte.end())
+    {
+	register_name(it->first);
+	++it;
+    }
+}
+
 events & events::operator = (events && ref) noexcept(false)
 {
     static_cast<reference>(*this) = std::move(static_cast<reference>(ref));

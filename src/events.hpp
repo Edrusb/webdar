@@ -57,7 +57,7 @@ public:
 	/// \note all events are kept, but all registered
 	/// actors to these events are not registered to the
 	/// newly created object (see copy constructor of reference class)
-    events(const events & ref) = default;
+    events(const events & ref);
     events(events && ref) noexcept(false) = default;
     events & operator = (const events & ref) = default;
     events & operator = (events && ref) noexcept(false);
