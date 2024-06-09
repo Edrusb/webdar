@@ -44,11 +44,32 @@ extern "C"
 class reference
 {
 public:
-    reference() { reset(); }; /// default constructor
-    reference(const reference & ref); /// copy constructor
-    reference(reference && ref) noexcept(false); /// move constructor
-    reference & operator = (const reference & ref); /// assignment operator
-    reference & operator = (reference && ref) noexcept(false); /// move assignment operator
+
+	/// usual constructor
+    reference() { reset(); };
+
+	/// copy constructor
+
+	/// \note the new object does not keep any peer that the copied object could have
+    reference(const reference & ref) { reset(); };
+
+	/// move constructor (only operational for objects without peering)
+
+	/// \note if a real implementation is needed, care should be taken to reconstruct
+	/// any existing peering with the new address of this moved object
+    reference(reference && ref) noexcept(false);
+
+	/// assignment operator (only operational for objects without peering)
+
+	/// \note see the note of the copy constructor
+    reference & operator = (const reference & ref);
+
+	/// move assigment operator
+
+	/// \see note the of the move constructor
+    reference & operator = (reference && ref) noexcept(false);
+
+	/// destructor
     virtual ~reference() { shut_all_peerings(); };
 
 	/// method used to create a relation between two objects

@@ -39,15 +39,6 @@ extern "C"
 
 using namespace std;
 
-
-reference::reference(const reference & ref)
-{
-    if(ref.is_empty())
-	reset();
-    else
-	throw WEBDAR_BUG; // cannot copy-construct an object already linked with another one
-}
-
 reference::reference(reference && ref) noexcept(false)
 {
     if(ref.is_empty())
