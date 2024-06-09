@@ -31,8 +31,6 @@ extern "C"
 
 
     // webdar headers
-#include "html_form_filename_mask.hpp"
-
 
     //
 #include "html_form_bool_mask.hpp"
@@ -51,46 +49,61 @@ html_form_bool_mask::html_form_bool_mask(bool include_html_form):
 	// components configuration
     mask_type.add_choice(and_op, "AND");
     mask_type.add_choice(or_op, "OR");
+    if(mask_type.num_choices() != 2)
+	throw WEBDAR_BUG;
     mask_type.set_selected(0);
     current_bool_mode = mask_type.get_selected_id();
     current_table_size = table_content.size();
 
-    adder.add_choice(type_undefined, "select a mask type");
-    adder.add_choice(type_filename, "filename expression");
-    adder.add_choice(type_bool, "boolean combinaison");
+    adder.add_choice("", "select a mask type");
     adder.set_selected(0);
 
     init(include_html_form);
 }
 
 html_form_bool_mask::html_form_bool_mask(const html_form_bool_mask & ref):
+    html_mask(ref), // parent class
+    actor(ref),     // parent class
     fs(ref.fs),
     mask_type(ref.mask_type),
     table(ref.table.get_width()),
     adder(ref.adder),
     papillotte(ref.papillotte),
-    current_bool_mode(ref.current_bool_mode),
-    list_of_mask_types(ref.list_of_mask_types)
+    list_of_mask_types(ref.list_of_mask_types),
+    event_del_count(0)
 
 {
-    table_content.clear(); // starts empty for a new object
-    del_event_to_content.clear(); // starts empty for a new object
-    event_del_count = 0;
-    events_to_delete.clear(); // starts empty for a new object
-    current_table_size = table_content.size();
+	// want the new object to have *AND* operation if ref has *OR*
+	// and vice versa. Because it does not make much sense to add
+	// and *AND* operator as member of an *AND* operator, same thing
+	// having and *OR* operator as member of another *OR* operator,
+	// stated that *AND* and *OR* operator can combine arbitrary number
+	// of components.
+    if(mask_type.num_choices() != 2)
+	throw WEBDAR_BUG; // should be *AND* and *OR* choices only
 
-    init(ref.papillotte.is_adopted());
+	// *AND* has index 0: 2 - 1 - 0 -> 1
+	// *OR* has index 1:  2 - 1 - 1 -> 0
+    mask_type.set_selected(mask_type.num_choices() - 1 - mask_type.get_selected_num());
+    current_bool_mode = mask_type.get_selected_id();
+
+    current_table_size = table_content.size();
+    adder.set_selected(0);
+
+    init(false); // <<<< virer include_html_form
 }
 
 void html_form_bool_mask::add_mask_type(const string & label,
 					const html_mask & tobecloned)
 {
+    adder.add_choice(webdar_tools_convert_to_string(list_of_mask_types.size()), label);
     list_of_mask_types.push_back(available_mask(label, tobecloned));
 }
 
 void html_form_bool_mask::add_mask_myself(const std::string & label)
 {
-    list_of_mask_types.push_back(available_mask(label, *this));
+    adder.add_choice(webdar_tools_convert_to_string(list_of_mask_types.size()), label);
+    list_of_mask_types.push_back(available_mask(label));
 }
 
 unique_ptr<libdar::mask> html_form_bool_mask::get_mask() const
@@ -149,9 +162,12 @@ void html_form_bool_mask::on_event(const string & event_name)
 {
     if(event_name == new_mask_to_add)
     {
-	if(adder.get_selected_id() != type_undefined)
+	if(adder.get_selected_num() != 0)
 	{
-	    add_mask(adder.get_selected_id());
+		// there is a shift by one between adder which first position (index 0)
+		// tells the user to select a filter and list_of_mask_types that have the
+		// first valid mask at position 0.
+	    add_mask(adder.get_selected_num() - 1);
 	    adder.set_selected(0); // resetting 'adder' to undefined
 	}
     }
@@ -195,6 +211,12 @@ html_form_bool_mask::available_mask::available_mask(const string & lab,
     mask_type = tobecloned.clone();
 }
 
+html_form_bool_mask::available_mask::available_mask(const string & lab):
+    label(lab)
+{
+    mask_type.reset();
+}
+
 html_form_bool_mask::available_mask::available_mask(const available_mask & ref):
     label(ref.label)
 {
@@ -203,8 +225,6 @@ html_form_bool_mask::available_mask::available_mask(const available_mask & ref):
     else
 	mask_type.reset();
 }
-
-
 
 void html_form_bool_mask::init(bool include_html_form)
 {
@@ -235,22 +255,17 @@ void html_form_bool_mask::init(bool include_html_form)
 }
 
 
-void html_form_bool_mask::add_mask(const string & mask_type)
+void html_form_bool_mask::add_mask(unsigned int num)
 {
     entry new_mask;
 
-    if(mask_type == type_filename)
-    {
-	new_mask.mask.reset(new (nothrow) html_form_filename_mask());
-    }
-    else if(mask_type == type_bool)
-    {
-	new_mask.mask.reset(new (nothrow) html_form_bool_mask(false));
-    }
-    else if(mask_type == type_undefined)
-	throw WEBDAR_BUG;  // cannot create a mask of that type
+    if(num >= list_of_mask_types.size())
+	throw WEBDAR_BUG;
+
+    if(!list_of_mask_types[num].mask_type)
+	new_mask.mask = clone(); // we clone ourself
     else
-	throw WEBDAR_BUG;  // unknown mask type
+	new_mask.mask = list_of_mask_types[num].mask_type->clone();
 
     if(! new_mask.mask)
 	throw exception_memory();

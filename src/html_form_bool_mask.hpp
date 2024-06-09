@@ -75,9 +75,9 @@ class html_form_bool_mask : public html_mask, public actor
 public:
     html_form_bool_mask(bool include_html_form = true);
     html_form_bool_mask(const html_form_bool_mask & ref);
-    html_form_bool_mask(html_form_bool_mask && ref) noexcept = default;
-    html_form_bool_mask & operator = (const html_form_bool_mask & ref) = default;
-    html_form_bool_mask & operator = (html_form_bool_mask && ref) noexcept = default;
+    html_form_bool_mask(html_form_bool_mask && ref) noexcept = delete;
+    html_form_bool_mask & operator = (const html_form_bool_mask & ref) = delete;
+    html_form_bool_mask & operator = (html_form_bool_mask && ref) noexcept = delete;
     ~html_form_bool_mask() = default;
 
 	/// component that will provided as possible to add in the logic operation of the current mask
@@ -112,22 +112,26 @@ private:
     static constexpr const char* new_mask_to_add = "new_mask";
     static constexpr const char* and_op = "and_op";
     static constexpr const char* or_op = "or_op";
-    static constexpr const char* type_undefined = "undefined";
-    static constexpr const char* type_filename = "filename";
-    static constexpr const char* type_bool = "bool";
 
     static constexpr const char* bool_changed_event = "bool_changed";
     static constexpr const char* css_class_bool_text = "html_form_bool_mask_bool_text";
 
+	//
+
     struct available_mask
     {
 	std::string label;
-	std::unique_ptr<html_mask> mask_type;
+	std::unique_ptr<html_mask> mask_type; // mask_type is not set to refer to this html_form_bool_mask
 
 	available_mask(const std::string & label,
 		       const html_mask & tobecloned);
-	available_mask(const available_mask &arg);
+	available_mask(const std::string & label); // to refer to this html_form_bool_mask
+	available_mask(const available_mask & arg);
     };
+
+    std::deque<available_mask> list_of_mask_types;
+
+	//
 
     struct entry
     {
@@ -138,24 +142,25 @@ private:
 	std::unique_ptr<html_form_input> del;
     };
 
+    std::list<entry> table_content;
+
+	//
+
     html_form_fieldset fs;
     html_form_select mask_type;
     html_table table;
     html_form_select adder;
     html_form papillotte;
 
-    std::deque<available_mask> list_of_mask_types;
-
-    std::list<entry> table_content;
     std::map<std::string, std::list<entry>::iterator> del_event_to_content;
     unsigned int event_del_count;
     std::deque<std::string> events_to_delete; ///< components that will be deleted once the inherited_get_body_part will have finished
 	/// \note cannot delete an object (mask and del) from an on_event() actor method triggered by the object itself
     std::string current_bool_mode; ///< currently displayed logic in table
-    unsigned int current_table_size; ///< size at which the displayed logic was last done
+    unsigned int current_table_size; ///< size at which the displayed logic was last updated
 
     void init(bool include_form);
-    void add_mask(const std::string & mask_type);
+    void add_mask(unsigned int num); ///< \param[in] num is the index in list_of_mask_types
     void del_mask(const std::string & event_name);
     void purge_to_delete();
     std::string bool_op_to_name(const std::string & op);
