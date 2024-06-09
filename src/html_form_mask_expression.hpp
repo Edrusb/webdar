@@ -21,8 +21,8 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
-#ifndef HTML_FORM_FILENAME_MASK_HPP
-#define HTML_FORM_FILENAME_MASK_HPP
+#ifndef HTML_FORM_MASK_EXPRESSION_HPP
+#define HTML_FORM_MASK_EXPRESSION_HPP
 
     // C system header files
 extern "C"
@@ -41,7 +41,7 @@ extern "C"
 #include "html_form_select.hpp"
 
 
-    /// class html_form_filename_mask provide mean to setup libdar::mask component for filename filtering
+    /// class html_form_mask_expression provide mean to setup libdar::mask component for filename filtering
 
     /// this html components is consitued of:
     ///
@@ -70,15 +70,15 @@ extern "C"
     /// like *and* and *or* combinasons.
 
 
-class html_form_filename_mask : public html_mask
+class html_form_mask_expression : public html_mask
 {
 public:
-    html_form_filename_mask();
-    html_form_filename_mask(const html_form_filename_mask & ref);
-    html_form_filename_mask(html_form_filename_mask && ref) noexcept = default;
-    html_form_filename_mask & operator = (const html_form_filename_mask & ref) = default;
-    html_form_filename_mask & operator = (html_form_filename_mask && ref) noexcept = default;
-    ~html_form_filename_mask() = default;
+    html_form_mask_expression();
+    html_form_mask_expression(const html_form_mask_expression & ref);
+    html_form_mask_expression(html_form_mask_expression && ref) noexcept = default;
+    html_form_mask_expression & operator = (const html_form_mask_expression & ref) = default;
+    html_form_mask_expression & operator = (html_form_mask_expression && ref) noexcept = default;
+    ~html_form_mask_expression() = default;
 
 	/// inherited from html_mask
     std::unique_ptr<libdar::mask> get_mask() const override;

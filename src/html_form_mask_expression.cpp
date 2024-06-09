@@ -35,12 +35,12 @@ extern "C"
 
 
     //
-#include "html_form_filename_mask.hpp"
+#include "html_form_mask_expression.hpp"
 
 using namespace std;
 
 
-html_form_filename_mask::html_form_filename_mask():
+html_form_mask_expression::html_form_mask_expression():
     fs(""),
     mask_type("Mask Type",
 	      "unused_event"),
@@ -67,7 +67,7 @@ html_form_filename_mask::html_form_filename_mask():
     init();
 }
 
-html_form_filename_mask::html_form_filename_mask(const html_form_filename_mask & ref):
+html_form_mask_expression::html_form_mask_expression(const html_form_mask_expression & ref):
     html_mask(ref), // parent class
     fs(ref.fs),
     mask_type(ref.mask_type),
@@ -78,7 +78,7 @@ html_form_filename_mask::html_form_filename_mask(const html_form_filename_mask &
     init();
 }
 
-unique_ptr<libdar::mask> html_form_filename_mask::get_mask() const
+unique_ptr<libdar::mask> html_form_mask_expression::get_mask() const
 {
     bool neg = negate.get_value_as_bool();
     bool casesensit = casesensitivity.get_value_as_bool();
@@ -117,14 +117,14 @@ unique_ptr<libdar::mask> html_form_filename_mask::get_mask() const
 }
 
 
-string html_form_filename_mask::inherited_get_body_part(const chemin & path,
+string html_form_mask_expression::inherited_get_body_part(const chemin & path,
 						   const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }
 
 
-void html_form_filename_mask::init()
+void html_form_mask_expression::init()
 {
 	// adoption tree
 

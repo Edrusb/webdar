@@ -33,7 +33,7 @@ extern "C"
 #include "webdar_tools.hpp"
 #include "webdar_css_style.hpp"
 #include "tokens.hpp"
-#include "html_form_filename_mask.hpp"
+#include "html_form_mask_expression.hpp"
 
     //
 #include "html_options_create.hpp"
@@ -121,7 +121,7 @@ html_options_create::html_options_create():
 	    else
 		archtype.set_selected(0);
 
-    filename_mask.add_mask_type("Filename expression", html_form_filename_mask());
+    filename_mask.add_mask_type("Filename expression", html_form_mask_expression());
     filename_mask.add_mask_myself("Logicial combination");
 
     compression.set_no_CR();
