@@ -47,10 +47,10 @@ public:
     static const std::string changed;
 
     html_crypto_algo(const std::string & title);
-    html_crypto_algo(const html_crypto_algo & ref) = default;
-    html_crypto_algo(html_crypto_algo && ref) noexcept = default;
-    html_crypto_algo & operator = (const html_crypto_algo & ref) = default;
-    html_crypto_algo & operator = (html_crypto_algo && ref) noexcept = default;
+    html_crypto_algo(const html_crypto_algo & ref) = delete;
+    html_crypto_algo(html_crypto_algo && ref) noexcept = delete;
+    html_crypto_algo & operator = (const html_crypto_algo & ref) = delete;
+    html_crypto_algo & operator = (html_crypto_algo && ref) noexcept = delete;
     ~html_crypto_algo() = default;
 
     libdar::crypto_algo get_value() const;

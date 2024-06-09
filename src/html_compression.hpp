@@ -46,10 +46,10 @@ public:
     static const std::string changed;  /// common event name for all object of this class
 
     html_compression(const std::string & title);
-    html_compression(const html_compression & ref) = default;
-    html_compression(html_compression && ref) noexcept = default;
-    html_compression & operator = (const html_compression & ref) = default;
-    html_compression & operator = (html_compression && ref) noexcept = default;
+    html_compression(const html_compression & ref) = delete;
+    html_compression(html_compression && ref) noexcept = delete;
+    html_compression & operator = (const html_compression & ref) = delete;
+    html_compression & operator = (html_compression && ref) noexcept = delete;
     ~html_compression() = default;
 
     libdar::compression get_value() const;

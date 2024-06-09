@@ -96,10 +96,10 @@ public:
 
 	/// constructor
     saisie();
-    saisie(const saisie & ref) = default;
-    saisie(saisie && ref) noexcept = default;
-    saisie & operator = (const saisie & ref) = default;
-    saisie & operator = (saisie && ref) noexcept = default;
+    saisie(const saisie & ref) = delete;
+    saisie(saisie && ref) noexcept = delete;
+    saisie & operator = (const saisie & ref) = delete;
+    saisie & operator = (saisie && ref) noexcept = delete;
     ~saisie() = default;
 
 	/// inherited from actor

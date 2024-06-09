@@ -55,10 +55,10 @@ public:
     static const std::string event_close;
 
     html_listing_page();
-    html_listing_page(const html_listing_page & ref) = default;
-    html_listing_page(html_listing_page && ref) noexcept = default;
-    html_listing_page & operator = (const html_listing_page & ref) = default;
-    html_listing_page & operator = (html_listing_page && ref) noexcept = default;
+    html_listing_page(const html_listing_page & ref) = delete;
+    html_listing_page(html_listing_page && ref) noexcept = delete;
+    html_listing_page & operator = (const html_listing_page & ref) = delete;
+    html_listing_page & operator = (html_listing_page && ref) noexcept = delete;
     ~html_listing_page() = default;
 
 
