@@ -32,7 +32,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
-
+#include "html_form_filename_mask.hpp"
 
     //
 #include "html_options_test.hpp"
@@ -59,6 +59,9 @@ html_options_test::html_options_test():
 
 	// default values
     empty.set_value_as_bool(defaults.get_empty());
+
+    filename_mask.add_mask_type("Filename expression", html_form_filename_mask());
+    filename_mask.add_mask_myself("Logical combination");
 
 	// building HTML structure
 

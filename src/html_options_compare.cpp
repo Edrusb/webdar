@@ -32,7 +32,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_tools.hpp"
-
+#include "html_form_filename_mask.hpp"
 
     //
 #include "html_options_compare.hpp"
@@ -75,6 +75,8 @@ html_options_compare::html_options_compare():
     furtive_read_mode.set_value_as_bool(defaults.get_furtive_read_mode());
     hourshift.set_value(webdar_tools_convert_to_string(defaults.get_hourshift()));
     compare_symlink_date.set_value_as_bool(defaults.get_compare_symlink_date());
+    filename_mask.add_mask_type("Filename expression", html_form_filename_mask());
+    filename_mask.add_mask_myself("Logical combination");
 
 	// building adoption tree
 

@@ -32,6 +32,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
+#include "html_form_filename_mask.hpp"
 
     //
 #include "html_options_merge.hpp"
@@ -133,6 +134,9 @@ html_options_merge::html_options_merge():
     crypto_pass1.set_value("");
     crypto_pass2.set_value("");
     crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
+
+    filename_mask.add_mask_type("Filename expression", html_form_filename_mask());
+    filename_mask.add_mask_myself("Logical combination");
 
 	// building HTML structure
 
