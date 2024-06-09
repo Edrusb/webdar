@@ -67,7 +67,7 @@ public:
     unsigned int get_selected_num() const { return selected; };
 
 	/// the number of currently available options
-    const unsigned int size() const { return choices.size(); };
+    const unsigned int num_choices() const { return choices.size(); };
 
 protected:
 
