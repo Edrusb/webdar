@@ -66,6 +66,8 @@ public:
     const std::string & get_selected_id() const { return choices[selected].id; };
     unsigned int get_selected_num() const { return selected; };
 
+	/// the number of currently available options
+    const unsigned int size() const { return choices.size(); };
 
 protected:
 
