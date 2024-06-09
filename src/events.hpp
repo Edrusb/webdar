@@ -43,14 +43,20 @@ extern "C"
 
     /// class events
 
-    /// an events object contains a set of labelled events, each one having a name.
+    /// an events object contains a set of events, each one having a name.
     /// an actor object must register for one or more named event of a events object
-    /// (or of different events objects) to be triggered by a named event
+    /// (or of different events objects) to be triggered by a named event from that object
 
 class events : public reference
 {
 public:
     events() = default;
+
+	/// copy constructor
+
+	/// \note all events are kept, but all registered
+	/// actors to these events are not registered to the
+	/// newly created object (see copy constructor of reference class)
     events(const events & ref) = default;
     events(events && ref) noexcept(false) = default;
     events & operator = (const events & ref) = default;
