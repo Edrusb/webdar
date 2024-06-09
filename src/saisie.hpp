@@ -49,6 +49,7 @@ extern "C"
 #include "html_archive_isolate.hpp"
 #include "html_archive_merge.hpp"
 #include "html_button.hpp"
+#include "html_double_button.hpp"
 #include "html_bibliotheque.hpp"
 #include "html_derouleur.hpp"
 
@@ -200,7 +201,7 @@ private:
 	//
     html_derouleur test_params;
     html_options_test test;
-    html_button go_test;
+    html_double_button go_test;
 	//
     html_button go_list;
 	//
