@@ -68,7 +68,7 @@ html_form_filename_mask::html_form_filename_mask():
 }
 
 html_form_filename_mask::html_form_filename_mask(const html_form_filename_mask & ref):
-    html_mask(ref),
+    html_mask(ref), // parent class
     fs(ref.fs),
     mask_type(ref.mask_type),
     negate(ref.negate),
