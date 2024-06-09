@@ -64,21 +64,19 @@ html_form_filename_mask::html_form_filename_mask():
     mask_type.add_choice("1", "Regular Expression");
     mask_type.set_selected(0);
 
-	// adoption tree
-
-    fs.adopt(&mask_type);
-    fs.adopt(&negate);
-    fs.adopt(&casesensitivity);
-    fs.adopt(&mask_expression);
-    adopt(&fs);
-
-	// events
-
-	// visibity
-
-	// css stuff
+    init();
 }
 
+html_form_filename_mask::html_form_filename_mask(const html_form_filename_mask & ref):
+    html_mask(ref),
+    fs(ref.fs),
+    mask_type(ref.mask_type),
+    negate(ref.negate),
+    casesensitivity(ref.casesensitivity),
+    mask_expression(ref.mask_expression)
+{
+    init();
+}
 
 unique_ptr<libdar::mask> html_form_filename_mask::get_mask() const
 {
@@ -125,3 +123,20 @@ string html_form_filename_mask::inherited_get_body_part(const chemin & path,
     return get_body_part_from_all_children(path, req);
 }
 
+
+void html_form_filename_mask::init()
+{
+	// adoption tree
+
+    fs.adopt(&mask_type);
+    fs.adopt(&negate);
+    fs.adopt(&casesensitivity);
+    fs.adopt(&mask_expression);
+    adopt(&fs);
+
+	// events
+
+	// visibity
+
+	// css stuff
+}

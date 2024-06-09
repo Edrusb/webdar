@@ -74,7 +74,7 @@ class html_form_filename_mask : public html_mask
 {
 public:
     html_form_filename_mask();
-    html_form_filename_mask(const html_form_filename_mask & ref) = default;
+    html_form_filename_mask(const html_form_filename_mask & ref);
     html_form_filename_mask(html_form_filename_mask && ref) noexcept = default;
     html_form_filename_mask & operator = (const html_form_filename_mask & ref) = default;
     html_form_filename_mask & operator = (html_form_filename_mask && ref) noexcept = default;
@@ -98,6 +98,8 @@ private:
     html_form_input negate;
     html_form_input casesensitivity;
     html_form_input mask_expression;
+
+    void init();
 };
 
 #endif
