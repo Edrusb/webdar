@@ -58,6 +58,11 @@ public:
 	/// \note this can be done using the MASK_CLONER_MACRO
     virtual std::unique_ptr<html_mask> clone() const = 0;
 
+protected:
+    static constexpr const char* red_border = "html_mask_error";
+
+	/// inherited from body_builder
+    virtual void new_css_library_available() override;
 };
 
 template <class T> std::unique_ptr<html_mask> mask_cloner(const T & ceci)
