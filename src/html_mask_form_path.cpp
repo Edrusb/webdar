@@ -38,10 +38,10 @@ extern "C"
 
 using namespace std;
 
-html_mask_form_path::html_mask_form_path():
+html_mask_form_path::html_mask_form_path(bool allow_absolute_paths):
     html_form("Update")
 {
-    root.add_mask_type("Path expression", html_form_mask_subdir());
+    root.add_mask_type("Path expression", html_form_mask_subdir(allow_absolute_paths));
     root.add_mask_myself("Logicial combination");
     adopt(&root);
 }

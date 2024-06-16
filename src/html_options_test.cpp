@@ -52,7 +52,8 @@ html_options_test::html_options_test():
     display_skipped("Display skipped files",
 		    html_form_input::check,
 		    "1",
-		    1)
+		    1),
+    path_mask(false)
 {
     libdar::archive_options_test defaults;
 

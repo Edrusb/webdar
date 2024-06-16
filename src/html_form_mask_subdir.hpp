@@ -70,7 +70,7 @@ extern "C"
 class html_form_mask_subdir : public html_mask
 {
 public:
-    html_form_mask_subdir();
+    html_form_mask_subdir(bool absolute_path_accepted);
     html_form_mask_subdir(const html_form_mask_subdir & ref);
     html_form_mask_subdir(html_form_mask_subdir && ref) noexcept = default;
     html_form_mask_subdir & operator = (const html_form_mask_subdir & ref) = default;
@@ -90,6 +90,7 @@ protected:
 
 
 private:
+    bool absolute_ok;
     html_form_fieldset fs;
     html_form_select mask_type;
     html_form_input casesensitivity;

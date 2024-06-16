@@ -42,7 +42,7 @@ extern "C"
 class html_mask_form_path : public html_form
 {
 public:
-    html_mask_form_path();
+    html_mask_form_path(bool allow_absolute_paths);
     html_mask_form_path(const html_mask_form_path & ref) = default;
     html_mask_form_path(html_mask_form_path && ref) noexcept = delete;
     html_mask_form_path & operator = (const html_mask_form_path & ref) = delete;
