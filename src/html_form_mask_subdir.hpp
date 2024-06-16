@@ -80,6 +80,8 @@ public:
 	/// inherited from html_mask
     std::unique_ptr<libdar::mask> get_mask() const override;
 
+    void set_path_prefix(const libdar::path & x_prefix) { prefix = x_prefix; };
+
 	/// clone() implementation
     MASK_CLONER_MACRO;
 
@@ -91,6 +93,7 @@ protected:
 
 private:
     bool absolute_ok;
+    libdar::path prefix;
     html_form_fieldset fs;
     html_form_select mask_type;
     html_form_input casesensitivity;

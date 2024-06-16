@@ -42,6 +42,7 @@ using namespace std;
 
 html_form_mask_subdir::html_form_mask_subdir(bool absolute_path_accepted):
     absolute_ok(absolute_path_accepted),
+    prefix(libdar::FAKE_ROOT),
     fs(""),
     mask_type("Mask Type",
 	      "unused_event"),
@@ -68,6 +69,7 @@ html_form_mask_subdir::html_form_mask_subdir(bool absolute_path_accepted):
 html_form_mask_subdir::html_form_mask_subdir(const html_form_mask_subdir & ref):
     html_mask(ref), // parent class
     absolute_ok(ref.absolute_ok),
+    prefix(ref.prefix),
     fs(ref.fs),
     mask_type(ref.mask_type),
     casesensitivity(ref.casesensitivity),
@@ -80,19 +82,32 @@ unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
 {
     bool casesensit = casesensitivity.get_value_as_bool();
     unique_ptr<libdar::mask> ret;
+    libdar::path pathval("/");
+
+    try
+    {
+	pathval = libdar::path(mask_subdir.get_value());
+	if(pathval.is_relative())
+	    pathval = prefix + pathval;
+    }
+    catch(libdar::Egeneric & e)
+    {
+	e.prepend_message("Error met while creating Filename based filtering");
+	throw exception_libcall(e);
+    }
 
     switch(mask_type.get_selected_num())
     {
     case 0: // Include path and subdir
-	ret.reset(new (nothrow) libdar::simple_path_mask(mask_subdir.get_value(),
+	ret.reset(new (nothrow) libdar::simple_path_mask(pathval.display(),
 							 casesensit));
 	break;
     case 1: // Include fixed path only
-	ret.reset(new (nothrow) libdar::same_path_mask(mask_subdir.get_value(),
+	ret.reset(new (nothrow) libdar::same_path_mask(pathval.display(),
 						       casesensit));
 	break;
     case 2: // Exclude path and subdir
-	ret.reset(new (nothrow) libdar::exclude_dir_mask(mask_subdir.get_value(),
+	ret.reset(new (nothrow) libdar::exclude_dir_mask(pathval.display(),
 							 casesensit));
 	break;
     default:
