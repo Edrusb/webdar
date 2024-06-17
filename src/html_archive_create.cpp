@@ -53,12 +53,14 @@ html_archive_create::html_archive_create():
 
     fs_root.set_select_mode(html_form_input_file::select_dir);
     fs_root.set_can_create_dir(false);
+    fs_root.set_change_event_name(fs_root_change_event);
     sauv_path.set_select_mode(html_form_input_file::select_dir);
     sauv_path.set_can_create_dir(true);
     if(repoxfer.get_html_user_interaction())
 	repoxfer.get_html_user_interaction()->auto_hide(true, false);
     else
 	throw WEBDAR_BUG;
+    options.set_fs_root(fs_root.get_value()); // will be kept updat to date by mean on events
 
 	// adoption tree
 
@@ -72,6 +74,7 @@ html_archive_create::html_archive_create():
     adopt(&repoxfer);
 
 	// events
+    fs_root.record_actor_on_event(this, fs_root_change_event);
     options.record_actor_on_event(this, html_options_create::entrepot_changed);
     repoxfer.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
 
@@ -93,6 +96,10 @@ void html_archive_create::on_event(const string & event_name)
     else if(event_name == html_libdar_running_popup::libdar_has_finished)
     {
 	repoxfer.set_visible(false);
+    }
+    else if(event_name == fs_root_change_event)
+    {
+	options.set_fs_root(fs_root.get_value());
     }
     else
 	throw WEBDAR_BUG;

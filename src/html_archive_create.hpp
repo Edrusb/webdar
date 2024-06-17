@@ -76,6 +76,8 @@ protected:
     virtual void signaled_inherited_cancel() override;
 
 private:
+    static constexpr const char* fs_root_change_event = "fs_root_changed";
+
     html_derouleur deroule;
     html_form form;
     html_form_fieldset fs;
