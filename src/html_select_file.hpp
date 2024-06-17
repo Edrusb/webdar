@@ -43,6 +43,7 @@ extern "C"
 #include "html_text.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_button.hpp"
+#include "html_double_button.hpp"
 #include "html_table.hpp"
 #include "html_popup.hpp"
 #include "html_form.hpp"
@@ -233,9 +234,7 @@ private:
 
 	//
     std::string path_loaded;          ///< path displayed (empty string means not initialized)
-    html_button parentdir1;           ///< change to parent dir
-    html_button parentdir2;           ///< replace parentdir one time of two to avoid endelessly changing to parentdirectory (when page refresh is set or user reloads page)
-    bool parentdir1_visible;          ///< keep trace of the parentdir that was last visible (used when loading_mode is set)
+    html_double_button parentdir;     ///< change to parent dir
     html_text content_placeholder;    ///< replace content and *parentdir* when loading the directory content
     html_table content;               ///< parent of content objects
     std::map<std::string, item> listed; ///< associate a event message to each listed items
@@ -286,9 +285,6 @@ private:
 	/// \param[in] mode if set to true, change visibility to display the content_placeholder
 	/// component, else show the normal components and available directory content
     void loading_mode(bool mode);
-
-	/// swap parentdir button visibility
-    void set_parentdir_visible();
 
 	/// return the parent path of the provided path
     static std::string get_parent_path(const std::string & somepath);

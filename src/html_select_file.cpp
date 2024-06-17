@@ -67,8 +67,7 @@ html_select_file::html_select_file(const string & message):
     warning(3, ""),
     fieldset(""),
     path_loaded(""),
-    parentdir1("Parent Directory", op_chdir_parent),
-    parentdir2("Parent Directory", op_chdir_parent),
+    parentdir("Parent Directory", op_chdir_parent),
     content(2),
     content_placeholder(2, "Loading directory content..."),
     btn_cancel("Cancel", op_cancelled),
@@ -92,8 +91,7 @@ html_select_file::html_select_file(const string & message):
 	// events we want to act on from our own html components
     btn_cancel.record_actor_on_event(this, op_cancelled);
     btn_validate.record_actor_on_event(this, entry_selected);
-    parentdir1.record_actor_on_event(this, op_chdir_parent);
-    parentdir2.record_actor_on_event(this, op_chdir_parent);
+    parentdir.record_actor_on_event(this, op_chdir_parent);
     btn_createdir.record_actor_on_event(this, op_createdir);
     btn_hide_createdir.record_actor_on_event(this, op_hide_createdir);
     createdir_input.record_actor_on_event(this, html_form_input::changed);
@@ -107,8 +105,7 @@ html_select_file::html_select_file(const string & message):
     title_box.adopt(&entrepot_url);
     title_box.adopt(&warning);
     adopt(&fieldset);
-    fieldset.adopt(&parentdir1);
-    fieldset.adopt(&parentdir2);
+    fieldset.adopt(&parentdir);
     fieldset.adopt(&content);
     fieldset.adopt(&content_placeholder);
     adopt(&webui);
@@ -136,8 +133,6 @@ html_select_file::html_select_file(const string & message):
 	// setup default visibility property
 
     ignore_body_changed_from_my_children(true); // ignore visibility change
-    parentdir1_visible = true;
-    set_parentdir_visible();
     btn_hide_createdir.set_visible(false);
 
     set_visible(false); // make us invisible until go_select() is called
@@ -205,9 +200,6 @@ void html_select_file::on_event(const string & event_name)
     {
 	fieldset.change_label(get_parent_path(fieldset.get_label()));
 	fieldset_isdir = true;
-	parentdir1_visible = ! parentdir1_visible;
-	set_parentdir_visible();
-	    // not necessary to call my_body_part_has_changed() as we just changed a child visibility
 	run_thread(run_fill_only);
     }
     else if(event_name == op_createdir)
@@ -766,8 +758,7 @@ void html_select_file::loading_mode(bool mode)
 	    // and does not need to be.
 	title.set_visible(false);
 	entrepot_url.set_visible(false);
-	parentdir1.set_visible(false);
-	parentdir2.set_visible(false);
+	parentdir.set_visible(false);
 	content.set_visible(false);
 	btn_box.set_visible(false);
 	webui.clear();
@@ -778,7 +769,7 @@ void html_select_file::loading_mode(bool mode)
     {
 	title.set_visible(true);
 	entrepot_url.set_visible(true);
-	set_parentdir_visible();
+	parentdir.set_visible(true);
 	content.set_visible(true);
 	btn_box.set_visible(true);
 	    // not necessary to set webui.set_visible(false) in the
@@ -789,12 +780,6 @@ void html_select_file::loading_mode(bool mode)
     }
 
     is_loading_mode = mode;
-}
-
-void html_select_file::set_parentdir_visible()
-{
-    parentdir1.set_visible(parentdir1_visible);
-    parentdir2.set_visible(!parentdir1_visible);
 }
 
 string html_select_file::get_parent_path(const string & somepath)

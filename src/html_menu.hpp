@@ -114,7 +114,7 @@ private:
     struct cell
     {
 	std::string itag;  ///< used in implementation
-	html_button* ibtn; ///< object container the visible (translatable) name of the item
+	html_button* ibtn; ///< object containing the visible (translatable) name of the item
 
 	cell(const std::string & label, const std::string & event_name, const std::string & tag)
 	{

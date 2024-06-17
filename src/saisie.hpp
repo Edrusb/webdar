@@ -48,7 +48,7 @@ extern "C"
 #include "html_archive_create.hpp"
 #include "html_archive_isolate.hpp"
 #include "html_archive_merge.hpp"
-#include "html_button.hpp"
+#include "html_double_button.hpp"
 #include "html_double_button.hpp"
 #include "html_bibliotheque.hpp"
 #include "html_derouleur.hpp"
@@ -190,29 +190,29 @@ private:
     html_form_input_file extract_fs_root;
     html_form extract_fs_root_form;
     html_options_extract extract;
-    html_button go_extract;
+    html_double_button go_extract;
 	//
     html_derouleur diff_params;
     html_form_fieldset diff_fs_root_fs;
     html_form_input_file diff_fs_root;
     html_form diff_fs_root_form;
     html_options_compare compare;
-    html_button go_compare;
+    html_double_button go_compare;
 	//
     html_derouleur test_params;
     html_options_test test;
     html_double_button go_test;
 	//
-    html_button go_list;
+    html_double_button go_list;
 	//
     html_archive_create create;
-    html_button go_create;
+    html_double_button go_create;
 	//
     html_archive_isolate isolate;
-    html_button go_isolate;
+    html_double_button go_isolate;
 	//
     html_archive_merge merge;
-    html_button go_merge;
+    html_double_button go_merge;
 	//
     html_bibliotheque biblio;
 	//
