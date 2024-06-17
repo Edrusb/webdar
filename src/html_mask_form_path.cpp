@@ -45,3 +45,20 @@ html_mask_form_path::html_mask_form_path(bool allow_absolute_paths):
     root.add_mask_myself("Logicial combination");
     adopt(&root);
 }
+
+void html_mask_form_path::set_fs_root(const std::string & prefix)
+{
+    try
+    {
+	if(!prefix.empty())
+	{
+	    libdar::path tmp(prefix);
+	    root.set_root_prefix(tmp);
+	}
+    }
+    catch(libdar::Egeneric & e)
+    {
+	e.prepend_message("Error while setting prefix for path base filtering");
+	throw exception_libcall(e);
+    }
+}

@@ -49,6 +49,8 @@ public:
     html_mask_form_path & operator = (html_mask_form_path && ref) noexcept = delete;
     ~html_mask_form_path() = default;
 
+    void set_fs_root(const std::string & prefix);
+
 	/// inherited from html_mask
     std::unique_ptr<libdar::mask> get_mask() const { return root.get_mask(); };
 
