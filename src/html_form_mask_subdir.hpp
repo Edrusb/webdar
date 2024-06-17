@@ -78,9 +78,10 @@ public:
     ~html_form_mask_subdir() = default;
 
 	/// inherited from html_mask
-    std::unique_ptr<libdar::mask> get_mask() const override;
+    virtual void set_root_prefix(const libdar::path & x_prefix) override { prefix = x_prefix; };
 
-    void set_path_prefix(const libdar::path & x_prefix) { prefix = x_prefix; };
+	/// inherited from html_mask
+    virtual std::unique_ptr<libdar::mask> get_mask() const override;
 
 	/// clone() implementation
     MASK_CLONER_MACRO;

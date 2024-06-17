@@ -89,6 +89,11 @@ public:
 	/// after all add_mask_type() with two arguments.
     void add_mask_myself(const std::string & label);
 
+
+	/// inherited from html_mask
+    virtual void set_root_prefix(const libdar::path & x_prefix) override;
+
+
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override;
 
@@ -137,9 +142,9 @@ private:
     {
 	entry() { mask.reset(); del.reset(); };
 
-	std::unique_ptr<html_text> logic;
-	std::unique_ptr<html_mask> mask;
-	std::unique_ptr<html_form_input> del;
+	std::unique_ptr<html_text> logic;  ///< text displaying "and" or "or"
+	std::unique_ptr<html_mask> mask;   ///< the mask
+	std::unique_ptr<html_form_input> del;  ///< the button to delete this mask
     };
 
     std::list<entry> table_content;
@@ -157,6 +162,7 @@ private:
 	/// \note cannot delete an object (mask and del) from an on_event() actor method triggered by the object itself
     std::string current_bool_mode; ///< currently displayed logic in table
     unsigned int current_table_size; ///< size at which the displayed logic was last updated
+    libdar::path root_prefix;
 
     void init();
     void add_mask(unsigned int num); ///< \param[in] num is the index in list_of_mask_types

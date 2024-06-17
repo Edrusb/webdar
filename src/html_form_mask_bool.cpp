@@ -42,7 +42,8 @@ html_form_mask_bool::html_form_mask_bool():
     mask_type("Combining with", bool_changed_event),
     table(3),
     adder("Add a new mask", new_mask_to_add),
-    event_del_count(0)
+    event_del_count(0),
+    root_prefix(libdar::FAKE_ROOT)
 {
 
 	// components configuration
@@ -68,8 +69,8 @@ html_form_mask_bool::html_form_mask_bool(const html_form_mask_bool & ref):
     table(ref.table.get_width()),
     adder(ref.adder),
     list_of_mask_types(ref.list_of_mask_types),
-    event_del_count(0)
-
+    event_del_count(0),
+    root_prefix(ref.root_prefix)
 {
 	// want the new object to have *AND* operation if ref has *OR*
 	// and vice versa. Because it does not make much sense to add
@@ -103,6 +104,23 @@ void html_form_mask_bool::add_mask_myself(const std::string & label)
     adder.add_choice(webdar_tools_convert_to_string(list_of_mask_types.size()), label);
     list_of_mask_types.push_back(available_mask(label));
 }
+
+void html_form_mask_bool::set_root_prefix(const libdar::path & x_prefix)
+{
+    list<entry>::iterator it = table_content.begin();
+
+    root_prefix = x_prefix; // record the value for use with future sub-mask
+
+	// updating current existing sub-masks
+    while(it != table_content.end())
+    {
+	if(! (it->mask))
+	    throw WEBDAR_BUG; // the unique_ptr points to nothing
+	(it->mask)->set_root_prefix(x_prefix);
+	++it;
+    }
+}
+
 
 unique_ptr<libdar::mask> html_form_mask_bool::get_mask() const
 {
@@ -261,6 +279,7 @@ void html_form_mask_bool::add_mask(unsigned int num)
 
     if(! new_mask.mask)
 	throw exception_memory();
+    new_mask.mask->set_root_prefix(root_prefix);
 
     new_mask.del.reset(new (nothrow) html_form_input("delete",
 						     html_form_input::check,
