@@ -53,6 +53,7 @@ extern "C"
 #include "html_entrepot.hpp"
 #include "html_web_user_interaction.hpp"
 #include "html_mask_form_filename.hpp"
+#include "html_mask_form_path.hpp"
 
     /// html component used for the user to provide the parameters to create a new archive
 
@@ -81,6 +82,9 @@ public:
 	/// optain the current entrepot object where is expected to be create the archive
     std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const { return entrep.get_entrepot(webui); };
 
+	/// needed for path based filtering to filter accordingly to the current root_fs
+    void set_fs_root(const std::string & prefix) { path_mask.set_fs_root(prefix); };
+
 protected:
 
 	/// inherited from body_builder
@@ -104,6 +108,8 @@ private:
     html_form form_perimeter;
 
     html_mask_form_filename filename_mask;
+
+    html_mask_form_path path_mask;
 
     html_form form_reading;
 
