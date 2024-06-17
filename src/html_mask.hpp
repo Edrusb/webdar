@@ -49,6 +49,12 @@ public:
     html_mask & operator = (html_mask && ref) noexcept = default;
     ~html_mask() = default;
 
+	/// set fs_root used by the operation
+
+	/// \note this is mainly needed to be implemented for
+	/// path based filtering
+    virtual void set_root_prefix(const libdar::path & x_prefix) {};
+
 	/// obtain the mask for libdar
     virtual std::unique_ptr<libdar::mask> get_mask() const = 0;
 
