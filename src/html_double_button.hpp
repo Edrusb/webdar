@@ -95,11 +95,14 @@ protected:
 
 
 private:
+    static const std::string event_one;
+    static const std::string event_two;
+
     html_button one;
     html_button two;
-    bool one_visible;
+    std::string my_event_name;
 
-    void swap();
+    void swap(bool show_one);
 };
 
 #endif
