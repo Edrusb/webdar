@@ -164,6 +164,7 @@ saisie::saisie():
     about_fs.adopt(&session_name);
     about_form.adopt(&about_fs);
     select.adopt_in_section(menu_main, &about_form);
+    select.adopt_in_section(menu_main, &demo);
 
 	// configuration of the restore sub-page
     static const char* sect_extract_params = "eparams";

@@ -52,7 +52,7 @@ extern "C"
 #include "html_double_button.hpp"
 #include "html_bibliotheque.hpp"
 #include "html_derouleur.hpp"
-
+#include "html_demo.hpp"
 
     /// class saisie
     ///
@@ -184,6 +184,7 @@ private:
     html_form_input session_name;
     html_form_fieldset about_fs;
     html_form about_form;
+    html_demo demo;
 	//
     html_derouleur extract_params;
     html_form_fieldset extract_fs_root_fs;
