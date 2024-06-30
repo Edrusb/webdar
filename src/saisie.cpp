@@ -279,6 +279,7 @@ string saisie::inherited_get_body_part(const chemin & path,
 	sub_path.pop_front();
 
     status = st_idle;
+    ignore_body_changed_from_my_children(false);
 
 	// now we can generate in return the whole HTML code for "this" object
     if(choice.get_current_tag() == menu_close && close.get_value())
@@ -318,6 +319,13 @@ string saisie::inherited_get_body_part(const chemin & path,
 	else
 	    ret = html_page::inherited_get_body_part(path, req);
     }
+
+    if(status != st_idle)
+	ignore_body_changed_from_my_children(true);
+	// avoiding re-evaluation which is not need if status != st_idle
+	// as an action has just been fired from us and re-evaluation
+	// would reset the status to st_idle and would lose the nature
+	// of the action we just fired.
 
     return ret;
 }
