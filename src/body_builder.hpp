@@ -240,7 +240,7 @@ public:
 	/// parent (here html_statistics) to be recorded as changed and the cycle is complete
 	/// this process never ends. This call avoids propagating any future body_changed status
 	/// toward the parents and set the caller as if it was a static, never changing, object.
-    void ignore_body_changed_from_my_children(bool mode) { ignore_children_body_changed = mode; };
+    void ignore_body_changed_from_my_children(bool mode) { ignore_children_body_changed = mode; if(mode) body_changed = false; };
 
 	/// get the current status of ignore_body_changed_from_my_children()
     bool get_ignore_body_changed_from_my_children() const { return ignore_children_body_changed; };
