@@ -204,6 +204,9 @@ saisie::saisie():
     diff_fs_root.set_can_create_dir(false);
     diff_fs_root.set_change_event_name(diff_root_changed);
 
+    compare.set_fs_root(diff_fs_root.get_value());
+
+
 	// testing sub-page
     static const char* sect_test_params = "tparams";
     test_params.add_section(sect_test_params, "Testing parameters");
