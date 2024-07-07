@@ -46,10 +46,11 @@ void archive_restore::inherited_run()
 	if(!ui && ! ui->get_user_interaction())
 	    throw WEBDAR_BUG;
 
+	ui->clear();
+	ui->auto_hide(false, false);
+
 	if(param == nullptr)
 	    throw WEBDAR_BUG;
-
-	ui->clear();
 
 	libdar::path archpath(param->get_archive_path(), true);
 	libdar::path fs_root(param->get_fs_root(), true);

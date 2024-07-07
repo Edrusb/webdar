@@ -46,6 +46,9 @@ void archive_isolate::inherited_run()
 	if(!ui && ! ui->get_user_interaction())
 	    throw WEBDAR_BUG;
 
+	ui->clear();
+	ui->auto_hide(false, false);
+
 	if(param == nullptr)
 	    throw WEBDAR_BUG;
 

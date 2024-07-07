@@ -63,11 +63,11 @@ void archive_init_list::inherited_run()
 	if(!ui && ! ui->get_user_interaction())
 	    throw WEBDAR_BUG;
 
+	ui->clear();
+	ui->auto_hide(false, false);
+
 	if(param == nullptr)
 	    throw WEBDAR_BUG;
-
-	ui->get_statistics().clear_counters();
-	ui->get_statistics().clear_labels();
 
 	libdar::path archpath(param->get_archive_path(), true);
 	string basename(param->get_archive_basename());
