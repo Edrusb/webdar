@@ -69,10 +69,10 @@ html_demo::html_demo():
     description.add_text(0, "Webdar is located. The below components illustrates the ");
     description.add_text(0, "HTML/HTTP limitations, so you can familiarize yourself with them.");
     description.add_nl();
-    description.add_text(2, "How to use this play ground");
+    description.add_text(2, "How to use this playground");
     description.add_text(0, "On the left, you can enter text, select components and click on the different buttons.");
     description.add_nl();
-    description.add_text(0, "On the right, you will see what and when Webdar will receive the information.");
+    description.add_text(0, "On the right, you will see when and what information Webdar will receive.");
     description.add_nl();
 
     static const char* choice1 = "choice 1";
