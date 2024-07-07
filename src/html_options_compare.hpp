@@ -41,6 +41,7 @@ extern "C"
 #include "html_form.hpp"
 #include "html_derouleur.hpp"
 #include "html_mask_form_filename.hpp"
+#include "html_mask_form_path.hpp"
 
     /// html component providing a way for the user to set the parameter of libdar comparison operation
 
@@ -53,6 +54,9 @@ public:
     html_options_compare & operator = (const html_options_compare & ref) = delete;
     html_options_compare & operator = (html_options_compare && ref) noexcept = delete;
     ~html_options_compare() = default;
+
+	/// needed for path based filtering to filter accordingly to the current root_fs
+    void set_fs_root(const std::string & prefix) { path_mask.set_fs_root(prefix); };
 
     libdar::archive_options_diff get_options() const;
 
@@ -77,6 +81,7 @@ private:
     html_form_input hourshift;
     html_form_input compare_symlink_date;
     html_mask_form_filename filename_mask;
+    html_mask_form_path path_mask;
 
 };
 

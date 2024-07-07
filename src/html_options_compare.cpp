@@ -65,7 +65,8 @@ html_options_compare::html_options_compare():
     compare_symlink_date("Compare symlink mtime",
 			 html_form_input::check,
 			 "",
-			 1)
+			 1),
+    path_mask(true)
 {
     libdar::archive_options_diff defaults;
 
@@ -79,9 +80,11 @@ html_options_compare::html_options_compare():
 	// building adoption tree
 
     static const char* sect_opt = "options";
-    static const char* sect_mask = "mask";
+    static const char* sect_mask_filename = "mask_file";
+    static const char* sect_mask_path = "mask_path";
     deroule.add_section(sect_opt, "Comparison options");
-    deroule.add_section(sect_mask, "Filename based filtering");
+    deroule.add_section(sect_mask_filename, "Filename based filtering");
+    deroule.add_section(sect_mask_path, "Path based filtering");
 
     fs.adopt(&info_details);
     fs.adopt(&what_to_check);
@@ -92,7 +95,8 @@ html_options_compare::html_options_compare():
     fs.adopt(&compare_symlink_date);
     form.adopt(&fs);
     deroule.adopt_in_section(sect_opt, &form);
-    deroule.adopt_in_section(sect_mask, &filename_mask);
+    deroule.adopt_in_section(sect_mask_filename, &filename_mask);
+    deroule.adopt_in_section(sect_mask_path, &path_mask);
     adopt(&deroule);
 
 	// css
@@ -112,6 +116,7 @@ libdar::archive_options_diff html_options_compare::get_options() const
     ret.set_hourshift(libdar::infinint(webdar_tools_convert_to_int(hourshift.get_value())));
     ret.set_compare_symlink_date(compare_symlink_date.get_value_as_bool());
     ret.set_selection(*(filename_mask.get_mask()));
+    ret.set_subtree(*(path_mask.get_mask()));
 
     return ret;
 }
