@@ -53,7 +53,7 @@ html_options_test::html_options_test():
 		    html_form_input::check,
 		    "1",
 		    1),
-    path_mask(false)
+    path_mask(true)
 {
     libdar::archive_options_test defaults;
 

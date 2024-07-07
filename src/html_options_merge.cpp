@@ -71,7 +71,7 @@ html_options_merge::html_options_merge():
     fs_perimeter(""),
     empty_dir("Store ignored directories as empty directories", html_form_input::check, "", 1),
     decremental_mode("Decremental mode", html_form_input::check, "", 1),
-    path_mask(false),
+    path_mask(true),
     form_compr("Update"),
     fs_compr(""),
     keep_compressed("Keep file compressed", html_form_input::check, "", 1),
