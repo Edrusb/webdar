@@ -60,7 +60,7 @@ html_demo::html_demo():
 
 	// components configuration
     description.add_text(2, "By Design");
-    description.add_text(0, "By design, webdar does not use any script but only pure ");
+    description.add_text(0, "By design, Webdar does not use any script but only pure ");
     description.add_text(0, "HTML directives. This has the advantage of security but ");
     description.add_text(0, "the drawback of HTML and HTTP limitations.");
     description.add_text(0, "In particular the information typed in the browser");
