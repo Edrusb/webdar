@@ -234,6 +234,7 @@ private:
     static const std::string menu_close;
 
     static const std::string diff_root_changed;
+    static const std::string extract_root_changed;
 };
 
 #endif

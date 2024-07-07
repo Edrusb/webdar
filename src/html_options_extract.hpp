@@ -41,6 +41,7 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_derouleur.hpp"
 #include "html_mask_form_filename.hpp"
+#include "html_mask_form_path.hpp"
 
     /// html components used for the user to provide parameters of libdar archive restoration operation
 
@@ -53,6 +54,9 @@ public:
     html_options_extract & operator = (const html_options_extract & ref) = delete;
     html_options_extract & operator = (html_options_extract && ref) noexcept = delete;
     ~html_options_extract() = default;
+
+	/// needed for path based filtering to filter accordingly to the current root_fs
+    void set_fs_root(const std::string & prefix) { path_mask.set_fs_root(prefix); };
 
     libdar::archive_options_extract get_options() const;
 
@@ -69,7 +73,6 @@ private:
     html_derouleur deroule;
     html_form form;
     html_form_fieldset fs;
-	// subtree (filter)
     html_form_input warn_over;
     html_form_input info_details;
 	// ea_mask (filter)
@@ -84,6 +87,7 @@ private:
     html_form_input only_deleted;
     html_form_input ignore_deleted;
     html_mask_form_filename filename_mask;
+    html_mask_form_path path_mask;
 };
 
 #endif

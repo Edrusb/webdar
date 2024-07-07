@@ -79,7 +79,8 @@ html_options_extract::html_options_extract():
     ignore_deleted("Avoid removing files flagged as to be removed",
 		   html_form_input::check,
 		   "",
-		   0)
+		   0),
+    path_mask(false)
 {
 	// set html fields to default value used by libdar
 
@@ -116,9 +117,11 @@ html_options_extract::html_options_extract():
 	// build the adoption tree
 
     static const char* sect_opt = "options";
-    static const char* sect_mask = "mask";
+    static const char* sect_mask_file = "mask_file";
+    static const char* sect_mask_path = "mask_path";
     deroule.add_section(sect_opt, "Restoration options");
-    deroule.add_section(sect_mask, "Filename based filtering");
+    deroule.add_section(sect_mask_file, "Filename based filtering");
+    deroule.add_section(sect_mask_path, "Path based filtering");
 
     fs.adopt(&warn_over);
     fs.adopt(&info_details);
@@ -133,7 +136,8 @@ html_options_extract::html_options_extract():
     fs.adopt(&ignore_deleted);
     form.adopt(&fs);
     deroule.adopt_in_section(sect_opt, &form);
-    deroule.adopt_in_section(sect_mask, &filename_mask);
+    deroule.adopt_in_section(sect_mask_file, &filename_mask);
+    deroule.adopt_in_section(sect_mask_path, &path_mask);
     adopt(&deroule);
 
 	// css
@@ -172,6 +176,7 @@ libdar::archive_options_extract html_options_extract::get_options() const
     ret.set_only_deleted(only_deleted.get_value_as_bool());
     ret.set_ignore_deleted(ignore_deleted.get_value_as_bool());
     ret.set_selection(*(filename_mask.get_mask()));
+    ret.set_subtree(*(path_mask.get_mask()));
 
     return ret;
 }
