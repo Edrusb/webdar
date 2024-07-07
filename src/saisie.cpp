@@ -65,6 +65,8 @@ const string saisie::menu_biblio = "bibliotheque";
 const string saisie::menu_sessions = "sessions";
 const string saisie::menu_close = "close";
 
+const string saisie::diff_root_changed = "diff_fs_root_changed";
+
 saisie::saisie():
     archread(""),
     licensing((chemin(STATIC_PATH_ID) + chemin(STATIC_OBJ_LICENSING)).display(false), "Webdar is released under the GNU Public License v3"),
@@ -200,6 +202,7 @@ saisie::saisie():
 
     diff_fs_root.set_select_mode(html_form_input_file::select_dir);
     diff_fs_root.set_can_create_dir(false);
+    diff_fs_root.set_change_event_name(diff_root_changed);
 
 	// testing sub-page
     static const char* sect_test_params = "tparams";
@@ -253,6 +256,7 @@ saisie::saisie():
     go_create.record_actor_on_event(this, event_create);
     go_isolate.record_actor_on_event(this, event_isolate);
     go_merge.record_actor_on_event(this, event_merge);
+    diff_fs_root.record_actor_on_event(this, diff_root_changed);
 
     session_name.set_change_event_name(changed_session_name); // using the same event name as the we one we will trigger upon session name change
     session_name.record_actor_on_event(this, changed_session_name);
@@ -400,6 +404,10 @@ void saisie::on_event(const string & event_name)
 	// propagating the event
 
 	my_body_part_has_changed();
+    }
+    else if(event_name == diff_root_changed)
+    {
+	compare.set_fs_root(diff_fs_root.get_value());
     }
     else
 	throw WEBDAR_BUG;
