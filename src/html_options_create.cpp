@@ -47,7 +47,7 @@ html_options_create::html_options_create():
     form_archgen("Update"),
     form_shown("Update"),
     form_perimeter("Update"),
-    path_mask(true),
+    path_mask(false),
     form_reading("Update"),
     form_compr("Update"),
     form_slicing("Update"),
