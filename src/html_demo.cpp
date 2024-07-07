@@ -62,14 +62,14 @@ html_demo::html_demo():
     description.add_text(2, "By Design");
     description.add_text(0, "By design, webdar does not use any script but only pure ");
     description.add_text(0, "HTML directives. This has the advantage of security but ");
-    description.add_text(0, "the drawback of the limitations of the HTML page description language and of the HTTP protocol.");
+    description.add_text(0, "the drawback of HTML and HTTP limitations.");
     description.add_text(0, "In particular the information typed in the browser");
 
     description.add_text(0, "is not immediately sent and available on the server side, where");
     description.add_text(0, "Webdar is located. The below components illustrates the ");
     description.add_text(0, "HTML/HTTP limitations, so you can familiarize yourself with them.");
     description.add_nl();
-    description.add_text(2, "How to use this example");
+    description.add_text(2, "How to use this play ground");
     description.add_text(0, "On the left, you can enter text, select components and click on the different buttons.");
     description.add_nl();
     description.add_text(0, "On the right, you will see what and when Webdar will receive the information.");
