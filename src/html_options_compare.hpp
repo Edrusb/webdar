@@ -70,10 +70,15 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    static constexpr const char* treated_none = "none";
+    static constexpr const char* treated_dir = "dir";
+    static constexpr const char* treated_all = "all";
+
     html_derouleur deroule;
     html_form form;
     html_form_fieldset fs;
     html_form_input info_details;
+    html_form_select display_treated;
     html_comparison_fields what_to_check;
     html_form_input alter_atime;
     html_form_input furtive_read_mode;

@@ -46,6 +46,7 @@ html_options_compare::html_options_compare():
 		 html_form_input::check,
 		 "1",
 		 1),
+    display_treated("Shown treated entried"),
     alter_atime("Modify atime",
 		html_form_input::check,
 		"",
@@ -77,6 +78,12 @@ html_options_compare::html_options_compare():
     hourshift.set_value(webdar_tools_convert_to_string(defaults.get_hourshift()));
     compare_symlink_date.set_value_as_bool(defaults.get_compare_symlink_date());
 
+	// component configuration
+    display_treated.add_choice(treated_none, "none");
+    display_treated.add_choice(treated_dir, "only directories");
+    display_treated.add_choice(treated_all, "files and directories");
+    display_treated.set_selected(2);  // all
+
 	// building adoption tree
 
     static const char* sect_opt = "options";
@@ -87,10 +94,11 @@ html_options_compare::html_options_compare():
     deroule.add_section(sect_mask_path, "Path based filtering");
 
     fs.adopt(&info_details);
+    fs.adopt(&display_treated);
+    fs.adopt(&display_skipped);
     fs.adopt(&what_to_check);
     fs.adopt(&alter_atime);
     fs.adopt(&furtive_read_mode);
-    fs.adopt(&display_skipped);
     fs.adopt(&hourshift);
     fs.adopt(&compare_symlink_date);
     form.adopt(&fs);
@@ -109,10 +117,18 @@ libdar::archive_options_diff html_options_compare::get_options() const
     libdar::archive_options_diff ret;
 
     ret.set_info_details(info_details.get_value_as_bool());
+    if(display_treated.get_selected_id() == treated_none)
+	ret.set_display_treated(false, false);
+    else if(display_treated.get_selected_id() == treated_dir)
+	ret.set_display_treated(true, true);
+    else if(display_treated.get_selected_id() == treated_all)
+	ret.set_display_treated(true, false);
+    else
+	throw WEBDAR_BUG;
+    ret.set_display_skipped(display_skipped.get_value_as_bool());
     ret.set_what_to_check(what_to_check.get_value());
     ret.set_alter_atime(alter_atime.get_value_as_bool());
     ret.set_furtive_read_mode(furtive_read_mode.get_value_as_bool());
-    ret.set_display_skipped(display_skipped.get_value_as_bool());
     ret.set_hourshift(libdar::infinint(webdar_tools_convert_to_int(hourshift.get_value())));
     ret.set_compare_symlink_date(compare_symlink_date.get_value_as_bool());
     ret.set_selection(*(filename_mask.get_mask()));
