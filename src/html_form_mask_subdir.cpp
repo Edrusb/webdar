@@ -121,7 +121,7 @@ unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
 	}
 	else
 	{
-	     // regular expression
+		// regular expression (temporary variable used for debugging purposes if needed)
 	    string tmp = libdar::tools_build_regex_for_exclude_mask(prefix.display(), mask_subdir.get_value());
 
 	    ret.reset(new (nothrow) libdar::not_mask(libdar::regular_mask(tmp, casesensit)));
