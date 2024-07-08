@@ -28,7 +28,8 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/libdar.hpp>
+#include <dar/tools.hpp>
 
     // webdar headers
 
@@ -44,12 +45,15 @@ html_form_mask_subdir::html_form_mask_subdir(bool absolute_path_accepted):
     absolute_ok(absolute_path_accepted),
     prefix(libdar::FAKE_ROOT),
     fs(""),
-    mask_type("Mask Type",
-	      "unused_event"),
+    mask_type("Mask Type"),
     casesensitivity("Case Sensitive",
 		    html_form_input::check,
 		    "1", // checked
 		    1),
+    regex("Regular expression in place of glob expression",
+	  html_form_input::check,
+	  "", // unchecked
+	  1),
     mask_subdir("Concerned path",
 		    html_form_input::text,
 		    "",
@@ -58,9 +62,8 @@ html_form_mask_subdir::html_form_mask_subdir(bool absolute_path_accepted):
 
 	// component configuration
 
-    mask_type.add_choice("0", "Include path and subdir");
-    mask_type.add_choice("1", "Include path only (no wildcard no subdir)");
-    mask_type.add_choice("2", "Exclude path and subdir (no wildcard!)");
+    mask_type.add_choice("0", "Include path and subdirs (no wildcard)");
+    mask_type.add_choice("1", "Exclude path and subdirs");
     mask_type.set_selected(0);
 
     init();
@@ -73,6 +76,7 @@ html_form_mask_subdir::html_form_mask_subdir(const html_form_mask_subdir & ref):
     fs(ref.fs),
     mask_type(ref.mask_type),
     casesensitivity(ref.casesensitivity),
+    regex(ref.regex),
     mask_subdir(ref.mask_subdir)
 {
     init();
@@ -87,8 +91,6 @@ unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
     try
     {
 	pathval = libdar::path(mask_subdir.get_value());
-	if(pathval.is_relative())
-	    pathval = prefix + pathval;
     }
     catch(libdar::Egeneric & e)
     {
@@ -98,17 +100,32 @@ unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
 
     switch(mask_type.get_selected_num())
     {
-    case 0: // Include path and subdir
-	ret.reset(new (nothrow) libdar::simple_path_mask(pathval.display(),
+    case 0: // Include path
+	ret.reset(new (nothrow) libdar::simple_path_mask(prefix + pathval.display(),
 							 casesensit));
 	break;
-    case 1: // Include fixed path only
-	ret.reset(new (nothrow) libdar::same_path_mask(pathval.display(),
-						       casesensit));
-	break;
-    case 2: // Exclude path and subdir
-	ret.reset(new (nothrow) libdar::exclude_dir_mask(pathval.display(),
-							 casesensit));
+    case 1: // Exclude path
+	if(! regex.get_value_as_bool())
+	{
+		// glob expression
+	    libdar::et_mask* tmp = new (nothrow) libdar::et_mask();
+
+	    ret.reset(tmp);
+		// the object is now managed by the shared_ptr but we
+		// still have tmp as a more specific pointer type on it
+	    if(!ret || tmp == nullptr)
+		throw exception_memory();
+
+	    tmp->add_mask(libdar::not_mask(libdar::simple_mask((prefix + pathval).display(), casesensit)));
+	    tmp->add_mask(libdar::not_mask(libdar::simple_mask((prefix + pathval).display() + "/*", casesensit)));
+	}
+	else
+	{
+	     // regular expression
+	    string tmp = libdar::tools_build_regex_for_exclude_mask(prefix.display(), mask_subdir.get_value());
+
+	    ret.reset(new (nothrow) libdar::not_mask(libdar::regular_mask(tmp, casesensit)));
+	}
 	break;
     default:
 	throw WEBDAR_BUG;
@@ -120,9 +137,19 @@ unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
     return ret;
 }
 
+void html_form_mask_subdir::on_event(const std::string & event_name)
+{
+    if(event_name == html_form_select::changed)
+    {
+	regex.set_visible(mask_type.get_selected_num() == 1);
+	    // regex is only visible if excluding a path
+    }
+    else
+	throw WEBDAR_BUG;
+}
 
 string html_form_mask_subdir::inherited_get_body_part(const chemin & path,
-						   const request & req)
+						      const request & req)
 {
     string ret = get_body_part_from_all_children(path, req);
     if(!absolute_ok)
@@ -169,12 +196,15 @@ void html_form_mask_subdir::init()
 
     fs.adopt(&mask_type);
     fs.adopt(&casesensitivity);
+    fs.adopt(&regex);
     fs.adopt(&mask_subdir);
     adopt(&fs);
 
 	// events
+    mask_type.record_actor_on_event(this, html_form_select::changed);
 
 	// visibity
+    regex.set_visible(mask_type.get_selected_num() == 1);
 
 	// css stuff
 }

@@ -36,6 +36,7 @@ extern "C"
 
     // webdar headers
 #include "html_mask.hpp"
+#include "actor.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_form_input.hpp"
 #include "html_form_select.hpp"
@@ -67,7 +68,7 @@ extern "C"
     /// like *and* and *or* combinasons.
 
 
-class html_form_mask_subdir : public html_mask
+class html_form_mask_subdir : public html_mask, public actor
 {
 public:
     html_form_mask_subdir(bool absolute_path_accepted);
@@ -82,6 +83,9 @@ public:
 
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override;
+
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
 
 	/// clone() implementation
     MASK_CLONER_MACRO;
@@ -98,6 +102,7 @@ private:
     html_form_fieldset fs;
     html_form_select mask_type;
     html_form_input casesensitivity;
+    html_form_input regex;
     html_form_input mask_subdir;
 
     void init();
