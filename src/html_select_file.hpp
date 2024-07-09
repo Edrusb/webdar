@@ -152,6 +152,9 @@ public:
 	/// action triggered from html_buttons internally used in this class implementation (do not use, even if it must stay a public method)
     virtual void on_event(const std::string & event_name) override;
 
+	/// returns the message argument passed at construction time
+    std::string get_message() const { return x_message; };
+
 protected:
 
 	/// inherited from body_builder (via html_div)
@@ -216,6 +219,7 @@ private:
 
 
 	// settings
+    std::string x_message;            ///< message passed at constructor time
 
     bool select_dir;                  ///< whether user is expected to select a directory
     std::string filter;               ///< only display files matching this filter (glob expression)

@@ -57,6 +57,7 @@ const string html_select_file::css_sticky_top = "html_select_sticky_top";
 const string html_select_file::css_sticky_bot = "html_select_sticky_bot";
 
 html_select_file::html_select_file(const string & message):
+    x_message(message),
     html_popup(width_pct,height_pct),
     status(st_init),
     which_thread(run_nothing),
