@@ -66,42 +66,35 @@ html_form_input_file::html_form_input_file(const string & label,
     selmode(select_file),
     internal_change(false)
 {
-	// html adoption tree
-
-    input_div.adopt(&input);
-    adopt(&input_div);
-    adopt(&trigger);
-    adopt(&user_select);
-    adopt(&empty_text);
-
-	// cabling events
-
-    register_name(changed_event_name);
-    register_name(changed_entrepot);
-
-    input.record_actor_on_event(this, html_form_input::changed);
-    trigger.record_actor_on_event(this, triggered_event);
-    user_select.record_actor_on_event(this, html_select_file::entry_selected);
-
-	// css classes
+    init();
 
     trigger.add_css_class(css_button_box);
     trigger.url_add_css_class(css_button_link);
-    input_div.add_css_class(css_input);
     input.set_no_CR();
-    empty_text.add_css_class(css_empty_text);
 
+    empty_text.add_css_class(css_empty_text);
 	// we ca now add text to empty_text
     empty_text.add_text(0,"");
 
-	// for now we only rely on entrepot local
-	// once library will be implemented we will
-	// add a library objet as argument (through a std::shared_ptr
-	// and provide a list of existing entrepots fetched from that
-	// library
     entrep.reset(new (nothrow) libdar::entrepot_local("", "", false));
     if(!entrep)
 	throw exception_memory();
+}
+
+html_form_input_file::html_form_input_file(const html_form_input_file & ref):
+    input(ref.input),
+	// input_div not copy constructable, must be set in init()
+    trigger(ref.trigger),
+    user_select(ref.user_select.get_message()), // no copy constructor available for this class
+    empty_text(ref.empty_text),
+    changed_event_name(ref.changed_event),
+    entrep(ref.entrep),
+    refresh_get_body(ref.refresh_get_body),
+    selmode(ref.selmode),
+    min_digits(ref.min_digits),
+    internal_change(ref.internal_change)
+{
+    init();
 }
 
 void html_form_input_file::set_change_event_name(const string & name)
@@ -342,4 +335,29 @@ string html_form_input_file::slicename_to_basename_update_min_digits(const strin
 	ret += sep_str + splitted[i];
 
     return ret;
+}
+
+
+void html_form_input_file::init()
+{
+	// html adoption tree
+
+    input_div.adopt(&input);
+    adopt(&input_div);
+    adopt(&trigger);
+    adopt(&user_select);
+    adopt(&empty_text);
+
+	// cabling events
+
+    register_name(changed_event_name);
+    register_name(changed_entrepot);
+
+    input.record_actor_on_event(this, html_form_input::changed);
+    trigger.record_actor_on_event(this, triggered_event);
+    user_select.record_actor_on_event(this, html_select_file::entry_selected);
+
+	// css classes
+
+    input_div.add_css_class(css_input);
 }
