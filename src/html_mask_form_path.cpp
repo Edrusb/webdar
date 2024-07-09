@@ -29,6 +29,7 @@ extern "C"
 
     // C++ system header files
 #include "html_form_mask_subdir.hpp"
+#include "html_form_mask_file.hpp"
 
     // webdar headers
 
@@ -42,6 +43,7 @@ html_mask_form_path::html_mask_form_path(bool allow_absolute_paths):
     html_form("Update")
 {
     root.add_mask_type("Path expression", html_form_mask_subdir(allow_absolute_paths));
+    root.add_mask_type("File listing", html_form_mask_file());
     root.add_mask_myself("Logical combination");
     adopt(&root);
 }
