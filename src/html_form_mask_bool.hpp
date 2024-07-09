@@ -131,6 +131,7 @@ private:
 	available_mask(const std::string & label,
 		       const html_mask & tobecloned);
 	available_mask(const std::string & label); // to refer to this html_form_mask_bool
+	available_mask(available_mask && ref) noexcept;
 	available_mask(const available_mask & arg);
     };
 

@@ -233,6 +233,12 @@ html_form_mask_bool::available_mask::available_mask(const string & lab):
     mask_type.reset();
 }
 
+html_form_mask_bool::available_mask::available_mask(available_mask && ref) noexcept
+{
+    label = std::move(ref.label);
+    mask_type = std::move(ref.mask_type);
+}
+
 html_form_mask_bool::available_mask::available_mask(const available_mask & ref):
     label(ref.label)
 {
