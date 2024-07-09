@@ -34,8 +34,6 @@ extern "C"
 
     // webdar headers
 #include "html_form_mask_bool.hpp"
-#include "html_form_mask_expression.hpp"
-#include "html_form.hpp"
 
     /// class html_mask_form_path let user define mask on paths
 
