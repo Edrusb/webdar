@@ -24,7 +24,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.69)
-AC_INIT([WEBDAR], [0.2.1-dev], [[https://github.com/Edrusb/webdar/issues]])
+AC_INIT([WEBDAR], [0.4.0-dev], [[https://github.com/Edrusb/webdar/issues]])
 AC_CONFIG_HEADERS([config.h])
 AC_LANG([C++])
 AC_CONFIG_SRCDIR([src/webdar.cpp])

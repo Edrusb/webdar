@@ -158,6 +158,7 @@ saisie::saisie():
     text.add_paragraph();
     text.add_text(0, "by Denis CORBIN");
     text.add_nl();
+    text.add_nl();
     text.add_text(0, "to my daughters");
     text.add_nl();
     text.add_text(0, "Capucine and C&eacute;lestine");
