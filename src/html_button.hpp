@@ -47,7 +47,7 @@ class html_button : public html_div, public events
 {
 public:
     html_button(const std::string & label, const std::string & x_event_name);
-    html_button(const html_button & ref) = delete;
+    html_button(const html_button & ref);
     html_button(html_button && ref) noexcept = delete;
     html_button & operator = (const html_button & ref) = delete;
     html_button & operator = (html_button && ref) noexcept = delete;
@@ -93,6 +93,8 @@ protected:
 private:
     html_url inside;
     std::string event_name;
+
+    void init();
 
     static const std::string action;
 };
