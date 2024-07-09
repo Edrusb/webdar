@@ -39,10 +39,8 @@ extern "C"
 
 using namespace std;
 
-#define FILENAME_INIT filename("File name", "/", 30, "Select a listing text file...")
-
 html_form_mask_file::html_form_mask_file():
-    FILENAME_INIT,
+    filename("File name", "/", 30, "Select a listing text file..."),
     exclude_checkbox("Exclude listed files",
 		     html_form_input::check,
 		     "", // unchecked
@@ -58,7 +56,7 @@ html_form_mask_file::html_form_mask_file():
 }
 
 html_form_mask_file::html_form_mask_file(const html_form_mask_file & ref):
-    FILENAME_INIT,
+    filename(ref.filename),
     exclude_checkbox(ref.exclude_checkbox),
     casesensit(ref.casesensit),
     fs(ref.fs),
