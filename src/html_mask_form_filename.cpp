@@ -43,6 +43,6 @@ html_mask_form_filename::html_mask_form_filename():
     html_form("Update")
 {
     root.add_mask_type("Filename expression", html_form_mask_expression());
-    root.add_mask_myself("Logicial combination");
+    root.add_mask_myself("Logical combination");
     adopt(&root);
 }

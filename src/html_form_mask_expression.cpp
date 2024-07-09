@@ -41,7 +41,7 @@ using namespace std;
 
 
 html_form_mask_expression::html_form_mask_expression():
-    fs(""),
+    fs("Filename expression"),
     mask_type("Mask Type",
 	      "unused_event"),
     negate("Negate",

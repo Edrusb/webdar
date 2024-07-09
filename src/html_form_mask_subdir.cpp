@@ -44,7 +44,7 @@ using namespace std;
 html_form_mask_subdir::html_form_mask_subdir(bool absolute_path_accepted):
     absolute_ok(absolute_path_accepted),
     prefix(libdar::FAKE_ROOT),
-    fs(""),
+    fs("Path expression"),
     mask_type("Mask Type"),
     casesensitivity("Case Sensitive",
 		    html_form_input::check,
