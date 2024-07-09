@@ -55,7 +55,7 @@ html_form_mask_bool::html_form_mask_bool():
     current_bool_mode = mask_type.get_selected_id();
     current_table_size = table_content.size();
 
-    adder.add_choice("", "select a mask type");
+    adder.add_choice("", "--- select a mask type ---");
     adder.set_selected(0);
 
     init();
