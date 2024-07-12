@@ -1,46 +1,32 @@
 Here is the task to do to get ready for release 1.0.0
 ========================================================
 + review all classes, virtual/override, move constructor & Co
-> does css inheritance used outside of copy during component construction?
-> does it is applied from body_builder inheritance or adoption?
->> change has_been_adopted / has_beed_foresaken (has_adopted / has_foresaken)
->>> rename html_url_class to css_class, move it directly under css not inheriting
->>> from body_builder (remove get_body_part and adoption stuff)
->>> add more pseudo classes, each receive a css object as parameter
->>>>> grab css_library for css branch, create a intermediate class that hold css_library
->>>>> and inform inherited objects of its availablity (lookup and callback)
->>>>> this class adds a new css property: a set of class names
 
 - have compliance with HTTP/1.1, this work is mainly at the server class layer
   where a answer has to be added field and updated version depending on the
   corresponding request. See RFC in the RFC subdirectory
-- add stop condition for a listener and thus webdar process (GUI choice, CTRL-C)
-- check how to avoid muliple field validation (update buttons), and have the
++ add stop condition for a listener and thus webdar process (GUI choice, CTRL-C)
++ check how to avoid muliple field validation (update buttons), and have the
   global action button to imply all fields update (more natural GUI interaction)
-- add viewport and associated fiels in the return HTML pages to be readable on
++ add viewport and associated fiels in the return HTML pages to be readable on
   mobiles
->> manage CSS out of HTML, object use css classes and give use only available
++ manage CSS out of HTML, object use css classes and give use only available
   classes. A static catalog of CSS class defines and exposes the list of classes
   only the requested classes get included in the HTML header. => not sure to be
   a good idea
 >>>> review all static std::string -> static constexpr char name[] = "initialisateur";
->>>>> terminer html_error vis a vis de html_dir_tree qui le compose
->>>>>> migrer html_dir_tree et revoir sa classe set_css_classid()
->>>>>>>> ajouter une class css_class_group (list of class name)
-- rename css_selector to css_pseudo_class
 
-
-- provide html interface for class libdar::entrepot in order to let the user
++ provide html interface for class libdar::entrepot in order to let the user
   select a directory on the local filesystem or a existing file on the local
   filesystem, this could be launched beside html_form_input fields of the class
   saisie as an alternative to fill them clicking on a button-like element beside
   these fields. Maybe abstracting the html_tree class could avoid code
   duplication for that task.
 - add a way to navigate in directory repo tree when defining/reading an backup
-- add a way to navigate in the local dir for looking for the root filesystem
++ add a way to navigate in the local dir for looking for the root filesystem
 - add a semaphore to control the number of running libdar task (listing task
   not being concerned by this).
-- add html interface for building filters
++ add html interface for building filters
 - have a base of filters with prepolated default an no-compress
 - add filter features to the many place it is used in libdar (file filtering,
   compression filtering, etc.) take the name from the base of filters
