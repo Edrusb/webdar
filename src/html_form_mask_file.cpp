@@ -76,8 +76,15 @@ unique_ptr<libdar::mask> html_form_mask_file::get_mask() const
 				     ! exclude_checkbox.get_value_as_bool(),
 				     empty_list));
 
-    if(!tmp)
+    if(! tmp)
 	throw exception_memory();
+
+    if(exclude_checkbox.get_value_as_bool())
+    {
+	tmp.reset(new (nothrow) libdar::not_mask(*tmp));
+	if(! tmp)
+	    throw exception_memory();
+    }
 
     return tmp;
 }
