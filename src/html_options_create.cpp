@@ -111,6 +111,7 @@ html_options_create::html_options_create():
     alter_atime.add_choice("atime", "Data last access time (atime)");
     alter_atime.add_choice("ctime", "Inode last change time (ctime)");
     compression_level.set_range(1, 9);
+    pause.set_range(0, 99999);
     if(defaults.get_reference() != nullptr)
 	throw WEBDAR_BUG; // not expected default value!!!
     else
