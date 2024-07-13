@@ -471,10 +471,8 @@ string saisie::get_archive_path() const
     case st_isolate:
     case st_repair:
 	return archread.get_archive_path();
-	break;
     case st_create:
 	return create.get_archive_path();
-	break;
     case st_merge:
 	return merge.get_archive_path();
     default:
