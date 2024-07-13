@@ -57,7 +57,6 @@ public:
     const std::string & get_archive_path() const { return sauv_path.get_value(); };
     const std::string & get_archive_basename() const { return basename.get_value(); };
     libdar::archive_options_merge get_options_merge(std::shared_ptr<html_web_user_interaction> dialog) const { return options.get_options(dialog); };
-    const html_archive_read & get_reference() const { return reference; };
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -82,7 +81,6 @@ private:
     html_form_fieldset fs;
     html_form_input_file sauv_path;
     html_form_input basename;
-    html_archive_read reference;
     html_options_merge options;
     html_libdar_running_popup repoxfer;
 };

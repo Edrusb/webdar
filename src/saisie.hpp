@@ -138,8 +138,9 @@ public:
     libdar::archive_options_isolate get_isolating_options(std::shared_ptr<html_web_user_interaction> dialog) const;
 
 	// merge options
+    const std::string & get_merge_path() const { return merge.get_archive_path(); };
+    const std::string & get_merge_basename() const { return merge.get_archive_basename(); };
     libdar::archive_options_merge get_merging_options(std::shared_ptr<html_web_user_interaction> dialog) const;
-    const html_archive_read & get_merging_reference() const { return merge.get_reference(); };
 
 	// repair options
     std::string get_repairing_path() const { return repair.get_archive_path(); };

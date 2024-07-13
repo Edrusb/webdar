@@ -389,6 +389,7 @@ void saisie::on_event(const string & event_name)
 	   || choice.get_current_tag() == menu_test
 	   || choice.get_current_tag() == menu_list
 	   || choice.get_current_tag() == menu_isolate
+	   || choice.get_current_tag() == menu_merge
 	   || choice.get_current_tag() == menu_repair)
 	    archive_show.set_visible(true);
 	else
@@ -470,11 +471,10 @@ string saisie::get_archive_path() const
     case st_list:
     case st_isolate:
     case st_repair:
+    case st_merge:
 	return archread.get_archive_path();
     case st_create:
 	return create.get_archive_path();
-    case st_merge:
-	return merge.get_archive_path();
     default:
 	throw WEBDAR_BUG;
     }
@@ -492,11 +492,10 @@ string saisie::get_archive_basename() const
     case st_list:
     case st_isolate:
     case st_repair:
+    case st_merge:
 	return archread.get_archive_basename();
     case st_create:
 	return create.get_archive_basename();
-    case st_merge:
-	return merge.get_archive_basename();
     default:
 	throw WEBDAR_BUG;
     }
@@ -509,6 +508,7 @@ libdar::archive_options_read saisie::get_read_options(shared_ptr<html_web_user_i
        && status != st_test
        && status != st_list
        && status != st_isolate
+       && status != st_merge
        && status != st_repair)
 	throw WEBDAR_BUG;
 
