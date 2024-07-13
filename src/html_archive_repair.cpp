@@ -59,7 +59,7 @@ html_archive_repair::html_archive_repair():
     deroule.add_section(sect_repair, "Repairing parameters");
     deroule.set_active_section(0);
 
-    repair_dest.set_select_mode(select_dir);
+    repair_dest.set_select_mode(html_form_input_file::select_dir);
     repair_dest.set_can_create_dir(true);
 
 	// adoption tree
