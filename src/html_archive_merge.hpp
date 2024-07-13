@@ -39,7 +39,6 @@ extern "C"
 #include "html_form_input_file.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_options_merge.hpp"
-#include "body_builder.hpp"
 #include "html_derouleur.hpp"
 #include "html_libdar_running_popup.hpp"
 
