@@ -42,18 +42,18 @@ extern "C"
 #include "html_yes_no_box.hpp"
 #include "html_options_extract.hpp"
 #include "html_options_read.hpp"
-#include "html_options_compare.hpp"
 #include "html_options_test.hpp"
 #include "html_archive_read.hpp"
 #include "html_archive_create.hpp"
 #include "html_archive_isolate.hpp"
 #include "html_archive_merge.hpp"
+#include "html_archive_repair.hpp"
+#include "html_archive_compare.hpp"
 #include "html_double_button.hpp"
 #include "html_double_button.hpp"
 #include "html_bibliotheque.hpp"
 #include "html_derouleur.hpp"
 #include "html_demo.hpp"
-#include "html_archive_repair.hpp"
 
     /// class saisie
     ///
@@ -203,11 +203,7 @@ private:
     html_options_extract extract;
     html_double_button go_extract;
 	//
-    html_derouleur diff_params;
-    html_form_fieldset diff_fs_root_fs;
-    html_form_input_file diff_fs_root;
-    html_form diff_fs_root_form;
-    html_options_compare compare;
+    html_archive_compare compare;
     html_double_button go_compare;
 	//
     html_derouleur test_params;
@@ -247,7 +243,6 @@ private:
     static const std::string menu_sessions;
     static const std::string menu_close;
 
-    static const std::string diff_root_changed;
     static const std::string extract_root_changed;
 
     static const std::string css_class_right;
