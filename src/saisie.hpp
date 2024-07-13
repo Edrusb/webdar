@@ -53,6 +53,7 @@ extern "C"
 #include "html_bibliotheque.hpp"
 #include "html_derouleur.hpp"
 #include "html_demo.hpp"
+#include "html_archive_repair.hpp"
 
     /// class saisie
     ///
@@ -93,7 +94,9 @@ public:
     static const std::string event_create;
     static const std::string event_isolate;
     static const std::string event_merge;
+    static const std::string event_repair;
     static const std::string changed_session_name;
+
 
 	/// constructor
     saisie();
@@ -138,6 +141,9 @@ public:
     libdar::archive_options_merge get_merging_options(std::shared_ptr<html_web_user_interaction> dialog) const;
     const html_archive_read & get_merging_reference() const { return merge.get_reference(); };
 
+	// repair options
+
+
 	/// defines the name of the session
 	///
 	/// \note this call does not trigger any event
@@ -157,15 +163,16 @@ protected:
 private:
     enum
     {
-	st_idle,    //< user did not click any action button, or action has completed
-	st_restore, //< user clicked on the restore button
-	st_compare, //< user clicked on the compare button
-	st_test,    //< user clicked on the test button
-	st_list,    //< user clicked on the list button
-	st_create,  //< user clicked on the create button
-	st_isolate, //< user clicked on the isolate button
-	st_merge    //< user clicked on the merge button
-    } status;       //< status is used to determine which field to user to provide information toward libdar
+	st_idle,    ///< user did not click any action button, or action has completed
+	st_restore, ///< user clicked on the restore button
+	st_compare, ///< user clicked on the compare button
+	st_test,    ///< user clicked on the test button
+	st_list,    ///< user clicked on the list button
+	st_create,  ///< user clicked on the create button
+	st_isolate, ///< user clicked on the isolate button
+	st_merge,   ///< user clicked on the merge button
+	st_repair   ///< user clicked in the repair button
+    } status;       ///< status is used to determine which field to user to provide information toward libdar
 
     html_menu choice;      ///< left main menu
     html_div right_pan;    ///< holds all that is beside main menu
@@ -215,6 +222,9 @@ private:
     html_archive_merge merge;
     html_double_button go_merge;
 	//
+    html_archive_repair repair;
+    html_double_button go_repair;
+	//
     html_bibliotheque biblio;
 	//
     html_yes_no_box close;
@@ -229,6 +239,7 @@ private:
     static const std::string menu_create;
     static const std::string menu_isolate;
     static const std::string menu_merge;
+    static const std::string menu_repair;
     static const std::string menu_biblio;
     static const std::string menu_sessions;
     static const std::string menu_close;

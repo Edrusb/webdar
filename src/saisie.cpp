@@ -49,6 +49,7 @@ const string saisie::event_list    = "saisie_list";
 const string saisie::event_create  = "saisie_create";
 const string saisie::event_isolate = "saisie_isolate";
 const string saisie::event_merge   = "saisie_merge";
+const string saisie::event_repair  = "saisie_repair";
 const string saisie::changed_session_name = "saisie_changed_session_name";
 
 const string saisie::css_class_text = "saisie_text";
@@ -61,6 +62,7 @@ const string saisie::menu_list = "list";
 const string saisie::menu_create = "create";
 const string saisie::menu_isolate = "isolate";
 const string saisie::menu_merge = "merge";
+const string saisie::menu_repair = "repair";
 const string saisie::menu_biblio = "bibliotheque";
 const string saisie::menu_sessions = "sessions";
 const string saisie::menu_close = "close";
@@ -122,6 +124,8 @@ saisie::saisie():
     select.add_section(menu_isolate, "");
     choice.add_entry("Merging", menu_merge);
     select.add_section(menu_merge, "");
+    choice.add_entry("Repairing", menu_repair);
+    select.add_section(menu_repair, "");
     choice.add_entry("", "");
     select.add_section("sep2", "");
     choice.add_entry("Configuration", menu_biblio);
@@ -234,6 +238,10 @@ saisie::saisie():
     select.adopt_in_section(menu_merge, &merge);
     select.adopt_in_section(menu_merge, &go_merge);
 
+	//repair sub-page
+    select.adopt_in_section(menu_repair, &repair);
+    select.adopt_in_section(menu_repair, &go_repair);
+
 	// configuration sub-page
     select.adopt_in_section(menu_biblio, &biblio);
 
@@ -262,6 +270,7 @@ saisie::saisie():
     go_create.record_actor_on_event(this, event_create);
     go_isolate.record_actor_on_event(this, event_isolate);
     go_merge.record_actor_on_event(this, event_merge);
+    go_repair.record_actor_on_event(this, event_repair);
     diff_fs_root.record_actor_on_event(this, diff_root_changed);
     extract_fs_root.record_actor_on_event(this, extract_root_changed);
 
@@ -276,6 +285,7 @@ saisie::saisie():
     register_name(event_create);
     register_name(event_isolate);
     register_name(event_merge);
+    register_name(event_repair);
     register_name(changed_session_name);
 
 	// css
@@ -295,6 +305,7 @@ saisie::saisie():
     go_create.add_css_class(css_class_right);
     go_isolate.add_css_class(css_class_right);
     go_merge.add_css_class(css_class_right);
+    go_repair.add_css_class(css_class_right);
     webdar_css_style::normal_button(extract_params, true);
     webdar_css_style::normal_button(diff_params, true);
     webdar_css_style::normal_button(test_params, true);
@@ -377,7 +388,8 @@ void saisie::on_event(const string & event_name)
 	   || choice.get_current_tag() == menu_compare
 	   || choice.get_current_tag() == menu_test
 	   || choice.get_current_tag() == menu_list
-	   || choice.get_current_tag() == menu_isolate)
+	   || choice.get_current_tag() == menu_isolate
+	   || choice.get_current_tag() == menu_repair)
 	    archive_show.set_visible(true);
 	else
 	    archive_show.set_visible(false);
@@ -392,7 +404,8 @@ void saisie::on_event(const string & event_name)
 	    || event_name == event_list
 	    || event_name == event_create
 	    || event_name == event_isolate
-	    || event_name == event_merge)
+	    || event_name == event_merge
+	    || event_name == event_repair)
     {
 	if(event_name == event_restore)
 	    status = st_restore;
@@ -408,6 +421,8 @@ void saisie::on_event(const string & event_name)
 	    status = st_isolate;
 	else if(event_name == event_merge)
 	    status = st_merge;
+	else if(event_name == event_repair)
+	    status = st_repair;
 	else
 	    throw WEBDAR_BUG;
 	act(event_name); // propagate the event to the subscribers
@@ -420,7 +435,7 @@ void saisie::on_event(const string & event_name)
 	// object
 	// In other words, the fact the status changed
 	// does not change at all the output returned by
-	// inherited_get_body_part() this my_body_part_has_changed()
+	// inherited_get_body_part() thus my_body_part_has_changed()
 	// has not to be invoked.
     }
     else if(event_name == changed_session_name)
@@ -454,6 +469,7 @@ string saisie::get_archive_path() const
     case st_test:
     case st_list:
     case st_isolate:
+    case st_repair:
 	return archread.get_archive_path();
 	break;
     case st_create:
@@ -477,6 +493,7 @@ string saisie::get_archive_basename() const
     case st_test:
     case st_list:
     case st_isolate:
+    case st_repair:
 	return archread.get_archive_basename();
     case st_create:
 	return create.get_archive_basename();
@@ -493,7 +510,8 @@ libdar::archive_options_read saisie::get_read_options(shared_ptr<html_web_user_i
        && status != st_compare
        && status != st_test
        && status != st_list
-       && status != st_isolate)
+       && status != st_isolate
+       && status != st_repair)
 	throw WEBDAR_BUG;
 
     return archread.get_read_options(dialog);
@@ -518,6 +536,8 @@ const string & saisie::get_fs_root() const
     case st_isolate:
 	throw WEBDAR_BUG;
     case st_merge:
+	throw WEBDAR_BUG;
+    case st_repair:
 	throw WEBDAR_BUG;
     default:
 	throw WEBDAR_BUG;
