@@ -541,7 +541,7 @@ libdar::archive_options_merge saisie::get_merging_options(shared_ptr<html_web_us
 
 libdar::archive_options_repair saisie::get_repairing_options(shared_ptr<html_web_user_interaction> dialog) const
 {
-    return libdar::archive_options_repair(); // for now we use only the default options
+    return repair.get_options(dialog);
 }
 
 void saisie::new_css_library_available()

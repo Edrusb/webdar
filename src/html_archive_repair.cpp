@@ -68,6 +68,7 @@ html_archive_repair::html_archive_repair():
     repair_fs.adopt(&basename);
     repair_form.adopt(&repair_fs);
     deroule.adopt_in_section(sect_repair, &repair_form);
+    deroule.adopt_in_section(sect_repair, &opt_repair);
     adopt(&deroule);
 
 	// events
