@@ -142,7 +142,9 @@ public:
     const html_archive_read & get_merging_reference() const { return merge.get_reference(); };
 
 	// repair options
-
+    std::string get_repairing_path() const { return repair.get_archive_path(); };
+    std::string get_repairing_basename() const { return repair.get_archive_basename(); };
+    libdar::archive_options_repair get_repairing_options(std::shared_ptr<html_web_user_interaction> dialog) const;
 
 	/// defines the name of the session
 	///

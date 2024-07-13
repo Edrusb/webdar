@@ -48,6 +48,7 @@ extern "C"
 #include "archive_isolate.hpp"
 #include "archive_merge.hpp"
 #include "archive_init_list.hpp"
+#include "archive_repair.hpp"
 
     /// main webdar html components that defines for a given session the type of output (config pages, libdar output, error, etc.)
 
@@ -113,6 +114,7 @@ private:
     archive_create arch_create;    ///< holds thread created for archive creation
     archive_isolate arch_isolate;  ///< holds thread created for archive isolation
     archive_merge arch_merge;      ///< holds thread created for archive merging
+    archive_repair arch_repair;    ///< holds thread created for archive repairing
     archive_init_list arch_init_list; ///< holds thread created to open an archive for listing
 
 	/// available parameters for libdar execution
@@ -128,6 +130,7 @@ private:
     void go_isolate();
     void go_merge();
     void go_init_list();
+    void go_repair();
 };
 
 #endif

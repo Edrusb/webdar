@@ -590,6 +590,11 @@ libdar::archive_options_merge saisie::get_merging_options(shared_ptr<html_web_us
     return merge.get_options_merge(dialog);
 }
 
+libdar::archive_options_repair saisie::get_repairing_options(shared_ptr<html_web_user_interaction> dialog) const
+{
+    return libdar::archive_options_repair(); // for now we use only the default options
+}
+
 void saisie::new_css_library_available()
 {
     css tmp;

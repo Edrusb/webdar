@@ -57,6 +57,7 @@ user_interface::user_interface()
     parametrage.record_actor_on_event(this, saisie::event_create);
     parametrage.record_actor_on_event(this, saisie::event_isolate);
     parametrage.record_actor_on_event(this, saisie::event_merge);
+    parametrage.record_actor_on_event(this, saisie::event_repair);
     parametrage.record_actor_on_event(this, saisie::changed_session_name);
 
 	/// messages received from html_libdar_running object named in_action
@@ -207,7 +208,8 @@ void user_interface::on_event(const string & event_name)
 	    || event_name == saisie::event_create
 	    || event_name == saisie::event_isolate
 	    || event_name == saisie::event_list
-	    || event_name == saisie::event_merge)
+	    || event_name == saisie::event_merge
+	    || event_name == saisie::event_repair)
     {
 	if(mode != config)
 	    throw WEBDAR_BUG;
@@ -234,6 +236,8 @@ void user_interface::on_event(const string & event_name)
 		go_merge();
 	    else if(event_name == saisie::event_list)
 		go_init_list();
+	    else if(event_name == saisie::event_repair)
+		go_repair();
 	    else
 		throw WEBDAR_BUG;
 	}
@@ -462,3 +466,19 @@ void user_interface::go_init_list()
     in_action.run_and_control_thread(current_thread);
 }
 
+void user_interface::go_repair()
+{
+   if(is_libdar_running())
+	throw WEBDAR_BUG;
+
+    if(current_thread != nullptr)
+	throw WEBDAR_BUG;
+
+	// providing libdar::parameters
+    arch_repair.set_user_interaction(get_html_user_interaction());
+    arch_repair.set_parametrage(&get_parametrage());
+
+	// launching libdar in a separated thread
+    current_thread = & arch_repair;
+    in_action.run_and_control_thread(current_thread);
+}
