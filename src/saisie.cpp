@@ -67,8 +67,6 @@ const string saisie::menu_biblio = "bibliotheque";
 const string saisie::menu_sessions = "sessions";
 const string saisie::menu_close = "close";
 
-const string saisie::extract_root_changed = "extract_fs_root_changed";
-
 const string saisie::css_class_right = "saisie_right";
 const string saisie::css_class_margin = "saisie_marge";
 const string saisie::css_class_choice = "saisie_choice";
@@ -85,9 +83,6 @@ saisie::saisie():
 		 20),
     about_fs(""),
     about_form("Change"),
-    extract_fs_root_fs(""),
-    extract_fs_root("Directory to take as root for restoration", "/", 30, "Select a directory where to restore to..."),
-    extract_fs_root_form("Update"),
     go_extract("Restore", event_restore),
     go_compare("Compare", event_compare),
     go_test("Test", event_test),
@@ -173,27 +168,12 @@ saisie::saisie():
     select.adopt_in_section(menu_main, &demo);
 
 	// configuration of the restore sub-page
-    static const char* sect_extract_params = "eparams";
-    extract_params.add_section(sect_extract_params, "Restoration parameters");
-    extract_params.set_active_section(sect_extract_params);
-
-    extract_fs_root_fs.adopt(&extract_fs_root);
-    extract_fs_root_form.adopt(&extract_fs_root_fs);
-    extract_params.adopt_in_section(sect_extract_params, &extract_fs_root_form);
-    select.adopt_in_section(menu_restore, &extract_params);
     select.adopt_in_section(menu_restore, &extract);
     select.adopt_in_section(menu_restore, &go_extract);
-
-    extract_fs_root.set_select_mode(html_form_input_file::select_dir);
-    extract_fs_root.set_can_create_dir(false);
-    extract_fs_root.set_change_event_name(extract_root_changed);
-
-    extract.set_fs_root(extract_fs_root.get_value());
 
 	// comparison sub-page
     select.adopt_in_section(menu_compare, &compare);
     select.adopt_in_section(menu_compare, &go_compare);
-
 
 	// testing sub-page
     static const char* sect_test_params = "tparams";
@@ -252,7 +232,6 @@ saisie::saisie():
     go_isolate.record_actor_on_event(this, event_isolate);
     go_merge.record_actor_on_event(this, event_merge);
     go_repair.record_actor_on_event(this, event_repair);
-    extract_fs_root.record_actor_on_event(this, extract_root_changed);
 
     session_name.set_change_event_name(changed_session_name); // using the same event name as the we one we will trigger upon session name change
     session_name.record_actor_on_event(this, changed_session_name);
@@ -286,7 +265,6 @@ saisie::saisie():
     go_isolate.add_css_class(css_class_right);
     go_merge.add_css_class(css_class_right);
     go_repair.add_css_class(css_class_right);
-    webdar_css_style::normal_button(extract_params, true);
     webdar_css_style::normal_button(test_params, true);
     choice.add_css_class(css_class_choice);
     around_licensing.add_css_class(css_class_license);
@@ -426,10 +404,6 @@ void saisie::on_event(const string & event_name)
 
 	my_body_part_has_changed();
     }
-    else if(event_name == extract_root_changed)
-    {
-	extract.set_fs_root(extract_fs_root.get_value());
-    }
     else
 	throw WEBDAR_BUG;
 }
@@ -497,7 +471,7 @@ const string & saisie::get_fs_root() const
     case st_idle:
 	throw WEBDAR_BUG;
     case st_restore:
-	return extract_fs_root.get_value();
+	return extract.get_fs_root();
     case st_compare:
 	return compare.get_fs_root();
     case st_test:

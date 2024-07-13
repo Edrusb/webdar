@@ -40,10 +40,10 @@ extern "C"
 #include "html_div.hpp"
 #include "events.hpp"
 #include "html_yes_no_box.hpp"
-#include "html_options_extract.hpp"
 #include "html_options_read.hpp"
 #include "html_options_test.hpp"
 #include "html_archive_read.hpp"
+#include "html_archive_extract.hpp"
 #include "html_archive_create.hpp"
 #include "html_archive_isolate.hpp"
 #include "html_archive_merge.hpp"
@@ -196,11 +196,7 @@ private:
     html_form about_form;
     html_demo demo;
 	//
-    html_derouleur extract_params;
-    html_form_fieldset extract_fs_root_fs;
-    html_form_input_file extract_fs_root;
-    html_form extract_fs_root_form;
-    html_options_extract extract;
+    html_archive_extract extract;
     html_double_button go_extract;
 	//
     html_archive_compare compare;
@@ -242,8 +238,6 @@ private:
     static const std::string menu_biblio;
     static const std::string menu_sessions;
     static const std::string menu_close;
-
-    static const std::string extract_root_changed;
 
     static const std::string css_class_right;
     static const std::string css_class_margin;
