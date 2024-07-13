@@ -235,6 +235,13 @@ private:
 
     static const std::string diff_root_changed;
     static const std::string extract_root_changed;
+
+    static const std::string css_class_right;
+    static const std::string css_class_margin;
+    static const std::string css_class_choice;
+    static const std::string css_class_license;
+    static const std::string css_class_rightpan;
+
 };
 
 #endif
