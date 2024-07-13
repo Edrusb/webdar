@@ -63,6 +63,8 @@ public:
 
 	/// hide/unhide  a section
 
+	/// use the inherited add_section(), adopt_in_section(), clear_section()...
+	/// from class html_aiguille to create and manipulate sections
 	/// \note by default all created sections are visible
     void section_set_visible(const std::string & name, bool visible);
 
