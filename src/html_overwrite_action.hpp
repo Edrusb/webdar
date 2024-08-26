@@ -41,10 +41,10 @@ class html_overwrite_action : public body_builder
 {
 public:
     html_overwrite_action();
-    html_overwrite_action(const html_overwrite_action & ref) = delete;
-    html_overwrite_action(html_overwrite_action && ref) noexcept = delete;
-    html_overwrite_action & operator = (const html_overwrite_action & ref) = delete;
-    html_overwrite_action & operator = (html_overwrite_action && ref) noexcept = delete;
+    html_overwrite_action(const html_overwrite_action & ref) = default;
+    html_overwrite_action(html_overwrite_action && ref) noexcept = default;
+    html_overwrite_action & operator = (const html_overwrite_action & ref) = default;
+    html_overwrite_action & operator = (html_overwrite_action && ref) noexcept = default;
     ~html_overwrite_action() = default;
 
 	/// obtain the crit_action object for libdar option
