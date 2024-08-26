@@ -59,7 +59,8 @@ public:
 
 	/// adding text
 	///
-	/// \param[in] level 1 for <h1> etc. and zero for normal text
+	/// \param[in] level set to 1 for <h1>text</h1> etc. and zero for normal text
+	/// \param[in] text is the text to add under the provided level
     void add_text(unsigned int level, const std::string & text);
     html_text & add_nl() { txt += "<br />"; my_body_part_has_changed(); return *this; };
     html_text & add_paragraph() { txt += "<p />"; my_body_part_has_changed(); return *this; };

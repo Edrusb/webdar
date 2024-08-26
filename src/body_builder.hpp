@@ -312,9 +312,9 @@ protected:
 
         /// let a parent obtain the body part from one of its children given its official name and seen the path of the request
         ///
-        /// \param[in] path, this is the path exactly as received from the get_body_part call:
+        /// \param[in] path is the path exactly as received from the get_body_part call:
         /// the first member is the name of a child object.
-        /// \param[in] req, this is the request exactly as received from the get_body_part call
+        /// \param[in] req is the request exactly as received from the get_body_part call
         /// \note it is typically called from the parent get_body_part() method
         /// \note if path is an empty list, the call fails (throwing an exception) as no
         /// no further name is available to find an child object to return its body part.
@@ -326,9 +326,9 @@ protected:
 
         /// let a parent obtain the body part from all children in the order the have been adopted
         ///
-        /// \param[in] path, this is the path, it can be empty. If not the front member is poped from the target
+        /// \param[in] path is the body_builder path, it can be empty. If not the front member is poped from the target
         /// even if the poped part of the path does not match the name of the consulted child object
-        /// \param[in] req, this is the request exactly as received from the get_body_part call
+        /// \param[in] req this is the request exactly as received from the get_body_part call
         /// \note if the object is not visible, this call will return an empty string
     std::string get_body_part_from_all_children(const chemin & path,
                                                 const request & req);
@@ -365,9 +365,7 @@ protected:
 
 	/// access to the closest ancestor (parent) matching (dynamic_cast) the provided type
 
-	/// \param[in] ancestor point to the found ancestor if found (undefined else and return is false)
-	/// \return true if ancestor matching the provided type has been found, only in that case
-	/// ancestor argument is set to this found ancestor
+	/// \param[in] ancestor point to the found ancestor if found (points to nullptr else)
     template <class T> void closest_ancestor_of_type(T* & ancestor)
     {
 	body_builder* ptr = parent;

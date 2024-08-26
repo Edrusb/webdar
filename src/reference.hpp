@@ -105,7 +105,7 @@ protected:
 
 	/// provide the next peer
 	///
-	/// \param[in] the address of the next peer upon successful call
+	/// \param[in] peer is the address of the next peer upon successful call
 	/// \return true if a next peer exists, false else in that case
 	/// the argument is undefined
     bool read_next_peer(reference * & peer) const;

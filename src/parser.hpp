@@ -63,7 +63,7 @@ public:
 
 	/// get the next request URI
 	///
-	/// \param[out] uri the value of the next request uri
+	/// \param[out] val the value of the next request uri
 	/// \return false if not enough data is available to provide the uri
     bool get_next_request_uri(uri & val);
 

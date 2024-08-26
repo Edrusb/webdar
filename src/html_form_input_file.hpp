@@ -47,7 +47,7 @@ extern "C"
     /// that triggers a popup for the user to select a file
     /// or a directory in a given libdar::entrepot (or by
     /// default an libdar::entrepot_local objeect).
-    /// user can also manually modify the entry in the <INPUT> HTML field
+    /// user can also manually modify the entry in the \<INPUT\> HTML field
     /// as a normal html_form_input object adopted by an
     /// html_form
 

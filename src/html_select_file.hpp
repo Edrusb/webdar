@@ -140,7 +140,7 @@ public:
 	/// start the user interaction for a path selection
 
 	/// \param[in] x_entr entrepot to scan directory from
-	/// \param[in] absolute path in x_entr to take as starting directory
+	/// \param[in] start_dir absolute path in x_entr to take as starting directory
 	/// \note if start_dir is not a directory not is an absolute path
 	/// an exception is thrown
     void go_select(const std::shared_ptr<libdar::entrepot> & x_entr,

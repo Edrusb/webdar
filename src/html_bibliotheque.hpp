@@ -79,7 +79,7 @@ public:
 	////// bibiotheque, le parent doit aller chercher l'objet et l'adopter. Ainsi un enfant peut avoir plusieurs parents [!]
 
     void add(category cat, const std::string & name, const  bibli_referable & obj, bool can_replace = false);
-    bool remove(category cat, const std::string & name); /// \returns true if an object was found and deleted
+    bool remove(category cat, const std::string & name); ///< \returns true if an object was found and deleted
 
     void reset_read(category cat) const;
     bool read_next(category cat, std::string & name) const;
