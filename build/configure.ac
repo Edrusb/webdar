@@ -23,8 +23,8 @@
 
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.69)
-AC_INIT([WEBDAR], [0.5.0-dev], [[https://github.com/Edrusb/webdar/issues]])
+AC_PREREQ([2.71])
+AC_INIT([WEBDAR],[0.5.0-dev],[[https://github.com/Edrusb/webdar/issues]])
 AC_CONFIG_HEADERS([config.h])
 AC_LANG([C++])
 AC_CONFIG_SRCDIR([src/webdar.cpp])
@@ -67,7 +67,7 @@ AC_ARG_WITH([pkgconfigdir],
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
-AC_PROG_LIBTOOL
+LT_INIT
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 
@@ -122,7 +122,9 @@ AC_CHECK_LIB(crypto, [ERR_get_error], [], [])
 
 # Checks for header files.
 AC_HEADER_DIRENT
-AC_HEADER_STDC
+AC_CHECK_INCLUDES_DEFAULT
+AC_PROG_EGREP
+
 AC_HEADER_SYS_WAIT
 
 AC_CHECK_HEADERS([dar/libdar.hpp])
@@ -136,7 +138,7 @@ AC_TYPE_OFF_T
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_CHECK_MEMBERS([struct stat.st_rdev])
-AC_DECL_SYS_SIGLIST
+
 AC_CHECK_TYPE(size_t, [AC_CHECK_SIZEOF(size_t)], [AC_MSG_ERROR([Cannot find size_t type])], [])
 AC_CHECK_TYPE(time_t, [AC_CHECK_SIZEOF(time_t)], [AC_MSG_ERROR([Cannot find time_t type])], [])
 AC_CHECK_TYPE(off_t, [AC_CHECK_SIZEOF(off_t)], [AC_MSG_ERROR([Cannot find off_t type])], [])
@@ -148,10 +150,10 @@ AC_FUNC_FORK
 AC_FUNC_LSTAT
 AC_HEADER_MAJOR
 AC_FUNC_MALLOC
-AC_TYPE_SIGNAL
+
 AC_FUNC_STAT
 AC_FUNC_UTIME_NULL
-AC_HEADER_TIME
+
 AC_CHECK_FUNCS([lchown mkdir regcomp rmdir strerror_r utime fdopendir readdir_r ctime_r getgrnam_r getpwnam_r localtime_r])
 
 
