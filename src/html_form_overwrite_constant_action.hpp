@@ -39,7 +39,7 @@ extern "C"
 #include "html_form_fieldset.hpp"
 
 
-    /// html component used for the constant_actions in overwriting policies (pure virtual class)
+    /// html component used for constant actions in overwriting policies
 
 class html_form_overwrite_constant_action: public html_overwrite_action
 {
@@ -56,7 +56,7 @@ public:
 
 protected:
 
-	/// inherited from body_builder from html_form_overwrite_constant_action
+	/// inherited from body_builder from html_overwrite_action
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
