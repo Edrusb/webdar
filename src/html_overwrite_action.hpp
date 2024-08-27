@@ -31,6 +31,7 @@ extern "C"
 }
 
     // C++ system header files
+#include <memory>
 
     // webdar headers
 #include "body_builder.hpp"
@@ -40,7 +41,7 @@ extern "C"
 class html_overwrite_action : public body_builder
 {
 public:
-    html_overwrite_action();
+    html_overwrite_action() {};
     html_overwrite_action(const html_overwrite_action & ref) = default;
     html_overwrite_action(html_overwrite_action && ref) noexcept = default;
     html_overwrite_action & operator = (const html_overwrite_action & ref) = default;
@@ -48,7 +49,7 @@ public:
     ~html_overwrite_action() = default;
 
 	/// obtain the crit_action object for libdar option
-    virtual libdar::crit_ation get_overwriting_action() const = 0;
+    virtual std::unique_ptr<libdar::crit_action> get_overwriting_action() const = 0;
 
 };
 
