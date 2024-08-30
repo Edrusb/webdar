@@ -321,11 +321,14 @@ void html_form_mask_bool::del_mask(const string & event_name)
 	throw WEBDAR_BUG;  // event_name absent from the map!
 
     list<entry>::iterator it = mit->second;
+    if(!it->logic)
+	throw WEBDAR_BUG;
     if(!it->mask)
 	throw WEBDAR_BUG;
     if(!it->del)
 	throw WEBDAR_BUG;
 
+    table.foresake(&(*(it->logic)));
     table.foresake(&(*(it->mask)));
     table.foresake(&(*(it->del)));
     events_to_delete.push_back(event_name);

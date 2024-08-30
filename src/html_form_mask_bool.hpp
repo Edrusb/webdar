@@ -141,7 +141,7 @@ private:
 
     struct entry
     {
-	entry() { mask.reset(); del.reset(); };
+	entry() { logic.reset(); mask.reset(); del.reset(); };
 
 	std::unique_ptr<html_text> logic;  ///< text displaying "and" or "or"
 	std::unique_ptr<html_mask> mask;   ///< the mask
