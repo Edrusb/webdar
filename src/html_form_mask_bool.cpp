@@ -187,8 +187,6 @@ void html_form_mask_bool::on_event(const string & event_name)
 	    adder.set_selected(0); // resetting 'adder' to undefined
 	}
     }
-    else if(event_name == bool_changed_event)
-	update_table_content_logic();
     else // check whether this is an event from a delete button
 	del_mask(event_name); // may throw exception if event_name is not a del event
 }
