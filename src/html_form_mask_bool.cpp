@@ -99,7 +99,7 @@ void html_form_mask_bool::add_mask_type(const string & label,
     list_of_mask_types.push_back(available_mask(label, tobecloned));
 }
 
-void html_form_mask_bool::add_mask_myself(const std::string & label)
+void html_form_mask_bool::add_mask_myself(const string & label)
 {
     adder.add_choice(webdar_tools_convert_to_string(list_of_mask_types.size()), label);
     list_of_mask_types.push_back(available_mask(label));
@@ -357,7 +357,7 @@ void html_form_mask_bool::purge_to_delete()
     update_table_content_logic();
 }
 
-std::string html_form_mask_bool::bool_op_to_name(const std::string & op)
+string html_form_mask_bool::bool_op_to_name(const string & op)
 {
     if(op == and_op)
 	return "and";
@@ -369,7 +369,7 @@ std::string html_form_mask_bool::bool_op_to_name(const std::string & op)
 
 void html_form_mask_bool::update_table_content_logic()
 {
-    std::string target_bool_mode = mask_type.get_selected_id();
+    string target_bool_mode = mask_type.get_selected_id();
     unsigned int target_table_size = table_content.size();
 
     if(target_bool_mode != current_bool_mode
