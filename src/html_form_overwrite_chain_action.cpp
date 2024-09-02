@@ -50,8 +50,8 @@ html_form_overwrite_chain_action::html_form_overwrite_chain_action(const std::st
 	// components setup
 
 	// adoption tree
-    fs.adopt(&table);
     fs.adopt(&adder);
+    fs.adopt(&table);
     adopt(&fs);
 
 	// events
@@ -93,6 +93,14 @@ void html_form_overwrite_chain_action::on_event(const std::string & event_name)
     {
 	entry new_action;
 
+	new_action.line1.reset(new (nothrow) html_hr());
+	if(!new_action.line1)
+	    throw exception_memory();
+
+	new_action.line2.reset(new (nothrow) html_hr());
+	if(!new_action.line2)
+	    throw exception_memory();
+
 	new_action.action.reset(new (nothrow) html_form_overwrite_action(""));
 	if(!new_action.action)
 	    throw exception_memory();
@@ -108,6 +116,8 @@ void html_form_overwrite_chain_action::on_event(const std::string & event_name)
 	new_action.del->set_change_event_name(counter_event_name);
 	new_action.del->record_actor_on_event(this, counter_event_name);
 
+	table.adopt(&(*new_action.line1));
+	table.adopt(&(*new_action.line2));
 	table.adopt(&(*new_action.action));
 	table.adopt(&(*new_action.del));
 	list<entry>::iterator pos = table_content.insert(table_content.end(),
@@ -149,6 +159,8 @@ void html_form_overwrite_chain_action::del_action(const std::string & event_name
     if(!it->del)
 	throw WEBDAR_BUG;
 
+    table.foresake(&(*(it->line1)));
+    table.foresake(&(*(it->line2)));
     table.foresake(&(*(it->action)));
     table.foresake(&(*(it->del)));
     events_to_delete.push_back(event_name);

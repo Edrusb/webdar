@@ -40,6 +40,7 @@ extern "C"
 #include "html_table.hpp"
 #include "html_button.hpp"
 #include "html_form_input.hpp"
+#include "html_hr.hpp"
 
     /// html component to be adopted by an html_form that implements a chain of actions for overwriting policies
 
@@ -76,6 +77,7 @@ private:
     {
 	entry() { action.reset(); del.reset(); };
 
+	std::unique_ptr<html_hr> line1, line2; // one for each column
 	std::unique_ptr<html_form_overwrite_action> action;
 	std::unique_ptr<html_form_input> del;
     };
