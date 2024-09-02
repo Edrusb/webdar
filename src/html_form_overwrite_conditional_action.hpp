@@ -75,9 +75,21 @@ private:
     html_form_fieldset true_block;
     html_form_select action_type_true;
     std::unique_ptr<html_overwrite_action> act_if_true;
+    std::unique_ptr<html_overwrite_action> old_true; ///< to keep act_if_true existing when changed from on_event()
+    bool change_true;
     html_form_fieldset false_block;
     html_form_select action_type_false;
     std::unique_ptr<html_overwrite_action> act_if_false;
+
+	/// \note old_true and old_false are necessary
+	/// for the body_builder code to find the object
+	/// until the get_body_part_from_all_children()
+	/// exits as called from our inherited_get_body_part()
+	/// only after that we will delete the objects. Though
+	/// they are just foresaken() if the act_if_true
+	/// or act_if_false had to change
+    std::unique_ptr<html_overwrite_action> old_false;  ///< to keep act_if_false existing when changed from on_event()
+    bool change_false;
 
 };
 

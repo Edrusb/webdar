@@ -49,12 +49,12 @@ html_form_overwrite_conditional_action::html_form_overwrite_conditional_action()
 	// components setup
     action_type_true.add_choice(action_type_undefined, "--- select an action type ---");
     action_type_true.add_choice(action_type_const, "constant action");
-    action_type_true.add_choice(action_type_const, "conditional action");
+    action_type_true.add_choice(action_type_condition, "conditional action");
     act_if_true.reset();
 
     action_type_false.add_choice(action_type_undefined, "--- select an action type ---");
     action_type_false.add_choice(action_type_const, "constant action");
-    action_type_false.add_choice(action_type_const, "conditional action");
+    action_type_false.add_choice(action_type_condition, "conditional action");
     act_if_false.reset();
 
 	// adoption tree
@@ -110,42 +110,62 @@ void html_form_overwrite_conditional_action::on_event(const std::string & event_
 {
     if(event_name == act_true_changed)
     {
+	if(old_true)
+	    throw WEBDAR_BUG;
+	if(change_true)
+	    throw WEBDAR_BUG;
+
+	change_true = true;
+	old_true = std::move(act_if_true);
+
 	if(action_type_true.get_selected_id() == action_type_undefined)
-	    act_if_true.reset();
+	{
+		// nothing to do
+	}
 	else if(action_type_true.get_selected_id() == action_type_const)
 	{
 	    act_if_true.reset(new (nothrow) html_form_overwrite_constant_action());
 	    if(!act_if_true)
 		throw exception_memory();
-	    true_block.adopt(act_if_true.get());
+		// adoption of this new object will be done in inherited_get_body_part()
 	}
 	else if(action_type_true.get_selected_id() == action_type_condition)
 	{
 	    act_if_true.reset(new (nothrow) html_form_overwrite_conditional_action());
 	    if(!act_if_true)
 		throw exception_memory();
-	    true_block.adopt(act_if_true.get());
+		// adoption of this new object will be done in inherited_get_body_part()
 	}
 	else
 	    throw WEBDAR_BUG;
     }
     else if(event_name == act_false_changed)
     {
+	if(old_false)
+	    throw WEBDAR_BUG;
+	if(change_false)
+	    throw WEBDAR_BUG;
+
+	change_false = true;
+	old_false = std::move(act_if_false);
+
 	if(action_type_false.get_selected_id() == action_type_undefined)
-	    act_if_false.reset();
+	{
+		// nothing to do
+	}
 	else if(action_type_false.get_selected_id() == action_type_const)
 	{
 	    act_if_false.reset(new (nothrow) html_form_overwrite_constant_action());
 	    if(!act_if_false)
 		throw exception_memory();
-	    false_block.adopt(act_if_false.get());
+		// adoption of this new object will be done in inherited_get_body_part()
 	}
 	else if(action_type_false.get_selected_id() == action_type_condition)
 	{
 	    act_if_false.reset(new (nothrow) html_form_overwrite_conditional_action());
 	    if(!act_if_false)
 		throw exception_memory();
-	    false_block.adopt(act_if_false.get());
+		// adoption of this new object will be done in inherited_get_body_part()
 	}
 	else
 	    throw WEBDAR_BUG;
@@ -157,6 +177,27 @@ void html_form_overwrite_conditional_action::on_event(const std::string & event_
 string html_form_overwrite_conditional_action::inherited_get_body_part(const chemin & path,
 								       const request & req)
 {
-    return get_body_part_from_all_children(path, req);
+    string ret;
+
+    change_true = false;
+    change_false = false;
+
+    ret = get_body_part_from_all_children(path, req);
+
+    if(change_true)
+    {
+	old_true.reset();
+	if(act_if_true)
+	    true_block.adopt(&(*act_if_true));
+    }
+
+    if(change_false)
+    {
+	old_false.reset();
+	if(act_if_false)
+	    false_block.adopt(&(*act_if_false));
+    }
+
+    return ret;
 }
 
