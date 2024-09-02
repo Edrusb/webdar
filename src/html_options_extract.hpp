@@ -42,6 +42,7 @@ extern "C"
 #include "html_derouleur.hpp"
 #include "html_mask_form_filename.hpp"
 #include "html_mask_form_path.hpp"
+#include "html_form_overwrite_action.hpp"
 
     /// html components used for the user to provide parameters of libdar archive restoration operation
 
@@ -83,7 +84,8 @@ private:
     html_form_input display_skipped;
     html_form_input empty_dir;
     html_form_select dirty_behavior;
-	// overwriting_rules (policy)
+    html_form_overwrite_action overwriting_policy;
+    html_form form_overwriting;
     html_form_input only_deleted;
     html_form_input ignore_deleted;
     html_mask_form_filename filename_mask;
