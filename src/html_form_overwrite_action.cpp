@@ -33,6 +33,7 @@ extern "C"
     // webdar headers
 #include "html_form_overwrite_constant_action.hpp"
 #include "html_form_overwrite_conditional_action.hpp"
+#include "html_form_overwrite_chain_action.hpp"
 
     //
 #include "html_form_overwrite_action.hpp"
@@ -47,6 +48,7 @@ html_form_overwrite_action::html_form_overwrite_action(const string & label):
 	// components setup
     action_type.add_choice(action_type_const, "constant action");
     action_type.add_choice(action_type_condition, "conditional action");
+    action_type.add_choice(action_type_chain, "chain action");
     action_type.set_selected(0);
     action.reset(new (nothrow) html_form_overwrite_constant_action());
     if(!action)
@@ -103,6 +105,12 @@ void html_form_overwrite_action::on_event(const std::string & event_name)
 	    if(!action)
 		throw exception_memory();
 		// adoption of this new object will be done in inherited_get_body_part()
+	}
+	else if(action_type.get_selected_id() == action_type_chain)
+	{
+	    action.reset(new (nothrow) html_form_overwrite_chain_action("Chain of actions"));
+	    if(!action)
+		throw exception_memory();
 	}
 	else // unknown action type
 	    throw WEBDAR_BUG;

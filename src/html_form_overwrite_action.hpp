@@ -74,6 +74,7 @@ private:
 
     static constexpr const char* action_type_const = "constant";
     static constexpr const char* action_type_condition = "condition";
+    static constexpr const char* action_type_chain = "chain";
 
     html_form_fieldset fs;
     html_form_select action_type;
