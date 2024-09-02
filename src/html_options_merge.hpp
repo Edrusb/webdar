@@ -49,6 +49,7 @@ extern "C"
 #include "html_entrepot.hpp"
 #include "html_mask_form_filename.hpp"
 #include "html_mask_form_path.hpp"
+#include "html_form_overwrite_action.hpp"
 
     /// html component for the user to provided parameters of a libdar merging operation
 
@@ -127,6 +128,9 @@ private:
 
     html_mask_form_filename filename_mask;
     html_mask_form_path path_mask;
+
+    html_form_overwrite_action overwriting_policy;
+    html_form form_overwriting;
 
     html_form form_compr;
     html_form_fieldset fs_compr;

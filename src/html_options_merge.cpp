@@ -72,6 +72,8 @@ html_options_merge::html_options_merge():
     empty_dir("Store ignored directories as empty directories", html_form_input::check, "", 1),
     decremental_mode("Decremental mode", html_form_input::check, "", 1),
     path_mask(true),
+    overwriting_policy(""),
+    form_overwriting("Update"),
     form_compr("Update"),
     fs_compr(""),
     keep_compressed("Keep file compressed", html_form_input::check, "", 1),
@@ -145,6 +147,7 @@ html_options_merge::html_options_merge():
     static const char* sect_filter = "filter";
     static const char* sect_mask_file = "mask_file";
     static const char* sect_mask_path = "mask_path";
+    static const char* sect_overwrite = "overwrite";
     static const char* sect_compr = "slicing";
     static const char* sect_slice = "compression";
     static const char* sect_cipher = "ciphering";
@@ -156,6 +159,7 @@ html_options_merge::html_options_merge():
     deroule.add_section(sect_filter, "What to take into consideration for Merging");
     deroule.add_section(sect_mask_file, "Filename based filtering");
     deroule.add_section(sect_mask_path, "Path based filterting");
+    deroule.add_section(sect_overwrite, "Overwriting policy");
     deroule.add_section(sect_compr, "Compression Options");
     deroule.add_section(sect_slice, "Slicing Options");
     deroule.add_section(sect_cipher, "Encryption Options");
@@ -197,6 +201,9 @@ html_options_merge::html_options_merge():
 
     deroule.adopt_in_section(sect_mask_file, &filename_mask);
     deroule.adopt_in_section(sect_mask_path, &path_mask);
+
+    form_overwriting.adopt(&overwriting_policy);
+    deroule.adopt_in_section(sect_overwrite, &form_overwriting);
 
     fs_compr.adopt(&keep_compressed);
     fs_compr.adopt(&compression);
@@ -363,6 +370,7 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
     ret.set_decremental_mode(decremental_mode.get_value_as_bool());
     ret.set_selection(*(filename_mask.get_mask()));
     ret.set_subtree(*(path_mask.get_mask()));
+    ret.set_overwriting_rules(*(overwriting_policy.get_overwriting_action()));
     ret.set_keep_compressed(keep_compressed.get_value_as_bool());
     ret.set_compression(compression.get_value());
     ret.set_compression_level(webdar_tools_convert_to_int(compression_level.get_value()));
