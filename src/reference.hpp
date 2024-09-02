@@ -32,6 +32,7 @@ extern "C"
 
     // C++ system header files
 #include <list>
+#include <set>
 
     // webdar headers
 
