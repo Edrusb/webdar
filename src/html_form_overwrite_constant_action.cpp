@@ -105,6 +105,7 @@ unique_ptr<libdar::crit_action> html_form_overwrite_constant_action::get_overwri
 	break;
     case 6:
 	act_data = libdar::data_ask;
+	break;
     default:
 	throw WEBDAR_BUG;
     }
@@ -137,6 +138,7 @@ unique_ptr<libdar::crit_action> html_form_overwrite_constant_action::get_overwri
 	break;
     case 8:
 	act_ea = libdar::EA_ask;
+	break;
     default:
 	throw WEBDAR_BUG;
     }
