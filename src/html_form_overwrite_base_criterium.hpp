@@ -41,8 +41,7 @@ extern "C"
 #include "html_form_select.hpp"
 #include "html_form_fieldset.hpp"
 
-
-    /// html component used for the base criterium in overwriting policies
+    /// html component to be adopted by an html_form that implements atomic/base actions for overwriting policies
 
 class html_form_overwrite_base_criterium: public html_overwrite_criterium, public actor
 {

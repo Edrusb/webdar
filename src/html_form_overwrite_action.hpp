@@ -39,7 +39,13 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "actor.hpp"
 
-    /// html component used for constant actions in overwriting policies
+    /// html component to be adopted by an html_form class
+
+    /// \note this class implements the html_overwrite_action and proposes to
+    /// the user a switch between html_form_overwrite_constant_action and
+    /// html_form_overwrite_conditional_action, which are two more specific
+    /// implementation of html_overwrite_action ancestor class that should also
+    /// be adopted by an html_form (directoy or not).
 
 class html_form_overwrite_action: public html_overwrite_action, public actor
 {

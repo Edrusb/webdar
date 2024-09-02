@@ -36,7 +36,11 @@ extern "C"
     // webdar headers
 #include "body_builder.hpp"
 
-    /// html component used for the criterium in overwriting policies (pure virtual class)
+    /// html ancestor class used for the criterium in html_form_overwrite_conditional_action class
+
+    /// \note this class is a pure virtual class and has no link with html_form class unlike
+    /// its inherited classes (html_form_overwrite_base_criterium and
+    /// html_form_overwrite_combining_criterium, for example).
 
 class html_overwrite_criterium : public body_builder
 {

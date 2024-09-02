@@ -36,7 +36,13 @@ extern "C"
     // webdar headers
 #include "body_builder.hpp"
 
-    /// html component used for the actions in overwriting policies (pure virtual class)
+    /// html component used for constant actions in overwriting policies
+
+    /// \note this is the common ancestor of all html overwrite policy components
+    /// and is a pure virtual class. It is not a _form_ related class as is
+    /// html_form_overwrite_action which by the way is a fully implemented child class
+    /// of this class.
+
 
 class html_overwrite_action : public body_builder
 {

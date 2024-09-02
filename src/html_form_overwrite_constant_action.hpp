@@ -39,7 +39,7 @@ extern "C"
 #include "html_form_fieldset.hpp"
 
 
-    /// html component used for constant actions in overwriting policies
+    /// html component to be adopted by an html_form that implements constant actions for overwriting policies
 
 class html_form_overwrite_constant_action: public html_overwrite_action
 {
