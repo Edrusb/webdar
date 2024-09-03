@@ -157,11 +157,8 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
 
     opts.clear();
     opts.set_crypto_algo(src_crypto_algo.get_value());
-    if(src_crypto_algo.get_value() != libdar::crypto_algo::none)
-    {
-	opts.set_crypto_pass(libdar::secu_string(src_crypto_pass.get_value().c_str(), src_crypto_pass.get_value().size()));
-	opts.set_crypto_size(webdar_tools_convert_to_int(src_crypto_size.get_value()));
-    }
+    opts.set_crypto_pass(libdar::secu_string(src_crypto_pass.get_value().c_str(), src_crypto_pass.get_value().size()));
+    opts.set_crypto_size(webdar_tools_convert_to_int(src_crypto_size.get_value()));
     opts.set_ignore_signature_check_failure(src_ignore_sig_failure.get_value_as_bool());
     opts.set_execute(src_execute.get_value());
     opts.set_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(src_slice_min_digits.get_value())));
@@ -184,11 +181,8 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
 	    opts.set_external_catalogue(string(""), chem.display());
 
 	opts.set_ref_crypto_algo(ref_crypto_algo.get_value());
-	if(ref_crypto_algo.get_value() != libdar::crypto_algo::none)
-	{
-	    opts.set_ref_crypto_pass(libdar::secu_string(ref_crypto_pass.get_value().c_str(), ref_crypto_pass.get_value().size()));
-	    opts.set_ref_crypto_size(webdar_tools_convert_to_int(ref_crypto_size.get_value()));
-	}
+	opts.set_ref_crypto_pass(libdar::secu_string(ref_crypto_pass.get_value().c_str(), ref_crypto_pass.get_value().size()));
+	opts.set_ref_crypto_size(webdar_tools_convert_to_int(ref_crypto_size.get_value()));
 	opts.set_ref_execute(ref_execute.get_value());
 	opts.set_ref_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(ref_slice_min_digits.get_value())));
 	opts.set_ref_entrepot(ref_entrep.get_entrepot(webui));
@@ -235,29 +229,6 @@ void html_options_read::on_event(const string & event_name)
 	    || event_name == html_form_input::changed
 	    || event_name == html_form_input_file::changed_entrepot)
     {
-
-	if(src_crypto_algo.get_value() == libdar::crypto_algo::none)
-	{
-	    src_crypto_pass.set_visible(false);
-	    src_crypto_size.set_visible(false);
-	}
-	else
-	{
-	    src_crypto_pass.set_visible(true);
-	    src_crypto_size.set_visible(true);
-	}
-
-	if(ref_crypto_algo.get_value() == libdar::crypto_algo::none)
-	{
-	    ref_crypto_pass.set_visible(false);
-	    ref_crypto_size.set_visible(false);
-	}
-	else
-	{
-	    ref_crypto_pass.set_visible(true);
-	    ref_crypto_size.set_visible(true);
-	}
-
 	if(ref_use_external_catalogue.get_value_as_bool())
 	{
 	    ref_path.set_visible(true);
