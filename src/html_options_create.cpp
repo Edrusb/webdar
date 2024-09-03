@@ -457,12 +457,24 @@ void html_options_create::on_event(const string & event_name)
 	{
 	case libdar::compression::none:
 	    compression_level.set_visible(false);
+	    compression.set_no_CR(false);
 	    min_compr_size.set_visible(false);
 	    min_compr_size_unit.set_visible(false);
+	    break;
+	case libdar::compression::lzo1x_1_15:
+	case libdar::compression::lzo1x_1:
+	    compression.set_no_CR(false);
+	    compression_level.set_visible(false);
+	    min_compr_size.set_visible(true);
+	    min_compr_size_unit.set_visible(true);
 	    break;
 	case libdar::compression::gzip:
 	case libdar::compression::bzip2:
 	case libdar::compression::lzo:
+	case libdar::compression::xz:
+	case libdar::compression::zstd:
+	case libdar::compression::lz4:
+	    compression.set_no_CR(true);
 	    compression_level.set_visible(true);
 	    min_compr_size.set_visible(true);
 	    min_compr_size_unit.set_visible(true);
