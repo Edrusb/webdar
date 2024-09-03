@@ -366,6 +366,15 @@ string body_builder::get_body_part(const chemin & path,
     return ret;
 }
 
+void body_builder::set_no_CR(bool no_cr)
+{
+    if(no_CR != no_cr)
+    {
+	my_body_part_has_changed();
+	no_CR = no_cr;
+    }
+}
+
 void body_builder::my_body_part_has_changed()
 {
     if(ignore_children_body_changed)

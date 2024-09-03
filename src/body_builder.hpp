@@ -246,7 +246,12 @@ public:
     bool get_ignore_body_changed_from_my_children() const { return ignore_children_body_changed; };
 
         /// ask for the implementation not to add a new line after this control
-    void set_no_CR() { no_CR = true; };
+
+	/// \note originally set_no_CR() had no argument, but it was needed to revert
+	/// to get back the Carriage Return (CR) after a component, where from the
+	/// added argument, which sound to be a double negation to get the default
+	/// behavior.
+    void set_no_CR(bool no_cr = true);
 
 protected:
 
