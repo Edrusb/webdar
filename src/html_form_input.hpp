@@ -65,6 +65,8 @@ public:
     ~html_form_input() = default;
 
     void set_range(int min, int max);
+    void set_min_only(int min);
+    void set_max_only(int max);
     void change_label(const std::string & label);
     void change_type(input_type type);
 
@@ -105,6 +107,7 @@ private:
     std::string modif_change; //< name of the event "changed" to use, if set to an empty string default behavior is used
 
     void my_act() { act(modif_change.empty() ? changed: modif_change); };
+    void check_min_max_change(const std::string & next_min, const std::string & next_max);
 
     static std::string string_for_type(input_type type);
 };

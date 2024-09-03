@@ -64,14 +64,23 @@ void html_form_input::set_range(int min, int max)
     string next_min = webdar_tools_convert_to_string(min);
     string next_max = webdar_tools_convert_to_string(max);
 
-    if(next_min != x_min
-       || next_max != x_max)
-    {
-	my_body_part_has_changed();
-	x_min = next_min;
-	x_max = next_max;
-	value_set = true;
-    }
+    check_min_max_change(next_min, next_max);
+}
+
+void html_form_input::set_min_only(int min)
+{
+    string next_min = webdar_tools_convert_to_string(min);
+    string next_max = "";
+
+    check_min_max_change(next_min, next_max);
+}
+
+void html_form_input::set_max_only(int max)
+{
+    string next_min = "";
+    string next_max = webdar_tools_convert_to_string(max);
+
+    check_min_max_change(next_min, next_max);
 }
 
 void html_form_input::change_label(const string & label)
@@ -173,8 +182,10 @@ string html_form_input::inherited_get_body_part(const chemin & path,
     if(x_type != "checkbox")
 	ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
     ret += "<input " + get_css_classes() + " type=\"" + x_type + "\" name=\"" + x_id + "\" id=\"" + x_id + "\" ";
-    if(x_min != "" && x_max != "") // yes both
-	ret += "min=\"" + x_min + "\" max=\"" + x_max + "\" ";
+    if(x_min != "")
+	ret += "min=\"" + x_min + "\" ";
+    if(x_max != "")
+	ret += "max=\"" + x_max + "\" ";
     if(x_init != "")
     {
 	if(x_type == "checkbox")
@@ -212,6 +223,19 @@ void html_form_input::set_change_event_name(const string & name)
     rename_name(modif_change, name);
     modif_change = name;
 }
+
+void html_form_input::check_min_max_change(const string & next_min, const string & next_max)
+{
+    if(next_min != x_min
+       || next_max != x_max)
+    {
+	my_body_part_has_changed();
+	x_min = next_min;
+	x_max = next_max;
+	value_set = true;
+    }
+}
+
 
 string html_form_input::string_for_type(input_type type)
 {
