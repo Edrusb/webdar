@@ -181,7 +181,6 @@ void html_form_overwrite_base_criterium::on_event(const std::string & event_name
 	throw WEBDAR_BUG;
 }
 
-
 string html_form_overwrite_base_criterium::inherited_get_body_part(const chemin & path,
 								   const request & req)
 {

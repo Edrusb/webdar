@@ -148,6 +148,15 @@ void html_form_mask_subdir::on_event(const std::string & event_name)
 	throw WEBDAR_BUG;
 }
 
+unique_ptr<body_builder> html_form_mask_subdir::make_brother() const
+{
+    std::unique_ptr<body_builder> ret(new (std::nothrow) html_form_mask_subdir(absolute_ok));
+
+    if(!ret)
+	throw exception_memory();
+    return ret;
+}
+
 string html_form_mask_subdir::inherited_get_body_part(const chemin & path,
 						      const request & req)
 {

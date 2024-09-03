@@ -103,6 +103,9 @@ public:
 	/// clone() implementation
     MASK_CLONER_MACRO;
 
+	/// inherited from body_builder
+    MAKE_BROTHER_MACRO;
+
 
 protected:
 	/// inherited methods from body_builder
