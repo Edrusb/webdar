@@ -74,6 +74,8 @@ html_options_create::html_options_create():
     hourshift("Hour shift", html_form_input::number, "", 5),
     shown_fs(""),
     info_details("Detailed informations", html_form_input::check, "1", 1),
+    display_treated("Display treated files", html_form_input::check, "", 1),
+    display_treated_only_dir("Display only treated directories", html_form_input::check, "", 1),
     empty("Dry run execution", html_form_input::check, "", 1),
     display_skipped("Display skipped files", html_form_input::check, "1", 1),
     security_check("Security warning", html_form_input::check, "", 1),
@@ -239,6 +241,8 @@ html_options_create::html_options_create():
 
 	// operation visibility
     shown_fs.adopt(&info_details);
+    shown_fs.adopt(&display_treated);
+    shown_fs.adopt(&display_treated_only_dir);
     shown_fs.adopt(&display_skipped);
     shown_fs.adopt(&security_check);
     shown_fs.adopt(&ignore_unknown_inode_type);
@@ -295,6 +299,7 @@ html_options_create::html_options_create():
     register_name(entrepot_changed);
 
     archtype.record_actor_on_event(this, html_form_radio::changed);
+    display_treated.record_actor_on_event(this, html_form_input::changed);
     compression.record_actor_on_event(this, html_compression::changed);
     slicing.record_actor_on_event(this, html_form_input::changed);
     different_first_slice.record_actor_on_event(this, html_form_input::changed);
@@ -305,6 +310,7 @@ html_options_create::html_options_create():
 
 	// css
     webdar_css_style::grey_button(deroule, true);
+    display_treated_only_dir.add_css_class(css_indent);
 }
 
 libdar::archive_options_create html_options_create::get_options(shared_ptr<html_web_user_interaction> & webui) const
@@ -341,6 +347,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_allow_over(allow_over.get_value_as_bool());
     ret.set_warn_over(warn_over.get_value_as_bool());
     ret.set_info_details(info_details.get_value_as_bool());
+    ret.set_display_treated(display_treated.get_value_as_bool(), display_treated_only_dir.get_value_as_bool());
     ret.set_pause(libdar::deci(pause.get_value()).computer());
     ret.set_empty_dir(empty_dir.get_value_as_bool());
     ret.set_compression(compression.get_value());
@@ -441,6 +448,8 @@ void html_options_create::on_event(const string & event_name)
 	    throw WEBDAR_BUG;
 	}
 
+	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
+
 	switch(compression.get_value())
 	{
 	case libdar::compression::none:
@@ -523,4 +532,10 @@ void html_options_create::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
+
+    css tmp;
+    tmp.css_margin_left("4em");
+
+    if(! csslib->class_exists(css_indent))
+	csslib->add(css_indent, tmp);
 }

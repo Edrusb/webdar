@@ -95,6 +95,8 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    static constexpr const char* css_indent = "html_option_create_indent";
+
     html_derouleur deroule;
 
     html_entrepot entrep;
@@ -149,6 +151,8 @@ private:
 
     html_form_fieldset shown_fs;
     html_form_input info_details;
+    html_form_input display_treated;
+    html_form_input display_treated_only_dir;
     html_form_input display_skipped;
     html_form_input security_check;
     html_form_input ignore_unknown_inode_type;
