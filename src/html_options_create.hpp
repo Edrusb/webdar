@@ -154,6 +154,7 @@ private:
     html_form_input display_treated;
     html_form_input display_treated_only_dir;
     html_form_input display_skipped;
+    html_form_input display_dir_summary;
     html_form_input security_check;
     html_form_input ignore_unknown_inode_type;
 

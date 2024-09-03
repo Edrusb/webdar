@@ -76,6 +76,7 @@ html_options_create::html_options_create():
     info_details("Detailed informations", html_form_input::check, "1", 1),
     display_treated("Display treated files", html_form_input::check, "", 1),
     display_treated_only_dir("Display only treated directories", html_form_input::check, "", 1),
+    display_dir_summary("Display summary at the end of each directory", html_form_input::check, "", 1),
     empty("Dry run execution", html_form_input::check, "", 1),
     display_skipped("Display skipped files", html_form_input::check, "1", 1),
     security_check("Security warning", html_form_input::check, "", 1),
@@ -243,6 +244,7 @@ html_options_create::html_options_create():
     shown_fs.adopt(&info_details);
     shown_fs.adopt(&display_treated);
     shown_fs.adopt(&display_treated_only_dir);
+    shown_fs.adopt(&display_dir_summary);
     shown_fs.adopt(&display_skipped);
     shown_fs.adopt(&security_check);
     shown_fs.adopt(&ignore_unknown_inode_type);
@@ -348,6 +350,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_warn_over(warn_over.get_value_as_bool());
     ret.set_info_details(info_details.get_value_as_bool());
     ret.set_display_treated(display_treated.get_value_as_bool(), display_treated_only_dir.get_value_as_bool());
+    ret.set_display_finished(display_dir_summary.get_value_as_bool());
     ret.set_pause(libdar::deci(pause.get_value()).computer());
     ret.set_empty_dir(empty_dir.get_value_as_bool());
     ret.set_compression(compression.get_value());
