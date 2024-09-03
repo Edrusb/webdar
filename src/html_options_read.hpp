@@ -139,6 +139,9 @@ private:
     html_form_input info_details;
     html_form_input lax;
     html_form_input sequential_read;
+    html_form_input multi_thread_crypto;
+    html_form_input multi_thread_compress;
+
 
 	// external catalogue entrepot
     html_entrepot ref_entrep;

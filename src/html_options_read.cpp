@@ -56,6 +56,8 @@ html_options_read::html_options_read():
     info_details("Detailed information", html_form_input::check, "1", 1),
     lax("Laxist check mode", html_form_input::check, "", 1),
     sequential_read("Sequential read", html_form_input::check, "", 1),
+    multi_thread_crypto("Number of thread for cryptography", html_form_input::number, "2", 5),
+    multi_thread_compress("Number of thread for decompression", html_form_input::number, "2", 5),
     ref_use_external_catalogue("Use external catalog to open the archive", html_form_input::check, "", 1),
     form_ref("Update Options"),
     ref_path("External catalog path", "/", 50, "Select the external catalog..."),
@@ -67,6 +69,8 @@ html_options_read::html_options_read():
 {
     ref_path.set_select_mode(html_form_input_file::select_slice);
     ref_path.set_can_create_dir(false);
+    multi_thread_crypto.set_min_only(1);
+    multi_thread_compress.set_min_only(1);
 
 	// set default values from libdar
 
@@ -105,6 +109,8 @@ html_options_read::html_options_read():
     fs_src.adopt(&info_details);
     fs_src.adopt(&lax);
     fs_src.adopt(&sequential_read);
+    fs_src.adopt(&multi_thread_crypto);
+    fs_src.adopt(&multi_thread_compress);
     form_src.adopt(&fs_src);
     deroule.adopt_in_section(sect_opt, &form_src);
 
@@ -166,6 +172,8 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
     opts.set_info_details(info_details.get_value_as_bool());
     opts.set_lax(lax.get_value_as_bool());
     opts.set_sequential_read(sequential_read.get_value_as_bool());
+    opts.set_multi_threaded_crypto(webdar_tools_convert_to_int(multi_thread_crypto.get_value()));
+    opts.set_multi_threaded_compress(webdar_tools_convert_to_int(multi_thread_compress.get_value()));
     if(ref_use_external_catalogue.get_value_as_bool())
     {
 	chemin chem(ref_path.get_value());
