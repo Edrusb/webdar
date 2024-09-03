@@ -49,6 +49,7 @@ html_options_create::html_options_create():
     form_archgen("Update"),
     form_shown("Update"),
     form_perimeter("Update"),
+    filename_mask("Filename expression"),
     path_mask(false),
     form_reading("Update"),
     form_compr("Update"),

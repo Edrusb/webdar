@@ -39,10 +39,10 @@ extern "C"
 
 using namespace std;
 
-html_mask_form_filename::html_mask_form_filename():
+html_mask_form_filename::html_mask_form_filename(const string & label):
     html_form("Update")
 {
-    root.add_mask_type("Filename expression", html_form_mask_expression());
+    root.add_mask_type(label, html_form_mask_expression());
     root.add_mask_myself("Logical combination");
     adopt(&root);
 }

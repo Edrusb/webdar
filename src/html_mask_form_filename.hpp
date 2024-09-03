@@ -37,12 +37,12 @@ extern "C"
 #include "html_form_mask_expression.hpp"
 #include "html_form.hpp"
 
-    /// class html_mask_form_filename let user define mask on filenames
+    /// class html_mask_form_filename let user define mask applies to strings (filename, extended attributes, ...)
 
 class html_mask_form_filename : public html_form
 {
 public:
-    html_mask_form_filename();
+    html_mask_form_filename(const std::string & label);
     html_mask_form_filename(const html_mask_form_filename & ref) = default;
     html_mask_form_filename(html_mask_form_filename && ref) noexcept = delete;
     html_mask_form_filename & operator = (const html_mask_form_filename & ref) = delete;
@@ -54,6 +54,7 @@ public:
 
 private:
     html_form_mask_bool root;
+
 };
 
 #endif

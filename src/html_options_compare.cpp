@@ -67,6 +67,7 @@ html_options_compare::html_options_compare():
 			 html_form_input::check,
 			 "",
 			 1),
+    filename_mask("Filename expression"),
     path_mask(false)
 {
     libdar::archive_options_diff defaults;

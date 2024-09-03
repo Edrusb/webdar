@@ -71,6 +71,7 @@ html_options_merge::html_options_merge():
     fs_perimeter(""),
     empty_dir("Store ignored directories as empty directories", html_form_input::check, "", 1),
     decremental_mode("Decremental mode", html_form_input::check, "", 1),
+    filename_mask("Filename expression"),
     path_mask(true),
     overwriting_policy(""),
     form_overwriting("Update"),
