@@ -43,10 +43,15 @@ const string html_compression::changed = "html_compression_changed";
 
 html_compression::html_compression(const string &title): html_form_select(title)
 {
-    add_choice("none", "None");
-    add_choice("gzip", "Gzip");
-    add_choice("bzip2", "Bzip2");
-    add_choice("lzo", "lzo");
+    add_choice("none", "None");       // 0
+    add_choice("gzip", "Gzip");       // 1
+    add_choice("bzip2", "Bzip2");     // 2
+    add_choice("lzo", "lzo");         // 3
+    add_choice("lzo_1_15", "lzop -1");// 4
+    add_choice("lzo_1", "lzop -3");   // 5
+    add_choice("xz", "xz");           // 6
+    add_choice("zstd", "zstd");       // 7
+    add_choice("lz4", "lz4");         // 8
     set_selected(0);
     register_name(changed);
     record_actor_on_event(this, html_form_select::changed);
@@ -64,6 +69,16 @@ libdar::compression html_compression::get_value() const
 	return libdar::compression::bzip2;
     case 3:
 	return libdar::compression::lzo;
+    case 4:
+	return libdar::compression::lzo1x_1_15;
+    case 5:
+	return libdar::compression::lzo1x_1;
+    case 6:
+	return libdar::compression::xz;
+    case 7:
+	return libdar::compression::zstd;
+    case 8:
+	return libdar::compression::lz4;
     default:
 	throw WEBDAR_BUG;
     }
@@ -84,6 +99,21 @@ void html_compression::set_value(libdar::compression val)
 	break;
     case libdar::compression::lzo:
 	set_selected(3);
+	break;
+    case libdar::compression::lzo1x_1_15:
+	set_selected(4);
+	break;
+    case libdar::compression::lzo1x_1:
+	set_selected(5);
+	break;
+    case libdar::compression::xz:
+	set_selected(6);
+	break;
+    case libdar::compression::zstd:
+	set_selected(7);
+	break;
+    case libdar::compression::lz4:
+	set_selected(8);
 	break;
     default:
 	throw WEBDAR_BUG;
