@@ -133,6 +133,7 @@ private:
     html_crypto_algo src_crypto_algo;
     html_form_input src_crypto_pass;
     html_form_input src_crypto_size;
+    html_form_input src_ignore_sig_failure;
     html_form_input src_execute;
     html_form_input src_slice_min_digits;
     html_form_input info_details;

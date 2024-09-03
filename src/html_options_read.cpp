@@ -50,6 +50,7 @@ html_options_read::html_options_read():
     src_crypto_algo("Cipher (for recent archives/backups, this is autodetected, do not select any cipher)"),
     src_crypto_pass("Passphrase (will be asked later if not provided here)", html_form_input::password, "", 30),
     src_crypto_size("Cipher block size", html_form_input::number, "0", 8),
+    src_ignore_sig_failure("Ignore signature failure", html_form_input::check, "", 1),
     src_execute("Command to execute locally before reading each slice", html_form_input::text, "", 30),
     src_slice_min_digits("Slice minimum digit", html_form_input::number, "0", 8),
     info_details("Detailed information", html_form_input::check, "1", 1),
@@ -98,6 +99,7 @@ html_options_read::html_options_read():
     fs_src.adopt(&src_crypto_algo);
     fs_src.adopt(&src_crypto_pass);
     fs_src.adopt(&src_crypto_size);
+    fs_src.adopt(&src_ignore_sig_failure);
     fs_src.adopt(&src_execute);
     fs_src.adopt(&src_slice_min_digits);
     fs_src.adopt(&info_details);
@@ -160,6 +162,7 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
 	opts.set_crypto_pass(libdar::secu_string(src_crypto_pass.get_value().c_str(), src_crypto_pass.get_value().size()));
 	opts.set_crypto_size(webdar_tools_convert_to_int(src_crypto_size.get_value()));
     }
+    opts.set_ignore_signature_check_failure(src_ignore_sig_failure.get_value_as_bool());
     opts.set_execute(src_execute.get_value());
     opts.set_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(src_slice_min_digits.get_value())));
     opts.set_entrepot(entrep.get_entrepot(webui));
