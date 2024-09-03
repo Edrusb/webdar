@@ -163,7 +163,8 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
 
     opts.clear();
     opts.set_crypto_algo(src_crypto_algo.get_value());
-    opts.set_crypto_pass(libdar::secu_string(src_crypto_pass.get_value().c_str(), src_crypto_pass.get_value().size()));
+    if(!src_crypto_pass.get_value().empty())
+	opts.set_crypto_pass(libdar::secu_string(src_crypto_pass.get_value().c_str(), src_crypto_pass.get_value().size()));
     opts.set_crypto_size(webdar_tools_convert_to_int(src_crypto_size.get_value()));
     opts.set_ignore_signature_check_failure(src_ignore_sig_failure.get_value_as_bool());
     opts.set_execute(src_execute.get_value());
@@ -189,7 +190,8 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
 	    opts.set_external_catalogue(string(""), chem.display());
 
 	opts.set_ref_crypto_algo(ref_crypto_algo.get_value());
-	opts.set_ref_crypto_pass(libdar::secu_string(ref_crypto_pass.get_value().c_str(), ref_crypto_pass.get_value().size()));
+	if(!ref_crypto_pass.get_value().empty())
+	    opts.set_ref_crypto_pass(libdar::secu_string(ref_crypto_pass.get_value().c_str(), ref_crypto_pass.get_value().size()));
 	opts.set_ref_crypto_size(webdar_tools_convert_to_int(ref_crypto_size.get_value()));
 	opts.set_ref_execute(ref_execute.get_value());
 	opts.set_ref_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(ref_slice_min_digits.get_value())));
