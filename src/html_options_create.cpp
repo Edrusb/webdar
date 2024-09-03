@@ -28,6 +28,8 @@ extern "C"
 }
 
     // C++ system header files
+#include <dar/libdar.hpp>
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_tools.hpp"
@@ -92,6 +94,7 @@ html_options_create::html_options_create():
     compression("Compression algorithm"),
     compression_level("Compression level", html_form_input::number, "", 3),
     min_compr_size("Minimum file sized compressed", html_form_input::number, "", 30),
+    compression_block("Block compression for parallel compression (zero to zero to disable)", html_form_input::number, "0", 30),
     slicing_fs(""),
     slicing("Sliced archive", html_form_input::check, "", 1),
     slice_size("Slice size", html_form_input::number, "", 6),
@@ -130,6 +133,7 @@ html_options_create::html_options_create():
     slice_size.set_no_CR();
     first_slice_size.set_no_CR();
     min_compr_size.set_no_CR();
+    compression_block.set_no_CR();
     retry_on_change_overhead.set_no_CR();
     sparse_file_min_size.set_no_CR();
 
@@ -139,6 +143,7 @@ html_options_create::html_options_create():
     pause.set_value(libdar::deci(defaults.get_pause()).human());
     compression.set_value(defaults.get_compression());
     compression_level.set_value(webdar_tools_convert_to_string(defaults.get_compression_level()));
+    compression_block.set_value(webdar_tools_convert_to_string(defaults.get_compression_block_size()));
     slicing.set_value_as_bool(defaults.get_slice_size() != 0);
     slice_size.set_value(libdar::deci(defaults.get_slice_size()).human());
     different_first_slice.set_value_as_bool(defaults.get_first_slice_size() != defaults.get_slice_size());
@@ -276,6 +281,8 @@ html_options_create::html_options_create():
     compr_fs.adopt(&compression_level);
     compr_fs.adopt(&min_compr_size);
     compr_fs.adopt(&min_compr_size_unit);
+    compr_fs.adopt(&compression_block);
+    compr_fs.adopt(&compr_block_unit);
     form_compr.adopt(&compr_fs);
     deroule.adopt_in_section(sect_compr, &form_compr);
 
@@ -317,8 +324,12 @@ html_options_create::html_options_create():
 
 libdar::archive_options_create html_options_create::get_options(shared_ptr<html_web_user_interaction> & webui) const
 {
+    static const libdar::U_I min_compr_bs = 50*1024;
+
     libdar::archive_options_create ret;
     shared_ptr<libdar::archive> ref_arch; // used locally to pass the archive of reference we may build for diff/incr backup
+    libdar::infinint compr_bs = libdar::deci(compression_block.get_value()).computer() * compr_block_unit.get_value();
+    libdar::U_I val = 0;
 
     switch(archtype.get_selected_num())
     {
@@ -356,6 +367,17 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_compression(compression.get_value());
     ret.set_compression_level(webdar_tools_convert_to_int(compression_level.get_value()));
     ret.set_min_compr_size(libdar::deci(min_compr_size.get_value()).computer() * min_compr_size_unit.get_value());
+
+    val = 0;
+    compr_bs.unstack(val);
+    if(!compr_bs.is_zero())
+	throw exception_range("compression block size is too large for the underlying operating system, please reduce");
+
+    if(val < min_compr_bs && val != 0)
+	throw exception_range(libdar::tools_printf("compression block size is too small, select either zero to disable compression per block or a block size greater or equal to %d", min_compr_bs));
+
+    ret.set_compression_block_size(val);
+
     if(slicing.get_value_as_bool())
     {
 	libdar::infinint s_size = libdar::deci(slice_size.get_value()).computer() * slice_size_unit.get_value();
@@ -460,6 +482,8 @@ void html_options_create::on_event(const string & event_name)
 	    compression.set_no_CR(false);
 	    min_compr_size.set_visible(false);
 	    min_compr_size_unit.set_visible(false);
+	    compression_block.set_visible(false);
+	    compr_block_unit.set_visible(false);
 	    break;
 	case libdar::compression::lzo1x_1_15:
 	case libdar::compression::lzo1x_1:
@@ -467,6 +491,8 @@ void html_options_create::on_event(const string & event_name)
 	    compression_level.set_visible(false);
 	    min_compr_size.set_visible(true);
 	    min_compr_size_unit.set_visible(true);
+	    compression_block.set_visible(true);
+	    compr_block_unit.set_visible(true);
 	    break;
 	case libdar::compression::gzip:
 	case libdar::compression::bzip2:
@@ -478,6 +504,8 @@ void html_options_create::on_event(const string & event_name)
 	    compression_level.set_visible(true);
 	    min_compr_size.set_visible(true);
 	    min_compr_size_unit.set_visible(true);
+	    compression_block.set_visible(true);
+	    compr_block_unit.set_visible(true);
 	    break;
 	default:
 	    throw WEBDAR_BUG;
