@@ -253,6 +253,16 @@ public:
 	/// behavior.
     void set_no_CR(bool no_cr = true);
 
+	/// used to create a new object of the same type only having a body_builder pointer on an existing object
+
+	/// \note note all classes have to define it, just those where the context
+	/// need duplicating objects of that type, from a body_builder pointed to object,
+	/// (see where html_form_dynamic_table is used). See below make_brother_template()
+	/// in the protected section for prepared implementation template and one step further
+	/// see the MAKE_BROTHER_MACRO at the end of this file.
+    virtual std::unique_ptr<body_builder> make_brother() const { throw WEBDAR_BUG; };
+
+
 protected:
 
 	/// implementation of get_body_part() method for inherited classes
@@ -395,6 +405,14 @@ protected:
         /// true if it has been requested no to add Carriage Return after the HTML object
     bool get_no_CR() const { return no_CR; };
 
+    template <class T> std::unique_ptr<body_builder> make_brother_template(const T* obj) const
+    {
+	std::unique_ptr<body_builder> ret(new (std::nothrow) T());
+
+	if(!ret)
+	    throw exception_memory();
+	return ret;
+    };
 
 private:
     bool visible;                                       ///< whether this object is visible or not
@@ -448,5 +466,9 @@ private:
 				       const request & req);
 
 };
+
+    // for classes that need to implement make_brother()
+#define MAKE_BROTHER_MACRO virtual std::unique_ptr<body_builder> make_brother() const override { return make_brother_template(this); }
+
 
 #endif
