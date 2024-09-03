@@ -56,6 +56,7 @@ html_options_read::html_options_read():
     info_details("Detailed information", html_form_input::check, "1", 1),
     lax("Laxist check mode", html_form_input::check, "", 1),
     sequential_read("Sequential read", html_form_input::check, "", 1),
+    force_first_slice("Start reading the first instead of the last (available when external catalog is used)", html_form_input::check, "", 1),
     multi_thread_crypto("Number of thread for cryptography", html_form_input::number, "2", 5),
     multi_thread_compress("Number of thread for decompression", html_form_input::number, "2", 5),
     ref_use_external_catalogue("Use external catalog to open the archive", html_form_input::check, "", 1),
@@ -83,6 +84,7 @@ html_options_read::html_options_read():
     src_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_slice_min_digits()));
     lax.set_value_as_bool(defaults.get_lax());
     sequential_read.set_value_as_bool(defaults.get_sequential_read());
+    force_first_slice.set_value_as_bool(defaults.get_force_first_slice());
     ref_use_external_catalogue.set_value_as_bool(defaults.is_external_catalogue_set());
     if(ref_use_external_catalogue.get_value_as_bool())
 	ref_path.set_value(defaults.get_ref_path().display());
@@ -109,6 +111,7 @@ html_options_read::html_options_read():
     fs_src.adopt(&info_details);
     fs_src.adopt(&lax);
     fs_src.adopt(&sequential_read);
+    fs_src.adopt(&force_first_slice);
     fs_src.adopt(&multi_thread_crypto);
     fs_src.adopt(&multi_thread_compress);
     form_src.adopt(&fs_src);
@@ -196,6 +199,7 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
 	opts.set_ref_execute(ref_execute.get_value());
 	opts.set_ref_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(ref_slice_min_digits.get_value())));
 	opts.set_ref_entrepot(ref_entrep.get_entrepot(webui));
+	opts.set_force_first_slice(force_first_slice.get_value_as_bool());
     }
     else
 	opts.unset_external_catalogue();
@@ -246,6 +250,7 @@ void html_options_read::on_event(const string & event_name)
 	    ref_execute.set_visible(true);
 	    ref_slice_min_digits.set_visible(true);
 	    deroule.section_set_visible(sect_ref_entrep, true);
+	    force_first_slice.set_enabled(true);
 	}
 	else
 	{
@@ -256,6 +261,7 @@ void html_options_read::on_event(const string & event_name)
 	    ref_crypto_pass.set_visible(false);
 	    ref_crypto_size.set_visible(false);
 	    deroule.section_set_visible(sect_ref_entrep, false);
+	    force_first_slice.set_enabled(false);
 	}
 
 	    // no need to call my_body_part_has_changed()
