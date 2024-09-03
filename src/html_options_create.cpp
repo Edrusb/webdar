@@ -51,6 +51,7 @@ html_options_create::html_options_create():
     form_perimeter("Update"),
     filename_mask("Filename expression"),
     path_mask(false),
+    ea_mask("Extended Attribute expression"),
     form_reading("Update"),
     form_compr("Update"),
     form_slicing("Update"),
@@ -188,6 +189,7 @@ html_options_create::html_options_create():
     static const char* sect_perimeter = "backup perimeter";
     static const char* sect_mask_file = "backup filename masks";
     static const char* sect_mask_path = "backup pathname masks";
+    static const char* sect_ea_mask = "EA masks";
     static const char* sect_source = "source reading mode";
     static const char* sect_compr = "compression";
     static const char* sect_slice = "slicing";
@@ -201,6 +203,7 @@ html_options_create::html_options_create():
     deroule.add_section(sect_perimeter, "What to take into consideration for backup");
     deroule.add_section(sect_mask_file, "Filename based filtering");
     deroule.add_section(sect_mask_path, "Path based filtering");
+    deroule.add_section(sect_ea_mask, "Extended Attributes filtering");
     deroule.add_section(sect_source, "Source file reading mode");
     deroule.add_section(sect_compr, "Compression options");
     deroule.add_section(sect_slice, "Slicing options");
@@ -270,6 +273,9 @@ html_options_create::html_options_create():
 
 	// path based masks
     deroule.adopt_in_section(sect_mask_path, &path_mask);
+
+	// EA masks
+    deroule.adopt_in_section(sect_ea_mask, &ea_mask);
 
 	// source data
     fs_alter_atime.adopt(&alter_atime);
@@ -389,6 +395,8 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 
 	ret.set_slicing(s_size, f_s_size);
     }
+
+    ret.set_ea_mask(*(ea_mask.get_mask()));
 
     ret.set_crypto_algo(crypto_algo.get_value());
     if(crypto_algo.get_value() != libdar::crypto_algo::none)

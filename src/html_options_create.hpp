@@ -113,6 +113,8 @@ private:
 
     html_mask_form_path path_mask;
 
+    html_mask_form_filename ea_mask;
+
     html_form form_reading;
 
     html_form form_compr;
