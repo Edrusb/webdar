@@ -249,6 +249,8 @@ void html_options_read::on_event(const string & event_name)
 	    ref_crypto_algo.set_visible(true);
 	    ref_execute.set_visible(true);
 	    ref_slice_min_digits.set_visible(true);
+	    ref_crypto_pass.set_visible(true);
+	    ref_crypto_size.set_visible(true);
 	    deroule.section_set_visible(sect_ref_entrep, true);
 	    force_first_slice.set_enabled(true);
 	}
