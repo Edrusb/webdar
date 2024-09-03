@@ -263,6 +263,7 @@ void html_options_read::on_event(const string & event_name)
 	    ref_crypto_pass.set_visible(false);
 	    ref_crypto_size.set_visible(false);
 	    deroule.section_set_visible(sect_ref_entrep, false);
+	    force_first_slice.set_value_as_bool(false);
 	    force_first_slice.set_enabled(false);
 	}
 
