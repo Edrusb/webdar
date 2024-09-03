@@ -182,10 +182,10 @@ html_options_repair::html_options_repair():
     crypto_pass2.set_value("");
     crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
 
-    pause.set_range(0, 99999);
-    multi_thread_crypto.set_range(1, 99999);
-    multi_thread_compress.set_range(1, 99999);
-    slice_min_digits.set_range(1, 99999);
+    pause.set_min_only(0);
+    multi_thread_crypto.set_min_only(1);
+    multi_thread_compress.set_min_only(1);
+    slice_min_digits.set_min_only(1);
 
     slice_size.set_no_CR();
     first_slice_size.set_no_CR();
