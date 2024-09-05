@@ -122,6 +122,7 @@ void html_form_dynamic_table::add_line(unsigned int typenum)
     else
 	newline.left_label.reset();
 
+    newline.object_type_index = typenum;
     newline.dynobj = list_of_types[typenum]->make_brother();
     if(! newline.dynobj)
 	throw WEBDAR_BUG;

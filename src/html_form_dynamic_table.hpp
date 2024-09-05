@@ -92,8 +92,8 @@ public:
 	/// constructor
     html_form_dynamic_table(bool has_left_labels,
 			    bool selector_below,
-			    const std::string & adder_text,
-			    const std::string & adder_default_choice);
+			    const std::string & adder_text,  ///< fixed label shown beside the add drop list
+			    const std::string & adder_default_choice); ///< default choice in the drop list
 
     html_form_dynamic_table(const html_form_dynamic_table & ref) = delete;
     html_form_dynamic_table(html_form_dynamic_table && ref) noexcept = delete;
@@ -113,17 +113,20 @@ public:
 
 	iterator & operator ++ (signed int n) { ++ptr; return *this; };
 	iterator operator ++ () { iterator ret; ret.ptr = ptr; ++ptr; return ret; };
-	std::shared_ptr<html_text> get_left_label() { return ptr->left_label; };
-	std::shared_ptr<body_builder> get_object() { return ptr->dynobj; };
+	bool operator == (const iterator & ref) const { return ptr == ref.ptr; };
+	bool operator != (const iterator & ref) const { return ptr != ref.ptr; };
+	std::shared_ptr<html_text> get_left_label() const { return ptr->left_label; };
+	unsigned int get_object_type() const { return ptr->object_type_index; };
+	std::shared_ptr<body_builder> get_object() const { return ptr->dynobj; };
 
     private:
-	std::list<line>::iterator ptr;
+	std::list<line>::const_iterator ptr;
 
 	friend html_form_dynamic_table;
     };
 
-    iterator begin() { iterator ret; ret.ptr = table_content.begin(); return ret; };
-    iterator end() { iterator ret; ret.ptr = table_content.end(); return ret; };
+    iterator begin() const { iterator ret; ret.ptr = table_content.begin(); return ret; };
+    iterator end() const { iterator ret; ret.ptr = table_content.end(); return ret; };
 
 	/// add a new object type to be proposed to the user from the "adder" selector
 
@@ -153,6 +156,7 @@ private:
 	line() { left_label.reset(); dynobj.reset(); del.reset(); };
 
 	std::shared_ptr<html_text> left_label;
+	unsigned int object_type_index; ///< index of the brother used in list_of_types
 	std::shared_ptr<body_builder> dynobj;
 	std::unique_ptr<html_form_input> del;
     };
