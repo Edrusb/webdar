@@ -128,12 +128,10 @@ private:
 
     struct available_mask
     {
-	std::string label;
 	std::unique_ptr<html_mask> mask_type; // mask_type is not set to refer to this html_form_mask_bool
 
-	available_mask(const std::string & label,
-		       const html_mask & tobecloned);
-	available_mask(const std::string & label); // to refer to this html_form_mask_bool
+	available_mask(const html_mask & tobecloned);
+	available_mask(); // to refer to this html_form_mask_bool
 	available_mask(available_mask && ref) noexcept;
 	available_mask(const available_mask & arg);
     };

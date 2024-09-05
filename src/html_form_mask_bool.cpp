@@ -74,7 +74,7 @@ html_form_mask_bool::html_form_mask_bool(const html_form_mask_bool & ref):
 {
 	// want the new object to have *AND* operation if ref has *OR*
 	// and vice versa. Because it does not make much sense to add
-	// and *AND* operator as member of an *AND* operator, same thing
+	// an *AND* operator as member of an *AND* operator, same thing
 	// having and *OR* operator as member of another *OR* operator,
 	// stated that *AND* and *OR* operator can combine arbitrary number
 	// of components.
@@ -96,13 +96,13 @@ void html_form_mask_bool::add_mask_type(const string & label,
 					const html_mask & tobecloned)
 {
     adder.add_choice(webdar_tools_convert_to_string(list_of_mask_types.size()), label);
-    list_of_mask_types.push_back(available_mask(label, tobecloned));
+    list_of_mask_types.push_back(available_mask(tobecloned));
 }
 
 void html_form_mask_bool::add_mask_myself(const string & label)
 {
     adder.add_choice(webdar_tools_convert_to_string(list_of_mask_types.size()), label);
-    list_of_mask_types.push_back(available_mask(label));
+    list_of_mask_types.push_back(available_mask());
 }
 
 void html_form_mask_bool::set_root_prefix(const libdar::path & x_prefix)
@@ -218,27 +218,22 @@ void html_form_mask_bool::new_css_library_available()
 }
 
 
-html_form_mask_bool::available_mask::available_mask(const string & lab,
-						    const html_mask & tobecloned):
-    label(lab)
+html_form_mask_bool::available_mask::available_mask(const html_mask & tobecloned)
 {
     mask_type = tobecloned.clone();
 }
 
-html_form_mask_bool::available_mask::available_mask(const string & lab):
-    label(lab)
+html_form_mask_bool::available_mask::available_mask()
 {
     mask_type.reset();
 }
 
 html_form_mask_bool::available_mask::available_mask(available_mask && ref) noexcept
 {
-    label = std::move(ref.label);
     mask_type = std::move(ref.mask_type);
 }
 
-html_form_mask_bool::available_mask::available_mask(const available_mask & ref):
-    label(ref.label)
+html_form_mask_bool::available_mask::available_mask(const available_mask & ref)
 {
     if(ref.mask_type)
 	mask_type = ref.mask_type->clone();
