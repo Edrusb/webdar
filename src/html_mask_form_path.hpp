@@ -37,6 +37,9 @@ extern "C"
 
     /// class html_mask_form_path let user define mask on paths
 
+    /// at the difference of the html_form_* classes which are component to be included into html_form
+    /// this class is a full html_form dedicated to the specific case of mask for path filtering
+
 class html_mask_form_path : public html_form
 {
 public:
