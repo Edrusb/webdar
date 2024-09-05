@@ -37,7 +37,10 @@ extern "C"
 #include "html_form_mask_expression.hpp"
 #include "html_form.hpp"
 
-    /// class html_mask_form_filename let user define mask applies to strings (filename, extended attributes, ...)
+    /// class html_mask_form_filename let user define mask applied to strings (filename, extended attributes, ...)
+
+    /// at the difference of the html_form_* classes which are component to be included into html_form
+    /// this class is a full html_form dedicated to the specific case of mask for filename filtering
 
 class html_mask_form_filename : public html_form
 {
