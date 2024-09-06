@@ -41,7 +41,7 @@ using namespace std;
 html_form_gnupg_list::html_form_gnupg_list():
     table(false,
 	  true,
-	  "Gnupg personas",
+	  "Gnupg persona to add",
 	  "--- select a type of persona ---")
 {
     html_form_input recip("Gnupg recipient",
@@ -55,6 +55,7 @@ html_form_gnupg_list::html_form_gnupg_list():
 
     table.add_obj_type("Gnupg recipient", recip);
     table.add_obj_type("Gnupg signatory", signator);
+    adopt(&table);
 }
 
 vector<string> html_form_gnupg_list::get_gnupg_recipients() const
