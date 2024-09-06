@@ -54,6 +54,8 @@ extern "C"
 #include "html_web_user_interaction.hpp"
 #include "html_mask_form_filename.hpp"
 #include "html_mask_form_path.hpp"
+#include "html_form_select.hpp"
+#include "html_form_gnupg_list.hpp"
 
     /// html component used for the user to provide the parameters to create a new archive
 
@@ -95,7 +97,9 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+	// css
     static constexpr const char* css_indent = "html_option_create_indent";
+
 
     html_derouleur deroule;
 
@@ -187,11 +191,12 @@ private:
     html_size_unit first_slice_size_unit;
 
     html_form_fieldset crypto_fs;
+    html_form_select crypto_type;
     html_crypto_algo crypto_algo;
     html_form_input crypto_pass1;
     html_form_input crypto_pass2;
     html_form_input crypto_size;
-
+    html_form_gnupg_list gnupg;
 };
 
 #endif
