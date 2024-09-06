@@ -21,8 +21,8 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
-#ifndef HTML_FORM_TEXT_LIST_HPP
-#define HTML_FORM_TEXT_LIST_HPP
+#ifndef HTML_FORM_GNUPG_LIST_HPP
+#define HTML_FORM_GNUPG_LIST_HPP
 
     // C system header files
 extern "C"
@@ -35,7 +35,7 @@ extern "C"
     // webdar headers
 #include "html_form_dynamic_table.hpp"
 
-    /// class html_form_text_list provide interface for the user to give a list of strings
+    /// class html_form_gnupg_list provide interface for the user to give a list of strings
 
     /// this html components is consitued of:
     ///
@@ -62,18 +62,18 @@ extern "C"
     ///
     /// \note this component includes an html_form by default
     /// (see constructor argument), but should not when used
-    /// recursively from another html_form_text_list
+    /// recursively from another html_form_gnupg_list
 
 
-class html_form_text_list : public body_builder
+class html_form_gnupg_list : public body_builder
 {
 public:
-    html_form_text_list();
-    html_form_text_list(const html_form_text_list & ref);
-    html_form_text_list(html_form_text_list && ref) noexcept = delete;
-    html_form_text_list & operator = (const html_form_text_list & ref) = delete;
-    html_form_text_list & operator = (html_form_text_list && ref) noexcept = delete;
-    ~html_form_text_list() = default;
+    html_form_gnupg_list();
+    html_form_gnupg_list(const html_form_gnupg_list & ref);
+    html_form_gnupg_list(html_form_gnupg_list && ref) noexcept = delete;
+    html_form_gnupg_list & operator = (const html_form_gnupg_list & ref) = delete;
+    html_form_gnupg_list & operator = (html_form_gnupg_list && ref) noexcept = delete;
+    ~html_form_gnupg_list() = default;
 
 	/// return the recipient list filled by the webuser
     std::vector<std::string> get_gnupg_recipients() const;

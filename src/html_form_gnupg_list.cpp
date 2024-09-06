@@ -38,7 +38,7 @@ extern "C"
 
 using namespace std;
 
-html_form_text_list::html_form_text_list():
+html_form_gnupg_list::html_form_gnupg_list():
     table(false,
 	  true,
 	  "Gnupg personas",
@@ -57,23 +57,23 @@ html_form_text_list::html_form_text_list():
     table.add_obj_type("Gnupg signatory", signator);
 }
 
-vector<string> html_form_text_list::get_gnupg_recipients() const
+vector<string> html_form_gnupg_list::get_gnupg_recipients() const
 {
     return gather_content_of_type(0);
 }
 
-vector<string> html_form_text_list::get_gnupg_signatories() const
+vector<string> html_form_gnupg_list::get_gnupg_signatories() const
 {
     return gather_content_of_type(1);
 }
 
-string html_form_text_list::inherited_get_body_part(const chemin & path,
+string html_form_gnupg_list::inherited_get_body_part(const chemin & path,
 						    const request & req)
 {
     return get_body_part_from_all_children(path, req);
 }
 
-vector<string> html_form_text_list::gather_content_of_type(unsigned int type) const
+vector<string> html_form_gnupg_list::gather_content_of_type(unsigned int type) const
 {
     vector<string> ret;
     html_form_dynamic_table::iterator it = table.begin();
