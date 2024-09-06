@@ -224,6 +224,16 @@ void html_form_input::set_change_event_name(const string & name)
     modif_change = name;
 }
 
+unique_ptr<body_builder> html_form_input::make_brother() const
+{
+    unique_ptr<body_builder> ret(new (nothrow) html_form_input(*this)); // using copy constructor
+
+    if(!ret)
+	throw exception_memory();
+
+    return ret;
+}
+
 void html_form_input::check_min_max_change(const string & next_min, const string & next_max)
 {
     if(next_min != x_min

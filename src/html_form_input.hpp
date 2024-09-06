@@ -87,7 +87,12 @@ public:
 	/// component here.
 	/// \note this call can be used any number of time, all actors will be kept
     void set_change_event_name(const std::string & name);
+
+	/// get the event name used when the component changes
     std::string get_event_name() const { return modif_change.empty()? changed: modif_change; };
+
+	/// inherited from body_builder
+    virtual std::unique_ptr<body_builder> make_brother() const override;
 
 protected:
 	/// inherited from body_builder
