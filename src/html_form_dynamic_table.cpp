@@ -77,7 +77,8 @@ void html_form_dynamic_table::add_obj_type(const string & label,
 	throw WEBDAR_BUG;
 
     list_of_types.push_back(std::move(newone));
-    adder.add_choice("", label);
+    adder.add_choice(label, label);
+    adder.set_selected(0);
 }
 
 void html_form_dynamic_table::on_event(const std::string & event_name)
@@ -96,7 +97,6 @@ void html_form_dynamic_table::on_event(const std::string & event_name)
     else // check whether this is an event from a delete button
 	del_line(event_name); // may throw exception if event_name is not a del event
 }
-
 
 string html_form_dynamic_table::inherited_get_body_part(const chemin & path,
 							const request & req)
@@ -136,6 +136,7 @@ void html_form_dynamic_table::add_line(unsigned int typenum)
 
     string event_name = webdar_tools_convert_to_string(event_del_count++);
     newline.del->set_change_event_name(event_name);
+    newline.del->record_actor_on_event(this, event_name);
     if(left_label)
 	table.adopt(&(*newline.left_label));
     table.adopt(&(*newline.dynobj));
@@ -161,7 +162,7 @@ void html_form_dynamic_table::del_line(const string & event_name)
     if(!it->del)
 	throw WEBDAR_BUG;
 
-    if(!it->left_label)
+    if(it->left_label)
 	table.foresake(&(*(it->left_label)));
     table.foresake(&(*(it->dynobj)));
     table.foresake(&(*(it->del)));
