@@ -568,6 +568,7 @@ void html_options_create::on_event(const string & event_name)
 	switch(crypto_algo.get_value())
 	{
 	case libdar::crypto_algo::none:
+	    crypto_type.set_visible(false);
 	    crypto_pass1.set_visible(false);
 	    crypto_pass2.set_visible(false);
 	    crypto_size.set_visible(false);
@@ -579,6 +580,7 @@ void html_options_create::on_event(const string & event_name)
 	case libdar::crypto_algo::twofish256:
 	case libdar::crypto_algo::serpent256:
 	case libdar::crypto_algo::camellia256:
+	    crypto_type.set_visible(true);
 	    switch(crypto_type.get_selected_num())
 	    {
 	    case 0: // symmetric
