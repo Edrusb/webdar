@@ -93,11 +93,11 @@ private:
 public:
     static const std::string changed;  /// default event name for all object of this clas
 
-	/// constructor
+        /// constructor
     html_form_dynamic_table(bool has_left_labels,
-			    bool selector_below,
-			    const std::string & adder_text,  ///< fixed label shown beside the add drop list
-			    const std::string & adder_default_choice); ///< default choice in the drop list
+                            bool selector_below,
+                            const std::string & adder_text,  ///< fixed label shown beside the add drop list
+                            const std::string & adder_default_choice); ///< default choice in the drop list
 
     html_form_dynamic_table(const html_form_dynamic_table & ref) = delete;
     html_form_dynamic_table(html_form_dynamic_table && ref) noexcept = delete;
@@ -108,61 +108,83 @@ public:
     class iterator
     {
     public:
-	iterator() {};
-	iterator(const iterator & ref) = default;
-	iterator(iterator && ref) = default;
-	iterator & operator = (const iterator & ref) = default;
-	iterator & operator = (iterator && ref) = default;
-	~iterator() = default;
+        iterator() {};
+        iterator(const iterator & ref) = default;
+        iterator(iterator && ref) = default;
+        iterator & operator = (const iterator & ref) = default;
+        iterator & operator = (iterator && ref) = default;
+        ~iterator() = default;
 
-	iterator & operator ++ (signed int n) { ++ptr; return *this; };
-	iterator operator ++ () { iterator ret; ret.ptr = ptr; ++ptr; return ret; };
-	bool operator == (const iterator & ref) const { return ptr == ref.ptr; };
-	bool operator != (const iterator & ref) const { return ptr != ref.ptr; };
-	std::shared_ptr<html_text> get_left_label() const { return ptr->left_label; };
-	unsigned int get_object_type() const { return ptr->object_type_index; };
-	std::shared_ptr<body_builder> get_object() const { return ptr->dynobj; };
+        iterator & operator ++ (signed int n) { ++ptr; return *this; };
+        iterator operator ++ () { iterator ret; ret.ptr = ptr; ++ptr; return ret; };
+        bool operator == (const iterator & ref) const { return ptr == ref.ptr; };
+        bool operator != (const iterator & ref) const { return ptr != ref.ptr; };
+        std::shared_ptr<html_text> get_left_label() const { return ptr->left_label; };
+        unsigned int get_object_type() const { return ptr->object_type_index; };
+        std::shared_ptr<body_builder> get_object() const { return ptr->dynobj; };
 
     private:
-	std::list<line>::const_iterator ptr;
+        std::list<line>::const_iterator ptr;
 
-	friend html_form_dynamic_table;
+        friend html_form_dynamic_table;
     };
 
     iterator begin() const { iterator ret; ret.ptr = table_content.begin(); return ret; };
     iterator end() const { iterator ret; ret.ptr = table_content.end(); return ret; };
 
-	/// add a new object type to be proposed to the user from the "adder" selector
+        /// add a new object type to be proposed to the user from the "adder" selector
 
-	/// \param[in] column the column number for this object (starts at zero)
-	/// \param[in,out] obj pointer to object that will be passed to the html_form_dynamic_table
+        /// \param[in] column the column number for this object (starts at zero)
+        /// \param[in,out] obj pointer to object that will be passed to the html_form_dynamic_table
     void add_obj_type(const std::string & label, const body_builder & obj);
 
-    	/// clear table content
+        /// clear table content
     void clear() { table_content.clear(); del_event_to_content.clear(); events_to_delete.clear(); };
 
-	/// inherited from actor
+        /// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
+        /// exposed css method from underlying html_table
+    void css_border_collapsed(bool mode) { table.css_border_collapsed(mode); };
+
+        /// exposed css method from underlying html_table
+    void set_css_class_first_row(const std::string & val) { table.set_css_class_first_row(val); };
+
+        /// exposed css method from underlying html_table
+    void set_css_class_first_row() { table.set_css_class_first_row(); };
+
+        /// exposed css method from underlying html_table
+    void set_css_class_first_column(const std::string & val) { table.set_css_class_first_column(val); };
+
+        /// exposed css method from underlying html_table
+    void set_css_class_first_column() { table.set_css_class_first_column(); };
+
+        /// exposed css method from underlying html_table
+    void set_css_class_cells(const std::string & val) { table.set_css_class_cells(val); };
+
+        /// exposed css method from underlying html_table
+    void set_css_class_cells() { table.set_css_class_cells(); };
+
+
 protected:
-	/// inherited methods from body_builder
+        /// inherited methods from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
-						const request & req) override;
+                                                const request & req) override;
 
 private:
 
-	// events
+        // events
     static constexpr const char* new_line_to_add = "new_line";
 
-	/// objects adopted for a given line of the "table" and managed by table_content
+        /// objects adopted for a given line of the "table" and managed by table_content
     struct line
     {
-	line() { left_label.reset(); dynobj.reset(); del.reset(); };
+        line() { left_label.reset(); dynobj.reset(); del.reset(); };
 
-	std::shared_ptr<html_text> left_label;
-	unsigned int object_type_index; ///< index of the brother used in list_of_types
-	std::shared_ptr<body_builder> dynobj;
-	std::unique_ptr<html_form_input> del;
+        std::shared_ptr<html_text> left_label;
+        unsigned int object_type_index; ///< index of the brother used in list_of_types
+        std::shared_ptr<body_builder> dynobj;
+        std::unique_ptr<html_form_input> del;
     };
 
     std::deque<std::unique_ptr<body_builder> > list_of_types; ///< available types of objects

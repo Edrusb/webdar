@@ -71,7 +71,7 @@ html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium
 	// visibility
 
 	// css stuff
-/*    table.set_css_class_first_column(css_class_bool_text); */
+    table.set_css_class_first_column(css_class_bool_text);
 }
 
 
