@@ -39,6 +39,8 @@ extern "C"
 
 using namespace std;
 
+const string html_form_dynamic_table::changed = "html_form_dynamic_table_changed";
+
 
 html_form_dynamic_table::html_form_dynamic_table(bool has_left_labels,
 						 bool selector_below,
@@ -60,6 +62,7 @@ html_form_dynamic_table::html_form_dynamic_table(bool has_left_labels,
 	adopt(&adder);
 
 	// events
+    register_name(changed);
     adder.record_actor_on_event(this, new_line_to_add);
 
 	// visibility
@@ -92,10 +95,13 @@ void html_form_dynamic_table::on_event(const std::string & event_name)
 		// first valid mask at position 0.
 	    add_line(adder.get_selected_num() - 1);
 	    adder.set_selected(0); // resetting 'adder' to undefined
+	    act(changed);
 	}
     }
     else // check whether this is an event from a delete button
 	del_line(event_name); // may throw exception if event_name is not a del event
+	// act(changed) will be done by purge_to_delete() outside the on_event()
+	// cascada calls
 }
 
 string html_form_dynamic_table::inherited_get_body_part(const chemin & path,
@@ -118,7 +124,11 @@ void html_form_dynamic_table::add_line(unsigned int typenum)
 	throw WEBDAR_BUG;
 
     if(left_label)
+    {
 	newline.left_label.reset(new (nothrow) html_text());
+	if(! newline.left_label)
+	    throw exception_memory();
+    }
     else
 	newline.left_label.reset();
 
@@ -137,7 +147,7 @@ void html_form_dynamic_table::add_line(unsigned int typenum)
     string event_name = webdar_tools_convert_to_string(event_del_count++);
     newline.del->set_change_event_name(event_name);
     newline.del->record_actor_on_event(this, event_name);
-    if(left_label)
+    if(newline.left_label)
 	table.adopt(&(*newline.left_label));
     table.adopt(&(*newline.dynobj));
     table.adopt(&(*newline.del));
@@ -175,6 +185,7 @@ void html_form_dynamic_table::del_line(const string & event_name)
 void html_form_dynamic_table::purge_to_delete()
 {
     deque<string>::iterator evit = events_to_delete.begin();
+    bool action = ! events_to_delete.empty();
 
     while(evit != events_to_delete.end())
     {
@@ -192,5 +203,6 @@ void html_form_dynamic_table::purge_to_delete()
     }
 
     events_to_delete.clear();
+    if(action)
+	act(changed);
 }
-

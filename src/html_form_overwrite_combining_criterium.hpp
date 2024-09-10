@@ -44,7 +44,7 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_form_select.hpp"
 #include "html_form_fieldset.hpp"
-
+#include "html_form_dynamic_table.hpp"
 
     /// html component used for to logically combine (and / or) criteria to setup an overwriting policies
 
@@ -94,34 +94,20 @@ private:
     static constexpr const char* css_class_bool_text = "html_form_over_comb_crit";
 
 
-    struct entry
-    {
-	entry() { logic.reset(); crit.reset(); del.reset(); };
+    html_form_fieldset fs;           ///< wrapps all html form components of this class
+    html_form_select crit_type;      ///< either "and" or "or" combination
+    html_form_dynamic_table table;   ///< adopts all member we are combining
+    std::string current_bool_mode;   ///< current value combination mode
+    bool self_added;                 ///< whether we have added ourself as a possible type of subcomposant
+	/// \note adding this class recursively cannot be done from the constructor
+	/// as "this" is not yet completed and using a temporary object would lead to
+	/// an endless cycle. We thus add ourslef to "table" the first time (and only this time)
+	/// the inherited_get_body_part() method is called, where from this boolean
+	/// self_added value to keep trace of that information
 
-	std::unique_ptr<html_text> logic;   ///< show the current logic operation to the user
-	std::unique_ptr<html_overwrite_criterium> crit; ///< the member for this entry
-	std::unique_ptr<html_form_input> del; ///< the button to delete this entry
-    };
-
-    std::list<entry> table_content; ///< owner of html components adopted by "table"
-    unsigned int event_del_count; ///< used to build new event name for each new "delete" button
-    std::map<std::string, std::list<entry>::iterator> del_event_to_content; /// find the table_content entry corresponding to a given event
-    std::deque<std::string> events_to_delete; ///< temporary list of events pending for deletion
-
-    html_form_fieldset fs;      ///< wrapps all html form components of this class
-    html_form_select crit_type; ///< either "and" or "or" combination
-    html_table table;           ///< adopts all member we are combining
-    html_form_select adder;     ///< let user add a new member
-
-	// these are used to record the status and avoid generating event if nothing has changed
-    std::string current_bool_mode; ///< current value combination mode
-    unsigned int current_table_size; ///< current size of table_content
-
-    void add_crit(const std::string crit_type);
     std::string bool_op_to_name(const std::string & op);
-    void update_table_content_logic();
-    void del_crit(const std::string & event_name); ///< consider the provided event to be a delete event and act accordingly
-    void purge_to_delete();
+    void update_table_content_logic(bool unconditionaly);
+
 };
 
 #endif

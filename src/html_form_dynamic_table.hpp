@@ -35,6 +35,8 @@ extern "C"
 #include <string>
 
     // webdar headers
+#include "actor.hpp"
+#include "events.hpp"
 #include "body_builder.hpp"
 #include "html_table.hpp"
 #include "html_button.hpp"
@@ -83,12 +85,14 @@ extern "C"
     /// (possibily a brand-new one or a copy constructed one if necessary)
     /// of the exact same class (not of a parent class).
 
-class html_form_dynamic_table : public body_builder, public actor
+class html_form_dynamic_table : public body_builder, public actor, public events
 {
 private:
     struct line; // referred before the public part for the ::iterator nested class
 
 public:
+    static const std::string changed;  /// default event name for all object of this clas
+
 	/// constructor
     html_form_dynamic_table(bool has_left_labels,
 			    bool selector_below,

@@ -40,11 +40,10 @@ extern "C"
 using namespace std;
 
 html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium():
-    event_del_count(0),
     fs(""),
-    crit_type("Combining with", bool_changed_event),
-    table(3),
-    adder("Add a new mask", new_crit_to_add)
+    crit_type("Combining with", html_form_select::changed),
+    table(true, false, "Add a new mask", " --- select a criterium --- "),
+    self_added(false)
 {
 
 	// components configuration
@@ -55,30 +54,24 @@ html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium
 	throw WEBDAR_BUG;
     crit_type.set_selected(0);
     current_bool_mode = crit_type.get_selected_id();
-    current_table_size = table_content.size();
 
-    adder.add_choice("", " --- select a criterium ---");
-    adder.add_choice(base_crit, "atomic criterium");
-    adder.add_choice(combining_crit, "composit criterium");
-    adder.set_selected(0);
+    table.add_obj_type("atomic criterium", html_form_overwrite_base_criterium());
+
 
 	// adoption tree
 
-    table.adopt(&crit_type);
-    table.adopt_static_html(""); // second column, first line
-    table.adopt_static_html(""); // thrid column, first line
-
+    fs.adopt(&crit_type);
     fs.adopt(&table);
-    fs.adopt(&adder);
     adopt(&fs);
 
 	// events
-    adder.record_actor_on_event(this, new_crit_to_add);
+    crit_type.record_actor_on_event(this, html_form_select::changed);
+    table.record_actor_on_event(this, html_form_dynamic_table::changed);
 
 	// visibility
 
 	// css stuff
-    table.set_css_class_first_column(css_class_bool_text);
+/*    table.set_css_class_first_column(css_class_bool_text); */
 }
 
 
@@ -97,16 +90,21 @@ unique_ptr<libdar::criterium> html_form_overwrite_combining_criterium::get_overw
 	throw exception_memory();
     else
     {
-	list<entry>::const_iterator it = table_content.begin();
+	html_form_dynamic_table::iterator it = table.begin();
 
-	while(it != table_content.end())
+	while(it != table.end())
 	{
-	    if(!(it->crit))
+	    std::shared_ptr<body_builder> tmp = it.get_object();
+	    if(!tmp)
 		throw WEBDAR_BUG;
-	    unique_ptr<libdar::criterium> sub((it->crit)->get_overwriting_criterium());
-	    if(!sub)
+	    html_overwrite_criterium* sub = dynamic_cast<html_overwrite_criterium*>(tmp.get());
+	    if(sub == nullptr)
 		throw WEBDAR_BUG;
-	    ret->add_crit(*sub);
+	    unique_ptr<libdar::criterium> sub_crit = sub->get_overwriting_criterium();
+	    if(!sub_crit)
+		throw WEBDAR_BUG;
+
+	    ret->add_crit(*sub_crit);
 
 	    ++it;
 	}
@@ -117,21 +115,24 @@ unique_ptr<libdar::criterium> html_form_overwrite_combining_criterium::get_overw
 
 void html_form_overwrite_combining_criterium::on_event(const std::string & event_name)
 {
-    if(event_name == new_crit_to_add)
-    {
-	add_crit(adder.get_selected_id());
-	adder.set_selected(0); // resetting 'adder'
-    }
+    if(event_name == html_form_select::changed)
+	update_table_content_logic(false);
+    else if (event_name == html_form_dynamic_table::changed)
+	update_table_content_logic(true);
     else
-	del_crit(event_name);
+	throw WEBDAR_BUG;
 }
 
 string html_form_overwrite_combining_criterium::inherited_get_body_part(const chemin & path,
 									const request & req)
 {
-    string ret = get_body_part_from_all_children(path, req);
-    purge_to_delete();
-    return ret;
+    if(!self_added)
+    {
+	table.add_obj_type("composit criterium", *this);
+	self_added = true;
+    }
+
+    return  get_body_part_from_all_children(path, req);
 }
 
 
@@ -153,47 +154,6 @@ void html_form_overwrite_combining_criterium::new_css_library_available()
     }
 }
 
-void html_form_overwrite_combining_criterium::add_crit(const std::string crit_type)
-{
-    entry new_crit;
-
-    if(crit_type == "")
-	return; // crit_type was set to undefined type
-
-    if(crit_type == base_crit)
-	new_crit.crit.reset(new (nothrow) html_form_overwrite_base_criterium());
-    else if(crit_type == combining_crit)
-	new_crit.crit.reset(new (nothrow) html_form_overwrite_combining_criterium());
-    else
-	throw WEBDAR_BUG;
-
-    if(!new_crit.crit)
-	throw exception_memory();
-
-    new_crit.del.reset(new (nothrow) html_form_input("delete",
-						     html_form_input::check,
-						     "",
-						     1));
-    if(!new_crit.del)
-	throw exception_memory();
-    string event_name = webdar_tools_convert_to_string(event_del_count++);
-    new_crit.del->set_change_event_name(event_name);
-    new_crit.del->record_actor_on_event(this, event_name);
-
-    new_crit.logic.reset(new (nothrow) html_text(0, ""));
-    if(! new_crit.logic)
-	throw exception_memory();
-
-    table.adopt(&(*new_crit.logic));
-    table.adopt(&(*new_crit.crit));
-    table.adopt(&(*new_crit.del));
-    list<entry>::iterator pos = table_content.insert(table_content.end(),
-						     std::move(new_crit));
-
-    del_event_to_content[event_name] = pos;
-    update_table_content_logic();
-}
-
 string html_form_overwrite_combining_criterium::bool_op_to_name(const std::string & op)
 {
     if(op == and_op)
@@ -204,84 +164,35 @@ string html_form_overwrite_combining_criterium::bool_op_to_name(const std::strin
 	throw WEBDAR_BUG;
 }
 
-void html_form_overwrite_combining_criterium::update_table_content_logic()
+void html_form_overwrite_combining_criterium::update_table_content_logic(bool unconditionaly)
 {
     string target_bool_mode = crit_type.get_selected_id();
-    unsigned int target_table_size = table_content.size();
 
-    if(target_bool_mode != current_bool_mode
-       || target_table_size != current_table_size)
+    if((target_bool_mode != current_bool_mode) || unconditionaly)
     {
 	string logic_text = bool_op_to_name(target_bool_mode);
-	list<entry>::iterator it = table_content.begin();
+	html_form_dynamic_table::iterator it = table.begin();
 
 	    // first line is empty
-	if(it != table_content.end())
+	if(it != table.end())
 	{
-	    if(!it->logic)
+	    shared_ptr<html_text> label = it.get_left_label();
+	    if(!label)
 		throw WEBDAR_BUG;
-	    it->logic->clear();
+	    label->clear();
 	    ++it;
 	}
 
-	while(it != table_content.end())
+	while(it != table.end())
 	{
-	    if(!it->logic)
+	    shared_ptr<html_text> label = it.get_left_label();
+	    if(!label)
 		throw WEBDAR_BUG;
-	    it->logic->clear();
-	    it->logic->add_text(0, logic_text);
+	    label->clear();
+	    label->add_text(0, logic_text);
 	    ++it;
 	}
 
 	current_bool_mode = target_bool_mode;
-	current_table_size = target_table_size;
     }
 }
-
-void html_form_overwrite_combining_criterium::del_crit(const string & event_name)
-{
-    map<string, list<entry>::iterator>::iterator mit = del_event_to_content.find(event_name);
-
-    if(mit == del_event_to_content.end())
-	throw WEBDAR_BUG; // event_name absent from the map!
-
-    list<entry>::iterator it = mit->second;
-    if(!it->logic)
-	throw WEBDAR_BUG;
-    if(!it->crit)
-	throw WEBDAR_BUG;
-    if(!it->del)
-	throw WEBDAR_BUG;
-
-    table.foresake(&(*(it->logic)));
-    table.foresake(&(*(it->crit)));
-    table.foresake(&(*(it->del)));
-    events_to_delete.push_back(event_name);
-    	// postponing the object deletion
-	// as we may get from here from the it->del pointed to actor event
-	// we would not be able to return from this call if deleted from here
-}
-
-void html_form_overwrite_combining_criterium::purge_to_delete()
-{
-    deque<string>::iterator evit = events_to_delete.begin();
-
-    while(evit != events_to_delete.end())
-    {
-	map<string, list<entry>::iterator>::iterator mit = del_event_to_content.find(*evit);
-
-	if(mit == del_event_to_content.end())
-	    throw WEBDAR_BUG;  // event_name absent from the map!
-
-	list<entry>::iterator it = mit->second;
-
-	(void)del_event_to_content.erase(mit);
-	(void)table_content.erase(it);
-
-	++evit;
-    }
-
-    events_to_delete.clear();
-    update_table_content_logic();
-}
-
