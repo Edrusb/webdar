@@ -79,9 +79,6 @@ public:
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override;
 
-	/// clone() implementation
-    MASK_CLONER_MACRO;
-
 	/// inherited from body_builder
     MAKE_BROTHER_MACRO;
 

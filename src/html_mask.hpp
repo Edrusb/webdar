@@ -58,29 +58,11 @@ public:
 	/// obtain the mask for libdar
     virtual std::unique_ptr<libdar::mask> get_mask() const = 0;
 
-
-	/// need to be implemented in *each* inherited class
-
-	/// \note this can be done using the MASK_CLONER_MACRO
-    virtual std::unique_ptr<html_mask> clone() const = 0;
-
 protected:
     static constexpr const char* red_border = "html_mask_error";
 
 	/// inherited from body_builder
     virtual void new_css_library_available() override;
 };
-
-template <class T> std::unique_ptr<html_mask> mask_cloner(const T & ceci)
-{
-    std::unique_ptr<html_mask> ret(new (std::nothrow) T(ceci));
-
-    if(!ret)
-	throw exception_memory();
-
-    return ret;
-};
-
-#define MASK_CLONER_MACRO virtual std::unique_ptr<html_mask> clone() const override { return mask_cloner(*this); }
 
 #endif

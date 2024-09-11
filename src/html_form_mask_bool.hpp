@@ -46,6 +46,7 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_form.hpp"
 #include "html_text.hpp"
+#include "html_form_dynamic_table.hpp"
 
 
     /// class html_form_mask_bool provide mean to combines with OR and AND different html_masks
@@ -70,7 +71,7 @@ class html_form_mask_bool : public html_mask, public actor
 {
 public:
     html_form_mask_bool();
-    html_form_mask_bool(const html_form_mask_bool & ref);
+    html_form_mask_bool(const html_form_mask_bool & ref) = delete;
     html_form_mask_bool(html_form_mask_bool && ref) noexcept = delete;
     html_form_mask_bool & operator = (const html_form_mask_bool & ref) = delete;
     html_form_mask_bool & operator = (html_form_mask_bool && ref) noexcept = delete;
@@ -96,9 +97,6 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
-	/// clone() implementation
-    MASK_CLONER_MACRO;
-
 	/// inherited from body_builder
     MAKE_BROTHER_MACRO;
 
@@ -120,54 +118,14 @@ private:
     static constexpr const char* bool_changed_event = "bool_changed";
     static constexpr const char* css_class_bool_text = "html_form_mask_bool_bool_text";
 
-	//
-
-    struct available_mask
-    {
-	std::unique_ptr<html_mask> mask_type; // mask_type is not set to refer to this html_form_mask_bool
-
-	available_mask(const html_mask & tobecloned);
-	available_mask(); // to refer to this html_form_mask_bool
-	available_mask(available_mask && ref) noexcept;
-	available_mask(const available_mask & arg);
-    };
-
-    std::deque<available_mask> list_of_mask_types;
-
-	//
-
-    struct entry
-    {
-	entry() { logic.reset(); mask.reset(); del.reset(); };
-
-	std::unique_ptr<html_text> logic;  ///< text displaying "and" or "or"
-	std::unique_ptr<html_mask> mask;   ///< the mask
-	std::unique_ptr<html_form_input> del;  ///< the button to delete this mask
-    };
-
-    std::list<entry> table_content;
-
-	//
-
     html_form_fieldset fs;
     html_form_select mask_type;
-    html_table table;
-    html_form_select adder;
-
-    std::map<std::string, std::list<entry>::iterator> del_event_to_content;
-    unsigned int event_del_count;
-    std::deque<std::string> events_to_delete; ///< components that will be deleted once the inherited_get_body_part will have finished
-	/// \note cannot delete an object (mask and del) from an on_event() actor method triggered by the object itself
+    html_form_dynamic_table table;
     std::string current_bool_mode; ///< currently displayed logic in table
-    unsigned int current_table_size; ///< size at which the displayed logic was last updated
     libdar::path root_prefix;
 
-    void init();
-    void add_mask(unsigned int num); ///< \param[in] num is the index in list_of_mask_types
-    void del_mask(const std::string & event_name);
-    void purge_to_delete();
     std::string bool_op_to_name(const std::string & op);
-    void update_table_content_logic(); // update labels in the first column in regard to the current AND/OR selected logic
+    void update_table_content_logic(bool unconditionally); // update labels in the first column in regard to the current AND/OR selected logic
 };
 
 #endif

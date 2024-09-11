@@ -87,9 +87,6 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
-	/// clone() implementation
-    MASK_CLONER_MACRO;
-
 	/// inherited from body_builder
     virtual std::unique_ptr<body_builder> make_brother() const override;
 
