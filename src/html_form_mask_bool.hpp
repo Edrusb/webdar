@@ -65,10 +65,6 @@ extern "C"
     /// |                                                   |
     /// +---------------------------------------------------+
     ///
-    /// \note this component includes an html_form by default
-    /// (see constructor argument), but should not when used
-    /// recursively from another html_form_mask_bool
-
 
 class html_form_mask_bool : public html_mask, public actor
 {
