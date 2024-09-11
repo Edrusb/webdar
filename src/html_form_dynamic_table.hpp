@@ -131,6 +131,7 @@ public:
 
     iterator begin() const { iterator ret; ret.ptr = table_content.begin(); return ret; };
     iterator end() const { iterator ret; ret.ptr = table_content.end(); return ret; };
+    bool empty() const { return table_content.empty(); };
 
         /// add a new object type to be proposed to the user from the "adder" selector
 
