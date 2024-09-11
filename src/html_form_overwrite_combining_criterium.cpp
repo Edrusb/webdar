@@ -164,11 +164,11 @@ string html_form_overwrite_combining_criterium::bool_op_to_name(const std::strin
 	throw WEBDAR_BUG;
 }
 
-void html_form_overwrite_combining_criterium::update_table_content_logic(bool unconditionaly)
+void html_form_overwrite_combining_criterium::update_table_content_logic(bool unconditionally)
 {
     string target_bool_mode = crit_type.get_selected_id();
 
-    if((target_bool_mode != current_bool_mode) || unconditionaly)
+    if((target_bool_mode != current_bool_mode) || unconditionally)
     {
 	string logic_text = bool_op_to_name(target_bool_mode);
 	html_form_dynamic_table::iterator it = table.begin();

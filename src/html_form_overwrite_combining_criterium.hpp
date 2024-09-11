@@ -106,7 +106,7 @@ private:
 	/// self_added value to keep trace of that information
 
     std::string bool_op_to_name(const std::string & op);
-    void update_table_content_logic(bool unconditionaly);
+    void update_table_content_logic(bool unconditionally);
 
 };
 
