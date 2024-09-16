@@ -78,6 +78,19 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & x_event_name) override { act(event_name); };
 
+	/// number of available choices provided to the web user by this object
+    unsigned int size() const { return get_choices().size(); };
+
+	/// provides recorded item id
+
+	/// \note index should be equal or greater than zero and strictly less than size()
+    const std::string & get_id(unsigned int index) const { return get_choices()[index].id; };
+
+	/// provides recorded item label
+
+	/// \note index should be equal or greater than zero and strictly less than size()
+    const std::string & get_label(unsigned int index) const { return get_choices()[index].label; };
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
