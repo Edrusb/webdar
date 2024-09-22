@@ -31,9 +31,8 @@ extern "C"
 
 
     // webdar headers
-#include "webdar_css_style.hpp"
-
-
+#include "html_form_overwrite_chain_cell.hpp"
+#include "html_form_overwrite_action.hpp"
 
     //
 #include "html_form_overwrite_chain_action.hpp"
@@ -41,44 +40,47 @@ extern "C"
 using namespace std;
 
 html_form_overwrite_chain_action::html_form_overwrite_chain_action(const std::string & label):
-    event_del_count(0),
     fs(label),
-    table(2),
-    adder("Add new action", event_add)
+    table(false, true, "New action", "--- select ---")
 {
 
 	// components setup
+    table.set_obj_type_provider(this);
+    table.add_obj_type("Add a new cell");
 
 	// adoption tree
-    fs.adopt(&adder);
     fs.adopt(&table);
     adopt(&fs);
 
 	// events
-    adder.record_actor_on_event(this, event_add);
 
 	// css
-    webdar_css_style::normal_button(adder, false);
 }
-
 
 unique_ptr<libdar::crit_action> html_form_overwrite_chain_action::get_overwriting_action() const
 {
     unique_ptr<libdar::crit_chain> ret;
-    list<entry>::const_iterator it = table_content.begin();
+    html_form_dynamic_table::iterator it = table.begin();
+    shared_ptr<body_builder> obj;
+    html_overwrite_action *obj_ptr;
     unique_ptr<libdar::crit_action> tmp;
 
     ret.reset(new (nothrow) libdar::crit_chain());
     if(!ret)
 	throw exception_memory();
 
-    while(it != table_content.end())
+    while(it != table.end())
     {
-	if(!it->action)
+	obj = it.get_object();
+	if(!obj)
 	    throw WEBDAR_BUG;
-	tmp = it->action->get_overwriting_action();
+	obj_ptr = dynamic_cast<html_overwrite_action*>(obj.get());
+	if(obj_ptr == nullptr)
+	    throw WEBDAR_BUG;
+	tmp = obj_ptr->get_overwriting_action();
 	if(!tmp)
 	    throw WEBDAR_BUG;
+
 	ret->add(*tmp);
 
 	++it;
@@ -87,107 +89,33 @@ unique_ptr<libdar::crit_action> html_form_overwrite_chain_action::get_overwritin
     return ret;
 }
 
-void html_form_overwrite_chain_action::on_event(const std::string & event_name)
+unique_ptr<body_builder> html_form_overwrite_chain_action::provide_object_of_type(unsigned int num,
+										  const std::string & context) const
 {
-    if(event_name == event_add)
+    unique_ptr<body_builder> ret;
+    unique_ptr<html_form_overwrite_action> obj;
+
+    switch(num)
     {
-	entry new_action;
-
-	new_action.line1.reset(new (nothrow) html_hr());
-	if(!new_action.line1)
+    case 0:
+	obj.reset(new (nothrow) html_form_overwrite_action(""));
+	if(!obj)
 	    throw exception_memory();
-
-	new_action.line2.reset(new (nothrow) html_hr());
-	if(!new_action.line2)
+	ret.reset(new (nothrow) html_form_overwrite_chain_cell(obj));
+	if(!ret)
 	    throw exception_memory();
-
-	new_action.action.reset(new (nothrow) html_form_overwrite_action(""));
-	if(!new_action.action)
-	    throw exception_memory();
-
-	new_action.del.reset(new (nothrow) html_form_input("delete",
-							   html_form_input::check,
-							   "",
-							   1));
-	if(!new_action.del)
-	    throw exception_memory();
-
-	string counter_event_name = webdar_tools_convert_to_string(event_del_count++);
-	new_action.del->set_change_event_name(counter_event_name);
-	new_action.del->record_actor_on_event(this, counter_event_name);
-
-	table.adopt(&(*new_action.line1));
-	table.adopt(&(*new_action.line2));
-	table.adopt(&(*new_action.action));
-	table.adopt(&(*new_action.del));
-	list<entry>::iterator pos = table_content.insert(table_content.end(),
-							 std::move(new_action));
-
-	del_event_to_content[counter_event_name] = pos;
+	break;
+    default:
+	throw WEBDAR_BUG;
     }
-    else
-	del_action(event_name);
+
+    return ret;
 }
+
 
 string html_form_overwrite_chain_action::inherited_get_body_part(const chemin & path,
 							       const request & req)
 {
-    string ret = get_body_part_from_all_children(path, req);
-    purge_to_delete();
-    return ret;
+    return  get_body_part_from_all_children(path, req);
 }
 
-void html_form_overwrite_chain_action::new_css_library_available()
-{
-    unique_ptr<css_library> & csslib = lookup_css_library();
-    if(!csslib)
-	throw WEBDAR_BUG;
-
-    webdar_css_style::update_library(*csslib);
-}
-
-void html_form_overwrite_chain_action::del_action(const std::string & event_name)
-{
-    map<string, list<entry>::iterator>::iterator mit = del_event_to_content.find(event_name);
-
-    if(mit == del_event_to_content.end())
-	throw WEBDAR_BUG; // event name absent from the map!
-
-    list<entry>::iterator it = mit->second;
-    if(!it->action)
-	throw WEBDAR_BUG;
-    if(!it->del)
-	throw WEBDAR_BUG;
-
-    table.foresake(&(*(it->line1)));
-    table.foresake(&(*(it->line2)));
-    table.foresake(&(*(it->action)));
-    table.foresake(&(*(it->del)));
-    events_to_delete.push_back(event_name);
-	// postponing the object deletion
-	// as we may get from here from the it->del pointed to actor event
-	// we would not be able to return from this call if deleted from here
-}
-
-
-void html_form_overwrite_chain_action::purge_to_delete()
-{
-    deque<string>::iterator evit = events_to_delete.begin();
-
-    while(evit != events_to_delete.end())
-    {
-	map<string, list<entry>::iterator>::iterator mit = del_event_to_content.find(*evit);
-
-	if(mit == del_event_to_content.end())
-	    throw WEBDAR_BUG; // event_name absent from the map!
-
-	list<entry>::iterator it = mit->second;
-
-	(void)del_event_to_content.erase(mit);
-	(void)table_content.erase(it);
-
-	++evit;
-    }
-
-    events_to_delete.clear();
-}

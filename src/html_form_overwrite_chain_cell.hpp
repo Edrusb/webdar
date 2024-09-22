@@ -21,8 +21,8 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
-#ifndef HTML_FORM_OVERWRITE_CHAIN_ACTION_HPP
-#define HTML_FORM_OVERWRITE_CHAIN_ACTION_HPP
+#ifndef HTML_FORM_OVERWRITE_CHAIN_CELL_HPP
+#define HTML_FORM_OVERWRITE_CHAIN_CELL_HPP
 
     // C system header files
 extern "C"
@@ -33,35 +33,27 @@ extern "C"
     // C++ system header files
 
     // webdar headers
-#include "actor.hpp"
 #include "html_overwrite_action.hpp"
 #include "html_form_overwrite_action.hpp"
-#include "html_form_fieldset.hpp"
-#include "html_table.hpp"
-#include "html_button.hpp"
-#include "html_form_input.hpp"
 #include "html_hr.hpp"
-#include "html_form_dynamic_table.hpp"
 
-    /// html component to be adopted by an html_form that implements a chain of actions for overwriting policies
+    /// html component holding an element in an overwriting policy chain (class html_form_overwrite_chain_action)
 
-class html_form_overwrite_chain_action: public html_overwrite_action,
-					public html_form_dynamic_table_object_provider
+    /// the only objective of this class is to add an <hr> element above the cell content
+    /// to separate the elements of the chain of actions.
 
+class html_form_overwrite_chain_cell: public html_overwrite_action
 {
 public:
-    html_form_overwrite_chain_action(const std::string & label);
-    html_form_overwrite_chain_action(const html_form_overwrite_chain_action & ref) = default;
-    html_form_overwrite_chain_action(html_form_overwrite_chain_action && ref) noexcept = default;
-    html_form_overwrite_chain_action & operator = (const html_form_overwrite_chain_action & ref) = default;
-    html_form_overwrite_chain_action & operator = (html_form_overwrite_chain_action && ref) noexcept = default;
-    ~html_form_overwrite_chain_action() = default;
+    html_form_overwrite_chain_cell(std::unique_ptr<html_form_overwrite_action> & insert);
+    html_form_overwrite_chain_cell(const html_form_overwrite_chain_cell & ref) = default;
+    html_form_overwrite_chain_cell(html_form_overwrite_chain_cell && ref) noexcept = default;
+    html_form_overwrite_chain_cell & operator = (const html_form_overwrite_chain_cell & ref) = default;
+    html_form_overwrite_chain_cell & operator = (html_form_overwrite_chain_cell && ref) noexcept = default;
+    ~html_form_overwrite_chain_cell() = default;
 
-	/// obtain the crit_chain_action object for libdar option
+	/// obtain the crit_chain_cell object for libdar option
     virtual std::unique_ptr<libdar::crit_action> get_overwriting_action() const override;
-
-	/// inherited from html_form_dynamic_table_object_provider
-    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num, const std::string & context) const override;
 
 
 protected:
@@ -71,8 +63,8 @@ protected:
 						const request & req) override;
 
 private:
-    html_form_fieldset fs;
-    html_form_dynamic_table table;
+    html_hr line;
+    std::unique_ptr<html_form_overwrite_action> incell;
 
 };
 

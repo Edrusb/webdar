@@ -45,7 +45,7 @@ extern "C"
     /// the user a switch between html_form_overwrite_constant_action and
     /// html_form_overwrite_conditional_action, which are two more specific
     /// implementation of html_overwrite_action ancestor class that should also
-    /// be adopted by an html_form (directoy or not).
+    /// be adopted by an html_form (directly or not).
 
 class html_form_overwrite_action: public html_overwrite_action, public actor
 {
