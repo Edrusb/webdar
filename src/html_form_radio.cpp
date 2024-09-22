@@ -89,7 +89,7 @@ void html_form_radio::set_selected(const std::string & id)
 	++val;
 
     if(val < choices.size())
-	sel_selected(val);
+	set_selected(val);
     else
 	throw WEBDAR_BUG;
 }
