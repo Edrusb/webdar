@@ -39,10 +39,52 @@ extern "C"
 
 using namespace std;
 
-html_mask_form_filename::html_mask_form_filename(const string & label):
+html_mask_form_filename::html_mask_form_filename(const string & title):
     html_form("Update")
 {
-    root.add_mask_type(label, html_form_mask_expression());
-    root.add_mask_myself("Logical combination");
+    labels.push_back(title);
+    labels.push_back("Logical combination");
+    init_bool_obj(root);
+
     adopt(&root);
+}
+
+
+unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigned int num) const
+{
+    unique_ptr<body_builder> ret;
+    unique_ptr<html_form_mask_bool> tmp;
+
+    switch(num)
+    {
+    case 0: // title provided in constructor
+	ret.reset(new (nothrow) html_form_mask_expression());
+	break;
+    case 1: // "logical combination"
+	tmp.reset(new (nothrow) html_form_mask_bool());
+	if(!tmp)
+	    throw exception_memory();
+
+	init_bool_obj(*tmp);
+	ret = std::move(tmp);
+	break;
+    default:
+	if(num < labels.size())
+	    throw WEBDAR_BUG; // problem in html_mask_form_filename?
+	else
+	    throw WEBDAR_BUG; // problem in html_form_mask_bool?
+    }
+
+    if(!ret)
+	throw exception_memory();
+
+    return ret;
+}
+
+
+void html_mask_form_filename::init_bool_obj(html_form_mask_bool & obj) const
+{
+    obj.set_obj_type_provider(this);
+    for(deque<string>::const_iterator it = labels.begin(); it != labels.end(); ++it)
+	obj.add_mask_type(*it);
 }

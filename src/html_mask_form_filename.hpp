@@ -42,10 +42,11 @@ extern "C"
     /// at the difference of the html_form_* classes which are component to be included into html_form
     /// this class is a full html_form dedicated to the specific case of mask for filename filtering
 
-class html_mask_form_filename : public html_form
+class html_mask_form_filename : public html_form,
+				public html_form_dynamic_table_object_provider
 {
 public:
-    html_mask_form_filename(const std::string & label);
+    html_mask_form_filename(const std::string & title);
     html_mask_form_filename(const html_mask_form_filename & ref) = default;
     html_mask_form_filename(html_mask_form_filename && ref) noexcept = delete;
     html_mask_form_filename & operator = (const html_mask_form_filename & ref) = delete;
@@ -55,8 +56,14 @@ public:
 	/// inherited from html_mask
     std::unique_ptr<libdar::mask> get_mask() const { return root.get_mask(); };
 
+	/// inherited from html_form_dynamic_table
+    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num) const override;
+
 private:
     html_form_mask_bool root;
+    std::deque<std::string> labels;
+
+    void init_bool_obj(html_form_mask_bool & obj) const;
 
 };
 
