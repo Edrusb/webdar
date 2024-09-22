@@ -67,7 +67,8 @@ void html_mask_form_path::set_fs_root(const std::string & prefix)
     }
 }
 
-unique_ptr<body_builder> html_mask_form_path::provide_object_of_type(unsigned int num) const
+unique_ptr<body_builder> html_mask_form_path::provide_object_of_type(unsigned int num,
+								     const string & context) const
 {
     unique_ptr<body_builder> ret;
     unique_ptr<html_form_mask_bool> tmp;

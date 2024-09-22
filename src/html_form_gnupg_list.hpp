@@ -82,7 +82,8 @@ public:
     std::vector<std::string> get_gnupg_signatories() const;
 
 	/// inherited from html_form_dynamic_table_object_provider
-    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num) const override;
+    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num,
+								 const std::string & context) const override;
 
 
 protected:

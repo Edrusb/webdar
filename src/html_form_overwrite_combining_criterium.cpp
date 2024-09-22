@@ -123,7 +123,8 @@ void html_form_overwrite_combining_criterium::on_event(const std::string & event
 	throw WEBDAR_BUG;
 }
 
-unique_ptr<body_builder> html_form_overwrite_combining_criterium::provide_object_of_type(unsigned int num) const
+unique_ptr<body_builder> html_form_overwrite_combining_criterium::provide_object_of_type(unsigned int num,
+											 const string & context) const
 {
     unique_ptr<body_builder> ret;
     unique_ptr<html_form_overwrite_combining_criterium> tmp;

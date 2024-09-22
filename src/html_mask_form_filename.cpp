@@ -50,7 +50,8 @@ html_mask_form_filename::html_mask_form_filename(const string & title):
 }
 
 
-unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigned int num) const
+unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigned int num,
+									 const string & context) const
 {
     unique_ptr<body_builder> ret;
     unique_ptr<html_form_mask_bool> tmp;

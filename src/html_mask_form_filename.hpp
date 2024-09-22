@@ -57,7 +57,8 @@ public:
     std::unique_ptr<libdar::mask> get_mask() const { return root.get_mask(); };
 
 	/// inherited from html_form_dynamic_table
-    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num) const override;
+    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num,
+								 const std::string & context) const override;
 
 private:
     html_form_mask_bool root;

@@ -60,7 +60,8 @@ vector<string> html_form_gnupg_list::get_gnupg_signatories() const
     return gather_content_of_type(1);
 }
 
-unique_ptr<body_builder> html_form_gnupg_list::provide_object_of_type(unsigned int num) const
+unique_ptr<body_builder> html_form_gnupg_list::provide_object_of_type(unsigned int num,
+								      const string & context) const
 {
     unique_ptr<body_builder> ret;
 

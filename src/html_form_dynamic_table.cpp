@@ -133,7 +133,7 @@ void html_form_dynamic_table::add_line(unsigned int typenum)
     newline.object_type_index = typenum;
     if(my_provider == nullptr)
 	throw WEBDAR_BUG;
-    newline.dynobj = my_provider->provide_object_of_type(typenum);
+    newline.dynobj = my_provider->provide_object_of_type(typenum, context);
     if(! newline.dynobj)
 	throw WEBDAR_BUG;
 

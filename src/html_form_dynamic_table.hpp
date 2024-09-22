@@ -57,7 +57,7 @@ extern "C"
 class html_form_dynamic_table_object_provider
 {
 public:
-    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num) const = 0;
+    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num, const std::string & context) const = 0;
 };
 
 
@@ -177,6 +177,12 @@ public:
 	/// get the current object provider
     const html_form_dynamic_table_object_provider* get_current_provider() const { return my_provider; };
 
+	/// set context passed to the object provider
+
+	/// \note if context is not defined, an empty string is passed
+	/// to the object provider
+    void set_obj_type_context(const std::string & ctxt) { context = ctxt; };
+
         /// add a new object type to be proposed to the user from the "adder" selector
 
         /// \param[in] column the column number for this object (starts at zero)
@@ -235,6 +241,7 @@ private:
     };
 
     const html_form_dynamic_table_object_provider* my_provider; ///< the object provider to use
+    std::string context;                 ///< the context string passed when to the object provider
     std::list<line> table_content;       ///< manages the objects adopted by "table"
     unsigned int event_del_count;        ///< used to build new event name for each new "delete" button
     std::map<std::string, std::list<line>::iterator> del_event_to_content; /// find the table_content entry corresponding to a given event
