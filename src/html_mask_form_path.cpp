@@ -82,10 +82,9 @@ unique_ptr<body_builder> html_mask_form_path::provide_object_of_type(unsigned in
 	ret.reset(new (nothrow) html_form_mask_file());
 	break;
     case 2: // "logical combination"
-	tmp.reset(new (nothrow) html_form_mask_bool());
+	tmp.reset(new (nothrow) html_form_mask_bool(html_form_mask_bool::invert_logic(context)));
 	if(!tmp)
 	    throw exception_memory();
-
 
 	init_bool_obj(*tmp);
 	ret = std::move(tmp);

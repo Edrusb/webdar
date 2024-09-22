@@ -69,6 +69,8 @@ html_form_mask_bool::html_form_mask_bool(const string & initial_mode):
 	// css stuff
     table.set_css_class_first_column(css_class_bool_text);
 
+	// final table update
+    update_table_content_logic(true); // true = update unconditionally
 }
 
 void html_form_mask_bool::set_root_prefix(const libdar::path & x_prefix)
@@ -241,5 +243,6 @@ void html_form_mask_bool::update_table_content_logic(bool unconditionally)
 	}
 
 	current_bool_mode = target_bool_mode;
+	table.set_obj_type_context(current_bool_mode);
     }
 }

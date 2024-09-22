@@ -62,7 +62,7 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
 	ret.reset(new (nothrow) html_form_mask_expression());
 	break;
     case 1: // "logical combination"
-	tmp.reset(new (nothrow) html_form_mask_bool());
+	tmp.reset(new (nothrow) html_form_mask_bool(html_form_mask_bool::invert_logic(context)));
 	if(!tmp)
 	    throw exception_memory();
 

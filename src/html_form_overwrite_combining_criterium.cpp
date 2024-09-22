@@ -136,7 +136,7 @@ unique_ptr<body_builder> html_form_overwrite_combining_criterium::provide_object
 	break;
     case 1:
 	tmp.reset(new (nothrow) html_form_overwrite_combining_criterium());
-	if(!ret)
+	if(!tmp)
 	    throw exception_memory();
 	if(current_bool_mode == and_op)
 	    tmp->current_bool_mode = or_op;
