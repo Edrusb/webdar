@@ -82,6 +82,18 @@ void html_form_radio::set_selected(unsigned int x)
     value_set = true;
 }
 
+void html_form_radio::set_selected(const std::string & id)
+{
+    unsigned int val = 0;
+    while(val < choices.size() && choices[val].id != id)
+	++val;
+
+    if(val < choices.size())
+	sel_selected(val);
+    else
+	throw WEBDAR_BUG;
+}
+
 string html_form_radio::inherited_get_body_part(const chemin & path,
 						const request & req)
 {
