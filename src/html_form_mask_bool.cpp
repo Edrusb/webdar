@@ -71,17 +71,6 @@ html_form_mask_bool::html_form_mask_bool():
 
 }
 
-void html_form_mask_bool::add_mask_type(const string & label,
-					const html_mask & tobecloned)
-{
-    table.add_obj_type(label, tobecloned);
-}
-
-void html_form_mask_bool::add_mask_myself(const string & label)
-{
-    table.add_obj_type(label, *this);
-}
-
 void html_form_mask_bool::set_root_prefix(const libdar::path & x_prefix)
 {
     html_form_dynamic_table::iterator it = table.begin();
@@ -181,8 +170,7 @@ void html_form_mask_bool::on_event(const string & event_name)
 string html_form_mask_bool::inherited_get_body_part(const chemin & path,
 						    const request & req)
 {
-    string ret = get_body_part_from_all_children(path, req);
-    return ret;
+    return get_body_part_from_all_children(path, req);
 }
 
 void html_form_mask_bool::new_css_library_available()

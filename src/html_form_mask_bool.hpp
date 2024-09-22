@@ -66,8 +66,10 @@ extern "C"
     /// |                                                   |
     /// +---------------------------------------------------+
     ///
+    ///
 
-class html_form_mask_bool : public html_mask, public actor
+class html_form_mask_bool : public html_mask,
+			    public actor
 {
 public:
     html_form_mask_bool();
@@ -77,25 +79,28 @@ public:
     html_form_mask_bool & operator = (html_form_mask_bool && ref) noexcept = delete;
     ~html_form_mask_bool() = default;
 
-	/// component that will provided as possible to add in the logic operation of the current mask
-    void add_mask_type(const std::string & label, const html_mask & tobecloned);
-
-	/// add recursion with object of the same configuration as "*this" in the list of available masks
-
-	/// \note if you want other masks to be available recursively this call must be invoked
-	/// after all add_mask_type() with two arguments.
-    void add_mask_myself(const std::string & label);
-
 
 	/// inherited from html_mask
     virtual void set_root_prefix(const libdar::path & x_prefix) override;
-
 
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
+
+	/// the object provider will create the objects (masks) of the requested types defined by add_mask_type()
+
+	/// works with add_mask_type() below
+	/// \note this is a passthrough access to the html_form_dynamic_table method of the same name
+    void set_obj_type_provider(const html_form_dynamic_table_object_provider* provider) { table.set_obj_type_provider(provider); };
+
+	/// component type that will proposed to the web user
+
+	/// works with set_obj_type_provider() above
+	/// \note this is a passthrough access to the html_form_dynamic_table method of the same name
+    void add_mask_type(const std::string & label) { table.add_obj_type(label); };
+
 
 	/// inherited from body_builder
     MAKE_BROTHER_MACRO;
@@ -111,7 +116,6 @@ protected:
 
 
 private:
-    static constexpr const char* new_mask_to_add = "new_mask";
     static constexpr const char* and_op = "and_op";
     static constexpr const char* or_op = "or_op";
 
