@@ -42,8 +42,7 @@ using namespace std;
 html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium():
     fs(""),
     crit_type("Combining with", html_form_select::changed),
-    table(true, false, "Add a new mask", " --- select a criterium --- "),
-    self_added(false)
+    table(true, false, "Add a new mask", " --- select a criterium --- ")
 {
 
 	// components configuration
@@ -55,8 +54,9 @@ html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium
     crit_type.set_selected(0);
     current_bool_mode = crit_type.get_selected_id();
 
-    table.add_obj_type("atomic criterium", html_form_overwrite_base_criterium());
-
+    table.set_obj_type_provider(this);
+    table.add_obj_type("atomic criterium");   // this is index 0 in provide_object_of_type()
+    table.add_obj_type("composit criterium"); // this is index 1 in provide_object_of_type()
 
 	// adoption tree
 
@@ -123,16 +123,40 @@ void html_form_overwrite_combining_criterium::on_event(const std::string & event
 	throw WEBDAR_BUG;
 }
 
+unique_ptr<body_builder> html_form_overwrite_combining_criterium::provide_object_of_type(unsigned int num) const
+{
+    unique_ptr<body_builder> ret;
+    unique_ptr<html_form_overwrite_combining_criterium> tmp;
+
+    switch(num)
+    {
+    case 0:
+	ret.reset(new (nothrow) html_form_overwrite_base_criterium());
+	break;
+    case 1:
+	tmp.reset(new (nothrow) html_form_overwrite_combining_criterium());
+	if(!ret)
+	    throw exception_memory();
+	if(current_bool_mode == and_op)
+	    tmp->current_bool_mode = or_op;
+	else
+	    tmp->current_bool_mode = and_op;
+	ret = std::move(tmp);
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+
+    if(!ret)
+	throw exception_memory();
+
+    return ret;
+}
+
 string html_form_overwrite_combining_criterium::inherited_get_body_part(const chemin & path,
 									const request & req)
 {
-    if(!self_added)
-    {
-	table.add_obj_type("composit criterium", *this);
-	self_added = true;
-    }
-
-    return  get_body_part_from_all_children(path, req);
+    return get_body_part_from_all_children(path, req);
 }
 
 

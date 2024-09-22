@@ -48,7 +48,9 @@ extern "C"
 
     /// html component used for to logically combine (and / or) criteria to setup an overwriting policies
 
-class html_form_overwrite_combining_criterium: public html_overwrite_criterium, public actor
+class html_form_overwrite_combining_criterium: public html_overwrite_criterium,
+					       public actor,
+					       public html_form_dynamic_table_object_provider
 {
 public:
     html_form_overwrite_combining_criterium();
@@ -63,6 +65,10 @@ public:
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
+
+
+	/// inherited from html_form_dynamic_table_object_provider
+    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num) const override;
 
 	/// inherited from body_builder
     MAKE_BROTHER_MACRO;
@@ -98,12 +104,6 @@ private:
     html_form_select crit_type;      ///< either "and" or "or" combination
     html_form_dynamic_table table;   ///< adopts all member we are combining
     std::string current_bool_mode;   ///< current value combination mode
-    bool self_added;                 ///< whether we have added ourself as a possible type of subcomposant
-	/// \note adding this class recursively cannot be done from the constructor
-	/// as "this" is not yet completed and using a temporary object would lead to
-	/// an endless cycle. We thus add ourslef to "table" the first time (and only this time)
-	/// the inherited_get_body_part() method is called, where from this boolean
-	/// self_added value to keep trace of that information
 
     std::string bool_op_to_name(const std::string & op);
     void update_table_content_logic(bool unconditionally);
