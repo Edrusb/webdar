@@ -40,7 +40,8 @@ extern "C"
     /// at the difference of the html_form_* classes which are component to be included into html_form
     /// this class is a full html_form dedicated to the specific case of mask for path filtering
 
-class html_mask_form_path : public html_form
+class html_mask_form_path : public html_form,
+			    public html_form_dynamic_table_object_provider
 {
 public:
     html_mask_form_path(bool allow_absolute_paths);
@@ -55,8 +56,15 @@ public:
 	/// inherited from html_mask
     std::unique_ptr<libdar::mask> get_mask() const { return root.get_mask(); };
 
+	/// inherited from html_form_dynamic_table
+    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num) const override;
+
 private:
     html_form_mask_bool root;
+    std::deque<std::string> labels;
+    bool allow_abs_paths;
+
+    void init_bool_obj(html_form_mask_bool & obj) const;
 };
 
 #endif
