@@ -37,7 +37,7 @@ extern "C"
 
 using namespace std;
 
-html_form_mask_bool::html_form_mask_bool():
+html_form_mask_bool::html_form_mask_bool(const string & initial_mode):
     fs(""),
     mask_type("Combining with", bool_changed_event),
     table(true, true, "Add a new mask", "--- select a mask type ---"),
@@ -50,7 +50,7 @@ html_form_mask_bool::html_form_mask_bool():
     mask_type.add_choice(or_op, "OR");
     if(mask_type.num_choices() != 2)
 	throw WEBDAR_BUG;
-    mask_type.set_selected(0);
+    mask_type.set_selected(initial_mode);
     current_bool_mode = mask_type.get_selected_id();
 
 	// adoption tree
@@ -163,6 +163,16 @@ void html_form_mask_bool::on_event(const string & event_name)
 	update_table_content_logic(false);
     else if(event_name == html_form_dynamic_table::changed)
 	update_table_content_logic(true);
+    else
+	throw WEBDAR_BUG;
+}
+
+string html_form_mask_bool::invert_logic(const std::string & logic)
+{
+    if(logic == and_op)
+	return or_op;
+    else if(logic == or_op)
+	return and_op;
     else
 	throw WEBDAR_BUG;
 }

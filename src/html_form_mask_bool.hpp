@@ -72,7 +72,11 @@ class html_form_mask_bool : public html_mask,
 			    public actor
 {
 public:
-    html_form_mask_bool();
+	/// constructor
+
+	/// \param[in] is either and_op or or_op (see constexpr defined below)
+    html_form_mask_bool(const std::string & initial_mode = and_op);
+
     html_form_mask_bool(const html_form_mask_bool & ref) = delete;
     html_form_mask_bool(html_form_mask_bool && ref) noexcept = delete;
     html_form_mask_bool & operator = (const html_form_mask_bool & ref) = delete;
@@ -105,6 +109,19 @@ public:
 	/// inherited from body_builder
     MAKE_BROTHER_MACRO;
 
+    const std::string & get_bool_mode() const { return current_bool_mode; };
+
+    static constexpr const char* and_op = "and_op";
+    static constexpr const char* or_op = "or_op";
+
+	/// return the and_op or or_op inverted logic of the provided argument
+
+	/// \note today this operation is trivial, but in the future if an XOR
+	/// bool logic or something else is added this method will provide some
+	/// real value.
+	/// \note this method purpose is to setup a different bool mode when
+	/// cascading several html_form_mask_bool components
+    static std::string invert_logic(const std::string & logic);
 
 protected:
 	/// inherited methods from body_builder
@@ -116,9 +133,6 @@ protected:
 
 
 private:
-    static constexpr const char* and_op = "and_op";
-    static constexpr const char* or_op = "or_op";
-
     static constexpr const char* bool_changed_event = "bool_changed";
     static constexpr const char* css_class_bool_text = "html_form_mask_bool_bool_text";
 
