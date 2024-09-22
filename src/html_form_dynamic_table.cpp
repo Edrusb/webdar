@@ -46,10 +46,12 @@ html_form_dynamic_table::html_form_dynamic_table(bool has_left_labels,
 						 bool selector_below,
 						 const string & adder_label,
 						 const string & adder_default_choice):
+    my_provider(nullptr),
     left_label(has_left_labels),
     table(has_left_labels ? 3 : 2),
     adder(adder_label, new_line_to_add)
 {
+
 	// components configuration/
     adder.add_choice("", adder_default_choice);
     adder.set_selected(0);
@@ -70,16 +72,18 @@ html_form_dynamic_table::html_form_dynamic_table(bool has_left_labels,
 	// css stuff
 }
 
-
-void html_form_dynamic_table::add_obj_type(const string & label,
-					   const body_builder & for_brother)
+void html_form_dynamic_table::set_obj_type_provider(const html_form_dynamic_table_object_provider* provider)
 {
-    std::unique_ptr<body_builder> newone(for_brother.make_brother());
+    if(provider == nullptr)
+	throw WEBDAR_BUG;
+    my_provider = provider;
+}
 
-    if(!newone)
+void html_form_dynamic_table::add_obj_type(const string & label)
+{
+    if(my_provider == nullptr)
 	throw WEBDAR_BUG;
 
-    list_of_types.push_back(std::move(newone));
     adder.add_choice(label, label);
     adder.set_selected(0);
 }
@@ -117,12 +121,6 @@ void html_form_dynamic_table::add_line(unsigned int typenum)
 {
     line newline;
 
-    if(typenum >= list_of_types.size())
-	throw WEBDAR_BUG;
-
-    if(! list_of_types[typenum])
-	throw WEBDAR_BUG;
-
     if(left_label)
     {
 	newline.left_label.reset(new (nothrow) html_text());
@@ -133,7 +131,9 @@ void html_form_dynamic_table::add_line(unsigned int typenum)
 	newline.left_label.reset();
 
     newline.object_type_index = typenum;
-    newline.dynobj = list_of_types[typenum]->make_brother();
+    if(my_provider == nullptr)
+	throw WEBDAR_BUG;
+    newline.dynobj = my_provider->provide_object_of_type(typenum);
     if(! newline.dynobj)
 	throw WEBDAR_BUG;
 

@@ -44,6 +44,23 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_form_select.hpp"
 
+    /// class html_form_dynamic_table_object_provider
+
+    /// is an interface for objets using an html_form_dynamic_table. This component
+    /// will call back the recorded provider object when a new entry is asked from web
+    /// interface to be added in the table.
+    /// \note most of the time this will be the owner of a html_form_dynamic_table
+    /// that will register itself as html_form_dynamic_table_object_provider to
+    /// his own the dynamic table object
+
+
+class html_form_dynamic_table_object_provider
+{
+public:
+    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num) const = 0;
+};
+
+
     /// class html_form_dynamic_table web user dynamically add new lines in a table
 
     /// The lines of the table are defined by the developper user of this class
@@ -84,6 +101,7 @@ extern "C"
     /// method make_brother() re-defined to provide another object
     /// (possibily a brand-new one or a copy constructed one if necessary)
     /// of the exact same class (not of a parent class).
+
 
 class html_form_dynamic_table : public body_builder, public actor, public events
 {
@@ -131,13 +149,41 @@ public:
 
     iterator begin() const { iterator ret; ret.ptr = table_content.begin(); return ret; };
     iterator end() const { iterator ret; ret.ptr = table_content.end(); return ret; };
+
+	/// whether the current dynamic_table is empty
     bool empty() const { return table_content.empty(); };
+
+	/// define a object provider
+
+	///\param[in] provider the object provider.
+
+	/// when needed by this dynamic table, the object provider will be asked
+	/// to create a new object of type "num", the argument of
+	/// html_form_dynamic_table_object_provider::provide_object_of_type()
+	/// for num = 0 the object type provided by the first call to
+	/// add_obj_type(), num = 1 correspond to the type of object
+	/// which label has been provide by the second time add_obj_type()
+	/// was called.
+
+	/// *before* adding types of objects that will be proposed to the web user,
+	/// an object provider (and only one) must be recorded calling this method
+	/// \note the object provider is not memory managed by the "this"
+	/// object and must survive during the whole life of "this".
+	/// \note only one and same provider must address all the possible type of
+	/// object to build. Any previously added provider is replaced by the one
+	/// give here.
+    void set_obj_type_provider(const html_form_dynamic_table_object_provider* provider);
+
+	/// get the current object provider
+    const html_form_dynamic_table_object_provider* get_current_provider() const { return my_provider; };
 
         /// add a new object type to be proposed to the user from the "adder" selector
 
         /// \param[in] column the column number for this object (starts at zero)
-        /// \param[in,out] obj pointer to object that will be passed to the html_form_dynamic_table
-    void add_obj_type(const std::string & label, const body_builder & obj);
+    void add_obj_type(const std::string & label);
+
+	/// return the number of object type available to the user
+    unsigned int obj_type_size() const { return adder.size() - 1; };
 
         /// clear table content
     void clear() { table_content.clear(); del_event_to_content.clear(); events_to_delete.clear(); };
@@ -188,7 +234,7 @@ private:
         std::unique_ptr<html_form_input> del;
     };
 
-    std::deque<std::unique_ptr<body_builder> > list_of_types; ///< available types of objects
+    const html_form_dynamic_table_object_provider* my_provider; ///< the object provider to use
     std::list<line> table_content;       ///< manages the objects adopted by "table"
     unsigned int event_del_count;        ///< used to build new event name for each new "delete" button
     std::map<std::string, std::list<line>::iterator> del_event_to_content; /// find the table_content entry corresponding to a given event
