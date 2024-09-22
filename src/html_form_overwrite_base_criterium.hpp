@@ -59,9 +59,6 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
-	/// inherited from body_builder
-    MAKE_BROTHER_MACRO;
-
 protected:
 
 	/// inherited from body_builder from html_overwrite_criterium

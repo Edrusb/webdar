@@ -54,10 +54,6 @@ public:
 	/// obtain the crit_constant_action object for libdar option
     virtual std::unique_ptr<libdar::crit_action> get_overwriting_action() const override;
 
-
-	/// inherited from body_builder
-    MAKE_BROTHER_MACRO;
-
 protected:
 
 	/// inherited from body_builder from html_overwrite_action

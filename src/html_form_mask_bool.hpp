@@ -106,9 +106,7 @@ public:
     void add_mask_type(const std::string & label) { table.add_obj_type(label); };
 
 
-	/// inherited from body_builder
-    MAKE_BROTHER_MACRO;
-
+	/// get the current boolean combining mode
     const std::string & get_bool_mode() const { return current_bool_mode; };
 
     static constexpr const char* and_op = "and_op";

@@ -71,9 +71,6 @@ public:
     virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num,
 								 const std::string & context) const override;
 
-	/// inherited from body_builder
-    MAKE_BROTHER_MACRO;
-
 	// mask_type values
     static constexpr const char* and_op = "and_op";
     static constexpr const char* or_op = "or_op";

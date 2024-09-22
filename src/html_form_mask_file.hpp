@@ -79,10 +79,6 @@ public:
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override;
 
-	/// inherited from body_builder
-    MAKE_BROTHER_MACRO;
-
-
 protected:
 	/// inherited methods from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,

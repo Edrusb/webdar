@@ -87,9 +87,6 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
-	/// inherited from body_builder
-    virtual std::unique_ptr<body_builder> make_brother() const override;
-
 protected:
 	/// inherited methods from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,

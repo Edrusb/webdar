@@ -70,9 +70,6 @@ public:
 	/// inherited from static_body_builder
     virtual std::string get_body_part() const override { return txt; };
 
-	/// inherited from body_builder
-    MAKE_BROTHER_MACRO;
-
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,

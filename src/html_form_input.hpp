@@ -91,9 +91,6 @@ public:
 	/// get the event name used when the component changes
     std::string get_event_name() const { return modif_change.empty()? changed: modif_change; };
 
-	/// inherited from body_builder
-    virtual std::unique_ptr<body_builder> make_brother() const override;
-
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,

@@ -63,10 +63,8 @@ public:
 
     /// class html_form_dynamic_table web user dynamically add new lines in a table
 
-    /// The lines of the table are defined by the developper user of this class
-    /// providing a set of body_builder objets which class has the make_brother()
-    /// method implemented to create a brandh-new object of the same inherited
-    /// class as the ones given as reference to define the table's line content
+    /// The possible type of lines of the table are defined by the developper user of this class
+    /// but this is the web user that defined the table content based on the available types
     ///
     /// this html components is consitued of:
     ///
@@ -95,12 +93,9 @@ public:
     ///
     ///
     /// \note this component must be adopted by an html_form
-    /// \note the programmer should provide the components type
-    /// that will consititue each new line calling add_type()
-    /// and the provided body_builder objects must have their
-    /// method make_brother() re-defined to provide another object
-    /// (possibily a brand-new one or a copy constructed one if necessary)
-    /// of the exact same class (not of a parent class).
+    /// \note the programmer should set an object provider
+    /// to create object component of the requested type by the
+    /// user.
 
 
 class html_form_dynamic_table : public body_builder, public actor, public events
