@@ -44,17 +44,9 @@ html_form_gnupg_list::html_form_gnupg_list():
 	  "Gnupg persona to add",
 	  "--- select a type of persona ---")
 {
-    html_form_input recip("Gnupg recipient",
-			  html_form_input::text,
-			  "",
-			  50);
-    html_form_input signator("Gnupg signatory",
-			     html_form_input::text,
-			     "",
-			     50);
-
-    table.add_obj_type("Gnupg recipient", recip);
-    table.add_obj_type("Gnupg signatory", signator);
+    table.set_obj_type_provider(this);
+    table.add_obj_type("Gnupg recipient"); // index 0 in provide_object_of_type()
+    table.add_obj_type("Gnupg signatory"); // index 1 in provide_object_of_type()
     adopt(&table);
 }
 
@@ -67,6 +59,37 @@ vector<string> html_form_gnupg_list::get_gnupg_signatories() const
 {
     return gather_content_of_type(1);
 }
+
+unique_ptr<body_builder> html_form_gnupg_list::provide_object_of_type(unsigned int num) const
+{
+    unique_ptr<body_builder> ret;
+
+    switch(num)
+    {
+    case 0:
+	ret.reset(new (nothrow)
+		  html_form_input("Gnupg recipient",
+				  html_form_input::text,
+				  "",
+				  50));
+	break;
+    case 1:
+	ret.reset(new (nothrow)
+		  html_form_input("Gnupg signatory",
+				  html_form_input::text,
+				  "",
+				  50));
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+
+    if(! ret)
+	throw exception_memory();
+
+    return ret;
+}
+
 
 string html_form_gnupg_list::inherited_get_body_part(const chemin & path,
 						    const request & req)

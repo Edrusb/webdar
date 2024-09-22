@@ -65,7 +65,7 @@ extern "C"
     /// recursively from another html_form_gnupg_list
 
 
-class html_form_gnupg_list : public body_builder
+class html_form_gnupg_list : public body_builder, public html_form_dynamic_table_object_provider
 {
 public:
     html_form_gnupg_list();
@@ -80,6 +80,10 @@ public:
 
     	/// return the list of signatories filled by the webuser
     std::vector<std::string> get_gnupg_signatories() const;
+
+	/// inherited from html_form_dynamic_table_object_provider
+    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num) const override;
+
 
 protected:
 	/// inherited methods from body_builder
