@@ -53,7 +53,7 @@ class html_form_overwrite_combining_criterium: public html_overwrite_criterium,
 					       public html_form_dynamic_table_object_provider
 {
 public:
-    html_form_overwrite_combining_criterium();
+    html_form_overwrite_combining_criterium(const std::string & initial_mode = and_op);
     html_form_overwrite_combining_criterium(const html_form_overwrite_combining_criterium & ref) = default;
     html_form_overwrite_combining_criterium(html_form_overwrite_combining_criterium && ref) noexcept = default;
     html_form_overwrite_combining_criterium & operator = (const html_form_overwrite_combining_criterium & ref) = default;
@@ -74,6 +74,9 @@ public:
 	/// inherited from body_builder
     MAKE_BROTHER_MACRO;
 
+	// mask_type values
+    static constexpr const char* and_op = "and_op";
+    static constexpr const char* or_op = "or_op";
 
 protected:
 
@@ -88,10 +91,6 @@ private:
 	// events
     static constexpr const char* bool_changed_event = "bool_changed";
     static constexpr const char* new_crit_to_add = "new_mask";
-
-	// mask_type values
-    static constexpr const char* and_op = "and_op";
-    static constexpr const char* or_op = "or_op";
 
 	// adder values
     static constexpr const char* base_crit = "base_crit";
@@ -108,6 +107,8 @@ private:
 
     std::string bool_op_to_name(const std::string & op);
     void update_table_content_logic(bool unconditionally);
+
+    static std::string invert_logic(const std::string & logic);
 
 };
 

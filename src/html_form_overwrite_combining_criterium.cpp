@@ -39,7 +39,7 @@ extern "C"
 
 using namespace std;
 
-html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium():
+html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium(const string & initial_mode):
     fs(""),
     crit_type("Combining with", html_form_select::changed),
     table(true, false, "Add a new mask", " --- select a criterium --- ")
@@ -51,7 +51,7 @@ html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium
     crit_type.add_choice(or_op, "OR");
     if(crit_type.num_choices() != 2)
 	throw WEBDAR_BUG;
-    crit_type.set_selected(0);
+    crit_type.set_selected(initial_mode);
     current_bool_mode = crit_type.get_selected_id();
 
     table.set_obj_type_provider(this);
@@ -72,6 +72,9 @@ html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium
 
 	// css stuff
     table.set_css_class_first_column(css_class_bool_text);
+
+	// final setup
+    update_table_content_logic(true); // true = update unconditionally
 }
 
 
@@ -135,7 +138,7 @@ unique_ptr<body_builder> html_form_overwrite_combining_criterium::provide_object
 	ret.reset(new (nothrow) html_form_overwrite_base_criterium());
 	break;
     case 1:
-	tmp.reset(new (nothrow) html_form_overwrite_combining_criterium());
+	tmp.reset(new (nothrow) html_form_overwrite_combining_criterium(invert_logic(context)));
 	if(!tmp)
 	    throw exception_memory();
 	if(current_bool_mode == and_op)
@@ -219,5 +222,18 @@ void html_form_overwrite_combining_criterium::update_table_content_logic(bool un
 	}
 
 	current_bool_mode = target_bool_mode;
+	table.set_obj_type_context(current_bool_mode);
     }
 }
+
+
+string html_form_overwrite_combining_criterium::invert_logic(const std::string & logic)
+{
+    if(logic == and_op)
+	return or_op;
+    else if(logic == or_op)
+	return and_op;
+    else
+	throw WEBDAR_BUG;
+}
+
