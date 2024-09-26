@@ -80,7 +80,7 @@ void html_dir_tree::init(const string & chemin)
     else
 	name.change_label(my_path.back());
 
-        	// The body_builder tree
+	// The body_builder tree
 
     line.adopt(&nosubdir);
     line.adopt(&shrink);
@@ -105,17 +105,7 @@ void html_dir_tree::init(const string & chemin)
 	// set initial visibility of objects
     on_event(event_shrink);
 
-	// contents is not directly adopted and is filled with go_init_indent()
-    contents.adopt_static_html(html_text(3, "Filename").get_body_part());
-    contents.adopt_static_html(html_text(3, "Data").get_body_part());
-    contents.adopt_static_html(html_text(3, "EA").get_body_part());
-    contents.adopt_static_html(html_text(3, "compr").get_body_part());
-    contents.adopt_static_html(html_text(3, "Sparse").get_body_part());
-    contents.adopt_static_html(html_text(3, "permissions").get_body_part());
-    contents.adopt_static_html(html_text(3, "UID").get_body_part());
-    contents.adopt_static_html(html_text(3, "GID").get_body_part());
-    contents.adopt_static_html(html_text(3, "Size").get_body_part());
-    contents.adopt_static_html(html_text(3, "Modifaction Date").get_body_part());
+	// "contents" is not directly adopted and is filled with go_init_indent()
 }
 
 void html_dir_tree::clear()
@@ -136,6 +126,7 @@ void html_dir_tree::clear()
     info_read = false;
     has_sub = true;
     my_body_part_has_changed();
+    clear_contents();
 }
 
 void html_dir_tree::set_source(const archive_init_list *ref)
@@ -236,6 +227,7 @@ void html_dir_tree::go_init_indent()
 	vector<libdar::list_entry> tmp = src->get_children_in_table(my_path.display(true));
 	vector<libdar::list_entry>::const_iterator it = tmp.begin();
 
+	clear_contents();
 	while(it != tmp.end())
 	{
 	    if(it->is_dir())
@@ -422,4 +414,19 @@ void html_dir_tree::new_css_library_available()
     contents.add_css_class(name_css_contents);
     contents.set_css_class_cells(name_css_contents_cells);
     contents.set_css_class_first_row(name_css_contents_title);
+}
+
+void html_dir_tree::clear_contents()
+{
+    contents.clear();
+    contents.adopt_static_html(html_text(3, "Filename").get_body_part());
+    contents.adopt_static_html(html_text(3, "Data").get_body_part());
+    contents.adopt_static_html(html_text(3, "EA").get_body_part());
+    contents.adopt_static_html(html_text(3, "compr").get_body_part());
+    contents.adopt_static_html(html_text(3, "Sparse").get_body_part());
+    contents.adopt_static_html(html_text(3, "permissions").get_body_part());
+    contents.adopt_static_html(html_text(3, "UID").get_body_part());
+    contents.adopt_static_html(html_text(3, "GID").get_body_part());
+    contents.adopt_static_html(html_text(3, "Size").get_body_part());
+    contents.adopt_static_html(html_text(3, "Modifaction Date").get_body_part());
 }
