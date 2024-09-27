@@ -42,7 +42,7 @@ using namespace std;
 html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium(const string & initial_mode):
     fs(""),
     crit_type("Combining with", html_form_select::changed),
-    table(true, false, "Add a new mask", " --- select a criterium --- ")
+    table(true, true, "Add a new mask", " --- select a criterium --- ")
 {
 
 	// components configuration
