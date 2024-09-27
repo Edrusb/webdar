@@ -38,6 +38,8 @@ extern "C"
 #include "html_form_select.hpp"
 #include "html_form_fieldset.hpp"
 #include "actor.hpp"
+#include "html_form_overwrite_constant_action.hpp"
+#include "html_form_overwrite_chain_action.hpp"
 
     /// html component to be adopted by an html_form class
 
@@ -78,9 +80,18 @@ private:
 
     html_form_fieldset fs;
     html_form_select action_type;
-    std::unique_ptr<html_overwrite_action> action;
-    std::unique_ptr<html_overwrite_action> old_action; ///< to keep action existing when changed from on_event()
-    bool changed;
+
+
+    html_form_overwrite_constant_action constant_action;
+    html_form_overwrite_chain_action chain_action;
+
+	// we use pointers for here
+	// to avoid cyclic dependency between html_form_overwrite_action
+	// and html_form_conditional_action/html_form_chain_action
+    std::unique_ptr<html_overwrite_action> conditional_action;
+
+    void make_conditional_action();
+    void set_visible();
 };
 
 #endif

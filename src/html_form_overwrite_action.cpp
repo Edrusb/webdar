@@ -29,11 +29,8 @@ extern "C"
 
     // C++ system header files
 
-
     // webdar headers
-#include "html_form_overwrite_constant_action.hpp"
 #include "html_form_overwrite_conditional_action.hpp"
-#include "html_form_overwrite_chain_action.hpp"
 
     //
 #include "html_form_overwrite_action.hpp"
@@ -42,22 +39,27 @@ using namespace std;
 
 html_form_overwrite_action::html_form_overwrite_action(const string & label):
     fs(label),
+    chain_action("Chain of actions"),
     action_type("Action type",  act_changed)
 {
 
 	// components setup
+
+	// conditional_action cannot be assigned right now
+	// to avoid endless loop constructing an html_form_conditional_action
+	// which in turn constructs two html_form_overwrite_action and so on.
+
     action_type.add_choice(action_type_const, "constant action");
     action_type.add_choice(action_type_condition, "conditional action");
     action_type.add_choice(action_type_chain, "chain action");
     action_type.set_selected(0);
-    action.reset(new (nothrow) html_form_overwrite_constant_action());
-    if(!action)
-	throw exception_memory();
-    old_action.reset();
+
+    set_visible();
 
 	// adoption tree
     fs.adopt(&action_type);
-    fs.adopt(&(*action));
+    fs.adopt(&constant_action);
+    fs.adopt(&chain_action);
     adopt(&fs);
 
 	// events
@@ -70,10 +72,23 @@ unique_ptr<libdar::crit_action> html_form_overwrite_action::get_overwriting_acti
 {
     unique_ptr<libdar::crit_action> ret;
 
-    if(!action)
+    switch(action_type.get_selected_num())
+    {
+    case 0:
+	ret = constant_action.get_overwriting_action();
+	break;
+    case 1:
+	if(!conditional_action)
+	    throw WEBDAR_BUG;
+	ret = conditional_action->get_overwriting_action();
+	break;
+    case 2:
+	ret = chain_action.get_overwriting_action();
+	break;
+    default:
 	throw WEBDAR_BUG;
+    }
 
-    ret = action->get_overwriting_action();
     if(!ret)
 	throw WEBDAR_BUG;
 
@@ -84,36 +99,9 @@ void html_form_overwrite_action::on_event(const std::string & event_name)
 {
     if(event_name == act_changed)
     {
-	if(old_action)
-	    throw WEBDAR_BUG;
-	if(changed)
-	    throw WEBDAR_BUG;
-
-	changed = true;
-	old_action = std::move(action);
-
-	if(action_type.get_selected_id() == action_type_const)
-	{
-	    action.reset(new (nothrow) html_form_overwrite_constant_action());
-	    if(!action)
-		throw exception_memory();
-		// adoption of this new object will be done in inherited_get_body_part()
-	}
-	else if(action_type.get_selected_id() == action_type_condition)
-	{
-	    action.reset(new (nothrow) html_form_overwrite_conditional_action());
-	    if(!action)
-		throw exception_memory();
-		// adoption of this new object will be done in inherited_get_body_part()
-	}
-	else if(action_type.get_selected_id() == action_type_chain)
-	{
-	    action.reset(new (nothrow) html_form_overwrite_chain_action("Chain of actions"));
-	    if(!action)
-		throw exception_memory();
-	}
-	else // unknown action type
-	    throw WEBDAR_BUG;
+	if(action_type.get_selected_num() == 1)
+	    make_conditional_action();
+	set_visible();
     }
     else // unexpected event name
 	throw WEBDAR_BUG;
@@ -122,20 +110,47 @@ void html_form_overwrite_action::on_event(const std::string & event_name)
 string html_form_overwrite_action::inherited_get_body_part(const chemin & path,
 							   const request & req)
 {
-    string ret;
+    return get_body_part_from_all_children(path, req);
+}
 
-    changed = false;
-
-    ret = get_body_part_from_all_children(path, req);
-
-    if(changed)
+void html_form_overwrite_action::make_conditional_action()
+{
+    if(!conditional_action)
     {
-	old_action.reset();
-	if(action)
-	    fs.adopt(&(*action));
+	conditional_action.reset(new (nothrow) html_form_overwrite_conditional_action());
+	if(!conditional_action)
+	    throw exception_memory();
+
+	fs.adopt(conditional_action.get());
+    }
+}
+
+void html_form_overwrite_action::set_visible()
+{
+    switch(action_type.get_selected_num())
+    {
+    case 0: // constant action
+	constant_action.set_visible(true);
+	if(conditional_action)
+	    conditional_action->set_visible(false);
+	chain_action.set_visible(false);
+	break;
+    case 1: // conditional action
+	constant_action.set_visible(false);
+	if(conditional_action)
+	    conditional_action->set_visible(true);
 	else
 	    throw WEBDAR_BUG;
+	chain_action.set_visible(false);
+	break;
+    case 2: // chain action
+	constant_action.set_visible(false);
+	if(conditional_action)
+	    conditional_action->set_visible(false);
+	chain_action.set_visible(true);
+	break;
+    default:
+	throw WEBDAR_BUG;
     }
-
-    return ret;
 }
+
