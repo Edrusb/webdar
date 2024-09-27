@@ -60,6 +60,7 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     hide_unless_interrupted(false),
     was_interrupted(false),
     h_inter(""),
+    h_gtstr_fs("Question regarding the above logs"),
     h_get_string("", html_form_input::text, "", 20),
     h_form("Update"),
     h_logs("Last logs"),
@@ -86,7 +87,8 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     h_inter.adopt(&h_inter_text);
     h_inter.adopt(&h_pause);
     h_form.adopt(&h_inter);
-    h_form.adopt(&h_get_string);
+    h_gtstr_fs.adopt(&h_get_string);
+    h_form.adopt(&h_gtstr_fs);
     h_global.adopt(&h_logs);
     h_global.adopt(&h_form);
     h_global.adopt(&stats);
@@ -220,7 +222,7 @@ void html_web_user_interaction::on_event(const string & event_name)
 	}
 	else if(event_name == html_form_input::changed)
 	{
-	    if(h_get_string.get_visible())
+	    if(h_gtstr_fs.get_visible())
 	    {
 		string tmpm;
 		bool tmpe;
@@ -231,13 +233,13 @@ void html_web_user_interaction::on_event(const string & event_name)
 		else
 		    throw WEBDAR_BUG;
 
-		h_get_string.set_visible(false);
+		h_gtstr_fs.set_visible(false);
 		my_body_part_has_changed();
 	    }
 	    else
 		throw WEBDAR_BUG;
 		// how could we get an event from h_get_string
-		// if it is not visible?
+		// if if the parent box is not visible?
 	}
 	else if(event_name == ask_end_libdar)
 	    set_mode(end_asked); // eventually calls my_body_part_has_changed()
@@ -255,7 +257,7 @@ void html_web_user_interaction::clear()
     check_libdata();
     lib_data->clear();
     h_inter.set_visible(false);
-    h_get_string.set_visible(false);
+    h_gtstr_fs.set_visible(false);
     adjust_visibility();
     stats.clear_counters();
     stats.clear_labels();
@@ -308,7 +310,7 @@ void html_web_user_interaction::my_visibility_has_changed()
 
 void html_web_user_interaction::adjust_visibility()
 {
-    if(h_get_string.get_visible() || h_inter.get_visible())
+    if(h_gtstr_fs.get_visible() || h_inter.get_visible())
     {
 	if(!h_form.get_visible())
 	{
@@ -417,9 +419,9 @@ void html_web_user_interaction::update_html_from_libdar_status()
 	if(lib_data->pending_get_string(msg, echo)
 	   || lib_data->pending_get_secu_string(msg, echo))
 	{
-	    if(!h_get_string.get_visible())
+	    if(!h_gtstr_fs.get_visible())
 	    {
-		h_get_string.set_visible(true);
+		h_gtstr_fs.set_visible(true);
 		h_get_string.change_label(msg);
 		if(echo)
 		    h_get_string.change_type(html_form_input::text);

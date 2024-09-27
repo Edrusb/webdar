@@ -227,6 +227,7 @@ private:
     html_form_radio h_pause;      ///< shows when libdar request a yes/no decision from the user
     html_form_fieldset h_inter;   ///< wraps h_pause and h_inter_text and is any visible when libdar request an information from the user
     html_text h_inter_text;       ///< displays the question/request from libdar
+    html_form_fieldset h_gtstr_fs;///< box arount h_get_string
     html_form_input h_get_string; ///< shows when libdar request a string answer from the user
     html_form h_form;             ///< html_form for the previous/above html fields
     html_text h_warnings;         ///< shows the list of warnings/message from libdar
