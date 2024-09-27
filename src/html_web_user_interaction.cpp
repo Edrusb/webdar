@@ -82,13 +82,13 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     h_warnings.ignore_body_changed_from_my_children(true);
 
 	// adoption tree
+    h_logs.adopt(&h_warnings);
     h_inter.adopt(&h_inter_text);
     h_inter.adopt(&h_pause);
     h_form.adopt(&h_inter);
     h_form.adopt(&h_get_string);
-    h_global.adopt(&h_form);
-    h_logs.adopt(&h_warnings);
     h_global.adopt(&h_logs);
+    h_global.adopt(&h_form);
     h_global.adopt(&stats);
     h_global.adopt(&ask_close);
     h_global.adopt(&force_close);
