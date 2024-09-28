@@ -28,7 +28,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include "webdar_css_style.hpp"
 
     // webdar headers
 
@@ -130,6 +130,15 @@ string html_form_mask_expression::inherited_get_body_part(const chemin & path,
     return get_body_part_from_all_children(path, req);
 }
 
+void html_form_mask_expression::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
+}
+
 
 void html_form_mask_expression::init()
 {
@@ -153,6 +162,7 @@ void html_form_mask_expression::init()
 	// visibity
 
 	// css stuff
+    fs.add_label_css_class(webdar_css_style::wcs_bold_text);
 }
 
 string html_form_mask_expression::tell_action() const
