@@ -97,6 +97,7 @@ html_options_create::html_options_create():
     compression_level("Compression level", html_form_input::number, "", 3),
     min_compr_size("Minimum file sized compressed", html_form_input::number, "", 30),
     compression_block("Block compression for parallel compression (zero to zero to disable)", html_form_input::number, "0", 30),
+    compr_mask("Filename expression"),
     slicing_fs(""),
     slicing("Sliced archive", html_form_input::check, "", 1),
     slice_size("Slice size", html_form_input::number, "", 6),
@@ -297,6 +298,8 @@ html_options_create::html_options_create():
     compr_fs.adopt(&compr_block_unit);
     form_compr.adopt(&compr_fs);
     deroule.adopt_in_section(sect_compr, &form_compr);
+    deroule.adopt_in_section(sect_compr,&compr_mask);
+
 
 	// slicing
     slicing_fs.adopt(&slicing);
@@ -392,6 +395,13 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 	throw exception_range(libdar::tools_printf("compression block size is too small, select either zero to disable compression per block or a block size greater or equal to %d", min_compr_bs));
 
     ret.set_compression_block_size(val);
+    if(compression.get_value() != libdar::compression::none)
+    {
+	unique_ptr<libdar::mask> libcompmask = compr_mask.get_mask();
+	if(!libcompmask)
+	    throw WEBDAR_BUG;
+	ret.set_compr_mask(*libcompmask);
+    }
 
     if(slicing.get_value_as_bool())
     {
@@ -513,6 +523,7 @@ void html_options_create::on_event(const string & event_name)
 	    min_compr_size_unit.set_visible(false);
 	    compression_block.set_visible(false);
 	    compr_block_unit.set_visible(false);
+	    compr_mask.set_visible(false);
 	    break;
 	case libdar::compression::lzo1x_1_15:
 	case libdar::compression::lzo1x_1:
@@ -522,6 +533,7 @@ void html_options_create::on_event(const string & event_name)
 	    min_compr_size_unit.set_visible(true);
 	    compression_block.set_visible(true);
 	    compr_block_unit.set_visible(true);
+	    compr_mask.set_visible(true);
 	    break;
 	case libdar::compression::gzip:
 	case libdar::compression::bzip2:
@@ -535,6 +547,7 @@ void html_options_create::on_event(const string & event_name)
 	    min_compr_size_unit.set_visible(true);
 	    compression_block.set_visible(true);
 	    compr_block_unit.set_visible(true);
+	    compr_mask.set_visible(true);
 	    break;
 	default:
 	    throw WEBDAR_BUG;

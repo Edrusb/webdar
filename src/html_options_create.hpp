@@ -181,6 +181,7 @@ private:
     html_size_unit min_compr_size_unit;
     html_form_input compression_block;
     html_size_unit compr_block_unit;
+    html_mask_form_filename compr_mask;
 
     html_form_fieldset slicing_fs;
     html_form_input slicing;
