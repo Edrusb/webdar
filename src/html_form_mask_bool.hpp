@@ -133,7 +133,6 @@ protected:
 private:
     static constexpr const char* bool_changed_event = "bool_changed";
     static constexpr const char* css_class_bool_text = "html_form_mask_bool_bool_text";
-    static constexpr const char* css_class_bool_title = "html_form_mask_bool_bool_title";
 
 
     html_form_fieldset fs;

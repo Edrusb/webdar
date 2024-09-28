@@ -31,6 +31,7 @@ extern "C"
 
 
     // webdar headers
+#include "webdar_css_style.hpp"
 
     //
 #include "html_form_mask_bool.hpp"
@@ -69,7 +70,7 @@ html_form_mask_bool::html_form_mask_bool(const string & initial_mode):
 
 	// css stuff
     table.set_css_class_first_column(css_class_bool_text);
-    fs.add_label_css_class(css_class_bool_title);
+    fs.add_label_css_class(webdar_css_style::wcs_bold_text);
 
 	// final table update
     update_table_content_logic(true); // true = update unconditionally
@@ -206,14 +207,7 @@ void html_form_mask_bool::new_css_library_available()
 	csslib->add(css_class_bool_text, tmp);
     }
 
-    if(!csslib->class_exists(css_class_bool_title))
-    {
-	css tmp;
-
-	tmp.css_font_weight_bold();
-
-	csslib->add(css_class_bool_title, tmp);
-    }
+    webdar_css_style::update_library(*csslib);
 }
 
 string html_form_mask_bool::bool_op_to_name(const string & op)
