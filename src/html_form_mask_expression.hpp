@@ -39,6 +39,7 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_form_input.hpp"
 #include "html_form_select.hpp"
+#include "actor.hpp"
 
 
     /// class html_form_mask_expression provide mean to setup libdar::mask component for filename filtering
@@ -70,7 +71,7 @@ extern "C"
     /// like *and* and *or* combinasons.
 
 
-class html_form_mask_expression : public html_mask
+class html_form_mask_expression : public html_mask, public actor
 {
 public:
     html_form_mask_expression();
@@ -82,6 +83,10 @@ public:
 
 	/// inherited from html_mask
     std::unique_ptr<libdar::mask> get_mask() const override;
+
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
+
 
 protected:
 	/// inherited methods from body_builder
@@ -97,6 +102,7 @@ private:
     html_form_input mask_expression;
 
     void init();
+    std::string tell_action() const;
 };
 
 #endif

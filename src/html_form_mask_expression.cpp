@@ -41,9 +41,8 @@ using namespace std;
 
 
 html_form_mask_expression::html_form_mask_expression():
-    fs("Filename expression"),
-    mask_type("Mask Type",
-	      "unused_event"),
+    fs(""),
+    mask_type("Mask Type"),
     negate("Negate",
 	   html_form_input::check,
 	   "", // unckecked
@@ -116,6 +115,14 @@ unique_ptr<libdar::mask> html_form_mask_expression::get_mask() const
     return ret;
 }
 
+void html_form_mask_expression::on_event(const std::string & event_name)
+{
+    if(event_name == html_form_select::changed
+       || event_name == html_form_input::changed)
+	fs.change_label(tell_action());
+    else
+	throw WEBDAR_BUG;
+}
 
 string html_form_mask_expression::inherited_get_body_part(const chemin & path,
 						   const request & req)
@@ -126,6 +133,8 @@ string html_form_mask_expression::inherited_get_body_part(const chemin & path,
 
 void html_form_mask_expression::init()
 {
+    fs.change_label(tell_action());
+
 	// adoption tree
 
     fs.adopt(&mask_type);
@@ -134,9 +143,45 @@ void html_form_mask_expression::init()
     fs.adopt(&mask_expression);
     adopt(&fs);
 
+
 	// events
+    mask_type.record_actor_on_event(this, html_form_select::changed);
+    negate.record_actor_on_event(this, html_form_input::changed);
+    casesensitivity.record_actor_on_event(this, html_form_input::changed);
+    mask_expression.record_actor_on_event(this, html_form_input::changed);
 
 	// visibity
 
 	// css stuff
+}
+
+string html_form_mask_expression::tell_action() const
+{
+    string ret = "Filename ";
+
+    if(negate.get_value_as_bool())
+	ret += "not matching ";
+    else
+	ret += "matching ";
+
+    switch(mask_type.get_selected_num())
+    {
+    case 0:
+	ret += "the glob expression ";
+	break;
+    case 1:
+	ret += "the regular expression ";
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+
+    ret += mask_expression.get_value() + " ";
+
+    if(casesensitivity.get_value_as_bool())
+	ret += "(case-sensitive)";
+    else
+	ret += "(case-INsensitive)";
+
+    return ret;
 }
