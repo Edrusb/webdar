@@ -92,6 +92,8 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// inherited from body_builder
+    virtual void new_css_library_available() override;
 
 private:
     bool absolute_ok;
@@ -103,6 +105,8 @@ private:
     html_form_input mask_subdir;
 
     void init();
+    std::string tell_action() const;
+
 };
 
 #endif

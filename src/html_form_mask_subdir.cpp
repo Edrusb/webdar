@@ -32,8 +32,7 @@ extern "C"
 #include <dar/tools.hpp>
 
     // webdar headers
-
-
+#include "webdar_css_style.hpp"
 
     //
 #include "html_form_mask_subdir.hpp"
@@ -44,7 +43,7 @@ using namespace std;
 html_form_mask_subdir::html_form_mask_subdir(bool absolute_path_accepted):
     absolute_ok(absolute_path_accepted),
     prefix(libdar::FAKE_ROOT),
-    fs("Path expression"),
+    fs(""),
     mask_type("Mask Type"),
     casesensitivity("Case Sensitive",
 		    html_form_input::check,
@@ -143,6 +142,11 @@ void html_form_mask_subdir::on_event(const std::string & event_name)
     {
 	regex.set_visible(mask_type.get_selected_num() == 1);
 	    // regex is only visible if excluding a path
+	fs.change_label(tell_action());
+    }
+    else if(event_name == html_form_input::changed)
+    {
+	fs.change_label(tell_action());
     }
     else
 	throw WEBDAR_BUG;
@@ -189,6 +193,14 @@ string html_form_mask_subdir::inherited_get_body_part(const chemin & path,
     return ret;
 }
 
+void html_form_mask_subdir::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
+}
 
 void html_form_mask_subdir::init()
 {
@@ -199,12 +211,48 @@ void html_form_mask_subdir::init()
     fs.adopt(&regex);
     fs.adopt(&mask_subdir);
     adopt(&fs);
+    fs.change_label(tell_action());
 
 	// events
     mask_type.record_actor_on_event(this, html_form_select::changed);
+    casesensitivity.record_actor_on_event(this, html_form_input::changed);
+    regex.record_actor_on_event(this, html_form_input::changed);
+    mask_subdir.record_actor_on_event(this, html_form_input::changed);
 
 	// visibity
     regex.set_visible(mask_type.get_selected_num() == 1);
 
 	// css stuff
+    fs.add_label_css_class(webdar_css_style::wcs_bold_text);
+}
+
+
+string html_form_mask_subdir::tell_action() const
+{
+    string ret = "";
+
+    switch(mask_type.get_selected_num())
+    {
+    case 0:
+	ret += "path is or is a subdir of the string ";
+	break;
+    case 1:
+	ret += "path does not match ";
+	if(regex.get_value_as_bool())
+	    ret += "the regular expression ";
+	else
+	    ret += "the glob expression ";
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+
+    ret += "\"" + mask_subdir.get_value() + "\" ";
+
+    if(casesensitivity.get_value_as_bool())
+	ret += "(case sensitive)";
+    else
+	ret += "(case INsensitive)";
+
+    return ret;
 }
