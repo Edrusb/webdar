@@ -468,6 +468,7 @@ string body_builder::get_body_part_from_all_children(const chemin & path,
     string ret = "";
     chemin sub_path = path;
     vector<body_builder *>::iterator it = order.begin();
+    vector<body_builder *>::iterator refbegin = it;
 
     create_css_lib_if_needed();
 
@@ -480,6 +481,24 @@ string body_builder::get_body_part_from_all_children(const chemin & path,
 	    throw WEBDAR_BUG;
 	ret += (*it)->get_body_part(sub_path, req);
 	++it;
+
+	if(order.begin() != refbegin)
+	    throw WEBDAR_BUG;
+	    // object child added or removed
+	    // while evaluation get_body_part
+	    // cannot be workaround because
+	    // aborting now could let some object
+	    // not updated but my flag my_body_has_changed()
+	    // to force for re-evaluation but this second time
+	    // if the request was a POST it will be transformed
+	    // into a GET and some form may not be updated.
+	    // If instead we restart the
+	    // loop here we may apply twice a POST
+	    // to a form object... thus we
+	    // forbid this and ask the caller
+	    // to add/remove child outside this method
+	    // and take action to restart or not the
+	    // body_builder::inherited_get_body_part()
     }
 
     if(visible)
