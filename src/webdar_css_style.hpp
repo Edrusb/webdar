@@ -52,6 +52,7 @@ namespace webdar_css_style
     constexpr const char* wcs_url_normal = "wcs_url_normal";
     constexpr const char* wcs_url_void = "wcs_url_void";
     constexpr const char* wcs_url_grey = "wcs_url_grey";
+    constexpr const char* wcs_bold_text = "wcs_bold_text";
 
 	/// update a css_library with css_class definitions used by the three following routines
     extern void update_library(css_library & ref);
