@@ -35,6 +35,7 @@ extern "C"
 
     // webdar headers
 #include "body_builder.hpp"
+#include "html_legend.hpp"
 
     /// class html_form_fieldset implements HTML fieldset feature
 
@@ -48,18 +49,24 @@ extern "C"
 class html_form_fieldset : public body_builder
 {
 public:
-    html_form_fieldset(const std::string & label) { x_label = label; };
+    html_form_fieldset(const std::string & label):legend(label) { adopt(&legend); };
     html_form_fieldset(const html_form_fieldset & ref) = default;
     html_form_fieldset(html_form_fieldset && ref) noexcept = default;
     html_form_fieldset & operator = (const html_form_fieldset & ref) = default;
     html_form_fieldset & operator = (html_form_fieldset && ref) noexcept = default;
     ~html_form_fieldset() = default;
 
-    void change_label(const std::string & label);
-    const std::string get_label() const { return x_label; };
+    void change_label(const std::string & label) { legend.change_label(label); };
+    const std::string get_label() const { return legend.get_label(); };
+
+	/// css is only applied css to the title of the form fieldset
+    void add_label_css_class(const std::string & name) { legend.add_css_class(name); };
+
+	/// css is only applied css to the title of the form fieldset
+    void remove_label_css_class(const std::string & name) { legend.remove_css_class(name); };
 
 	/// clear and destroy previously added objects
-    void clear() { orphan_all_children(); };
+    void clear() { orphan_all_children(); adopt(&legend); };
 
 protected:
 	/// inherited from body_builder
@@ -67,7 +74,7 @@ protected:
 						const request & req) override;
 
 private:
-    std::string x_label;
+    html_legend legend;
 
 };
 
