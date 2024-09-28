@@ -157,12 +157,12 @@ void html_form_mask_expression::init()
 
 string html_form_mask_expression::tell_action() const
 {
-    string ret = "Filename ";
+    string ret = "filename ";
 
     if(negate.get_value_as_bool())
-	ret += "not matching ";
+	ret += "does not match ";
     else
-	ret += "matching ";
+	ret += "matches ";
 
     switch(mask_type.get_selected_num())
     {
