@@ -40,7 +40,8 @@ using namespace std;
 html_form_overwrite_action::html_form_overwrite_action(const string & label):
     fs(label),
     chain_action("Chain of actions"),
-    action_type("Action type",  act_changed)
+    action_type("Action type",  act_changed),
+    need_conditional_action(false)
 {
 
 	// components setup
@@ -100,7 +101,11 @@ void html_form_overwrite_action::on_event(const std::string & event_name)
     if(event_name == act_changed)
     {
 	if(action_type.get_selected_num() == 1)
-	    make_conditional_action();
+	{
+	    if(!conditional_action)
+		need_conditional_action = true;
+	}
+
 	set_visible();
     }
     else // unexpected event name
@@ -110,7 +115,18 @@ void html_form_overwrite_action::on_event(const std::string & event_name)
 string html_form_overwrite_action::inherited_get_body_part(const chemin & path,
 							   const request & req)
 {
-    return get_body_part_from_all_children(path, req);
+    string ret;
+
+    ret = get_body_part_from_all_children(path, req);
+
+    if(need_conditional_action)
+    {
+	make_conditional_action();
+	need_conditional_action = false;
+	my_body_part_has_changed();
+    }
+
+    return ret;
 }
 
 void html_form_overwrite_action::make_conditional_action()
@@ -140,7 +156,10 @@ void html_form_overwrite_action::set_visible()
 	if(conditional_action)
 	    conditional_action->set_visible(true);
 	else
-	    throw WEBDAR_BUG;
+	{
+	    if(!need_conditional_action)
+		throw WEBDAR_BUG;
+	}
 	chain_action.set_visible(false);
 	break;
     case 2: // chain action

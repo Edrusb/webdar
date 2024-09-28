@@ -53,10 +53,10 @@ class html_form_overwrite_action: public html_overwrite_action, public actor
 {
 public:
     html_form_overwrite_action(const std::string & label);
-    html_form_overwrite_action(const html_form_overwrite_action & ref) = default;
-    html_form_overwrite_action(html_form_overwrite_action && ref) noexcept = default;
-    html_form_overwrite_action & operator = (const html_form_overwrite_action & ref) = default;
-    html_form_overwrite_action & operator = (html_form_overwrite_action && ref) noexcept = default;
+    html_form_overwrite_action(const html_form_overwrite_action & ref) = delete;
+    html_form_overwrite_action(html_form_overwrite_action && ref) noexcept = delete;
+    html_form_overwrite_action & operator = (const html_form_overwrite_action & ref) = delete;
+    html_form_overwrite_action & operator = (html_form_overwrite_action && ref) noexcept = delete;
     ~html_form_overwrite_action() = default;
 
 	/// obtain the crit_action object for libdar option
@@ -80,10 +80,9 @@ private:
 
     html_form_fieldset fs;
     html_form_select action_type;
-
-
     html_form_overwrite_constant_action constant_action;
     html_form_overwrite_chain_action chain_action;
+    bool need_conditional_action;
 
 	// we use pointers for here
 	// to avoid cyclic dependency between html_form_overwrite_action
