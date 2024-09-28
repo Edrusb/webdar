@@ -37,6 +37,7 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_form_input_file.hpp"
+#include "actor.hpp"
 
     /// class html_form_mask_file provide interface to include or exclude a list of entry taken from a text file
 
@@ -63,7 +64,7 @@ extern "C"
     /// recursively from another html_form_mask_file
 
 
-class html_form_mask_file : public html_mask
+class html_form_mask_file : public html_mask, public actor
 {
 public:
     html_form_mask_file();
@@ -79,11 +80,17 @@ public:
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override;
 
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
+
+
 protected:
 	/// inherited methods from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// inherited from body_builder
+    virtual void new_css_library_available() override;
 
 private:
     html_form_input_file filename;
@@ -93,6 +100,7 @@ private:
     libdar::path prefix;
 
     void init();
+    std::string tell_action() const;
 };
 
 #endif

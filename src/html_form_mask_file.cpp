@@ -31,7 +31,7 @@ extern "C"
 #include <dar/libdar.hpp>
 
     // webdar headers
-
+#include "webdar_css_style.hpp"
 
 
     //
@@ -95,7 +95,25 @@ string html_form_mask_file::inherited_get_body_part(const chemin & path,
     return get_body_part_from_all_children(path, req);
 }
 
+void html_form_mask_file::on_event(const std::string & event_name)
+{
+    if(event_name == html_form_input_file::changed_event
+       || event_name == html_form_input::changed)
+    {
+	fs.change_label(tell_action());
+    }
+    else
+	throw WEBDAR_BUG;
+}
 
+void html_form_mask_file::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
+}
 
 
 void html_form_mask_file::init()
@@ -106,4 +124,33 @@ void html_form_mask_file::init()
     fs.adopt(&exclude_checkbox);
     fs.adopt(&casesensit);
     adopt(&fs);
+    fs.change_label(tell_action());
+
+	// events
+    filename.record_actor_on_event(this, html_form_input_file::changed_event);
+    exclude_checkbox.record_actor_on_event(this, html_form_input::changed);
+    casesensit.record_actor_on_event(this, html_form_input::changed);
+
+	// css
+    fs.add_label_css_class(webdar_css_style::wcs_bold_text);
+
+}
+
+
+string html_form_mask_file::tell_action() const
+{
+    string ret = "path ";
+
+    if(exclude_checkbox.get_value_as_bool())
+	ret += "is not listed ";
+    else
+	ret += "is listed ";
+
+    if(casesensit.get_value_as_bool())
+	ret += "(case sensitive) ";
+    else
+	ret += "(case INsensitive) ";
+    ret += "in file named \"" + filename.get_value() + "\" ";
+
+    return ret;
 }
