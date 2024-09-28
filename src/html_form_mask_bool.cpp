@@ -69,6 +69,7 @@ html_form_mask_bool::html_form_mask_bool(const string & initial_mode):
 
 	// css stuff
     table.set_css_class_first_column(css_class_bool_text);
+    fs.add_label_css_class(css_class_bool_title);
 
 	// final table update
     update_table_content_logic(true); // true = update unconditionally
@@ -203,6 +204,15 @@ void html_form_mask_bool::new_css_library_available()
 	tmp.css_font_weight_bold();
 
 	csslib->add(css_class_bool_text, tmp);
+    }
+
+    if(!csslib->class_exists(css_class_bool_title))
+    {
+	css tmp;
+
+	tmp.css_font_weight_bold();
+
+	csslib->add(css_class_bool_title, tmp);
     }
 }
 
