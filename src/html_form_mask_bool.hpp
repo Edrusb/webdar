@@ -142,6 +142,8 @@ private:
 
     std::string bool_op_to_name(const std::string & op);
     void update_table_content_logic(bool unconditionally); // update labels in the first column in regard to the current AND/OR selected logic
+
+    std::string tell_action() const;
 };
 
 #endif

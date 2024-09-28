@@ -52,6 +52,7 @@ html_form_mask_bool::html_form_mask_bool(const string & initial_mode):
 	throw WEBDAR_BUG;
     mask_type.set_selected(initial_mode);
     current_bool_mode = mask_type.get_selected_id();
+    fs.change_label(tell_action());
 
 	// adoption tree
 
@@ -167,6 +168,8 @@ void html_form_mask_bool::on_event(const string & event_name)
 	update_table_content_logic(true);
     else
 	throw WEBDAR_BUG;
+
+    fs.change_label(tell_action());
 }
 
 string html_form_mask_bool::invert_logic(const std::string & logic)
@@ -245,4 +248,16 @@ void html_form_mask_bool::update_table_content_logic(bool unconditionally)
 	current_bool_mode = target_bool_mode;
 	table.set_obj_type_context(current_bool_mode);
     }
+}
+
+string html_form_mask_bool::tell_action() const
+{
+    string ret;
+
+    if(table.empty())
+	ret += "match everything";
+    else
+	ret += "match only if...";
+
+    return ret;
 }
