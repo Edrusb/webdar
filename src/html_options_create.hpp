@@ -166,9 +166,13 @@ private:
 
     html_form_fieldset perimeter_fs;
     html_form_input empty_dir;
-    html_form_input nodump;
     html_form_input same_fs;
     html_form_input cache_directory_tagging;
+    html_form_input nodump;
+    html_form_fieldset exclu_by_ea_fs;
+    html_form_input exclude_by_ea;
+    html_form_input default_ea;
+    html_form_input exclude_by_ea_name;
 
     html_form_fieldset fs_alter_atime;
     html_form_radio alter_atime;

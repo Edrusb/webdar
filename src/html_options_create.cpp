@@ -87,9 +87,13 @@ html_options_create::html_options_create():
     ignore_unknown_inode_type("Ignore unknown inode type instead of warning", html_form_input::check, "", 1),
     perimeter_fs(""),
     empty_dir("Store ignored directories as empty directories", html_form_input::check, "1", 1),
-    nodump("Avoid saving files having the 'Nodump' flag set", html_form_input::check, "1", 1),
     same_fs("Only consider files located on the same filesystem as the rooted directory", html_form_input::check, "", 1),
     cache_directory_tagging("Ignore directories that use a cache directory tag", html_form_input::check, "1", 1),
+    nodump("Avoid saving files having the 'Nodump' flag set", html_form_input::check, "1", 1),
+    exclu_by_ea_fs("Avoid saving files having a given Extended Attribute"),
+    exclude_by_ea("enable", html_form_input::check, "1", 1),
+    default_ea("Use the default excluding Extended Attribute", html_form_input::check, "1", 1),
+    exclude_by_ea_name("Extended Attribute name", html_form_input::text, "", 30),
     fs_alter_atime("What to alter if furtive read mode is not used"),
     furtive_read_mode("Furtive read mode (if available)", html_form_input::check, "", 1),
     compr_fs(""),
@@ -268,10 +272,14 @@ html_options_create::html_options_create():
 
 	// perimeter
     perimeter_fs.adopt(&empty_dir);
-    perimeter_fs.adopt(&nodump);
     perimeter_fs.adopt(&same_fs);
     perimeter_fs.adopt(&cache_directory_tagging);
+    perimeter_fs.adopt(&nodump);
     form_perimeter.adopt(&perimeter_fs);
+    exclu_by_ea_fs.adopt(&exclude_by_ea);
+    exclu_by_ea_fs.adopt(&default_ea);
+    exclu_by_ea_fs.adopt(&exclude_by_ea_name);
+    form_perimeter.adopt(&exclu_by_ea_fs);
     deroule.adopt_in_section(sect_perimeter, &form_perimeter);
 
 	// filename based masks
@@ -326,6 +334,8 @@ html_options_create::html_options_create():
 
     archtype.record_actor_on_event(this, html_form_radio::changed);
     display_treated.record_actor_on_event(this, html_form_input::changed);
+    exclude_by_ea.record_actor_on_event(this, html_form_input::changed);
+    default_ea.record_actor_on_event(this, html_form_input::changed);
     compression.record_actor_on_event(this, html_compression::changed);
     slicing.record_actor_on_event(this, html_form_input::changed);
     different_first_slice.record_actor_on_event(this, html_form_input::changed);
@@ -436,6 +446,8 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 	ret.set_crypto_size(webdar_tools_convert_to_int(crypto_size.get_value()));
     }
     ret.set_nodump(nodump.get_value_as_bool());
+    if(exclude_by_ea.get_value_as_bool())
+	ret.set_exclude_by_ea(exclude_by_ea_name.get_value());
     ret.set_what_to_check(what_to_check.get_value());
     ret.set_empty(empty.get_value_as_bool());
     ret.set_alter_atime(alter_atime.get_selected_id() == "atime");
@@ -513,6 +525,24 @@ void html_options_create::on_event(const string & event_name)
 	}
 
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
+
+	if(exclude_by_ea.get_value_as_bool())
+	{
+	    default_ea.set_visible(true);
+	    exclude_by_ea_name.set_visible(true);
+	    if(default_ea.get_value_as_bool())
+	    {
+		exclude_by_ea_name.set_value(libdar::archive_options_create::default_excluding_ea);
+		exclude_by_ea_name.set_enabled(false);
+	    }
+	    else
+		exclude_by_ea_name.set_enabled(true);
+	}
+	else
+	{
+	    default_ea.set_visible(false);
+	    exclude_by_ea_name.set_visible(false);
+	}
 
 	switch(compression.get_value())
 	{
