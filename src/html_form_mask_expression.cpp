@@ -186,7 +186,7 @@ string html_form_mask_expression::tell_action() const
 	throw WEBDAR_BUG;
     }
 
-    ret += mask_expression.get_value() + " ";
+    ret += "\"" + mask_expression.get_value() + "\" ";
 
     if(casesensitivity.get_value_as_bool())
 	ret += "(case-sensitive)";
