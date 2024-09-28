@@ -261,7 +261,7 @@ string html_form_mask_bool::tell_action() const
     if(table.empty())
 	ret += "match everything";
     else
-	ret += "only if...";
+	ret += "invovled if...";
 
     return ret;
 }
