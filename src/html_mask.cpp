@@ -38,21 +38,3 @@ extern "C"
 #include "html_mask.hpp"
 
 using namespace std;
-
-void html_mask::new_css_library_available()
-{
-    unique_ptr<css_library> & csslib = lookup_css_library();
-    if(!csslib)
-	throw WEBDAR_BUG;
-
-    if(! csslib->class_exists(red_border))
-    {
-	css tmp;
-
-	tmp.clear();
-	tmp.css_border_width(css::bd_all, css::bd_thick, false);
-	tmp.css_border_color(css::bd_all, RED);
-
-	csslib->add(red_border, tmp);
-    }
-}

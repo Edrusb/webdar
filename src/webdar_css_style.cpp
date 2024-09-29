@@ -58,6 +58,7 @@ namespace webdar_css_style
     static css_class url_void(wcs_url_void);         ///< links when button is a void
     static css_class url_grey(wcs_url_grey);         ///< links when button is disabled or greyed
     static css_class bold_text(wcs_bold_text);       ///< bold text
+    static css_class red_border(wcs_red_border);     ///< red border
 
     static void init()
     {
@@ -156,9 +157,17 @@ namespace webdar_css_style
                 btn_void.set_value(box_void);
 		btn_grey.set_value(box_grey);
 
+		    //
+
 		tmp_set.clear();
 		tmp_set.css_font_weight_bold();
 		bold_text.set_value(tmp_set);
+
+		    //
+		tmp_set.clear();
+		tmp_set.css_border_width(css::bd_all, css::bd_thick, false);
+		tmp_set.css_border_color(css::bd_all, RED);
+		red_border.set_value(tmp_set);
 
                 initialized = true;
             }
@@ -188,6 +197,7 @@ namespace webdar_css_style
 	    csslib.add(full_width);
 	    csslib.add(width_8em);
 	    csslib.add(bold_text);
+	    csslib.add(red_border);
 	}
 	else
 	{
