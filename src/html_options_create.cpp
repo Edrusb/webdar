@@ -206,13 +206,13 @@ html_options_create::html_options_create():
     deroule.add_section(sect_repo, "Backup Repository");
     deroule.add_section(sect_type, "Backup Type");
     deroule.add_section(sect_ref, "Backup of Reference");
+    deroule.add_section(sect_source, "Source file reading mode");
     deroule.add_section(sect_gen, "Backup General Options");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_perimeter, "What to take into consideration for backup");
     deroule.add_section(sect_mask_file, "Filename based filtering");
     deroule.add_section(sect_mask_path, "Path based filtering");
     deroule.add_section(sect_ea_mask, "Extended Attributes filtering");
-    deroule.add_section(sect_source, "Source file reading mode");
     deroule.add_section(sect_compr, "Compression options");
     deroule.add_section(sect_slice, "Slicing options");
     deroule.add_section(sect_cipher, "Encryption options");
@@ -235,6 +235,13 @@ html_options_create::html_options_create():
     wrap_ref.adopt(&reference);
     wrap_ref.adopt(&ref_placeholder);
     deroule.adopt_in_section(sect_ref, &wrap_ref);
+
+	// source data
+    fs_alter_atime.adopt(&alter_atime);
+    form_reading.adopt(&furtive_read_mode);
+    form_reading.adopt(&fs_alter_atime);
+    deroule.adopt_in_section(sect_source, &form_reading);
+
 
 	// archive generation
     archgen_fs.adopt(&allow_over);
@@ -288,12 +295,6 @@ html_options_create::html_options_create():
 
 	// EA masks
     deroule.adopt_in_section(sect_ea_mask, &ea_mask);
-
-	// source data
-    fs_alter_atime.adopt(&alter_atime);
-    form_reading.adopt(&furtive_read_mode);
-    form_reading.adopt(&fs_alter_atime);
-    deroule.adopt_in_section(sect_source, &form_reading);
 
 	// compression
     compr_fs.adopt(&compression);
