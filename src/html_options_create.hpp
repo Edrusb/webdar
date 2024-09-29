@@ -134,6 +134,10 @@ private:
     html_form_fieldset wrap_ref;   // help make distinction at display between archive or ref options and archive options
     html_text ref_placeholder;     // shows when archtype is not differential/incremental
 
+    html_form_fieldset fs_alter_atime;
+    html_form_radio alter_atime;
+    html_form_input furtive_read_mode;
+
     html_form_fieldset archgen_fs;
     html_form_input allow_over;
     html_form_input warn_over;
@@ -172,10 +176,6 @@ private:
     html_form_input exclude_by_ea;
     html_form_input default_ea;
     html_form_input exclude_by_ea_name;
-
-    html_form_fieldset fs_alter_atime;
-    html_form_radio alter_atime;
-    html_form_input furtive_read_mode;
 
     html_form_fieldset compr_fs;
     html_compression compression;
