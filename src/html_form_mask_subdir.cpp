@@ -108,7 +108,7 @@ unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
     switch(mask_type.get_selected_num())
     {
     case 0: // Include path
-	ret.reset(new (nothrow) libdar::simple_path_mask(prefix + pathval.display(),
+	ret.reset(new (nothrow) libdar::simple_path_mask(prefix + pathval,
 							 casesensit));
 	break;
     case 1: // Exclude path
