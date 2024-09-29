@@ -87,7 +87,6 @@ html_options_create::html_options_create():
     ignore_unknown_inode_type("Ignore unknown inode type instead of warning", html_form_input::check, "", 1),
     perimeter_fs(""),
     empty_dir("Store ignored directories as empty directories", html_form_input::check, "1", 1),
-    same_fs("Only consider files located on the same filesystem as the rooted directory", html_form_input::check, "", 1),
     cache_directory_tagging("Ignore directories that use a cache directory tag", html_form_input::check, "1", 1),
     nodump("Avoid saving files having the 'Nodump' flag set", html_form_input::check, "1", 1),
     exclu_by_ea_fs("Avoid saving files having a given Extended Attribute"),
@@ -173,7 +172,6 @@ html_options_create::html_options_create():
     else
 	alter_atime.set_selected(1);
     furtive_read_mode.set_value_as_bool(defaults.get_furtive_read_mode());
-    same_fs.set_value_as_bool(defaults.get_same_fs());
     fixed_date.set_value(defaults.get_fixed_date());
     slice_permission.set_value(defaults.get_slice_permission());
     slice_user_ownership.set_value(defaults.get_slice_user_ownership());
@@ -272,7 +270,6 @@ html_options_create::html_options_create():
 
 	// perimeter
     perimeter_fs.adopt(&empty_dir);
-    perimeter_fs.adopt(&same_fs);
     perimeter_fs.adopt(&cache_directory_tagging);
     perimeter_fs.adopt(&nodump);
     form_perimeter.adopt(&perimeter_fs);
@@ -452,7 +449,6 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_empty(empty.get_value_as_bool());
     ret.set_alter_atime(alter_atime.get_selected_id() == "atime");
     ret.set_furtive_read_mode(furtive_read_mode.get_value_as_bool());
-    ret.set_same_fs(same_fs.get_value_as_bool());
     ret.set_cache_directory_tagging(cache_directory_tagging.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
     ret.set_slice_permission(slice_permission.get_value());
