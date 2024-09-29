@@ -79,7 +79,7 @@ public:
     ~html_form_mask_subdir() = default;
 
 	/// inherited from html_mask
-    virtual void set_root_prefix(const libdar::path & x_prefix) override { prefix = x_prefix; };
+    virtual void set_root_prefix(const libdar::path & x_prefix) override;
 
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override;

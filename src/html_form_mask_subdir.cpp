@@ -81,6 +81,14 @@ html_form_mask_subdir::html_form_mask_subdir(const html_form_mask_subdir & ref):
     init();
 }
 
+void html_form_mask_subdir::set_root_prefix(const libdar::path & x_prefix)
+{
+    prefix = x_prefix;
+    fs.change_label(tell_action());
+    my_body_part_has_changed();
+};
+
+
 unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
 {
     bool casesensit = casesensitivity.get_value_as_bool();
@@ -234,7 +242,7 @@ string html_form_mask_subdir::tell_action() const
     switch(mask_type.get_selected_num())
     {
     case 0:
-	ret += "path is or is a subdir of the string ";
+	ret += "path is or is a subdir of ";
 	break;
     case 1:
 	ret += "path does not match ";
@@ -247,7 +255,21 @@ string html_form_mask_subdir::tell_action() const
 	throw WEBDAR_BUG;
     }
 
-    ret += "\"" + mask_subdir.get_value() + "\" ";
+    ret += "\"";
+    if(! mask_subdir.get_value().empty())
+    {
+	try
+	{
+	    ret += (prefix + libdar::path(mask_subdir.get_value())).display();
+	}
+	catch(libdar::Egeneric & e)
+	{
+	    e.prepend_message("Error met while evaluation path base filtering: ");
+	    throw exception_libcall(e);
+	}
+    }
+
+    ret += "\" ";
 
     if(casesensitivity.get_value_as_bool())
 	ret += "(case sensitive)";
