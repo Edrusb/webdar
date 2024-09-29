@@ -56,6 +56,7 @@ extern "C"
 #include "html_mask_form_path.hpp"
 #include "html_form_select.hpp"
 #include "html_form_gnupg_list.hpp"
+#include "html_form_same_fs.hpp"
 
     /// html component used for the user to provide the parameters to create a new archive
 
@@ -107,6 +108,8 @@ private:
 
     html_form form_archtype;
 
+    html_form form_reading;
+
     html_form form_archgen;
 
     html_form form_shown;
@@ -119,7 +122,7 @@ private:
 
     html_mask_form_filename ea_mask;
 
-    html_form form_reading;
+    html_form form_same_fs;
 
     html_form form_compr;
 
@@ -176,6 +179,9 @@ private:
     html_form_input exclude_by_ea;
     html_form_input default_ea;
     html_form_input exclude_by_ea_name;
+
+    html_form_same_fs same_fs;
+    html_form_fieldset same_fs_fs;
 
     html_form_fieldset compr_fs;
     html_compression compression;

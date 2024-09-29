@@ -47,12 +47,13 @@ const string html_options_create::entrepot_changed = "html_options_create_entrep
 html_options_create::html_options_create():
     form_archtype("Update"),
     form_archgen("Update"),
+    form_reading("Update"),
     form_shown("Update"),
     form_perimeter("Update"),
     filename_mask("Filename expression"),
     path_mask(false),
     ea_mask("Extended Attribute expression"),
-    form_reading("Update"),
+    form_same_fs("Update"),
     form_compr("Update"),
     form_slicing("Update"),
     form_crypto("Update"),
@@ -95,6 +96,7 @@ html_options_create::html_options_create():
     exclude_by_ea_name("Extended Attribute name", html_form_input::text, "", 30),
     fs_alter_atime("What to alter if furtive read mode is not used"),
     furtive_read_mode("Furtive read mode (if available)", html_form_input::check, "", 1),
+    same_fs_fs("Select the filesystems based on their mount point"),
     compr_fs(""),
     compression("Compression algorithm"),
     compression_level("Compression level", html_form_input::number, "", 3),
@@ -197,6 +199,7 @@ html_options_create::html_options_create():
     static const char* sect_perimeter = "backup perimeter";
     static const char* sect_mask_file = "backup filename masks";
     static const char* sect_mask_path = "backup pathname masks";
+    static const char* sect_mount_points = "mount point filtering";
     static const char* sect_ea_mask = "EA masks";
     static const char* sect_source = "source reading mode";
     static const char* sect_compr = "compression";
@@ -211,7 +214,8 @@ html_options_create::html_options_create():
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_perimeter, "What to take into consideration for backup");
     deroule.add_section(sect_mask_file, "Filename based filtering");
-    deroule.add_section(sect_mask_path, "Path based filtering");
+    deroule.add_section(sect_mask_path, "Filesystem filtering");
+    deroule.add_section(sect_mount_points, "Mount point filtering");
     deroule.add_section(sect_ea_mask, "Extended Attributes filtering");
     deroule.add_section(sect_compr, "Compression options");
     deroule.add_section(sect_slice, "Slicing options");
@@ -292,6 +296,11 @@ html_options_create::html_options_create():
 
 	// path based masks
     deroule.adopt_in_section(sect_mask_path, &path_mask);
+
+	// mount point filtering
+    same_fs_fs.adopt(&same_fs);
+    form_same_fs.adopt(&same_fs_fs);
+    deroule.adopt_in_section(sect_mount_points, &form_same_fs);
 
 	// EA masks
     deroule.adopt_in_section(sect_ea_mask, &ea_mask);
@@ -469,6 +478,14 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_entrepot(entrep.get_entrepot(webui));
     ret.set_selection(*(filename_mask.get_mask()));
     ret.set_subtree(*(path_mask.get_mask()));
+
+    vector<string> mp = same_fs.get_included_fs_path();
+    for(vector<string>::iterator it = mp.begin(); it != mp.end(); ++it)
+	ret.set_same_fs_include(*it);
+
+    mp = same_fs.get_excluded_fs_path();
+    for(vector<string>::iterator it = mp.begin(); it != mp.end(); ++it)
+	ret.set_same_fs_exclude(*it);
 
     return ret;
 }
