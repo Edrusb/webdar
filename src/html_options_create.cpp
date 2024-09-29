@@ -102,6 +102,7 @@ html_options_create::html_options_create():
     compression_level("Compression level", html_form_input::number, "", 3),
     min_compr_size("Minimum file sized compressed", html_form_input::number, "", 30),
     compression_block("Block compression for parallel compression (zero to zero to disable)", html_form_input::number, "0", 30),
+    compr_threads("Number of threads for compression", html_form_input::number, "2", 5),
     compr_mask("Filename expression"),
     slicing_fs(""),
     slicing("Sliced archive", html_form_input::check, "", 1),
@@ -113,7 +114,8 @@ html_options_create::html_options_create():
     crypto_algo("Cipher used"),
     crypto_pass1("Pass phrase", html_form_input::password, "", 30),
     crypto_pass2("Confirm pass phrase", html_form_input::password, "", 30),
-    crypto_size("Cipher Block size", html_form_input::number, "", 30)
+    crypto_size("Cipher Block size", html_form_input::number, "", 30),
+    crypto_threads("Number of threads for ciphering", html_form_input::number, "2", 5)
 {
     libdar::archive_options_create defaults;
 
@@ -128,6 +130,8 @@ html_options_create::html_options_create():
     compression_level.set_range(1, 9);
     pause.set_min_only(0);
     hourshift.set_min_only(0);
+    compr_threads.set_min_only(1);
+    crypto_threads.set_min_only(1);
     if(defaults.get_reference() != nullptr)
 	throw WEBDAR_BUG; // not expected default value!!!
     else
@@ -312,6 +316,7 @@ html_options_create::html_options_create():
     compr_fs.adopt(&min_compr_size_unit);
     compr_fs.adopt(&compression_block);
     compr_fs.adopt(&compr_block_unit);
+    compr_fs.adopt(&compr_threads);
     form_compr.adopt(&compr_fs);
     deroule.adopt_in_section(sect_compr, &form_compr);
     deroule.adopt_in_section(sect_compr,&compr_mask);
@@ -334,6 +339,7 @@ html_options_create::html_options_create():
     crypto_fs.adopt(&crypto_pass2);
     crypto_fs.adopt(&gnupg);
     crypto_fs.adopt(&crypto_size);
+    crypto_fs.adopt(&crypto_threads);
     form_crypto.adopt(&crypto_fs);
     deroule.adopt_in_section(sect_cipher, &form_crypto);
 
@@ -403,6 +409,8 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_compression(compression.get_value());
     ret.set_compression_level(webdar_tools_convert_to_int(compression_level.get_value()));
     ret.set_min_compr_size(libdar::deci(min_compr_size.get_value()).computer() * min_compr_size_unit.get_value());
+    ret.set_multi_threaded_compress(webdar_tools_convert_to_int(compr_threads.get_value()));
+    ret.set_multi_threaded_crypto(webdar_tools_convert_to_int(crypto_threads.get_value()));
 
     val = 0;
     compr_bs.unstack(val);
@@ -568,6 +576,7 @@ void html_options_create::on_event(const string & event_name)
 	    min_compr_size_unit.set_visible(false);
 	    compression_block.set_visible(false);
 	    compr_block_unit.set_visible(false);
+	    compr_threads.set_visible(false);
 	    compr_mask.set_visible(false);
 	    break;
 	case libdar::compression::lzo1x_1_15:
@@ -578,6 +587,7 @@ void html_options_create::on_event(const string & event_name)
 	    min_compr_size_unit.set_visible(true);
 	    compression_block.set_visible(true);
 	    compr_block_unit.set_visible(true);
+	    compr_threads.set_visible(true);
 	    compr_mask.set_visible(true);
 	    break;
 	case libdar::compression::gzip:
@@ -592,6 +602,7 @@ void html_options_create::on_event(const string & event_name)
 	    min_compr_size_unit.set_visible(true);
 	    compression_block.set_visible(true);
 	    compr_block_unit.set_visible(true);
+	    compr_threads.set_visible(true);
 	    compr_mask.set_visible(true);
 	    break;
 	default:
@@ -630,6 +641,7 @@ void html_options_create::on_event(const string & event_name)
 	    crypto_pass1.set_visible(false);
 	    crypto_pass2.set_visible(false);
 	    crypto_size.set_visible(false);
+	    crypto_threads.set_visible(false);
 	    gnupg.set_visible(false);
 	    break;
 	case libdar::crypto_algo::scrambling:
@@ -655,6 +667,7 @@ void html_options_create::on_event(const string & event_name)
 		throw WEBDAR_BUG;
 	    }
 	    crypto_size.set_visible(true);
+	    crypto_threads.set_visible(true);
 	    break;
 	default:
 	    throw WEBDAR_BUG;

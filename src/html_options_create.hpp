@@ -190,6 +190,7 @@ private:
     html_size_unit min_compr_size_unit;
     html_form_input compression_block;
     html_size_unit compr_block_unit;
+    html_form_input compr_threads;
     html_mask_form_filename compr_mask;
 
     html_form_fieldset slicing_fs;
@@ -206,6 +207,7 @@ private:
     html_form_input crypto_pass1;
     html_form_input crypto_pass2;
     html_form_input crypto_size;
+    html_form_input crypto_threads;
     html_form_gnupg_list gnupg;
 };
 
