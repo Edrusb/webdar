@@ -46,7 +46,7 @@ extern "C"
     /// using set_archive_path(), set_archive_basename() and eventually set_archive_options_read()
     /// then the thread has to be run calling the libthreadar::run() inherited method which opens
     /// the archive. Once the archive has been openned successfully the thread ends and the method
-    /// openned() return true. Starting this point the archive content is available
+    /// openned() returns true. Starting this point, the archive content is available
     /// calling get_children_in_table() or has_subdirectory(). Once completed close_archive() can be called
     /// or the object deleted.
 
