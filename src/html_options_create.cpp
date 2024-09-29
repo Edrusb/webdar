@@ -100,6 +100,7 @@ html_options_create::html_options_create():
     exclude_by_ea_name("Extended Attribute name", html_form_input::text, "", 30),
     fs_alter_atime("What to alter if furtive read mode is not used"),
     furtive_read_mode("Furtive read mode (if available)", html_form_input::check, "", 1),
+    zeroing_neg_date("Automatically zeroing negative dates while reading", html_form_input::check, "", 1),
     same_fs_fs("Select the filesystems based on their mount point"),
     compr_fs(""),
     compression("Compression algorithm"),
@@ -185,6 +186,7 @@ html_options_create::html_options_create():
     else
 	alter_atime.set_selected(1);
     furtive_read_mode.set_value_as_bool(defaults.get_furtive_read_mode());
+    zeroing_neg_date.set_value_as_bool(defaults.get_auto_zeroing_neg_dates());
     fixed_date.set_value(defaults.get_fixed_date());
     slice_permission.set_value(defaults.get_slice_permission());
     slice_user_ownership.set_value(defaults.get_slice_user_ownership());
@@ -263,6 +265,7 @@ html_options_create::html_options_create():
     fs_alter_atime.adopt(&alter_atime);
     form_reading.adopt(&furtive_read_mode);
     form_reading.adopt(&fs_alter_atime);
+    form_reading.adopt(&zeroing_neg_date);
     deroule.adopt_in_section(sect_source, &form_reading);
 
 
@@ -487,6 +490,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_empty(empty.get_value_as_bool());
     ret.set_alter_atime(alter_atime.get_selected_id() == "atime");
     ret.set_furtive_read_mode(furtive_read_mode.get_value_as_bool());
+    ret.set_auto_zeroing_neg_dates(zeroing_neg_date.get_value_as_bool());
     ret.set_cache_directory_tagging(cache_directory_tagging.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
     ret.set_slice_permission(slice_permission.get_value());
