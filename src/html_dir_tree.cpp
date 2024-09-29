@@ -49,7 +49,7 @@ html_dir_tree::html_dir_tree(const string & chemin):
     expand("+", event_expand),
     nosubdir(" ",""),
     name("", event_click),
-    contents(10)
+    contents(11)
 {
     init(chemin);
 }
@@ -59,7 +59,7 @@ html_dir_tree::html_dir_tree(const archive_init_list * ref, const string & chemi
     expand("+", event_expand),
     nosubdir(" ",""),
     name("", event_click),
-    contents(10)
+    contents(11)
 {
     init(chemin);
     set_source(ref);
@@ -267,6 +267,9 @@ void html_dir_tree::go_init_indent()
 	    else
 		contents.adopt_static_html("[     ]");
 
+		// delta signature
+	    contents.adopt_static_html(it->get_delta_flag());
+
 		// EA
 	    if(it->has_EA())
 		if(it->has_EA_saved_in_the_archive())
@@ -420,6 +423,7 @@ void html_dir_tree::clear_contents()
 {
     contents.clear();
     contents.adopt_static_html(html_text(3, "Filename").get_body_part());
+    contents.adopt_static_html(html_text(3, "Delta Sig").get_body_part());
     contents.adopt_static_html(html_text(3, "Data").get_body_part());
     contents.adopt_static_html(html_text(3, "EA").get_body_part());
     contents.adopt_static_html(html_text(3, "compr").get_body_part());
