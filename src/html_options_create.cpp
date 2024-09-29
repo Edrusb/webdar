@@ -78,7 +78,7 @@ html_options_create::html_options_create():
     hourshift("Hour shift", html_form_input::number, "", 5),
     shown_fs(""),
     info_details("Detailed informations", html_form_input::check, "1", 1),
-    display_treated("Display treated files", html_form_input::check, "", 1),
+    display_treated("Display treated files", html_form_input::check, "1", 1),
     display_treated_only_dir("Display only treated directories", html_form_input::check, "", 1),
     display_dir_summary("Display summary at the end of each directory", html_form_input::check, "", 1),
     empty("Dry run execution", html_form_input::check, "", 1),
