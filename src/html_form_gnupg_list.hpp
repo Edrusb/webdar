@@ -35,11 +35,12 @@ extern "C"
     // webdar headers
 #include "html_form_dynamic_table.hpp"
 
-    /// class html_form_gnupg_list provide interface for the user to give a list of strings
+    /// class html_form_gnupg_list provide interface for the user to give a list
+    /// of gnupg signatories and gnupg recipients
 
     /// this html components is consitued of:
     ///
-    /// +----html_table-----------------------------+-------+
+    /// +---html_form_dynamic_table-----------------+-------+
     /// |                                           |       |
     /// |+---------------------------------------+  |+-+    |
     /// ||<html_form_input::text>                |  || | del|
@@ -60,9 +61,10 @@ extern "C"
     /// +------------+
     ///
     ///
-    /// \note this component includes an html_form by default
-    /// (see constructor argument), but should not when used
-    /// recursively from another html_form_gnupg_list
+    /// \note this component should adopted by an html_form directly
+    /// or not (through an html_form_fieldset for example)
+    ///
+
 
 
 class html_form_gnupg_list : public body_builder, public html_form_dynamic_table_object_provider
