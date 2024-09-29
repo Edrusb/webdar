@@ -123,8 +123,10 @@ html_options_create::html_options_create():
 
     archtype.add_choice("full", "Full backup");
     archtype.add_choice("diff", "Differential/Incremental backup");
+    archtype.add_choice("diffdelta", "Differential/Incremental backup with binary delta (*)");
     archtype.add_choice("snap", "Snapshot backup");
     archtype.add_choice("date", "Date based differential backup");
+    binary_delta_note.add_text(0, "(*) delta signature needed to be present in the backup of reference");
     alter_atime.add_choice("atime", "Data last access time (atime)");
     alter_atime.add_choice("ctime", "Inode last change time (ctime)");
     compression_level.set_range(1, 9);
@@ -235,6 +237,7 @@ html_options_create::html_options_create():
     archtype_fs.adopt(&what_to_check);
     archtype_fs.adopt(&hourshift);
     archtype_fs.adopt(&fixed_date);
+    archtype_fs.adopt(&binary_delta_note);
     form_archtype.adopt(&archtype_fs);
     deroule.adopt_in_section(sect_type, &form_archtype);
 
@@ -377,6 +380,9 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     {
     case 0: // full backup
 	break;
+    case 2: // diff/incremental backup with binary delta
+	ret.set_delta_diff(true);
+	    /* no break ! */
     case 1: // diff/incremental backup
 	ref_arch.reset(new (nothrow) libdar::archive(webui->get_user_interaction(),
 						     libdar::path(reference.get_archive_path()),
@@ -388,10 +394,10 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 	else
 	    ret.set_reference(ref_arch);
 	break;
-    case 2: // snapshot
+    case 3: // snapshot
 	ret.set_snapshot(true);
 	break;
-    case 3: // fixed date
+    case 4: // fixed date
 	ret.set_fixed_date(fixed_date.get_value());
 	break;
     default:
@@ -523,20 +529,21 @@ void html_options_create::on_event(const string & event_name)
 	    what_to_check.set_visible(false);
 	    break;
 	case 1: // diff
+	case 2: // diff+delta
 	    reference.set_visible(true);
 	    ref_placeholder.set_visible(false);
 	    hourshift.set_visible(true);
 	    fixed_date.set_visible(false);
 	    what_to_check.set_visible(true);
 	    break;
-	case 2: // snapshot
+	case 3: // snapshot
 	    reference.set_visible(false);
 	    ref_placeholder.set_visible(true);
 	    hourshift.set_visible(false);
 	    fixed_date.set_visible(false);
 	    what_to_check.set_visible(false);
 	    break;
-	case 3: // date
+	case 4: // date
 	    reference.set_visible(false);
 	    ref_placeholder.set_visible(true);
 	    hourshift.set_visible(true);
