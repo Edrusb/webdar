@@ -84,7 +84,7 @@ html_options_create::html_options_create():
     empty("Dry run execution", html_form_input::check, "", 1),
     display_skipped("Display skipped files", html_form_input::check, "1", 1),
     security_check("Security warning", html_form_input::check, "", 1),
-    ignore_unknown_inode_type("Ignore unknown inode type instead of warning", html_form_input::check, "", 1),
+    dont_ignore_unknown_inode_type("Do not ignore unknown inode type instead of warning", html_form_input::check, "1", 1),
     perimeter_fs(""),
     empty_dir("Store ignored directories as empty directories", html_form_input::check, "1", 1),
     cache_directory_tagging("Ignore directories that use a cache directory tag", html_form_input::check, "1", 1),
@@ -184,7 +184,7 @@ html_options_create::html_options_create():
     user_comment.set_value(defaults.get_user_comment());
     hash_algo.set_value(defaults.get_hash_algo());
     slice_min_digits.set_value(libdar::deci(defaults.get_slice_min_digits()).human());
-    ignore_unknown_inode_type.set_value_as_bool(defaults.get_ignore_unknown_inode_type());
+    dont_ignore_unknown_inode_type.set_value_as_bool(! defaults.get_ignore_unknown_inode_type());
 
 	// build tree dependancy
 
@@ -264,7 +264,7 @@ html_options_create::html_options_create():
     shown_fs.adopt(&display_dir_summary);
     shown_fs.adopt(&display_skipped);
     shown_fs.adopt(&security_check);
-    shown_fs.adopt(&ignore_unknown_inode_type);
+    shown_fs.adopt(&dont_ignore_unknown_inode_type);
     form_shown.adopt(&shown_fs);
     deroule.adopt_in_section(sect_show, &form_shown);
 
@@ -462,7 +462,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_user_comment(user_comment.get_value());
     ret.set_hash_algo(hash_algo.get_value());
     ret.set_slice_min_digits(libdar::deci(slice_min_digits.get_value()).computer());
-    ret.set_ignore_unknown_inode_type(ignore_unknown_inode_type.get_value_as_bool());
+    ret.set_ignore_unknown_inode_type(! dont_ignore_unknown_inode_type.get_value_as_bool());
     ret.set_execute(execute.get_value());
     ret.set_entrepot(entrep.get_entrepot(webui));
     ret.set_selection(*(filename_mask.get_mask()));
