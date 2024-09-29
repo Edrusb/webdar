@@ -48,6 +48,7 @@ html_options_create::html_options_create():
     form_archtype("Update"),
     form_archgen("Update"),
     form_reading("Update"),
+    form_delta_sig("Update"),
     form_shown("Update"),
     form_perimeter("Update"),
     filename_mask("Filename expression"),
@@ -61,6 +62,9 @@ html_options_create::html_options_create():
     fixed_date("Only record files changed since:"),
     wrap_ref(""),
     reference("Archive of reference"),
+    delta_fs(""),
+    delta_sig("Compute binary delta signature", html_form_input::check, "", 1),
+    delta_mask("Filename expression"),
     archgen_fs(""),
     allow_over("Allow slice overwriting", html_form_input::check, "", 1),
     warn_over("Warn before overwriting", html_form_input::check, "", 1),
@@ -200,6 +204,7 @@ html_options_create::html_options_create():
     static const char* sect_repo = "repo";
     static const char* sect_type = "type";
     static const char* sect_ref = "archive_ref";
+    static const char* sect_delta = "delta_sig";
     static const char* sect_gen = "archive_gen_opt";
     static const char* sect_show = "archive show opt";
     static const char* sect_perimeter = "backup perimeter";
@@ -215,6 +220,7 @@ html_options_create::html_options_create():
     deroule.add_section(sect_repo, "Backup Repository");
     deroule.add_section(sect_type, "Backup Type");
     deroule.add_section(sect_ref, "Backup of Reference");
+    deroule.add_section(sect_delta, "Delta signatures");
     deroule.add_section(sect_source, "Source file reading mode");
     deroule.add_section(sect_gen, "Backup General Options");
     deroule.add_section(sect_show, "What to show during the operation");
@@ -246,6 +252,12 @@ html_options_create::html_options_create():
     wrap_ref.adopt(&reference);
     wrap_ref.adopt(&ref_placeholder);
     deroule.adopt_in_section(sect_ref, &wrap_ref);
+
+	// delta signatures
+    delta_fs.adopt(&delta_sig);
+    form_delta_sig.adopt(&delta_fs);
+    deroule.adopt_in_section(sect_delta, &form_delta_sig);
+    deroule.adopt_in_section(sect_delta, &delta_mask);
 
 	// source data
     fs_alter_atime.adopt(&alter_atime);
@@ -350,6 +362,7 @@ html_options_create::html_options_create():
     register_name(entrepot_changed);
 
     archtype.record_actor_on_event(this, html_form_radio::changed);
+    delta_sig.record_actor_on_event(this, html_form_input::changed);
     display_treated.record_actor_on_event(this, html_form_input::changed);
     exclude_by_ea.record_actor_on_event(this, html_form_input::changed);
     default_ea.record_actor_on_event(this, html_form_input::changed);
@@ -501,6 +514,19 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     for(vector<string>::iterator it = mp.begin(); it != mp.end(); ++it)
 	ret.set_same_fs_exclude(*it);
 
+    if(delta_sig.get_value_as_bool())
+    {
+	unique_ptr<libdar::mask> dmask = delta_mask.get_mask();
+
+	if(dmask)
+	{
+	    ret.set_delta_signature(true);
+	    ret.set_delta_mask(*dmask);
+	}
+	else
+	    throw WEBDAR_BUG;
+    }
+
     return ret;
 }
 
@@ -554,6 +580,7 @@ void html_options_create::on_event(const string & event_name)
 	    throw WEBDAR_BUG;
 	}
 
+	delta_mask.set_visible(delta_sig.get_value_as_bool());
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
 
 	if(exclude_by_ea.get_value_as_bool())

@@ -108,6 +108,8 @@ private:
 
     html_form form_archtype;
 
+    html_form form_delta_sig;
+
     html_form form_reading;
 
     html_form form_archgen;
@@ -137,6 +139,10 @@ private:
     html_form_fieldset wrap_ref;   // help make distinction at display between archive or ref options and archive options
     html_text binary_delta_note;   // note about binary delta requirement
     html_text ref_placeholder;     // shows when archtype is not differential/incremental
+
+    html_form_fieldset delta_fs;
+    html_form_input delta_sig;
+    html_mask_form_filename delta_mask;
 
     html_form_fieldset fs_alter_atime;
     html_form_radio alter_atime;
