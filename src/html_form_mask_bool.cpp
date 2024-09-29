@@ -78,27 +78,8 @@ html_form_mask_bool::html_form_mask_bool(const string & initial_mode):
 
 void html_form_mask_bool::set_root_prefix(const libdar::path & x_prefix)
 {
-    html_form_dynamic_table::iterator it = table.begin();
-    shared_ptr<body_builder> obj;
-    html_mask* ptr = nullptr;
-
     root_prefix = x_prefix; // record the value for use with future sub-mask
-
-	// updating current existing sub-masks
-    while(it != table.end())
-    {
-	obj = it.get_object();
-	if(!obj)
-	    throw WEBDAR_BUG;
-
-	ptr = dynamic_cast<html_mask*>(obj.get());
-	if(ptr == nullptr)
-	    throw WEBDAR_BUG;
-
-	ptr->set_root_prefix(x_prefix);
-
-	++it;
-    }
+    propagate_root_prefix(); // propagate the new prefix to child masks
 }
 
 unique_ptr<libdar::mask> html_form_mask_bool::get_mask() const
@@ -167,7 +148,10 @@ void html_form_mask_bool::on_event(const string & event_name)
     if(event_name == bool_changed_event)
 	update_table_content_logic(false);
     else if(event_name == html_form_dynamic_table::changed)
+    {
 	update_table_content_logic(true);
+	propagate_root_prefix();
+    }
     else
 	throw WEBDAR_BUG;
 
@@ -251,6 +235,28 @@ void html_form_mask_bool::update_table_content_logic(bool unconditionally)
 
 	current_bool_mode = target_bool_mode;
 	table.set_obj_type_context(current_bool_mode);
+    }
+}
+
+void html_form_mask_bool::propagate_root_prefix()
+{
+    html_form_dynamic_table::iterator it = table.begin();
+    shared_ptr<body_builder> obj;
+    html_mask* ptr = nullptr;
+
+    while(it != table.end())
+    {
+	obj = it.get_object();
+	if(!obj)
+	    throw WEBDAR_BUG;
+
+	ptr = dynamic_cast<html_mask*>(obj.get());
+	if(ptr == nullptr)
+	    throw WEBDAR_BUG;
+
+	ptr->set_root_prefix(root_prefix);
+
+	++it;
     }
 }
 
