@@ -57,6 +57,7 @@ extern "C"
 #include "html_form_select.hpp"
 #include "html_form_gnupg_list.hpp"
 #include "html_form_same_fs.hpp"
+#include "html_form_ignore_as_symlink.hpp"
 
     /// html component used for the user to provide the parameters to create a new archive
 
@@ -148,6 +149,7 @@ private:
     html_form_radio alter_atime;
     html_form_input furtive_read_mode;
     html_form_input zeroing_neg_date;
+    html_form_ignore_as_symlink follow_symlinks;
 
     html_form_fieldset archgen_fs;
     html_form_input allow_over;

@@ -266,6 +266,7 @@ html_options_create::html_options_create():
     form_reading.adopt(&furtive_read_mode);
     form_reading.adopt(&fs_alter_atime);
     form_reading.adopt(&zeroing_neg_date);
+    form_reading.adopt(&follow_symlinks);
     deroule.adopt_in_section(sect_source, &form_reading);
 
 
@@ -491,6 +492,8 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_alter_atime(alter_atime.get_selected_id() == "atime");
     ret.set_furtive_read_mode(furtive_read_mode.get_value_as_bool());
     ret.set_auto_zeroing_neg_dates(zeroing_neg_date.get_value_as_bool());
+    if(!follow_symlinks.empty())
+	ret.set_ignored_as_symlink(follow_symlinks.get_symlink_list());
     ret.set_cache_directory_tagging(cache_directory_tagging.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
     ret.set_slice_permission(slice_permission.get_value());
