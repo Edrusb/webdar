@@ -106,7 +106,7 @@ private:
     std::string x_max;   ///< maximum value of the field (for type = number)
     bool value_set;      ///< record that a manual set_value has been done and POST request received from body_part should not overwrite the change
 
-    std::string modif_change; //< name of the event "changed" to use, if set to an empty string default behavior is used
+    std::string modif_change; ///< name of the event "changed" to use, if set to an empty string default behavior is used
 
     void my_act() { act(modif_change.empty() ? changed: modif_change); };
     void check_min_max_change(const std::string & next_min, const std::string & next_max);
