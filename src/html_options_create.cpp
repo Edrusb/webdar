@@ -101,6 +101,7 @@ html_options_create::html_options_create():
     fs_alter_atime("What to alter if furtive read mode is not used"),
     furtive_read_mode("Furtive read mode (if available)", html_form_input::check, "", 1),
     zeroing_neg_date("Automatically zeroing negative dates while reading", html_form_input::check, "", 1),
+    fs_mod_data_detect("How file change is detected"),
     same_fs_fs("Select the filesystems based on their mount point"),
     compr_fs(""),
     compression("Compression algorithm"),
@@ -134,6 +135,9 @@ html_options_create::html_options_create():
     binary_delta_note.add_text(0, "(*) delta signature needed to be present in the backup of reference");
     alter_atime.add_choice("atime", "Data last access time (atime)");
     alter_atime.add_choice("ctime", "Inode last change time (ctime)");
+    mod_data_detect.add_choice("any_inode_change", "Any inode change (behavior before rel. 2.6.0)");
+    mod_data_detect.add_choice("mtime_size", "only mtime and file size change (default)");
+    mod_data_detect.set_selected("mtime_size");
     compression_level.set_range(1, 9);
     pause.set_min_only(0);
     hourshift.set_min_only(0);
@@ -267,6 +271,8 @@ html_options_create::html_options_create():
     form_reading.adopt(&fs_alter_atime);
     form_reading.adopt(&zeroing_neg_date);
     form_reading.adopt(&follow_symlinks);
+    fs_mod_data_detect.adopt(&mod_data_detect);
+    form_reading.adopt(&fs_mod_data_detect);
     deroule.adopt_in_section(sect_source, &form_reading);
 
 
@@ -533,6 +539,13 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 	else
 	    throw WEBDAR_BUG;
     }
+
+    if(mod_data_detect.get_selected_id() == "any_inode_change")
+	ret.set_modified_data_detection(libdar::modified_data_detection::any_inode_change);
+    else if(mod_data_detect.get_selected_id() == "mtime_size")
+	ret.set_modified_data_detection(libdar::modified_data_detection::mtime_size);
+    else
+	throw WEBDAR_BUG;
 
     return ret;
 }
