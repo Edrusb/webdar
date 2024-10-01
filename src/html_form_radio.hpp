@@ -50,7 +50,7 @@ extern "C"
 class html_form_radio : public body_builder, public events
 {
 public:
-    static const std::string changed; /// common event name for all object of this class
+    static const std::string changed; /// default event name for all object of this class
 
     html_form_radio();
     html_form_radio(const html_form_radio & ref) = default;
@@ -69,6 +69,9 @@ public:
 
 	/// the number of currently available options
     const unsigned int num_choices() const { return choices.size(); };
+
+	/// change the default value for the "changed" event
+    void set_change_event_name(const std::string & name);
 
 protected:
 
@@ -100,6 +103,9 @@ private:
     std::vector<record> choices;
     unsigned int selected;
     bool value_set; ///< avoid POST request to overwrite set_seleected*()
+
+    std::string modif_changed; ///< name of the event "changed" to use, empty string for the default
+    void my_act();
 };
 
 

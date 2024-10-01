@@ -65,7 +65,7 @@ void html_form_radio::set_selected(unsigned int x)
 	if(next_val != selected)
 	{
 	    selected = next_val;
-	    act(changed);
+	    my_act();
 	    my_body_part_has_changed();
 	}
     }
@@ -74,7 +74,7 @@ void html_form_radio::set_selected(unsigned int x)
 	if(x != selected)
 	{
 	    selected = x;
-	    act(changed);
+	    my_act();
 	    my_body_part_has_changed();
 	}
     }
@@ -82,7 +82,7 @@ void html_form_radio::set_selected(unsigned int x)
     value_set = true;
 }
 
-void html_form_radio::set_selected(const std::string & id)
+void html_form_radio::set_selected(const string & id)
 {
     unsigned int val = 0;
     while(val < choices.size() && choices[val].id != id)
@@ -92,6 +92,19 @@ void html_form_radio::set_selected(const std::string & id)
 	set_selected(val);
     else
 	throw WEBDAR_BUG;
+}
+
+void html_form_radio::set_change_event_name(const string & name)
+{
+    if(name.empty())
+	throw WEBDAR_BUG;
+
+    if(modif_changed.empty())
+	rename_name(changed, name);
+    else
+	rename_name(modif_changed, name);
+
+    modif_changed = name;
 }
 
 string html_form_radio::inherited_get_body_part(const chemin & path,
@@ -146,7 +159,7 @@ void html_form_radio::update_field_from_request(const request & req)
 		selected = u;
 		if(has_changed)
 		{
-		    act(changed);
+		    my_act();
 		    my_body_part_has_changed();
 		}
 	    }
@@ -158,4 +171,12 @@ void html_form_radio::unlock_update_field_from_request()
 {
     if(!has_my_body_part_changed())
 	value_set = false;
+}
+
+void html_form_radio::my_act()
+{
+    if(modif_changed.empty())
+	act(changed);
+    else
+	act(modif_changed);
 }
