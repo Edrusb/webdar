@@ -134,7 +134,7 @@ html_options_create::html_options_create():
     archtype.add_choice("diffdelta", "Differential/Incremental backup with binary delta (*)");
     archtype.add_choice("snap", "Snapshot backup");
     archtype.add_choice("date", "Date based differential backup");
-    binary_delta_note.add_text(0, "(*) delta signature needed to be present in the backup of reference");
+    binary_delta_note.add_text(0, "(*) delta signatures need to be present in the backup of reference");
     alter_atime.add_choice("atime", "Data last access time (atime)");
     alter_atime.add_choice("ctime", "Inode last change time (ctime)");
     mod_data_detect.add_choice("any_inode_change", "Any inode change (behavior before rel. 2.6.0)");
