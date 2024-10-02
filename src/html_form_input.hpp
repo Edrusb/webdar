@@ -70,10 +70,12 @@ public:
     void change_label(const std::string & label);
     void change_type(input_type type);
 
-    const std::string & get_value() const { return x_init; };
     void set_value(const std::string & val);
-    const bool get_value_as_bool() const { return !x_init.empty(); }; //< for checkbox empty string means unchecked, anything else checked
     void set_value_as_bool(bool val);
+    void set_value_as_int(int val);
+    const std::string & get_value() const { return x_init; };
+    bool get_value_as_bool() const { return !x_init.empty(); }; //< for checkbox empty string means unchecked, anything else checked
+    int get_value_as_int() const;
 
 	/// whether the HTML control is enable or disabled
     void set_enabled(bool val);

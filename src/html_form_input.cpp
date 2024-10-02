@@ -127,6 +127,22 @@ void html_form_input::set_value_as_bool(bool val)
     }
 }
 
+void html_form_input::set_value_as_int(int val)
+{
+    if(x_type == string_for_type(number))
+	set_value(webdar_tools_convert_to_string(val));
+    else
+	throw WEBDAR_BUG;
+}
+
+int html_form_input::get_value_as_int() const
+{
+    if(x_type == string_for_type(number))
+	return webdar_tools_convert_to_int(x_init);
+    else
+	throw WEBDAR_BUG;
+}
+
 void html_form_input::set_enabled(bool val)
 {
     if(enabled != val)
