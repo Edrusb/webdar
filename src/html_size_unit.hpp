@@ -38,9 +38,11 @@ extern "C"
 
     /// html component in a form a couple of dropdown list for user to define a size in byte or larger units
 
-class html_size_unit : public body_builder, public actor
+class html_size_unit : public body_builder, public actor, public events
 {
 public:
+    static const std::string changed;
+
     html_size_unit();
     html_size_unit(const html_size_unit & ref) = delete;
     html_size_unit(html_size_unit && ref) noexcept = delete;

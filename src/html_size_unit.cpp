@@ -39,17 +39,23 @@ extern "C"
 
 using namespace std;
 
+const string html_size_unit::changed = "html_size_unit_changed";
+
 html_size_unit::html_size_unit() : unit(""),
 				   SI_mode("")
 {
     SI_mode.add_choice("SI", "SI");
     SI_mode.add_choice("bin", "binary");
     SI_mode.set_selected(0);
-    SI_mode.record_actor_on_event(this, html_form_select::changed);
     unit.set_no_CR();
     set_fields();
     adopt(&unit);
     adopt(&SI_mode);
+
+	// events
+    register_name(changed);
+    SI_mode.record_actor_on_event(this, html_form_select::changed);
+    unit.record_actor_on_event(this, html_form_select::changed);
 }
 
 libdar::infinint html_size_unit::get_value() const
@@ -76,10 +82,16 @@ libdar::infinint html_size_unit::get_value() const
 
 void html_size_unit::on_event(const string & event_name)
 {
-    set_fields();
-	// no need to call my_body_part_has_changed()
-	// because changed done in on_event concern
-	// body_builder objects we have adopted
+    if(event_name == html_form_select::changed)
+    {
+	set_fields();
+	    // no need to call my_body_part_has_changed()
+	    // because changed done in on_event concern
+	    // body_builder objects we have adopted
+	act(changed);
+    }
+    else
+	throw WEBDAR_BUG;
 }
 
 string html_size_unit::inherited_get_body_part(const chemin & path,
@@ -87,7 +99,6 @@ string html_size_unit::inherited_get_body_part(const chemin & path,
 {
     return get_body_part_from_all_children(path, req);
 }
-
 
 void html_size_unit::set_fields()
 {
