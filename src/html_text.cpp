@@ -42,19 +42,25 @@ using namespace std;
 
 void html_text::add_text(unsigned int level, const string & text)
 {
-    string css_val = get_css_classes();
-
     if(level == 0)
-	if(css_val.empty())
-	    txt += text + "\n";
-	else
-	    txt += "<div " + css_val + ">" + text + "</div>\n";
+	txt += text + "\n";
+	// the \n is only inside html code, it does not show in the rendering
     else
     {
 	string h = webdar_tools_convert_to_string(level);
-	txt += "<h" + h + " " + css_val + ">" + text + "</h" + h + ">\n";
+	txt += "<h" + h +">" + text + "</h" + h + ">\n";
     }
     my_body_part_has_changed();
+}
+
+string html_text::get_body_part() const
+{
+    string css_val = get_css_classes();
+
+    if(css_val.empty())
+	return txt;
+    else
+	return "<div " + css_val + ">" + txt + "</div>\n";
 }
 
 string html_text::inherited_get_body_part(const chemin & path,

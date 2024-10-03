@@ -68,7 +68,7 @@ public:
     void clear() { txt = ""; my_body_part_has_changed(); };
 
 	/// inherited from static_body_builder
-    virtual std::string get_body_part() const override { return txt; };
+    virtual std::string get_body_part() const override;
 
 protected:
 	/// inherited from body_builder
