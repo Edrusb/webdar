@@ -50,7 +50,11 @@ public:
     html_size_unit & operator = (html_size_unit && ref) noexcept = delete;
     ~html_size_unit() = default;
 
+	/// return the unit factor as integer
     libdar::infinint get_value() const;
+
+	/// return the unit label
+    std::string get_string() const { return unit.get_selected_id(); };
 
 	/// actor inheritance
     virtual void on_event(const std::string & event_name) override;

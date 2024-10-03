@@ -106,27 +106,27 @@ void html_size_unit::set_fields()
     {
     case 0:
 	unit.clear();
-	unit.add_choice("octet", "o");
-	unit.add_choice("kilo", "ko");
-	unit.add_choice("mega", "Mo");
-	unit.add_choice("giga", "Go");
-	unit.add_choice("tera", "To");
-	unit.add_choice("peta", "Po");
-	unit.add_choice("exa", "Eo");
-	unit.add_choice("zetta", "Zo");
-	unit.add_choice("yotta", "Yo");
+	unit.add_choice("o", "o");
+	unit.add_choice("ko", "ko");
+	unit.add_choice("Mo", "Mo");
+	unit.add_choice("Go", "Go");
+	unit.add_choice("To", "To");
+	unit.add_choice("Po", "Po");
+	unit.add_choice("Eo", "Eo");
+	unit.add_choice("Zo", "Zo");
+	unit.add_choice("Yo", "Yo");
 	break;
     case 1:
 	unit.clear();
-	unit.add_choice("octet", "o");
-	unit.add_choice("kilo", "kio");
-	unit.add_choice("mega", "Mio");
-	unit.add_choice("giga", "Gio");
-	unit.add_choice("tera", "Tio");
-	unit.add_choice("peta", "Pio");
-	unit.add_choice("exa", "Eio");
-	unit.add_choice("zetta", "Zio");
-	unit.add_choice("yotta", "Yio");
+	unit.add_choice("o", "o");
+	unit.add_choice("kio", "kio");
+	unit.add_choice("Mio", "Mio");
+	unit.add_choice("Gio", "Gio");
+	unit.add_choice("Tio", "Tio");
+	unit.add_choice("Pio", "Pio");
+	unit.add_choice("Eio", "Eio");
+	unit.add_choice("Zio", "Zio");
+	unit.add_choice("Yio", "Yio");
 	break;
     default:
 	throw WEBDAR_BUG;
