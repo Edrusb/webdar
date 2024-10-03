@@ -156,10 +156,13 @@ html_options_create::html_options_create():
 		archtype.set_selected(3);
 	    else
 		archtype.set_selected(0);
-
     compression.set_no_CR();
     slice_size.set_no_CR();
+    slice_size.set_min_only(1);
+    slice_size.set_value_as_int(1);
     first_slice_size.set_no_CR();
+    first_slice_size.set_min_only(1);
+    first_slice_size.set_value_as_int(1);
     min_compr_size.set_no_CR();
     compression_block.set_no_CR();
     retry_on_change_overhead.set_no_CR();
@@ -176,9 +179,7 @@ html_options_create::html_options_create():
     compression_level.set_value(webdar_tools_convert_to_string(defaults.get_compression_level()));
     compression_block.set_value(webdar_tools_convert_to_string(defaults.get_compression_block_size()));
     slicing.set_value_as_bool(defaults.get_slice_size() != 0);
-    slice_size.set_value(libdar::deci(defaults.get_slice_size()).human());
     different_first_slice.set_value_as_bool(defaults.get_first_slice_size() != defaults.get_slice_size());
-    first_slice_size.set_value(libdar::deci(defaults.get_first_slice_size()).human());
     execute.set_value(defaults.get_execute());
     crypto_algo.set_value(defaults.get_crypto_algo());
     crypto_pass1.set_value("");
