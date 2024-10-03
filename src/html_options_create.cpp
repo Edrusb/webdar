@@ -108,6 +108,7 @@ html_options_create::html_options_create():
     compression_level("Compression level", html_form_input::number, "", 3),
     min_compr_size("Minimum file sized compressed", html_form_input::number, "", 30),
     compression_block("Block compression for parallel compression (zero to zero to disable)", html_form_input::number, "0", 30),
+    never_resave_uncompressed("Never resave uncompressed if compression ratio was bad", html_form_input::check, "", 1),
     compr_threads("Number of threads for compression", html_form_input::number, "2", 5),
     compr_mask("Filename expression"),
     slicing_fs(""),
@@ -362,6 +363,7 @@ html_options_create::html_options_create():
     compr_fs.adopt(&min_compr_size_unit);
     compr_fs.adopt(&compression_block);
     compr_fs.adopt(&compr_block_unit);
+    compr_fs.adopt(&never_resave_uncompressed);
     compr_fs.adopt(&compr_threads);
     form_compr.adopt(&compr_fs);
     deroule.adopt_in_section(sect_compr, &form_compr);
@@ -464,6 +466,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_compression(compression.get_value());
     ret.set_compression_level(webdar_tools_convert_to_int(compression_level.get_value()));
     ret.set_min_compr_size(libdar::deci(min_compr_size.get_value()).computer() * min_compr_size_unit.get_value());
+    ret.set_never_resave_uncompressed(never_resave_uncompressed.get_value_as_bool());
     ret.set_multi_threaded_compress(webdar_tools_convert_to_int(compr_threads.get_value()));
     ret.set_multi_threaded_crypto(webdar_tools_convert_to_int(crypto_threads.get_value()));
 

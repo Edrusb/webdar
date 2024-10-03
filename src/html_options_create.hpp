@@ -207,6 +207,7 @@ private:
     html_size_unit min_compr_size_unit;
     html_form_input compression_block;
     html_size_unit compr_block_unit;
+    html_form_input never_resave_uncompressed;
     html_form_input compr_threads;
     html_mask_form_filename compr_mask;
 
