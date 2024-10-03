@@ -76,7 +76,14 @@ libdar::infinint html_size_unit::get_value() const
 	throw WEBDAR_BUG;
     }
 
-    ret = base.power(unit.get_selected_num());
+    try
+    {
+	ret = base.power(unit.get_selected_num());
+    }
+    catch(libdar::Elimitint & e)
+    {
+	throw exception_libcall(e);
+    }
 
     return ret;
 }
