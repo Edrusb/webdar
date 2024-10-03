@@ -219,8 +219,11 @@ void html_form_sig_block_size::make_summary()
 		if(i_mult < maxval * i_divi) // this i_mult/i_divi < maxval
 		    summary_f.add_text(0, ratio);
 		else
-		    summary_f.add_text(0, max_size.get_value() + " " + max_unit.get_string());
+		    summary_f.add_text(0, max_size.get_value() + " " + max_unit.get_string() + " o");
 	}
+	summary_f.add_nl();
+	summary_f.add_nl();
+	summary_l.set_visible(false);
     }
     else
     {
@@ -264,7 +267,8 @@ void html_form_sig_block_size::make_summary()
 			 + max_size.get_value()
 			 + " "
 			 + max_unit.get_string());
+	summary_l.add_nl();
+	summary_l.add_nl();
+	summary_l.set_visible(true);
     }
-    summary_l.add_nl();
-    summary_l.add_nl();
 }
