@@ -83,17 +83,7 @@ choose::choose(const string & user):
     page.define_css_class_in_library(css_class_page, tmpcss);
     page.add_css_class(css_class_page);
 
-    tmpcss.clear();
     tmp.add_text(3, string("Current sessions - we are identified as user ") + owner);
-    tmpcss.css_padding("1em");
-    tmpcss.css_background_color(COLOR_PADBACK);
-    tmpcss.css_color(COLOR_PADFRONT);
-    tmpcss.css_font_weight_bold();
-    tmpcss.css_border_width(css::bd_all, css::bd_medium);
-    tmpcss.css_border_style(css::bd_all, css::bd_solid);
-    tmpcss.css_border_color(css::bd_all, COLOR_PADBORD);
-    page.define_css_class_in_library(css_class_tmp_text, tmpcss);
-    tmp.add_css_class(css_class_tmp_text);
     page.adopt_static_html(tmp.get_body_part());
 
     tmpcss.clear();
