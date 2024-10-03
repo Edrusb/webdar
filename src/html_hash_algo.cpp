@@ -47,6 +47,8 @@ html_hash_algo::html_hash_algo(const string & title):
     add_choice("none", "none");
     add_choice("md5", "md5");
     add_choice("sha1", "sha1");
+    add_choice("sha512", "sha512");
+    add_choice("whirlpool", "whirlpool");
     set_selected(0);
     register_name(changed);
     record_actor_on_event(this, html_form_select::changed);
@@ -62,6 +64,10 @@ libdar::hash_algo html_hash_algo::get_value() const
 	return libdar::hash_algo::md5;
     case 2:
 	return libdar::hash_algo::sha1;
+    case 3:
+	return libdar::hash_algo::sha512;
+    case 4:
+	return libdar::hash_algo::whirlpool;
     default:
 	throw WEBDAR_BUG;
     }
@@ -79,6 +85,12 @@ void html_hash_algo::set_value(libdar::hash_algo val)
 	break;
     case libdar::hash_algo::sha1:
 	set_selected(2);
+	break;
+    case libdar::hash_algo::sha512:
+	set_selected(3);
+	break;
+    case libdar::hash_algo::whirlpool:
+	set_selected(4);
 	break;
     default:
 	throw WEBDAR_BUG;
