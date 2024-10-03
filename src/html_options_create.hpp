@@ -58,6 +58,7 @@ extern "C"
 #include "html_form_gnupg_list.hpp"
 #include "html_form_same_fs.hpp"
 #include "html_form_ignore_as_symlink.hpp"
+#include "html_form_sig_block_size.hpp"
 
     /// html component used for the user to provide the parameters to create a new archive
 
@@ -146,6 +147,7 @@ private:
 
     html_form_fieldset delta_fs;
     html_form_input delta_sig;
+    html_form_sig_block_size sig_block_size;
     html_mask_form_filename delta_mask;
 
     html_form_fieldset fs_alter_atime;

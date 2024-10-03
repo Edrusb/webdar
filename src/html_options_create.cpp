@@ -281,6 +281,7 @@ html_options_create::html_options_create():
 
 	// delta signatures
     delta_fs.adopt(&delta_sig);
+    delta_fs.adopt(&sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
     deroule.adopt_in_section(sect_delta, &delta_mask);
@@ -584,6 +585,8 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 	}
 	else
 	    throw WEBDAR_BUG;
+
+	ret.set_sig_block_len(sig_block_size.get_value());
     }
 
     if(mod_data_detect.get_selected_id() == "any_inode_change")
@@ -647,6 +650,7 @@ void html_options_create::on_event(const string & event_name)
 	}
 
 	delta_mask.set_visible(delta_sig.get_value_as_bool());
+	sig_block_size.set_visible(delta_sig.get_value_as_bool());
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
 
 	if(exclude_by_ea.get_value_as_bool())
