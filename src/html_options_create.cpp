@@ -108,7 +108,7 @@ html_options_create::html_options_create():
     compression_level("Compression level", html_form_input::number, "", 3),
     min_compr_size("Minimum file sized compressed", html_form_input::number, "", 30),
     compression_block("Block compression for parallel compression (zero to zero to disable)", html_form_input::number, "0", 30),
-    never_resave_uncompressed("Never resave uncompressed if compression ratio was bad", html_form_input::check, "", 1),
+    never_resave_uncompressed("Never resave uncompressed if compressed file took more place than uncompressed", html_form_input::check, "", 1),
     compr_threads("Number of threads for compression", html_form_input::number, "2", 5),
     compr_mask("Filename expression"),
     slicing_fs(""),
@@ -684,6 +684,7 @@ void html_options_create::on_event(const string & event_name)
 	    min_compr_size_unit.set_visible(false);
 	    compression_block.set_visible(false);
 	    compr_block_unit.set_visible(false);
+	    never_resave_uncompressed.set_visible(false);
 	    compr_threads.set_visible(false);
 	    compr_mask.set_visible(false);
 	    break;
@@ -695,6 +696,7 @@ void html_options_create::on_event(const string & event_name)
 	    min_compr_size_unit.set_visible(true);
 	    compression_block.set_visible(true);
 	    compr_block_unit.set_visible(true);
+	    never_resave_uncompressed.set_visible(true);
 	    compr_threads.set_visible(true);
 	    compr_mask.set_visible(true);
 	    break;
@@ -710,6 +712,7 @@ void html_options_create::on_event(const string & event_name)
 	    min_compr_size_unit.set_visible(true);
 	    compression_block.set_visible(true);
 	    compr_block_unit.set_visible(true);
+	    never_resave_uncompressed.set_visible(true);
 	    compr_threads.set_visible(true);
 	    compr_mask.set_visible(true);
 	    break;
