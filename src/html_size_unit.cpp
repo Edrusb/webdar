@@ -54,7 +54,8 @@ html_size_unit::html_size_unit() : unit(""),
 
 	// events
     register_name(changed);
-    SI_mode.record_actor_on_event(this, html_form_select::changed);
+    SI_mode.set_change_event_name(mode_changed);
+    SI_mode.record_actor_on_event(this, mode_changed);
     unit.record_actor_on_event(this, html_form_select::changed);
 }
 
@@ -82,7 +83,7 @@ libdar::infinint html_size_unit::get_value() const
 
 void html_size_unit::on_event(const string & event_name)
 {
-    if(event_name == html_form_select::changed)
+    if(event_name == mode_changed)
     {
 	set_fields();
 	    // no need to call my_body_part_has_changed()
@@ -90,6 +91,8 @@ void html_size_unit::on_event(const string & event_name)
 	    // body_builder objects we have adopted
 	act(changed);
     }
+    else if(event_name == html_form_select::changed)
+	act(changed);
     else
 	throw WEBDAR_BUG;
 }

@@ -66,6 +66,8 @@ protected:
 						const request & req) override;
 
 private:
+    static constexpr const char* mode_changed = "SI_mode changed";
+
     html_form_select unit;
     html_form_select SI_mode;
 
