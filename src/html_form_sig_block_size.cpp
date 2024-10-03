@@ -131,8 +131,15 @@ void html_form_sig_block_size::on_event(const string & event_name)
 
 	libdar::infinint min, max;
 
-	min = min_unit.get_value() * libdar::infinint(min_size.get_value_as_int());
-	max = max_unit.get_value() * libdar::infinint(max_size.get_value_as_int());
+	try
+	{
+	    min = min_unit.get_value() * libdar::infinint(min_size.get_value_as_int());
+	    max = max_unit.get_value() * libdar::infinint(max_size.get_value_as_int());
+	}
+	catch(libdar::Elimitint & e)
+	{
+	    throw exception_libcall(e);
+	}
 
 	if(max < min && ! max.is_zero())
 	{
