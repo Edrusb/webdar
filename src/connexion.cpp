@@ -22,13 +22,28 @@
 /*********************************************************************/
 
     //  C system header files
+#include "my_config.h"
 extern "C"
 {
+#if HAVE_ERRNO_H
 #include <errno.h>
+#endif
+
+#if HAVE_LIMITS_H
 #include <limits.h>
+#endif
+
+#if HAVE_STRING_H
 #include <string.h>
+#endif
+
+#if HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
+
+#if HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
+#endif
 }
 
     // webdar headers

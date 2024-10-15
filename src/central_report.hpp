@@ -25,10 +25,16 @@
 #define CENTRAL_REPORT_HPP
 
     //  C system header files
+#include "my_config.h"
 extern "C"
 {
+#if HAVE_SYSLOG_H
 #include <syslog.h>
+#endif
+
+#if HAVE_PTHREAD_H
 #include <pthread.h>
+#endif
 }
 
     // C++ system header files

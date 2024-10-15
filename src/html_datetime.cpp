@@ -22,9 +22,12 @@
 /*********************************************************************/
 
     // C system header files
+#include "my_config.h"
 extern "C"
 {
+#if HAVE_TIME_H
 #include <time.h>
+#endif
 }
 
     // C++ system header files

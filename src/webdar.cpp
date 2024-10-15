@@ -22,14 +22,32 @@
 /*********************************************************************/
 
     // C system header files
+#include "my_config.h"
 extern "C"
 {
+#if HAVE_SIGNAL_H
 #include <signal.h>
+#endif
+
+#if HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+
+#if HAVE_STRING_H
 #include <string.h>
+#endif
+
+#if HAVE_ERRNO_H
 #include <errno.h>
+#endif
+
+#if HAVE_SIGNAL_H
 #include <signal.h>
+#endif
+
+#if HAVE_TIME_H
 #include <time.h>
+#endif
 }
 
     // C++ system header files

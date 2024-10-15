@@ -25,6 +25,7 @@
 #define HTML_BIBLIOTHEQUE_HPP
 
     // C system header files
+#include "my_config.h"
 extern "C"
 {
 

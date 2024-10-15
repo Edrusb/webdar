@@ -25,6 +25,7 @@
 #define HTML_FORM_SAME_FS_HPP
 
     // C system header files
+#include "my_config.h"
 extern "C"
 {
 

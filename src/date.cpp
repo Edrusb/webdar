@@ -22,9 +22,12 @@
 /*********************************************************************/
 
     // C system header files
+#include "my_config.h"
 extern "C"
 {
+#if HAVE_ERRNO_H
 #include <errno.h>
+#endif
 }
 
     // C++ system header files

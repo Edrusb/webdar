@@ -25,9 +25,12 @@
 #define EXCEPTIONS_HPP
 
     // C system header files
+#include "my_config.h"
 extern "C"
 {
+#if HAVE_STRING_H
 #include <string.h>
+#endif
 }
 
     // C++ system header files

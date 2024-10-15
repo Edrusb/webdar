@@ -25,6 +25,7 @@
 #define HTML_STATISTICS_HPP
 
     // C system header files
+#include "my_config.h"
 extern "C"
 {
 

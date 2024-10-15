@@ -25,6 +25,7 @@
 #define HTML_DOUBLE_BUTTON_HPP
 
     // C system header files
+#include "my_config.h"
 extern "C"
 {
 

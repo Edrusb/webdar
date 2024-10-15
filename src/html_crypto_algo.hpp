@@ -25,6 +25,7 @@
 #define HTML_CRYPTO_ALGO_HPP
 
     // C system header files
+#include "my_config.h"
 extern "C"
 {
 

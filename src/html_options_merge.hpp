@@ -25,6 +25,7 @@
 #define HTML_OPTIONS_MERGE_HPP
 
     // C system header files
+#include "my_config.h"
 extern "C"
 {
 

@@ -25,10 +25,16 @@
 #define DATE_HPP
 
     // C system header files
+#include "my_config.h"
 extern "C"
 {
+#if HAVE_TIME_H
 #include <time.h>
+#endif
+
+#if HAVE_CTYPE_H
 #include <ctype.h>
+#endif
 }
 
     // C++ system header files

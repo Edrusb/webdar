@@ -128,6 +128,10 @@ AC_PROG_EGREP
 AC_HEADER_SYS_WAIT
 
 AC_CHECK_HEADERS([dar/libdar.hpp])
+AC_CHECK_HEADERS([libthreadar/libthreadar.hpp])
+
+AC_CHECK_HEADERS([stdio.h stdlib.h syslog.h pthread.h errno.h limits.h sys/types.h sys/stat.h sys/socket.h time.h ctype.h openssl/err.h string.h fnmatch.h netinet/ip.h arpa/inet.h strings.h unistd.h fcntl.h signal.h])
+AC_CHECK_HEADERS([openssl/ssl.h])
 
 AC_SYS_LARGEFILE
 

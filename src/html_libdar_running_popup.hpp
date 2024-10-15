@@ -25,6 +25,7 @@
 #define HTML_LIBDAR_RUNNING_POPUP_HPP
 
     // C system header files
+#include "my_config.h"
 extern "C"
 {
 

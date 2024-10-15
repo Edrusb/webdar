@@ -25,9 +25,12 @@
 #define SSL_CONTEXT_HPP
 
     // C system header files
+#include "my_config.h"
 extern "C"
 {
+#if HAVE_OPENSSL_SSL_H
 #include <openssl/ssl.h>
+#endif
 }
 
     // C++ system header files

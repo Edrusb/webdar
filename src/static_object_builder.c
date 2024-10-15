@@ -21,15 +21,39 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
+#include "my_config.h"
+
+#if HAVE_STDIO_H
 #include <stdio.h>
+#endif
+
+#if HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
+
+#if HAVE_SYS_STAT_H
 #include <sys/stat.h>
+#endif
+
+#if HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+
+#if HAVE_FCNTL_H
 #include <fcntl.h>
+#endif
+
+#if HAVE_STRING_H
 #include <string.h>
+#endif
+
+#if HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+
+#if HAVE_ERRNO_H
 #include <errno.h>
-#include <string.h>
+#endif
 
 #define CODE_OK 0
 #define CODE_USAGE 1

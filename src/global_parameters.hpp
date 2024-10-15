@@ -27,9 +27,12 @@
     /// \file global_parameters.hpp parameters global to the webdar application
 
     // C system header files
+#include "my_config.h"
 extern "C"
 {
+#if HAVE_SIGNAL_H
 #include <signal.h>
+#endif
 }
 
     // C++ system header files

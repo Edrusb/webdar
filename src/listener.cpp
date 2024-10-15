@@ -22,16 +22,40 @@
 /*********************************************************************/
 
     // C system header files
+#include "my_config.h"
 extern "C"
 {
+#if HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
+
+#if HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
+#endif
+
+#if HAVE_NETINET_IP_H
 #include <netinet/ip.h>
+#endif
+
+#if HAVE_ARPA_INET_H
 #include <arpa/inet.h>
+#endif
+
+#if HAVE_STRINGS_H
 #include <strings.h>
+#endif
+
+#if HAVE_STRING_H
 #include <string.h>
+#endif
+
+#if HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+
+#if HAVE_ERRNO_H
 #include <errno.h>
+#endif
 }
 
     // C++ system header files
