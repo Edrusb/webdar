@@ -127,11 +127,26 @@ AC_PROG_EGREP
 
 AC_HEADER_SYS_WAIT
 
-AC_CHECK_HEADERS([dar/libdar.hpp])
-AC_CHECK_HEADERS([libthreadar/libthreadar.hpp])
-
 AC_CHECK_HEADERS([stdio.h stdlib.h syslog.h pthread.h errno.h limits.h sys/types.h sys/stat.h sys/socket.h time.h ctype.h openssl/err.h string.h fnmatch.h netinet/ip.h arpa/inet.h strings.h unistd.h fcntl.h signal.h])
-AC_CHECK_HEADERS([openssl/ssl.h])
+
+AC_CHECK_HEADER([openssl/ssl.h],
+		[],
+		[
+		  AC_MSG_ERROR([missing required <openssl/ssl.h> included file])
+		])
+
+AC_CHECK_HEADER([dar/libdar.hpp],
+		[],
+		[
+		  AC_MSG_ERROR([missing required <dar/libdar.hpp> included file])
+		])
+
+AC_CHECK_HEADERS([libthreadar/libthreadar.hpp],
+		[],
+		[
+		  AC_MSG_ERROR([missing required <libthreadar/libthreadar.hpp> included file])
+		])
+
 
 AC_SYS_LARGEFILE
 
