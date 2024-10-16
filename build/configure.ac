@@ -113,13 +113,6 @@ AC_DEFINE(_DARWIN_C_SOURCE, 1, [Define on Darwin to activate all library feature
 ##
 ###########
 
-# Checks for libraries.
-AC_CHECK_LIB(dar, [get_version], [], [])
-AC_CHECK_LIB(ssl, [SSL_new], [], [])
-AC_CHECK_LIB(crypto, [ERR_get_error], [], [])
-# AC_CHECK_LIB(nsl, [endnetconfig], [], [])
-# AC_CHECK_LIB(cap, [cap_get_proc], [], [])
-
 # Checks for header files.
 AC_HEADER_DIRENT
 AC_CHECK_INCLUDES_DEFAULT
@@ -129,6 +122,8 @@ AC_HEADER_SYS_WAIT
 
 AC_CHECK_HEADERS([stdio.h stdlib.h syslog.h pthread.h errno.h limits.h sys/types.h sys/stat.h sys/socket.h time.h ctype.h openssl/err.h string.h fnmatch.h netinet/ip.h arpa/inet.h strings.h unistd.h fcntl.h signal.h])
 
+# mandatory headers
+AC_CHECK_HEADERS([openssl/ssl.h dar/libdar.hpp libthreadar/libthreadar.hpp])
 AC_CHECK_HEADER([openssl/ssl.h],
 		[],
 		[
@@ -161,7 +156,6 @@ AC_CHECK_MEMBERS([struct stat.st_rdev])
 AC_CHECK_TYPE(size_t, [AC_CHECK_SIZEOF(size_t)], [AC_MSG_ERROR([Cannot find size_t type])], [])
 AC_CHECK_TYPE(time_t, [AC_CHECK_SIZEOF(time_t)], [AC_MSG_ERROR([Cannot find time_t type])], [])
 AC_CHECK_TYPE(off_t, [AC_CHECK_SIZEOF(off_t)], [AC_MSG_ERROR([Cannot find off_t type])], [])
-
 
 # Checks for library functions.
 AC_FUNC_FNMATCH
@@ -334,6 +328,10 @@ else
      fi
 fi
 
+PKG_CHECK_MODULES(OPENSSL,
+		  openssl,
+		  [],
+		  [])
 
 PKG_CHECK_MODULES(LIBDAR,
                   libdar${build_mode_suffix},
@@ -400,6 +398,11 @@ AS_IF(         [ test "x$enable_build_html" != "xyes"],
                       )
                ]
      )
+
+# Checks for libraries.
+AC_CHECK_LIB(dar64, [for_autoconf], [], [AC_MSG_ERROR([cannot link with libdar library]) ])
+AC_CHECK_LIB(threadar, [for_autoconf], [], [AC_MSG_ERROR([Cannot link with libthreadar library]) ])
+AC_CHECK_LIB(ssl, [SSL_new], [], [AC_MSG_ERROR([Cannot link with libssl library]) ])
 
 
 AM_CONDITIONAL([BUILD_MODE32], [test "$build_mode" = "32"])
