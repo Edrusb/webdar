@@ -30,10 +30,12 @@ extern "C"
 
     // C++ system header files
 #include <dar/libdar.hpp>
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_css_style.hpp"
-
+#include "webdar_tools.hpp"
+#include "tokens.hpp"
 
     //
 #include "html_options_isolate.hpp"
@@ -64,6 +66,7 @@ html_options_isolate::html_options_isolate():
     fs_compr(""),
     compression("Compression algorithm"),
     compression_level("Compression level", html_form_input::number, "", 3),
+    compression_block("Block compression for parallel compression (zero to zero to disable)", html_form_input::number, "0", 30),
     form_slicing("Update"),
     fs_slicing(""),
     slicing("Sliced archive", html_form_input::check, "", 1),
@@ -80,7 +83,6 @@ html_options_isolate::html_options_isolate():
     libdar::archive_options_isolate defaults;
 
 	// removing Carriage Return for some components
-    compression.set_no_CR();
     slice_size.set_no_CR();
     first_slice_size.set_no_CR();
 
@@ -99,6 +101,7 @@ html_options_isolate::html_options_isolate():
     empty.set_value_as_bool(defaults.get_empty());
     compression.set_value(defaults.get_compression());
     compression_level.set_value(webdar_tools_convert_to_string(defaults.get_compression_level()));
+    compression_block.set_value(webdar_tools_convert_to_string(defaults.get_compression_block_size()));
     slicing.set_value_as_bool(defaults.get_slice_size() != 0);
     slice_size.set_value(libdar::deci(defaults.get_slice_size()).human());
     different_first_slice.set_value_as_bool(defaults.get_first_slice_size() != defaults.get_slice_size());
@@ -148,6 +151,8 @@ html_options_isolate::html_options_isolate():
 
     fs_compr.adopt(&compression);
     fs_compr.adopt(&compression_level);
+    fs_compr.adopt(&compression_block);
+    fs_compr.adopt(&compr_block_unit);
     form_compr.adopt(&fs_compr);
     deroule.adopt_in_section(sect_compr, &form_compr);
 
@@ -192,12 +197,28 @@ void html_options_isolate::on_event(const string & event_name)
 	switch(compression.get_value())
 	{
 	case libdar::compression::none:
+	    compression.set_no_CR(false);
 	    compression_level.set_visible(false);
+	    compression_block.set_visible(false);
+	    compr_block_unit.set_visible(false);
+	    break;
+	case libdar::compression::lzo1x_1_15:
+	case libdar::compression::lzo1x_1:
+	    compression.set_no_CR(false);
+	    compression_level.set_visible(false);
+	    compression_block.set_visible(true);
+	    compr_block_unit.set_visible(true);
 	    break;
 	case libdar::compression::gzip:
 	case libdar::compression::bzip2:
 	case libdar::compression::lzo:
+	case libdar::compression::xz:
+	case libdar::compression::zstd:
+	case libdar::compression::lz4:
+	    compression.set_no_CR(false);
 	    compression_level.set_visible(true);
+	    compression_block.set_visible(true);
+	    compr_block_unit.set_visible(true);
 	    break;
 	default:
 	    throw WEBDAR_BUG;
@@ -263,6 +284,8 @@ void html_options_isolate::on_event(const string & event_name)
 libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<html_web_user_interaction> & webui) const
 {
     libdar::archive_options_isolate ret;
+    libdar::infinint compr_bs = libdar::deci(compression_block.get_value()).computer() * compr_block_unit.get_value();
+    libdar::U_I val = 0;
 
     ret.set_entrepot(entrep.get_entrepot(webui));
     ret.set_allow_over(allow_over.get_value_as_bool());
@@ -280,6 +303,15 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     ret.set_info_details(info_details.get_value_as_bool());
     ret.set_compression(compression.get_value());
     ret.set_compression_level(webdar_tools_convert_to_int(compression_level.get_value()));
+
+    val = 0;
+    compr_bs.unstack(val);
+    if(!compr_bs.is_zero())
+	throw exception_range("compression block size is too large for the underlying operating system, please reduce");
+
+    if(val < tokens_min_compr_bs && val != 0)
+	throw exception_range(libdar::tools_printf("compression block size is too small, select either zero to disable compression per block or a block size greater or equal to %d", tokens_min_compr_bs));
+    ret.set_compression_block_size(val);
 
     if(slicing.get_value_as_bool())
     {
