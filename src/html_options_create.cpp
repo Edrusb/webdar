@@ -171,6 +171,16 @@ html_options_create::html_options_create():
 
     crypto_type.add_choice("sym", "Symmetric encryption");
     crypto_type.add_choice("asym", "Asymmetric encryption");
+    crypto_pass1.set_value("");
+    crypto_pass2.set_value("");
+    crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
+    crypto_kdf_hash.add_choice("md5","md5");
+    crypto_kdf_hash.add_choice("sha1","sha1");
+    crypto_kdf_hash.add_choice("sha512","sha512");
+    crypto_kdf_hash.add_choice("whirlpool","whirlpool");
+    crypto_kdf_hash.add_choice("argon2","argon2");
+    crypto_kdf_hash.set_selected("argon2");
+
 
 	// set default values
     allow_over.set_value_as_bool(defaults.get_allow_over());
@@ -183,15 +193,6 @@ html_options_create::html_options_create():
     different_first_slice.set_value_as_bool(defaults.get_first_slice_size() != defaults.get_slice_size());
     execute.set_value(defaults.get_execute());
     crypto_algo.set_value(defaults.get_crypto_algo());
-    crypto_pass1.set_value("");
-    crypto_pass2.set_value("");
-    crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
-    crypto_kdf_hash.add_choice("md5","md5");
-    crypto_kdf_hash.add_choice("sha1","sha1");
-    crypto_kdf_hash.add_choice("sha512","sha512");
-    crypto_kdf_hash.add_choice("whirlpool","whirlpool");
-    crypto_kdf_hash.add_choice("argon2","argon2");
-    crypto_kdf_hash.set_selected("argon2");
 
     int tmp = 0;
     libdar::infinint tmpi = defaults.get_iteration_count();
