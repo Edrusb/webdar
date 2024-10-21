@@ -422,8 +422,6 @@ html_options_create::html_options_create():
 
 libdar::archive_options_create html_options_create::get_options(shared_ptr<html_web_user_interaction> & webui) const
 {
-    static const libdar::U_I min_compr_bs = 50*1024;
-
     libdar::archive_options_create ret;
     shared_ptr<libdar::archive> ref_arch; // used locally to pass the archive of reference we may build for diff/incr backup
     libdar::infinint compr_bs = libdar::deci(compression_block.get_value()).computer() * compr_block_unit.get_value();
@@ -477,10 +475,10 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     if(!compr_bs.is_zero())
 	throw exception_range("compression block size is too large for the underlying operating system, please reduce");
 
-    if(val < min_compr_bs && val != 0)
-	throw exception_range(libdar::tools_printf("compression block size is too small, select either zero to disable compression per block or a block size greater or equal to %d", min_compr_bs));
-
+    if(val < tokens_min_compr_bs && val != 0)
+	throw exception_range(libdar::tools_printf("compression block size is too small, select either zero to disable compression per block or a block size greater or equal to %d", tokens_min_compr_bs));
     ret.set_compression_block_size(val);
+
     if(compression.get_value() != libdar::compression::none)
     {
 	unique_ptr<libdar::mask> libcompmask = compr_mask.get_mask();

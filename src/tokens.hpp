@@ -31,6 +31,7 @@ extern "C"
 
 }
     // C++ system header files
+#include <dar/libdar.hpp>
 
     // webdar headers
 #include "my_config.h"
@@ -128,5 +129,9 @@ extern const char* WHITE;
 
 extern const char* STATIC_PATH_ID;
 extern const char* STATIC_OBJ_LICENSING;
+
+
+    // Webdar chosen min & max values
+extern const libdar::U_I tokens_min_compr_bs;
 
 #endif
