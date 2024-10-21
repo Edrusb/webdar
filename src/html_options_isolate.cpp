@@ -90,6 +90,7 @@ html_options_isolate::html_options_isolate():
     allow_over.set_value_as_bool(defaults.get_allow_over());
     warn_over.set_value_as_bool(defaults.get_warn_over());
     pause.set_value(libdar::deci(defaults.get_pause()).human());
+    pause.set_min_only(0);
     slice_permission.set_value(defaults.get_slice_permission());
     slice_user_ownership.set_value(defaults.get_slice_user_ownership());
     slice_group_ownership.set_value(defaults.get_slice_group_ownership());
