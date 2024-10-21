@@ -94,6 +94,8 @@ private:
     html_form_fieldset delta_fs;
     html_form_input delta_sig;
     html_form_input delta_transfer_mode;
+    html_form_input delta_sig_min_size;
+    html_size_unit delta_sig_min_size_unit;
     html_form_sig_block_size sig_block_size;
     html_mask_form_filename delta_mask;
 

@@ -49,6 +49,7 @@ html_options_isolate::html_options_isolate():
     delta_fs(""),
     delta_sig("Transfer binary delta signature", html_form_input::check, "", 1),
     delta_transfer_mode("Compute delta signature when they are missing", html_form_input::check, "", 1),
+    delta_sig_min_size("Avoid calculating delta signature for file smaller than", html_form_input::number, "0", 30),
     delta_mask("Filename expression"),
     form_archgen("Update"),
     fs_archgen(""),
@@ -96,6 +97,7 @@ html_options_isolate::html_options_isolate():
     slice_size.set_no_CR();
     first_slice_size.set_no_CR();
     compression_block.set_no_CR();
+    delta_sig_min_size.set_no_CR();
 
 	// configure html components
     crypto_type.add_choice("sym", "Symmetric encryption");
@@ -135,6 +137,7 @@ html_options_isolate::html_options_isolate():
     crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
     compr_threads.set_min_only(1);
     crypto_threads.set_min_only(1);
+    delta_sig_min_size.set_value(webdar_tools_convert_to_string(defaults.get_delta_sig_min_size()));
 
     int tmp = 0;
     libdar::infinint tmpi = defaults.get_iteration_count();
@@ -170,6 +173,8 @@ html_options_isolate::html_options_isolate():
 
     delta_fs.adopt(&delta_sig);
     delta_fs.adopt(&delta_transfer_mode);
+    delta_fs.adopt(&delta_sig_min_size);
+    delta_fs.adopt(&delta_sig_min_size_unit);
     delta_fs.adopt(&sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
@@ -256,12 +261,16 @@ void html_options_isolate::on_event(const string & event_name)
 	if(delta_sig.get_value_as_bool())
 	{
 	    delta_transfer_mode.set_visible(true);
+	    delta_sig_min_size.set_visible(delta_transfer_mode.get_value_as_bool());
+	    delta_sig_min_size_unit.set_visible(delta_transfer_mode.get_value_as_bool());
 	    sig_block_size.set_visible(delta_transfer_mode.get_value_as_bool());
 	    delta_mask.set_visible(delta_transfer_mode.get_value_as_bool());
 	}
 	else
 	{
 	    delta_transfer_mode.set_visible(false);
+	    delta_sig_min_size.set_visible(false);
+	    delta_sig_min_size_unit.set_visible(false);
 	    sig_block_size.set_visible(false);
 	    delta_mask.set_visible(false);
 	}
@@ -430,6 +439,7 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
        && delta_transfer_mode.get_value_as_bool())
     {
 	unique_ptr<libdar::mask> dmask = delta_mask.get_mask();
+	libdar::infinint min_sz = libdar::deci(delta_sig_min_size.get_value()).computer() * delta_sig_min_size_unit.get_value();
 
 	if(dmask)
 	    ret.set_delta_mask(*dmask);
@@ -437,6 +447,7 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
 	    throw WEBDAR_BUG;
 
 	ret.set_sig_block_len(sig_block_size.get_value());
+	ret.set_delta_sig_min_size(min_sz);
     }
 
     val = 0;
