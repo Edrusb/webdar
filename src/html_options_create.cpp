@@ -65,6 +65,7 @@ html_options_create::html_options_create():
     reference("Archive of reference"),
     delta_fs(""),
     delta_sig("Compute binary delta signature", html_form_input::check, "", 1),
+    delta_sig_min_size("Avoid calculating delta signature for file smaller than", html_form_input::number, "0", 30),
     delta_mask("Filename expression"),
     archgen_fs(""),
     allow_over("Allow slice overwriting", html_form_input::check, "", 1),
@@ -168,7 +169,7 @@ html_options_create::html_options_create():
     compression_block.set_no_CR();
     retry_on_change_overhead.set_no_CR();
     sparse_file_min_size.set_no_CR();
-
+    delta_sig_min_size.set_no_CR();
     crypto_type.add_choice("sym", "Symmetric encryption");
     crypto_type.add_choice("asym", "Asymmetric encryption");
     crypto_pass1.set_value("");
@@ -193,6 +194,7 @@ html_options_create::html_options_create():
     different_first_slice.set_value_as_bool(defaults.get_first_slice_size() != defaults.get_slice_size());
     execute.set_value(defaults.get_execute());
     crypto_algo.set_value(defaults.get_crypto_algo());
+    delta_sig_min_size.set_value(webdar_tools_convert_to_string(defaults.get_delta_sig_min_size()));
 
     int tmp = 0;
     libdar::infinint tmpi = defaults.get_iteration_count();
@@ -285,6 +287,8 @@ html_options_create::html_options_create():
 
 	// delta signatures
     delta_fs.adopt(&delta_sig);
+    delta_fs.adopt(&delta_sig_min_size);
+    delta_fs.adopt(&delta_sig_min_size_unit);
     delta_fs.adopt(&sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
@@ -581,6 +585,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     if(delta_sig.get_value_as_bool())
     {
 	unique_ptr<libdar::mask> dmask = delta_mask.get_mask();
+	libdar::infinint min_sz = libdar::deci(delta_sig_min_size.get_value()).computer() * delta_sig_min_size_unit.get_value();
 
 	if(dmask)
 	{
@@ -591,6 +596,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 	    throw WEBDAR_BUG;
 
 	ret.set_sig_block_len(sig_block_size.get_value());
+	ret.set_delta_sig_min_size(min_sz);
     }
 
     if(mod_data_detect.get_selected_id() == "any_inode_change")
@@ -654,6 +660,8 @@ void html_options_create::on_event(const string & event_name)
 	}
 
 	delta_mask.set_visible(delta_sig.get_value_as_bool());
+	delta_sig_min_size.set_visible(delta_sig.get_value_as_bool());
+	delta_sig_min_size_unit.set_visible(delta_sig.get_value_as_bool());
 	sig_block_size.set_visible(delta_sig.get_value_as_bool());
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
 
