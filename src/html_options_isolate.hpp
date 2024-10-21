@@ -47,6 +47,8 @@ extern "C"
 #include "html_entrepot.hpp"
 #include "html_form_gnupg_list.hpp"
 #include "html_form_select.hpp"
+#include "html_mask_form_filename.hpp"
+#include "html_form_sig_block_size.hpp"
 
     /// html components for the user to provide parameters of a isolation operation
 
@@ -83,6 +85,13 @@ protected:
 
 private:
     html_derouleur deroule;
+
+    html_form form_delta_sig;
+    html_form_fieldset delta_fs;
+    html_form_input delta_sig;
+    html_form_input delta_transfer_mode;
+    html_form_sig_block_size sig_block_size;
+    html_mask_form_filename delta_mask;
 
     html_entrepot entrep;
     html_form form_archgen;

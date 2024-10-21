@@ -45,6 +45,11 @@ using namespace std;
 const string html_options_isolate::entrepot_changed = "html_options_isolate_entrep_changed";
 
 html_options_isolate::html_options_isolate():
+    form_delta_sig("Update"),
+    delta_fs(""),
+    delta_sig("Transfer binary delta signature", html_form_input::check, "", 1),
+    delta_transfer_mode("Compute delta signature when they are missing", html_form_input::check, "", 1),
+    delta_mask("Filename expression"),
     form_archgen("Update"),
     fs_archgen(""),
     allow_over("Allow slice overwriting", html_form_input::check, "", 1),
@@ -124,6 +129,7 @@ html_options_isolate::html_options_isolate():
 	// building HTML structure
 
     static const char* sect_entrep = "entrepot";
+    static const char* sect_delta = "delta_sig";
     static const char* sect_general = "general";
     static const char* sect_show = "show";
     static const char* sect_compr = "compress";
@@ -131,6 +137,7 @@ html_options_isolate::html_options_isolate():
     static const char* sect_cipher = "ciphering";
 
     deroule.add_section(sect_entrep, "Isolated Catalog Repository");
+    deroule.add_section(sect_delta, "Delta signatures");
     deroule.add_section(sect_general, "General Isolation Options");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_compr, "Compression options");
@@ -138,6 +145,13 @@ html_options_isolate::html_options_isolate():
     deroule.add_section(sect_cipher, "Encryption options");
 
     deroule.adopt_in_section(sect_entrep, &entrep);
+
+    delta_fs.adopt(&delta_sig);
+    delta_fs.adopt(&delta_transfer_mode);
+    delta_fs.adopt(&sig_block_size);
+    form_delta_sig.adopt(&delta_fs);
+    deroule.adopt_in_section(sect_delta, &form_delta_sig);
+    deroule.adopt_in_section(sect_delta, &delta_mask);
 
     fs_archgen.adopt(&allow_over);
     fs_archgen.adopt(&warn_over);
@@ -189,6 +203,8 @@ html_options_isolate::html_options_isolate():
 	// events and visibility
     register_name(entrepot_changed);
 
+    delta_sig.record_actor_on_event(this, html_form_input::changed);
+    delta_transfer_mode.record_actor_on_event(this, html_form_input::changed);
     compression.record_actor_on_event(this, html_compression::changed);
     slicing.record_actor_on_event(this, html_form_input::changed);
     different_first_slice.record_actor_on_event(this, html_form_input::changed);
@@ -209,6 +225,19 @@ void html_options_isolate::on_event(const string & event_name)
        || event_name == html_crypto_algo::changed
        || event_name == html_form_select::changed)
     {
+	if(delta_sig.get_value_as_bool())
+	{
+	    delta_transfer_mode.set_visible(true);
+	    sig_block_size.set_visible(delta_transfer_mode.get_value_as_bool());
+	    delta_mask.set_visible(delta_transfer_mode.get_value_as_bool());
+	}
+	else
+	{
+	    delta_transfer_mode.set_visible(false);
+	    sig_block_size.set_visible(false);
+	    delta_mask.set_visible(false);
+	}
+
 	switch(compression.get_value())
 	{
 	case libdar::compression::none:
@@ -341,6 +370,20 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     ret.set_compression_level(webdar_tools_convert_to_int(compression_level.get_value()));
     ret.set_multi_threaded_compress(webdar_tools_convert_to_int(compr_threads.get_value()));
     ret.set_multi_threaded_crypto(webdar_tools_convert_to_int(crypto_threads.get_value()));
+
+    ret.set_delta_signature(delta_sig.get_value_as_bool());
+    if(delta_sig.get_value_as_bool()
+       && delta_transfer_mode.get_value_as_bool())
+    {
+	unique_ptr<libdar::mask> dmask = delta_mask.get_mask();
+
+	if(dmask)
+	    ret.set_delta_mask(*dmask);
+	else
+	    throw WEBDAR_BUG;
+
+	ret.set_sig_block_len(sig_block_size.get_value());
+    }
 
     val = 0;
     compr_bs.unstack(val);
