@@ -139,17 +139,10 @@ html_options_isolate::html_options_isolate():
     crypto_threads.set_min_only(1);
     delta_sig_min_size.set_value(webdar_tools_convert_to_string(defaults.get_delta_sig_min_size()));
 
-    int tmp = 0;
-    libdar::infinint tmpi = defaults.get_iteration_count();
-    tmpi.unstack(tmp);
-    if(! tmpi.is_zero())
-	throw exception_range("Value provided to iteration count exceeds the supported libdar integer flavor (infinint)");
-    else
-    {
-	iteration_count.set_min_only(tmp);
-	iteration_count.set_value(webdar_tools_convert_to_string(tmp));
-    }
-
+    iteration_count.set_min_only(
+	webdar_tools_convert_from_infinint<int>(defaults.get_iteration_count(),
+						string("Value provided to iteration count exceeds the supported libdar integer flavor (infinint)")));
+    iteration_count.set_value(libdar::deci(defaults.get_iteration_count()).human());
 
 	// building HTML structure
 
@@ -450,10 +443,8 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
 	ret.set_delta_sig_min_size(min_sz);
     }
 
-    val = 0;
-    compr_bs.unstack(val);
-    if(!compr_bs.is_zero())
-	throw exception_range("compression block size is too large for the underlying operating system, please reduce");
+    val = webdar_tools_convert_from_infinint<libdar::U_I>(compr_bs,
+							  string("compression block size is too large for the underlying operating system, please reduce"));
 
     if(val < tokens_min_compr_bs && val != 0)
 	throw exception_range(libdar::tools_printf("compression block size is too small, select either zero to disable compression per block or a block size greater or equal to %d", tokens_min_compr_bs));

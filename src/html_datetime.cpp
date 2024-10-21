@@ -219,16 +219,14 @@ libdar::infinint html_datetime::get_value() const
     return libdar::infinint(tmp_ret);
 }
 
-void html_datetime::set_value(libdar::infinint val)
+void html_datetime::set_value(const libdar::infinint & val)
 {
-    time_t tmp = 0;
+    time_t tmp;
     struct tm splitted;
     struct tm *ret;
 
-    val.unstack(tmp);
-    if(val != 0)
-	throw WEBDAR_BUG; // value given from libdar is not possible to be represented by this implementation
-
+    tmp = webdar_tools_convert_from_infinint<time_t>(val,
+						     string("value given from libdar is not possible to be stored as time_t system type"));
     ret = localtime_r(&tmp, &splitted);
     if(ret == nullptr)
 	throw WEBDAR_BUG; // system failed representing this date in splitted fields

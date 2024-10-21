@@ -61,7 +61,7 @@ public:
     libdar::infinint get_value() const;
 
 	/// setup the initial value displayed to the user
-    void set_value(libdar::infinint val);
+    void set_value(const libdar::infinint & val);
 
 protected:
 	/// inherited from body_builder

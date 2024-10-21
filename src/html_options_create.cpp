@@ -37,6 +37,7 @@ extern "C"
 #include "webdar_css_style.hpp"
 #include "tokens.hpp"
 #include "html_form_mask_expression.hpp"
+#include "webdar_tools.hpp"
 
     //
 #include "html_options_create.hpp"
@@ -196,16 +197,11 @@ html_options_create::html_options_create():
     crypto_algo.set_value(defaults.get_crypto_algo());
     delta_sig_min_size.set_value(webdar_tools_convert_to_string(defaults.get_delta_sig_min_size()));
 
-    int tmp = 0;
     libdar::infinint tmpi = defaults.get_iteration_count();
-    tmpi.unstack(tmp);
-    if(! tmpi.is_zero())
-	throw exception_range("Value provided to iteration count exceeds the supported libdar integer flavor (infinint)");
-    else
-    {
-	iteration_count.set_min_only(tmp);
-	iteration_count.set_value(webdar_tools_convert_to_string(tmp));
-    }
+    iteration_count.set_min_only(
+	webdar_tools_convert_from_infinint<int>(tmpi,
+						string("Value provided to iteration count exceeds the supported libdar integer flavor (infinint)")));
+    iteration_count.set_value(libdar::deci(tmpi).human());
 
     min_compr_size.set_value(libdar::deci(defaults.get_min_compr_size()).human());
     what_to_check.set_value(defaults.get_comparison_fields());
@@ -475,10 +471,8 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_multi_threaded_compress(webdar_tools_convert_to_int(compr_threads.get_value()));
     ret.set_multi_threaded_crypto(webdar_tools_convert_to_int(crypto_threads.get_value()));
 
-    val = 0;
-    compr_bs.unstack(val);
-    if(!compr_bs.is_zero())
-	throw exception_range("compression block size is too large for the underlying operating system, please reduce");
+    val = webdar_tools_convert_from_infinint<libdar::U_I>(compr_bs,
+							  string("compression block size is too large for the underlying operating system, please reduce"));
 
     if(val < tokens_min_compr_bs && val != 0)
 	throw exception_range(libdar::tools_printf("compression block size is too small, select either zero to disable compression per block or a block size greater or equal to %d", tokens_min_compr_bs));
@@ -810,13 +804,19 @@ void html_options_create::on_event(const string & event_name)
 	{
 	    if(cur_it < libdar::default_iteration_count)
 		iteration_count.set_value(libdar::deci(libdar::default_iteration_count).human());
+	    iteration_count.set_min_only(
+		webdar_tools_convert_from_infinint<int>(
+		    libdar::default_iteration_count,
+		    string("too large integer default value provided by libdar")));
 	}
 	else
 	{
 	    if(cur_it < libdar::default_iteration_count_argon2)
-		throw WEBDAR_BUG;
-		// this should be avoided thanks to the min value
-		// set to iteration_count component
+		iteration_count.set_value(libdar::deci(libdar::default_iteration_count_argon2).human());
+	    iteration_count.set_min_only(
+		webdar_tools_convert_from_infinint<int>(
+		    libdar::default_iteration_count_argon2,
+		    string("too large integer default value provided by libdar")));
 
 	    if(cur_it == libdar::default_iteration_count)
 		iteration_count.set_value(libdar::deci(libdar::default_iteration_count_argon2).human());

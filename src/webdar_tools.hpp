@@ -70,6 +70,18 @@ template <class T> void webdar_tools_concat_vectors(std::vector<T> & op1,
 	op1.push_back(op2[i]);
 }
 
+template <class T> T webdar_tools_convert_from_infinint(const libdar::infinint & val, const std::string & conv_err_msg)
+{
+    T ret = 0;
+    libdar::infinint tmp(val);
+
+    tmp.unstack(ret);
+    if(! tmp.is_zero())
+	throw exception_range(conv_err_msg);
+
+    return ret;
+}
+
 extern int webdar_tools_convert_to_int(const std::string & ref);
 extern unsigned int webdar_tools_convert_hexa_to_int(const std::string & ref);
 extern void webdar_tools_split_by(char sep, const std::string & aggregate, std::vector<std::string> & splitted);
