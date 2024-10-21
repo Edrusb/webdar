@@ -80,7 +80,8 @@ html_options_isolate::html_options_isolate():
     crypto_algo("Cipher used"),
     crypto_pass1("Pass phrase", html_form_input::password, "", 30),
     crypto_pass2("Confirm pass phrase", html_form_input::password, "", 30),
-    crypto_size("Cipher Block size", html_form_input::number, "", 30)
+    crypto_size("Cipher Block size", html_form_input::number, "", 30),
+    crypto_threads("Number of threads for ciphering", html_form_input::number, "2", 5)
 {
     libdar::archive_options_isolate defaults;
 
@@ -118,6 +119,7 @@ html_options_isolate::html_options_isolate():
     crypto_pass2.set_value("");
     crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
     compr_threads.set_min_only(1);
+    crypto_threads.set_min_only(1);
 
 	// building HTML structure
 
@@ -179,6 +181,7 @@ html_options_isolate::html_options_isolate():
     fs_crypto.adopt(&crypto_pass2);
     fs_crypto.adopt(&gnupg);
     fs_crypto.adopt(&crypto_size);
+    fs_crypto.adopt(&crypto_threads);
     form_crypto.adopt(&fs_crypto);
     deroule.adopt_in_section(sect_cipher, &form_crypto);
     adopt(&deroule);
@@ -272,6 +275,7 @@ void html_options_isolate::on_event(const string & event_name)
 	    crypto_pass2.set_visible(false);
 	    crypto_size.set_visible(false);
 	    gnupg.set_visible(false);
+	    crypto_threads.set_visible(false);
 	    break;
 	case libdar::crypto_algo::scrambling:
 	case libdar::crypto_algo::blowfish:
@@ -296,6 +300,7 @@ void html_options_isolate::on_event(const string & event_name)
 		throw WEBDAR_BUG;
 	    }
 	    crypto_size.set_visible(true);
+	    crypto_threads.set_visible(true);
 	    break;
 	default:
 	    throw WEBDAR_BUG;
@@ -335,6 +340,7 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     ret.set_compression(compression.get_value());
     ret.set_compression_level(webdar_tools_convert_to_int(compression_level.get_value()));
     ret.set_multi_threaded_compress(webdar_tools_convert_to_int(compr_threads.get_value()));
+    ret.set_multi_threaded_crypto(webdar_tools_convert_to_int(crypto_threads.get_value()));
 
     val = 0;
     compr_bs.unstack(val);

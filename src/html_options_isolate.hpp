@@ -122,7 +122,6 @@ private:
     html_form_input first_slice_size;
     html_size_unit first_slice_size_unit;
 
-
     html_form form_crypto;
     html_form_fieldset fs_crypto;
     html_form_select crypto_type;
@@ -131,6 +130,7 @@ private:
     html_form_input crypto_pass2;
     html_form_input crypto_size;
     html_form_gnupg_list gnupg;
+    html_form_input crypto_threads;
 
 };
 
