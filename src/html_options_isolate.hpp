@@ -111,6 +111,7 @@ private:
     html_form_input compression_level;
     html_form_input compression_block;
     html_size_unit compr_block_unit;
+    html_form_input compr_threads;
 
     html_form form_slicing;
     html_form_fieldset fs_slicing;

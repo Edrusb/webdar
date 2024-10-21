@@ -67,6 +67,7 @@ html_options_isolate::html_options_isolate():
     compression("Compression algorithm"),
     compression_level("Compression level", html_form_input::number, "", 3),
     compression_block("Block compression for parallel compression (zero to zero to disable)", html_form_input::number, "0", 30),
+    compr_threads("Number of threads for compression", html_form_input::number, "2", 5),
     form_slicing("Update"),
     fs_slicing(""),
     slicing("Sliced archive", html_form_input::check, "", 1),
@@ -116,7 +117,7 @@ html_options_isolate::html_options_isolate():
     crypto_pass1.set_value("");
     crypto_pass2.set_value("");
     crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
-
+    compr_threads.set_min_only(1);
 
 	// building HTML structure
 
@@ -159,6 +160,7 @@ html_options_isolate::html_options_isolate():
     fs_compr.adopt(&compression_level);
     fs_compr.adopt(&compression_block);
     fs_compr.adopt(&compr_block_unit);
+    fs_compr.adopt(&compr_threads);
     form_compr.adopt(&fs_compr);
     deroule.adopt_in_section(sect_compr, &form_compr);
 
@@ -211,6 +213,7 @@ void html_options_isolate::on_event(const string & event_name)
 	    compression_level.set_visible(false);
 	    compression_block.set_visible(false);
 	    compr_block_unit.set_visible(false);
+	    compr_threads.set_visible(false);
 	    break;
 	case libdar::compression::lzo1x_1_15:
 	case libdar::compression::lzo1x_1:
@@ -218,6 +221,7 @@ void html_options_isolate::on_event(const string & event_name)
 	    compression_level.set_visible(false);
 	    compression_block.set_visible(true);
 	    compr_block_unit.set_visible(true);
+	    compr_threads.set_visible(true);
 	    break;
 	case libdar::compression::gzip:
 	case libdar::compression::bzip2:
@@ -229,6 +233,7 @@ void html_options_isolate::on_event(const string & event_name)
 	    compression_level.set_visible(true);
 	    compression_block.set_visible(true);
 	    compr_block_unit.set_visible(true);
+	    compr_threads.set_visible(true);
 	    break;
 	default:
 	    throw WEBDAR_BUG;
@@ -329,6 +334,7 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     ret.set_info_details(info_details.get_value_as_bool());
     ret.set_compression(compression.get_value());
     ret.set_compression_level(webdar_tools_convert_to_int(compression_level.get_value()));
+    ret.set_multi_threaded_compress(webdar_tools_convert_to_int(compr_threads.get_value()));
 
     val = 0;
     compr_bs.unstack(val);
