@@ -85,6 +85,7 @@ html_options_isolate::html_options_isolate():
 	// removing Carriage Return for some components
     slice_size.set_no_CR();
     first_slice_size.set_no_CR();
+    compression_block.set_no_CR();
 
 	// setting default values from libdar
     allow_over.set_value_as_bool(defaults.get_allow_over());
@@ -216,7 +217,7 @@ void html_options_isolate::on_event(const string & event_name)
 	case libdar::compression::xz:
 	case libdar::compression::zstd:
 	case libdar::compression::lz4:
-	    compression.set_no_CR(false);
+	    compression.set_no_CR(true);
 	    compression_level.set_visible(true);
 	    compression_block.set_visible(true);
 	    compr_block_unit.set_visible(true);
