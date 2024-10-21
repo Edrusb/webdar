@@ -75,6 +75,7 @@ html_options_isolate::html_options_isolate():
     first_slice_size("Slice size", html_form_input::number, "", 6),
     form_crypto("Update"),
     fs_crypto(""),
+    crypto_type("type of cryptography"),
     crypto_algo("Cipher used"),
     crypto_pass1("Pass phrase", html_form_input::password, "", 30),
     crypto_pass2("Confirm pass phrase", html_form_input::password, "", 30),
@@ -86,6 +87,9 @@ html_options_isolate::html_options_isolate():
     slice_size.set_no_CR();
     first_slice_size.set_no_CR();
     compression_block.set_no_CR();
+
+    crypto_type.add_choice("sym", "Symmetric encryption");
+    crypto_type.add_choice("asym", "Asymmetric encryption");
 
 	// setting default values from libdar
     allow_over.set_value_as_bool(defaults.get_allow_over());
@@ -168,8 +172,10 @@ html_options_isolate::html_options_isolate():
     deroule.adopt_in_section(sect_slice, &form_slicing);
 
     fs_crypto.adopt(&crypto_algo);
+    fs_crypto.adopt(&crypto_type);
     fs_crypto.adopt(&crypto_pass1);
     fs_crypto.adopt(&crypto_pass2);
+    fs_crypto.adopt(&gnupg);
     fs_crypto.adopt(&crypto_size);
     form_crypto.adopt(&fs_crypto);
     deroule.adopt_in_section(sect_cipher, &form_crypto);
@@ -182,6 +188,7 @@ html_options_isolate::html_options_isolate():
     slicing.record_actor_on_event(this, html_form_input::changed);
     different_first_slice.record_actor_on_event(this, html_form_input::changed);
     crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
+    crypto_type.record_actor_on_event(this, html_form_select::changed);
     entrep.record_actor_on_event(this, html_entrepot::changed);
 
     on_event(html_compression::changed);
@@ -194,7 +201,8 @@ void html_options_isolate::on_event(const string & event_name)
 {
     if(event_name == html_compression::changed
        || event_name == html_form_input::changed
-       || event_name == html_crypto_algo::changed)
+       || event_name == html_crypto_algo::changed
+       || event_name == html_form_select::changed)
     {
 	switch(compression.get_value())
 	{
@@ -254,9 +262,11 @@ void html_options_isolate::on_event(const string & event_name)
 	switch(crypto_algo.get_value())
 	{
 	case libdar::crypto_algo::none:
+	    crypto_type.set_visible(false);
 	    crypto_pass1.set_visible(false);
 	    crypto_pass2.set_visible(false);
 	    crypto_size.set_visible(false);
+	    gnupg.set_visible(false);
 	    break;
 	case libdar::crypto_algo::scrambling:
 	case libdar::crypto_algo::blowfish:
@@ -264,8 +274,22 @@ void html_options_isolate::on_event(const string & event_name)
 	case libdar::crypto_algo::twofish256:
 	case libdar::crypto_algo::serpent256:
 	case libdar::crypto_algo::camellia256:
-	    crypto_pass1.set_visible(true);
-	    crypto_pass2.set_visible(true);
+	    crypto_type.set_visible(true);
+	    switch(crypto_type.get_selected_num())
+	    {
+	    case 0: // symmetric
+		crypto_pass1.set_visible(true);
+		crypto_pass2.set_visible(true);
+		gnupg.set_visible(false);
+		break;
+	    case 1: // asymmetric
+		crypto_pass1.set_visible(false);
+		crypto_pass2.set_visible(false);
+		gnupg.set_visible(true);
+		break;
+	    default:
+		throw WEBDAR_BUG;
+	    }
 	    crypto_size.set_visible(true);
 	    break;
 	default:
@@ -329,12 +353,22 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     ret.set_crypto_algo(crypto_algo.get_value());
     if(crypto_algo.get_value() != libdar::crypto_algo::none)
     {
-	if(crypto_pass1.get_value() != crypto_pass2.get_value())
-	    throw exception_range("crypto password and its confirmation do not match");
-	ret.set_crypto_pass(libdar::secu_string(crypto_pass1.get_value().c_str(), crypto_pass1.get_value().size()));
+	switch(crypto_type.get_selected_num())
+	{
+	case 0: // sym
+	    if(crypto_pass1.get_value() != crypto_pass2.get_value())
+		throw exception_range("crypto password and its confirmation do not match");
+	    ret.set_crypto_pass(libdar::secu_string(crypto_pass1.get_value().c_str(), crypto_pass1.get_value().size()));
+	    break;
+	case 1: // asym
+	    ret.set_gnupg_recipients(gnupg.get_gnupg_recipients());
+	    ret.set_gnupg_signatories(gnupg.get_gnupg_signatories());
+	    break;
+	default:
+	    throw WEBDAR_BUG;
+	}
 	ret.set_crypto_size(webdar_tools_convert_to_int(crypto_size.get_value()));
     }
-
 
     return ret;
 }

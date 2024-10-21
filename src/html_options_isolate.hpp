@@ -45,6 +45,8 @@ extern "C"
 #include "html_crypto_algo.hpp"
 #include "html_derouleur.hpp"
 #include "html_entrepot.hpp"
+#include "html_form_gnupg_list.hpp"
+#include "html_form_select.hpp"
 
     /// html components for the user to provide parameters of a isolation operation
 
@@ -122,10 +124,13 @@ private:
 
     html_form form_crypto;
     html_form_fieldset fs_crypto;
+    html_form_select crypto_type;
     html_crypto_algo crypto_algo;
     html_form_input crypto_pass1;
     html_form_input crypto_pass2;
     html_form_input crypto_size;
+    html_form_gnupg_list gnupg;
+
 };
 
 #endif
