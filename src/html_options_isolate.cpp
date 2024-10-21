@@ -86,7 +86,9 @@ html_options_isolate::html_options_isolate():
     crypto_pass1("Pass phrase", html_form_input::password, "", 30),
     crypto_pass2("Confirm pass phrase", html_form_input::password, "", 30),
     crypto_size("Cipher Block size", html_form_input::number, "", 30),
-    crypto_threads("Number of threads for ciphering", html_form_input::number, "2", 5)
+    crypto_threads("Number of threads for ciphering", html_form_input::number, "2", 5),
+    crypto_fs_kdf_hash("Key Derivation Function"),
+    iteration_count("Iteration count", html_form_input::number, "1", 30)
 {
     libdar::archive_options_isolate defaults;
 
@@ -95,8 +97,16 @@ html_options_isolate::html_options_isolate():
     first_slice_size.set_no_CR();
     compression_block.set_no_CR();
 
+	// configure html components
     crypto_type.add_choice("sym", "Symmetric encryption");
     crypto_type.add_choice("asym", "Asymmetric encryption");
+    crypto_kdf_hash.add_choice("md5","md5");
+    crypto_kdf_hash.add_choice("sha1","sha1");
+    crypto_kdf_hash.add_choice("sha512","sha512");
+    crypto_kdf_hash.add_choice("whirlpool","whirlpool");
+    crypto_kdf_hash.add_choice("argon2","argon2");
+    crypto_kdf_hash.set_selected("argon2");
+
 
 	// setting default values from libdar
     allow_over.set_value_as_bool(defaults.get_allow_over());
@@ -125,6 +135,18 @@ html_options_isolate::html_options_isolate():
     crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
     compr_threads.set_min_only(1);
     crypto_threads.set_min_only(1);
+
+    int tmp = 0;
+    libdar::infinint tmpi = defaults.get_iteration_count();
+    tmpi.unstack(tmp);
+    if(! tmpi.is_zero())
+	throw exception_range("Value provided to iteration count exceeds the supported libdar integer flavor (infinint)");
+    else
+    {
+	iteration_count.set_min_only(tmp);
+	iteration_count.set_value(webdar_tools_convert_to_string(tmp));
+    }
+
 
 	// building HTML structure
 
@@ -197,7 +219,11 @@ html_options_isolate::html_options_isolate():
     fs_crypto.adopt(&crypto_size);
     fs_crypto.adopt(&crypto_threads);
     form_crypto.adopt(&fs_crypto);
+    crypto_fs_kdf_hash.adopt(&crypto_kdf_hash);
+    crypto_fs_kdf_hash.adopt(&iteration_count);
+    form_crypto.adopt(&crypto_fs_kdf_hash);
     deroule.adopt_in_section(sect_cipher, &form_crypto);
+
     adopt(&deroule);
 
 	// events and visibility
@@ -211,6 +237,8 @@ html_options_isolate::html_options_isolate():
     crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
     crypto_type.record_actor_on_event(this, html_form_select::changed);
     entrep.record_actor_on_event(this, html_entrepot::changed);
+    crypto_kdf_hash.set_change_event_name(kdf_algo_changed);
+    crypto_kdf_hash.record_actor_on_event(this, kdf_algo_changed);
 
     on_event(html_compression::changed);
 
@@ -305,6 +333,7 @@ void html_options_isolate::on_event(const string & event_name)
 	    crypto_size.set_visible(false);
 	    gnupg.set_visible(false);
 	    crypto_threads.set_visible(false);
+	    crypto_fs_kdf_hash.set_visible(false);
 	    break;
 	case libdar::crypto_algo::scrambling:
 	case libdar::crypto_algo::blowfish:
@@ -319,11 +348,13 @@ void html_options_isolate::on_event(const string & event_name)
 		crypto_pass1.set_visible(true);
 		crypto_pass2.set_visible(true);
 		gnupg.set_visible(false);
+		crypto_fs_kdf_hash.set_visible(true);
 		break;
 	    case 1: // asymmetric
 		crypto_pass1.set_visible(false);
 		crypto_pass2.set_visible(false);
 		gnupg.set_visible(true);
+		crypto_fs_kdf_hash.set_visible(false);
 		break;
 	    default:
 		throw WEBDAR_BUG;
@@ -341,6 +372,29 @@ void html_options_isolate::on_event(const string & event_name)
     }
     else if(event_name == html_entrepot::changed)
 	act(entrepot_changed);
+    else if(event_name == kdf_algo_changed)
+    {
+	libdar::infinint cur_it = libdar::deci(iteration_count.get_value()).computer();
+
+	if(crypto_kdf_hash.get_selected_id() != "argon2")
+	{
+	    if(cur_it < libdar::default_iteration_count)
+		iteration_count.set_value(libdar::deci(libdar::default_iteration_count).human());
+	}
+	else
+	{
+	    if(cur_it < libdar::default_iteration_count_argon2)
+		throw WEBDAR_BUG;
+		// this should be avoided thanks to the min value
+		// set to iteration_count component
+
+	    if(cur_it == libdar::default_iteration_count)
+		iteration_count.set_value(libdar::deci(libdar::default_iteration_count_argon2).human());
+		// we will not change back to lower value when swapping back to argon2
+		// unless the value is the default one (thus user can change the hash
+		// algorithm and stick to the default value for the selected hash algo).
+	}
+    }
     else
 	throw WEBDAR_BUG;
 }
@@ -414,6 +468,27 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
 	    if(crypto_pass1.get_value() != crypto_pass2.get_value())
 		throw exception_range("crypto password and its confirmation do not match");
 	    ret.set_crypto_pass(libdar::secu_string(crypto_pass1.get_value().c_str(), crypto_pass1.get_value().size()));
+	    ret.set_iteration_count(libdar::deci(iteration_count.get_value()).computer());
+	    switch(crypto_kdf_hash.get_selected_num())
+	    {
+	    case 0:
+		ret.set_kdf_hash(libdar::hash_algo::md5);
+		break;
+	    case 1:
+		ret.set_kdf_hash(libdar::hash_algo::sha1);
+		break;
+	    case 2:
+		ret.set_kdf_hash(libdar::hash_algo::sha512);
+		break;
+	    case 3:
+		ret.set_kdf_hash(libdar::hash_algo::whirlpool);
+		break;
+	    case 4:
+		ret.set_kdf_hash(libdar::hash_algo::argon2);
+		break;
+	    default:
+		throw WEBDAR_BUG;
+	    }
 	    break;
 	case 1: // asym
 	    ret.set_gnupg_recipients(gnupg.get_gnupg_recipients());

@@ -84,6 +84,10 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+
+	// specific events
+    static constexpr const char* kdf_algo_changed = "kdf_algo_changed";
+
     html_derouleur deroule;
 
     html_form form_delta_sig;
@@ -140,7 +144,9 @@ private:
     html_form_input crypto_size;
     html_form_gnupg_list gnupg;
     html_form_input crypto_threads;
-
+    html_form_fieldset crypto_fs_kdf_hash;
+    html_form_radio crypto_kdf_hash;
+    html_form_input iteration_count;
 };
 
 #endif
