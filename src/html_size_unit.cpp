@@ -45,11 +45,14 @@ const string html_size_unit::changed = "html_size_unit_changed";
 html_size_unit::html_size_unit() : unit(""),
 				   SI_mode("")
 {
+	// set components value
     SI_mode.add_choice("SI", "SI");
     SI_mode.add_choice("bin", "binary");
     SI_mode.set_selected(0);
     unit.set_no_CR();
     set_fields();
+
+	// adoption tree
     adopt(&unit);
     adopt(&SI_mode);
 
@@ -95,7 +98,7 @@ void html_size_unit::on_event(const string & event_name)
     {
 	set_fields();
 	    // no need to call my_body_part_has_changed()
-	    // because changed done in on_event concern
+	    // because changes done in on_event concern
 	    // body_builder objects we have adopted
 	act(changed);
     }
