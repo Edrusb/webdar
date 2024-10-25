@@ -44,14 +44,14 @@ using namespace std;
 const string html_form_input_unit::changed = "html_form_input_unit_changed";
 
 html_form_input_unit::html_form_input_unit(const string & label,
-				 const string & initial_value,
-				 unsigned int size):
+					   const libdar::infinint & initial_value,
+					   unsigned int size):
     ignore_input_event(false),
     field(label,
 	  html_form_input::number,
-	  initial_value,
+	  "", // we will set the field value below
 	  size),
-    val(0),
+    val(initial_value),
     min(0),
     max(0),
     modif_change("")
@@ -59,6 +59,7 @@ html_form_input_unit::html_form_input_unit(const string & label,
 
 	// components configuration
     field.set_no_CR();
+    set_field_val();
 
 	// adoption tree
     adopt(&field);

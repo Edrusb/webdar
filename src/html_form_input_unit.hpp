@@ -53,7 +53,7 @@ public:
     static const std::string changed;
 
     html_form_input_unit(const std::string & label,
-			 const std::string & initial_value,
+			 const libdar::infinint & initial_value,
 			 unsigned int size);
     html_form_input_unit(const html_form_input_unit & ref) = default;
     html_form_input_unit(html_form_input_unit && ref) noexcept = default;
