@@ -33,7 +33,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
-
+#include "webdar_tools.hpp"
 
     //
 #include "html_form_sig_block_size.hpp"
@@ -44,8 +44,8 @@ html_form_sig_block_size::html_form_sig_block_size():
     fs_function("Function used to derive delta signature block size from the file size to sign"),
     multiply("Multicative factor", html_form_input::number, "1", 10),
     divisor("Divisor factor", html_form_input::number, "1", 10),
-    min_size("Minimum block size", html_form_input::number, "1", 10),
-    max_size("Maximum block size (set to zero to disable max size)", html_form_input::number, "1", 10)
+    min_size("Minimum block size", "1", 10),
+    max_size("Maximum block size (set to zero to disable max size)", "1", 10)
 {
 
 	// default values
@@ -57,10 +57,8 @@ html_form_sig_block_size::html_form_sig_block_size():
     function.set_selected("root2");
     multiply.set_min_only(1);
     divisor.set_min_only(1);
-    min_size.set_value_as_int(RS_DEFAULT_BLOCK_LEN);
-    max_size.set_value_as_int(64*RS_DEFAULT_BLOCK_LEN);
-    min_size.set_no_CR(); // to have min_unit on its right (no need to play with CSS for that)
-    max_size.set_no_CR(); // to have max_unit on its right (no need to play with CSS for that)
+    min_size.set_value_as_infinint(libdar::infinint(RS_DEFAULT_BLOCK_LEN));
+    max_size.set_value_as_infinint(libdar::infinint(64*RS_DEFAULT_BLOCK_LEN));
     make_summary();
 
 	// adoption tree
@@ -71,18 +69,14 @@ html_form_sig_block_size::html_form_sig_block_size():
     adopt(&multiply);
     adopt(&divisor);
     adopt(&min_size);
-    adopt(&min_unit);
     adopt(&max_size);
-    adopt(&max_unit);
 
 	// events
     function.record_actor_on_event(this, html_form_radio::changed);
     multiply.record_actor_on_event(this, html_form_input::changed);
     divisor.record_actor_on_event(this, html_form_input::changed);
-    min_size.record_actor_on_event(this, html_form_input::changed);
-    min_unit.record_actor_on_event(this, html_size_unit::changed);
-    max_size.record_actor_on_event(this, html_form_input::changed);
-    max_unit.record_actor_on_event(this, html_size_unit::changed);
+    min_size.record_actor_on_event(this, html_form_input_unit::changed);
+    max_size.record_actor_on_event(this, html_form_input_unit::changed);
 
 	// csss
     summary_f.add_css_class(webdar_css_style::wcs_bold_text);
@@ -115,8 +109,8 @@ libdar::delta_sig_block_size html_form_sig_block_size::get_value() const
 
     ret.multiplier = libdar::infinint(multiply.get_value_as_int());
     ret.divisor = libdar::infinint(divisor.get_value_as_int());
-    ret.min_block_len = min_size.get_value_as_int();
-    ret.max_block_len = max_size.get_value_as_int();
+    ret.min_block_len = webdar_tools_convert_from_infinint<libdar::U_I>(min_size.get_value_as_infinint(), string("Error while converting min size"));
+    ret.max_block_len = webdar_tools_convert_from_infinint<libdar::U_I>(max_size.get_value_as_infinint(), string("Error while converting max size"));
 
     return ret;
 }
@@ -126,21 +120,12 @@ void html_form_sig_block_size::on_event(const string & event_name)
 {
     if(event_name == html_form_input::changed
        || event_name == html_form_radio::changed
-       || event_name == html_size_unit::changed)
+       || event_name == html_form_input_unit::changed)
     {
 	    // check that min_size <= max_size
 
-	libdar::infinint min, max;
-
-	try
-	{
-	    min = min_unit.get_value() * libdar::infinint(min_size.get_value_as_int());
-	    max = max_unit.get_value() * libdar::infinint(max_size.get_value_as_int());
-	}
-	catch(libdar::Elimitint & e)
-	{
-	    throw exception_libcall(e);
-	}
+	libdar::infinint min = min_size.get_value_as_infinint();
+	libdar::infinint max = max_size.get_value_as_infinint();
 
 	if(max < min && ! max.is_zero())
 	{
@@ -206,21 +191,21 @@ void html_form_sig_block_size::make_summary()
     if(function.get_selected_num() == 0)
     {
 	if(ratio.empty()) // the ratio is 1, thus we use the min_size
-	    summary_f.add_text(0, min_size.get_value() + " " + min_unit.get_string());
+	    summary_f.add_text(0, min_size.get_raw_value() + " " + min_size.get_unit_string());
 	else // need to find the max from min_size*min_unit and ratio
 	{
-	    libdar::infinint minval = libdar::infinint(min_size.get_value_as_int()) * min_unit.get_value();
-	    libdar::infinint maxval = libdar::infinint(max_size.get_value_as_int()) * max_unit.get_value();
+	    libdar::infinint minval = min_size.get_value_as_infinint();
+	    libdar::infinint maxval = max_size.get_value_as_infinint();
 	    libdar::infinint i_mult = libdar::infinint(multi);
 	    libdar::infinint i_divi = libdar::infinint(divi);
 
 	    if(i_mult < minval * i_divi) // thus: i_mult/i_divi < minval
-		summary_f.add_text(0, min_size.get_value() + " " + min_unit.get_string());
+		summary_f.add_text(0, min_size.get_raw_value() + " " + min_size.get_unit_string());
 	    else
 		if(i_mult < maxval * i_divi) // this i_mult/i_divi < maxval
 		    summary_f.add_text(0, ratio);
 		else
-		    summary_f.add_text(0, max_size.get_value() + " " + max_unit.get_string() + " o");
+		    summary_f.add_text(0, max_size.get_raw_value() + " " + max_size.get_unit_string() + " o");
 	}
 	summary_f.add_nl();
 	summary_f.add_nl();
@@ -258,16 +243,16 @@ void html_form_sig_block_size::make_summary()
 	summary_l.add_nl();
 	summary_l.add_text(0, "with");
 	summary_l.add_text(0,
-			 min_size.get_value()
+			 min_size.get_raw_value()
 			 + " "
-			 + min_unit.get_string()
+			 + min_size.get_unit_string()
 			 + " &le; block_size");
-	if(max_size.get_value_as_int() != 0)
+	if(! max_size.get_value_as_infinint().is_zero())
 	    summary_l.add_text(0,
 			 " &le; "
-			 + max_size.get_value()
+			 + max_size.get_raw_value()
 			 + " "
-			 + max_unit.get_string());
+			 + max_size.get_unit_string());
 	summary_l.add_nl();
 	summary_l.add_nl();
 	summary_l.set_visible(true);

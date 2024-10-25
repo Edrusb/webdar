@@ -44,7 +44,7 @@ extern "C"
 #include "html_text.hpp"
 #include "html_form_radio.hpp"
 #include "html_form_input.hpp"
-#include "html_size_unit.hpp"
+#include "html_form_input_unit.hpp"
 #include "html_form_fieldset.hpp"
 
     /// html component used for to logically combine (and / or) criteria to setup an overwriting policies
@@ -82,10 +82,8 @@ private:
     html_form_radio function;
     html_form_input multiply;
     html_form_input divisor;
-    html_form_input min_size;
-    html_size_unit min_unit;
-    html_form_input max_size;
-    html_size_unit max_unit;
+    html_form_input_unit min_size;
+    html_form_input_unit max_size;
 
     void make_summary();
 };
