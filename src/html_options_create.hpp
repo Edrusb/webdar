@@ -60,6 +60,7 @@ extern "C"
 #include "html_form_same_fs.hpp"
 #include "html_form_ignore_as_symlink.hpp"
 #include "html_form_sig_block_size.hpp"
+#include "html_form_input_unit.hpp"
 
     /// html component used for the user to provide the parameters to create a new archive
 
@@ -216,11 +217,9 @@ private:
 
     html_form_fieldset slicing_fs;
     html_form_input slicing;
-    html_form_input slice_size;
-    html_size_unit slice_size_unit;
+    html_form_input_unit slice_size;
     html_form_input different_first_slice;
-    html_form_input first_slice_size;
-    html_size_unit first_slice_size_unit;
+    html_form_input_unit first_slice_size;
 
     html_form_fieldset crypto_fs;
     html_form_select crypto_type;

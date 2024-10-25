@@ -116,9 +116,9 @@ html_options_create::html_options_create():
     compr_mask("Filename expression"),
     slicing_fs(""),
     slicing("Sliced archive", html_form_input::check, "", 1),
-    slice_size("Slice size", html_form_input::number, "", 6),
+    slice_size("Slice size", "", 6),
     different_first_slice("Specific size for first slice", html_form_input::check, "", 1),
-    first_slice_size("Slice size", html_form_input::number, "", 6),
+    first_slice_size("Slice size", "", 6),
     crypto_fs(""),
     crypto_type("type of cryptography"),
     crypto_algo("Cipher used"),
@@ -160,12 +160,8 @@ html_options_create::html_options_create():
 	    else
 		archtype.set_selected(0);
     compression.set_no_CR();
-    slice_size.set_no_CR();
-    slice_size.set_min_only(1);
-    slice_size.set_value_as_int(1);
-    first_slice_size.set_no_CR();
-    first_slice_size.set_min_only(1);
-    first_slice_size.set_value_as_int(1);
+    slice_size.set_min_only(60);
+    first_slice_size.set_min_only(60);
     min_compr_size.set_no_CR();
     compression_block.set_no_CR();
     retry_on_change_overhead.set_no_CR();
@@ -376,10 +372,8 @@ html_options_create::html_options_create():
 	// slicing
     slicing_fs.adopt(&slicing);
     slicing_fs.adopt(&slice_size);
-    slicing_fs.adopt(&slice_size_unit);
     slicing_fs.adopt(&different_first_slice);
     slicing_fs.adopt(&first_slice_size);
-    slicing_fs.adopt(&first_slice_size_unit);
     form_slicing.adopt(&slicing_fs);
     deroule.adopt_in_section(sect_slice, &form_slicing);
 
@@ -488,11 +482,11 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 
     if(slicing.get_value_as_bool())
     {
-	libdar::infinint s_size = libdar::deci(slice_size.get_value()).computer() * slice_size_unit.get_value();
+	libdar::infinint s_size = slice_size.get_value_as_infinint();
 	libdar::infinint f_s_size = 0;
 
 	if(different_first_slice.get_value_as_bool())
-	    f_s_size = libdar::deci(first_slice_size.get_value()).computer() * first_slice_size_unit.get_value();
+	    f_s_size = first_slice_size.get_value_as_infinint();
 
 	ret.set_slicing(s_size, f_s_size);
     }
@@ -725,26 +719,17 @@ void html_options_create::on_event(const string & event_name)
 	if(slicing.get_value_as_bool())
 	{
 	    slice_size.set_visible(true);
-	    slice_size_unit.set_visible(true);
 	    different_first_slice.set_visible(true);
 	    if(different_first_slice.get_value_as_bool())
-	    {
 		first_slice_size.set_visible(true);
-		first_slice_size_unit.set_visible(true);
-	    }
 	    else
-	    {
 		first_slice_size.set_visible(false);
-		first_slice_size_unit.set_visible(false);
-	    }
 	}
 	else // no slicing requested
 	{
 	    slice_size.set_visible(false);
-	    slice_size_unit.set_visible(false);
 	    different_first_slice.set_visible(false);
 	    first_slice_size.set_visible(false);
-	    first_slice_size_unit.set_visible(false);
 	}
 
 	switch(crypto_algo.get_value())
