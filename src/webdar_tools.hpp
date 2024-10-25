@@ -77,7 +77,12 @@ template <class T> T webdar_tools_convert_from_infinint(const libdar::infinint &
 
     tmp.unstack(ret);
     if(! tmp.is_zero())
-	throw exception_range(conv_err_msg);
+    {
+	if(conv_err_msg.empty())
+	    throw WEBDAR_BUG;
+	else
+	    throw exception_range(conv_err_msg);
+    }
 
     return ret;
 }
