@@ -43,7 +43,8 @@ using namespace std;
 const string html_size_unit::changed = "html_size_unit_changed";
 
 html_size_unit::html_size_unit() : unit(""),
-				   SI_mode("")
+				   SI_mode(""),
+				   manual_change(false)
 {
 	// set components value
     SI_mode.add_choice("SI", "SI");
@@ -66,19 +67,7 @@ html_size_unit::html_size_unit() : unit(""),
 libdar::infinint html_size_unit::get_value() const
 {
     libdar::infinint ret;
-    libdar::infinint base;
-
-    switch(SI_mode.get_selected_num())
-    {
-    case 0:
-	base = 1000;
-	break;
-    case 1:
-	base = 1024;
-	break;
-    default:
-	throw WEBDAR_BUG;
-    }
+    libdar::infinint base = get_base_unit_value(SI_mode.get_selected_num());
 
     try
     {
@@ -92,8 +81,89 @@ libdar::infinint html_size_unit::get_value() const
     return ret;
 }
 
+libdar::infinint html_size_unit::get_base_unit_value(unsigned int index) const
+{
+    libdar::infinint base;
+
+    switch(index)
+    {
+    case 0:
+	base = 1000;
+	break;
+    case 1:
+	base = 1024;
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+
+    return base;
+}
+
+unsigned int html_size_unit::get_max_power_for_base_unit(unsigned int index) const
+{
+    return unit.num_choices();
+	// for now the implementation
+	// uses the same number of factors
+	// for both SI and binary based units
+	// if this change in the future
+	// we will keep trace of the units
+	// in a ~table~ field and read that table in
+	// set_fields() method for we have the
+	// exact number of option per base unit
+	// at any time
+}
+
+void html_size_unit::set_unit_and_ratio_indexes(unsigned int base_index,
+						unsigned int power_index)
+{
+    bool has_changed = false;
+
+    manual_change = true;
+
+    try
+    {
+	if(base_index < get_max_base_unit_index())
+	{
+	    if(base_index != SI_mode.get_selected_num())
+	    {
+		SI_mode.set_selected(base_index);
+		set_fields();
+		has_changed = true;
+	    }
+		// else nothing changes here, thus nothing to do
+	}
+	else
+	    throw WEBDAR_BUG;
+
+	if(power_index < get_max_power_for_base_unit(base_index))
+	{
+	if(power_index != unit.get_selected_num())
+	{
+	    unit.set_selected(power_index);
+	    has_changed = true;
+	}
+	    // else nothing changes here, thus nothing to do
+	}
+	else
+	    throw WEBDAR_BUG;
+    }
+    catch(...)
+    {
+	manual_change = false;
+	throw;
+    }
+    manual_change = false;
+
+    if(has_changed)
+	act(changed);
+}
+
 void html_size_unit::on_event(const string & event_name)
 {
+    if(manual_change)
+	return;
+
     if(event_name == mode_changed)
     {
 	set_fields();

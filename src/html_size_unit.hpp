@@ -57,6 +57,20 @@ public:
 	/// return the unit label
     std::string get_string() const { return unit.get_selected_id(); };
 
+	/// get the max base unit index (index starts at zero)
+    unsigned int get_max_base_unit_index() const { return SI_mode.num_choices(); };
+
+	/// get value of the base unit of given index
+    libdar::infinint get_base_unit_value(unsigned int index) const;
+
+	/// get the max power available for the base unit of given index
+
+	/// \note power 0 means factor is "base_unit^0" (which is 1)... and so on.
+    unsigned int get_max_power_for_base_unit(unsigned int index) const;
+
+	/// change the selected base unit and factor programmatically
+    void set_unit_and_ratio_indexes(unsigned int base_index, unsigned int power_index);
+
 	/// actor inheritance
     virtual void on_event(const std::string & event_name) override;
 
@@ -71,6 +85,7 @@ private:
 
     html_form_select unit;
     html_form_select SI_mode;
+    bool manual_change;
 
     void set_fields();
 };
