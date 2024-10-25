@@ -43,7 +43,6 @@ extern "C"
 #include "html_crypto_algo.hpp"
 #include "html_form_input.hpp"
 #include "html_comparison_fields.hpp"
-#include "html_size_unit.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_datetime.hpp"
 #include "html_form.hpp"
@@ -149,8 +148,7 @@ private:
 
     html_form_fieldset delta_fs;
     html_form_input delta_sig;
-    html_form_input delta_sig_min_size;
-    html_size_unit delta_sig_min_size_unit;
+    html_form_input_unit delta_sig_min_size;
     html_form_sig_block_size sig_block_size;
     html_mask_form_filename delta_mask;
 
@@ -170,11 +168,9 @@ private:
     html_form_input slice_user_ownership;
     html_form_input slice_group_ownership;
     html_form_input retry_on_change_times;
-    html_form_input retry_on_change_overhead;
-    html_size_unit retry_on_change_overhead_unit;
+    html_form_input_unit retry_on_change_overhead;
     html_form_input sequential_marks;
-    html_form_input sparse_file_min_size;
-    html_size_unit sparse_file_min_size_unit;
+    html_form_input_unit sparse_file_min_size;
     html_form_input user_comment;
     html_form_input slice_min_digits;
     html_hash_algo hash_algo;
@@ -207,10 +203,8 @@ private:
     html_form_fieldset compr_fs;
     html_compression compression;
     html_form_input compression_level;
-    html_form_input min_compr_size;
-    html_size_unit min_compr_size_unit;
-    html_form_input compression_block;
-    html_size_unit compr_block_unit;
+    html_form_input_unit min_compr_size;
+    html_form_input_unit compression_block;
     html_form_input never_resave_uncompressed;
     html_form_input compr_threads;
     html_mask_form_filename compr_mask;

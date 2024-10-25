@@ -66,7 +66,7 @@ html_options_create::html_options_create():
     reference("Archive of reference"),
     delta_fs(""),
     delta_sig("Compute binary delta signature", html_form_input::check, "", 1),
-    delta_sig_min_size("Avoid calculating delta signature for file smaller than", html_form_input::number, "0", 30),
+    delta_sig_min_size("Avoid calculating delta signature for file smaller than", "0", 30),
     delta_mask("Filename expression"),
     archgen_fs(""),
     allow_over("Allow slice overwriting", html_form_input::check, "", 1),
@@ -76,11 +76,11 @@ html_options_create::html_options_create():
     slice_user_ownership("Slice user ownership", html_form_input::text, "", 10),
     slice_group_ownership("slice group ownership", html_form_input::text, "", 10),
     retry_on_change_times("Max retries saving files that changed", html_form_input::number, "", 3),
-    retry_on_change_overhead("Max wasted bytes retrying saving changed files", html_form_input::number, "", 10),
+    retry_on_change_overhead("Max wasted bytes retrying saving changed files", "0", 10),
     sequential_marks("Add sequential marks", html_form_input::check, "", 1),
     user_comment("User comment in slice header", html_form_input::text, "", 40),
     slice_min_digits("Minimum digits in slice filenames", html_form_input::number, "", 3),
-    sparse_file_min_size("Minimum size of holes to lookup in sparse files", html_form_input::number, "", 10),
+    sparse_file_min_size("Minimum size of holes to lookup in sparse files", "", 10),
     hash_algo("Hashing algorithm"),
     execute("Command to execute after each slice", html_form_input::text, "", 30),
     hourshift("Hour shift", html_form_input::number, "", 5),
@@ -109,8 +109,8 @@ html_options_create::html_options_create():
     compr_fs(""),
     compression("Compression algorithm"),
     compression_level("Compression level", html_form_input::number, "", 3),
-    min_compr_size("Minimum file sized compressed", html_form_input::number, "", 30),
-    compression_block("Block compression for parallel compression (zero to zero to disable)", html_form_input::number, "0", 30),
+    min_compr_size("Minimum file sized compressed", "", 30),
+    compression_block("Block compression for parallel compression (zero to zero to disable)", "0", 30),
     never_resave_uncompressed("Never resave uncompressed if compressed file took more place than uncompressed", html_form_input::check, "", 1),
     compr_threads("Number of threads for compression", html_form_input::number, "2", 5),
     compr_mask("Filename expression"),
@@ -162,11 +162,6 @@ html_options_create::html_options_create():
     compression.set_no_CR();
     slice_size.set_min_only(60);
     first_slice_size.set_min_only(60);
-    min_compr_size.set_no_CR();
-    compression_block.set_no_CR();
-    retry_on_change_overhead.set_no_CR();
-    sparse_file_min_size.set_no_CR();
-    delta_sig_min_size.set_no_CR();
     crypto_type.add_choice("sym", "Symmetric encryption");
     crypto_type.add_choice("asym", "Asymmetric encryption");
     crypto_pass1.set_value("");
@@ -186,12 +181,12 @@ html_options_create::html_options_create():
     pause.set_value(libdar::deci(defaults.get_pause()).human());
     compression.set_value(defaults.get_compression());
     compression_level.set_value(webdar_tools_convert_to_string(defaults.get_compression_level()));
-    compression_block.set_value(webdar_tools_convert_to_string(defaults.get_compression_block_size()));
+    compression_block.set_value_as_infinint(defaults.get_compression_block_size());
     slicing.set_value_as_bool(defaults.get_slice_size() != 0);
     different_first_slice.set_value_as_bool(defaults.get_first_slice_size() != defaults.get_slice_size());
     execute.set_value(defaults.get_execute());
     crypto_algo.set_value(defaults.get_crypto_algo());
-    delta_sig_min_size.set_value(webdar_tools_convert_to_string(defaults.get_delta_sig_min_size()));
+    delta_sig_min_size.set_value_as_infinint(defaults.get_delta_sig_min_size());
 
     libdar::infinint tmpi = defaults.get_iteration_count();
     iteration_count.set_min_only(
@@ -199,7 +194,7 @@ html_options_create::html_options_create():
 						string("Value provided to iteration count exceeds the supported libdar integer flavor (infinint)")));
     iteration_count.set_value(libdar::deci(tmpi).human());
 
-    min_compr_size.set_value(libdar::deci(defaults.get_min_compr_size()).human());
+    min_compr_size.set_value_as_infinint(defaults.get_min_compr_size());
     what_to_check.set_value(defaults.get_comparison_fields());
     hourshift.set_value(libdar::deci(defaults.get_hourshift()).human());
     empty.set_value_as_bool(defaults.get_empty());
@@ -214,9 +209,9 @@ html_options_create::html_options_create():
     slice_user_ownership.set_value(defaults.get_slice_user_ownership());
     slice_group_ownership.set_value(defaults.get_slice_group_ownership());
     retry_on_change_times.set_value(libdar::deci(defaults.get_repeat_count()).human());
-    retry_on_change_overhead.set_value(libdar::deci(defaults.get_repeat_byte()).human());
+    retry_on_change_overhead.set_value_as_infinint(defaults.get_repeat_byte());
     sequential_marks.set_value_as_bool(defaults.get_sequential_marks());
-    sparse_file_min_size.set_value(libdar::deci(defaults.get_sparse_file_min_size()).human());
+    sparse_file_min_size.set_value_as_infinint(defaults.get_sparse_file_min_size());
     security_check.set_value_as_bool(defaults.get_security_check());
     user_comment.set_value(defaults.get_user_comment());
     hash_algo.set_value(defaults.get_hash_algo());
@@ -280,7 +275,6 @@ html_options_create::html_options_create():
 	// delta signatures
     delta_fs.adopt(&delta_sig);
     delta_fs.adopt(&delta_sig_min_size);
-    delta_fs.adopt(&delta_sig_min_size_unit);
     delta_fs.adopt(&sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
@@ -306,10 +300,8 @@ html_options_create::html_options_create():
     archgen_fs.adopt(&slice_group_ownership);
     archgen_fs.adopt(&retry_on_change_times);
     archgen_fs.adopt(&retry_on_change_overhead);
-    archgen_fs.adopt(&retry_on_change_overhead_unit);
     archgen_fs.adopt(&sequential_marks);
     archgen_fs.adopt(&sparse_file_min_size);
-    archgen_fs.adopt(&sparse_file_min_size_unit);
     archgen_fs.adopt(&user_comment);
     archgen_fs.adopt(&slice_min_digits);
     archgen_fs.adopt(&hash_algo);
@@ -359,9 +351,7 @@ html_options_create::html_options_create():
     compr_fs.adopt(&compression);
     compr_fs.adopt(&compression_level);
     compr_fs.adopt(&min_compr_size);
-    compr_fs.adopt(&min_compr_size_unit);
     compr_fs.adopt(&compression_block);
-    compr_fs.adopt(&compr_block_unit);
     compr_fs.adopt(&never_resave_uncompressed);
     compr_fs.adopt(&compr_threads);
     form_compr.adopt(&compr_fs);
@@ -419,7 +409,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 {
     libdar::archive_options_create ret;
     shared_ptr<libdar::archive> ref_arch; // used locally to pass the archive of reference we may build for diff/incr backup
-    libdar::infinint compr_bs = libdar::deci(compression_block.get_value()).computer() * compr_block_unit.get_value();
+    libdar::infinint compr_bs = compression_block.get_value_as_infinint();
     libdar::U_I val = 0;
 
     switch(archtype.get_selected_num())
@@ -460,7 +450,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_empty_dir(empty_dir.get_value_as_bool());
     ret.set_compression(compression.get_value());
     ret.set_compression_level(webdar_tools_convert_to_int(compression_level.get_value()));
-    ret.set_min_compr_size(libdar::deci(min_compr_size.get_value()).computer() * min_compr_size_unit.get_value());
+    ret.set_min_compr_size(min_compr_size.get_value_as_infinint());
     ret.set_never_resave_uncompressed(never_resave_uncompressed.get_value_as_bool());
     ret.set_multi_threaded_compress(webdar_tools_convert_to_int(compr_threads.get_value()));
     ret.set_multi_threaded_crypto(webdar_tools_convert_to_int(crypto_threads.get_value()));
@@ -549,9 +539,9 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_slice_user_ownership(slice_user_ownership.get_value());
     ret.set_slice_group_ownership(slice_group_ownership.get_value());
     ret.set_retry_on_change(libdar::deci(retry_on_change_times.get_value()).computer(),
-			    libdar::deci(retry_on_change_overhead.get_value()).computer() * retry_on_change_overhead_unit.get_value());
+			    retry_on_change_overhead.get_value_as_infinint());
     ret.set_sequential_marks(sequential_marks.get_value_as_bool());
-    ret.set_sparse_file_min_size(libdar::deci(sparse_file_min_size.get_value()).computer() * sparse_file_min_size_unit.get_value());
+    ret.set_sparse_file_min_size(sparse_file_min_size.get_value_as_infinint());
     ret.set_security_check(security_check.get_value_as_bool());
     ret.set_user_comment(user_comment.get_value());
     ret.set_hash_algo(hash_algo.get_value());
@@ -573,7 +563,6 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     if(delta_sig.get_value_as_bool())
     {
 	unique_ptr<libdar::mask> dmask = delta_mask.get_mask();
-	libdar::infinint min_sz = libdar::deci(delta_sig_min_size.get_value()).computer() * delta_sig_min_size_unit.get_value();
 
 	if(dmask)
 	{
@@ -584,7 +573,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 	    throw WEBDAR_BUG;
 
 	ret.set_sig_block_len(sig_block_size.get_value());
-	ret.set_delta_sig_min_size(min_sz);
+	ret.set_delta_sig_min_size(delta_sig_min_size.get_value_as_infinint());
     }
 
     if(mod_data_detect.get_selected_id() == "any_inode_change")
@@ -649,7 +638,6 @@ void html_options_create::on_event(const string & event_name)
 
 	delta_mask.set_visible(delta_sig.get_value_as_bool());
 	delta_sig_min_size.set_visible(delta_sig.get_value_as_bool());
-	delta_sig_min_size_unit.set_visible(delta_sig.get_value_as_bool());
 	sig_block_size.set_visible(delta_sig.get_value_as_bool());
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
 
@@ -677,9 +665,7 @@ void html_options_create::on_event(const string & event_name)
 	    compression_level.set_visible(false);
 	    compression.set_no_CR(false);
 	    min_compr_size.set_visible(false);
-	    min_compr_size_unit.set_visible(false);
 	    compression_block.set_visible(false);
-	    compr_block_unit.set_visible(false);
 	    never_resave_uncompressed.set_visible(false);
 	    compr_threads.set_visible(false);
 	    compr_mask.set_visible(false);
@@ -689,9 +675,7 @@ void html_options_create::on_event(const string & event_name)
 	    compression.set_no_CR(false);
 	    compression_level.set_visible(false);
 	    min_compr_size.set_visible(true);
-	    min_compr_size_unit.set_visible(true);
 	    compression_block.set_visible(true);
-	    compr_block_unit.set_visible(true);
 	    never_resave_uncompressed.set_visible(true);
 	    compr_threads.set_visible(true);
 	    compr_mask.set_visible(true);
@@ -705,9 +689,7 @@ void html_options_create::on_event(const string & event_name)
 	    compression.set_no_CR(true);
 	    compression_level.set_visible(true);
 	    min_compr_size.set_visible(true);
-	    min_compr_size_unit.set_visible(true);
 	    compression_block.set_visible(true);
-	    compr_block_unit.set_visible(true);
 	    never_resave_uncompressed.set_visible(true);
 	    compr_threads.set_visible(true);
 	    compr_mask.set_visible(true);
