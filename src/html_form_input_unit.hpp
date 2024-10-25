@@ -80,6 +80,12 @@ public:
     void set_value_as_infinint(const libdar::infinint & x_val);
     libdar::infinint get_value_as_infinint() const { return val; };
 
+	/// get the displayed number value (not taking into account the unit)
+    const std::string & get_raw_value() const { return field.get_value(); };
+
+	/// get unit display string
+    const std::string get_unit_string() const { return unit_box.get_string(); };
+
 	/// whether the HTML control is enable or disabled
     void set_enabled(bool val) { field.set_enabled(val); };
 
