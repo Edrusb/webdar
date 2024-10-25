@@ -61,9 +61,20 @@ public:
     html_form_input_unit & operator = (html_form_input_unit && ref) noexcept = default;
     ~html_form_input_unit() = default;
 
+	/// set both min and max
+
+	/// \note the condition must be respected 0 <= min < max
     void set_range(const libdar::infinint & x_min, const libdar::infinint & x_max);
+
+	/// set min, min cannot be negative nor less than max if set
     void set_min_only(const libdar::infinint & x_min);
+
+	/// set the max value (by default there is no maximum constraint applied
+
+	/// \note setting this to zero disable max value
     void set_max_only(const libdar::infinint & x_max);
+
+	/// change the label
     void change_label(const std::string & label) { field.change_label(label); };
 
     void set_value_as_infinint(const libdar::infinint & x_val);
@@ -105,6 +116,8 @@ private:
 
     void my_act() { act(modif_change.empty() ? changed: modif_change); };
     void reduce_val_and_unit();
+    void set_field_min_max();
+    void set_field_val();
 
 
 	/// returns the closest value to val expressed in number of "unit"

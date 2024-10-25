@@ -74,27 +74,49 @@ html_form_input_unit::html_form_input_unit(const string & label,
 void html_form_input_unit::set_range(const libdar::infinint & x_min,
 				     const libdar::infinint & x_max)
 {
+    if(x_max.is_zero())
+	throw WEBDAR_BUG;
+    if(x_max < x_min)
+	throw WEBDAR_BUG;
+
     min = x_min;
     max = x_max;
-    field.set_range(reduce_to_unit(min, unit_box.get_value()),
-		    reduce_to_unit_above(max, unit_box.get_value()));
+    if(val < min)
+    {
+	val = min;
+	set_field_val();
+    }
+    if(val > max)
+    {
+	val = max;
+	set_field_val();
+    }
+
+    set_field_min_max();
 }
 
 void html_form_input_unit::set_min_only(const libdar::infinint & x_min)
 {
     min = x_min;
     max = 0;
-    field.set_min_only(reduce_to_unit(min, unit_box.get_value()));
+    if(val < min)
+    {
+	val = min;
+	set_field_val();
+    }
+    set_field_min_max();
 }
 
 void html_form_input_unit::set_max_only(const libdar::infinint & x_max)
 {
     min = 0;
     max = x_max;
-    field.set_range(reduce_to_unit(min, unit_box.get_value()),
-		    reduce_to_unit_above(max, unit_box.get_value()));
-	// we use a set_range and not a set_max_only()
-	// because we must forbid negative values, always.
+    if(val > max)
+    {
+	val = max;
+	set_field_val();
+    }
+    set_field_min_max();
 }
 
 void html_form_input_unit::set_value_as_infinint(const libdar::infinint & x_val)
@@ -123,19 +145,18 @@ void html_form_input_unit::on_event(const std::string & event_name)
 	ignore_input_event = true;
 	try
 	{
-	    libdar::infinint new_unit = unit_box.get_value();
-	    int repr_val = reduce_to_unit(val, new_unit);
-	    int repr_min = reduce_to_unit(min, new_unit);
-	    int repr_max = reduce_to_unit(max, new_unit);
-	    if(repr_val < repr_min)
-		throw WEBDAR_BUG;
-	    if(repr_max != 0
-	       && repr_max < repr_val)
-		throw WEBDAR_BUG;
-
-	    field.set_min_only(repr_min);
-	    field.set_max_only(repr_max);
-	    field.set_value_as_int(repr_val);
+	    set_field_min_max();
+	    val = libdar::infinint(field.get_value_as_int()) * unit_box.get_value();
+	    if(val < min)
+	    {
+		val = min;
+		set_field_val();
+	    }
+	    if(max != 0 && val > max)
+	    {
+		val = max;
+		set_field_val();
+	    }
 	}
 	catch(...)
 	{
@@ -165,6 +186,25 @@ void html_form_input_unit::set_change_event_name(const string & name)
 	// all registered actors are kept:
     rename_name(modif_change, name);
     modif_change = name;
+
+}
+
+void html_form_input_unit::set_field_min_max()
+{
+    libdar::infinint unit_val = unit_box.get_value();
+
+    if(max.is_zero()) // only min is set
+	field.set_min_only(reduce_to_unit_above(min, unit_val));
+    else
+	field.set_range(reduce_to_unit_above(min, unit_val),
+			reduce_to_unit_above(max, unit_val));
+	// we use a set_range and not a set_max_only()
+	// because we must forbid negative values, always.
+}
+
+void html_form_input_unit::set_field_val()
+{
+    field.set_value_as_int(reduce_to_unit(val, unit_box.get_value()));
 }
 
 int html_form_input_unit::reduce_to_unit(const libdar::infinint & val, const libdar::infinint & unit)
