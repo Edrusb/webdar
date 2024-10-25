@@ -42,7 +42,6 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_form_input.hpp"
 #include "html_compression.hpp"
-#include "html_size_unit.hpp"
 #include "html_hash_algo.hpp"
 #include "html_crypto_algo.hpp"
 #include "html_archive_read.hpp"
@@ -51,6 +50,7 @@ extern "C"
 #include "html_mask_form_filename.hpp"
 #include "html_mask_form_path.hpp"
 #include "html_form_overwrite_action.hpp"
+#include "html_form_input_unit.hpp"
 
     /// html component for the user to provided parameters of a libdar merging operation
 
@@ -102,8 +102,7 @@ private:
     html_form_input slice_user_ownership;
     html_form_input slice_group_ownership;
     html_form_input sequential_marks;
-    html_form_input sparse_file_min_size;
-    html_size_unit sparse_file_min_size_unit;
+    html_form_input_unit sparse_file_min_size;
     html_form_input user_comment;
     html_form_input slice_min_digits;
     html_hash_algo hash_algo;
@@ -138,17 +137,14 @@ private:
     html_form_input keep_compressed;
     html_compression compression;
     html_form_input compression_level;
-    html_form_input min_compr_size;
-    html_size_unit min_compr_size_unit;
+    html_form_input_unit min_compr_size;
 
     html_form form_slicing;
     html_form_fieldset fs_slicing;
     html_form_input slicing;
-    html_form_input slice_size;
-    html_size_unit slice_size_unit;
+    html_form_input_unit slice_size;
     html_form_input different_first_slice;
-    html_form_input first_slice_size;
-    html_size_unit first_slice_size_unit;
+    html_form_input_unit first_slice_size;
 
     html_form form_crypto;
     html_form_fieldset fs_crypto;

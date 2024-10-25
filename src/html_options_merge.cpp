@@ -53,7 +53,7 @@ html_options_merge::html_options_merge():
     slice_user_ownership("Slice user ownership", html_form_input::text, "", 10),
     slice_group_ownership("slice group ownership", html_form_input::text, "", 10),
     sequential_marks("Add sequential marks", html_form_input::check, "", 1),
-    sparse_file_min_size("Minimum size of holes to lookup in sparse files", html_form_input::number, "", 10),
+    sparse_file_min_size("Minimum size of holes to lookup in sparse files", "", 10),
     user_comment("User comment in slice header", html_form_input::text, "", 40),
     slice_min_digits("Minimum digits in slice filenames", html_form_input::number, "", 3),
     hash_algo("Hashing algorithm"),
@@ -81,13 +81,13 @@ html_options_merge::html_options_merge():
     keep_compressed("Keep file compressed", html_form_input::check, "", 1),
     compression("Compression algorithm"),
     compression_level("Compression level", html_form_input::range, "", 3),
-    min_compr_size("Minimum file sized compressed", html_form_input::number, "", 30),
+    min_compr_size("Minimum file sized compressed", "", 30),
     form_slicing("Update"),
     fs_slicing(""),
     slicing("Sliced archive", html_form_input::check, "", 1),
-    slice_size("Slice size", html_form_input::number, "", 6),
+    slice_size("Slice size", "", 6),
     different_first_slice("Specific size for first slice", html_form_input::check, "", 1),
-    first_slice_size("Slice size", html_form_input::number, "", 6),
+    first_slice_size("Slice size", "", 6),
     form_crypto("Update"),
     fs_crypto(""),
     crypto_algo("Cipher used"),
@@ -100,10 +100,6 @@ html_options_merge::html_options_merge():
 	// removing Carriage Return for some components
 
     compression.set_no_CR();
-    slice_size.set_no_CR();
-    first_slice_size.set_no_CR();
-    min_compr_size.set_no_CR();
-    sparse_file_min_size.set_no_CR();
 
 
 	// setting default values from libdar
@@ -115,7 +111,7 @@ html_options_merge::html_options_merge():
     slice_user_ownership.set_value(defaults.get_slice_user_ownership());
     slice_group_ownership.set_value(defaults.get_slice_group_ownership());
     sequential_marks.set_value_as_bool(defaults.get_sequential_marks());
-    sparse_file_min_size.set_value(libdar::deci(defaults.get_sparse_file_min_size()).human());
+    sparse_file_min_size.set_value_as_infinint(defaults.get_sparse_file_min_size());
     user_comment.set_value(defaults.get_user_comment());
     slice_min_digits.set_value(libdar::deci(defaults.get_slice_min_digits()).human());
     hash_algo.set_value(defaults.get_hash_algo());
@@ -128,12 +124,12 @@ html_options_merge::html_options_merge():
     keep_compressed.set_value_as_bool(defaults.get_keep_compressed());
     compression.set_value(defaults.get_compression());
     compression_level.set_value(webdar_tools_convert_to_string(defaults.get_compression_level()));
-    min_compr_size.set_value(libdar::deci(defaults.get_min_compr_size()).human());
+    min_compr_size.set_value_as_infinint(defaults.get_min_compr_size());
 
     slicing.set_value_as_bool(defaults.get_slice_size() != 0);
-    slice_size.set_value(libdar::deci(defaults.get_slice_size()).human());
+    slice_size.set_value_as_infinint(defaults.get_slice_size());
     different_first_slice.set_value_as_bool(defaults.get_first_slice_size() != defaults.get_slice_size());
-    first_slice_size.set_value(libdar::deci(defaults.get_first_slice_size()).human());
+    first_slice_size.set_value_as_infinint(defaults.get_first_slice_size());
 
     crypto_algo.set_value(defaults.get_crypto_algo());
     crypto_pass1.set_value("");
@@ -176,7 +172,6 @@ html_options_merge::html_options_merge():
     fs_archgen.adopt(&slice_group_ownership);
     fs_archgen.adopt(&sequential_marks);
     fs_archgen.adopt(&sparse_file_min_size);
-    fs_archgen.adopt(&sparse_file_min_size_unit);
     fs_archgen.adopt(&user_comment);
     fs_archgen.adopt(&slice_min_digits);
     fs_archgen.adopt(&hash_algo);
@@ -211,16 +206,13 @@ html_options_merge::html_options_merge():
     fs_compr.adopt(&compression);
     fs_compr.adopt(&compression_level);
     fs_compr.adopt(&min_compr_size);
-    fs_compr.adopt(&min_compr_size_unit);
     form_compr.adopt(&fs_compr);
     deroule.adopt_in_section(sect_compr, &form_compr);
 
     fs_slicing.adopt(&slicing);
     fs_slicing.adopt(&slice_size);
-    fs_slicing.adopt(&slice_size_unit);
     fs_slicing.adopt(&different_first_slice);
     fs_slicing.adopt(&first_slice_size);
-    fs_slicing.adopt(&first_slice_size_unit);
     form_slicing.adopt(&fs_slicing);
     deroule.adopt_in_section(sect_slice, &form_slicing);
 
@@ -264,7 +256,6 @@ void html_options_merge::on_event(const string & event_name)
 	    compression.set_visible(false);
 	    compression_level.set_visible(false);
 	    min_compr_size.set_visible(false);
-	    min_compr_size_unit.set_visible(false);
 	}
 	else
 	{
@@ -274,14 +265,12 @@ void html_options_merge::on_event(const string & event_name)
 	    case libdar::compression::none:
 		compression_level.set_visible(false);
 		min_compr_size.set_visible(false);
-		min_compr_size_unit.set_visible(false);
 		break;
 	    case libdar::compression::gzip:
 	    case libdar::compression::bzip2:
 	    case libdar::compression::lzo:
 		compression_level.set_visible(true);
 		min_compr_size.set_visible(true);
-		min_compr_size_unit.set_visible(true);
 		break;
 	    default:
 		throw WEBDAR_BUG;
@@ -291,26 +280,17 @@ void html_options_merge::on_event(const string & event_name)
 	if(slicing.get_value_as_bool())
 	{
 	    slice_size.set_visible(true);
-	    slice_size_unit.set_visible(true);
 	    different_first_slice.set_visible(true);
 	    if(different_first_slice.get_value_as_bool())
-	    {
 		first_slice_size.set_visible(true);
-		first_slice_size_unit.set_visible(true);
-	    }
 	    else
-	    {
 		first_slice_size.set_visible(false);
-		first_slice_size_unit.set_visible(false);
-	    }
 	}
 	else // no slicing requested
 	{
 	    slice_size.set_visible(false);
-	    slice_size_unit.set_visible(false);
 	    different_first_slice.set_visible(false);
 	    first_slice_size.set_visible(false);
-	    first_slice_size_unit.set_visible(false);
 	}
 
 	switch(crypto_algo.get_value())
@@ -360,7 +340,7 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
     ret.set_slice_user_ownership(slice_user_ownership.get_value());
     ret.set_slice_group_ownership(slice_group_ownership.get_value());
     ret.set_sequential_marks(sequential_marks.get_value_as_bool());
-    ret.set_sparse_file_min_size(libdar::deci(sparse_file_min_size.get_value()).computer() * sparse_file_min_size_unit.get_value());
+    ret.set_sparse_file_min_size(sparse_file_min_size.get_value_as_infinint());
     ret.set_user_comment(user_comment.get_value());
     ret.set_slice_min_digits(libdar::deci(slice_min_digits.get_value()).computer());
     ret.set_hash_algo(hash_algo.get_value());
@@ -376,15 +356,15 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
     ret.set_keep_compressed(keep_compressed.get_value_as_bool());
     ret.set_compression(compression.get_value());
     ret.set_compression_level(webdar_tools_convert_to_int(compression_level.get_value()));
-    ret.set_min_compr_size(libdar::deci(min_compr_size.get_value()).computer() * min_compr_size_unit.get_value());
+    ret.set_min_compr_size(min_compr_size.get_value_as_infinint());
 
     if(slicing.get_value_as_bool())
     {
-	libdar::infinint s_size = libdar::deci(slice_size.get_value()).computer() * slice_size_unit.get_value();
+	libdar::infinint s_size = slice_size.get_value_as_infinint();
 	libdar::infinint f_s_size = 0;
 
 	if(different_first_slice.get_value_as_bool())
-	    f_s_size = libdar::deci(first_slice_size.get_value()).computer() * first_slice_size_unit.get_value();
+	    f_s_size = first_slice_size.get_value_as_infinint();
 
 	ret.set_slicing(s_size, f_s_size);
     }
