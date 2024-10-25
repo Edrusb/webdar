@@ -173,6 +173,15 @@ string html_form_input_unit::inherited_get_body_part(const chemin & path,
     return get_body_part_from_all_children(path, req);
 }
 
+void html_form_input_unit::css_classes_have_changed()
+{
+    css_class_group applied_to_me = get_css_class_group();
+
+	// propagating our css class only to the "field" field
+    field.clear_css_classes();
+    field.add_css_class(applied_to_me);
+}
+
 void html_form_input_unit::set_change_event_name(const string & name)
 {
     if(name == "")
