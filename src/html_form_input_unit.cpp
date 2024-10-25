@@ -164,6 +164,8 @@ void html_form_input_unit::on_event(const std::string & event_name)
 	    throw;
 	}
 	ignore_input_event = false;
+
+	my_act(); // acting only once even if we modified or not the "field" field
     }
 }
 
