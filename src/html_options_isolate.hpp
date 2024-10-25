@@ -40,7 +40,6 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_form_input.hpp"
 #include "html_compression.hpp"
-#include "html_size_unit.hpp"
 #include "html_hash_algo.hpp"
 #include "html_crypto_algo.hpp"
 #include "html_derouleur.hpp"
@@ -94,8 +93,7 @@ private:
     html_form_fieldset delta_fs;
     html_form_input delta_sig;
     html_form_input delta_transfer_mode;
-    html_form_input delta_sig_min_size;
-    html_size_unit delta_sig_min_size_unit;
+    html_form_input_unit delta_sig_min_size;
     html_form_sig_block_size sig_block_size;
     html_mask_form_filename delta_mask;
 
@@ -124,18 +122,15 @@ private:
     html_form_fieldset fs_compr;
     html_compression compression;
     html_form_input compression_level;
-    html_form_input compression_block;
-    html_size_unit compr_block_unit;
+    html_form_input_unit compression_block;
     html_form_input compr_threads;
 
     html_form form_slicing;
     html_form_fieldset fs_slicing;
     html_form_input slicing;
-    html_form_input slice_size;
-    html_size_unit slice_size_unit;
+    html_form_input_unit slice_size;
     html_form_input different_first_slice;
-    html_form_input first_slice_size;
-    html_size_unit first_slice_size_unit;
+    html_form_input_unit first_slice_size;
 
     html_form form_crypto;
     html_form_fieldset fs_crypto;

@@ -49,7 +49,7 @@ html_options_isolate::html_options_isolate():
     delta_fs(""),
     delta_sig("Transfer binary delta signature", html_form_input::check, "", 1),
     delta_transfer_mode("Compute delta signature when they are missing", html_form_input::check, "", 1),
-    delta_sig_min_size("Avoid calculating delta signature for file smaller than", html_form_input::number, "0", 30),
+    delta_sig_min_size("Avoid calculating delta signature for file smaller than", "0", 30),
     delta_mask("Filename expression"),
     form_archgen("Update"),
     fs_archgen(""),
@@ -72,14 +72,14 @@ html_options_isolate::html_options_isolate():
     fs_compr(""),
     compression("Compression algorithm"),
     compression_level("Compression level", html_form_input::number, "", 3),
-    compression_block("Block compression for parallel compression (zero to zero to disable)", html_form_input::number, "0", 30),
+    compression_block("Block compression for parallel compression (zero to zero to disable)", "0", 30),
     compr_threads("Number of threads for compression", html_form_input::number, "2", 5),
     form_slicing("Update"),
     fs_slicing(""),
     slicing("Sliced archive", html_form_input::check, "", 1),
-    slice_size("Slice size", html_form_input::number, "", 6),
+    slice_size("Slice size", "", 6),
     different_first_slice("Specific size for first slice", html_form_input::check, "", 1),
-    first_slice_size("Slice size", html_form_input::number, "", 6),
+    first_slice_size("Slice size", "", 6),
     form_crypto("Update"),
     fs_crypto(""),
     crypto_type("type of cryptography"),
@@ -92,12 +92,6 @@ html_options_isolate::html_options_isolate():
     iteration_count("Iteration count", html_form_input::number, "1", 30)
 {
     libdar::archive_options_isolate defaults;
-
-	// removing Carriage Return for some components
-    slice_size.set_no_CR();
-    first_slice_size.set_no_CR();
-    compression_block.set_no_CR();
-    delta_sig_min_size.set_no_CR();
 
 	// configure html components
     crypto_type.add_choice("sym", "Symmetric encryption");
@@ -126,18 +120,18 @@ html_options_isolate::html_options_isolate():
     empty.set_value_as_bool(defaults.get_empty());
     compression.set_value(defaults.get_compression());
     compression_level.set_value(webdar_tools_convert_to_string(defaults.get_compression_level()));
-    compression_block.set_value(webdar_tools_convert_to_string(defaults.get_compression_block_size()));
+    compression_block.set_value_as_infinint(defaults.get_compression_block_size());
     slicing.set_value_as_bool(defaults.get_slice_size() != 0);
-    slice_size.set_value(libdar::deci(defaults.get_slice_size()).human());
+    slice_size.set_value_as_infinint(defaults.get_slice_size());
     different_first_slice.set_value_as_bool(defaults.get_first_slice_size() != defaults.get_slice_size());
-    first_slice_size.set_value(libdar::deci(defaults.get_first_slice_size()).human());
+    first_slice_size.set_value_as_infinint(defaults.get_first_slice_size());
     crypto_algo.set_value(defaults.get_crypto_algo());
     crypto_pass1.set_value("");
     crypto_pass2.set_value("");
     crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
     compr_threads.set_min_only(1);
     crypto_threads.set_min_only(1);
-    delta_sig_min_size.set_value(webdar_tools_convert_to_string(defaults.get_delta_sig_min_size()));
+    delta_sig_min_size.set_value_as_infinint(defaults.get_delta_sig_min_size());
 
     iteration_count.set_min_only(
 	webdar_tools_convert_from_infinint<int>(defaults.get_iteration_count(),
@@ -167,7 +161,6 @@ html_options_isolate::html_options_isolate():
     delta_fs.adopt(&delta_sig);
     delta_fs.adopt(&delta_transfer_mode);
     delta_fs.adopt(&delta_sig_min_size);
-    delta_fs.adopt(&delta_sig_min_size_unit);
     delta_fs.adopt(&sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
@@ -195,17 +188,14 @@ html_options_isolate::html_options_isolate():
     fs_compr.adopt(&compression);
     fs_compr.adopt(&compression_level);
     fs_compr.adopt(&compression_block);
-    fs_compr.adopt(&compr_block_unit);
     fs_compr.adopt(&compr_threads);
     form_compr.adopt(&fs_compr);
     deroule.adopt_in_section(sect_compr, &form_compr);
 
     fs_slicing.adopt(&slicing);
     fs_slicing.adopt(&slice_size);
-    fs_slicing.adopt(&slice_size_unit);
     fs_slicing.adopt(&different_first_slice);
     fs_slicing.adopt(&first_slice_size);
-    fs_slicing.adopt(&first_slice_size_unit);
     form_slicing.adopt(&fs_slicing);
     deroule.adopt_in_section(sect_slice, &form_slicing);
 
@@ -255,7 +245,6 @@ void html_options_isolate::on_event(const string & event_name)
 	{
 	    delta_transfer_mode.set_visible(true);
 	    delta_sig_min_size.set_visible(delta_transfer_mode.get_value_as_bool());
-	    delta_sig_min_size_unit.set_visible(delta_transfer_mode.get_value_as_bool());
 	    sig_block_size.set_visible(delta_transfer_mode.get_value_as_bool());
 	    delta_mask.set_visible(delta_transfer_mode.get_value_as_bool());
 	}
@@ -263,7 +252,6 @@ void html_options_isolate::on_event(const string & event_name)
 	{
 	    delta_transfer_mode.set_visible(false);
 	    delta_sig_min_size.set_visible(false);
-	    delta_sig_min_size_unit.set_visible(false);
 	    sig_block_size.set_visible(false);
 	    delta_mask.set_visible(false);
 	}
@@ -274,7 +262,6 @@ void html_options_isolate::on_event(const string & event_name)
 	    compression.set_no_CR(false);
 	    compression_level.set_visible(false);
 	    compression_block.set_visible(false);
-	    compr_block_unit.set_visible(false);
 	    compr_threads.set_visible(false);
 	    break;
 	case libdar::compression::lzo1x_1_15:
@@ -282,7 +269,6 @@ void html_options_isolate::on_event(const string & event_name)
 	    compression.set_no_CR(false);
 	    compression_level.set_visible(false);
 	    compression_block.set_visible(true);
-	    compr_block_unit.set_visible(true);
 	    compr_threads.set_visible(true);
 	    break;
 	case libdar::compression::gzip:
@@ -294,7 +280,6 @@ void html_options_isolate::on_event(const string & event_name)
 	    compression.set_no_CR(true);
 	    compression_level.set_visible(true);
 	    compression_block.set_visible(true);
-	    compr_block_unit.set_visible(true);
 	    compr_threads.set_visible(true);
 	    break;
 	default:
@@ -304,26 +289,17 @@ void html_options_isolate::on_event(const string & event_name)
 	if(slicing.get_value_as_bool())
 	{
 	    slice_size.set_visible(true);
-	    slice_size_unit.set_visible(true);
 	    different_first_slice.set_visible(true);
 	    if(different_first_slice.get_value_as_bool())
-	    {
 		first_slice_size.set_visible(true);
-		first_slice_size_unit.set_visible(true);
-	    }
 	    else
-	    {
 		first_slice_size.set_visible(false);
-		first_slice_size_unit.set_visible(false);
-	    }
 	}
 	else // no slicing requested
 	{
 	    slice_size.set_visible(false);
-	    slice_size_unit.set_visible(false);
 	    different_first_slice.set_visible(false);
 	    first_slice_size.set_visible(false);
-	    first_slice_size_unit.set_visible(false);
 	}
 
 	switch(crypto_algo.get_value())
@@ -405,7 +381,7 @@ void html_options_isolate::on_event(const string & event_name)
 libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<html_web_user_interaction> & webui) const
 {
     libdar::archive_options_isolate ret;
-    libdar::infinint compr_bs = libdar::deci(compression_block.get_value()).computer() * compr_block_unit.get_value();
+    libdar::infinint compr_bs = compression_block.get_value_as_infinint();
     libdar::U_I val = 0;
 
     ret.set_entrepot(entrep.get_entrepot(webui));
@@ -432,7 +408,6 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
        && delta_transfer_mode.get_value_as_bool())
     {
 	unique_ptr<libdar::mask> dmask = delta_mask.get_mask();
-	libdar::infinint min_sz = libdar::deci(delta_sig_min_size.get_value()).computer() * delta_sig_min_size_unit.get_value();
 
 	if(dmask)
 	    ret.set_delta_mask(*dmask);
@@ -440,7 +415,7 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
 	    throw WEBDAR_BUG;
 
 	ret.set_sig_block_len(sig_block_size.get_value());
-	ret.set_delta_sig_min_size(min_sz);
+	ret.set_delta_sig_min_size(delta_sig_min_size.get_value_as_infinint());
     }
 
     val = webdar_tools_convert_from_infinint<libdar::U_I>(compr_bs,
@@ -452,11 +427,11 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
 
     if(slicing.get_value_as_bool())
     {
-	libdar::infinint s_size = libdar::deci(slice_size.get_value()).computer() * slice_size_unit.get_value();
+	libdar::infinint s_size = slice_size.get_value_as_infinint();
 	libdar::infinint f_s_size = 0;
 
 	if(different_first_slice.get_value_as_bool())
-	    f_s_size = libdar::deci(first_slice_size.get_value()).computer() * first_slice_size_unit.get_value();
+	    f_s_size = first_slice_size.get_value_as_infinint();
 
 	ret.set_slicing(s_size, f_s_size);
     }
