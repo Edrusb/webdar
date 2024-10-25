@@ -127,7 +127,6 @@ html_options_repair::html_options_repair():
 	    "",
 	    1),
     slice_size("Slice size",
-	       html_form_input::number,
 	       "",
 	       6),
     different_first_slice("Specific size for first slice",
@@ -135,7 +134,6 @@ html_options_repair::html_options_repair():
 			  "",
 			  1),
     first_slice_size("Slice size",
-		     html_form_input::number,
 		     "",
 		     6),
     slicing_fs(""),
@@ -175,9 +173,9 @@ html_options_repair::html_options_repair():
     warn_over.set_value_as_bool(defaults.get_warn_over());
     pause.set_value(libdar::deci(defaults.get_pause()).human());
     slicing.set_value_as_bool(defaults.get_slice_size() != 0);
-    slice_size.set_value(libdar::deci(defaults.get_slice_size()).human());
+    slice_size.set_value_as_infinint(defaults.get_slice_size());
     different_first_slice.set_value_as_bool(defaults.get_first_slice_size() != defaults.get_slice_size());
-    first_slice_size.set_value(libdar::deci(defaults.get_first_slice_size()).human());
+    first_slice_size.set_value_as_infinint(defaults.get_first_slice_size());
     crypto_algo.set_value(defaults.get_crypto_algo());
     crypto_pass1.set_value("");
     crypto_pass2.set_value("");
@@ -187,9 +185,6 @@ html_options_repair::html_options_repair():
     multi_thread_crypto.set_min_only(1);
     multi_thread_compress.set_min_only(1);
     slice_min_digits.set_min_only(1);
-
-    slice_size.set_no_CR();
-    first_slice_size.set_no_CR();
 
 	// adoption tree
     display_fs.adopt(&info_details);
@@ -221,10 +216,8 @@ html_options_repair::html_options_repair():
 
     slicing_fs.adopt(&slicing);
     slicing_fs.adopt(&slice_size);
-    slicing_fs.adopt(&slice_size_unit);
     slicing_fs.adopt(&different_first_slice);
     slicing_fs.adopt(&first_slice_size);
-    slicing_fs.adopt(&first_slice_size_unit);
     slicing_form.adopt(&slicing_fs);
     deroule.adopt_in_section(sect_slice, &slicing_form);
 
@@ -266,26 +259,17 @@ void html_options_repair::on_event(const string & event_name)
     	if(slicing.get_value_as_bool())
 	{
 	    slice_size.set_visible(true);
-	    slice_size_unit.set_visible(true);
 	    different_first_slice.set_visible(true);
 	    if(different_first_slice.get_value_as_bool())
-	    {
 		first_slice_size.set_visible(true);
-		first_slice_size_unit.set_visible(true);
-	    }
 	    else
-	    {
 		first_slice_size.set_visible(false);
-		first_slice_size_unit.set_visible(false);
-	    }
 	}
 	else // no slicing requested
 	{
 	    slice_size.set_visible(false);
-	    slice_size_unit.set_visible(false);
 	    different_first_slice.set_visible(false);
 	    first_slice_size.set_visible(false);
-	    first_slice_size_unit.set_visible(false);
 	}
 
 	switch(crypto_algo.get_value())
@@ -333,11 +317,11 @@ libdar::archive_options_repair html_options_repair::get_options(shared_ptr<html_
     ret.set_pause(libdar::deci(pause.get_value()).computer());
     if(slicing.get_value_as_bool())
     {
-	libdar::infinint s_size = libdar::deci(slice_size.get_value()).computer() * slice_size_unit.get_value();
+	libdar::infinint s_size = slice_size.get_value_as_infinint();
 	libdar::infinint f_s_size = 0;
 
 	if(different_first_slice.get_value_as_bool())
-	    f_s_size = libdar::deci(first_slice_size.get_value()).computer() * first_slice_size_unit.get_value();
+	    f_s_size = first_slice_size.get_value_as_infinint();
 
 	ret.set_slicing(s_size, f_s_size);
     }

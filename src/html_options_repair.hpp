@@ -41,13 +41,13 @@ extern "C"
 #include "events.hpp"
 #include "html_crypto_algo.hpp"
 #include "html_form_input.hpp"
-#include "html_size_unit.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_form.hpp"
 #include "html_hash_algo.hpp"
 #include "html_derouleur.hpp"
 #include "html_entrepot.hpp"
 #include "html_web_user_interaction.hpp"
+#include "html_form_input_unit.hpp"
 
     /// html component used for the user to provide the parameters to repair an archive
 
@@ -125,11 +125,9 @@ private:
 	// slicing
 
     html_form_input slicing;
-    html_form_input slice_size;
-    html_size_unit slice_size_unit;
+    html_form_input_unit slice_size;
     html_form_input different_first_slice;
-    html_form_input first_slice_size;
-    html_size_unit first_slice_size_unit;
+    html_form_input_unit first_slice_size;
     html_form_fieldset slicing_fs;
     html_form slicing_form;
 
