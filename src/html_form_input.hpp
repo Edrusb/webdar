@@ -78,7 +78,7 @@ public:
     bool get_value_as_bool() const { return !x_init.empty(); }; //< for checkbox empty string means unchecked, anything else checked
     int get_value_as_int() const;
 
-	/// whether the HTML control is enable or disabled
+	/// set whether the HTML control is enable or disabled
     void set_enabled(bool val);
 
 	/// change the name of the event generated when this control changes
