@@ -67,6 +67,8 @@ html_options_merge::html_options_merge():
     form_shown("Update"),
     fs_shown(""),
     info_details("Detailed informations", html_form_input::check, "1", 1),
+    display_treated("Display treated files", html_form_input::check, "1", 1),
+    display_treated_only_dir("Display only treated directories", html_form_input::check, "", 1),
     display_skipped("Display skipped files", html_form_input::check, "1", 1),
     form_perimeter("Update"),
     fs_perimeter(""),
@@ -187,6 +189,8 @@ html_options_merge::html_options_merge():
     deroule.adopt_in_section(sect_aux, &aux_block);
 
     fs_shown.adopt(&info_details);
+    fs_shown.adopt(&display_treated);
+    fs_shown.adopt(&display_treated_only_dir);
     fs_shown.adopt(&display_skipped);
     form_shown.adopt(&fs_shown);
     deroule.adopt_in_section(sect_show, &form_shown);
@@ -228,6 +232,7 @@ html_options_merge::html_options_merge():
 	// events and visibility
     register_name(entrepot_changed);
 
+    display_treated.record_actor_on_event(this, html_form_input::changed);
     keep_compressed.record_actor_on_event(this, html_form_input::changed);
     compression.record_actor_on_event(this, html_compression::changed);
     slicing.record_actor_on_event(this, html_form_input::changed);
@@ -240,6 +245,7 @@ html_options_merge::html_options_merge():
 
 	// CSS
     webdar_css_style::grey_button(deroule, true);
+    display_treated_only_dir.add_css_class(webdar_css_style::wcs_indent);
 }
 
 
@@ -250,6 +256,7 @@ void html_options_merge::on_event(const string & event_name)
        || event_name == html_crypto_algo::changed)
     {
 	auxiliary.set_visible(has_aux.get_value_as_bool());
+	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
 
 	if(keep_compressed.get_value_as_bool())
 	{
@@ -347,6 +354,8 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
     ret.set_empty(empty.get_value_as_bool());
     ret.set_execute(execute.get_value());
     ret.set_info_details(info_details.get_value_as_bool());
+    ret.set_display_treated(display_treated.get_value_as_bool(),
+			    display_treated_only_dir.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
     ret.set_empty_dir(empty_dir.get_value_as_bool());
     ret.set_decremental_mode(decremental_mode.get_value_as_bool());

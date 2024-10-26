@@ -119,6 +119,8 @@ private:
     html_form form_shown;
     html_form_fieldset fs_shown;
     html_form_input info_details;
+    html_form_input display_treated;
+    html_form_input display_treated_only_dir;
     html_form_input display_skipped;
 
     html_form form_perimeter;
