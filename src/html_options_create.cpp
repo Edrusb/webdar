@@ -402,7 +402,7 @@ html_options_create::html_options_create():
 
 	// css
     webdar_css_style::grey_button(deroule, true);
-    display_treated_only_dir.add_css_class(css_indent);
+    display_treated_only_dir.add_css_class(webdar_css_style::wcs_indent);
 }
 
 libdar::archive_options_create html_options_create::get_options(shared_ptr<html_web_user_interaction> & webui) const
@@ -806,10 +806,4 @@ void html_options_create::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
-
-    css tmp;
-    tmp.css_margin_left("4em");
-
-    if(! csslib->class_exists(css_indent))
-	csslib->add(css_indent, tmp);
 }

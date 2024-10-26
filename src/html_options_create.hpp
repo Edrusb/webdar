@@ -101,9 +101,6 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
-	// css
-    static constexpr const char* css_indent = "html_option_create_indent";
-
 	// specific events
     static constexpr const char* kdf_algo_changed = "kdf_algo_changed";
 

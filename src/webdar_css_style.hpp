@@ -55,6 +55,7 @@ namespace webdar_css_style
     constexpr const char* wcs_url_grey = "wcs_url_grey";
     constexpr const char* wcs_bold_text = "wcs_bold_text";
     constexpr const char* wcs_red_border = "wcs_red_border";
+    constexpr const char* wcs_indent = "wcs_indent";
 
 
 	/// update a css_library with css_class definitions used by the three following routines

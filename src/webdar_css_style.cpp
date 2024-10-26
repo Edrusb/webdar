@@ -60,6 +60,7 @@ namespace webdar_css_style
     static css_class url_grey(wcs_url_grey);         ///< links when button is disabled or greyed
     static css_class bold_text(wcs_bold_text);       ///< bold text
     static css_class red_border(wcs_red_border);     ///< red border
+    static css_class indent(wcs_indent);             ///< indentation (4em shift to the right)
 
     static void init()
     {
@@ -170,6 +171,11 @@ namespace webdar_css_style
 		tmp_set.css_border_color(css::bd_all, RED);
 		red_border.set_value(tmp_set);
 
+		    //
+		tmp_set.clear();
+		tmp_set.css_margin_left("4em");
+		indent.set_value(tmp_set);
+
                 initialized = true;
             }
         }
@@ -199,6 +205,7 @@ namespace webdar_css_style
 	    csslib.add(width_8em);
 	    csslib.add(bold_text);
 	    csslib.add(red_border);
+	    csslib.add(indent);
 	}
 	else
 	{
@@ -214,6 +221,10 @@ namespace webdar_css_style
 		throw WEBDAR_BUG;
 	    if(!csslib.class_exists(bold_text.get_name()))
 		throw WEBDAR_BUG;
+		// should continue with the other css objects
+		// but... well... does not make much sense to
+		// check that, if class does not exist, the
+		// problem will be seen shortly.
 	}
     }
 
