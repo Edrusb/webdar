@@ -86,7 +86,7 @@ html_options_isolate::html_options_isolate():
     crypto_algo("Cipher used"),
     crypto_pass1("Pass phrase", html_form_input::password, "", 30),
     crypto_pass2("Confirm pass phrase", html_form_input::password, "", 30),
-    crypto_size("Cipher Block size", html_form_input::number, "", 30),
+    crypto_size("Cipher Block size", 0, 30),
     crypto_threads("Number of threads for ciphering", html_form_input::number, "2", 5),
     crypto_fs_kdf_hash("Key Derivation Function"),
     iteration_count("Iteration count", html_form_input::number, "1", 30)
@@ -128,7 +128,7 @@ html_options_isolate::html_options_isolate():
     crypto_algo.set_value(defaults.get_crypto_algo());
     crypto_pass1.set_value("");
     crypto_pass2.set_value("");
-    crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
+    crypto_size.set_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
     compr_threads.set_min_only(1);
     crypto_threads.set_min_only(1);
     delta_sig_min_size.set_value_as_infinint(defaults.get_delta_sig_min_size());
@@ -474,7 +474,10 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
 	default:
 	    throw WEBDAR_BUG;
 	}
-	ret.set_crypto_size(webdar_tools_convert_to_int(crypto_size.get_value()));
+	ret.set_crypto_size(
+	    webdar_tools_convert_from_infinint<libdar::U_32>(
+		crypto_size.get_value_as_infinint(),
+		string("Value too large for a cipher block size")));
     }
 
     return ret;
