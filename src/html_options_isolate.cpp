@@ -102,7 +102,8 @@ html_options_isolate::html_options_isolate():
     crypto_kdf_hash.add_choice("whirlpool","whirlpool");
     crypto_kdf_hash.add_choice("argon2","argon2");
     crypto_kdf_hash.set_selected("argon2");
-
+    slice_size.set_min_only(60);
+    first_slice_size.set_min_only(60);
 
 	// setting default values from libdar
     allow_over.set_value_as_bool(defaults.get_allow_over());
