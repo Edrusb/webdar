@@ -80,6 +80,10 @@ public:
 	/// change the selected base unit and factor programmatically
     void set_unit_and_ratio_indexes(unsigned int base_index, unsigned int power_index);
 
+	/// whether the HTML control is enable or disabled
+    void set_enabled(bool val) { unit.set_enabled(val); SI_mode.set_enabled(val); };
+
+
 	/// actor inheritance
     virtual void on_event(const std::string & event_name) override;
 

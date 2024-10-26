@@ -87,7 +87,7 @@ public:
     const std::string get_unit_string() const { return unit_box.get_string(); };
 
 	/// whether the HTML control is enable or disabled
-    void set_enabled(bool val) { field.set_enabled(val); };
+    void set_enabled(bool val) { field.set_enabled(val); unit_box.set_enabled(val); };
 
 	/// change the name of the event generated when this control changes
 

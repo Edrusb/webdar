@@ -42,7 +42,8 @@ using namespace std;
 
 const string html_form_select::changed = "html_form_select_changed";
 
-html_form_select::html_form_select(const string & label, const string & x_event_name)
+html_form_select::html_form_select(const string & label, const string & x_event_name):
+    enabled(true)
 {
     x_label = label;
     if(x_event_name.empty())
@@ -64,6 +65,16 @@ html_form_select::html_form_select(const html_form_select & ref):
     record_actor_on_event(this, html_form_radio::changed);
 }
 
+void html_form_select::set_enabled(bool val)
+{
+    if(enabled != val)
+    {
+	enabled = val;
+	act(event_name);
+	my_body_part_has_changed();
+    }
+}
+
 string html_form_select::inherited_get_body_part(const chemin & path, const request & req)
 {
     string ret = "";
@@ -78,7 +89,10 @@ string html_form_select::inherited_get_body_part(const chemin & path, const requ
 	// for any request provide an updated HTML content in response
 
     ret += "<label for=\"" + select_id + "\">" + x_label + "</label>\n";
-    ret += "<select name=\"" + select_id + "\" id=\"" + select_id + "\">\n";
+    ret += "<select name=\"" + select_id + "\" id=\"" + select_id + "\"";
+    if(!enabled)
+	ret += " disabled";
+    ret += + ">\n";
     while(it != get_choices().end())
     {
 	ret += "<option value=\"" + it->id + "\"";

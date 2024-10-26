@@ -92,6 +92,9 @@ public:
 	/// \note index should be equal or greater than zero and strictly less than size()
     const std::string & get_label(unsigned int index) const { return get_choices()[index].label; };
 
+	/// set whether the HTML control is enable or disabled
+    void set_enabled(bool val);
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
@@ -99,6 +102,7 @@ protected:
 
 
 private:
+    bool enabled;        ///< whether the control is enabled or disabled
     std::string x_label;
     std::string event_name;
 
