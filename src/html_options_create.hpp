@@ -60,6 +60,7 @@ extern "C"
 #include "html_form_ignore_as_symlink.hpp"
 #include "html_form_sig_block_size.hpp"
 #include "html_form_input_unit.hpp"
+#include "html_compression_params.hpp"
 
     /// html component used for the user to provide the parameters to create a new archive
 
@@ -129,8 +130,6 @@ private:
 
     html_form form_same_fs;
 
-    html_form form_compr;
-
     html_form form_slicing;
 
     html_form form_crypto;
@@ -197,13 +196,7 @@ private:
     html_form_same_fs same_fs;
     html_form_fieldset same_fs_fs;
 
-    html_form_fieldset compr_fs;
-    html_compression compression;
-    html_form_input compression_level;
-    html_form_input_unit min_compr_size;
-    html_form_input_unit compression_block;
-    html_form_input never_resave_uncompressed;
-    html_form_input compr_threads;
+    html_compression_params compr_params;
     html_mask_form_filename compr_mask;
 
     html_form_fieldset slicing_fs;

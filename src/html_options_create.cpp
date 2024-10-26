@@ -57,7 +57,6 @@ html_options_create::html_options_create():
     path_mask(false),
     ea_mask("Extended Attribute expression"),
     form_same_fs("Update"),
-    form_compr("Update"),
     form_slicing("Update"),
     form_crypto("Update"),
     archtype_fs(""),
@@ -106,13 +105,7 @@ html_options_create::html_options_create():
     zeroing_neg_date("Automatically zeroing negative dates while reading", html_form_input::check, "", 1),
     fs_mod_data_detect("How file change is detected"),
     same_fs_fs("Select the filesystems based on their mount point"),
-    compr_fs(""),
-    compression("Compression algorithm"),
-    compression_level("Compression level", html_form_input::number, "", 3),
-    min_compr_size("Minimum file sized compressed", 0, 30),
-    compression_block("Block compression for parallel compression (zero to zero to disable)", 0, 30),
-    never_resave_uncompressed("Never resave uncompressed if compressed file took more place than uncompressed", html_form_input::check, "", 1),
-    compr_threads("Number of threads for compression", html_form_input::number, "2", 5),
+    compr_params(true),
     compr_mask("Filename expression"),
     slicing_fs(""),
     slicing("Sliced archive", html_form_input::check, "", 1),
@@ -144,10 +137,8 @@ html_options_create::html_options_create():
     mod_data_detect.add_choice("any_inode_change", "Any inode change (behavior before rel. 2.6.0)");
     mod_data_detect.add_choice("mtime_size", "only mtime and file size change (default)");
     mod_data_detect.set_selected("mtime_size");
-    compression_level.set_range(1, 9);
     pause.set_min_only(0);
     hourshift.set_min_only(0);
-    compr_threads.set_min_only(1);
     crypto_threads.set_min_only(1);
     if(defaults.get_reference() != nullptr)
 	throw WEBDAR_BUG; // not expected default value!!!
@@ -159,7 +150,6 @@ html_options_create::html_options_create():
 		archtype.set_selected(3);
 	    else
 		archtype.set_selected(0);
-    compression.set_no_CR();
     slice_size.set_min_only(60);
     first_slice_size.set_min_only(60);
     crypto_type.add_choice("sym", "Symmetric encryption");
@@ -179,9 +169,9 @@ html_options_create::html_options_create():
     allow_over.set_value_as_bool(defaults.get_allow_over());
     warn_over.set_value_as_bool(defaults.get_warn_over());
     pause.set_value(libdar::deci(defaults.get_pause()).human());
-    compression.set_value(defaults.get_compression());
-    compression_level.set_value(webdar_tools_convert_to_string(defaults.get_compression_level()));
-    compression_block.set_value_as_infinint(defaults.get_compression_block_size());
+    compr_params.set_compression_algo(defaults.get_compression());
+    compr_params.set_compression_level(defaults.get_compression_level());
+    compr_params.set_compression_block(defaults.get_compression_block_size());
     slicing.set_value_as_bool(defaults.get_slice_size() != 0);
     different_first_slice.set_value_as_bool(defaults.get_first_slice_size() != defaults.get_slice_size());
     execute.set_value(defaults.get_execute());
@@ -194,7 +184,7 @@ html_options_create::html_options_create():
 						string("Value provided to iteration count exceeds the supported libdar integer flavor (infinint)")));
     iteration_count.set_value(libdar::deci(tmpi).human());
 
-    min_compr_size.set_value_as_infinint(defaults.get_min_compr_size());
+    compr_params.set_min_compression_size(defaults.get_min_compr_size());
     what_to_check.set_value(defaults.get_comparison_fields());
     hourshift.set_value(libdar::deci(defaults.get_hourshift()).human());
     empty.set_value_as_bool(defaults.get_empty());
@@ -348,14 +338,7 @@ html_options_create::html_options_create():
     deroule.adopt_in_section(sect_ea_mask, &ea_mask);
 
 	// compression
-    compr_fs.adopt(&compression);
-    compr_fs.adopt(&compression_level);
-    compr_fs.adopt(&min_compr_size);
-    compr_fs.adopt(&compression_block);
-    compr_fs.adopt(&never_resave_uncompressed);
-    compr_fs.adopt(&compr_threads);
-    form_compr.adopt(&compr_fs);
-    deroule.adopt_in_section(sect_compr, &form_compr);
+    deroule.adopt_in_section(sect_compr, &compr_params);
     deroule.adopt_in_section(sect_compr,&compr_mask);
 
 
@@ -389,7 +372,7 @@ html_options_create::html_options_create():
     display_treated.record_actor_on_event(this, html_form_input::changed);
     exclude_by_ea.record_actor_on_event(this, html_form_input::changed);
     default_ea.record_actor_on_event(this, html_form_input::changed);
-    compression.record_actor_on_event(this, html_compression::changed);
+    compr_params.record_actor_on_event(this, html_compression_params::changed);
     slicing.record_actor_on_event(this, html_form_input::changed);
     different_first_slice.record_actor_on_event(this, html_form_input::changed);
     crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
@@ -409,7 +392,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 {
     libdar::archive_options_create ret;
     shared_ptr<libdar::archive> ref_arch; // used locally to pass the archive of reference we may build for diff/incr backup
-    libdar::infinint compr_bs = compression_block.get_value_as_infinint();
+    libdar::infinint compr_bs = compr_params.get_compression_block();
     libdar::U_I val = 0;
 
     switch(archtype.get_selected_num())
@@ -448,11 +431,11 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_display_finished(display_dir_summary.get_value_as_bool());
     ret.set_pause(libdar::deci(pause.get_value()).computer());
     ret.set_empty_dir(empty_dir.get_value_as_bool());
-    ret.set_compression(compression.get_value());
-    ret.set_compression_level(webdar_tools_convert_to_int(compression_level.get_value()));
-    ret.set_min_compr_size(min_compr_size.get_value_as_infinint());
-    ret.set_never_resave_uncompressed(never_resave_uncompressed.get_value_as_bool());
-    ret.set_multi_threaded_compress(webdar_tools_convert_to_int(compr_threads.get_value()));
+    ret.set_compression(compr_params.get_compression_algo());
+    ret.set_compression_level(compr_params.get_compression_level());
+    ret.set_min_compr_size(compr_params.get_min_compression_size());
+    ret.set_never_resave_uncompressed(compr_params.get_resave_uncompressed());
+    ret.set_multi_threaded_compress(compr_params.get_num_threads());
     ret.set_multi_threaded_crypto(webdar_tools_convert_to_int(crypto_threads.get_value()));
 
     val = webdar_tools_convert_from_infinint<libdar::U_I>(compr_bs,
@@ -462,7 +445,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 	throw exception_range(libdar::tools_printf("compression block size is too small, select either zero to disable compression per block or a block size greater or equal to %d", tokens_min_compr_bs));
     ret.set_compression_block_size(val);
 
-    if(compression.get_value() != libdar::compression::none)
+    if(compr_params.get_compression_algo() != libdar::compression::none)
     {
 	unique_ptr<libdar::mask> libcompmask = compr_mask.get_mask();
 	if(!libcompmask)
@@ -599,7 +582,7 @@ string html_options_create::inherited_get_body_part(const chemin & path,
 void html_options_create::on_event(const string & event_name)
 {
     if(event_name == html_form_radio::changed
-       || event_name == html_compression::changed
+       || event_name == html_compression_params::changed
        || event_name == html_form_input::changed
        || event_name == html_crypto_algo::changed
        || event_name == html_form_select::changed)
@@ -662,44 +645,7 @@ void html_options_create::on_event(const string & event_name)
 	    exclude_by_ea_name.set_visible(false);
 	}
 
-	switch(compression.get_value())
-	{
-	case libdar::compression::none:
-	    compression_level.set_visible(false);
-	    compression.set_no_CR(false);
-	    min_compr_size.set_visible(false);
-	    compression_block.set_visible(false);
-	    never_resave_uncompressed.set_visible(false);
-	    compr_threads.set_visible(false);
-	    compr_mask.set_visible(false);
-	    break;
-	case libdar::compression::lzo1x_1_15:
-	case libdar::compression::lzo1x_1:
-	    compression.set_no_CR(false);
-	    compression_level.set_visible(false);
-	    min_compr_size.set_visible(true);
-	    compression_block.set_visible(true);
-	    never_resave_uncompressed.set_visible(true);
-	    compr_threads.set_visible(true);
-	    compr_mask.set_visible(true);
-	    break;
-	case libdar::compression::gzip:
-	case libdar::compression::bzip2:
-	case libdar::compression::lzo:
-	case libdar::compression::xz:
-	case libdar::compression::zstd:
-	case libdar::compression::lz4:
-	    compression.set_no_CR(true);
-	    compression_level.set_visible(true);
-	    min_compr_size.set_visible(true);
-	    compression_block.set_visible(true);
-	    never_resave_uncompressed.set_visible(true);
-	    compr_threads.set_visible(true);
-	    compr_mask.set_visible(true);
-	    break;
-	default:
-	    throw WEBDAR_BUG;
-	}
+	compr_mask.set_visible(compr_params.get_compression_algo() != libdar::compression::none);
 
 	if(slicing.get_value_as_bool())
 	{
