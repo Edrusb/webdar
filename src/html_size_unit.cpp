@@ -49,7 +49,7 @@ html_size_unit::html_size_unit() : unit(""),
 	// set components value
     SI_mode.add_choice("SI", "SI");
     SI_mode.add_choice("bin", "binary");
-    SI_mode.set_selected(0);
+    SI_mode.set_selected(1); // defaulting to binary family units
     unit.set_no_CR();
     set_fields();
 
