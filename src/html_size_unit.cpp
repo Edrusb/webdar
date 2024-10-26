@@ -102,7 +102,7 @@ libdar::infinint html_size_unit::get_base_unit_value(unsigned int index) const
 
 unsigned int html_size_unit::get_max_power_for_base_unit(unsigned int index) const
 {
-    return unit.num_choices();
+    return unit.num_choices() - 1;
 	// for now the implementation
 	// uses the same number of factors
 	// for both SI and binary based units
@@ -123,7 +123,7 @@ void html_size_unit::set_unit_and_ratio_indexes(unsigned int base_index,
 
     try
     {
-	if(base_index < get_max_base_unit_index())
+	if(base_index <= get_max_base_unit_index())
 	{
 	    if(base_index != SI_mode.get_selected_num())
 	    {
@@ -136,7 +136,7 @@ void html_size_unit::set_unit_and_ratio_indexes(unsigned int base_index,
 	else
 	    throw WEBDAR_BUG;
 
-	if(power_index < get_max_power_for_base_unit(base_index))
+	if(power_index <= get_max_power_for_base_unit(base_index))
 	{
 	if(power_index != unit.get_selected_num())
 	{

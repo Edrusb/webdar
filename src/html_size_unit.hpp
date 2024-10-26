@@ -58,15 +58,24 @@ public:
     std::string get_string() const { return unit.get_selected_id(); };
 
 	/// get the max base unit index (index starts at zero)
-    unsigned int get_max_base_unit_index() const { return SI_mode.num_choices(); };
+    unsigned int get_max_base_unit_index() const { return SI_mode.num_choices() - 1; };
+
+	/// get current base index
+    unsigned int get_current_base_index() const { return SI_mode.get_selected_num(); };
 
 	/// get value of the base unit of given index
+
+	/// \note base units are stored in ascending order with the index
     libdar::infinint get_base_unit_value(unsigned int index) const;
 
 	/// get the max power available for the base unit of given index
 
 	/// \note power 0 means factor is "base_unit^0" (which is 1)... and so on.
     unsigned int get_max_power_for_base_unit(unsigned int index) const;
+
+	/// get the current power selected
+    unsigned int get_current_power_for_base_unit() const { return unit.get_selected_num(); };
+
 
 	/// change the selected base unit and factor programmatically
     void set_unit_and_ratio_indexes(unsigned int base_index, unsigned int power_index);
