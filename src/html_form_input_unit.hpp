@@ -114,7 +114,8 @@ protected:
     virtual void css_classes_have_changed() override;
 
 private:
-    bool ignore_input_event;
+    bool ignore_events;  ///< do not act on received event
+    bool no_act;         ///< do not propagate event
     html_form_input field;
     html_size_unit unit_box;
     libdar::infinint val; ///< current absolute value
@@ -123,10 +124,11 @@ private:
 
     std::string modif_change; ///< name of the event "changed" to use, if set to an empty string default behavior is used
 
-    void my_act() { act(modif_change.empty() ? changed: modif_change); };
+    void my_act() { if(!no_act) act(modif_change.empty() ? changed: modif_change); };
     void reduce_val_and_unit();
     void set_field_min_max();
     void set_field_val();
+    void set_value_to_largest_unit();
 
 
 	/// returns the closest value to val expressed in number of "unit"
