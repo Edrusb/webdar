@@ -39,7 +39,6 @@ extern "C"
 #include "html_form.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_form_input.hpp"
-#include "html_compression.hpp"
 #include "html_hash_algo.hpp"
 #include "html_crypto_algo.hpp"
 #include "html_derouleur.hpp"
@@ -48,6 +47,7 @@ extern "C"
 #include "html_form_select.hpp"
 #include "html_mask_form_filename.hpp"
 #include "html_form_sig_block_size.hpp"
+#include "html_compression_params.hpp"
 
     /// html components for the user to provide parameters of a isolation operation
 
@@ -118,12 +118,7 @@ private:
     html_form_fieldset fs_shown;
     html_form_input info_details;
 
-    html_form form_compr;
-    html_form_fieldset fs_compr;
-    html_compression compression;
-    html_form_input compression_level;
-    html_form_input_unit compression_block;
-    html_form_input compr_threads;
+    html_compression_params compr_params;
 
     html_form form_slicing;
     html_form_fieldset fs_slicing;

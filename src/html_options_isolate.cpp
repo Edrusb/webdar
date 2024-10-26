@@ -68,12 +68,7 @@ html_options_isolate::html_options_isolate():
     form_shown("Update"),
     fs_shown(""),
     info_details("Detailed informations", html_form_input::check, "1", 1),
-    form_compr("Update"),
-    fs_compr(""),
-    compression("Compression algorithm"),
-    compression_level("Compression level", html_form_input::number, "", 3),
-    compression_block("Block compression for parallel compression (zero to zero to disable)", 0, 30),
-    compr_threads("Number of threads for compression", html_form_input::number, "2", 5),
+    compr_params(false, false),
     form_slicing("Update"),
     fs_slicing(""),
     slicing("Sliced archive", html_form_input::check, "", 1),
@@ -119,9 +114,9 @@ html_options_isolate::html_options_isolate():
     hash_algo.set_value(defaults.get_hash_algo());
     execute.set_value(defaults.get_execute());
     empty.set_value_as_bool(defaults.get_empty());
-    compression.set_value(defaults.get_compression());
-    compression_level.set_value(webdar_tools_convert_to_string(defaults.get_compression_level()));
-    compression_block.set_value_as_infinint(defaults.get_compression_block_size());
+    compr_params.set_compression_algo(defaults.get_compression());
+    compr_params.set_compression_level(defaults.get_compression_level());
+    compr_params.set_compression_block(defaults.get_compression_block_size());
     slicing.set_value_as_bool(defaults.get_slice_size() != 0);
     slice_size.set_value_as_infinint(defaults.get_slice_size());
     different_first_slice.set_value_as_bool(defaults.get_first_slice_size() != defaults.get_slice_size());
@@ -130,7 +125,6 @@ html_options_isolate::html_options_isolate():
     crypto_pass1.set_value("");
     crypto_pass2.set_value("");
     crypto_size.set_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
-    compr_threads.set_min_only(1);
     crypto_threads.set_min_only(1);
     delta_sig_min_size.set_value_as_infinint(defaults.get_delta_sig_min_size());
 
@@ -186,12 +180,7 @@ html_options_isolate::html_options_isolate():
     form_shown.adopt(&fs_shown);
     deroule.adopt_in_section(sect_show, &form_shown);
 
-    fs_compr.adopt(&compression);
-    fs_compr.adopt(&compression_level);
-    fs_compr.adopt(&compression_block);
-    fs_compr.adopt(&compr_threads);
-    form_compr.adopt(&fs_compr);
-    deroule.adopt_in_section(sect_compr, &form_compr);
+    deroule.adopt_in_section(sect_compr, &compr_params);
 
     fs_slicing.adopt(&slicing);
     fs_slicing.adopt(&slice_size);
@@ -220,7 +209,6 @@ html_options_isolate::html_options_isolate():
 
     delta_sig.record_actor_on_event(this, html_form_input::changed);
     delta_transfer_mode.record_actor_on_event(this, html_form_input::changed);
-    compression.record_actor_on_event(this, html_compression::changed);
     slicing.record_actor_on_event(this, html_form_input::changed);
     different_first_slice.record_actor_on_event(this, html_form_input::changed);
     crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
@@ -229,7 +217,7 @@ html_options_isolate::html_options_isolate():
     crypto_kdf_hash.set_change_event_name(kdf_algo_changed);
     crypto_kdf_hash.record_actor_on_event(this, kdf_algo_changed);
 
-    on_event(html_compression::changed);
+    on_event(html_form_input::changed);
 
 	// css
     webdar_css_style::grey_button(deroule, true);
@@ -237,8 +225,7 @@ html_options_isolate::html_options_isolate():
 
 void html_options_isolate::on_event(const string & event_name)
 {
-    if(event_name == html_compression::changed
-       || event_name == html_form_input::changed
+    if(event_name == html_form_input::changed
        || event_name == html_crypto_algo::changed
        || event_name == html_form_select::changed)
     {
@@ -255,36 +242,6 @@ void html_options_isolate::on_event(const string & event_name)
 	    delta_sig_min_size.set_visible(false);
 	    sig_block_size.set_visible(false);
 	    delta_mask.set_visible(false);
-	}
-
-	switch(compression.get_value())
-	{
-	case libdar::compression::none:
-	    compression.set_no_CR(false);
-	    compression_level.set_visible(false);
-	    compression_block.set_visible(false);
-	    compr_threads.set_visible(false);
-	    break;
-	case libdar::compression::lzo1x_1_15:
-	case libdar::compression::lzo1x_1:
-	    compression.set_no_CR(false);
-	    compression_level.set_visible(false);
-	    compression_block.set_visible(true);
-	    compr_threads.set_visible(true);
-	    break;
-	case libdar::compression::gzip:
-	case libdar::compression::bzip2:
-	case libdar::compression::lzo:
-	case libdar::compression::xz:
-	case libdar::compression::zstd:
-	case libdar::compression::lz4:
-	    compression.set_no_CR(true);
-	    compression_level.set_visible(true);
-	    compression_block.set_visible(true);
-	    compr_threads.set_visible(true);
-	    break;
-	default:
-	    throw WEBDAR_BUG;
 	}
 
 	if(slicing.get_value_as_bool())
@@ -382,7 +339,7 @@ void html_options_isolate::on_event(const string & event_name)
 libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<html_web_user_interaction> & webui) const
 {
     libdar::archive_options_isolate ret;
-    libdar::infinint compr_bs = compression_block.get_value_as_infinint();
+    libdar::infinint compr_bs = compr_params.get_compression_block();
     libdar::U_I val = 0;
 
     ret.set_entrepot(entrep.get_entrepot(webui));
@@ -399,9 +356,9 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     ret.set_empty(empty.get_value_as_bool());
     ret.set_execute(execute.get_value());
     ret.set_info_details(info_details.get_value_as_bool());
-    ret.set_compression(compression.get_value());
-    ret.set_compression_level(webdar_tools_convert_to_int(compression_level.get_value()));
-    ret.set_multi_threaded_compress(webdar_tools_convert_to_int(compr_threads.get_value()));
+    ret.set_compression(compr_params.get_compression_algo());
+    ret.set_compression_level(compr_params.get_compression_level());
+    ret.set_multi_threaded_compress(compr_params.get_num_threads());
     ret.set_multi_threaded_crypto(webdar_tools_convert_to_int(crypto_threads.get_value()));
 
     ret.set_delta_signature(delta_sig.get_value_as_bool());
