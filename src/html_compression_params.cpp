@@ -43,7 +43,8 @@ using namespace std;
 const string html_compression_params::changed = "html_compression_params_changed";
 
 
-html_compression_params::html_compression_params(bool show_resave):
+html_compression_params::html_compression_params(bool show_resave,
+						 bool show_min_size):
     form_compr("Update"),
     compr_fs("Compression parameters"),
     compression("Compression algorithm"),
@@ -52,7 +53,8 @@ html_compression_params::html_compression_params(bool show_resave):
     compression_block("Block compression for parallel compression (zero to zero to disable)", 0, 30),
     never_resave_uncompressed("Never resave uncompressed if compressed file took more place than uncompressed", html_form_input::check, "", 1),
     compr_threads("Number of threads for compression", html_form_input::number, "2", 5),
-    x_show_resave(show_resave)
+    x_show_resave(show_resave),
+    x_show_min_size(show_min_size)
 {
 
 	// component setup
@@ -78,6 +80,8 @@ html_compression_params::html_compression_params(bool show_resave):
 	// visibility
     if(! x_show_resave)
 	never_resave_uncompressed.set_visible(false);
+    if(! x_show_min_size)
+	min_compr_size.set_visible(false);
 
 	// css
     on_event(html_compression::changed);
@@ -95,7 +99,8 @@ void html_compression_params::on_event(const string & event_name)
 	case libdar::compression::none:
 	    compression_level.set_visible(false);
 	    compression.set_no_CR(false);
-	    min_compr_size.set_visible(false);
+	    if(x_show_min_size)
+		min_compr_size.set_visible(false);
 	    compression_block.set_visible(false);
 	    if(x_show_resave)
 		never_resave_uncompressed.set_visible(false);
@@ -105,7 +110,8 @@ void html_compression_params::on_event(const string & event_name)
 	case libdar::compression::lzo1x_1:
 	    compression.set_no_CR(false);
 	    compression_level.set_visible(false);
-	    min_compr_size.set_visible(true);
+	    if(x_show_min_size)
+		min_compr_size.set_visible(true);
 	    compression_block.set_visible(true);
 	    if(x_show_resave)
 		never_resave_uncompressed.set_visible(true);
@@ -119,7 +125,8 @@ void html_compression_params::on_event(const string & event_name)
 	case libdar::compression::lz4:
 	    compression.set_no_CR(true);
 	    compression_level.set_visible(true);
-	    min_compr_size.set_visible(true);
+	    if(x_show_min_size)
+		min_compr_size.set_visible(true);
 	    compression_block.set_visible(true);
 	    if(x_show_resave)
 		never_resave_uncompressed.set_visible(true);

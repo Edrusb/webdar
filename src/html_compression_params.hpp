@@ -55,7 +55,8 @@ public:
 	// change event
     static const std::string changed;
 
-    html_compression_params(bool show_resave);
+    html_compression_params(bool show_resave,
+			    bool show_min_size);
     html_compression_params(const html_compression_params & ref) = delete;
     html_compression_params(html_compression_params && ref) noexcept = delete;
     html_compression_params & operator = (const html_compression_params & ref) = delete;
@@ -95,6 +96,7 @@ private:
     html_form_input compr_threads;
 
     bool x_show_resave;
+    bool x_show_min_size;
 };
 
 #endif

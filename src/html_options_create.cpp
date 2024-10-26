@@ -105,7 +105,7 @@ html_options_create::html_options_create():
     zeroing_neg_date("Automatically zeroing negative dates while reading", html_form_input::check, "", 1),
     fs_mod_data_detect("How file change is detected"),
     same_fs_fs("Select the filesystems based on their mount point"),
-    compr_params(true),
+    compr_params(true, true),
     compr_mask("Filename expression"),
     slicing_fs(""),
     slicing("Sliced archive", html_form_input::check, "", 1),
