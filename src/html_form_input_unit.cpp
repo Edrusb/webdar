@@ -87,12 +87,12 @@ void html_form_input_unit::set_range(const libdar::infinint & x_min,
     max = x_max;
     if(val < min)
     {
-	val = min;
+	set_value_as_infinint(min);
 	set_field_val();
     }
     if(val > max)
     {
-	val = max;
+	set_value_as_infinint(max);
 	set_field_val();
     }
 
@@ -105,7 +105,7 @@ void html_form_input_unit::set_min_only(const libdar::infinint & x_min)
     max = 0;
     if(val < min)
     {
-	val = min;
+	set_value_as_infinint(min);
 	set_field_val();
     }
     set_field_min_max();
@@ -117,7 +117,7 @@ void html_form_input_unit::set_max_only(const libdar::infinint & x_max)
     max = x_max;
     if(val > max)
     {
-	val = max;
+	set_value_as_infinint(max);
 	set_field_val();
     }
     set_field_min_max();
@@ -215,7 +215,7 @@ void html_form_input_unit::set_field_min_max()
 
 void html_form_input_unit::set_field_val()
 {
-    field.set_value_as_int(reduce_to_unit(val, unit_box.get_value()));
+    field.set_value(libdar::deci(reduce_to_unit(val, unit_box.get_value())).human());
 }
 
 void html_form_input_unit::set_value_to_largest_unit()
@@ -295,29 +295,17 @@ void html_form_input_unit::set_value_to_largest_unit()
 	throw WEBDAR_BUG;
 }
 
-int html_form_input_unit::reduce_to_unit(const libdar::infinint & val, const libdar::infinint & unit)
+libdar::infinint html_form_input_unit::reduce_to_unit(const libdar::infinint & val, const libdar::infinint & unit)
 {
-    libdar::infinint target = val / unit;
-    int ret = 0;
-
-    target.unstack(ret);
-    if(! target.is_zero()) // too large for integer type, falling back to zero
-	ret = 0;
-
-    return ret;
+    return val / unit;
 }
 
-int html_form_input_unit::reduce_to_unit_above(const libdar::infinint & val, const libdar::infinint & unit)
+libdar::infinint html_form_input_unit::reduce_to_unit_above(const libdar::infinint & val, const libdar::infinint & unit)
 {
     libdar::infinint target = val / unit;
-    int ret = 0;
 
     while(target * unit < val)
 	++target;
 
-    target.unstack(ret);
-    if(! target.is_zero()) // too large for integer type, falling back to zero
-	ret = 0;
-
-    return ret;
+    return target;
 }

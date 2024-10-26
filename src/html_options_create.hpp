@@ -220,7 +220,7 @@ private:
     html_crypto_algo crypto_algo;
     html_form_input crypto_pass1;
     html_form_input crypto_pass2;
-    html_form_input crypto_size;
+    html_form_input_unit crypto_size;
     html_form_input crypto_threads;
     html_form_gnupg_list gnupg;
     html_form_fieldset crypto_fs_kdf_hash;

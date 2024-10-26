@@ -65,9 +65,9 @@ public:
     html_form_input & operator = (html_form_input && ref) noexcept = default;
     ~html_form_input() = default;
 
-    void set_range(int min, int max);
-    void set_min_only(int min);
-    void set_max_only(int max);
+    void set_range(const libdar::infinint & min, const libdar::infinint & max);
+    void set_min_only(const libdar::infinint & min);
+    void set_max_only(const libdar::infinint & max);
     void change_label(const std::string & label);
     void change_type(input_type type);
 

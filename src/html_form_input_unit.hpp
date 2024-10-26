@@ -132,10 +132,10 @@ private:
 
 
 	/// returns the closest value to val expressed in number of "unit"
-    static int reduce_to_unit(const libdar::infinint & val, const libdar::infinint & unit);
+    static libdar::infinint reduce_to_unit(const libdar::infinint & val, const libdar::infinint & unit);
 
 	/// returns the closest value to val but not less than val expresed in number of "unit"
-    static int reduce_to_unit_above(const libdar::infinint & val, const libdar::infinint & unit);
+    static libdar::infinint reduce_to_unit_above(const libdar::infinint & val, const libdar::infinint & unit);
 
 };
 

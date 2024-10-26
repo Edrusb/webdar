@@ -60,26 +60,27 @@ html_form_input::html_form_input(const string & label,
     register_name(changed);
 }
 
-void html_form_input::set_range(int min, int max)
+void html_form_input::set_range(const libdar::infinint & min,
+				const libdar::infinint & max)
 {
-    string next_min = webdar_tools_convert_to_string(min);
-    string next_max = webdar_tools_convert_to_string(max);
+    string next_min = libdar::deci(min).human();
+    string next_max = libdar::deci(max).human();
 
     check_min_max_change(next_min, next_max);
 }
 
-void html_form_input::set_min_only(int min)
+void html_form_input::set_min_only(const libdar::infinint & min)
 {
-    string next_min = webdar_tools_convert_to_string(min);
+    string next_min = libdar::deci(min).human();
     string next_max = "";
 
     check_min_max_change(next_min, next_max);
 }
 
-void html_form_input::set_max_only(int max)
+void html_form_input::set_max_only(const libdar::infinint & max)
 {
     string next_min = "";
-    string next_max = webdar_tools_convert_to_string(max);
+    string next_max = libdar::deci(max).human();
 
     check_min_max_change(next_min, next_max);
 }
