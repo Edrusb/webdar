@@ -30,6 +30,7 @@ extern "C"
 
     // C++ system header files
 #include <dar/libdar.hpp>
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_css_style.hpp"
@@ -78,12 +79,8 @@ html_options_merge::html_options_merge():
     path_mask(true),
     overwriting_policy(""),
     form_overwriting("Update"),
-    form_compr("Update"),
-    fs_compr(""),
-    keep_compressed("Keep file compressed", html_form_input::check, "", 1),
-    compression("Compression algorithm"),
-    compression_level("Compression level", html_form_input::range, "", 3),
-    min_compr_size("Minimum file sized compressed", 0, 30),
+    compr_params(true, true, true),
+    compr_mask("Filename expression"),
     form_slicing("Update"),
     fs_slicing(""),
     slicing("Sliced archive", html_form_input::check, "", 1),
@@ -98,11 +95,6 @@ html_options_merge::html_options_merge():
     crypto_size("Cipher Block size", html_form_input::number, "", 30)
 {
     libdar::archive_options_merge defaults;
-
-	// removing Carriage Return for some components
-
-    compression.set_no_CR();
-
 
 	// setting default values from libdar
 
@@ -123,10 +115,11 @@ html_options_merge::html_options_merge():
     empty_dir.set_value_as_bool(defaults.get_empty_dir());
     decremental_mode.set_value_as_bool(defaults.get_decremental_mode());
 
-    keep_compressed.set_value_as_bool(defaults.get_keep_compressed());
-    compression.set_value(defaults.get_compression());
-    compression_level.set_value(webdar_tools_convert_to_string(defaults.get_compression_level()));
-    min_compr_size.set_value_as_infinint(defaults.get_min_compr_size());
+    compr_params.set_keep_compressed(true); // bypass default value from libdar
+    compr_params.set_compression_algo(defaults.get_compression());
+    compr_params.set_compression_level(defaults.get_compression_level());
+    compr_params.set_min_compression_size(defaults.get_min_compr_size());
+    compr_params.set_keep_compressed(defaults.get_keep_compressed());
 
     slicing.set_value_as_bool(defaults.get_slice_size() != 0);
     slice_size.set_value_as_infinint(defaults.get_slice_size());
@@ -206,12 +199,8 @@ html_options_merge::html_options_merge():
     form_overwriting.adopt(&overwriting_policy);
     deroule.adopt_in_section(sect_overwrite, &form_overwriting);
 
-    fs_compr.adopt(&keep_compressed);
-    fs_compr.adopt(&compression);
-    fs_compr.adopt(&compression_level);
-    fs_compr.adopt(&min_compr_size);
-    form_compr.adopt(&fs_compr);
-    deroule.adopt_in_section(sect_compr, &form_compr);
+    deroule.adopt_in_section(sect_compr, &compr_params);
+    deroule.adopt_in_section(sect_compr, &compr_mask);
 
     fs_slicing.adopt(&slicing);
     fs_slicing.adopt(&slice_size);
@@ -233,8 +222,7 @@ html_options_merge::html_options_merge():
     register_name(entrepot_changed);
 
     display_treated.record_actor_on_event(this, html_form_input::changed);
-    keep_compressed.record_actor_on_event(this, html_form_input::changed);
-    compression.record_actor_on_event(this, html_compression::changed);
+    compr_params.record_actor_on_event(this, html_compression_params::changed);
     slicing.record_actor_on_event(this, html_form_input::changed);
     different_first_slice.record_actor_on_event(this, html_form_input::changed);
     has_aux.record_actor_on_event(this, html_form_input::changed);
@@ -252,37 +240,17 @@ html_options_merge::html_options_merge():
 void html_options_merge::on_event(const string & event_name)
 {
     if(event_name == html_form_input::changed
-       || event_name == html_compression::changed
+       || event_name == html_compression_params::changed
        || event_name == html_crypto_algo::changed)
     {
 	auxiliary.set_visible(has_aux.get_value_as_bool());
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
 
-	if(keep_compressed.get_value_as_bool())
-	{
-	    compression.set_visible(false);
-	    compression_level.set_visible(false);
-	    min_compr_size.set_visible(false);
-	}
+	if(! compr_params.get_keep_compressed()
+	   && compr_params.get_compression_algo() != libdar::compression::none)
+	    compr_mask.set_visible(true);
 	else
-	{
-	    compression.set_visible(true);
-	    switch(compression.get_value())
-	    {
-	    case libdar::compression::none:
-		compression_level.set_visible(false);
-		min_compr_size.set_visible(false);
-		break;
-	    case libdar::compression::gzip:
-	    case libdar::compression::bzip2:
-	    case libdar::compression::lzo:
-		compression_level.set_visible(true);
-		min_compr_size.set_visible(true);
-		break;
-	    default:
-		throw WEBDAR_BUG;
-	    }
-	}
+	    compr_mask.set_visible(false);
 
 	if(slicing.get_value_as_bool())
 	{
@@ -362,10 +330,29 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
     ret.set_selection(*(filename_mask.get_mask()));
     ret.set_subtree(*(path_mask.get_mask()));
     ret.set_overwriting_rules(*(overwriting_policy.get_overwriting_action()));
-    ret.set_keep_compressed(keep_compressed.get_value_as_bool());
-    ret.set_compression(compression.get_value());
-    ret.set_compression_level(webdar_tools_convert_to_int(compression_level.get_value()));
-    ret.set_min_compr_size(min_compr_size.get_value_as_infinint());
+    if(! compr_params.get_keep_compressed())
+    {
+	ret.set_keep_compressed(false);
+	ret.set_compression(compr_params.get_compression_algo());
+	ret.set_compression_level(compr_params.get_compression_level());
+	ret.set_min_compr_size(compr_params.get_min_compression_size());
+
+	libdar::U_I val = webdar_tools_convert_from_infinint<libdar::U_I>(compr_params.get_compression_block(),
+									  string("compression block size is too large for the underlying operating system, please reduce"));
+
+	if(val < tokens_min_compr_bs && val != 0)
+	    throw exception_range(libdar::tools_printf("compression block size is too small, select either zero to disable compression per block or a block size greater or equal to %d", tokens_min_compr_bs));
+	ret.set_compression_block_size(val);
+
+	unique_ptr<libdar::mask> libcompmask = compr_mask.get_mask();
+	if(!libcompmask)
+	    throw WEBDAR_BUG;
+	ret.set_compr_mask(*libcompmask);
+	ret.set_multi_threaded_compress(compr_params.get_num_threads());
+    }
+    else
+	ret.set_keep_compressed(true);
+
 
     if(slicing.get_value_as_bool())
     {

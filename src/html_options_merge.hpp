@@ -51,6 +51,7 @@ extern "C"
 #include "html_mask_form_path.hpp"
 #include "html_form_overwrite_action.hpp"
 #include "html_form_input_unit.hpp"
+#include "html_compression_params.hpp"
 
     /// html component for the user to provided parameters of a libdar merging operation
 
@@ -134,12 +135,8 @@ private:
     html_form_overwrite_action overwriting_policy;
     html_form form_overwriting;
 
-    html_form form_compr;
-    html_form_fieldset fs_compr;
-    html_form_input keep_compressed;
-    html_compression compression;
-    html_form_input compression_level;
-    html_form_input_unit min_compr_size;
+    html_compression_params compr_params;
+    html_mask_form_filename compr_mask;
 
     html_form form_slicing;
     html_form_fieldset fs_slicing;
