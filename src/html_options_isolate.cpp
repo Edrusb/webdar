@@ -68,7 +68,7 @@ html_options_isolate::html_options_isolate():
     form_shown("Update"),
     fs_shown(""),
     info_details("Detailed informations", html_form_input::check, "1", 1),
-    compr_params(false, false),
+    compr_params(false, false, false),
     form_slicing("Update"),
     fs_slicing(""),
     slicing("Sliced archive", html_form_input::check, "", 1),

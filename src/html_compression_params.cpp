@@ -44,7 +44,8 @@ const string html_compression_params::changed = "html_compression_params_changed
 
 
 html_compression_params::html_compression_params(bool show_resave,
-						 bool show_min_size):
+						 bool show_min_size,
+						 bool show_keep_compressed):
     form_compr("Update"),
     compr_fs("Compression parameters"),
     compression("Compression algorithm"),
@@ -52,6 +53,7 @@ html_compression_params::html_compression_params(bool show_resave,
     min_compr_size("Minimum file sized compressed", 0, 30),
     compression_block("Block compression for parallel compression (zero to zero to disable)", 0, 30),
     never_resave_uncompressed("Never resave uncompressed if compressed file took more place than uncompressed", html_form_input::check, "", 1),
+    keep_compressed("Keep file compressed", html_form_input::check, "", 1),
     compr_threads("Number of threads for compression", html_form_input::number, "2", 5),
     x_show_resave(show_resave),
     x_show_min_size(show_min_size)
@@ -62,8 +64,16 @@ html_compression_params::html_compression_params(bool show_resave,
     compr_threads.set_min_only(1);
     compression.set_no_CR();
 
+	// visibility
+    if(! x_show_resave)
+	never_resave_uncompressed.set_visible(false);
+    if(! x_show_min_size)
+	min_compr_size.set_visible(false);
+    if(! show_keep_compressed)
+	keep_compressed.set_visible(false);
 
 	// adoption tree
+    compr_fs.adopt(&keep_compressed);
     compr_fs.adopt(&compression);
     compr_fs.adopt(&compression_level);
     compr_fs.adopt(&min_compr_size);
@@ -76,12 +86,8 @@ html_compression_params::html_compression_params(bool show_resave,
 	// events
     register_name(changed);
     compression.record_actor_on_event(this, html_compression::changed);
+    keep_compressed.record_actor_on_event(this, html_form_input::changed);
 
-	// visibility
-    if(! x_show_resave)
-	never_resave_uncompressed.set_visible(false);
-    if(! x_show_min_size)
-	min_compr_size.set_visible(false);
 
 	// css
     on_event(html_compression::changed);
@@ -91,49 +97,62 @@ html_compression_params::html_compression_params(bool show_resave,
 void html_compression_params::on_event(const string & event_name)
 {
     if(event_name == html_compression::changed
-       || event_name == html_form_input::changed
-       || event_name == html_form_select::changed)
+       || event_name == html_form_input::changed)
     {
-	switch(compression.get_value())
+	if(keep_compressed.get_value_as_bool())
 	{
-	case libdar::compression::none:
+	    compression.set_visible(false);
 	    compression_level.set_visible(false);
-	    compression.set_no_CR(false);
-	    if(x_show_min_size)
-		min_compr_size.set_visible(false);
+	    min_compr_size.set_visible(false);
 	    compression_block.set_visible(false);
-	    if(x_show_resave)
-		never_resave_uncompressed.set_visible(false);
+	    never_resave_uncompressed.set_visible(false);
 	    compr_threads.set_visible(false);
-	    break;
-	case libdar::compression::lzo1x_1_15:
-	case libdar::compression::lzo1x_1:
-	    compression.set_no_CR(false);
-	    compression_level.set_visible(false);
-	    if(x_show_min_size)
-		min_compr_size.set_visible(true);
-	    compression_block.set_visible(true);
-	    if(x_show_resave)
-		never_resave_uncompressed.set_visible(true);
-	    compr_threads.set_visible(true);
-	    break;
-	case libdar::compression::gzip:
-	case libdar::compression::bzip2:
-	case libdar::compression::lzo:
-	case libdar::compression::xz:
-	case libdar::compression::zstd:
-	case libdar::compression::lz4:
-	    compression.set_no_CR(true);
-	    compression_level.set_visible(true);
-	    if(x_show_min_size)
-		min_compr_size.set_visible(true);
-	    compression_block.set_visible(true);
-	    if(x_show_resave)
-		never_resave_uncompressed.set_visible(true);
-	    compr_threads.set_visible(true);
-	    break;
-	default:
-	    throw WEBDAR_BUG;
+	}
+	else
+	{
+	    compression.set_visible(true);
+
+	    switch(compression.get_value())
+	    {
+	    case libdar::compression::none:
+		compression_level.set_visible(false);
+		compression.set_no_CR(false);
+		if(x_show_min_size)
+		    min_compr_size.set_visible(false);
+		compression_block.set_visible(false);
+		if(x_show_resave)
+		    never_resave_uncompressed.set_visible(false);
+		compr_threads.set_visible(false);
+		break;
+	    case libdar::compression::lzo1x_1_15:
+	    case libdar::compression::lzo1x_1:
+		compression.set_no_CR(false);
+		compression_level.set_visible(false);
+		if(x_show_min_size)
+		    min_compr_size.set_visible(true);
+		compression_block.set_visible(true);
+		if(x_show_resave)
+		    never_resave_uncompressed.set_visible(true);
+		compr_threads.set_visible(true);
+		break;
+	    case libdar::compression::gzip:
+	    case libdar::compression::bzip2:
+	    case libdar::compression::lzo:
+	    case libdar::compression::xz:
+	    case libdar::compression::zstd:
+	    case libdar::compression::lz4:
+		compression.set_no_CR(true);
+		compression_level.set_visible(true);
+		if(x_show_min_size)
+		    min_compr_size.set_visible(true);
+		compression_block.set_visible(true);
+		if(x_show_resave)
+		    never_resave_uncompressed.set_visible(true);
+		compr_threads.set_visible(true);
+		break;
+	    default:
+		throw WEBDAR_BUG;
+	    }
 	}
 
 	act(changed);

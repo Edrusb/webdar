@@ -56,7 +56,8 @@ public:
     static const std::string changed;
 
     html_compression_params(bool show_resave,
-			    bool show_min_size);
+			    bool show_min_size,
+			    bool show_keep_compressed);
     html_compression_params(const html_compression_params & ref) = delete;
     html_compression_params(html_compression_params && ref) noexcept = delete;
     html_compression_params & operator = (const html_compression_params & ref) = delete;
@@ -67,6 +68,7 @@ public:
     void set_compression_level(int val) { compression_level.set_value_as_int(val); };
     void set_min_compression_size(const libdar::infinint & val) { min_compr_size.set_value_as_infinint(val); };
     void set_compression_block(const libdar::infinint & val) { compression_block.set_value_as_infinint(val); };
+    void set_keep_compressed(bool val) { keep_compressed.set_value_as_bool(val); };
 
     libdar::compression get_compression_algo() const { return compression.get_value(); };
     libdar::U_I get_compression_level() const { return compression_level.get_value_as_int(); };
@@ -74,6 +76,7 @@ public:
     libdar::infinint get_compression_block() const { return compression_block.get_value_as_infinint(); };
     bool get_resave_uncompressed() const { return never_resave_uncompressed.get_value_as_bool(); };
     libdar::U_I get_num_threads() const { return compr_threads.get_value_as_int(); };
+    bool get_keep_compressed() const { return keep_compressed.get_value_as_bool(); };
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -94,6 +97,7 @@ private:
     html_form_input_unit compression_block;
     html_form_input never_resave_uncompressed;
     html_form_input compr_threads;
+    html_form_input keep_compressed;
 
     bool x_show_resave;
     bool x_show_min_size;
