@@ -172,6 +172,7 @@ html_options_create::html_options_create():
     compr_params.set_compression_algo(defaults.get_compression());
     compr_params.set_compression_level(defaults.get_compression_level());
     compr_params.set_compression_block(defaults.get_compression_block_size());
+    compr_params.set_min_compression_size(defaults.get_min_compr_size());
     slicing.set_value_as_bool(defaults.get_slice_size() != 0);
     different_first_slice.set_value_as_bool(defaults.get_first_slice_size() != defaults.get_slice_size());
     execute.set_value(defaults.get_execute());
@@ -184,7 +185,6 @@ html_options_create::html_options_create():
 						string("Value provided to iteration count exceeds the supported libdar integer flavor (infinint)")));
     iteration_count.set_value(libdar::deci(tmpi).human());
 
-    compr_params.set_min_compression_size(defaults.get_min_compr_size());
     what_to_check.set_value(defaults.get_comparison_fields());
     hourshift.set_value(libdar::deci(defaults.get_hourshift()).human());
     empty.set_value_as_bool(defaults.get_empty());
