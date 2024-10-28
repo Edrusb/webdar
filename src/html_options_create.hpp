@@ -39,7 +39,6 @@ extern "C"
 #include "body_builder.hpp"
 #include "actor.hpp"
 #include "events.hpp"
-#include "html_crypto_algo.hpp"
 #include "html_form_input.hpp"
 #include "html_comparison_fields.hpp"
 #include "html_form_fieldset.hpp"
@@ -54,13 +53,13 @@ extern "C"
 #include "html_mask_form_filename.hpp"
 #include "html_mask_form_path.hpp"
 #include "html_form_select.hpp"
-#include "html_form_gnupg_list.hpp"
 #include "html_form_same_fs.hpp"
 #include "html_form_ignore_as_symlink.hpp"
 #include "html_form_sig_block_size.hpp"
 #include "html_form_input_unit.hpp"
 #include "html_compression_params.hpp"
 #include "html_slicing.hpp"
+#include "html_ciphering.hpp"
 
     /// html component used for the user to provide the parameters to create a new archive
 
@@ -102,9 +101,6 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
-	// specific events
-    static constexpr const char* kdf_algo_changed = "kdf_algo_changed";
-
 
     html_derouleur deroule;
 
@@ -129,8 +125,6 @@ private:
     html_mask_form_filename ea_mask;
 
     html_form form_same_fs;
-
-    html_form form_crypto;
 
     html_form_fieldset archtype_fs;
     html_form_radio archtype;      // fs_archtype member
@@ -195,17 +189,7 @@ private:
 
     html_slicing slicing;
 
-    html_form_fieldset crypto_fs;
-    html_form_select crypto_type;
-    html_crypto_algo crypto_algo;
-    html_form_input crypto_pass1;
-    html_form_input crypto_pass2;
-    html_form_input_unit crypto_size;
-    html_form_input crypto_threads;
-    html_form_gnupg_list gnupg;
-    html_form_fieldset crypto_fs_kdf_hash;
-    html_form_radio crypto_kdf_hash;
-    html_form_input iteration_count;
+    html_ciphering ciphering;
 };
 
 #endif
