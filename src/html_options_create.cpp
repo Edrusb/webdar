@@ -57,7 +57,6 @@ html_options_create::html_options_create():
     path_mask(false),
     ea_mask("Extended Attribute expression"),
     form_same_fs("Update"),
-    form_slicing("Update"),
     form_crypto("Update"),
     archtype_fs(""),
     fixed_date("Only record files changed since:"),
@@ -71,14 +70,10 @@ html_options_create::html_options_create():
     allow_over("Allow slice overwriting", html_form_input::check, "", 1),
     warn_over("Warn before overwriting", html_form_input::check, "", 1),
     pause("Pause at each N slices (zero = no pause)", html_form_input::number, "", 3),
-    slice_permission("Slice permission (octal)", html_form_input::text, "", 10),
-    slice_user_ownership("Slice user ownership", html_form_input::text, "", 10),
-    slice_group_ownership("slice group ownership", html_form_input::text, "", 10),
     retry_on_change_times("Max retries saving files that changed", html_form_input::number, "", 3),
     retry_on_change_overhead("Max wasted bytes retrying saving changed files", 0, 10),
     sequential_marks("Add sequential marks", html_form_input::check, "", 1),
     user_comment("User comment in slice header", html_form_input::text, "", 40),
-    slice_min_digits("Minimum digits in slice filenames", html_form_input::number, "", 3),
     sparse_file_min_size("Minimum size of holes to lookup in sparse files", 0, 10),
     hash_algo("Hashing algorithm"),
     execute("Command to execute after each slice", html_form_input::text, "", 30),
@@ -107,11 +102,6 @@ html_options_create::html_options_create():
     same_fs_fs("Select the filesystems based on their mount point"),
     compr_params(true, true, false),
     compr_mask("Filename expression"),
-    slicing_fs(""),
-    slicing("Sliced archive", html_form_input::check, "", 1),
-    slice_size("Slice size", 0, 6),
-    different_first_slice("Specific size for first slice", html_form_input::check, "", 1),
-    first_slice_size("Slice size", 0, 6),
     crypto_fs(""),
     crypto_type("type of cryptography"),
     crypto_algo("Cipher used"),
@@ -150,8 +140,6 @@ html_options_create::html_options_create():
 		archtype.set_selected(3);
 	    else
 		archtype.set_selected(0);
-    slice_size.set_min_only(60);
-    first_slice_size.set_min_only(60);
     crypto_type.add_choice("sym", "Symmetric encryption");
     crypto_type.add_choice("asym", "Asymmetric encryption");
     crypto_pass1.set_value("");
@@ -173,8 +161,6 @@ html_options_create::html_options_create():
     compr_params.set_compression_level(defaults.get_compression_level());
     compr_params.set_compression_block(defaults.get_compression_block_size());
     compr_params.set_min_compression_size(defaults.get_min_compr_size());
-    slicing.set_value_as_bool(defaults.get_slice_size() != 0);
-    different_first_slice.set_value_as_bool(defaults.get_first_slice_size() != defaults.get_slice_size());
     execute.set_value(defaults.get_execute());
     crypto_algo.set_value(defaults.get_crypto_algo());
     delta_sig_min_size.set_value_as_infinint(defaults.get_delta_sig_min_size());
@@ -195,9 +181,6 @@ html_options_create::html_options_create():
     furtive_read_mode.set_value_as_bool(defaults.get_furtive_read_mode());
     zeroing_neg_date.set_value_as_bool(defaults.get_auto_zeroing_neg_dates());
     fixed_date.set_value(defaults.get_fixed_date());
-    slice_permission.set_value(defaults.get_slice_permission());
-    slice_user_ownership.set_value(defaults.get_slice_user_ownership());
-    slice_group_ownership.set_value(defaults.get_slice_group_ownership());
     retry_on_change_times.set_value(libdar::deci(defaults.get_repeat_count()).human());
     retry_on_change_overhead.set_value_as_infinint(defaults.get_repeat_byte());
     sequential_marks.set_value_as_bool(defaults.get_sequential_marks());
@@ -205,8 +188,12 @@ html_options_create::html_options_create():
     security_check.set_value_as_bool(defaults.get_security_check());
     user_comment.set_value(defaults.get_user_comment());
     hash_algo.set_value(defaults.get_hash_algo());
-    slice_min_digits.set_value(libdar::deci(defaults.get_slice_min_digits()).human());
     dont_ignore_unknown_inode_type.set_value_as_bool(! defaults.get_ignore_unknown_inode_type());
+    slicing.set_slicing(defaults.get_slice_size(), defaults.get_first_slice_size());
+    slicing.set_permission(defaults.get_slice_permission());
+    slicing.set_user_ownership(defaults.get_slice_user_ownership());
+    slicing.set_group_ownership(defaults.get_slice_group_ownership());
+    slicing.set_min_digits(defaults.get_slice_min_digits());
 
 	// build tree dependancy
 
@@ -285,15 +272,11 @@ html_options_create::html_options_create():
     archgen_fs.adopt(&allow_over);
     archgen_fs.adopt(&warn_over);
     archgen_fs.adopt(&pause);
-    archgen_fs.adopt(&slice_permission);
-    archgen_fs.adopt(&slice_user_ownership);
-    archgen_fs.adopt(&slice_group_ownership);
     archgen_fs.adopt(&retry_on_change_times);
     archgen_fs.adopt(&retry_on_change_overhead);
     archgen_fs.adopt(&sequential_marks);
     archgen_fs.adopt(&sparse_file_min_size);
     archgen_fs.adopt(&user_comment);
-    archgen_fs.adopt(&slice_min_digits);
     archgen_fs.adopt(&hash_algo);
     archgen_fs.adopt(&execute);
     archgen_fs.adopt(&empty);
@@ -343,12 +326,8 @@ html_options_create::html_options_create():
 
 
 	// slicing
-    slicing_fs.adopt(&slicing);
-    slicing_fs.adopt(&slice_size);
-    slicing_fs.adopt(&different_first_slice);
-    slicing_fs.adopt(&first_slice_size);
-    form_slicing.adopt(&slicing_fs);
-    deroule.adopt_in_section(sect_slice, &form_slicing);
+
+    deroule.adopt_in_section(sect_slice, &slicing);
 
 	// ciphering
     crypto_fs.adopt(&crypto_algo);
@@ -373,8 +352,6 @@ html_options_create::html_options_create():
     exclude_by_ea.record_actor_on_event(this, html_form_input::changed);
     default_ea.record_actor_on_event(this, html_form_input::changed);
     compr_params.record_actor_on_event(this, html_compression_params::changed);
-    slicing.record_actor_on_event(this, html_form_input::changed);
-    different_first_slice.record_actor_on_event(this, html_form_input::changed);
     crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
     entrep.record_actor_on_event(this, html_entrepot::changed);
     crypto_type.record_actor_on_event(this, html_form_select::changed);
@@ -453,16 +430,10 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 	ret.set_compr_mask(*libcompmask);
     }
 
-    if(slicing.get_value_as_bool())
-    {
-	libdar::infinint s_size = slice_size.get_value_as_infinint();
-	libdar::infinint f_s_size = 0;
-
-	if(different_first_slice.get_value_as_bool())
-	    f_s_size = first_slice_size.get_value_as_infinint();
-
-	ret.set_slicing(s_size, f_s_size);
-    }
+    libdar::infinint s_size;
+    libdar::infinint f_s_size;
+    slicing.get_slicing(s_size, f_s_size);
+    ret.set_slicing(s_size, f_s_size);
 
     ret.set_ea_mask(*(ea_mask.get_mask()));
 
@@ -521,9 +492,9 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 	ret.set_ignored_as_symlink(follow_symlinks.get_symlink_list());
     ret.set_cache_directory_tagging(cache_directory_tagging.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
-    ret.set_slice_permission(slice_permission.get_value());
-    ret.set_slice_user_ownership(slice_user_ownership.get_value());
-    ret.set_slice_group_ownership(slice_group_ownership.get_value());
+    ret.set_slice_permission(slicing.get_permission());
+    ret.set_slice_user_ownership(slicing.get_user_ownership());
+    ret.set_slice_group_ownership(slicing.get_group_ownership());
     ret.set_retry_on_change(libdar::deci(retry_on_change_times.get_value()).computer(),
 			    retry_on_change_overhead.get_value_as_infinint());
     ret.set_sequential_marks(sequential_marks.get_value_as_bool());
@@ -531,7 +502,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_security_check(security_check.get_value_as_bool());
     ret.set_user_comment(user_comment.get_value());
     ret.set_hash_algo(hash_algo.get_value());
-    ret.set_slice_min_digits(libdar::deci(slice_min_digits.get_value()).computer());
+    ret.set_slice_min_digits(slicing.get_min_digits());
     ret.set_ignore_unknown_inode_type(! dont_ignore_unknown_inode_type.get_value_as_bool());
     ret.set_execute(execute.get_value());
     ret.set_entrepot(entrep.get_entrepot(webui));
@@ -646,22 +617,6 @@ void html_options_create::on_event(const string & event_name)
 	}
 
 	compr_mask.set_visible(compr_params.get_compression_algo() != libdar::compression::none);
-
-	if(slicing.get_value_as_bool())
-	{
-	    slice_size.set_visible(true);
-	    different_first_slice.set_visible(true);
-	    if(different_first_slice.get_value_as_bool())
-		first_slice_size.set_visible(true);
-	    else
-		first_slice_size.set_visible(false);
-	}
-	else // no slicing requested
-	{
-	    slice_size.set_visible(false);
-	    different_first_slice.set_visible(false);
-	    first_slice_size.set_visible(false);
-	}
 
 	switch(crypto_algo.get_value())
 	{
