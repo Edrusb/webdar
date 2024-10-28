@@ -48,6 +48,7 @@ extern "C"
 #include "html_entrepot.hpp"
 #include "html_web_user_interaction.hpp"
 #include "html_form_input_unit.hpp"
+#include "html_slicing.hpp"
 
     /// html component used for the user to provide the parameters to repair an archive
 
@@ -114,22 +115,13 @@ private:
 
 	// target
 
-    html_form_input slice_min_digits;
-    html_form_input slice_permission;
-    html_form_input slice_user_ownership;
-    html_form_input slice_group_ownership;
     html_form_input user_comment;
     html_form_fieldset target_fs;
     html_form target_form;
 
 	// slicing
 
-    html_form_input slicing;
-    html_form_input_unit slice_size;
-    html_form_input different_first_slice;
-    html_form_input_unit first_slice_size;
-    html_form_fieldset slicing_fs;
-    html_form slicing_form;
+    html_slicing slicing;
 
 	// crypto
 

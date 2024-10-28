@@ -100,44 +100,12 @@ html_options_repair::html_options_repair():
     hash_algo("Generate hashing files for each slice"),
     processing_fs(""),
     processing_form("Update"),
-    slice_min_digits("Minimum digits in slice filenames",
-		     html_form_input::number,
-		     "1",
-		     3),
-    slice_permission("Slice permission (octal)",
-		     html_form_input::text,
-		     "",
-		     10),
-    slice_user_ownership("Slice user ownership",
-			 html_form_input::text,
-			 "",
-			 10),
-    slice_group_ownership("slice group ownership",
-			  html_form_input::text,
-			  "",
-			  10),
     user_comment("User comment in slice header",
 		 html_form_input::text,
 		 "",
 		 40),
     target_fs(""),
     target_form("Update"),
-    slicing("Sliced archive",
-	    html_form_input::check,
-	    "",
-	    1),
-    slice_size("Slice size",
-	       0,
-	       6),
-    different_first_slice("Specific size for first slice",
-			  html_form_input::check,
-			  "",
-			  1),
-    first_slice_size("Slice size",
-		     0,
-		     6),
-    slicing_fs(""),
-    slicing_form("Update"),
     crypto_algo("Cipher used"),
     crypto_pass1("Pass phrase",
 		 html_form_input::password,
@@ -172,10 +140,6 @@ html_options_repair::html_options_repair():
     allow_over.set_value_as_bool(defaults.get_allow_over());
     warn_over.set_value_as_bool(defaults.get_warn_over());
     pause.set_value(libdar::deci(defaults.get_pause()).human());
-    slicing.set_value_as_bool(defaults.get_slice_size() != 0);
-    slice_size.set_value_as_infinint(defaults.get_slice_size());
-    different_first_slice.set_value_as_bool(defaults.get_first_slice_size() != defaults.get_slice_size());
-    first_slice_size.set_value_as_infinint(defaults.get_first_slice_size());
     crypto_algo.set_value(defaults.get_crypto_algo());
     crypto_pass1.set_value("");
     crypto_pass2.set_value("");
@@ -184,7 +148,12 @@ html_options_repair::html_options_repair():
     pause.set_min_only(0);
     multi_thread_crypto.set_min_only(1);
     multi_thread_compress.set_min_only(1);
-    slice_min_digits.set_min_only(1);
+
+    slicing.set_permission(defaults.get_slice_permission());
+    slicing.set_user_ownership(defaults.get_slice_user_ownership());
+    slicing.set_group_ownership(defaults.get_slice_group_ownership());
+    slicing.set_min_digits(defaults.get_slice_min_digits());
+    slicing.set_slicing(defaults.get_slice_size(), defaults.get_first_slice_size());
 
 	// adoption tree
     display_fs.adopt(&info_details);
@@ -206,20 +175,11 @@ html_options_repair::html_options_repair():
     processing_form.adopt(&processing_fs);
     deroule.adopt_in_section(sect_process, &processing_form);
 
-    target_fs.adopt(&slice_min_digits);
-    target_fs.adopt(&slice_permission);
-    target_fs.adopt(&slice_user_ownership);
-    target_fs.adopt(&slice_group_ownership);
     target_fs.adopt(&user_comment);
     target_form.adopt(&target_fs);
     deroule.adopt_in_section(sect_target, &target_form);
 
-    slicing_fs.adopt(&slicing);
-    slicing_fs.adopt(&slice_size);
-    slicing_fs.adopt(&different_first_slice);
-    slicing_fs.adopt(&first_slice_size);
-    slicing_form.adopt(&slicing_fs);
-    deroule.adopt_in_section(sect_slice, &slicing_form);
+    deroule.adopt_in_section(sect_slice, &slicing);
 
     crypto_fs.adopt(&crypto_algo);
     crypto_fs.adopt(&crypto_pass1);
@@ -235,8 +195,6 @@ html_options_repair::html_options_repair():
     register_name(entrepot_changed);
 
     display_treated.record_actor_on_event(this, html_form_input::changed);
-    slicing.record_actor_on_event(this, html_form_input::changed);
-    different_first_slice.record_actor_on_event(this, html_form_input::changed);
     crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
     entrep.record_actor_on_event(this, html_entrepot::changed);
 
@@ -255,22 +213,6 @@ void html_options_repair::on_event(const string & event_name)
        event_name == html_crypto_algo::changed)
     {
 	display_only_dir.set_visible(display_treated.get_value_as_bool());
-
-    	if(slicing.get_value_as_bool())
-	{
-	    slice_size.set_visible(true);
-	    different_first_slice.set_visible(true);
-	    if(different_first_slice.get_value_as_bool())
-		first_slice_size.set_visible(true);
-	    else
-		first_slice_size.set_visible(false);
-	}
-	else // no slicing requested
-	{
-	    slice_size.set_visible(false);
-	    different_first_slice.set_visible(false);
-	    first_slice_size.set_visible(false);
-	}
 
 	switch(crypto_algo.get_value())
 	{
@@ -315,16 +257,12 @@ libdar::archive_options_repair html_options_repair::get_options(shared_ptr<html_
     ret.set_display_skipped(display_skipped.get_value_as_bool());
     ret.set_display_finished(display_dirstats.get_value_as_bool());
     ret.set_pause(libdar::deci(pause.get_value()).computer());
-    if(slicing.get_value_as_bool())
-    {
-	libdar::infinint s_size = slice_size.get_value_as_infinint();
-	libdar::infinint f_s_size = 0;
 
-	if(different_first_slice.get_value_as_bool())
-	    f_s_size = first_slice_size.get_value_as_infinint();
+    libdar::infinint s_size;
+    libdar::infinint f_s_size;
+    slicing.get_slicing(s_size, f_s_size);
+    ret.set_slicing(s_size, f_s_size);
 
-	ret.set_slicing(s_size, f_s_size);
-    }
     ret.set_execute(execute.get_value());
     ret.set_crypto_algo(crypto_algo.get_value());
     if(crypto_algo.get_value() != libdar::crypto_algo::none)
@@ -337,12 +275,12 @@ libdar::archive_options_repair html_options_repair::get_options(shared_ptr<html_
 	// gnupg recipient not surfacing to GUI for now
 	// gnupg signatories not surfacing to GUI for now
     ret.set_empty(dry_run.get_value_as_bool());
-    ret.set_slice_permission(slice_permission.get_value());
-    ret.set_slice_user_ownership(slice_user_ownership.get_value());
-    ret.set_slice_group_ownership(slice_group_ownership.get_value());
+    ret.set_slice_permission(slicing.get_permission());
+    ret.set_slice_user_ownership(slicing.get_user_ownership());
+    ret.set_slice_group_ownership(slicing.get_group_ownership());
     ret.set_user_comment(user_comment.get_value());
     ret.set_hash_algo(hash_algo.get_value());
-    ret.set_slice_min_digits(libdar::deci(slice_min_digits.get_value()).computer());
+    ret.set_slice_min_digits(slicing.get_min_digits());
     ret.set_entrepot(entrep.get_entrepot(webui));
     ret.set_multi_threaded_crypto(webdar_tools_convert_to_int(multi_thread_crypto.get_value()));
     ret.set_multi_threaded_compress(webdar_tools_convert_to_int(multi_thread_compress.get_value()));
