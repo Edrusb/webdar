@@ -52,6 +52,7 @@ extern "C"
 #include "html_form_overwrite_action.hpp"
 #include "html_form_input_unit.hpp"
 #include "html_compression_params.hpp"
+#include "html_slicing.hpp"
 
     /// html component for the user to provided parameters of a libdar merging operation
 
@@ -99,13 +100,9 @@ private:
     html_form_input allow_over;
     html_form_input warn_over;
     html_form_input pause;
-    html_form_input slice_permission;
-    html_form_input slice_user_ownership;
-    html_form_input slice_group_ownership;
     html_form_input sequential_marks;
     html_form_input_unit sparse_file_min_size;
     html_form_input user_comment;
-    html_form_input slice_min_digits;
     html_hash_algo hash_algo;
     html_form_input execute;
     html_form_input empty;
@@ -138,12 +135,7 @@ private:
     html_compression_params compr_params;
     html_mask_form_filename compr_mask;
 
-    html_form form_slicing;
-    html_form_fieldset fs_slicing;
-    html_form_input slicing;
-    html_form_input_unit slice_size;
-    html_form_input different_first_slice;
-    html_form_input_unit first_slice_size;
+    html_slicing slicing;
 
     html_form form_crypto;
     html_form_fieldset fs_crypto;
