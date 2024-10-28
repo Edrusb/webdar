@@ -56,12 +56,8 @@ html_options_isolate::html_options_isolate():
     allow_over("Allow slice overwriting", html_form_input::check, "", 1),
     warn_over("Warn before overwriting", html_form_input::check, "", 1),
     pause("Pause at each N slices (zero = no pause)", html_form_input::number, "", 3),
-    slice_permission("Slice permission (octal)", html_form_input::text, "", 10),
-    slice_user_ownership("Slice user ownership", html_form_input::text, "", 10),
-    slice_group_ownership("slice group ownership", html_form_input::text, "", 10),
     sequential_marks("Add sequential marks", html_form_input::check, "", 1),
     user_comment("User comment in slice header", html_form_input::text, "", 40),
-    slice_min_digits("Minimum digits in slice filenames", html_form_input::number, "", 3),
     hash_algo("Hashing algorithm"),
     execute("Command to execute after each slice", html_form_input::text, "", 30),
     empty("Dry run execution", html_form_input::check, "", 1),
@@ -69,12 +65,6 @@ html_options_isolate::html_options_isolate():
     fs_shown(""),
     info_details("Detailed informations", html_form_input::check, "1", 1),
     compr_params(false, false, false),
-    form_slicing("Update"),
-    fs_slicing(""),
-    slicing("Sliced archive", html_form_input::check, "", 1),
-    slice_size("Slice size", 0, 6),
-    different_first_slice("Specific size for first slice", html_form_input::check, "", 1),
-    first_slice_size("Slice size", 0, 6),
     form_crypto("Update"),
     fs_crypto(""),
     crypto_type("type of cryptography"),
@@ -97,30 +87,26 @@ html_options_isolate::html_options_isolate():
     crypto_kdf_hash.add_choice("whirlpool","whirlpool");
     crypto_kdf_hash.add_choice("argon2","argon2");
     crypto_kdf_hash.set_selected("argon2");
-    slice_size.set_min_only(60);
-    first_slice_size.set_min_only(60);
 
 	// setting default values from libdar
     allow_over.set_value_as_bool(defaults.get_allow_over());
     warn_over.set_value_as_bool(defaults.get_warn_over());
     pause.set_value(libdar::deci(defaults.get_pause()).human());
     pause.set_min_only(0);
-    slice_permission.set_value(defaults.get_slice_permission());
-    slice_user_ownership.set_value(defaults.get_slice_user_ownership());
-    slice_group_ownership.set_value(defaults.get_slice_group_ownership());
+    slicing.set_permission(defaults.get_slice_permission());
+    slicing.set_user_ownership(defaults.get_slice_user_ownership());
+    slicing.set_group_ownership(defaults.get_slice_group_ownership());
     sequential_marks.set_value_as_bool(defaults.get_sequential_marks());
     user_comment.set_value(defaults.get_user_comment());
-    slice_min_digits.set_value(libdar::deci(defaults.get_slice_min_digits()).human());
+    slicing.set_min_digits(defaults.get_slice_min_digits());
     hash_algo.set_value(defaults.get_hash_algo());
     execute.set_value(defaults.get_execute());
     empty.set_value_as_bool(defaults.get_empty());
     compr_params.set_compression_algo(defaults.get_compression());
     compr_params.set_compression_level(defaults.get_compression_level());
     compr_params.set_compression_block(defaults.get_compression_block_size());
-    slicing.set_value_as_bool(defaults.get_slice_size() != 0);
-    slice_size.set_value_as_infinint(defaults.get_slice_size());
-    different_first_slice.set_value_as_bool(defaults.get_first_slice_size() != defaults.get_slice_size());
-    first_slice_size.set_value_as_infinint(defaults.get_first_slice_size());
+    slicing.set_slicing(defaults.get_slice_size(),
+			defaults.get_first_slice_size());
     crypto_algo.set_value(defaults.get_crypto_algo());
     crypto_pass1.set_value("");
     crypto_pass2.set_value("");
@@ -164,12 +150,8 @@ html_options_isolate::html_options_isolate():
     fs_archgen.adopt(&allow_over);
     fs_archgen.adopt(&warn_over);
     fs_archgen.adopt(&pause);
-    fs_archgen.adopt(&slice_permission);
-    fs_archgen.adopt(&slice_user_ownership);
-    fs_archgen.adopt(&slice_group_ownership);
     fs_archgen.adopt(&sequential_marks);
     fs_archgen.adopt(&user_comment);
-    fs_archgen.adopt(&slice_min_digits);
     fs_archgen.adopt(&hash_algo);
     fs_archgen.adopt(&execute);
     fs_archgen.adopt(&empty);
@@ -182,12 +164,7 @@ html_options_isolate::html_options_isolate():
 
     deroule.adopt_in_section(sect_compr, &compr_params);
 
-    fs_slicing.adopt(&slicing);
-    fs_slicing.adopt(&slice_size);
-    fs_slicing.adopt(&different_first_slice);
-    fs_slicing.adopt(&first_slice_size);
-    form_slicing.adopt(&fs_slicing);
-    deroule.adopt_in_section(sect_slice, &form_slicing);
+    deroule.adopt_in_section(sect_slice, &slicing);
 
     fs_crypto.adopt(&crypto_algo);
     fs_crypto.adopt(&crypto_type);
@@ -209,8 +186,6 @@ html_options_isolate::html_options_isolate():
 
     delta_sig.record_actor_on_event(this, html_form_input::changed);
     delta_transfer_mode.record_actor_on_event(this, html_form_input::changed);
-    slicing.record_actor_on_event(this, html_form_input::changed);
-    different_first_slice.record_actor_on_event(this, html_form_input::changed);
     crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
     crypto_type.record_actor_on_event(this, html_form_select::changed);
     entrep.record_actor_on_event(this, html_entrepot::changed);
@@ -242,22 +217,6 @@ void html_options_isolate::on_event(const string & event_name)
 	    delta_sig_min_size.set_visible(false);
 	    sig_block_size.set_visible(false);
 	    delta_mask.set_visible(false);
-	}
-
-	if(slicing.get_value_as_bool())
-	{
-	    slice_size.set_visible(true);
-	    different_first_slice.set_visible(true);
-	    if(different_first_slice.get_value_as_bool())
-		first_slice_size.set_visible(true);
-	    else
-		first_slice_size.set_visible(false);
-	}
-	else // no slicing requested
-	{
-	    slice_size.set_visible(false);
-	    different_first_slice.set_visible(false);
-	    first_slice_size.set_visible(false);
 	}
 
 	switch(crypto_algo.get_value())
@@ -346,12 +305,12 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     ret.set_allow_over(allow_over.get_value_as_bool());
     ret.set_warn_over(warn_over.get_value_as_bool());
     ret.set_pause(libdar::deci(pause.get_value()).computer());
-    ret.set_slice_permission(slice_permission.get_value());
-    ret.set_slice_user_ownership(slice_user_ownership.get_value());
-    ret.set_slice_group_ownership(slice_group_ownership.get_value());
+    ret.set_slice_permission(slicing.get_permission());
+    ret.set_slice_user_ownership(slicing.get_user_ownership());
+    ret.set_slice_group_ownership(slicing.get_group_ownership());
     ret.set_sequential_marks(sequential_marks.get_value_as_bool());
     ret.set_user_comment(user_comment.get_value());
-    ret.set_slice_min_digits(libdar::deci(slice_min_digits.get_value()).computer());
+    ret.set_slice_min_digits(slicing.get_min_digits());
     ret.set_hash_algo(hash_algo.get_value());
     ret.set_empty(empty.get_value_as_bool());
     ret.set_execute(execute.get_value());
@@ -383,16 +342,12 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
 	throw exception_range(libdar::tools_printf("compression block size is too small, select either zero to disable compression per block or a block size greater or equal to %d", tokens_min_compr_bs));
     ret.set_compression_block_size(val);
 
-    if(slicing.get_value_as_bool())
-    {
-	libdar::infinint s_size = slice_size.get_value_as_infinint();
-	libdar::infinint f_s_size = 0;
 
-	if(different_first_slice.get_value_as_bool())
-	    f_s_size = first_slice_size.get_value_as_infinint();
+    libdar::infinint s_size;
+    libdar::infinint f_s_size;
 
-	ret.set_slicing(s_size, f_s_size);
-    }
+    slicing.get_slicing(s_size, f_s_size);
+    ret.set_slicing(s_size, f_s_size);
 
     ret.set_crypto_algo(crypto_algo.get_value());
     if(crypto_algo.get_value() != libdar::crypto_algo::none)
