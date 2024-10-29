@@ -89,10 +89,6 @@ html_options_repair::html_options_repair():
 	    html_form_input::check,
 	    "",
 	    1),
-    multi_thread_crypto("Number of thread for ciphering",
-			html_form_input::number,
-			"1",
-			3),
     multi_thread_compress("Number of thread for compression",
 			  html_form_input::number,
 			  "1",
@@ -105,22 +101,7 @@ html_options_repair::html_options_repair():
 		 "",
 		 40),
     target_fs(""),
-    target_form("Update"),
-    crypto_algo("Cipher used"),
-    crypto_pass1("Pass phrase",
-		 html_form_input::password,
-		 "",
-		 30),
-    crypto_pass2("Confirm pass phrase",
-		 html_form_input::password,
-		 "",
-		 30),
-    crypto_size("Cipher Block size",
-		html_form_input::number,
-		"",
-		30),
-    crypto_fs(""),
-    crypto_form("Update")
+    target_form("Update")
 {
     libdar::archive_options_repair defaults;
 
@@ -140,13 +121,9 @@ html_options_repair::html_options_repair():
     allow_over.set_value_as_bool(defaults.get_allow_over());
     warn_over.set_value_as_bool(defaults.get_warn_over());
     pause.set_value(libdar::deci(defaults.get_pause()).human());
-    crypto_algo.set_value(defaults.get_crypto_algo());
-    crypto_pass1.set_value("");
-    crypto_pass2.set_value("");
-    crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
+    ciphering.set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
 
     pause.set_min_only(0);
-    multi_thread_crypto.set_min_only(1);
     multi_thread_compress.set_min_only(1);
 
     slicing.set_permission(defaults.get_slice_permission());
@@ -169,7 +146,6 @@ html_options_repair::html_options_repair():
     processing_fs.adopt(&pause);
     processing_fs.adopt(&execute);
     processing_fs.adopt(&dry_run);
-    processing_fs.adopt(&multi_thread_crypto);
     processing_fs.adopt(&multi_thread_compress);
     processing_fs.adopt(&hash_algo);
     processing_form.adopt(&processing_fs);
@@ -181,12 +157,7 @@ html_options_repair::html_options_repair():
 
     deroule.adopt_in_section(sect_slice, &slicing);
 
-    crypto_fs.adopt(&crypto_algo);
-    crypto_fs.adopt(&crypto_pass1);
-    crypto_fs.adopt(&crypto_pass2);
-    crypto_fs.adopt(&crypto_size);
-    crypto_form.adopt(&crypto_fs);
-    deroule.adopt_in_section(sect_crypt, &crypto_form);
+    deroule.adopt_in_section(sect_crypt, &ciphering);
 
     adopt(&deroule);
 
@@ -195,7 +166,6 @@ html_options_repair::html_options_repair():
     register_name(entrepot_changed);
 
     display_treated.record_actor_on_event(this, html_form_input::changed);
-    crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
     entrep.record_actor_on_event(this, html_entrepot::changed);
 
     on_event(html_form_input::changed); // first initialization
@@ -209,32 +179,9 @@ html_options_repair::html_options_repair():
 
 void html_options_repair::on_event(const string & event_name)
 {
-    if(event_name == html_form_input::changed ||
-       event_name == html_crypto_algo::changed)
+    if(event_name == html_form_input::changed)
     {
 	display_only_dir.set_visible(display_treated.get_value_as_bool());
-
-	switch(crypto_algo.get_value())
-	{
-	case libdar::crypto_algo::none:
-	    crypto_pass1.set_visible(false);
-	    crypto_pass2.set_visible(false);
-	    crypto_size.set_visible(false);
-	    break;
-	case libdar::crypto_algo::scrambling:
-	case libdar::crypto_algo::blowfish:
-	case libdar::crypto_algo::aes256:
-	case libdar::crypto_algo::twofish256:
-	case libdar::crypto_algo::serpent256:
-	case libdar::crypto_algo::camellia256:
-	    crypto_pass1.set_visible(true);
-	    crypto_pass2.set_visible(true);
-	    crypto_size.set_visible(true);
-	    break;
-	default:
-	    throw WEBDAR_BUG;
-	}
-
     }
     else if(event_name == html_entrepot::changed)
     {
@@ -264,16 +211,29 @@ libdar::archive_options_repair html_options_repair::get_options(shared_ptr<html_
     ret.set_slicing(s_size, f_s_size);
 
     ret.set_execute(execute.get_value());
-    ret.set_crypto_algo(crypto_algo.get_value());
-    if(crypto_algo.get_value() != libdar::crypto_algo::none)
+
+    ret.set_crypto_algo(ciphering.get_crypto_algo());
+    if(ciphering.get_crypto_algo() != libdar::crypto_algo::none)
     {
-	if(crypto_pass1.get_value() != crypto_pass2.get_value())
-	    throw exception_range("crypto password and its confirmation do not match");
-	ret.set_crypto_pass(libdar::secu_string(crypto_pass1.get_value().c_str(), crypto_pass1.get_value().size()));
-	ret.set_crypto_size(webdar_tools_convert_to_int(crypto_size.get_value()));
+	switch(ciphering.get_crypto_type())
+	{
+	case html_ciphering::sym:
+	    ret.set_crypto_pass(ciphering.get_crypto_pass());
+		// these two are absent from libdar API for repairing... should be fixed
+		// ret.set_iteration_count(ciphering.get_iteration_count());
+		// ret.set_kdf_hash(ciphering.get_kdf_hash());
+	    break;
+	case html_ciphering::asym:
+	    ret.set_gnupg_recipients(ciphering.get_gnupg_recipients());
+	    ret.set_gnupg_signatories(ciphering.get_gnupg_signatories());
+	    break;
+	default:
+	    throw WEBDAR_BUG;
+	}
+	ret.set_crypto_size(ciphering.get_crypto_size());
+	ret.set_multi_threaded_crypto(ciphering.get_multi_threaded_crypto());
     }
-	// gnupg recipient not surfacing to GUI for now
-	// gnupg signatories not surfacing to GUI for now
+
     ret.set_empty(dry_run.get_value_as_bool());
     ret.set_slice_permission(slicing.get_permission());
     ret.set_slice_user_ownership(slicing.get_user_ownership());
@@ -282,7 +242,6 @@ libdar::archive_options_repair html_options_repair::get_options(shared_ptr<html_
     ret.set_hash_algo(hash_algo.get_value());
     ret.set_slice_min_digits(slicing.get_min_digits());
     ret.set_entrepot(entrep.get_entrepot(webui));
-    ret.set_multi_threaded_crypto(webdar_tools_convert_to_int(multi_thread_crypto.get_value()));
     ret.set_multi_threaded_compress(webdar_tools_convert_to_int(multi_thread_compress.get_value()));
 
     return ret;

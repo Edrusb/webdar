@@ -39,7 +39,6 @@ extern "C"
 #include "body_builder.hpp"
 #include "actor.hpp"
 #include "events.hpp"
-#include "html_crypto_algo.hpp"
 #include "html_form_input.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_form.hpp"
@@ -49,6 +48,7 @@ extern "C"
 #include "html_web_user_interaction.hpp"
 #include "html_form_input_unit.hpp"
 #include "html_slicing.hpp"
+#include "html_ciphering.hpp"
 
     /// html component used for the user to provide the parameters to repair an archive
 
@@ -107,7 +107,6 @@ private:
     html_form_input pause;
     html_form_input execute;
     html_form_input dry_run;
-    html_form_input multi_thread_crypto;
     html_form_input multi_thread_compress;
     html_hash_algo hash_algo;
     html_form_fieldset processing_fs;
@@ -125,13 +124,7 @@ private:
 
 	// crypto
 
-    html_crypto_algo crypto_algo;
-    html_form_input crypto_pass1;
-    html_form_input crypto_pass2;
-    html_form_input crypto_size;
-    html_form_fieldset crypto_fs;
-    html_form crypto_form;
-
+    html_ciphering ciphering;
 
     static const std::string css_indent;
 };
