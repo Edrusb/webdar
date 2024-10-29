@@ -53,6 +53,7 @@ extern "C"
 #include "html_form_input_unit.hpp"
 #include "html_compression_params.hpp"
 #include "html_slicing.hpp"
+#include "html_ciphering.hpp"
 
     /// html component for the user to provided parameters of a libdar merging operation
 
@@ -137,12 +138,8 @@ private:
 
     html_slicing slicing;
 
-    html_form form_crypto;
-    html_form_fieldset fs_crypto;
-    html_crypto_algo crypto_algo;
-    html_form_input crypto_pass1;
-    html_form_input crypto_pass2;
-    html_form_input crypto_size;
+    html_ciphering ciphering;
+
 };
 
 #endif

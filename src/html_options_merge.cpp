@@ -76,13 +76,7 @@ html_options_merge::html_options_merge():
     overwriting_policy(""),
     form_overwriting("Update"),
     compr_params(true, true, true),
-    compr_mask("Filename expression"),
-    form_crypto("Update"),
-    fs_crypto(""),
-    crypto_algo("Cipher used"),
-    crypto_pass1("Pass phrase", html_form_input::password, "", 30),
-    crypto_pass2("Confirm pass phrase", html_form_input::password, "", 30),
-    crypto_size("Cipher Block size", html_form_input::number, "", 30)
+    compr_mask("Filename expression")
 {
     libdar::archive_options_merge defaults;
 
@@ -112,11 +106,7 @@ html_options_merge::html_options_merge():
     slicing.set_group_ownership(defaults.get_slice_group_ownership());
     slicing.set_min_digits(defaults.get_slice_min_digits());
     slicing.set_slicing(defaults.get_slice_size(), defaults.get_first_slice_size());
-
-    crypto_algo.set_value(defaults.get_crypto_algo());
-    crypto_pass1.set_value("");
-    crypto_pass2.set_value("");
-    crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
+    ciphering.set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
 
 	// building HTML structure
 
@@ -187,12 +177,7 @@ html_options_merge::html_options_merge():
 
     deroule.adopt_in_section(sect_slice, &slicing);
 
-    fs_crypto.adopt(&crypto_algo);
-    fs_crypto.adopt(&crypto_pass1);
-    fs_crypto.adopt(&crypto_pass2);
-    fs_crypto.adopt(&crypto_size);
-    form_crypto.adopt(&fs_crypto);
-    deroule.adopt_in_section(sect_cipher, &form_crypto);
+    deroule.adopt_in_section(sect_cipher, &ciphering);
 
     adopt(&deroule);
 
@@ -202,7 +187,6 @@ html_options_merge::html_options_merge():
     display_treated.record_actor_on_event(this, html_form_input::changed);
     compr_params.record_actor_on_event(this, html_compression_params::changed);
     has_aux.record_actor_on_event(this, html_form_input::changed);
-    crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
     entrep.record_actor_on_event(this, html_entrepot::changed);
 
     on_event(html_form_input::changed);
@@ -216,8 +200,7 @@ html_options_merge::html_options_merge():
 void html_options_merge::on_event(const string & event_name)
 {
     if(event_name == html_form_input::changed
-       || event_name == html_compression_params::changed
-       || event_name == html_crypto_algo::changed)
+       || event_name == html_compression_params::changed)
     {
 	auxiliary.set_visible(has_aux.get_value_as_bool());
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
@@ -227,27 +210,6 @@ void html_options_merge::on_event(const string & event_name)
 	    compr_mask.set_visible(true);
 	else
 	    compr_mask.set_visible(false);
-
-	switch(crypto_algo.get_value())
-	{
-	case libdar::crypto_algo::none:
-	    crypto_pass1.set_visible(false);
-	    crypto_pass2.set_visible(false);
-	    crypto_size.set_visible(false);
-	    break;
-	case libdar::crypto_algo::scrambling:
-	case libdar::crypto_algo::blowfish:
-	case libdar::crypto_algo::aes256:
-	case libdar::crypto_algo::twofish256:
-	case libdar::crypto_algo::serpent256:
-	case libdar::crypto_algo::camellia256:
-	    crypto_pass1.set_visible(true);
-	    crypto_pass2.set_visible(true);
-	    crypto_size.set_visible(true);
-	    break;
-	default:
-	    throw WEBDAR_BUG;
-	}
 
 	    // no need to call my_body_part_has_changed()
 	    // because changed done in on_event concern
@@ -319,13 +281,24 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
     slicing.get_slicing(s_size, f_s_size);
     ret.set_slicing(s_size, f_s_size);
 
-    ret.set_crypto_algo(crypto_algo.get_value());
-    if(crypto_algo.get_value() != libdar::crypto_algo::none)
+    ret.set_crypto_algo(ciphering.get_crypto_algo());
+    if(ciphering.get_crypto_algo() != libdar::crypto_algo::none)
     {
-	if(crypto_pass1.get_value() != crypto_pass2.get_value())
-	    throw exception_range("crypto password and its confirmation do not match");
-	ret.set_crypto_pass(libdar::secu_string(crypto_pass1.get_value().c_str(), crypto_pass1.get_value().size()));
-	ret.set_crypto_size(webdar_tools_convert_to_int(crypto_size.get_value()));
+	switch(ciphering.get_crypto_type())
+	{
+	case html_ciphering::sym:
+	    ret.set_crypto_pass(ciphering.get_crypto_pass());
+	    ret.set_iteration_count(ciphering.get_iteration_count());
+	    ret.set_kdf_hash(ciphering.get_kdf_hash());
+	    break;
+	case html_ciphering::asym:
+	    ret.set_gnupg_recipients(ciphering.get_gnupg_recipients());
+	    ret.set_gnupg_signatories(ciphering.get_gnupg_signatories());
+	    break;
+	default:
+	    throw WEBDAR_BUG;
+	}
+	ret.set_crypto_size(ciphering.get_crypto_size());
     }
 
     if(has_aux.get_value_as_bool())
