@@ -219,9 +219,8 @@ libdar::archive_options_repair html_options_repair::get_options(shared_ptr<html_
 	{
 	case html_ciphering::sym:
 	    ret.set_crypto_pass(ciphering.get_crypto_pass());
-		// these two are absent from libdar API for repairing... should be fixed
-		// ret.set_iteration_count(ciphering.get_iteration_count());
-		// ret.set_kdf_hash(ciphering.get_kdf_hash());
+	    ret.set_iteration_count(ciphering.get_iteration_count());
+	    ret.set_kdf_hash(ciphering.get_kdf_hash());
 	    break;
 	case html_ciphering::asym:
 	    ret.set_gnupg_recipients(ciphering.get_gnupg_recipients());
