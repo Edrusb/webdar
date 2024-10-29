@@ -49,6 +49,7 @@ extern "C"
 #include "html_form_sig_block_size.hpp"
 #include "html_compression_params.hpp"
 #include "html_slicing.hpp"
+#include "html_ciphering.hpp"
 
     /// html components for the user to provide parameters of a isolation operation
 
@@ -119,18 +120,7 @@ private:
 
     html_slicing slicing;
 
-    html_form form_crypto;
-    html_form_fieldset fs_crypto;
-    html_form_select crypto_type;
-    html_crypto_algo crypto_algo;
-    html_form_input crypto_pass1;
-    html_form_input crypto_pass2;
-    html_form_input_unit crypto_size;
-    html_form_gnupg_list gnupg;
-    html_form_input crypto_threads;
-    html_form_fieldset crypto_fs_kdf_hash;
-    html_form_radio crypto_kdf_hash;
-    html_form_input iteration_count;
+    html_ciphering ciphering;
 };
 
 #endif
