@@ -259,6 +259,7 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
 	    throw WEBDAR_BUG;
 	}
 	ret.set_crypto_size(ciphering.get_crypto_size());
+	ret.set_multi_threaded_crypto(ciphering.get_multi_threaded_crypto());
     }
 
     return ret;
