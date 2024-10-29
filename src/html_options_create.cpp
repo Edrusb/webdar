@@ -368,7 +368,6 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_min_compr_size(compr_params.get_min_compression_size());
     ret.set_never_resave_uncompressed(compr_params.get_resave_uncompressed());
     ret.set_multi_threaded_compress(compr_params.get_num_threads());
-    ret.set_multi_threaded_crypto(ciphering.get_multi_threaded_crypto());
 
     val = webdar_tools_convert_from_infinint<libdar::U_I>(compr_bs,
 							  string("compression block size is too large for the underlying operating system, please reduce"));
@@ -410,6 +409,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 	    throw WEBDAR_BUG;
 	}
 	ret.set_crypto_size(ciphering.get_crypto_size());
+	ret.set_multi_threaded_crypto(ciphering.get_multi_threaded_crypto());
     }
     ret.set_nodump(nodump.get_value_as_bool());
     if(exclude_by_ea.get_value_as_bool())
