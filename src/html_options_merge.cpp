@@ -71,7 +71,6 @@ html_options_merge::html_options_merge():
     form_perimeter("Update"),
     fs_perimeter(""),
     empty_dir("Store ignored directories as empty directories", html_form_input::check, "", 1),
-    decremental_mode("Decremental mode", html_form_input::check, "", 1),
     filename_mask("Filename expression"),
     ea_mask("Extended Attribute expression"),
     path_mask(true),
@@ -95,7 +94,6 @@ html_options_merge::html_options_merge():
     empty.set_value_as_bool(defaults.get_empty());
 
     empty_dir.set_value_as_bool(defaults.get_empty_dir());
-    decremental_mode.set_value_as_bool(defaults.get_decremental_mode());
 
     compr_params.set_keep_compressed(true); // bypass default value from libdar
     compr_params.set_compression_algo(defaults.get_compression());
@@ -167,7 +165,6 @@ html_options_merge::html_options_merge():
     deroule.adopt_in_section(sect_show, &form_shown);
 
     fs_perimeter.adopt(&empty_dir);
-    fs_perimeter.adopt(&decremental_mode);
     form_perimeter.adopt(&fs_perimeter);
     deroule.adopt_in_section(sect_filter, &form_perimeter);
 
@@ -255,7 +252,6 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
 			    display_treated_only_dir.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
     ret.set_empty_dir(empty_dir.get_value_as_bool());
-    ret.set_decremental_mode(decremental_mode.get_value_as_bool());
     ret.set_selection(*(filename_mask.get_mask()));
     ret.set_subtree(*(path_mask.get_mask()));
     ret.set_overwriting_rules(*(overwriting_policy.get_overwriting_action()));

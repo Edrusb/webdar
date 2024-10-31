@@ -126,7 +126,6 @@ private:
     html_form form_perimeter;
     html_form_fieldset fs_perimeter;
     html_form_input empty_dir;
-    html_form_input decremental_mode;
 
     html_mask_form_filename filename_mask;
     html_mask_form_path path_mask;
