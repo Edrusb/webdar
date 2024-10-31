@@ -62,6 +62,11 @@ html_options_merge::html_options_merge():
     aux_form("Update"),
     aux_block(""),
     auxiliary("Auxiliary archive of reference"),
+    form_delta_sig("Update"),
+    delta_fs(""),
+    delta_sig("delta signatures"),
+    delta_sig_min_size("Avoid calculating delta signature for file smaller than", 0, 30),
+    delta_mask("Filename expression"),
     form_shown("Update"),
     fs_shown(""),
     info_details("Detailed informations", html_form_input::check, "1", 1),
@@ -82,6 +87,10 @@ html_options_merge::html_options_merge():
     libdar::archive_options_merge defaults;
 
 	// setting default values from libdar
+    delta_sig.add_choice("drop", "Drop all signatures");
+    delta_sig.add_choice("transfer", "Transfer signatures as is");
+    delta_sig.add_choice("compute", "Define signatures to transfer or compute");
+    delta_sig.set_selected(1); // transfer by default
 
     allow_over.set_value_as_bool(defaults.get_allow_over());
     warn_over.set_value_as_bool(defaults.get_warn_over());
@@ -92,8 +101,8 @@ html_options_merge::html_options_merge():
     hash_algo.set_value(defaults.get_hash_algo());
     execute.set_value(defaults.get_execute());
     empty.set_value_as_bool(defaults.get_empty());
-
     empty_dir.set_value_as_bool(defaults.get_empty_dir());
+    delta_sig_min_size.set_value_as_infinint(defaults.get_delta_sig_min_size());
 
     compr_params.set_keep_compressed(true); // bypass default value from libdar
     compr_params.set_compression_algo(defaults.get_compression());
@@ -113,6 +122,7 @@ html_options_merge::html_options_merge():
     static const char* sect_entrep = "entrepot";
     static const char* sect_general = "general";
     static const char* sect_aux = "auxiliary";
+    static const char* sect_delta = "delta_sig";
     static const char* sect_show = "show";
     static const char* sect_filter = "filter";
     static const char* sect_mask_file = "mask_file";
@@ -126,6 +136,7 @@ html_options_merge::html_options_merge():
     deroule.add_section(sect_entrep, "Backup Repository");
     deroule.add_section(sect_general, "General Merging Options");
     deroule.add_section(sect_aux, "Auxiliary Backup of Reference");
+    deroule.add_section(sect_delta, "Delta signatures");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_filter, "What to take into consideration for Merging");
     deroule.add_section(sect_mask_file, "Filename based filtering");
@@ -157,6 +168,13 @@ html_options_merge::html_options_merge():
     aux_block.adopt(&auxiliary);
     deroule.adopt_in_section(sect_aux, &aux_block);
 
+    delta_fs.adopt(&delta_sig);
+    delta_fs.adopt(&delta_sig_min_size);
+    delta_fs.adopt(&sig_block_size);
+    form_delta_sig.adopt(&delta_fs);
+    deroule.adopt_in_section(sect_delta, &form_delta_sig);
+    deroule.adopt_in_section(sect_delta, &delta_mask);
+
     fs_shown.adopt(&info_details);
     fs_shown.adopt(&display_treated);
     fs_shown.adopt(&display_treated_only_dir);
@@ -187,6 +205,7 @@ html_options_merge::html_options_merge():
 	// events and visibility
     register_name(entrepot_changed);
 
+    delta_sig.record_actor_on_event(this, html_form_select::changed);
     display_treated.record_actor_on_event(this, html_form_input::changed);
     compr_params.record_actor_on_event(this, html_compression_params::changed);
     has_aux.record_actor_on_event(this, html_form_input::changed);
@@ -203,10 +222,14 @@ html_options_merge::html_options_merge():
 void html_options_merge::on_event(const string & event_name)
 {
     if(event_name == html_form_input::changed
+       || event_name == html_form_select::changed
        || event_name == html_compression_params::changed)
     {
 	auxiliary.set_visible(has_aux.get_value_as_bool());
 	decremental.set_visible(has_aux.get_value_as_bool());
+	delta_mask.set_visible(delta_sig.get_selected_num() == 2);
+	delta_sig_min_size.set_visible(delta_sig.get_selected_num() == 2);
+	sig_block_size.set_visible(delta_sig.get_selected_num() == 2);
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
 
 	if(! compr_params.get_keep_compressed()
@@ -319,6 +342,33 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
 	    ret.set_auxiliary_ref(aux);
 
 	ret.set_decremental_mode(decremental.get_value_as_bool());
+    }
+
+    unique_ptr<libdar::mask> dmask;
+    switch(delta_sig.get_selected_num())
+    {
+    case 0: // drop
+	ret.set_delta_signature(false);
+	break;
+    case 1: // transfer
+	ret.set_delta_signature(true);
+	break;
+    case 2: // transfer and recompute
+	dmask = delta_mask.get_mask();
+
+	if(dmask)
+	{
+	    ret.set_delta_signature(true);
+	    ret.set_delta_mask(*dmask);
+	}
+	else
+	    throw WEBDAR_BUG;
+
+	ret.set_sig_block_len(sig_block_size.get_value());
+	ret.set_delta_sig_min_size(delta_sig_min_size.get_value_as_infinint());
+	break;
+    default:
+	throw WEBDAR_BUG;
     }
 
     return ret;

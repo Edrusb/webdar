@@ -54,6 +54,8 @@ extern "C"
 #include "html_compression_params.hpp"
 #include "html_slicing.hpp"
 #include "html_ciphering.hpp"
+#include "html_form_sig_block_size.hpp"
+#include "html_form_select.hpp"
 
     /// html component for the user to provided parameters of a libdar merging operation
 
@@ -115,6 +117,13 @@ private:
 
     html_form_fieldset aux_block;
     html_archive_read auxiliary;
+
+    html_form form_delta_sig;
+    html_form_fieldset delta_fs;
+    html_form_select delta_sig;
+    html_form_input_unit delta_sig_min_size;
+    html_form_sig_block_size sig_block_size;
+    html_mask_form_filename delta_mask;
 
     html_form form_shown;
     html_form_fieldset fs_shown;
