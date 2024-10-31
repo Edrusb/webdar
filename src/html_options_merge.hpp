@@ -110,6 +110,7 @@ private:
 
     html_form_fieldset has_aux_fs;
     html_form_input has_aux;
+    html_form_input decremental;
     html_form aux_form;
 
     html_form_fieldset aux_block;

@@ -58,6 +58,7 @@ html_options_merge::html_options_merge():
     empty("Dry run execution", html_form_input::check, "", 1),
     has_aux_fs(""),
     has_aux("Use an auxiliary archive", html_form_input::check, "", 1),
+    decremental("Build a decremental backup", html_form_input::check, "", 1),
     aux_form("Update"),
     aux_block(""),
     auxiliary("Auxiliary archive of reference"),
@@ -152,6 +153,7 @@ html_options_merge::html_options_merge():
     deroule.adopt_in_section(sect_general, &form_archgen);
 
     has_aux_fs.adopt(&has_aux);
+    has_aux_fs.adopt(&decremental);
     aux_form.adopt(&has_aux_fs);
     aux_block.adopt(&aux_form);
     aux_block.adopt(&auxiliary);
@@ -207,6 +209,7 @@ void html_options_merge::on_event(const string & event_name)
        || event_name == html_compression_params::changed)
     {
 	auxiliary.set_visible(has_aux.get_value_as_bool());
+	decremental.set_visible(has_aux.get_value_as_bool());
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
 
 	if(! compr_params.get_keep_compressed()
@@ -318,6 +321,8 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
 	    throw exception_memory();
 	else
 	    ret.set_auxiliary_ref(aux);
+
+	ret.set_decremental_mode(decremental.get_value_as_bool());
     }
 
     return ret;
