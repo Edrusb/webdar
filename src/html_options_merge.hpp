@@ -129,6 +129,7 @@ private:
 
     html_mask_form_filename filename_mask;
     html_mask_form_path path_mask;
+    html_mask_form_filename ea_mask;
 
     html_form_overwrite_action overwriting_policy;
     html_form form_overwriting;
