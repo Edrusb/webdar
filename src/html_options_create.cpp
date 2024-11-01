@@ -76,7 +76,7 @@ html_options_create::html_options_create():
     sparse_file_min_size("Minimum size of holes to lookup in sparse files", 0, 10),
     hash_algo("Hashing algorithm"),
     execute("Command to execute after each slice", html_form_input::text, "", 30),
-    hourshift("Hour shift", html_form_input::number, "", 5),
+    hourshift("Ignore difference of exactly +/- N hour(s)", html_form_input::number, "", 5),
     shown_fs(""),
     info_details("Detailed informations", html_form_input::check, "1", 1),
     display_treated("Display treated files", html_form_input::check, "1", 1),
