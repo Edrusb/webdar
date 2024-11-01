@@ -41,16 +41,12 @@ extern "C"
 using namespace std;
 
 html_options_extract::html_options_extract():
-    form("Update Options"),
+    form_archgen("Update"),
     fs(""),
     warn_over("Warn before overwriting",
 	      html_form_input::check,
 	      "1",
 	      0),
-    info_details("Detailed informations",
-		 html_form_input::check,
-		 "1",
-		 0),
     flat("Do not restore directory structure",
 	 html_form_input::check,
 	 "",
@@ -64,6 +60,20 @@ html_options_extract::html_options_extract():
 	  html_form_input::check,
 	  "",
 	  0),
+    form_show("Update"),
+    fs_show(""),
+    info_details("Detailed informations",
+		 html_form_input::check,
+		 "1",
+		 0),
+    display_treated("Display treated files",
+		    html_form_input::check,
+		    "1",
+		    1),
+    display_treated_only_dir("Display only treated directories",
+			     html_form_input::check,
+			     "",
+			     1),
     display_skipped("Display skipped files",
 		    html_form_input::check,
 		    "1",
@@ -121,39 +131,60 @@ html_options_extract::html_options_extract():
 	// build the adoption tree
 
     static const char* sect_opt = "options";
+    static const char* sect_show = "archive show opt";
     static const char* sect_mask_file = "mask_file";
     static const char* sect_mask_path = "mask_path";
     static const char* sect_fsa_scope = "FSA Scope";
     static const char* sect_overwriting = "overwriting";
     deroule.add_section(sect_opt, "Restoration options");
+    deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_mask_file, "Filename based filtering");
     deroule.add_section(sect_mask_path, "Path based filtering");
     deroule.add_section(sect_fsa_scope, "Filesystem Specific Attributes filtering");
     deroule.add_section(sect_overwriting, "Overwriting policy");
 
     fs.adopt(&warn_over);
-    fs.adopt(&info_details);
+    fs.adopt(&warn_remove_no_match);
     fs.adopt(&flat);
     fs.adopt(&what_to_check);
-    fs.adopt(&warn_remove_no_match);
-    fs.adopt(&empty);
-    fs.adopt(&display_skipped);
     fs.adopt(&empty_dir);
     fs.adopt(&dirty_behavior);
     fs.adopt(&only_deleted);
     fs.adopt(&ignore_deleted);
-    form.adopt(&fs);
-    deroule.adopt_in_section(sect_opt, &form);
+    fs.adopt(&empty);
+    form_archgen.adopt(&fs);
+    deroule.adopt_in_section(sect_opt, &form_archgen);
+
+    fs_show.adopt(&info_details);
+    fs_show.adopt(&display_treated);
+    fs_show.adopt(&display_treated_only_dir);
+    fs_show.adopt(&display_skipped);
+    form_show.adopt(&fs_show);
+    deroule.adopt_in_section(sect_show, &form_show);
+
     deroule.adopt_in_section(sect_mask_file, &filename_mask);
+
     deroule.adopt_in_section(sect_fsa_scope, &fsa_scope);
+
     form_overwriting.adopt(&overwriting_policy);
     deroule.adopt_in_section(sect_overwriting, &form_overwriting);
+
     deroule.adopt_in_section(sect_mask_path, &path_mask);
+
     adopt(&deroule);
+
+	// events
+    display_treated.record_actor_on_event(this, html_form_input::changed);
 
 	// css
 
     webdar_css_style::grey_button(deroule, true);
+    display_treated_only_dir.add_css_class(webdar_css_style::wcs_indent);
+
+	// components visibility status
+    on_event(html_form_input::changed);
+
+
 }
 
 libdar::archive_options_extract html_options_extract::get_options() const
@@ -161,7 +192,6 @@ libdar::archive_options_extract html_options_extract::get_options() const
     libdar::archive_options_extract ret;
 
     ret.set_warn_over(warn_over.get_value_as_bool());
-    ret.set_info_details(info_details.get_value_as_bool());
     ret.set_flat(flat.get_value_as_bool());
     if(what_to_check.get_selected_id() == "all")
 	ret.set_what_to_check(libdar::comparison_fields::all);
@@ -175,7 +205,12 @@ libdar::archive_options_extract html_options_extract::get_options() const
 	throw WEBDAR_BUG;
     ret.set_warn_remove_no_match(warn_remove_no_match.get_value_as_bool());
     ret.set_empty(empty.get_value_as_bool());
+
+    ret.set_info_details(info_details.get_value_as_bool());
+    ret.set_display_treated(display_treated.get_value_as_bool(),
+			    display_treated_only_dir.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
+
     if(dirty_behavior.get_selected_id() == "ignore")
 	ret.set_dirty_behavior(libdar::archive_options_extract::dirty_ignore);
     else if(dirty_behavior.get_selected_id() == "warn")
@@ -194,6 +229,15 @@ libdar::archive_options_extract html_options_extract::get_options() const
     return ret;
 }
 
+void html_options_extract::on_event(const std::string & event_name)
+{
+    if(event_name == html_form_input::changed)
+    {
+	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
+    }
+    else
+	throw WEBDAR_BUG;
+}
 
 string html_options_extract::inherited_get_body_part(const chemin & path,
 						     const request & req)

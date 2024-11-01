@@ -36,6 +36,7 @@ extern "C"
 
     // webdar headers
 #include "body_builder.hpp"
+#include "actor.hpp"
 #include "html_form_select.hpp"
 #include "html_form_input.hpp"
 #include "html_form.hpp"
@@ -48,7 +49,7 @@ extern "C"
 
     /// html components used for the user to provide parameters of libdar archive restoration operation
 
-class html_options_extract : public body_builder
+class html_options_extract : public body_builder, public actor
 {
 public:
     html_options_extract();
@@ -63,6 +64,9 @@ public:
 
     libdar::archive_options_extract get_options() const;
 
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
+
 protected:
 
 	// inherited from body_builder
@@ -74,18 +78,23 @@ protected:
 
 private:
     html_derouleur deroule;
-    html_form form;
+    html_form form_archgen;
     html_form_fieldset fs;
     html_form_input warn_over;
-    html_form_input info_details;
-	// ea_mask (filter)
     html_form_input flat;
     html_form_select what_to_check;
     html_form_input warn_remove_no_match;
     html_form_input empty;
-    html_form_input display_skipped;
     html_form_input empty_dir;
     html_form_select dirty_behavior;
+
+    html_form form_show;
+    html_form_fieldset fs_show;
+    html_form_input info_details;
+    html_form_input display_treated;
+    html_form_input display_treated_only_dir;
+    html_form_input display_skipped;
+
     html_form_overwrite_action overwriting_policy;
     html_form form_overwriting;
     html_form_input only_deleted;
