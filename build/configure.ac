@@ -399,6 +399,19 @@ AS_IF(         [ test "x$enable_build_html" != "xyes"],
                ]
      )
 
+
+AC_ARG_ENABLE( [dev],
+	       AS_HELP_STRING(--enable-dev, [use trivial password for development purposes]),
+	       [explicit_dev=yes],
+	       [enable_dev=no])
+
+AS_IF(	       [ test "x$enable_dev" != "xno" ],
+	       [ AC_MSG_WARN([WARNING! Using trivial password for development purposes])
+	         AC_DEFINE(WEBDAR_DEV, 1, [trivial passwords for dev purposes])
+	       ],
+	       [] # else we just keep silent
+	       )
+
 # Checks for libraries.
 AC_CHECK_LIB(dar64, [for_autoconf], [], [AC_MSG_ERROR([cannot link with libdar library]) ])
 AC_CHECK_LIB(threadar, [for_autoconf], [], [AC_MSG_ERROR([Cannot link with libthreadar library]) ])

@@ -139,8 +139,11 @@ int main(int argc, char *argv[], char** env)
     try
     {
 	webdar_tools_init_randomization();
-//	fixed_pass = "";
+#ifdef WEBDAR_DEV
+	fixed_pass = "";
+#else
 	fixed_pass = webdar_tools_generate_random_string(10);
+#endif
 	shared_ptr<authentication_cli> auth(new (nothrow) authentication_cli(fixed_user, fixed_pass));
 
 	if(!auth)
