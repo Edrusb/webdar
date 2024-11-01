@@ -103,7 +103,7 @@ html_options_compare::html_options_compare():
     static const char* sect_mask_path = "mask_path";
     static const char* sect_ea_mask = "EA masks";
     static const char* sect_fsa_scope = "FSA Scope";
-    deroule.add_section(sect_source, "Source file reading mode");
+    deroule.add_section(sect_source, "Filesystem reading mode");
     deroule.add_section(sect_opt, "Comparison options");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_mask_filename, "Filename based filtering");

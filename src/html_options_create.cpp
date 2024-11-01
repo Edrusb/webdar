@@ -188,7 +188,7 @@ html_options_create::html_options_create():
     deroule.add_section(sect_type, "Backup Type");
     deroule.add_section(sect_ref, "Backup of Reference");
     deroule.add_section(sect_delta, "Delta signatures");
-    deroule.add_section(sect_source, "Source file reading mode");
+    deroule.add_section(sect_source, "Filesystem reading mode");
     deroule.add_section(sect_gen, "Backup General Options");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_perimeter, "What to take into consideration for backup");
