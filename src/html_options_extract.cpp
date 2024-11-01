@@ -123,10 +123,12 @@ html_options_extract::html_options_extract():
     static const char* sect_opt = "options";
     static const char* sect_mask_file = "mask_file";
     static const char* sect_mask_path = "mask_path";
+    static const char* sect_fsa_scope = "FSA Scope";
     static const char* sect_overwriting = "overwriting";
     deroule.add_section(sect_opt, "Restoration options");
     deroule.add_section(sect_mask_file, "Filename based filtering");
     deroule.add_section(sect_mask_path, "Path based filtering");
+    deroule.add_section(sect_fsa_scope, "Filesystem Specific Attributes filtering");
     deroule.add_section(sect_overwriting, "Overwriting policy");
 
     fs.adopt(&warn_over);
@@ -143,6 +145,7 @@ html_options_extract::html_options_extract():
     form.adopt(&fs);
     deroule.adopt_in_section(sect_opt, &form);
     deroule.adopt_in_section(sect_mask_file, &filename_mask);
+    deroule.adopt_in_section(sect_fsa_scope, &fsa_scope);
     form_overwriting.adopt(&overwriting_policy);
     deroule.adopt_in_section(sect_overwriting, &form_overwriting);
     deroule.adopt_in_section(sect_mask_path, &path_mask);
@@ -185,6 +188,7 @@ libdar::archive_options_extract html_options_extract::get_options() const
     ret.set_ignore_deleted(ignore_deleted.get_value_as_bool());
     ret.set_selection(*(filename_mask.get_mask()));
     ret.set_subtree(*(path_mask.get_mask()));
+    ret.set_fsa_scope(fsa_scope.get_scope());
     ret.set_overwriting_rules(*(overwriting_policy.get_overwriting_action()));
 
     return ret;

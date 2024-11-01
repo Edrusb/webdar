@@ -44,6 +44,7 @@ extern "C"
 #include "html_mask_form_filename.hpp"
 #include "html_mask_form_path.hpp"
 #include "html_form_overwrite_action.hpp"
+#include "html_fsa_scope.hpp"
 
     /// html components used for the user to provide parameters of libdar archive restoration operation
 
@@ -91,6 +92,7 @@ private:
     html_form_input ignore_deleted;
     html_mask_form_filename filename_mask;
     html_mask_form_path path_mask;
+    html_fsa_scope fsa_scope;
 };
 
 #endif
