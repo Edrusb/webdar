@@ -75,7 +75,7 @@ class html_form_mask_bool : public html_mask,
 public:
 	/// constructor
 
-	/// \param[in] is either and_op or or_op (see constexpr defined below)
+	/// \param[in] initial_mode is either and_op or or_op (see constexpr defined below)
     html_form_mask_bool(const std::string & initial_mode = and_op);
 
     html_form_mask_bool(const html_form_mask_bool & ref) = delete;

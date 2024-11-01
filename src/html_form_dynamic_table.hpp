@@ -182,7 +182,7 @@ public:
 
         /// add a new object type to be proposed to the user from the "adder" selector
 
-        /// \param[in] column the column number for this object (starts at zero)
+        /// \param[in] label the column number for this object (starts at zero)
     void add_obj_type(const std::string & label);
 
 	/// return the number of object type available to the user
