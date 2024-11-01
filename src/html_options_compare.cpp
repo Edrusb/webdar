@@ -78,7 +78,8 @@ html_options_compare::html_options_compare():
 		    "1",
 		    1),
     filename_mask("Filename expression"),
-    path_mask(false)
+    path_mask(false),
+    ea_mask("Extended Attribute expression")
 {
     libdar::archive_options_diff defaults;
 
@@ -96,11 +97,13 @@ html_options_compare::html_options_compare():
     static const char* sect_show = "archive show opt";
     static const char* sect_mask_filename = "mask_file";
     static const char* sect_mask_path = "mask_path";
+    static const char* sect_ea_mask = "EA masks";
     static const char* sect_fsa_scope = "FSA Scope";
     deroule.add_section(sect_opt, "Comparison options");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_mask_filename, "Filename based filtering");
     deroule.add_section(sect_mask_path, "Path based filtering");
+    deroule.add_section(sect_ea_mask, "Extended Attributes filtering");
     deroule.add_section(sect_fsa_scope, "Filesystem Specific Attributes filtering");
 
     fs.adopt(&what_to_check);
@@ -121,6 +124,8 @@ html_options_compare::html_options_compare():
     deroule.adopt_in_section(sect_mask_filename, &filename_mask);
 
     deroule.adopt_in_section(sect_mask_path, &path_mask);
+
+    deroule.adopt_in_section(sect_ea_mask, &ea_mask);
 
     deroule.adopt_in_section(sect_fsa_scope, &fsa_scope);
 
@@ -155,6 +160,7 @@ libdar::archive_options_diff html_options_compare::get_options() const
     ret.set_compare_symlink_date(compare_symlink_date.get_value_as_bool());
     ret.set_selection(*(filename_mask.get_mask()));
     ret.set_subtree(*(path_mask.get_mask()));
+    ret.set_ea_mask(*(ea_mask.get_mask()));
     ret.set_fsa_scope(fsa_scope.get_scope());
 
     return ret;

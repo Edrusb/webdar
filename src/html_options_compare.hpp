@@ -98,6 +98,7 @@ private:
 
     html_mask_form_filename filename_mask;
     html_mask_form_path path_mask;
+    html_mask_form_filename ea_mask;
     html_fsa_scope fsa_scope;
 
 };
