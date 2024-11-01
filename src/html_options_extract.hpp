@@ -80,6 +80,7 @@ private:
     html_derouleur deroule;
     html_form form_archgen;
     html_form_fieldset fs;
+    html_form_input in_place;
     html_form_input warn_over;
     html_form_input flat;
     html_form_select what_to_check;

@@ -43,6 +43,10 @@ using namespace std;
 html_options_extract::html_options_extract():
     form_archgen("Update"),
     fs(""),
+    in_place("Ignore the provided root directory above and use instead the \"in place\" directory information stored in the archive",
+	     html_form_input::check,
+	     "",
+	     1),
     warn_over("Warn before overwriting",
 	      html_form_input::check,
 	      "1",
@@ -104,6 +108,7 @@ html_options_extract::html_options_extract():
 
     libdar::archive_options_extract defaults;
 
+    in_place.set_value_as_bool(defaults.get_in_place());
     flat.set_value_as_bool(defaults.get_flat());
     what_to_check.add_choice("all", "All");
     what_to_check.add_choice("ignore_owner", "All but ownership");
@@ -148,6 +153,7 @@ html_options_extract::html_options_extract():
     deroule.add_section(sect_fsa_scope, "Filesystem Specific Attributes filtering");
     deroule.add_section(sect_overwriting, "Overwriting policy");
 
+    fs.adopt(&in_place);
     fs.adopt(&warn_over);
     fs.adopt(&warn_remove_no_match);
     fs.adopt(&flat);
@@ -197,6 +203,7 @@ libdar::archive_options_extract html_options_extract::get_options() const
 {
     libdar::archive_options_extract ret;
 
+    ret.set_in_place(in_place.get_value_as_bool());
     ret.set_warn_over(warn_over.get_value_as_bool());
     ret.set_flat(flat.get_value_as_bool());
     if(what_to_check.get_selected_id() == "all")
