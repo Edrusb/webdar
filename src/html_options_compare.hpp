@@ -43,6 +43,7 @@ extern "C"
 #include "html_derouleur.hpp"
 #include "html_mask_form_filename.hpp"
 #include "html_mask_form_path.hpp"
+#include "html_fsa_scope.hpp"
 
     /// html component providing a way for the user to set the parameter of libdar comparison operation
 
@@ -88,6 +89,7 @@ private:
     html_form_input compare_symlink_date;
     html_mask_form_filename filename_mask;
     html_mask_form_path path_mask;
+    html_fsa_scope fsa_scope;
 
 };
 

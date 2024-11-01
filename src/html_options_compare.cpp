@@ -91,9 +91,11 @@ html_options_compare::html_options_compare():
     static const char* sect_opt = "options";
     static const char* sect_mask_filename = "mask_file";
     static const char* sect_mask_path = "mask_path";
+    static const char* sect_fsa_scope = "FSA Scope";
     deroule.add_section(sect_opt, "Comparison options");
     deroule.add_section(sect_mask_filename, "Filename based filtering");
     deroule.add_section(sect_mask_path, "Path based filtering");
+    deroule.add_section(sect_fsa_scope, "Filesystem Specific Attributes filtering");
 
     fs.adopt(&info_details);
     fs.adopt(&display_treated);
@@ -107,6 +109,8 @@ html_options_compare::html_options_compare():
     deroule.adopt_in_section(sect_opt, &form);
     deroule.adopt_in_section(sect_mask_filename, &filename_mask);
     deroule.adopt_in_section(sect_mask_path, &path_mask);
+    deroule.adopt_in_section(sect_fsa_scope, &fsa_scope);
+
     adopt(&deroule);
 
 	// css
@@ -135,6 +139,7 @@ libdar::archive_options_diff html_options_compare::get_options() const
     ret.set_compare_symlink_date(compare_symlink_date.get_value_as_bool());
     ret.set_selection(*(filename_mask.get_mask()));
     ret.set_subtree(*(path_mask.get_mask()));
+    ret.set_fsa_scope(fsa_scope.get_scope());
 
     return ret;
 }
