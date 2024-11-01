@@ -178,6 +178,7 @@ html_options_create::html_options_create():
     static const char* sect_mask_path = "backup pathname masks";
     static const char* sect_mount_points = "mount point filtering";
     static const char* sect_ea_mask = "EA masks";
+    static const char* sect_fsa_scope = "FSA Scope";
     static const char* sect_source = "source reading mode";
     static const char* sect_compr = "compression";
     static const char* sect_slice = "slicing";
@@ -195,6 +196,7 @@ html_options_create::html_options_create():
     deroule.add_section(sect_mask_path, "Filesystem filtering");
     deroule.add_section(sect_mount_points, "Mount point filtering");
     deroule.add_section(sect_ea_mask, "Extended Attributes filtering");
+    deroule.add_section(sect_fsa_scope, "Filesystem Specific Attributes filtering");
     deroule.add_section(sect_compr, "Compression options");
     deroule.add_section(sect_slice, "Slicing options");
     deroule.add_section(sect_cipher, "Encryption options");
@@ -289,6 +291,9 @@ html_options_create::html_options_create():
 
 	// EA masks
     deroule.adopt_in_section(sect_ea_mask, &ea_mask);
+
+	// FSA scope
+    deroule.adopt_in_section(sect_fsa_scope, &fsa_scope);
 
 	// compression
     deroule.adopt_in_section(sect_compr, &compr_params);
@@ -390,6 +395,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_slicing(s_size, f_s_size);
 
     ret.set_ea_mask(*(ea_mask.get_mask()));
+    ret.set_fsa_scope(fsa_scope.get_scope());
 
     ret.set_crypto_algo(ciphering.get_crypto_algo());
     if(ciphering.get_crypto_algo() != libdar::crypto_algo::none)

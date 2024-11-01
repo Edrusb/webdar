@@ -60,6 +60,7 @@ extern "C"
 #include "html_compression_params.hpp"
 #include "html_slicing.hpp"
 #include "html_ciphering.hpp"
+#include "html_fsa_scope.hpp"
 
     /// html component used for the user to provide the parameters to create a new archive
 
@@ -186,6 +187,7 @@ private:
 
     html_compression_params compr_params;
     html_mask_form_filename compr_mask;
+    html_fsa_scope fsa_scope;
 
     html_slicing slicing;
 
