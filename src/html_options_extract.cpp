@@ -83,6 +83,10 @@ html_options_extract::html_options_extract():
 	      "1",
 	      0),
     dirty_behavior("Dirty file behavior"),
+    ignore_sockets("Do not restore Unix sockets",
+		   html_form_input::check,
+		   "",
+		   1),
     overwriting_policy(""),
     form_overwriting("Update"),
     only_deleted("Restore only deleted files",
@@ -127,6 +131,7 @@ html_options_extract::html_options_extract():
 
     only_deleted.set_value_as_bool(defaults.get_only_deleted());
     ignore_deleted.set_value_as_bool(defaults.get_ignore_deleted());
+    ignore_sockets.set_value_as_bool(defaults.get_ignore_unix_sockets());
 
 	// build the adoption tree
 
@@ -151,6 +156,7 @@ html_options_extract::html_options_extract():
     fs.adopt(&dirty_behavior);
     fs.adopt(&only_deleted);
     fs.adopt(&ignore_deleted);
+    fs.adopt(&ignore_sockets);
     fs.adopt(&empty);
     form_archgen.adopt(&fs);
     deroule.adopt_in_section(sect_opt, &form_archgen);
@@ -221,6 +227,8 @@ libdar::archive_options_extract html_options_extract::get_options() const
 	throw WEBDAR_BUG;
     ret.set_only_deleted(only_deleted.get_value_as_bool());
     ret.set_ignore_deleted(ignore_deleted.get_value_as_bool());
+    ret.set_ignore_unix_sockets(ignore_sockets.get_value_as_bool());
+
     ret.set_selection(*(filename_mask.get_mask()));
     ret.set_subtree(*(path_mask.get_mask()));
     ret.set_fsa_scope(fsa_scope.get_scope());

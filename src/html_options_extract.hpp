@@ -87,6 +87,7 @@ private:
     html_form_input empty;
     html_form_input empty_dir;
     html_form_select dirty_behavior;
+    html_form_input ignore_sockets;
 
     html_form form_show;
     html_form_fieldset fs_show;
