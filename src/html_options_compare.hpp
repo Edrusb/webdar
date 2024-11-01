@@ -90,6 +90,7 @@ private:
 
     html_form form;
     html_form_fieldset fs;
+    html_form_input in_place;
     html_comparison_fields what_to_check;
     html_form_input compare_symlink_date;
 

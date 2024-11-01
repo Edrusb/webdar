@@ -43,6 +43,10 @@ using namespace std;
 html_options_compare::html_options_compare():
     form("Update"),
     fs(""),
+    in_place("Ignore the provided root directory above and use instead the \"in place\" directory information stored in the archive",
+	     html_form_input::check,
+	     "",
+	     1),
     form_reading("Update"),
     fs_alter_atime("What to alter if furtive read mode is not used"),
     furtive_read_mode("Furtive read mode (if available)",
@@ -82,6 +86,7 @@ html_options_compare::html_options_compare():
     libdar::archive_options_diff defaults;
 
 	/// default values
+    in_place.set_value_as_bool(defaults.get_in_place());
     alter_atime.add_choice("atime", "Data last access time (atime)");
     alter_atime.add_choice("ctime", "Inode last change time (ctime)");
     if(defaults.get_alter_atime())
@@ -117,6 +122,7 @@ html_options_compare::html_options_compare():
     form_reading.adopt(&hourshift);
     deroule.adopt_in_section(sect_source, &form_reading);
 
+    fs.adopt(&in_place);
     fs.adopt(&what_to_check);
     fs.adopt(&compare_symlink_date);
     form.adopt(&fs);
@@ -157,6 +163,7 @@ libdar::archive_options_diff html_options_compare::get_options() const
 {
     libdar::archive_options_diff ret;
 
+    ret.set_in_place(in_place.get_value_as_bool());
     ret.set_info_details(info_details.get_value_as_bool());
     ret.set_display_treated(display_treated.get_value_as_bool(),
 			    display_treated_only_dir.get_value_as_bool());
