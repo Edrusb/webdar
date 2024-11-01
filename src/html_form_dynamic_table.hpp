@@ -52,7 +52,7 @@ extern "C"
     /// interface to be added in the table.
     /// \note most of the time this will be the owner of a html_form_dynamic_table
     /// that will register itself as html_form_dynamic_table_object_provider to
-    /// his own the dynamic table object
+    /// his owned dynamic table object
 
 
 class html_form_dynamic_table_object_provider
