@@ -128,6 +128,7 @@ html_options_merge::html_options_merge():
     static const char* sect_mask_file = "mask_file";
     static const char* sect_mask_path = "mask_path";
     static const char* sect_ea_mask = "EA masks";
+    static const char* sect_fsa_scope = "FSA Scope";
     static const char* sect_overwrite = "overwrite";
     static const char* sect_compr = "slicing";
     static const char* sect_slice = "compression";
@@ -142,6 +143,7 @@ html_options_merge::html_options_merge():
     deroule.add_section(sect_mask_file, "Filename based filtering");
     deroule.add_section(sect_mask_path, "Path based filterting");
     deroule.add_section(sect_ea_mask, "Extended Attributes filtering");
+    deroule.add_section(sect_fsa_scope, "Filesystem Specific Attributes filtering");
     deroule.add_section(sect_overwrite, "Overwriting policy");
     deroule.add_section(sect_compr, "Compression Options");
     deroule.add_section(sect_slice, "Slicing Options");
@@ -189,6 +191,7 @@ html_options_merge::html_options_merge():
     deroule.adopt_in_section(sect_mask_file, &filename_mask);
     deroule.adopt_in_section(sect_mask_path, &path_mask);
     deroule.adopt_in_section(sect_ea_mask, &ea_mask);
+    deroule.adopt_in_section(sect_fsa_scope, &fsa_scope);
 
     form_overwriting.adopt(&overwriting_policy);
     deroule.adopt_in_section(sect_overwrite, &form_overwriting);
@@ -307,6 +310,7 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
     slicing.get_slicing(s_size, f_s_size);
     ret.set_slicing(s_size, f_s_size);
     ret.set_ea_mask(*(ea_mask.get_mask()));
+    ret.set_fsa_scope(fsa_scope.get_scope());
 
     ret.set_crypto_algo(ciphering.get_crypto_algo());
     if(ciphering.get_crypto_algo() != libdar::crypto_algo::none)

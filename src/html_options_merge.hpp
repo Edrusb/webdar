@@ -56,6 +56,7 @@ extern "C"
 #include "html_ciphering.hpp"
 #include "html_form_sig_block_size.hpp"
 #include "html_form_select.hpp"
+#include "html_fsa_scope.hpp"
 
     /// html component for the user to provided parameters of a libdar merging operation
 
@@ -139,6 +140,7 @@ private:
     html_mask_form_filename filename_mask;
     html_mask_form_path path_mask;
     html_mask_form_filename ea_mask;
+    html_fsa_scope fsa_scope;
 
     html_form_overwrite_action overwriting_policy;
     html_form form_overwriting;
