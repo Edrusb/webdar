@@ -68,31 +68,32 @@ public:
     /// but this is the web user that defined the table content based on the available types
     ///
     /// this html components is consitued of:
-    ///
-    /// +----html_table-----------------------------+-------+
-    /// |       |                                   |       |
-    /// |+-----+|+-------------------------------+  |+-+    |
-    /// ||label|||body_builder objet             |  || | del|
-    /// |+-----+|+--------------------------------  |+-+    |
-    /// |+-----+|+-------------------------------+  |+-+    |
-    /// ||label|||body_builder objet             |  || | del|
-    /// |+-----+|+--------------------------------  |+-+    |
-    /// |+-----+|+-------------------------------+  |+-+    |
-    /// ||label|||body_builder objet             |  || | del|
-    /// |+-----+|+--------------------------------  |+-+    |
-    /// |+-----+|+-------------------------------+  |+-+    |
-    /// ||label|||body_builder objet             |  || | del|
-    /// |+-----+|+--------------------------------  |+-+    |
-    /// |+-----+|+-------------------------------+  |+-+    |
-    /// ||label|||body_builder objet             |  || | del|
-    /// |+-----+|+--------------------------------  |+-+    |
-    /// +-------+-----------------------------------+-------+
-    ///
-    /// +---------------------+
-    /// |  add drop down list | (or html_button if only one type to add
-    /// +---------------------+ (option to position the button before the table or after)
-    ///
-    ///
+
+    /** \verbatim
+	+----html_table-----------------------------+-------+
+	|       |                                   |       |
+	|+-----+|+-------------------------------+  |+-+    |
+	||label|||body_builder objet             |  || | del|
+	|+-----+|+--------------------------------  |+-+    |
+	|+-----+|+-------------------------------+  |+-+    |
+	||label|||body_builder objet             |  || | del|
+	|+-----+|+--------------------------------  |+-+    |
+	|+-----+|+-------------------------------+  |+-+    |
+	||label|||body_builder objet             |  || | del|
+	|+-----+|+--------------------------------  |+-+    |
+	|+-----+|+-------------------------------+  |+-+    |
+	||label|||body_builder objet             |  || | del|
+	|+-----+|+--------------------------------  |+-+    |
+	|+-----+|+-------------------------------+  |+-+    |
+	||label|||body_builder objet             |  || | del|
+	|+-----+|+--------------------------------  |+-+    |
+	+-------+-----------------------------------+-------+
+
+	+---------------------+
+	|  add drop down list | (or html_button if only one type to add
+	+---------------------+ (option to position the button before the table or after)
+	\endverbatim **/
+
     /// \note this component must be adopted by an html_form
     /// \note the programmer should set an object provider
     /// to create object component of the requested type by the

@@ -51,21 +51,26 @@ extern "C"
     /// it created child html_dir_tree for any direct subdirectory it contains which are not
     /// expanded by default.
     /// This object is a component used by html_listing_page class
-    ///                                                . . .<set_drop_page() given object> . . .
-    /// +-------------------- <line> ----------------+ .      <title>                          .
-    /// | +--+ +------------------------------------+| . . . . . . . . . . . . . . . . . . . . .
-    /// | |()| |   <name>                           ||
-    /// | +--+ +------------------------------------+| . . <set_drop_content() give object>. . .
-    /// +--------------------------------------------+ . +-------<content> -------------------+
-    /// +----------------- <for subdirs> ------------+ . | Filename | Data | Ea..   |         |.
-    /// |                                            | . +----------+------+--------+---------+
-    /// |                                            | . |          |      |        |         |.
-    /// |                                            | . +----------+------+--------+---------+
-    /// |                                            | . |          |      |        |         |.
-    /// +--------------------------------------------+ . . . . . . . . . . . . . . . . . . . . .
-    ///
-    /// () is either "shrink", "expand" of "nosubdir" depending on the current path type
-    /// and shrink/expansion status when it is a directory
+
+    /** \verbatim
+	.                                              . . .<set_drop_page() given object> . . .
+	+-------------------- <line> ----------------+ .      <title>                          .
+	| +--+ +------------------------------------+| . . . . . . . . . . . . . . . . . . . . .
+	| |()| |   <name>                           ||
+	| +--+ +------------------------------------+| . . <set_drop_content() give object>. . .
+	+--------------------------------------------+ . +-------<content> -------------------+
+	+----------------- <for subdirs> ------------+ . | Filename | Data | Ea..   |         |.
+	|                                            | . +----------+------+--------+---------+
+	|                                            | . |          |      |        |         |.
+	|                                            | . +----------+------+--------+---------+
+	|                                            | . |          |      |        |         |.
+	+--------------------------------------------+ . . . . . . . . . . . . . . . . . . . . .
+
+
+	() is either "shrink", "expand" of "nosubdir" depending on the current path type
+	and shrink/expansion status when it is a directory
+	\endverbatim **/
+
 
 class html_dir_tree: public html_div, public actor
 {
