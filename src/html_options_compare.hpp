@@ -36,6 +36,7 @@ extern "C"
 
     // webdar headers
 #include "body_builder.hpp"
+#include "actor.hpp"
 #include "html_form_input.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_comparison_fields.hpp"
@@ -47,7 +48,7 @@ extern "C"
 
     /// html component providing a way for the user to set the parameter of libdar comparison operation
 
-class html_options_compare : public body_builder
+class html_options_compare : public body_builder, public actor
 {
 public:
     html_options_compare();
@@ -62,13 +63,16 @@ public:
 
     libdar::archive_options_diff get_options() const;
 
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
+
 protected:
 
-	// inherited from body_builder
+	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
-	// inherited from body_builder
+	/// inherited from body_builder
     virtual void new_css_library_available() override;
 
 private:
@@ -79,14 +83,19 @@ private:
     html_derouleur deroule;
     html_form form;
     html_form_fieldset fs;
-    html_form_input info_details;
-    html_form_select display_treated;
     html_comparison_fields what_to_check;
     html_form_input alter_atime;
     html_form_input furtive_read_mode;
-    html_form_input display_skipped;
     html_form_input hourshift;
     html_form_input compare_symlink_date;
+
+    html_form form_show;
+    html_form_fieldset fs_show;
+    html_form_input info_details;
+    html_form_input display_treated;
+    html_form_input display_treated_only_dir;
+    html_form_input display_skipped;
+
     html_mask_form_filename filename_mask;
     html_mask_form_path path_mask;
     html_fsa_scope fsa_scope;

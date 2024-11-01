@@ -41,13 +41,8 @@ extern "C"
 using namespace std;
 
 html_options_compare::html_options_compare():
-    form("Update options"),
+    form("Update"),
     fs(""),
-    info_details("Detailed information",
-		 html_form_input::check,
-		 "1",
-		 1),
-    display_treated("Shown treated entried"),
     alter_atime("Modify atime",
 		html_form_input::check,
 		"",
@@ -56,10 +51,6 @@ html_options_compare::html_options_compare():
 		      html_form_input::check,
 		      "",
 		      1),
-    display_skipped("Display skipped files",
-		    html_form_input::check,
-		    "1",
-		    1),
     hourshift("Ignore difference of exactly +/- N hour(s)",
 	      html_form_input::number,
 	      "0",
@@ -68,6 +59,24 @@ html_options_compare::html_options_compare():
 			 html_form_input::check,
 			 "",
 			 1),
+    form_show("Update"),
+    fs_show(""),
+    info_details("Detailed information",
+		 html_form_input::check,
+		 "1",
+		 1),
+    display_treated("Display treated files",
+		    html_form_input::check,
+		    "1",
+		    1),
+    display_treated_only_dir("Display only treated directories",
+			     html_form_input::check,
+			     "",
+			     1),
+    display_skipped("Display skipped files",
+		    html_form_input::check,
+		    "1",
+		    1),
     filename_mask("Filename expression"),
     path_mask(false)
 {
@@ -80,26 +89,20 @@ html_options_compare::html_options_compare():
     hourshift.set_value(webdar_tools_convert_to_string(defaults.get_hourshift()));
     compare_symlink_date.set_value_as_bool(defaults.get_compare_symlink_date());
 
-	// component configuration
-    display_treated.add_choice(treated_none, "none");
-    display_treated.add_choice(treated_dir, "only directories");
-    display_treated.add_choice(treated_all, "files and directories");
-    display_treated.set_selected(2);  // all
 
 	// building adoption tree
 
     static const char* sect_opt = "options";
+    static const char* sect_show = "archive show opt";
     static const char* sect_mask_filename = "mask_file";
     static const char* sect_mask_path = "mask_path";
     static const char* sect_fsa_scope = "FSA Scope";
     deroule.add_section(sect_opt, "Comparison options");
+    deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_mask_filename, "Filename based filtering");
     deroule.add_section(sect_mask_path, "Path based filtering");
     deroule.add_section(sect_fsa_scope, "Filesystem Specific Attributes filtering");
 
-    fs.adopt(&info_details);
-    fs.adopt(&display_treated);
-    fs.adopt(&display_skipped);
     fs.adopt(&what_to_check);
     fs.adopt(&alter_atime);
     fs.adopt(&furtive_read_mode);
@@ -107,15 +110,34 @@ html_options_compare::html_options_compare():
     fs.adopt(&compare_symlink_date);
     form.adopt(&fs);
     deroule.adopt_in_section(sect_opt, &form);
+
+    fs_show.adopt(&info_details);
+    fs_show.adopt(&display_treated);
+    fs_show.adopt(&display_treated_only_dir);
+    fs_show.adopt(&display_skipped);
+    form_show.adopt(&fs_show);
+    deroule.adopt_in_section(sect_show, &form_show);
+
     deroule.adopt_in_section(sect_mask_filename, &filename_mask);
+
     deroule.adopt_in_section(sect_mask_path, &path_mask);
+
     deroule.adopt_in_section(sect_fsa_scope, &fsa_scope);
 
     adopt(&deroule);
 
+	// events
+
+    display_treated.record_actor_on_event(this, html_form_input::changed);
+
 	// css
 
     webdar_css_style::grey_button(deroule, true);
+    display_treated_only_dir.add_css_class(webdar_css_style::wcs_indent);
+
+	// components visibility setup
+
+    on_event(html_form_input::changed);
 }
 
 libdar::archive_options_diff html_options_compare::get_options() const
@@ -123,14 +145,8 @@ libdar::archive_options_diff html_options_compare::get_options() const
     libdar::archive_options_diff ret;
 
     ret.set_info_details(info_details.get_value_as_bool());
-    if(display_treated.get_selected_id() == treated_none)
-	ret.set_display_treated(false, false);
-    else if(display_treated.get_selected_id() == treated_dir)
-	ret.set_display_treated(true, true);
-    else if(display_treated.get_selected_id() == treated_all)
-	ret.set_display_treated(true, false);
-    else
-	throw WEBDAR_BUG;
+    ret.set_display_treated(display_treated.get_value_as_bool(),
+			    display_treated_only_dir.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
     ret.set_what_to_check(what_to_check.get_value());
     ret.set_alter_atime(alter_atime.get_value_as_bool());
@@ -143,6 +159,17 @@ libdar::archive_options_diff html_options_compare::get_options() const
 
     return ret;
 }
+
+void html_options_compare::on_event(const std::string & event_name)
+{
+    if(event_name == html_form_input::changed)
+    {
+	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
+    }
+    else
+	throw WEBDAR_BUG;
+}
+
 
 
 string html_options_compare::inherited_get_body_part(const chemin & path,
