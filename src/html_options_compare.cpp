@@ -114,10 +114,10 @@ html_options_compare::html_options_compare():
     fs_alter_atime.adopt(&alter_atime);
     form_reading.adopt(&furtive_read_mode);
     form_reading.adopt(&fs_alter_atime);
+    form_reading.adopt(&hourshift);
     deroule.adopt_in_section(sect_source, &form_reading);
 
     fs.adopt(&what_to_check);
-    fs.adopt(&hourshift);
     fs.adopt(&compare_symlink_date);
     form.adopt(&fs);
     deroule.adopt_in_section(sect_opt, &form);
