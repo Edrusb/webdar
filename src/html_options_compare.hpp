@@ -81,11 +81,15 @@ private:
     static constexpr const char* treated_all = "all";
 
     html_derouleur deroule;
+
+    html_form form_reading;
+    html_form_fieldset fs_alter_atime;
+    html_form_radio alter_atime;
+    html_form_input furtive_read_mode;
+
     html_form form;
     html_form_fieldset fs;
     html_comparison_fields what_to_check;
-    html_form_input alter_atime;
-    html_form_input furtive_read_mode;
     html_form_input hourshift;
     html_form_input compare_symlink_date;
 

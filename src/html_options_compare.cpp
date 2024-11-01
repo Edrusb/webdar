@@ -43,11 +43,9 @@ using namespace std;
 html_options_compare::html_options_compare():
     form("Update"),
     fs(""),
-    alter_atime("Modify atime",
-		html_form_input::check,
-		"",
-		1),
-    furtive_read_mode("Furtive read mode",
+    form_reading("Update"),
+    fs_alter_atime("What to alter if furtive read mode is not used"),
+    furtive_read_mode("Furtive read mode (if available)",
 		      html_form_input::check,
 		      "",
 		      1),
@@ -84,8 +82,13 @@ html_options_compare::html_options_compare():
     libdar::archive_options_diff defaults;
 
 	/// default values
+    alter_atime.add_choice("atime", "Data last access time (atime)");
+    alter_atime.add_choice("ctime", "Inode last change time (ctime)");
+    if(defaults.get_alter_atime())
+	alter_atime.set_selected(0);
+    else
+	alter_atime.set_selected(1);
     what_to_check.set_value(defaults.get_what_to_check());
-    alter_atime.set_value_as_bool(defaults.get_alter_atime());
     furtive_read_mode.set_value_as_bool(defaults.get_furtive_read_mode());
     hourshift.set_value(webdar_tools_convert_to_string(defaults.get_hourshift()));
     compare_symlink_date.set_value_as_bool(defaults.get_compare_symlink_date());
@@ -93,12 +96,14 @@ html_options_compare::html_options_compare():
 
 	// building adoption tree
 
+    static const char* sect_source = "source reading mode";
     static const char* sect_opt = "options";
     static const char* sect_show = "archive show opt";
     static const char* sect_mask_filename = "mask_file";
     static const char* sect_mask_path = "mask_path";
     static const char* sect_ea_mask = "EA masks";
     static const char* sect_fsa_scope = "FSA Scope";
+    deroule.add_section(sect_source, "Source file reading mode");
     deroule.add_section(sect_opt, "Comparison options");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_mask_filename, "Filename based filtering");
@@ -106,9 +111,12 @@ html_options_compare::html_options_compare():
     deroule.add_section(sect_ea_mask, "Extended Attributes filtering");
     deroule.add_section(sect_fsa_scope, "Filesystem Specific Attributes filtering");
 
+    fs_alter_atime.adopt(&alter_atime);
+    form_reading.adopt(&furtive_read_mode);
+    form_reading.adopt(&fs_alter_atime);
+    deroule.adopt_in_section(sect_source, &form_reading);
+
     fs.adopt(&what_to_check);
-    fs.adopt(&alter_atime);
-    fs.adopt(&furtive_read_mode);
     fs.adopt(&hourshift);
     fs.adopt(&compare_symlink_date);
     form.adopt(&fs);
@@ -154,7 +162,7 @@ libdar::archive_options_diff html_options_compare::get_options() const
 			    display_treated_only_dir.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
     ret.set_what_to_check(what_to_check.get_value());
-    ret.set_alter_atime(alter_atime.get_value_as_bool());
+    ret.set_alter_atime(alter_atime.get_selected_id() == "atime");
     ret.set_furtive_read_mode(furtive_read_mode.get_value_as_bool());
     ret.set_hourshift(libdar::infinint(webdar_tools_convert_to_int(hourshift.get_value())));
     ret.set_compare_symlink_date(compare_symlink_date.get_value_as_bool());
