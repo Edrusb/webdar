@@ -36,6 +36,7 @@ extern "C"
 
     // webdar headers
 #include "body_builder.hpp"
+#include "actor.hpp"
 #include "html_form.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_form_input.hpp"
@@ -45,7 +46,7 @@ extern "C"
 
     /// html component for the user to provide parameters of libdar archive testing operation
 
-class html_options_test : public body_builder
+class html_options_test : public body_builder, public actor
 {
 public:
     html_options_test();
@@ -56,6 +57,9 @@ public:
     ~html_options_test() = default;
 
     libdar::archive_options_test get_options() const;
+
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
 
 protected:
 
@@ -68,11 +72,18 @@ protected:
 
 private:
     html_derouleur deroule;
+
     html_form form;
     html_form_fieldset fs;
-    html_form_input info_details;
     html_form_input empty;
+
+    html_form form_show;
+    html_form_fieldset fs_show;
+    html_form_input info_details;
+    html_form_input display_treated;
+    html_form_input display_treated_only_dir;
     html_form_input display_skipped;
+
     html_mask_form_filename filename_mask;
     html_mask_form_path path_mask;
 };

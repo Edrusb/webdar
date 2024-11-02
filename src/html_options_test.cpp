@@ -42,14 +42,24 @@ using namespace std;
 html_options_test::html_options_test():
     form("Update options"),
     fs(""),
-    info_details("Detailed informations",
-		 html_form_input::check,
-		 "1",
-		 1),
     empty("Dry-run execution",
 	  html_form_input::check,
 	  "",
 	  1),
+    form_show("Update"),
+    fs_show(""),
+    info_details("Detailed informations",
+		 html_form_input::check,
+		 "1",
+		 1),
+    display_treated("Display treated files",
+		    html_form_input::check,
+		    "1",
+		    1),
+    display_treated_only_dir("Display only treated directories",
+			     html_form_input::check,
+			     "",
+			     1),
     display_skipped("Display skipped files",
 		    html_form_input::check,
 		    "1",
@@ -65,37 +75,69 @@ html_options_test::html_options_test():
 	// building HTML structure
 
     static const char* sect_opt = "options";
+    static const char* sect_show = "archive show opt";
     static const char* sect_mask = "mask";
     static const char* sect_path = "path";
     deroule.add_section(sect_opt, "Testing options");
+    deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_mask, "Filename based filtering");
     deroule.add_section(sect_path, "Path based filtering");
 
-    fs.adopt(&info_details);
     fs.adopt(&empty);
-    fs.adopt(&display_skipped);
     form.adopt(&fs);
     deroule.adopt_in_section(sect_opt, &form);
+
+    fs_show.adopt(&info_details);
+    fs_show.adopt(&display_treated);
+    fs_show.adopt(&display_treated_only_dir);
+    fs_show.adopt(&display_skipped);
+    form_show.adopt(&fs_show);
+    deroule.adopt_in_section(sect_show, &form_show);
+
     deroule.adopt_in_section(sect_mask, &filename_mask);
+
     deroule.adopt_in_section(sect_path, &path_mask);
+
     adopt(&deroule);
+
+	// events
+    display_treated.record_actor_on_event(this, html_form_input::changed);
 
 	// css
 
     webdar_css_style::grey_button(deroule, true);
+    display_treated_only_dir.add_css_class(webdar_css_style::wcs_indent);
+
+	// components visibility status
+    on_event(html_form_input::changed);
+
 }
 
 libdar::archive_options_test html_options_test::get_options() const
 {
     libdar::archive_options_test ret;
 
-    ret.set_display_treated(info_details.get_value_as_bool(), false);
     ret.set_empty(empty.get_value_as_bool());
+
+    ret.set_info_details(info_details.get_value_as_bool());
+    ret.set_display_treated(display_treated.get_value_as_bool(),
+			    display_treated_only_dir.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
+
     ret.set_selection(*(filename_mask.get_mask()));
     ret.set_subtree(*(path_mask.get_mask()));
 
     return ret;
+}
+
+void html_options_test::on_event(const string & event_name)
+{
+    if(event_name == html_form_input::changed)
+    {
+	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
+    }
+    else
+	throw WEBDAR_BUG;
 }
 
 string html_options_test::inherited_get_body_part(const chemin & path,
