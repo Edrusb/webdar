@@ -244,7 +244,7 @@ libdar::archive_options_extract html_options_extract::get_options() const
     return ret;
 }
 
-void html_options_extract::on_event(const std::string & event_name)
+void html_options_extract::on_event(const string & event_name)
 {
     if(event_name == html_form_input::changed)
     {
