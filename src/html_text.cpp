@@ -61,7 +61,10 @@ string html_text::get_body_part() const
     if(css_val.empty())
 	return txt;
     else
-	return "<div " + css_val + ">" + txt + "</div>\n";
+	if(!txt.empty())
+	    return "<div " + css_val + ">" + txt + "</div>\n";
+	else
+	    return "";
 }
 
 string html_text::inherited_get_body_part(const chemin & path,
