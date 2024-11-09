@@ -76,18 +76,18 @@ html_demo::html_demo():
     description.add_text(0, "On the right, you will see when and what information Webdar will receive.");
     description.add_nl();
 
-    static const char* choice1 = "choice 1";
-    static const char* choice2 = "choice 2";
-    static const char* choice3 = "choice 3";
+    static const char* choice1 = "hidden";
+    static const char* choice2 = "disabled";
+    static const char* choice3 = "enabled";
 
-    left_radio.add_choice("1", choice1);
-    left_radio.add_choice("2", choice2);
-    left_radio.add_choice("3", choice3);
-    left_radio.set_selected(0);
+    left_radio.add_choice("0", choice1);
+    left_radio.add_choice("1", choice2);
+    left_radio.add_choice("2", choice3);
+    left_radio.set_selected(2);
 
-    right_radio.add_choice("1", choice1);
-    right_radio.add_choice("2", choice2);
-    right_radio.add_choice("3", choice3);
+    right_radio.add_choice("0", choice1);
+    right_radio.add_choice("1", choice2);
+    right_radio.add_choice("2", choice3);
     right_radio.set_selected(0);
 
 	// adoption tree
@@ -131,6 +131,10 @@ html_demo::html_demo():
     table.set_css_class_cells(css_cells);
     table.css_border_collapsed(true);
     table.add_css_class(css_table);
+
+	// visibility & coherence
+    on_event(html_form_input::changed);
+    on_event(html_form_radio::changed);
 }
 
 
@@ -139,7 +143,25 @@ void html_demo::on_event(const string & event_name)
     if(event_name == html_form_input::changed)
 	right_input.set_value(left_input.get_value());
     else if(event_name == html_form_radio::changed)
+    {
 	right_radio.set_selected(left_radio.get_selected_num());
+	switch(left_radio.get_selected_num())
+	{
+	case 0: // hidden
+	    left_input.set_visible(false);
+	    break;
+	case 1: // disabled
+	    left_input.set_visible(true);
+	    left_input.set_enabled(false);
+	    break;
+	case 2: // enabled
+	    left_input.set_visible(true);
+	    left_input.set_enabled(true);
+	    break;
+	default:
+	    throw WEBDAR_BUG;
+	}
+    }
     else if(event_name == event_incr)
 	counter.set_value(webdar_tools_convert_to_string(webdar_tools_convert_to_int(counter.get_value()) + 1));
     else if(event_name == event_clear)
