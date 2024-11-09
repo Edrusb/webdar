@@ -48,15 +48,15 @@ html_form_mask_expression::html_form_mask_expression(const string & subject):
     negate("Negate",
 	   html_form_input::check,
 	   "", // unckecked
-	   1),
+	   "1"),
     casesensitivity("Case Sensitive",
 		    html_form_input::check,
 		    "1", // checked
-		    1),
+		    "1"),
     mask_expression("Mask Expression",
 		    html_form_input::text,
 		    "",
-		    30)
+		    "80%")
 {
 
 	// component configuration

@@ -43,11 +43,11 @@ using namespace std;
 
 html_form_overwrite_base_criterium::html_form_overwrite_base_criterium():
     crit_fs(""),
-    negate("Not", html_form_input::check, "", 1),
-    invert("Invert roles", html_form_input::check, "", 1),
+    negate("Not", html_form_input::check, "", "1"),
+    invert("Invert roles", html_form_input::check, "", "1"),
     base("Criterium"),
     date("Date"),
-    hourshift("Hourshift", html_form_input::number, "0", 5)
+    hourshift("Hourshift", html_form_input::number, "0", "5")
 {
 
 	// components setup

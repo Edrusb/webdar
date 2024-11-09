@@ -41,15 +41,15 @@ extern "C"
 using namespace std;
 
 html_form_mask_file::html_form_mask_file():
-    filename("File name", "/", 30, "Select a listing text file..."),
+    filename("File name", "/", "80%", "Select a listing text file..."),
     exclude_checkbox("Exclude listed files",
 		     html_form_input::check,
 		     "", // unchecked
-		     1),
+		     "1"),
     casesensit("Case sensitivivity",
 	       html_form_input::check,
 	       "1", // checked
-	       1),
+	       "1"),
     fs("File listing"),
     prefix(libdar::FAKE_ROOT)
 {

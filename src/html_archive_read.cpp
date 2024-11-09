@@ -45,7 +45,7 @@ html_archive_read::html_archive_read(const string & archive_description):
     fs(archive_description),
     arch_path("Backup Path",
 	      "/",
-	      50,
+	      "80%",
 	      "Select the backup to read...")
 {
 

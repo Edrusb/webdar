@@ -54,7 +54,7 @@ public:
 
     html_form_input_unit(const std::string & label,
 			 const libdar::infinint & initial_value,
-			 unsigned int size);
+			 const std::string & size);
     html_form_input_unit(const html_form_input_unit & ref) = default;
     html_form_input_unit(html_form_input_unit && ref) noexcept = default;
     html_form_input_unit & operator = (const html_form_input_unit & ref) = default;

@@ -43,8 +43,8 @@ using namespace std;
 html_archive_merge::html_archive_merge():
     form("Update"),
     fs(""),
-    sauv_path("Where to create the backup", "/", 20, "Select directory where to create the backup..."),
-    basename("Backup Basename", html_form_input::text, "", 10)
+    sauv_path("Where to create the backup", "/", "80%", "Select directory where to create the backup..."),
+    basename("Backup Basename", html_form_input::text, "", "80%")
 {
     static const char* sect_archive = "archive";
 

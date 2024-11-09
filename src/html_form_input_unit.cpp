@@ -45,7 +45,7 @@ const string html_form_input_unit::changed = "html_form_input_unit_changed";
 
 html_form_input_unit::html_form_input_unit(const string & label,
 					   const libdar::infinint & initial_value,
-					   unsigned int size):
+					   const string & size):
     ignore_events(false),
     no_act(false),
     field(label,

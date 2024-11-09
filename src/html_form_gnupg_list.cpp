@@ -73,14 +73,14 @@ unique_ptr<body_builder> html_form_gnupg_list::provide_object_of_type(unsigned i
 		  html_form_input("Gnupg recipient key id or email",
 				  html_form_input::text,
 				  "",
-				  50));
+				  "80%"));
 	break;
     case 1:
 	ret.reset(new (nothrow)
 		  html_form_input("Gnupg signatory email",
 				  html_form_input::text,
 				  "",
-				  50));
+				  "80%"));
 	break;
     default:
 	throw WEBDAR_BUG;

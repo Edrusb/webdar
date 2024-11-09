@@ -93,7 +93,7 @@ unique_ptr<body_builder> html_form_ignore_as_symlink::provide_object_of_type(uns
 		  html_form_input("Followed symlink",
 				  html_form_input::text,
 				  "",
-				  50));
+				  "80%"));
 	break;
     default:
 	throw WEBDAR_BUG;

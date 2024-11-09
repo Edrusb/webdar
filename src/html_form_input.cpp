@@ -46,12 +46,12 @@ const string html_form_input::changed = "html_form_input_changed";
 html_form_input::html_form_input(const string & label,
 				 input_type type,
 				 const string & initial_value,
-				 unsigned int size):
+				 const string & size):
     enabled(true),
     x_label(label),
     x_type(string_for_type(type)),
     x_init(initial_value),
-    x_size(webdar_tools_convert_to_string(size)),
+    x_size(size),
     x_min(""),
     x_max(""),
     value_set(false),

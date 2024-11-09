@@ -43,7 +43,7 @@ extern "C"
 using namespace std;
 
 html_datetime::html_datetime(const string & title):
-    year(title, html_form_input::number, "1970", 6),
+    year(title, html_form_input::number, "1970", "6"),
     month(""),
     day(""),
     hour("At"),

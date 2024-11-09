@@ -44,7 +44,7 @@ const string html_archive_extract::extract_root_changed = "extract_fs_root_chang
 
 html_archive_extract::html_archive_extract():
     extract_fs_root_fs(""),
-    extract_fs_root("Directory to take as root for restoration", "/", 30, "Select a directory where to restore to..."),
+    extract_fs_root("Directory to take as root for restoration", "/", "80%", "Select a directory where to restore to..."),
     extract_fs_root_form("Update")
 {
 

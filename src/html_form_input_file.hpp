@@ -61,7 +61,7 @@ public:
 
     html_form_input_file(const std::string & label,
 			 const std::string & initial_value,
-			 unsigned int size,
+			 const std::string & size,
 			 const std::string & popup_message);
 
     html_form_input_file(const html_form_input_file & ref);

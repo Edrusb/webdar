@@ -49,15 +49,15 @@ html_form_mask_subdir::html_form_mask_subdir(bool absolute_path_accepted):
     casesensitivity("Case Sensitive",
 		    html_form_input::check,
 		    "1", // checked
-		    1),
+		    "1"),
     regex("Regular expression in place of glob expression",
 	  html_form_input::check,
 	  "", // unchecked
-	  1),
+	  "1"),
     mask_subdir("Concerned path",
-		    html_form_input::text,
-		    "",
-		    30)
+		html_form_input::text,
+		"",
+		"80%")
 {
 
 	// component configuration

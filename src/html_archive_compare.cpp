@@ -44,7 +44,7 @@ const string html_archive_compare::diff_root_changed = "diff_fs_root_changed";
 
 html_archive_compare::html_archive_compare():
     diff_fs_root_fs(""),
-    diff_fs_root("Directory to compare the backup against", "/", 30, "Select the directory to compare with..."),
+    diff_fs_root("Directory to compare the backup against", "/", "80%", "Select the directory to compare with..."),
     diff_fs_root_form("Update")
 {
 

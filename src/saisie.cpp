@@ -81,7 +81,7 @@ saisie::saisie():
     session_name("Session name",
 		 html_form_input::text,
 		 "",
-		 20),
+		 "20"),
     about_fs(""),
     about_form("Change"),
     go_extract("Restore", event_restore),

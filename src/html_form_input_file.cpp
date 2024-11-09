@@ -55,7 +55,7 @@ const string html_form_input_file::css_empty_text = "html_form_input_file_eol";
 
 html_form_input_file::html_form_input_file(const string & label,
 					   const string & initial_value,
-					   unsigned int size,
+					   const string & size,
 					   const string & popup_message):
     input(label, html_form_input::text, initial_value, size),
     trigger("+", triggered_event),

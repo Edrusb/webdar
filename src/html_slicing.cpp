@@ -43,14 +43,14 @@ using namespace std;
 html_slicing::html_slicing():
     form_slicing("Update"),
     slicing_fs(""),
-    slicing("Sliced archive", html_form_input::check, "", 1), // unchecked
-    slice_size("Slice size", 0, 6),
-    different_first_slice("Specific size for first slice", html_form_input::check, "", 1), // unchecked
-    first_slice_size("Slice size", 0, 6),
-    slice_permission("Slice permission (octal)", html_form_input::text, "", 10),
-    slice_user_ownership("Slice user ownership", html_form_input::text, "", 10),
-    slice_group_ownership("slice group ownership", html_form_input::text, "", 10),
-    slice_min_digits("Minimum digits in slice file names", html_form_input::number, "0", 3)
+    slicing("Sliced archive", html_form_input::check, "", "1"), // unchecked
+    slice_size("Slice size", 0, "10"),
+    different_first_slice("Specific size for first slice", html_form_input::check, "", "1"), // unchecked
+    first_slice_size("Slice size", 0, "10"),
+    slice_permission("Slice permission (octal)", html_form_input::text, "", "10"),
+    slice_user_ownership("Slice user ownership", html_form_input::text, "", "80%"),
+    slice_group_ownership("slice group ownership", html_form_input::text, "", "80%"),
+    slice_min_digits("Minimum digits in slice file names", html_form_input::number, "0", "3")
 {
 
 	// component setup

@@ -45,12 +45,12 @@ html_ciphering::html_ciphering():
     crypto_fs(""),
     crypto_type("type of cryptography"),
     crypto_algo("Cipher used"),
-    crypto_pass1("Pass phrase", html_form_input::password, "", 30),
-    crypto_pass2("Confirm pass phrase", html_form_input::password, "", 30),
-    crypto_size("Cipher Block size", 0, 30),
-    crypto_threads("Number of threads for ciphering", html_form_input::number, "2", 5),
+    crypto_pass1("Pass phrase", html_form_input::password, "", "80%"),
+    crypto_pass2("Confirm pass phrase", html_form_input::password, "", "80%"),
+    crypto_size("Cipher Block size", 0, "30"),
+    crypto_threads("Number of threads for ciphering", html_form_input::number, "2", "5"),
     crypto_fs_kdf_hash("Key Derivation Function"),
-    iteration_count("Iteration count", html_form_input::number, "1", 30)
+    iteration_count("Iteration count", html_form_input::number, "1", "30")
 
 {
 	// components configuration

@@ -46,7 +46,7 @@ html_demo::html_demo():
     left_input("Enter some text here",
 	       html_form_input::text,
 	       "",
-	       30),
+	       "80%"),
     left_fs("Information at Browser level"),
     form("Update"),
     btn_incr("Increment", event_incr),
@@ -54,9 +54,9 @@ html_demo::html_demo():
     right_input("Entered text",
 		html_form_input::text,
 		"",
-		30),
+		"80%"),
     right_fs("Information known by Webdar"),
-    counter("Counter", html_form_input::number, "0", 10)
+    counter("Counter", html_form_input::number, "0", "10")
 {
 
 	// components configuration

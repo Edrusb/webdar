@@ -43,8 +43,8 @@ using namespace std;
 html_archive_isolate::html_archive_isolate():
     form("Update"),
     fs(""),
-    sauv_path("Where to create the isolated catalog", "/", 20, "Select the directory where to create the isolated catalog..."),
-    basename("Isolated Catalog basename", html_form_input::text, "", 10)
+    sauv_path("Where to create the isolated catalog", "/", "80%", "Select the directory where to create the isolated catalog..."),
+    basename("Isolated Catalog basename", html_form_input::text, "", "80%")
 {
     static const char* sect_archive = "isolation options";
     deroule.add_section(sect_archive, "Backup Isolation");

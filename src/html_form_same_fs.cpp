@@ -73,14 +73,14 @@ unique_ptr<body_builder> html_form_same_fs::provide_object_of_type(unsigned int 
 		  html_form_input("Included mount point",
 				  html_form_input::text,
 				  "",
-				  50));
+				  "80%"));
 	break;
     case 1:
 	ret.reset(new (nothrow)
 		  html_form_input("Excluded mount point",
 				  html_form_input::text,
 				  "",
-				  50));
+				  "80%"));
 	break;
     default:
 	throw WEBDAR_BUG;

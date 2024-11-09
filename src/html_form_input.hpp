@@ -58,7 +58,7 @@ public:
     html_form_input(const std::string & label,
 		    input_type type,
 		    const std::string & initial_value, //< for check set empty string for unchecked, anything else for checked
-		    unsigned int size);
+		    const std::string & size);
     html_form_input(const html_form_input & ref) = default;
     html_form_input(html_form_input && ref) noexcept = default;
     html_form_input & operator = (const html_form_input & ref) = default;

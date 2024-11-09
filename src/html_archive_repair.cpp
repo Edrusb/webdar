@@ -43,12 +43,12 @@ using namespace std;
 html_archive_repair::html_archive_repair():
     repair_dest("Where to create the repaired backup",
 		"/",
-		30,
+		"80%",
 		"Select path where will be created the repaired backup"),
     basename("Repaired backup basename",
 	     html_form_input::text,
 	     "",
-	     30),
+	     "80%"),
     repair_fs(""),
     repair_form("Update")
 {
