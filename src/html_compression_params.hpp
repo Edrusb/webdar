@@ -47,7 +47,7 @@ extern "C"
 #include "webdar_tools.hpp"
 
 
-    /// html component used for the user to define a has algorithm
+    /// html component used for the user to define a compression algorithm
 
 class html_compression_params : public body_builder, public actor, public events
 {

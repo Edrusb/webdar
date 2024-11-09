@@ -60,7 +60,6 @@ html_compression_params::html_compression_params(bool show_resave,
 {
 
 	// component setup
-    compression_level.set_range(1, 9);
     compr_threads.set_min_only(1);
     compression.set_no_CR();
 
@@ -143,6 +142,10 @@ void html_compression_params::on_event(const string & event_name)
 	    case libdar::compression::lz4:
 		compression.set_no_CR(true);
 		compression_level.set_visible(true);
+		if(compression.get_value() == libdar::compression::zstd)
+		    compression_level.set_range(1, 22);
+		else
+		    compression_level.set_range(1, 9);
 		if(x_show_min_size)
 		    min_compr_size.set_visible(true);
 		compression_block.set_visible(true);
