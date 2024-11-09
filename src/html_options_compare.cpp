@@ -83,6 +83,10 @@ html_options_compare::html_options_compare():
     path_mask(false),
     ea_mask("extended attribute")
 {
+
+	/// component setup
+    hourshift.set_range(0, 23);
+
     libdar::archive_options_diff defaults;
 
 	/// default values

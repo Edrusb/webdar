@@ -61,6 +61,7 @@ html_form_input_unit::html_form_input_unit(const string & label,
 	// components configuration
     field.set_no_CR();
     set_field_val();
+    field.set_min_only(0);
 
 	// adoption tree
     adopt(&field);

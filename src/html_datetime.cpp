@@ -180,6 +180,8 @@ html_datetime::html_datetime(const string & title):
     minute.add_choice("58","58");
     minute.add_choice("59","59");
 
+    year.set_min_only(1970);
+
     year.set_no_CR();
     month.set_no_CR();
     day.set_no_CR();

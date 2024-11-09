@@ -62,6 +62,7 @@ html_compression_params::html_compression_params(bool show_resave,
 	// component setup
     compr_threads.set_min_only(1);
     compression.set_no_CR();
+    min_compr_size.set_min_only(0);
 
 	// visibility
     if(! x_show_resave)

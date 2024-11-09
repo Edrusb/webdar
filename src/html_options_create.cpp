@@ -118,7 +118,7 @@ html_options_create::html_options_create():
     mod_data_detect.add_choice("mtime_size", "only mtime and file size change (default)");
     mod_data_detect.set_selected("mtime_size");
     pause.set_min_only(0);
-    hourshift.set_min_only(0);
+    hourshift.set_range(0, 23);
     if(defaults.get_reference() != nullptr)
 	throw WEBDAR_BUG; // not expected default value!!!
     else
@@ -129,6 +129,7 @@ html_options_create::html_options_create():
 		archtype.set_selected(3);
 	    else
 		archtype.set_selected(0);
+    retry_on_change_times.set_min_only(0);
 
 	// set default values
     allow_over.set_value_as_bool(defaults.get_allow_over());
@@ -151,7 +152,7 @@ html_options_create::html_options_create():
     zeroing_neg_date.set_value_as_bool(defaults.get_auto_zeroing_neg_dates());
     fixed_date.set_value(defaults.get_fixed_date());
     retry_on_change_times.set_value(libdar::deci(defaults.get_repeat_count()).human());
-    retry_on_change_overhead.set_value_as_infinint(defaults.get_repeat_byte());
+    retry_on_change_overhead.set_value_as_infinint(libdar::infinint(0));
     sequential_marks.set_value_as_bool(defaults.get_sequential_marks());
     sparse_file_min_size.set_value_as_infinint(defaults.get_sparse_file_min_size());
     security_check.set_value_as_bool(defaults.get_security_check());

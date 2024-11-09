@@ -84,6 +84,10 @@ html_options_merge::html_options_merge():
     compr_params(true, true, true),
     compr_mask("file name")
 {
+
+	// components setups
+    pause.set_min_only(0);
+
     libdar::archive_options_merge defaults;
 
 	// setting default values from libdar

@@ -74,13 +74,18 @@ html_options_read::html_options_read():
     multi_thread_crypto.set_min_only(1);
     multi_thread_compress.set_min_only(1);
 
+    ref_crypto_size.set_min_only(0);
+    src_slice_min_digits.set_min_only(0);
+    ref_slice_min_digits.set_min_only(0);
+
 	// set default values from libdar
 
     libdar::archive_options_read defaults;
 
     src_crypto_algo.set_value(defaults.get_crypto_algo());
     src_crypto_pass.set_value("");
-    src_crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_crypto_size()));
+    src_crypto_size.set_min_only(defaults.get_crypto_size());
+    src_crypto_size.set_value_as_int(defaults.get_crypto_size());
     src_execute.set_value(defaults.get_execute());
     src_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_slice_min_digits()));
     lax.set_value_as_bool(defaults.get_lax());

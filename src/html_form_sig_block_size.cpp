@@ -59,6 +59,8 @@ html_form_sig_block_size::html_form_sig_block_size():
     divisor.set_min_only(1);
     min_size.set_value_as_infinint(libdar::infinint(RS_DEFAULT_BLOCK_LEN));
     max_size.set_value_as_infinint(libdar::infinint(64*RS_DEFAULT_BLOCK_LEN));
+    min_size.set_min_only(8);
+    max_size.set_min_only(8);
     make_summary();
 
 	// adoption tree
