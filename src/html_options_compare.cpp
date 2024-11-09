@@ -79,9 +79,9 @@ html_options_compare::html_options_compare():
 		    html_form_input::check,
 		    "1",
 		    1),
-    filename_mask("Filename expression"),
+    filename_mask("file name"),
     path_mask(false),
-    ea_mask("Extended Attribute expression")
+    ea_mask("extended attribute")
 {
     libdar::archive_options_diff defaults;
 

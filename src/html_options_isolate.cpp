@@ -50,7 +50,7 @@ html_options_isolate::html_options_isolate():
     delta_sig("Transfer binary delta signature", html_form_input::check, "", 1),
     delta_transfer_mode("Compute delta signature when they are missing", html_form_input::check, "", 1),
     delta_sig_min_size("Avoid calculating delta signature for file smaller than", 0, 30),
-    delta_mask("Filename expression"),
+    delta_mask("file name"),
     form_archgen("Update"),
     fs_archgen(""),
     allow_over("Allow slice overwriting", html_form_input::check, "", 1),

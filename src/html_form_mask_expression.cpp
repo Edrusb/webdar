@@ -41,7 +41,8 @@ extern "C"
 using namespace std;
 
 
-html_form_mask_expression::html_form_mask_expression():
+html_form_mask_expression::html_form_mask_expression(const string & subject):
+    sujet(subject),
     fs(""),
     mask_type("Mask Type"),
     negate("Negate",
@@ -69,6 +70,7 @@ html_form_mask_expression::html_form_mask_expression():
 
 html_form_mask_expression::html_form_mask_expression(const html_form_mask_expression & ref):
     html_mask(ref), // parent class
+    sujet(ref.sujet),
     fs(ref.fs),
     mask_type(ref.mask_type),
     negate(ref.negate),
@@ -168,7 +170,7 @@ void html_form_mask_expression::init()
 
 string html_form_mask_expression::tell_action() const
 {
-    string ret = "filename ";
+    string ret = sujet + " ";
 
     if(negate.get_value_as_bool())
 	ret += "does not match ";

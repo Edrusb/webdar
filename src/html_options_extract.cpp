@@ -101,7 +101,7 @@ html_options_extract::html_options_extract():
 		   html_form_input::check,
 		   "",
 		   0),
-    filename_mask("Filename expression"),
+    filename_mask("file name"),
     path_mask(false)
 {
 	// set html fields to default value used by libdar

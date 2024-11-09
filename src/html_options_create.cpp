@@ -53,9 +53,9 @@ html_options_create::html_options_create():
     form_delta_sig("Update"),
     form_shown("Update"),
     form_perimeter("Update"),
-    filename_mask("Filename expression"),
+    filename_mask("file name"),
     path_mask(false),
-    ea_mask("Extended Attribute expression"),
+    ea_mask("extended attribute"),
     form_same_fs("Update"),
     archtype_fs(""),
     fixed_date("Only record files changed since:"),
@@ -64,7 +64,7 @@ html_options_create::html_options_create():
     delta_fs(""),
     delta_sig("Compute binary delta signature", html_form_input::check, "", 1),
     delta_sig_min_size("Avoid calculating delta signature for file smaller than", 0, 30),
-    delta_mask("Filename expression"),
+    delta_mask("file name"),
     archgen_fs(""),
     allow_over("Allow slice overwriting", html_form_input::check, "", 1),
     warn_over("Warn before overwriting", html_form_input::check, "", 1),
@@ -100,7 +100,7 @@ html_options_create::html_options_create():
     fs_mod_data_detect("How data (not metadata) changes are detected"),
     same_fs_fs("Select the filesystems based on their mount point"),
     compr_params(true, true, false),
-    compr_mask("Filename expression")
+    compr_mask("file name")
 {
     libdar::archive_options_create defaults;
 

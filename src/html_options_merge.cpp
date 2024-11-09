@@ -66,7 +66,7 @@ html_options_merge::html_options_merge():
     delta_fs(""),
     delta_sig("delta signatures"),
     delta_sig_min_size("Avoid calculating delta signature for file smaller than", 0, 30),
-    delta_mask("Filename expression"),
+    delta_mask("file name"),
     form_shown("Update"),
     fs_shown(""),
     info_details("Detailed informations", html_form_input::check, "1", 1),
@@ -76,13 +76,13 @@ html_options_merge::html_options_merge():
     form_perimeter("Update"),
     fs_perimeter(""),
     empty_dir("Store ignored directories as empty directories", html_form_input::check, "", 1),
-    filename_mask("Filename expression"),
-    ea_mask("Extended Attribute expression"),
+    filename_mask("file name"),
+    ea_mask("extended attribute"),
     path_mask(true),
     overwriting_policy(""),
     form_overwriting("Update"),
     compr_params(true, true, true),
-    compr_mask("Filename expression")
+    compr_mask("file name")
 {
     libdar::archive_options_merge defaults;
 

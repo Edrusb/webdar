@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 
@@ -40,10 +40,14 @@ extern "C"
 
 using namespace std;
 
-html_mask_form_filename::html_mask_form_filename(const string & title):
-    html_form("Update")
+html_mask_form_filename::html_mask_form_filename(const string & subject):
+    html_form("Update"),
+    sujet(subject)
 {
-    labels.push_back(title);
+	// we use tools_printf to ease future message translation
+	// if in other languages the subject is not at the beginning
+	// but in the middle or at the end of the translated string:
+    labels.push_back(libdar::tools_printf("%S expression", &sujet));
     labels.push_back("Logical combination");
     init_bool_obj(root);
 
@@ -60,7 +64,7 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
     switch(num)
     {
     case 0: // title provided in constructor
-	ret.reset(new (nothrow) html_form_mask_expression());
+	ret.reset(new (nothrow) html_form_mask_expression(sujet));
 	break;
     case 1: // "logical combination"
 	tmp.reset(new (nothrow) html_form_mask_bool(html_form_mask_bool::invert_logic(context)));

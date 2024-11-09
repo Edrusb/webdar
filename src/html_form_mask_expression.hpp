@@ -75,7 +75,13 @@ extern "C"
 class html_form_mask_expression : public html_mask, public actor
 {
 public:
-    html_form_mask_expression();
+
+	/// constructor
+
+	/// \param[in] subject is the name of the type of thing the filters will
+	/// be applied to. This parameter is used in the synthesis string representing
+	/// what the filter does: "{subject} matches the regular expression {regex}"
+    html_form_mask_expression(const std::string & subject);
     html_form_mask_expression(const html_form_mask_expression & ref);
     html_form_mask_expression(html_form_mask_expression && ref) noexcept = default;
     html_form_mask_expression & operator = (const html_form_mask_expression & ref) = default;
@@ -98,6 +104,7 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    std::string sujet;
     html_form_fieldset fs;
     html_form_select mask_type;
     html_form_input negate;

@@ -47,7 +47,12 @@ class html_mask_form_filename : public html_form,
 				public html_form_dynamic_table_object_provider
 {
 public:
-    html_mask_form_filename(const std::string & title);
+
+	/// constructor
+
+	/// \param[in] subject is the name of the type of object we filter like "file name" or "extended attributes"
+	/// this string is used to build the summary phrase describing the action the filter will perform
+    html_mask_form_filename(const std::string & subject);
     html_mask_form_filename(const html_mask_form_filename & ref) = default;
     html_mask_form_filename(html_mask_form_filename && ref) noexcept = delete;
     html_mask_form_filename & operator = (const html_mask_form_filename & ref) = delete;
@@ -64,6 +69,7 @@ public:
 private:
     html_form_mask_bool root;
     std::deque<std::string> labels;
+    std::string sujet;
 
     void init_bool_obj(html_form_mask_bool & obj) const;
 

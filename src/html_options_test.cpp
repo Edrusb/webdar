@@ -64,7 +64,7 @@ html_options_test::html_options_test():
 		    html_form_input::check,
 		    "1",
 		    1),
-    filename_mask("Filename expression"),
+    filename_mask("file name"),
     path_mask(true)
 {
     libdar::archive_options_test defaults;
