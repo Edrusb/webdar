@@ -36,7 +36,7 @@ extern "C"
     // webdar headers
 #include "html_form_dynamic_table.hpp"
 
-    /// class html_form_same_fs provide interface for the user to filter base on mounted filesystem
+    /// class html_form_same_fs provide interface for the user to filter base on mounted file system
 
     /// this html components is consitued of:
     ///

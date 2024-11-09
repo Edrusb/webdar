@@ -108,13 +108,13 @@ html_options_compare::html_options_compare():
     static const char* sect_mask_path = "mask_path";
     static const char* sect_ea_mask = "EA masks";
     static const char* sect_fsa_scope = "FSA Scope";
-    deroule.add_section(sect_source, "Filesystem reading mode");
+    deroule.add_section(sect_source, "File system reading mode");
     deroule.add_section(sect_opt, "Comparison options");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_mask_filename, "File name based filtering");
     deroule.add_section(sect_mask_path, "Path based filtering");
     deroule.add_section(sect_ea_mask, "Extended Attributes filtering");
-    deroule.add_section(sect_fsa_scope, "Filesystem Specific Attributes filtering");
+    deroule.add_section(sect_fsa_scope, "File system Specific Attributes filtering");
 
     fs_alter_atime.adopt(&alter_atime);
     form_reading.adopt(&furtive_read_mode);

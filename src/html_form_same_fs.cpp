@@ -42,7 +42,7 @@ using namespace std;
 html_form_same_fs::html_form_same_fs():
     table(false,
 	  true,
-	  "Filesystem mount point to add",
+	  "File system mount point to add",
 	  "--- select a type of filter ---")
 {
     table.set_obj_type_provider(this);

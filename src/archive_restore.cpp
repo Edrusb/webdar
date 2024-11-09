@@ -73,7 +73,7 @@ void archive_restore::inherited_run()
 	ui->get_statistics().set_treated_label("item(s) restored");
 	ui->get_statistics().set_skipped_label("item(s) not restored (not saved in archive)");
 	ui->get_statistics().set_tooold_label("item(s) not restored (overwriting policy decision)");
-	ui->get_statistics().set_errored_label("item(s) failed to restore (filesystem error)");
+	ui->get_statistics().set_errored_label("item(s) failed to restore (file system error)");
 	ui->get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
 	ui->get_statistics().set_hard_links_label("hard link(s) restored");
 	ui->get_statistics().set_ea_treated_label("item(s) having their EA restored");

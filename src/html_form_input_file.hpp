@@ -42,7 +42,7 @@ extern "C"
 #include "html_select_file.hpp"
 #include "html_text.hpp"
 
-    /// class html_form_input_file provides a mean to the user to navigate in a filesystem to select a file or directory
+    /// class html_form_input_file provides a mean to the user to navigate in a file system to select a file or directory
 
     /// this is an html_form_input with an added button
     /// that triggers a popup for the user to select a file
@@ -91,7 +91,7 @@ public:
     void set_select_mode(select_mode val);
     void set_can_create_dir(bool val) { user_select.set_can_create_dir(val); };
 
-	/// change the entrepot to search into (if not called, local filesystem is used)
+	/// change the entrepot to search into (if not called, local file system is used)
 
 	/// \param[in] entrepot points to the libdar::entrepot to use
     void set_entrepot(std::shared_ptr<libdar::entrepot> entrepot);

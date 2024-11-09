@@ -77,7 +77,7 @@ void archive_compare::inherited_run()
 	ui->clear();
 	ui->get_statistics().clear_labels();
 	ui->get_statistics().set_treated_label("item(s) identical");
-	ui->get_statistics().set_errored_label("item(s) do not match those on filesystem");
+	ui->get_statistics().set_errored_label("item(s) do not match those on file system");
 	ui->get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
 	ui->get_statistics().set_total_label("inode(s) considered");
 

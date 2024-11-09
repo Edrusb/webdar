@@ -98,7 +98,7 @@ html_options_create::html_options_create():
     furtive_read_mode("Furtive read mode (if available)", html_form_input::check, "", 1),
     zeroing_neg_date("Automatically zeroing negative dates while reading", html_form_input::check, "", 1),
     fs_mod_data_detect("How data (not metadata) changes are detected"),
-    same_fs_fs("Select the filesystems based on their mount point"),
+    same_fs_fs("Select the file systems based on their mount point"),
     compr_params(true, true, false),
     compr_mask("file name")
 {
@@ -188,15 +188,15 @@ html_options_create::html_options_create():
     deroule.add_section(sect_type, "Backup Type");
     deroule.add_section(sect_ref, "Backup of Reference");
     deroule.add_section(sect_delta, "Delta signatures");
-    deroule.add_section(sect_source, "Filesystem reading mode");
+    deroule.add_section(sect_source, "File system reading mode");
     deroule.add_section(sect_gen, "Backup General Options");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_perimeter, "What to take into consideration for backup");
-    deroule.add_section(sect_mask_path, "Filesystem filtering");
     deroule.add_section(sect_mask_file, "File name based filtering");
+    deroule.add_section(sect_mask_path, "Path based filtering");
     deroule.add_section(sect_mount_points, "Mount point filtering");
     deroule.add_section(sect_ea_mask, "Extended Attributes filtering");
-    deroule.add_section(sect_fsa_scope, "Filesystem Specific Attributes filtering");
+    deroule.add_section(sect_fsa_scope, "File system Specific Attributes filtering");
     deroule.add_section(sect_compr, "Compression options");
     deroule.add_section(sect_slice, "Slicing options");
     deroule.add_section(sect_cipher, "Encryption options");

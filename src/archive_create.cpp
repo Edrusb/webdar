@@ -75,7 +75,7 @@ void archive_create::inherited_run()
 	ui->get_statistics().set_tooold_label("item(s) modified while read for backup (dirty files)");
 	ui->get_statistics().set_byte_amount_label("byte(s) wasted due to changing files at the time they were read");
 	ui->get_statistics().set_skipped_label("item(s) not saved (no inode/file change)");
-	ui->get_statistics().set_errored_label("items(s) with error (filesystem error)");
+	ui->get_statistics().set_errored_label("items(s) with error (file system error)");
 	ui->get_statistics().set_ignored_label("item(s) ignored (excluded by filters)");
 	ui->get_statistics().set_deleted_label("item(s) recorded as deleted");
 	ui->get_statistics().set_ea_treated_label("item(s) with Extended Attributes");

@@ -150,7 +150,7 @@ html_options_extract::html_options_extract():
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_mask_file, "File name based filtering");
     deroule.add_section(sect_mask_path, "Path based filtering");
-    deroule.add_section(sect_fsa_scope, "Filesystem Specific Attributes filtering");
+    deroule.add_section(sect_fsa_scope, "File system Specific Attributes filtering");
     deroule.add_section(sect_overwriting, "Overwriting policy");
 
     fs.adopt(&in_place);

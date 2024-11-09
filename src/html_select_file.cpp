@@ -523,7 +523,7 @@ bool html_select_file::init_fieldset_isdir()
 	catch(exception_range & f)
 	{
 		// target.pop_back() failed
-		// this means target was empty (aka root filesystem)
+		// this means target was empty (aka root file system)
 		// and "/" was not a directory or failed to be openned
 		// reporting the first exception
 	    warning.clear();
@@ -797,7 +797,7 @@ string html_select_file::get_parent_path(const string & somepath)
     catch(exception_range & e)
     {
 	    // pop_back() failed because we
-	    // we reached the root of the filesystem
+	    // we reached the root of the file system
 	    // ignoring this error and staying at
 	    // the same path
     }

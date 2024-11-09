@@ -42,7 +42,7 @@ using namespace std;
 
 html_fsa_scope::html_fsa_scope():
     form("Update"),
-    fs("Filesystem Specific Attributes to consider"),
+    fs("File system Specific Attributes to consider"),
     hfs_family("HFS+ (MacOS) family attributes", html_form_input::check, "1", 1),
     ext_family("Ext* (Linux) family attributes", html_form_input::check, "1", 1)
 {

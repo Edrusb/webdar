@@ -143,7 +143,7 @@ html_options_merge::html_options_merge():
     deroule.add_section(sect_mask_file, "File name based filtering");
     deroule.add_section(sect_mask_path, "Path based filterting");
     deroule.add_section(sect_ea_mask, "Extended Attributes filtering");
-    deroule.add_section(sect_fsa_scope, "Filesystem Specific Attributes filtering");
+    deroule.add_section(sect_fsa_scope, "File system Specific Attributes filtering");
     deroule.add_section(sect_overwrite, "Overwriting policy");
     deroule.add_section(sect_compr, "Compression Options");
     deroule.add_section(sect_slice, "Slicing Options");

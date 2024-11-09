@@ -71,7 +71,7 @@ html_entrepot::html_entrepot():
     string val;
 
 	// component configuration
-    repo_type.add_choice(type_local, "local filesystem");         // index 0
+    repo_type.add_choice(type_local, "local file system");        // index 0
     repo_type.add_choice(type_ftp, "FTP protocol (unciphered)");  // index 1
     repo_type.add_choice(type_sftp, "SFTP protocol (ciphered)");  // index 2
     repo_type.set_selected(0);
@@ -266,10 +266,10 @@ string html_entrepot::inherited_get_body_part(const chemin & path,
 	    // we trigger an event only if:
 	    // there was some change in the html parameters but if the
 	    // repo type has changed we only trigger if the new type is of
-	    // local filesystem. The reason is to avoid trying to generate
+	    // local file system. The reason is to avoid trying to generate
 	    // sftp or ftp entrepot while the user has just changed the type
 	    // to theses but has not yet got the opportunity to provide
-	    // parameters. Local filesystem is different because it has no
+	    // parameters. Local file system is different because it has no
 	    // parameters to be set.
 	trigger_event();
 
