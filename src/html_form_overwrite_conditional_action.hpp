@@ -58,9 +58,8 @@ public:
 
 protected:
 
-	/// inherited from body_builder from html_overwrite_action
-    virtual std::string inherited_get_body_part(const chemin & path,
-						const request & req) override;
+	/// inherited from body_builder
+    virtual void new_css_library_available() override;
 
 private:
     static constexpr const char* act_true_changed = "true changed";
@@ -69,6 +68,8 @@ private:
     static constexpr const char* action_type_undefined = "undefined";
     static constexpr const char* action_type_const = "constant";
     static constexpr const char* action_type_condition = "condition";
+
+    static constexpr const char* css_cond = "html_form_overwrite_cond_act";
 
     html_form_overwrite_combining_criterium condition;
     html_form_overwrite_action when_true;

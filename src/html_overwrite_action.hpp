@@ -35,7 +35,7 @@ extern "C"
 #include <memory>
 
     // webdar headers
-#include "body_builder.hpp"
+#include "html_div.hpp"
 
     /// html component used for constant actions in overwriting policies
 
@@ -44,8 +44,7 @@ extern "C"
     /// html_form_overwrite_action which by the way is a fully implemented child class
     /// of this class.
 
-
-class html_overwrite_action : public body_builder
+class html_overwrite_action : public html_div
 {
 public:
     html_overwrite_action() {};

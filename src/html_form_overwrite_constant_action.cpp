@@ -149,11 +149,3 @@ unique_ptr<libdar::crit_action> html_form_overwrite_constant_action::get_overwri
 	throw exception_memory();
     return ret;
 }
-
-
-string html_form_overwrite_constant_action::inherited_get_body_part(const chemin & path,
-							       const request & req)
-{
-    return get_body_part_from_all_children(path, req);
-}
-

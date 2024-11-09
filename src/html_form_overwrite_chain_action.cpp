@@ -113,10 +113,3 @@ unique_ptr<body_builder> html_form_overwrite_chain_action::provide_object_of_typ
     return ret;
 }
 
-
-string html_form_overwrite_chain_action::inherited_get_body_part(const chemin & path,
-							       const request & req)
-{
-    return  get_body_part_from_all_children(path, req);
-}
-

@@ -56,6 +56,8 @@ html_form_overwrite_conditional_action::html_form_overwrite_conditional_action()
 	// events
 
 	// css
+    when_true.add_css_class(css_cond);
+    when_false.add_css_class(css_cond);
 }
 
 unique_ptr<libdar::crit_action> html_form_overwrite_conditional_action::get_overwriting_action() const
@@ -83,9 +85,17 @@ unique_ptr<libdar::crit_action> html_form_overwrite_conditional_action::get_over
     return ret;
 }
 
-string html_form_overwrite_conditional_action::inherited_get_body_part(const chemin & path,
-								       const request & req)
+void html_form_overwrite_conditional_action::new_css_library_available()
 {
-    return get_body_part_from_all_children(path, req);
-}
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
 
+    if(! csslib->class_exists(css_cond))
+    {
+	css tmp;
+	tmp.css_float(css::fl_left);
+	tmp.css_width("50%", false);
+	csslib->add(css_cond, tmp);
+    }
+}

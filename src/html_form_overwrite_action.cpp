@@ -118,7 +118,7 @@ string html_form_overwrite_action::inherited_get_body_part(const chemin & path,
 {
     string ret;
 
-    ret = get_body_part_from_all_children(path, req);
+    ret = html_div::inherited_get_body_part(path, req);
 
     if(need_conditional_action)
     {

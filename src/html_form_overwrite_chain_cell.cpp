@@ -62,9 +62,3 @@ unique_ptr<libdar::crit_action> html_form_overwrite_chain_cell::get_overwriting_
     return incell->get_overwriting_action();
 }
 
-
-string html_form_overwrite_chain_cell::inherited_get_body_part(const chemin & path,
-							       const request & req)
-{
-    return get_body_part_from_all_children(path, req);
-}

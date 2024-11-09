@@ -55,12 +55,6 @@ public:
 	/// obtain the crit_constant_action object for libdar option
     virtual std::unique_ptr<libdar::crit_action> get_overwriting_action() const override;
 
-protected:
-
-	/// inherited from body_builder from html_overwrite_action
-    virtual std::string inherited_get_body_part(const chemin & path,
-						const request & req) override;
-
 private:
     html_form_fieldset action_fs;
     html_form_select data_action;

@@ -35,7 +35,7 @@ extern "C"
 
     // webdar headers
 #include "html_overwrite_action.hpp"
-#include "body_builder.hpp"
+#include "html_div.hpp"
 #include "html_form_select.hpp"
 #include "html_form_fieldset.hpp"
 #include "actor.hpp"

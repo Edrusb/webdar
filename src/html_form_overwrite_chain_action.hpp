@@ -63,13 +63,6 @@ public:
 	/// inherited from html_form_dynamic_table_object_provider
     virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num, const std::string & context) const override;
 
-
-protected:
-
-	/// inherited from body_builder from html_overwrite_action
-    virtual std::string inherited_get_body_part(const chemin & path,
-						const request & req) override;
-
 private:
     html_form_fieldset fs;
     html_form_dynamic_table table;
