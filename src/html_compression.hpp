@@ -39,7 +39,7 @@ extern "C"
 
 #include "html_form_select.hpp"
 
-    /// html components to let the user define the compression algorithm and compression level to use
+    /// html components to let the user define the compression algorithm
 
 class html_compression : public html_form_select
 {
