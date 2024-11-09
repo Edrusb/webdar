@@ -423,7 +423,7 @@ void html_dir_tree::new_css_library_available()
 void html_dir_tree::clear_contents()
 {
     contents.clear();
-    contents.adopt_static_html(html_text(3, "Filename").get_body_part());
+    contents.adopt_static_html(html_text(3, "File name").get_body_part());
     contents.adopt_static_html(html_text(3, "Delta Sig").get_body_part());
     contents.adopt_static_html(html_text(3, "Data").get_body_part());
     contents.adopt_static_html(html_text(3, "EA").get_body_part());

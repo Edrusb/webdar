@@ -174,7 +174,7 @@ html_options_create::html_options_create():
     static const char* sect_gen = "archive_gen_opt";
     static const char* sect_show = "archive show opt";
     static const char* sect_perimeter = "backup perimeter";
-    static const char* sect_mask_file = "backup filename masks";
+    static const char* sect_mask_file = "backup file name masks";
     static const char* sect_mask_path = "backup pathname masks";
     static const char* sect_mount_points = "mount point filtering";
     static const char* sect_ea_mask = "EA masks";
@@ -192,8 +192,8 @@ html_options_create::html_options_create():
     deroule.add_section(sect_gen, "Backup General Options");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_perimeter, "What to take into consideration for backup");
-    deroule.add_section(sect_mask_file, "Filename based filtering");
     deroule.add_section(sect_mask_path, "Filesystem filtering");
+    deroule.add_section(sect_mask_file, "File name based filtering");
     deroule.add_section(sect_mount_points, "Mount point filtering");
     deroule.add_section(sect_ea_mask, "Extended Attributes filtering");
     deroule.add_section(sect_fsa_scope, "Filesystem Specific Attributes filtering");

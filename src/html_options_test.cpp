@@ -80,7 +80,7 @@ html_options_test::html_options_test():
     static const char* sect_path = "path";
     deroule.add_section(sect_opt, "Testing options");
     deroule.add_section(sect_show, "What to show during the operation");
-    deroule.add_section(sect_mask, "Filename based filtering");
+    deroule.add_section(sect_mask, "File name based filtering");
     deroule.add_section(sect_path, "Path based filtering");
 
     fs.adopt(&empty);

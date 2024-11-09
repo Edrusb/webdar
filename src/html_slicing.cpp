@@ -50,7 +50,7 @@ html_slicing::html_slicing():
     slice_permission("Slice permission (octal)", html_form_input::text, "", 10),
     slice_user_ownership("Slice user ownership", html_form_input::text, "", 10),
     slice_group_ownership("slice group ownership", html_form_input::text, "", 10),
-    slice_min_digits("Minimum digits in slice filenames", html_form_input::number, "0", 3)
+    slice_min_digits("Minimum digits in slice file names", html_form_input::number, "0", 3)
 {
 
 	// component setup

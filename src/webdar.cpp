@@ -442,12 +442,12 @@ static void parse_cmd(int argc, char *argv[],
 	case 'C':
 	    certificate = optarg;
 	    if(certificate.empty())
-		throw exception_range("-C option needs a filename");
+		throw exception_range("-C option needs a file name");
 	    break;
 	case 'K':
 	    privateK = optarg;
 	    if(privateK.empty())
-		throw exception_range("-K option needs a filename");
+		throw exception_range("-K option needs a file name");
 	    break;
 	case 'h':
 	    throw exception_range(string("Usage: ")

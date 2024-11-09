@@ -102,7 +102,7 @@ unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
     }
     catch(libdar::Egeneric & e)
     {
-	e.prepend_message("Error met while creating Filename based filtering");
+	e.prepend_message("Error met while creating file name based filtering");
 	throw exception_libcall(e);
     }
 
