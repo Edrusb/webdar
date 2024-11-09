@@ -38,7 +38,7 @@ extern "C"
     // webdar headers
 #include "actor.hpp"
 #include "events.hpp"
-#include "body_builder.hpp"
+#include "html_div.hpp"
 #include "html_table.hpp"
 #include "html_button.hpp"
 #include "html_text.hpp"
@@ -100,7 +100,7 @@ public:
     /// user.
 
 
-class html_form_dynamic_table : public body_builder, public actor, public events
+class html_form_dynamic_table : public html_div, public actor, public events
 {
 private:
     struct line; // referred before the public part for the ::iterator nested class
@@ -220,6 +220,9 @@ protected:
         /// inherited methods from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
                                                 const request & req) override;
+
+	/// inherited from body_builder
+    virtual void new_css_library_available() override;
 
 private:
 

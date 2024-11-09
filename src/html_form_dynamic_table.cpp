@@ -32,7 +32,7 @@ extern "C"
 
 
     // webdar headers
-#include "webdar_tools.hpp"
+#include "webdar_css_style.hpp"
 
 
     //
@@ -71,6 +71,7 @@ html_form_dynamic_table::html_form_dynamic_table(bool has_left_labels,
 	// visibility
 
 	// css stuff
+    table.add_css_class(webdar_css_style::wcs_full_width);
 }
 
 void html_form_dynamic_table::set_obj_type_provider(const html_form_dynamic_table_object_provider* provider)
@@ -112,9 +113,18 @@ void html_form_dynamic_table::on_event(const std::string & event_name)
 string html_form_dynamic_table::inherited_get_body_part(const chemin & path,
 							const request & req)
 {
-    string ret = get_body_part_from_all_children(path, req);
+    string ret = html_div::inherited_get_body_part(path, req);
     purge_to_delete();
     return ret;
+}
+
+void html_form_dynamic_table::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
 }
 
 
