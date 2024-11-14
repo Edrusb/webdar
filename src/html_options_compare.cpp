@@ -53,6 +53,10 @@ html_options_compare::html_options_compare():
 		      html_form_input::check,
 		      "",
 		      "1"),
+    zeroing_neg_date("Automatically zeroing negative dates while reading",
+		     html_form_input::check,
+		     "",
+		     "1"),
     hourshift("Ignore difference of exactly +/- N hour(s)",
 	      html_form_input::number,
 	      "0",
@@ -99,6 +103,7 @@ html_options_compare::html_options_compare():
 	alter_atime.set_selected(1);
     what_to_check.set_value(defaults.get_what_to_check());
     furtive_read_mode.set_value_as_bool(defaults.get_furtive_read_mode());
+    zeroing_neg_date.set_value_as_bool(defaults.get_auto_zeroing_neg_dates());
     hourshift.set_value(webdar_tools_convert_to_string(defaults.get_hourshift()));
     compare_symlink_date.set_value_as_bool(defaults.get_compare_symlink_date());
 
@@ -123,6 +128,7 @@ html_options_compare::html_options_compare():
     fs_alter_atime.adopt(&alter_atime);
     form_reading.adopt(&furtive_read_mode);
     form_reading.adopt(&fs_alter_atime);
+    form_reading.adopt(&zeroing_neg_date);
     form_reading.adopt(&hourshift);
     deroule.adopt_in_section(sect_source, &form_reading);
 
@@ -175,6 +181,7 @@ libdar::archive_options_diff html_options_compare::get_options() const
     ret.set_what_to_check(what_to_check.get_value());
     ret.set_alter_atime(alter_atime.get_selected_id() == "atime");
     ret.set_furtive_read_mode(furtive_read_mode.get_value_as_bool());
+    ret.set_auto_zeroing_neg_dates(zeroing_neg_date.get_value_as_bool());
     ret.set_hourshift(libdar::infinint(webdar_tools_convert_to_int(hourshift.get_value())));
     ret.set_compare_symlink_date(compare_symlink_date.get_value_as_bool());
     ret.set_selection(*(filename_mask.get_mask()));

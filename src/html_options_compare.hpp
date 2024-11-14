@@ -86,6 +86,7 @@ private:
     html_form_fieldset fs_alter_atime;
     html_form_radio alter_atime;
     html_form_input furtive_read_mode;
+    html_form_input zeroing_neg_date;
     html_form_input hourshift;
 
     html_form form;
