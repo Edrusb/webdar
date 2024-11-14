@@ -32,7 +32,7 @@ extern "C"
 
 
     // webdar headers
-
+#include "html_form_input_file.hpp"
 
     //
 #include "html_form_same_fs.hpp"
@@ -70,17 +70,17 @@ unique_ptr<body_builder> html_form_same_fs::provide_object_of_type(unsigned int 
     {
     case 0:
 	ret.reset(new (nothrow)
-		  html_form_input("Included mount point",
-				  html_form_input::text,
-				  "",
-				  "80%"));
+		  html_form_input_file("Included mount point",
+				       "/",
+				       "80%",
+				       "Select a path which filesystem will be included in the operation..."));
 	break;
     case 1:
 	ret.reset(new (nothrow)
-		  html_form_input("Excluded mount point",
-				  html_form_input::text,
-				  "",
-				  "80%"));
+		  html_form_input_file("Excluded mount point",
+				       "/",
+				       "80%",
+				       "Select a path which filesystem will be excluded from the operation..."));
 	break;
     default:
 	throw WEBDAR_BUG;
