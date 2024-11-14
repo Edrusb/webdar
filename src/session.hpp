@@ -41,7 +41,7 @@ extern "C"
     /// class session - holds information about a current user session
 
     /// a session object stores a work under progress. An internal mutex
-    /// avoid two concurrent requests to be addressed a given session object.
+    /// avoids two concurrent requests to be addressed to a given session object.
     /// Session object are sollicitated by parser and chooser
     /// objects.
 
