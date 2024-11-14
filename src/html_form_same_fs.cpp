@@ -64,7 +64,7 @@ vector<string> html_form_same_fs::get_excluded_fs_path() const
 unique_ptr<body_builder> html_form_same_fs::provide_object_of_type(unsigned int num,
 								      const string & context) const
 {
-    unique_ptr<body_builder> ret;
+    unique_ptr<html_form_input_file> ret;
 
     switch(num)
     {
@@ -88,6 +88,11 @@ unique_ptr<body_builder> html_form_same_fs::provide_object_of_type(unsigned int 
 
     if(! ret)
 	throw exception_memory();
+    else
+    {
+	ret->set_select_mode(html_form_input_file::select_dir);
+	ret->set_can_create_dir(false);
+    }
 
     return ret;
 }
