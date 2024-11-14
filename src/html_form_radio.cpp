@@ -43,6 +43,7 @@ using namespace std;
 const string html_form_radio::changed = "html_form_radio::changed";
 
 html_form_radio::html_form_radio():
+    enabled(true),
     selected(0),
     value_set(false)
 {
@@ -108,6 +109,16 @@ void html_form_radio::set_change_event_name(const string & name)
     modif_changed = name;
 }
 
+void html_form_radio::set_enabled(bool val)
+{
+    if(enabled != val)
+    {
+	enabled = val;
+	my_act();
+	my_body_part_has_changed();
+    }
+}
+
 string html_form_radio::inherited_get_body_part(const chemin & path,
 						const request & req)
 {
@@ -126,6 +137,8 @@ string html_form_radio::inherited_get_body_part(const chemin & path,
 	ret += "<input " + get_css_classes() + " type=\"radio\" name=\"" + radio_id + "\" id=\"" + choices[i].id + "\" value=\"" + choices[i].id + "\" ";
 	if(i == selected)
 	    ret += "checked ";
+	if(!enabled)
+	    ret += "disabled ";
 	ret += "/>\n";
 	ret += "<label " + get_css_classes() + " for=\"" + choices[i].id + "\">" + choices[i].label + "</label>";
 	if(i+1 < choices.size() || !get_no_CR())

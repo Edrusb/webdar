@@ -122,6 +122,7 @@ html_demo::html_demo():
 
     right_input.set_enabled(false);
     counter.set_enabled(false);
+    right_radio.set_enabled(false);
 
 	// css
 

@@ -74,6 +74,9 @@ public:
 	/// change the default value for the "changed" event
     void set_change_event_name(const std::string & name);
 
+	/// set whether the HTML control is enable or disabled
+    void set_enabled(bool val);
+
 protected:
 
 	/// inherited from body_builder
@@ -101,9 +104,10 @@ protected:
     void unlock_update_field_from_request();
 
 private:
+    bool enabled;              ///< whether the control is enabled or disabled
     std::vector<record> choices;
     unsigned int selected;
-    bool value_set; ///< avoid POST request to overwrite set_seleected*()
+    bool value_set;            ///< avoid POST request to overwrite set_seleected*()
 
     std::string modif_changed; ///< name of the event "changed" to use, empty string for the default
     void my_act();
