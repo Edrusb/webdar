@@ -59,6 +59,7 @@ extern "C"
 
     // libraries header files
 #include <dar/libdar.hpp>
+#include <dar/tools.hpp>
 #include <libthreadar/libthreadar.hpp>
 
 
@@ -108,6 +109,7 @@ static void add_item_to_list(const char *optarg, vector<interface_port> & ecoute
 static void close_all_listeners(int sig);
 static void libdar_init();
 static void libdar_end();
+static void usage(const char* argv0);
 
     // yes, this will point to a global object, this class handle concurrent access,
     // no problem in this multi-threaded program.
@@ -450,9 +452,8 @@ static void parse_cmd(int argc, char *argv[],
 		throw exception_range("-K option needs a file name");
 	    break;
 	case 'h':
-	    throw exception_range(string("Usage: ")
-				  + string(argv[0])
-				  + string(" [-l <IP>[:port]] [-v] [-b] [-C <certificate file> -K <private key file>]\n"));
+	    usage(argv[0]);
+	    break;
 	case '?':
 	    cerr << "Ignoring Unknown argument given on command line: " << lu << endl;
 	    break;
@@ -642,4 +643,12 @@ static void signal_handler(int x)
 			+to_string(delta)+string(" second(s)\n\n"));
 	last_trigger = now;
     }
+}
+
+static void usage(const char* argv0)
+{
+    string msg = libdar::tools_printf("Usage: %s [-l <IP>[:port]] [-v] [-b] [-C <certificate file> -K <private key file>]\n", argv0);
+
+    cout << msg << endl;
+    exit(1);
 }
