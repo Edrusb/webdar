@@ -34,7 +34,7 @@
 #include "session.hpp"
 #include "authentication.hpp"
 
-    /// thread object that read request from the provided proto_connexion send then to the
+    /// thread object that read request from the provided proto_connexion send them to the
     /// appropriated session managing authentication and send back the answer to the session
 
     /// \note relies on a parser object to split byte flow into structured requests, challenge object
@@ -44,7 +44,7 @@
 class server: public libthreadar::thread_signal
 {
 public:
-	// constructor & Destructor are intentionally set as private methods
+	// constructor & destructor are intentionally set as private methods
 
     static bool run_new_server(const std::shared_ptr<central_report> & log,
 			       const std::shared_ptr<const authentication> & auth,
