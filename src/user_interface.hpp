@@ -81,6 +81,9 @@ public:
     	/// whether a libdar thread is running
     bool is_libdar_running() const { return in_action.is_libdar_running(); };
 
+	/// whether user has requested to disconnect
+    bool disconnection_requested() const { bool ret = disconnect_req; disconnect_req = false; return ret; };
+
 protected:
 
 	/// inherited from responder
@@ -102,6 +105,7 @@ private:
     mode_type return_mode; ///< mode in which to return from error status
     bool close_requested;  ///< whether session close has been asked
     bool mode_changed;     ///< whether mode has changed
+    mutable bool disconnect_req; ///< whether user has requested a session disconnection
 
     saisie parametrage;            ///< page issued in mode == config
     html_libdar_running_page in_action; ///< page issued when a libdar thread is running (mode == running)

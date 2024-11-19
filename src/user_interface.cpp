@@ -48,6 +48,7 @@ user_interface::user_interface()
     mode = config;
     mode_changed = false;
     close_requested = false;
+    disconnect_req = false;
 
 	/// messages receved from saisie object named parametrage
     parametrage.record_actor_on_event(this, saisie::event_closing);
@@ -60,6 +61,7 @@ user_interface::user_interface()
     parametrage.record_actor_on_event(this, saisie::event_merge);
     parametrage.record_actor_on_event(this, saisie::event_repair);
     parametrage.record_actor_on_event(this, saisie::changed_session_name);
+    parametrage.record_actor_on_event(this, saisie::event_disconn);
 
 	/// messages received from html_libdar_running object named in_action
     in_action.record_actor_on_event(this, html_libdar_running_page::libdar_has_finished);
@@ -273,6 +275,10 @@ void user_interface::on_event(const string & event_name)
 	arch_init_list.close_archive();
 	mode = config;
 	mode_changed = true;
+    }
+    else if(event_name == saisie::event_disconn)
+    {
+	disconnect_req = true;
     }
     else
 	throw WEBDAR_BUG; // what's that event !?!
