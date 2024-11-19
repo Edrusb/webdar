@@ -76,12 +76,12 @@ public:
 	/// summary information of sessions
     struct session_summary
     {
-	std::string owner;        //< owner of the session
-	std::string session_ID;   //< session ID: internal unique identifier for that session
-	std::string session_name; //< name given to that session by the user
-	bool locked;              //< whether the session is locked by a thread
-	bool libdar_running;      //< whether a libdar job is running
-	bool closing;             //< whether the session is pending for closure
+	std::string owner;        ///< owner of the session
+	std::string session_ID;   ///< session ID: internal unique identifier for that session
+	std::string session_name; ///< name given to that session by the user
+	bool locked;              ///< whether the session is locked by a thread
+	bool libdar_running;      ///< whether a libdar job is running
+	bool closing;             ///< whether the session is pending for closure
 	void clear() { owner = session_ID = ""; locked = libdar_running = closing = false; };
     };
 
@@ -106,10 +106,10 @@ private:
 	/// set session_ID
     void set_session_id(const std::string & sessid);
 
-    libthreadar::semaphore lock_wui; //< required locking before accessing wui field
-    user_interface wui;       //< object containing the current Web User Interface; is managed by the session object and should never be nullptr
-    pthread_t tid;            //< tid of the thread that acquired lock on that object
-    std::string session_ID;   //< session_ID info (duplicated info to avoid table lookup and mutex lock)
+    libthreadar::semaphore lock_wui; ///< required locking before accessing wui field
+    user_interface wui;       ///< object containing the current Web User Interface; is managed by the session object and should never be nullptr
+    pthread_t tid;            ///< tid of the thread that acquired lock on that object
+    std::string session_ID;   ///< session_ID info (duplicated info to avoid table lookup and mutex lock)
 
     void check_caller() const; //< test whether the caller has properly acquired the lock on this object
 
@@ -121,15 +121,15 @@ private:
 	/// wraps a session object with some metadata
     struct table
     {
-	std::string owner;      //< to whom the session is
-	session *reference;     //< object reference
-	unsigned int ref_given; //< number of time the reference to that object has been given
-	bool closing;           //< if true the reference must not be given any longer
+	std::string owner;      ///< to whom the session is
+	session *reference;     ///< object reference
+	unsigned int ref_given; ///< number of time the reference to that object has been given
+	bool closing;           ///< if true the reference must not be given any longer
 	void clear() { owner = ""; reference = nullptr; ref_given = 0; closing = false; };
     };
 
-    static libthreadar::mutex lock_running;       //< control access to runnng_session static table
-    static std::map<std::string, table> running_session;     //< list of existing sessions
+    static libthreadar::mutex lock_running;       ///< control access to runnng_session static table
+    static std::map<std::string, table> running_session;     ///< list of existing sessions
     static session_summary publish(std::map<std::string, table>::iterator it);
 };
 
