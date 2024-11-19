@@ -86,6 +86,66 @@ extern "C"
 
 #define DEFAULT_TCP_PORT 8008
 
+    /// \mainpage
+    /// The following describes the overall architecture of the webdar software
+    ///
+    /// The webdar main() launches:
+    /// - a \ref central_report object that will gather logs from all internal components
+    ///   and output them to a specified destination (command-line, syslog, or other alternatives)
+    /// - an \ref authentication object to validate user provided credentials
+    /// - a \ref ssl_context information that carries the necessary information to setup a server side SSL session
+    /// - a \ref listener object for each IPv4 and IPv6 specified on command-line, they all receive
+    ///   the a pointer to the \ref central_report and \ref authentication module as well as a copy of the
+    ///   the \ref ssl_context and the IP and port to listen on.
+    /// Then the main() routine is pending for all listeners to end, or a signal to come to end the
+    /// webdar process.
+    ///
+    /// The role of a \ref listener object is to create a \ref proto_connexion for each new incoming TCP session.
+    /// This proto_connexion is passed with pointers to the central_report and authentication objects to
+    /// a new \ref server object. Each server object with the help of a \ref parser object transforms the TCP byte
+    /// stream into a suite of HTTP \ref request, and transmit back the corresponding HTTP \ref answer.
+    /// These answers are obtained from either:
+    /// - a \ref static_object for static components (images, licensing text, and so on)!
+    /// - a \ref challenge object if the client has not yet been authenticated
+    /// - a \ref choose object if the client is authenticated but the pointed to session does not exist
+    /// - the \ref user_interface object for the \ref session pointed to by the HTTP request.
+    /// The user_interface object is acquired by the server object from the \ref session class.
+    ///
+    /// the \ref session *class* manages a list of session *objects* associated with a reference counter
+    /// that keep trace of the servers that have been given the session reference (only one can interact
+    /// with the session at a given time). Only when the counter drops to zero that a closing session
+    /// request can be executing and the session is torn down. A few flags are also associated with
+    /// this session object in that table (locked, running libdar, or closing).
+    ///
+    /// The \ref session *objects* manage a \ref user_interface object to provide the answer to each HTTP request.
+    /// this is associated with a semaphore for locking and the thread_id of the \ref server object
+    /// (which is from a libdar::thread inherited class) managing the session. Such server object has
+    /// obtained the session management calling session::acquire_session() and has not yet called
+    /// session::release_session().
+    ///
+    /// \ref user_interface class provides mean to setup HTTP response to HTTP request for that particular
+    /// session. In other words, it handle user interaction thought the web interface. For that it
+    /// relies on a set of \ref body_builder inherited classes which complex objects are build from simpler
+    /// one and for hierachical tree of adopted body_builder objects from the \ref html_page
+    /// down to simpler components like \ref html_button or \ref html_text objects. The user_interface class has
+    /// several status and for each a different body_builder object is used to provide the body of the
+    /// HTTP answer:
+    /// - config:       object parametrage of class \ref saisie
+    /// - listing_open: object in_list     of class \ref html_listing_page
+    /// - listing:      object in_action   of class \ref html_libdar_running_page
+    /// - running:      object in_action   of class \ref html_libdar_running_page
+    /// - error:        onject in_error    of class \ref html_error
+    ///
+    /// most if not all \ref body_builder inherited class have a name starting with the html_* prefix
+    /// Some components to behave as expected should be adopted by an \ref html_form object, these classes
+    /// have a name staring with html_form_*.
+    ///
+    /// Pay attention that some objects are based on \ref html_form (they contain a set of html_form_ components
+    /// adopted by an html_form root object and have a class name starting with html_*_form_* like
+    /// html_mask_form_path or html_mask_form_filename. These are not to be adopted by an html form
+    /// as they embedd an html_form object as private field.
+    ///
+
 using namespace std;
 
     /// struct used to store TCP port and network interface
