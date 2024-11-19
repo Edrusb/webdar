@@ -40,6 +40,18 @@ extern "C"
 
 using namespace std;
 
+challenge::challenge(const shared_ptr<const authentication> & base):
+    page("Webdar")
+{
+    if(!base)
+	throw WEBDAR_BUG;
+    database = base;
+
+    title.add_text(1, "Authentication required to access Webdar");
+    page.adopt(&title);
+}
+
+
 bool challenge::is_an_authoritative_request(const request & req, string & user)
 {
     bool ret = false;
@@ -75,6 +87,7 @@ answer challenge::give_answer(const request & req)
     ret.set_status(STATUS_CODE_UNAUTHORIZED);
     ret.set_reason("login/password requested");
     ret.set_attribute(HDR_WWW_AUTHENTICATE, "Basic realm=\"/\"");
+    ret.add_body(page.get_body_part(req.get_uri().get_path(), req));
 
     return ret;
 }
