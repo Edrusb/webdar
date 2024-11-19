@@ -62,6 +62,7 @@ public:
     bool has_waiting_threads() const { return lock_wui.waiting_thread(); };
     bool has_working_server() const { return lock_wui.working_thread(); };
     std::string get_session_ID() const { return session_ID; };
+    bool disconnection_requested() const;
 
 
 	/// inherited from actor parent class

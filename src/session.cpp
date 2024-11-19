@@ -74,8 +74,13 @@ void session::check_caller() const
 answer session::give_answer(const request & req)
 {
     check_caller();
-
     return wui.give_answer(req);
+}
+
+bool session::disconnection_requested() const
+{
+    check_caller();
+    return wui.disconnection_requested();
 }
 
 void session::on_event(const string & event_name)
