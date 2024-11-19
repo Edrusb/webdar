@@ -40,7 +40,7 @@ extern "C"
 #include "html_div.hpp"
 #include "css_class_group.hpp"
 
-    /// simple html component providing the usual button feature of GUIs
+    /// simple html component providing the usual button feature of GUIs, better using html_double_button instead
 
     /// \note upon user 'click' on the button a event is generated that
     /// can be used for actors that registered to it, to perform some action
