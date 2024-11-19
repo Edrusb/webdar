@@ -52,6 +52,7 @@ const string saisie::event_isolate = "saisie_isolate";
 const string saisie::event_merge   = "saisie_merge";
 const string saisie::event_repair  = "saisie_repair";
 const string saisie::changed_session_name = "saisie_changed_session_name";
+const string saisie::event_disconn = "saisie_disconn";
 
 const string saisie::css_class_text = "saisie_text";
 
@@ -218,6 +219,9 @@ saisie::saisie():
     right_pan.adopt(&select);
     adopt(&right_pan);
 
+	// disconnect
+    adopt(&disco);
+
 	// define the closing event for this
     register_name(event_closing);
 
@@ -233,6 +237,7 @@ saisie::saisie():
     go_isolate.record_actor_on_event(this, event_isolate);
     go_merge.record_actor_on_event(this, event_merge);
     go_repair.record_actor_on_event(this, event_repair);
+    disco.record_actor_on_event(this, html_disconnect::event_disconn);
 
     session_name.set_change_event_name(changed_session_name); // using the same event name as the we one we will trigger upon session name change
     session_name.record_actor_on_event(this, changed_session_name);
@@ -247,6 +252,7 @@ saisie::saisie():
     register_name(event_merge);
     register_name(event_repair);
     register_name(changed_session_name);
+    register_name(event_disconn);
 
 	// css
     webdar_css_style::normal_button(archive_show, true);
@@ -405,6 +411,8 @@ void saisie::on_event(const string & event_name)
 
 	my_body_part_has_changed();
     }
+    else if(event_name == html_disconnect::event_disconn)
+	act(event_disconn); // propagate the event
     else
 	throw WEBDAR_BUG;
 }

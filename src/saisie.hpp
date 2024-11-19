@@ -55,6 +55,7 @@ extern "C"
 #include "html_bibliotheque.hpp"
 #include "html_derouleur.hpp"
 #include "html_demo.hpp"
+#include "html_disconnect.hpp"
 
     /// class saisie
     ///
@@ -97,7 +98,7 @@ public:
     static const std::string event_merge;
     static const std::string event_repair;
     static const std::string changed_session_name;
-
+    static const std::string event_disconn;
 
 	/// constructor
     saisie();
@@ -224,6 +225,8 @@ private:
     html_bibliotheque biblio;
 	//
     html_yes_no_box close;
+	//
+    html_disconnect disco;
 
     static const std::string css_class_text;
 
