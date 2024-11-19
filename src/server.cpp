@@ -252,6 +252,7 @@ void server::inherited_run()
 				{
 				    if(sess != nullptr && sess->get_session_ID() != session_ID)
 					throw WEBDAR_BUG;
+
 				    if(sess == nullptr)
 				    {
 					sess = session::acquire_session(session_ID);
@@ -260,6 +261,8 @@ void server::inherited_run()
 				    }
 					// obtaining the answer from the session
 				    ans = sess->give_answer(req);
+				    if(sess->disconnection_requested())
+					ans = chal.give_answer(req);
 				}
 			}
 
