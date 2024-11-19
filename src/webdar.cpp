@@ -287,7 +287,7 @@ int main(int argc, char *argv[], char** env)
 		    creport->report(warning, reminder_msg);
 
 			/////////////////////////////////////////////////
-			// looping while not all thread have ended
+			// looping while not all (listener) thread have ended
 
 		    while(!taches.empty())
 		    {
@@ -296,12 +296,12 @@ int main(int argc, char *argv[], char** env)
 			else
 			    if(!taches.back()->is_running())
 			    {
-				taches.back()->join();
+				taches.back()->join(); // may throw exception
 				delete taches.back();
 				taches.back() = nullptr;
 			    }
 			    else
-				taches.back()->join();
+				taches.back()->join(); // we are suspended waiting for this task to end
 		    }
 
 		    creport->report(info, "all listener threads have ended, waiting for existing sessions to end");

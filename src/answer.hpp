@@ -89,7 +89,7 @@ public:
         /// \note this also set Content-Length accordingly
     void add_body(const std::string & key);
 
-        /// removes the body keeping header untouched (Content-Lenght in particular)
+        /// removes the body keeping header untouched (Content-Length in particular)
     void drop_body_keep_header() { body = ""; };
 
         /// set a given attribute to the HTTP header

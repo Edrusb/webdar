@@ -45,14 +45,14 @@
 class listener : public libthreadar::thread_signal
 {
 public:
-    listener(const std::shared_ptr<central_report> & log,        //< where to send reports
-	     const std::shared_ptr<const authentication> & auth, //< where to request for authentications
-	     std::unique_ptr<ssl_context> & ciphering,           //< if emtpy use http, else https with the provided context
+    listener(const std::shared_ptr<central_report> & log,        //< where to send reports, used but also passed to the generated server objects
+	     const std::shared_ptr<const authentication> & auth, //< where to request for authentications (passed to generated server objects)
+	     std::unique_ptr<ssl_context> & ciphering,           //< if emtpy, a connexion object is provided to the generated server objects else a ssl_connexion is passed instead
 	     unsigned int port                                   //< listen on localhost IPv4 or IPv6
 	);
-    listener(const std::shared_ptr<central_report> & log,        //< where to send reports
-	     const std::shared_ptr<const authentication> & auth, //< where to request for authentications
-	     std::unique_ptr<ssl_context> & ciphering,           //< if emtpy use http, else https with the provided context
+    listener(const std::shared_ptr<central_report> & log,        //< where to send reports, used but also passed to the generated server objects
+	     const std::shared_ptr<const authentication> & auth, //< where to request for authentications (passed to generated server objects)
+	     std::unique_ptr<ssl_context> & ciphering,           //< if emtpy, a connexion object is provided to the generated server objects else a ssl_connexion is passed instead
 	     const std::string & ip,                             //< interface to listen on
 	     unsigned int port                                   //< port to listen on
 	);

@@ -193,10 +193,14 @@ void server::inherited_run()
 
     try
     {
+	    // outer while loop
+
 	while(src.get_status() == proto_connexion::connected)
 	{
 	    try
 	    {
+		    // inner while loop
+
 		while(sess == nullptr ||
 		      (src.get_next_request_uri(url)
 		       && webdar_tools_get_session_ID_from_URI(url) == sess->get_session_ID()))
@@ -204,7 +208,7 @@ void server::inherited_run()
 		    cancellation_checkpoint();
 		    try
 		    {
-			const request & req = src.get_request();
+			const request & req = src.get_request(); // pending for the next request to come
 			ans.clear();
 
 			    // extract session info if any
@@ -265,10 +269,9 @@ void server::inherited_run()
 		    catch(exception_input & e)
 		    {
 			    // nothing to do;
-			    // we just end normally the server thread
 		    }
 
-		} // end of the while loop
+		} // end of the inner while loop
 
 		    // release the lock for the current session
 		if(sess != nullptr)
@@ -288,7 +291,7 @@ void server::inherited_run()
 		src.close();
 		throw;
 	    }
-	}
+	} // end of outler while loop
     }
     catch(exception_range & e)
     {

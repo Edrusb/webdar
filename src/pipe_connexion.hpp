@@ -33,7 +33,7 @@
 
     /// provides read/write implementation of a socket object
 
-    /// \note used for http connections (non ssl/tls connections)
+    /// \note only used for in test_webdar.cpp (can be removed)
 
 class pipe_connexion : public proto_connexion
 {
