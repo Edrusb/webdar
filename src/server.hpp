@@ -73,11 +73,19 @@ private:
     server & operator = (server && ref) noexcept = delete;
     ~server() { cancel(); join(); };
 
-    parser src;              //< this object manages the given proto_connexion in constructor
-    std::shared_ptr<central_report> rep; //< where do logs should go
-    std::shared_ptr<const authentication> authsrc; //< object to consult for user authentications
-    bool can_keep_session;   //< whether aonther object asked interacting with the session we use
-    session *locked_session; //< the current session we use (we have acquired its mutex)
+    enum auth_consideration {
+	ignore_auth_redir,  ///< user has just disconnected and will be redirected to steady page
+	ignore_auth_steady, ///< user has to be redirected to the steady page
+	no_ignore           ///< user has authenticated and can access webdar
+    };
+
+    parser src;              ///< this object manages the given proto_connexion in constructor
+    std::shared_ptr<central_report> rep; ///< where do logs should go
+    std::shared_ptr<const authentication> authsrc; ///< object to consult for user authentications
+    bool can_keep_session;   ///< whether another object asked interacting with the session we use
+    session *locked_session; ///< the current session we use (we have acquired its mutex)
+    auth_consideration ignore_auth; ///< how to consider authentication info in request
+
 
 	/// static fields
     static libthreadar::mutex lock_counter; //< manages access to all static fields

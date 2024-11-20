@@ -48,6 +48,7 @@ extern "C"
 #include "choose.hpp"
 #include "static_object_library.hpp"
 #include "global_parameters.hpp"
+#include "disconnected_page.hpp"
 
 using namespace std;
 
@@ -169,7 +170,11 @@ void server::throw_a_pending_exception()
 
 server::server(const shared_ptr<central_report> & log,
 	       const shared_ptr<const authentication> & auth,
-	       unique_ptr<proto_connexion> & source) : src(source, log)
+	       unique_ptr<proto_connexion> & source) :
+    src(source, log),
+    can_keep_session(true),
+    locked_session(nullptr),
+    ignore_auth(no_ignore)
 {
     if(!log)
 	throw WEBDAR_BUG;
@@ -177,7 +182,6 @@ server::server(const shared_ptr<central_report> & log,
     if(!auth)
 	throw WEBDAR_BUG;
     authsrc = auth;
-    can_keep_session = true;
 }
 
 void server::inherited_run()
@@ -189,6 +193,7 @@ void server::inherited_run()
     challenge chal(authsrc);
     session::session_summary info;
     string user;
+    disconnected_page disconned;
 
 
     try
@@ -241,29 +246,42 @@ void server::inherited_run()
 			else // not a path to a static object
 			{
 				// check validity of the request
-			    if(!chal.is_an_authoritative_request(req, user))
+			    if(ignore_auth == ignore_auth_redir)
+			    {
+				ignore_auth = ignore_auth_steady;
+				disconned.set_redirect(false);
+				ans = disconned.give_answer(req);
+			    }
+			    else if(!chal.is_an_authoritative_request(req, user)
+				    || ignore_auth == ignore_auth_steady)
+			    {
 				ans = chal.give_answer(req);
+				ignore_auth = no_ignore;
+			    }
+			    else if(!session::get_session_info(session_ID, info)
+				    || info.locked
+				    || info.owner != user)
+				ans = choose::give_answer_for(user, req);
 			    else
-				if(!session::get_session_info(session_ID, info)
-				   || info.locked
-				   || info.owner != user)
-				    ans = choose::give_answer_for(user, req);
-				else
-				{
-				    if(sess != nullptr && sess->get_session_ID() != session_ID)
-					throw WEBDAR_BUG;
+			    {
+				if(sess != nullptr && sess->get_session_ID() != session_ID)
+				    throw WEBDAR_BUG;
 
+				if(sess == nullptr)
+				{
+				    sess = session::acquire_session(session_ID);
 				    if(sess == nullptr)
-				    {
-					sess = session::acquire_session(session_ID);
-					if(sess == nullptr)
-					    throw WEBDAR_BUG;
-				    }
-					// obtaining the answer from the session
-				    ans = sess->give_answer(req);
-				    if(sess->disconnection_requested())
-					ans = chal.give_answer(req);
+					throw WEBDAR_BUG;
 				}
+				    // obtaining the answer from the session
+				ans = sess->give_answer(req);
+				if(sess->disconnection_requested())
+				{
+				    ignore_auth = ignore_auth_redir;
+				    disconned.set_redirect(true);
+				    ans = disconned.give_answer(req);
+				}
+			    }
 			}
 
 			    // send back the anwser
