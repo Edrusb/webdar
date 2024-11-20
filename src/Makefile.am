@@ -43,7 +43,7 @@ endif
 #
 
 bin_PROGRAMS = webdar
-noinst_PROGRAMS = static_object_builder test_webdar
+noinst_PROGRAMS = static_object_builder
 
 static_object_builder_SOURCES = static_object_builder.c
 
@@ -62,9 +62,5 @@ COMMON = central_report.cpp central_report.hpp proto_connexion.cpp proto_connexi
 webdar_SOURCES = $(COMMON) webdar.cpp
 webdar_CPPFLAGS = $(LIBDAR_CFLAGS) $(OPENSSL_CFLAGS)
 webdar_LDFLAGS = $(LIBDAR_LIBS) $(OPENSSL_LIBS)
-
-test_webdar_SOURCES = $(COMMON) test_webdar.cpp
-test_webdar_CPPFLAGS = $(LIBDAR_CFLAGS) $(OPENSSL_CLFAGS)
-test_webdar_LDFLAGS = $(LIBDAR_LIBS) $(OPENSSL_LIBS)
 
 static_object_library.cpp: static_object.sto
