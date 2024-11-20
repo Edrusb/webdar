@@ -84,7 +84,7 @@ extern "C"
     ///   on the browser (get_body_part())
     /// \note more details about css. body_builder object can be associated to the name of one
     /// or more css_class or css_class_group at any time, those are just labels. The class
-    /// definition is stored in a css_library. If a body_builder object have created
+    /// definition is stored in a css_library. If a body_builder object has created
     /// a css_library (calling store_css_library()) all its adopted body_builder objects
     /// can access it and upload their class definitions using lookup_css_library().
     /// a class can be informed of the availability of a css_library overriding the
