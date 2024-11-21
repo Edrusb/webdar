@@ -47,12 +47,14 @@ extern "C"
 
 using namespace std;
 
-map<string, choose::record *> choose::per_user;
 const string choose::css_class_error_msg = "choose_error_msg";
 const string choose::css_class_normal_text = "choose_normal_text";
 
-choose::choose(const string & user):
+choose::choose():
     page("Webdar - Choose a session"),
+    owner(""),
+    confirm_mode(false),
+    disconnect_req(false),
     table(6),
     nouvelle("/choose/new", "Create a new session"),
     form("Kill the selected session"),
@@ -70,11 +72,11 @@ choose::choose(const string & user):
     static const string css_class_form = "choose_form";
     static const string css_class_div = "choose_div";
 
-    owner = user;
-    confirm_mode = false;
     boxes.clear();
 
 	/// setup of session table page
+
+    page.adopt(&disco);
 
     tmpcss.clear();
     tmpcss.css_background_color(COLOR_BACK);
@@ -84,7 +86,7 @@ choose::choose(const string & user):
     page.define_css_class_in_library(css_class_page, tmpcss);
     page.add_css_class(css_class_page);
 
-    tmp.add_text(3, string("Current sessions - we are identified as user ") + owner);
+    tmp.add_text(3, "Current sessions");
     page.adopt_static_html(tmp.get_body_part());
 
     tmpcss.clear();
@@ -178,12 +180,30 @@ choose::choose(const string & user):
     ctable.adopt(&confirmed);
     confirm.adopt(&ctable);
     confirm.set_prefix(chemin("choose"));
+
+	// events
+    disco.record_actor_on_event(this, html_disconnect::event_disconn);
+}
+
+void choose::set_owner(const std::string & user)
+{
+    if(user.empty())
+	throw WEBDAR_BUG;
+    else
+    {
+	owner = user;
+	disco.set_username(user);
+    }
 }
 
 answer choose::give_answer(const request & req)
 {
     answer ret;
     string error_msg = "";
+
+	// sanity checks
+    if(owner.empty())
+	throw WEBDAR_BUG;
 
 	// update the form fields when request is a POST
 
@@ -256,7 +276,16 @@ answer choose::give_answer(const request & req)
 	    table.adopt_static_html(tmp.get_body_part());
 	}
 	if(req.get_uri().get_path() == chemin("choose/new"))
-	    ret = create_new_session(req);
+	{
+	    if(!session::create_new_session(owner,
+					    false, // not espetially an initial session (some other may already exist for that user
+					    req,
+					    ret)) // the response to return
+		throw WEBDAR_BUG;
+		// with initial set to false the
+		// call should either succeed or
+		// throw an exception
+	}
 	else
 	    ret.add_body(page.get_body_part(req.get_uri().get_path(), req));
     }
@@ -264,19 +293,12 @@ answer choose::give_answer(const request & req)
     return ret;
 }
 
-answer choose::create_new_session(const request & req)
+void choose::on_event(const std::string & event_name)
 {
-    answer ret;
-
-    html_page page("redirection to newly created session page");
-    string session_ID = session::create_new(owner);
-
-    page.set_refresh_redirection(0, session_ID);
-    ret.set_status(STATUS_CODE_OK);
-    ret.set_reason("new session created");
-    ret.add_body(page.get_body_part(chemin("/"), req));
-
-    return ret;
+    if(event_name == html_disconnect::event_disconn)
+	disconnect_req = true;
+    else
+	throw WEBDAR_BUG;
 }
 
 void choose::regenerate_table_page()
@@ -406,88 +428,4 @@ void choose::kill_selected_sessions() const
     }
 }
 
-
-answer choose::give_answer_for(const string & user, const request & req)
-{
-    answer ret;
-
-    map<string, record *>::iterator it = per_user.find(user);
-
-    if(it == per_user.end())
-    {
-	    // no choose object already exists for that user,
-	    // creating one and recording it in per_user table
-
-	record *tmp = new (nothrow) record();
-	if(tmp == nullptr)
-	    throw exception_memory();
-
-	try
-	{
-	    tmp->obj = new (nothrow) choose(user);
-	    if(tmp->obj == nullptr)
-		throw exception_memory();
-	    ret = tmp->obj->create_new_session(req);
-
-	    per_user[user] = tmp;
-		// tmp is now managed/owned by the per_user map
-	}
-	catch(...)
-	{
-	    delete tmp;
-	    throw;
-	}
-
-	it = per_user.find(user);
-	if(it == per_user.end())
-	    throw WEBDAR_BUG;
-    }
-    else // chooser already exists
-    {
-	if(it->second == nullptr)
-	    throw WEBDAR_BUG;
-
-	it->second->lock.lock();
-	try
-	{
-	    if(it->second->obj == nullptr)
-		throw WEBDAR_BUG;
-
-	    ret = it->second->obj->give_answer(req);
-	}
-	catch(...)
-	{
-	    it->second->lock.unlock();
-	    throw;
-	}
-
-	it->second->lock.unlock();
-    }
-
-    return ret;
-}
-
-
-void choose::cleanup_memory()
-{
-    map<string, record *>::iterator it = per_user.begin();
-
-    try
-    {
-
-	while(it != per_user.end())
-	{
-	    if(it->second != nullptr)
-		delete it->second;
-	    ++it;
-	}
-    }
-    catch(...)
-    {
-	per_user.clear();
-	throw;
-    }
-
-    per_user.clear();
-}
 

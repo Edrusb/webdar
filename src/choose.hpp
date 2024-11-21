@@ -39,7 +39,8 @@ extern "C"
     // webdar headers
 #include "session.hpp"
 #include "responder.hpp"
-#include "html_page.hpp"
+#include "actor.hpp"
+#include "events.hpp"
 #include "html_page.hpp"
 #include "html_url.hpp"
 #include "html_form.hpp"
@@ -49,6 +50,7 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_form_radio.hpp"
 #include "html_yes_no_box.hpp"
+#include "html_disconnect.hpp"
 
     /// display current existing user sessions and let user kill or change of session
 
@@ -56,32 +58,39 @@ extern "C"
     ///  but the creation if chooser object is managed by the class chooser, which exposes
     ///  the static method give_answer_for() for that purpose
 
-class choose : public responder
+class choose : public responder, public actor
 {
 public:
-
-    static answer give_answer_for(const std::string & user, const request & req);
-
-    static void cleanup_memory();
-
-private:
-
 	// constructor
-    choose(const std::string & user);
+    choose();
     choose(const choose & ref) = delete;
     choose(choose && ref) noexcept = delete;
     choose & operator = (const choose & ref) = delete;
     choose & operator = (choose && ref) noexcept = delete;
     ~choose() { release_boxes(); };
 
-	// inherited from responder, but made private
+	/// mandatory call before using other methods (give_answer() in particular)
+    void set_owner(const std::string & user);
+
+	/// inherited from responder
+
+	/// \note alsways shows the session table for the user
     virtual answer give_answer(const request & req) override;
 
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
 
-    std::string owner;       ///< list only sessions for that owner
-    bool confirm_mode;       ///< whether we display session list or kill confirmation
+	/// whether user has requested to disconnect
+    bool disconnection_requested() const { bool ret = disconnect_req; disconnect_req = false; return ret; };
+
+private:
+    std::string owner;           ///< list only sessions for that owner
+    bool confirm_mode;           ///< whether we display session list or kill confirmation
+    mutable bool disconnect_req; ///< whether user has asked for disconnection
+
 	/// listing session page and associated objects
     html_page page;          ///< page root for session listing
+    html_disconnect disco;
     html_table table;
     html_url nouvelle;
     html_form form;
@@ -94,31 +103,11 @@ private:
     html_table ctable;
     html_yes_no_box confirmed;
 
-    answer create_new_session(const request & req);
     void regenerate_table_page();
     void release_boxes();
     void regenerate_confirm_page();
     void kill_selected_sessions() const;
 
-	/// class level structure holding a chooser for each user
-
-    struct record
-    {
-	choose *obj;
-	libthreadar::mutex lock;
-
-	record() { obj = nullptr; };
-	record(const record & ref) = delete;
-	record(record && ref) noexcept = delete;
-	record & operator = (const record & ref) = delete;
-	record & operator = (record && ref) noexcept = delete;
-	~record() { if(obj != nullptr) delete obj; };
-    };
-
-	/// the list of chooser and associated attributes
-
-	/// maps username to a record structure (which contained the chooser)
-    static std::map<std::string, record *> per_user;
     static const std::string css_class_error_msg;
     static const std::string css_class_normal_text;
 };
