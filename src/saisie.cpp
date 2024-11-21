@@ -98,6 +98,9 @@ saisie::saisie():
     status = st_idle;
     html_text text; // used to build static text content
 
+	// disconnect
+    adopt(&disco);
+
 	// configuration of "choice"
     choice.add_entry("Main Page", menu_main);
     select.add_section(menu_main, "");
@@ -218,9 +221,6 @@ saisie::saisie():
     select.set_active_section(menu_main);
     right_pan.adopt(&select);
     adopt(&right_pan);
-
-	// disconnect
-    adopt(&disco);
 
 	// define the closing event for this
     register_name(event_closing);

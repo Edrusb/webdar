@@ -78,6 +78,9 @@ public:
 	/// set the session name (customizable by user)
     void set_session_name(const std::string & name);
 
+	/// define the username that the current session is owned by
+    void set_username(const std::string & username) { parametrage.set_username(username); };
+
     	/// whether a libdar thread is running
     bool is_libdar_running() const { return in_action.is_libdar_running(); };
 

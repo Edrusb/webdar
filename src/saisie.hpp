@@ -69,6 +69,8 @@ extern "C"
     ///- just below and beside the menu, an html_aiguille "select"
     /// shows the different "pages" for parameters and options depending on the selection
     /// action
+    ///  +-------------------------------+
+    ///  |        disco(html_disconnect) |
     ///  +---------+---------------------+
     ///  | choices | right_pan           |
     ///  | (menu)  |+-------------------+|
@@ -156,6 +158,9 @@ public:
 
 	/// get the current session name
     std::string get_session_name() const { return session_name.get_value(); };
+
+	/// define the username that the current session is owned by
+    void set_username(const std::string & username) { disco.set_username(username); };
 
 protected:
 	/// inherited from body_builder

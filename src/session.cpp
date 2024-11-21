@@ -209,6 +209,8 @@ string session::create_new(const string & owner)
 
     if(obj == nullptr)
 	throw exception_memory();
+    else
+	obj->wui.set_username(owner);
 
     try
     {
