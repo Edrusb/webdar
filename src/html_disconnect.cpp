@@ -99,6 +99,7 @@ void html_disconnect::new_css_library_available()
 	    // top bar (the html_disconnect (html_div) itself)
 	tmp.clear();
 
+	tmp.css_background_color(COLOR_BACK);
 	tmp.css_overflow(css::ov_hidden);
 	tmp.css_width("100%", true);
 	tmp.css_background_color(COLOR_TOPBAR_BACK, true);
@@ -113,7 +114,7 @@ void html_disconnect::new_css_library_available()
 	tmp.css_text_shadow("0.1em", "0.1em", "0");
 	tmp.css_text_v_align(css::al_middle);
 	tmp.css_margin_right("1em");
-	tmp.css_color(COLOR_MENU_FRONT_OFF);
+	tmp.css_color(WHITE);
 
 	csslib->add(css_status, tmp);
 

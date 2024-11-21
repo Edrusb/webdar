@@ -79,9 +79,7 @@ choose::choose():
     page.adopt(&disco);
 
     tmpcss.clear();
-    tmpcss.css_background_color(COLOR_BACK);
     tmpcss.css_color(COLOR_TEXT);
-    tmpcss.css_padding("1em");
     tmpcss.css_text_h_align(css::al_center);
     page.define_css_class_in_library(css_class_page, tmpcss);
     page.add_css_class(css_class_page);
