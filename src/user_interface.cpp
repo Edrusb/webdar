@@ -327,7 +327,7 @@ void user_interface::set_session_name(const string & name)
     in_list.set_session_name(name);
 	// note, parametrage is already set with the new session name
 	// the session name is filled by the user using the saisie class (parametrage)
-	// which update itslef and triggers the event "saisie::changed_session_name"
+	// which update itself and triggers the event "saisie::changed_session_name"
 	// for which the session object is registered and call this method to update
 	// other components
 }
