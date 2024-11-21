@@ -194,7 +194,8 @@ void server::inherited_run()
     session::session_summary info;
     string user;
     disconnected_page disconned;
-
+    choose chooser;
+    bool initial = true;
 
     try
     {
@@ -245,41 +246,72 @@ void server::inherited_run()
 			}
 			else // not a path to a static object
 			{
-				// check validity of the request
+				// show the disconnected page with uri cleaned from session info
 			    if(ignore_auth == ignore_auth_redir)
 			    {
 				ignore_auth = ignore_auth_steady;
 				disconned.set_redirect(false);
 				ans = disconned.give_answer(req);
 			    }
+				// check whether the session is authenticated
 			    else if(!chal.is_an_authoritative_request(req, user)
 				    || ignore_auth == ignore_auth_steady)
 			    {
+				    // ask for user authentication
 				ans = chal.give_answer(req);
 				ignore_auth = no_ignore;
 			    }
-			    else if(!session::get_session_info(session_ID, info)
+			    else // session authenticated for user "user"
+			    {
+				chooser.set_owner(user);
+
+				if(!session::get_session_info(session_ID, info)
 				    || info.locked
 				    || info.owner != user)
-				ans = choose::give_answer_for(user, req);
-			    else
-			    {
-				if(sess != nullptr && sess->get_session_ID() != session_ID)
-				    throw WEBDAR_BUG;
+				{
+					// session in URL is not valid for that user
 
-				if(sess == nullptr)
-				{
-				    sess = session::acquire_session(session_ID);
-				    if(sess == nullptr)
-					throw WEBDAR_BUG;
+					// try creating a first session if just connected
+					// and no other session was created so far for that
+					// user, then go to that session (refresh in the provided answer)
+				    if(!initial
+				       || !session::create_new_session(user,
+								       true,
+								       req,
+								       ans))
+
+				    {
+					    // else display the list of available sessions for that user
+
+					initial = false;
+					ans = chooser.give_answer(req);
+					if(chooser.disconnection_requested())
+					{
+					    ignore_auth = ignore_auth_redir;
+					    disconned.set_redirect(true);
+					    ans = disconned.give_answer(req);
+					}
+				    }
 				}
-				    // obtaining the answer from the session
-				ans = sess->give_answer(req);
-				if(sess->disconnection_requested())
+				else // this is a valid session for that user
 				{
-				    ignore_auth = ignore_auth_redir;
-				    disconned.set_redirect(true);
-				    ans = disconned.give_answer(req);
+				    if(sess != nullptr && sess->get_session_ID() != session_ID)
+					throw WEBDAR_BUG;
+
+				    if(sess == nullptr)
+				    {
+					sess = session::acquire_session(session_ID);
+					if(sess == nullptr)
+					    throw WEBDAR_BUG;
+				    }
+					// obtaining the answer from the session object
+				    ans = sess->give_answer(req);
+				    if(sess->disconnection_requested())
+				    {
+					ignore_auth = ignore_auth_redir;
+					disconned.set_redirect(true);
+					ans = disconned.give_answer(req);
+				    }
 				}
 			    }
 			}

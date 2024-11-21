@@ -33,6 +33,7 @@
 #include "central_report.hpp"
 #include "session.hpp"
 #include "authentication.hpp"
+#include "choose.hpp"
 
     /// thread object that read request from the provided proto_connexion send them to the
     /// appropriated session managing authentication and send back the answer to the session
@@ -83,7 +84,7 @@ private:
     std::shared_ptr<central_report> rep; ///< where do logs should go
     std::shared_ptr<const authentication> authsrc; ///< object to consult for user authentications
     bool can_keep_session;   ///< whether another object asked interacting with the session we use
-    session *locked_session; ///< the current session we use (we have acquired its mutex)
+    session* locked_session; ///< the current session we use (we have acquired its mutex)
     auth_consideration ignore_auth; ///< how to consider authentication info in request
 
 

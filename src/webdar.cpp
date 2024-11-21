@@ -372,8 +372,6 @@ int main(int argc, char *argv[], char** env)
 		    server::kill_all_servers();
 
 		    creport->report(info, "all server threads have ended");
-
-		    choose::cleanup_memory();
 		}
 		catch(...)
 		{
