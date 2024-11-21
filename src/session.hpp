@@ -85,14 +85,49 @@ public:
 	void clear() { owner = session_ID = ""; locked = libdar_running = closing = false; };
     };
 
+
+	/// create a new session
+
+	/// \param[in] user the user to whom the session will belong
+	/// \param[in] initial if set to true a session is created only if no other session exist for that user
+	/// \param[in] req the request from the browser
+	/// \param[out] the answer to send back to the browser, this field is set only when this method returns true
+	/// \return true if a session has been created and only then provides the answer (ret) to return to the brownser
+	/// \note this call may throw exception (if for example the session max number has been reached)
+    static bool create_new_session(const std::string & user, bool initial, const request & req, answer & ret);
+
+	/// get the total number of session (all users)
     static unsigned int get_num_session();
+
+	/// get the total number of session for the given user
     static unsigned int get_num_session(const std::string & user);
+
+	/// get a summary description vector of all sessions
     static std::vector<session_summary> get_summary();
+
+	/// get a summary description of the session known from its session_ID
     static bool get_session_info(const std::string & session_ID, session_summary & val);
-    static std::string create_new(const std::string & owner); /// returns the session_ID of the newly created session
+
+	/// acquire the excusivity use of the session which id is provided in argument
+
+	/// \param[in] session_ID the session to acquire
+	/// \return a pointer to the session object (it is managed by the session class, this not to be released)
+	/// \note the call is blocking until the session is acquired. It has to be released when requested by other
+	/// thread and/or when no more needed (browser disconnectio...) using the release_session() method
     static session *acquire_session(const std::string & session_ID);
+
+	/// release the session object from our exclusive access
+
+	/// \note the session object should not be used anymore
+	/// after that and before a new call to acquire_session()
+	/// nor should the object be deleted/freed.
     static void release_session(session *sess);
-    static bool close_session(const std::string & session_ID); //< return true if the session exists and has been flagged for destruction
+
+	/// request the session to be tear down and destoyed
+
+	/// \return true if the session exists and has been flagged for destruction, false if the session
+	/// is unknown.
+    static bool close_session(const std::string & session_ID);
 
 private:
 	/// constructor
@@ -131,6 +166,7 @@ private:
     static libthreadar::mutex lock_running;       ///< control access to runnng_session static table
     static std::map<std::string, table> running_session;     ///< list of existing sessions
     static session_summary publish(std::map<std::string, table>::iterator it);
+    static std::string create_new(const std::string & owner); /// returns the session_ID of the newly created session
 };
 
 #endif
