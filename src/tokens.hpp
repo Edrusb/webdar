@@ -122,6 +122,7 @@ extern const char* COLOR_MENU_FRONT_HOVER_GREY;
 extern const char* COLOR_MENU_FRONT_ACTIVE_ON;
 extern const char* COLOR_MENU_FRONT_ACTIVE_OFF;
 extern const char* COLOR_MENU_FRONT_ACTIVE_GREY;
+extern const char* COLOR_TOPBAR_BACK;
 
 extern const char* COLOR_ARED; // almost red
 extern const char* RED;

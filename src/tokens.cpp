@@ -63,7 +63,8 @@ const char* COLOR_MENU_FRONT_HOVER_OFF = "white";
 const char* COLOR_MENU_FRONT_HOVER_GREY = "yellow";
 const char* COLOR_MENU_FRONT_ACTIVE_ON = "red";
 const char* COLOR_MENU_FRONT_ACTIVE_OFF = "red";
-const char* COLOR_MENU_FRONT_ACTIVE_GREY = "blue";;
+const char* COLOR_MENU_FRONT_ACTIVE_GREY = "blue";
+const char* COLOR_TOPBAR_BACK = "white";
 
 const char* COLOR_ARED = "rgb(255,30,10)";
 const char* RED = "red";
