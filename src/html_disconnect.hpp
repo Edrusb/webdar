@@ -35,11 +35,15 @@ extern "C"
 #include <dar/libdar.hpp>
 
     // webdar headers
+#include "html_div.hpp"
+#include "actor.hpp"
+#include "events.hpp"
+#include "html_text.hpp"
 #include "html_button.hpp"
 
     /// html component used for the user to define a has algorithm
 
-class html_disconnect : public html_button
+class html_disconnect : public html_div, public actor, public events
 {
 public:
 	/// disconnect event
@@ -52,6 +56,12 @@ public:
     html_disconnect & operator = (html_disconnect && ref) noexcept = delete;
     ~html_disconnect() = default;
 
+	/// set the username to display for the session ownership
+    void set_username(const std::string & username);
+
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
+
 protected:
 
 	/// inherited from body_builder from html_button
@@ -59,7 +69,15 @@ protected:
 
 
 private:
-    static const std::string css_disconn;
+    static const std::string css_global;
+    static const std::string css_status;
+    static const std::string css_status_box;
+    static const std::string css_quit_box;
+    static const std::string css_quit_link;
+
+    html_div status_box;
+    html_text status;
+    html_button quit;
 };
 
 #endif
