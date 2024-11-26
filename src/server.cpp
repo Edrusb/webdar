@@ -54,120 +54,6 @@ using namespace std;
 
 static string get_session_ID_from(const request & req);
 
-libthreadar::mutex server::lock_counter;
-unsigned int server::max_server = 0;
-list<server *> server::instances;
-
-bool server::run_new_server(const shared_ptr<central_report> & log,
-			    const shared_ptr<const authentication> & auth,
-			    unique_ptr<proto_connexion> & source)
-{
-    bool ret = false;
-
-    lock_counter.lock();
-
-    try
-    {
-	    //////////
-	    // creating a new server object if allowed
-	    // and adding it to the list
-
-	if(instances.size() >= max_server && max_server > 0)
-	    ret = false;
-	else
-	{
-	    sigset_t sigs;
-	    server *tmp = new (nothrow) server(log, auth, source);
-
-	    if(tmp == nullptr)
-		throw exception_memory();
-	    instances.push_back(tmp);
-
-	    if(sigfillset(&sigs) != 0)
-		throw exception_system("failed creating a full signal set", errno);
-	    if(sigdelset(&sigs, THREAD_SIGNAL) != 0)
-		throw exception_system("failed removing the THREAD_SIGNAL from signal set", errno);
-
-	    tmp->set_signal_mask(sigs);
-	    tmp->run();
-
-	    ret = true;
-	}
-    }
-    catch(...)
-    {
-	lock_counter.unlock();
-	throw;
-    }
-
-    lock_counter.unlock();
-
-    return ret;
-}
-
-void server::kill_all_servers()
-{
-    lock_counter.lock();
-
-    try
-    {
-	list<server *>::iterator it = instances.begin();
-	while(it != instances.end())
-	{
-	    if(*it != nullptr)
-	    {
-		delete (*it);
-		(*it) = nullptr;
-	    }
-	    it = instances.erase(it);
-	}
-
-	if(!instances.empty())
-	    throw WEBDAR_BUG;
-    }
-    catch(...)
-    {
-	lock_counter.unlock();
-	throw;
-    }
-
-    lock_counter.unlock();
-}
-
-void server::throw_a_pending_exception()
-{
-    lock_counter.lock();
-
-    try
-    {
-	list<server *>::iterator it = instances.begin();
-
-	while(it != instances.end())
-	{
-	    if(*it == nullptr)
-		it = instances.erase(it);
-	    else
-	    {
-		if(!((*it)->is_running()))
-		{
-		    (*it)->join(); // necessary to throw exception generated from within the thread
-		    delete (*it);
-		    (*it) = nullptr;
-		    it = instances.erase(it);
-		}
-	    else
-		++it;
-	    }
-	}
-    }
-    catch(...)
-    {
-	lock_counter.unlock();
-	throw;
-    }
-    lock_counter.unlock();
-}
-
 server::server(const shared_ptr<central_report> & log,
 	       const shared_ptr<const authentication> & auth,
 	       unique_ptr<proto_connexion> & source) :
@@ -350,8 +236,19 @@ void server::inherited_run()
     {
 	rep->report(notice, string("Server thread ending: ") + e.get_message());
     }
+	// notify our server_pool (if any) that the server thead is ending
+    end_all_peers();
 }
 
+void server::end_all_peers()
+{
+    reference* ptr = nullptr;
+
+    reset_read_peers();
+    while(read_next_peer(ptr))
+	break_peer_with(ptr);
+	// there should only be at most one peer: the server_pool that if we have been created by such object
+}
 
 
 static string get_session_ID_from(const request & req)

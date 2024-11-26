@@ -103,14 +103,14 @@ void reference::break_peer_with(reference* obj)
     {
 	try
 	{
-	    peers.erase(obj);
+	    erase_with_coherence(obj);
 	}
 	catch(...)
 	{
-	    obj->peers.erase(this);
+	    obj->erase_with_coherence(this);
 	    throw;
 	}
-	obj->peers.erase(this);
+	obj->erase_with_coherence(this);
 	obj->broken_peering_from(this);
     }
     else
@@ -150,3 +150,25 @@ void reference::shut_all_peerings()
     reset();
 }
 
+void reference::erase_with_coherence(reference* ptr)
+{
+    set<reference*>::iterator it = peers.begin();
+
+    if(ptr == nullptr)
+	throw WEBDAR_BUG;
+
+    while(it != peers.end()
+	  && *it != ptr)
+	++it;
+
+    if(it == peers.end())
+	throw WEBDAR_BUG;
+	// asking to erase an non-peered reference object
+
+    if(it == next_to_read) // erasing the next to read object
+	++next_to_read;
+	// seeking past the element that we will
+	// erase here:
+
+    peers.erase(it);
+}

@@ -34,6 +34,7 @@
 #include "session.hpp"
 #include "authentication.hpp"
 #include "choose.hpp"
+#include "reference.hpp"
 
     /// thread object that read request from the provided proto_connexion send them to the
     /// appropriated session managing authentication and send back the answer to the session
@@ -42,30 +43,11 @@
     /// for authentication validation and request, and session class to find and interrogate
     /// the proper session
 
-class server: public libthreadar::thread_signal
+class server: public libthreadar::thread_signal,
+	      public reference // this inheritance is used to notify server_pool objects
 {
 public:
-	// constructor & destructor are intentionally set as private methods
-
-    static bool run_new_server(const std::shared_ptr<central_report> & log,
-			       const std::shared_ptr<const authentication> & auth,
-			       std::unique_ptr<proto_connexion> & source);
-    static void set_max_server(unsigned int val) { max_server = val; };
-    static void kill_server(pthread_t tid);
-    static void kill_all_servers();
-    static void throw_a_pending_exception();
-
-	/// used by another server to ask this object to release the session it uses
-    void release_session() { can_keep_session = false; }; // no need of mutex here, several concurrent call will lead to the same result.
-
-protected:
-	/// inherited from libthreadar::thread
-    virtual void inherited_run() override;
-
-	// no need to override thread::signaled_inherited_cancel();
-
-private:
-    server(const std::shared_ptr<central_report> & log,
+    server(const std::shared_ptr<central_report> & creport,
 	   const std::shared_ptr<const authentication> & auth,
 	   std::unique_ptr<proto_connexion> & source);
     server(const server & ref) = delete;
@@ -74,24 +56,33 @@ private:
     server & operator = (server && ref) noexcept = delete;
     ~server() { cancel(); join(); };
 
-    enum auth_consideration {
+	/// used by another server to ask this object to release the session it uses
+    void release_session() { can_keep_session = false; }; // no need of mutex here, several concurrent call will lead to the same result.
+
+protected:
+
+	/// inherited from libthreadar::thread
+    virtual void inherited_run() override;
+
+	// no need to override thread::signaled_inherited_cancel();
+
+private:
+
+    enum auth_consideration
+    {
 	ignore_auth_redir,  ///< user has just disconnected and will be redirected to steady page
 	ignore_auth_steady, ///< user has to be redirected to the steady page
 	no_ignore           ///< user has authenticated and can access webdar
     };
 
-    parser src;              ///< this object manages the given proto_connexion in constructor
+    parser src;                          ///< this object manages the given proto_connexion in constructor
     std::shared_ptr<central_report> rep; ///< where do logs should go
     std::shared_ptr<const authentication> authsrc; ///< object to consult for user authentications
-    bool can_keep_session;   ///< whether another object asked interacting with the session we use
-    session* locked_session; ///< the current session we use (we have acquired its mutex)
-    auth_consideration ignore_auth; ///< how to consider authentication info in request
+    bool can_keep_session;               ///< whether another object asked interacting with the session we use
+    session* locked_session;             ///< the current session we use (we have acquired its mutex)
+    auth_consideration ignore_auth;      ///< how to consider authentication info in request
 
-
-	/// static fields
-    static libthreadar::mutex lock_counter; //< manages access to all static fields
-    static unsigned int max_server;         //< max allowed number of concurrent thread
-    static std::list<server *> instances;   //< list of existing server objects
+    void end_all_peers();
 };
 
 #endif

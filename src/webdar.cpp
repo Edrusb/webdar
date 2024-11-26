@@ -75,6 +75,7 @@ extern "C"
 #include "static_object_library.hpp"
 #include "environment.hpp"
 #include "global_parameters.hpp"
+#include "server_pool.hpp"
 
 #define WEBDAR_EXIT_OK 0
 #define WEBDAR_EXIT_SYNTAX 1
@@ -85,6 +86,7 @@ extern "C"
 #define WEBDAR_EXIT_RESOURCE 6
 
 #define DEFAULT_TCP_PORT 8008
+#define POOL_SIZE 50
 
     /// \mainpage
     /// The following describes the overall architecture of the webdar software
@@ -176,6 +178,7 @@ static void usage(const char* argv0);
     // it is necessary to have this global for signal handler able to report what they do
 static shared_ptr<central_report> creport;
 static vector<listener *> taches;
+static shared_ptr<server_pool> pool;
 
 static void signal_handler(int x);
 static string reminder_msg;
@@ -265,22 +268,27 @@ int main(int argc, char *argv[], char** env)
 	else
 	    min = info;
 
-	central_report* tmp = nullptr;
-
 	if(background)
-	    tmp = new (nothrow) central_report_syslog(min, "webdar", facility);
+	    creport.reset(new (nothrow) central_report_syslog(min, "webdar", facility));
 	else
-	    tmp = new (nothrow) central_report_stdout(min);
+	    creport.reset(new (nothrow) central_report_stdout(min));
 
-	if(tmp == nullptr)
+	if(!creport)
 	    throw exception_memory();
-	else
-	    creport.reset(tmp); // tmp is now managed by the shared_ptr
 
 	if(background)
 	    throw exception_feature("background as a daemon");
 
 	creport->report(debug, "central report object has been created");
+
+	    /////////////////////////////////////////////////
+	    // creating the server_pool, managing servers
+	    // which each, interact with a browser through an
+	    // http/https connection.
+
+	pool.reset(new (nothrow) server_pool(POOL_SIZE, creport));
+	if(!pool)
+	    throw exception_memory();
 
 
 	    /////////////////////////////////////////////////
@@ -295,7 +303,6 @@ int main(int argc, char *argv[], char** env)
 	    {
 
 		libdar_init();
-		server::set_max_server(10);
 
 		try
 		{
@@ -321,9 +328,9 @@ int main(int argc, char *argv[], char** env)
 			    + string(":") + to_string(it->port) + string("\n");
 
 			if(it->interface == "")
-			    tmp = new (nothrow) listener(creport, auth, cipher, it->port);
+			    tmp = new (nothrow) listener(creport, auth, cipher, pool, it->port);
 			else
-			    tmp = new (nothrow) listener(creport, auth, cipher, it->interface, it->port);
+			    tmp = new (nothrow) listener(creport, auth, cipher, pool, it->interface, it->port);
 			if(tmp == nullptr)
 			    throw exception_memory();
 			else
@@ -369,7 +376,7 @@ int main(int argc, char *argv[], char** env)
 			/////////////////////////////////////////////////
 			// killing remaining server threads
 
-		    server::kill_all_servers();
+		    pool->join();
 
 		    creport->report(info, "all server threads have ended");
 		}
@@ -387,6 +394,8 @@ int main(int argc, char *argv[], char** env)
 			}
 		    }
 		    taches.clear();
+
+		    pool->cancel();
 		    throw;
 		}
 	    }
@@ -663,9 +672,14 @@ static void close_all_listeners(int sig)
 	    else
 		(*it)->cancel();
 	}
-	server::kill_all_servers();
 
-	creport->report(crit, "SIGNAL RECEIVED: no more sessions is running");
+	if(pool)
+	{
+	    pool->cancel();
+	    pool->join();
+	}
+
+	creport->report(crit, "SIGNAL RECEIVED: no more sessions has a running job");
     }
 }
 

@@ -33,6 +33,7 @@
 #include "exceptions.hpp"
 #include "authentication.hpp"
 #include "ssl_context.hpp"
+#include "server_pool.hpp"
 
     /// class listener
     ///
@@ -45,16 +46,18 @@
 class listener : public libthreadar::thread_signal
 {
 public:
-    listener(const std::shared_ptr<central_report> & log,        //< where to send reports, used but also passed to the generated server objects
-	     const std::shared_ptr<const authentication> & auth, //< where to request for authentications (passed to generated server objects)
-	     std::unique_ptr<ssl_context> & ciphering,           //< if emtpy, a connexion object is provided to the generated server objects else a ssl_connexion is passed instead
-	     unsigned int port                                   //< listen on localhost IPv4 or IPv6
+    listener(const std::shared_ptr<central_report> & log,        ///< where to send reports, used but also passed to the generated server objects
+	     const std::shared_ptr<const authentication> & auth, ///< where to request for authentications (passed to generated server objects)
+	     std::unique_ptr<ssl_context> & ciphering,           ///< if emtpy, a connexion object is provided to the generated server objects else a ssl_connexion is passed instead
+	     std::shared_ptr<server_pool> & pool,                ///< the server_pool which will create and manage servers objects for us
+	     unsigned int port                                   ///< listen on localhost IPv4 or IPv6
 	);
-    listener(const std::shared_ptr<central_report> & log,        //< where to send reports, used but also passed to the generated server objects
-	     const std::shared_ptr<const authentication> & auth, //< where to request for authentications (passed to generated server objects)
-	     std::unique_ptr<ssl_context> & ciphering,           //< if emtpy, a connexion object is provided to the generated server objects else a ssl_connexion is passed instead
-	     const std::string & ip,                             //< interface to listen on
-	     unsigned int port                                   //< port to listen on
+    listener(const std::shared_ptr<central_report> & log,        ///< where to send reports, used but also passed to the generated server objects
+	     const std::shared_ptr<const authentication> & auth, ///< where to request for authentications (passed to generated server objects)
+	     std::unique_ptr<ssl_context> & ciphering,           ///< if emtpy, a connexion object is provided to the generated server objects else a ssl_connexion is passed instead
+	     std::shared_ptr<server_pool> & pool,                ///< the server_pool which will create and manage servers objects for us
+	     const std::string & ip,                             ///< interface to listen on
+	     unsigned int port                                   ///< port to listen on
 	);
     listener(const listener & ref) = delete;
     listener(listener && ref) noexcept = delete;
@@ -78,11 +81,13 @@ private:
     std::string l_ip;                          ///< listening IP address
     std::string l_port;                        ///< listening port
     std::unique_ptr<ssl_context> ssl_ctx;      ///< ciphering context
+    std::shared_ptr<server_pool> srv;          ///< current servers
 
     void set_sockfd(int domain);
     void init(const std::shared_ptr<central_report> & log,
 	      const std::shared_ptr<const authentication> & auth,
 	      std::unique_ptr<ssl_context> & ciphering,
+	      std::shared_ptr<server_pool> & pool,
 	      const std::string & ip,
 	      unsigned int port);
 };

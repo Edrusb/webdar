@@ -118,6 +118,7 @@ private:
 
     void reset();             ///< clear object status (ignoring possibily existing peers)
     void shut_all_peerings(); ///< break link with all peers
+    void erase_with_coherence(reference* ptr); ///< erase an object from peers but take cares that next_to_read stays valid
 };
 
 #endif

@@ -82,11 +82,12 @@ static string network_IPv6_to_string(const struct in6_addr & ip);
 listener::listener(const shared_ptr<central_report> & log,
 		   const shared_ptr<const authentication> & auth,
 		   unique_ptr<ssl_context> & ciphering,
+		   std::shared_ptr<server_pool> & pool,
 		   unsigned int port)
 {
     try
     {
-	init(log, auth, ciphering, "::1", port);
+	init(log, auth, ciphering, pool, "::1", port);
     }
     catch(exception_bug & e)
     {
@@ -94,7 +95,7 @@ listener::listener(const shared_ptr<central_report> & log,
     }
     catch(...)
     {
-	init(log, auth, ciphering, "127.0.0.1", port);
+	init(log, auth, ciphering, pool, "127.0.0.1", port);
 	    // no throw;
     }
 }
@@ -102,19 +103,28 @@ listener::listener(const shared_ptr<central_report> & log,
 listener::listener(const shared_ptr<central_report> & log,
 		   const shared_ptr<const authentication> & auth,
 		   unique_ptr<ssl_context> & ciphering,
+		   std::shared_ptr<server_pool> & pool,
 		   const string & ip,
 		   unsigned int port)
 {
-    init(log, auth, ciphering, ip, port);
+    init(log, auth, ciphering, pool, ip, port);
 }
 
 void listener::init(const shared_ptr<central_report> & log,
 		    const shared_ptr<const authentication> & auth,
 		    unique_ptr<ssl_context> & ciphering,
+		    std::shared_ptr<server_pool> & pool,
 		    const string & ip,
 		    unsigned int port)
 {
     sigset_t sigs;
+
+    if(!log)
+	throw WEBDAR_BUG;
+    if(!auth)
+	throw WEBDAR_BUG;
+    if(!pool)
+	throw WEBDAR_BUG;
 
     l_ip = ip;
     l_port = webdar_tools_convert_to_string(port);
@@ -124,12 +134,11 @@ void listener::init(const shared_ptr<central_report> & log,
 	throw exception_system("failed removing the THREAD_SIGNAL from signal set", errno);
     set_signal_mask(sigs);
 
-    sockfd = -1;
-    if(!log)
-	throw WEBDAR_BUG;
     rep = log;
     src = auth;
+    sockfd = -1;
     ssl_ctx = std::move(ciphering);
+    srv = pool;
 
     try
     {
@@ -294,34 +303,6 @@ void listener::inherited_run()
 	    throw WEBDAR_BUG;
 	}
 
-	bool loop = true;
-	do
-	{
-	    try
-	    {
-		cancellation_checkpoint();
-		server::throw_a_pending_exception();
-		loop = false;
-	    }
-	    catch(exception_bug & e)
-	    {
-		throw;
-	    }
-	    catch(libthreadar::exception_thread & e)
-	    {
-		throw;
-	    }
-	    catch(exception_libcall & e)
-	    {
-		throw;
-	    }
-	    catch(exception_base & e)
-	    {
-		rep->report(warning, string("listener object: Previous server ended with error: ") + e.get_message());
-	    }
-	}
-	while(loop);
-
 	if(ssl_ctx)
 	{
 	    rep->report(debug, "listener object: creating a new \"ssl_connexion\" object");
@@ -338,7 +319,7 @@ void listener::inherited_run()
 	else
 	{
 	    rep->report(debug, "listener object: creating a server thread to answer requests received from the new connection");
-	    if(!server::run_new_server(rep, src, con))
+	    if(!srv->run_new_server(src, con))
 	    {
 		rep->report(warning, "failed to create a new server maximum connection reached");
 		con.reset();
