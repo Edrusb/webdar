@@ -94,7 +94,7 @@ void reference::peer_with(reference *obj)
     }
 }
 
-void reference::break_peer_with(reference *obj)
+void reference::break_peer_with(reference* obj)
 {
     if(obj == nullptr)
 	throw WEBDAR_BUG;

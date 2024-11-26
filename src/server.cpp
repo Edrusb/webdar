@@ -321,7 +321,7 @@ void server::inherited_run()
 		    }
 		    catch(exception_input & e)
 		    {
-			    // nothing to do;
+			    // nothing to do
 		    }
 
 		} // end of the inner while loop

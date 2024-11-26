@@ -91,7 +91,7 @@ public:
 	/// \param[in] user the user to whom the session will belong
 	/// \param[in] initial if set to true a session is created only if no other session exist for that user
 	/// \param[in] req the request from the browser
-	/// \param[out] the answer to send back to the browser, this field is set only when this method returns true
+	/// \param[out] ret the answer to send back to the browser, this field is set only when this method returns true
 	/// \return true if a session has been created and only then provides the answer (ret) to return to the brownser
 	/// \note this call may throw exception (if for example the session max number has been reached)
     static bool create_new_session(const std::string & user, bool initial, const request & req, answer & ret);
