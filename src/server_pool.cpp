@@ -194,6 +194,10 @@ void server_pool::signaled_inherited_cancel()
     {
 	cancel_all_servers(); // ask all servers to end
 	max_server = 0; // ask inherited_thread to end asap
+	verrou.signal(); // awake the thread.
+	    // in case no server are running, the thread
+	    // would stay pending on verrou waiting for
+	    // a signal() forever
     }
     catch(...)
     {
