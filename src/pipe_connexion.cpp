@@ -63,7 +63,6 @@ pipe_connexion::~pipe_connexion() { fermeture(); };
 
 unsigned int pipe_connexion::read_impl(char *a, unsigned int size, bool blocking)
 {
-    bool loop = true;
     ssize_t lu = 0;
 
     if(get_status() != connected)
@@ -77,31 +76,26 @@ unsigned int pipe_connexion::read_impl(char *a, unsigned int size, bool blocking
 
     try
     {
-	while(loop)
+	lu = read(readfd, a, size);
+	if(lu == 0)
 	{
-	    loop = false;
-	    lu = read(readfd, a, size);
-	    if(lu == 0)
+	    fermeture();
+	    throw exception_range("reached end of data on socket");
+	}
+	if(lu < 0)
+	{
+	    switch(errno)
 	    {
-		fermeture();
-		throw exception_range("reached end of data on socket");
-	    }
-	    if(lu < 0)
-	    {
-		switch(errno)
-		{
-		case EINTR:    // system call interrupted by a signal
-		    loop = true;
-		    break;
-		case EAGAIN:   // means no data avaiable in non-blocking mode
-		    if(blocking)
-			throw WEBDAR_BUG;
-		    else
-			lu = 0;
-		    break;
-		default:
-		    throw exception_system("Error met while receiving data: ", errno);
-		}
+	    case EINTR:    // system call interrupted by a signal
+		throw exception_signal();
+	    case EAGAIN:   // means no data avaiable in non-blocking mode
+		if(blocking)
+		    throw WEBDAR_BUG;
+		else
+		    lu = 0;
+		break;
+	    default:
+		throw exception_system("Error met while receiving data: ", errno);
 	    }
 	}
     }

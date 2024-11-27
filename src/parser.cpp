@@ -79,6 +79,10 @@ const request & parser::get_request()
 	req.clear();
 	req.read(*source);
     }
+    catch(exception_signal & e)
+    {
+	throw;
+    }
     catch(exception_input & e)
     {
 	answer err;

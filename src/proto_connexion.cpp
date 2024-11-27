@@ -181,6 +181,10 @@ void proto_connexion::fill_buffer(bool blocking)
 	    {
 		throw;
 	    }
+	    catch(exception_signal & e)
+	    {
+		throw;
+	    }
 	    catch(exception_base & e)
 	    {
 		if(already_read == data_size) // no more data in buffer
