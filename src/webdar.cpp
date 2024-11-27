@@ -661,7 +661,7 @@ static void close_all_listeners(int sig)
 	creport->report(crit, "SIGNAL RECEIVED: A libdar job is currently running, cannot stop the operation, stop the running job(s) before from web interface");
     else
     {
-	creport->report(crit, "SIGNAL RECEIVED: no libdar job is currently running, propagating signal to all listener thread objects...");
+	creport->report(crit, "SIGNAL RECEIVED: propagating signal to all listener thread objects...");
 	for(vector<listener *>::iterator it = taches.begin();
 	    it != taches.end();
 	    ++it)
@@ -672,12 +672,12 @@ static void close_all_listeners(int sig)
 		(*it)->cancel();
 	}
 
-	creport->report(crit, "SIGNAL RECEIVED: no libdar job is currently running, propagating signal to all server thread objects...");
+	creport->report(crit, "SIGNAL RECEIVED: propagating signal to all server thread objects...");
 
 	if(pool)
 	    pool->cancel();
 
-	creport->report(crit, "SIGNAL RECEIVED: All listeners and server thread objects have been asked to ended");
+	creport->report(crit, "SIGNAL RECEIVED: All listeners and server thread objects have been asked to end");
     }
 }
 
