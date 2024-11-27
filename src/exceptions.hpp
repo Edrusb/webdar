@@ -173,6 +173,16 @@ private:
     static std::string get_ssl_error();
 };
 
+class exception_signal: public exception_base
+{
+public:
+    exception_signal(): exception_base("system call interruted by a signal") {};
+
+protected:
+    virtual exception_base *clone() const override { return cloner<exception_signal>((void *)this); };
+};
+
+
 extern void throw_as_most_derivated_class(exception_base *ebase);
 
 #endif
