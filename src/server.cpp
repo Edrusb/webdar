@@ -60,7 +60,7 @@ server::server(const shared_ptr<central_report> & log,
     src(source, log),
     can_keep_session(true),
     locked_session(nullptr),
-    ignore_auth(no_ignore)
+    ignore_auth(ignore_auth_steady)
 {
     if(!log)
 	throw WEBDAR_BUG;
