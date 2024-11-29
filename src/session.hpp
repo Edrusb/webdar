@@ -42,8 +42,10 @@ extern "C"
 
     /// a session object stores a work under progress. An internal mutex
     /// avoids two concurrent requests to be addressed to a given session object.
-    /// Session object are sollicitated by parser and chooser
-    /// objects.
+    /// Session object are sollicitated by 'server' objects which only
+    /// live during a TCP connection. Several TCP connection can connect
+    /// over time or in concurrency to a given session object but only
+    /// one at a time handles (acquired) the session.
 
 class session : public responder, public actor
 {

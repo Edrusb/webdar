@@ -36,12 +36,15 @@
 #include "choose.hpp"
 #include "reference.hpp"
 
-    /// thread object that read request from the provided proto_connexion send them to the
-    /// appropriated session managing authentication and send back the answer to the session
+    /// thread object that read request from the provided proto_connexion, send them to the
+    /// appropriated session, managing authentication and sending back the answer to the browser
+    /// at the other end of the proto_connexion.
 
     /// \note relies on a parser object to split byte flow into structured requests, challenge object
-    /// for authentication validation and request, and session class to find and interrogate
-    /// the proper session
+    /// for authentication validation of requests, and session class to find and interrogate
+    /// the proper session. Server are spaws when an new TCP connection is received, while sessions
+    /// objects stay alive accross TCP connections and are tear down on by user action on through the web
+    /// interface.
 
 class server: public libthreadar::thread_signal,
 	      public reference // this inheritance is used to notify server_pool objects
