@@ -38,9 +38,7 @@ extern "C"
     // webdar headers
 #include "chemin.hpp"
 
-    /////////////////////////////////////////////////////////////////////////////////////
     /// uri type holds the splitted list of the scheme / hostname / path
-    ///
 
 class uri
 {

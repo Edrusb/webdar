@@ -54,20 +54,22 @@ extern "C"
 
     /// this html components is consitued of:
     ///
-    /// +----html_fieldset----------------------------------+
-    /// |                                                   |
-    /// | logical combination:  +----------------+          |
-    /// |                       |dropdown list   |          |
-    /// |                       +----------------+          |
-    /// |        +-------------------------------+-----+    |
-    /// |        | table of masks                | DEL |    |
-    /// |        +-------------------------------+-----+    |
-    /// |                                                   |
-    /// |         [ add new mask dropdown list]             |
-    /// |                                                   |
-    /// +---------------------------------------------------+
-    ///
-    ///
+
+    /** \verbatim
+	+----html_fieldset----------------------------------+
+	|                                                   |
+	| logical combination:  +----------------+          |
+	|                       |dropdown list   |          |
+	|                       +----------------+          |
+	|        +-------------------------------+-----+    |
+	|        | table of masks                | DEL |    |
+	|        +-------------------------------+-----+    |
+	|                                                   |
+	|         [ add new mask dropdown list]             |
+	|                                                   |
+	+---------------------------------------------------+
+
+	\endverbatim **/
 
 class html_form_mask_bool : public html_mask,
 			    public actor

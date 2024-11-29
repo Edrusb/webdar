@@ -58,7 +58,7 @@ extern "C"
 #include "html_disconnect.hpp"
 
     /// class saisie
-    ///
+
     /// defines the web "pages" when no operation is
     /// running in the current session.
     ///- on the left a menu 'choices' that triggers 'this' to modify the middle and top area
@@ -69,22 +69,26 @@ extern "C"
     ///- just below and beside the menu, an html_aiguille "select"
     /// shows the different "pages" for parameters and options depending on the selection
     /// action
-    ///  +-------------------------------+
-    ///  |        disco(html_disconnect) |
-    ///  +---------+---------------------+
-    ///  | choices | right_pan           |
-    ///  | (menu)  |+-------------------+|
-    ///  |         ||archive_show       ||
-    ///  |         ||(for read actions) ||
-    ///  |         |+-------------------+|
-    ///  |         |+-------------------+|
-    ///  |         ||select             ||
-    ///  |         ||(a page for each   ||
-    ///  |         || action)           ||
-    ///  |         ||                   ||
-    ///  |         |+-------------------+|
-    ///  +---------+---------------------+
-    ///
+
+    /** \verbatim
+
+	+-------------------------------+
+	|        disco(html_disconnect) |
+	+---------+---------------------+
+	| choices | right_pan           |
+	| (menu)  |+-------------------+|
+	|         ||archive_show       ||
+	|         ||(for read actions) ||
+	|         |+-------------------+|
+	|         |+-------------------+|
+	|         ||select             ||
+	|         ||(a page for each   ||
+	|         || action)           ||
+	|         ||                   ||
+	|         |+-------------------+|
+	+---------+---------------------+
+
+	\endverbatim **/
 
 class saisie : public html_page, public actor, public events
 {

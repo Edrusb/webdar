@@ -36,32 +36,32 @@ extern "C"
     // webdar headers
 #include "html_form_dynamic_table.hpp"
 
-    /// class html_form_gnupg_list provide interface for the user to give a list
-    /// of gnupg signatories and gnupg recipients
+    /// class html_form_gnupg_list provide interface for the user to give a list of gnupg signatories and gnupg recipients
 
     /// this html components is consitued of:
     ///
-    /// +---html_form_dynamic_table-----------------+-------+
-    /// |                                           |       |
-    /// |+---------------------------------------+  |+-+    |
-    /// ||<html_form_input::text>                |  || | del|
-    /// |+---------------------------------------+  |+-+    |
-    /// |+---------------------------------------+  |+-+    |
-    /// ||<html_form_input::text>                |  || | del|
-    /// |+---------------------------------------+  |+-+    |
-    /// |+---------------------------------------+  |+-+    |
-    /// ||<html_form_input::text>                |  || | del|
-    /// |+---------------------------------------+  |+-+    |
-    /// |+---------------------------------------+  |+-+    |
-    /// ||<html_form_input::text>                |  || | del|
-    /// |+---------------------------------------+  |+-+    |
-    /// +-------------------------------------------+-------+
-    ///
-    /// +------------+
-    /// |  add entry |
-    /// +------------+
-    ///
-    ///
+    /** \verbatim
+	+---html_form_dynamic_table-----------------+-------+
+	|                                           |       |
+	|+---------------------------------------+  |+-+    |
+	||<html_form_input::text>                |  || | del|
+	|+---------------------------------------+  |+-+    |
+	|+---------------------------------------+  |+-+    |
+	||<html_form_input::text>                |  || | del|
+	|+---------------------------------------+  |+-+    |
+	|+---------------------------------------+  |+-+    |
+	||<html_form_input::text>                |  || | del|
+	|+---------------------------------------+  |+-+    |
+	|+---------------------------------------+  |+-+    |
+	||<html_form_input::text>                |  || | del|
+	|+---------------------------------------+  |+-+    |
+	+-------------------------------------------+-------+
+
+	+------------+
+	|  add entry |
+	+------------+
+	\endverbatim **/
+
     /// \note this component should adopted by an html_form directly
     /// or not (through an html_form_fieldset for example)
     ///

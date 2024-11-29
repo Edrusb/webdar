@@ -48,7 +48,7 @@ extern "C"
     /// having the name of the event passed as argument
 
     /// class of object that are pointed/triggered to by others
-    ///
+
     /// and that informs these pointers about their imminent death in order
     /// to be removed from the pointed objects list
 class actor : public reference

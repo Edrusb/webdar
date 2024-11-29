@@ -39,8 +39,8 @@ extern "C"
     // webdar headers
 #include "css_property.hpp"
 
-    /// class css
-    ///
+    /// class managing Cascading Style Sheets attributes
+
     /// contains a set of well-known css attributes and their values
     /// provide methods to reset each of them to a well-known default value
 

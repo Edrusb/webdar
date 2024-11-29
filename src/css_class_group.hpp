@@ -37,6 +37,8 @@ extern "C"
 
     // webdar headers
 
+    /// manages a set of css class names
+
     /// this is only a way to manipulate a list of existing class names
     /// no class definition is done here just a list of names as a set
 

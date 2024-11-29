@@ -115,7 +115,7 @@ protected:
 };
 
     /// exception used to report an request error from the http client
-    ///
+
     /// \note at the difference of the exception_range type, this exception
     /// is used when the user request is syntaxically correct but a field value has an
     /// unexpected value. This implies that we can and must answer to by a error HTTP answer
@@ -172,6 +172,8 @@ private:
 
     static std::string get_ssl_error();
 };
+
+    /// class used to propagate the reception of a signal by the current process/thread
 
 class exception_signal: public exception_base
 {

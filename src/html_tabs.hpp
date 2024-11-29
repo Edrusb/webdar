@@ -43,7 +43,7 @@ extern "C"
 #include "css.hpp"
 
     /// class html_tabs implements tabs
-    ///
+
     /// this class implements tabs. Tabs are created
     /// calling add_tab(). Below the tab bar
     /// the rest of the area shows the object adopted for the

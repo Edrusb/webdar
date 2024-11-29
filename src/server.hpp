@@ -36,6 +36,8 @@
 #include "choose.hpp"
 #include "reference.hpp"
 
+    /// class server for TCP session management
+
     /// thread object that read request from the provided proto_connexion, send them to the
     /// appropriated session, managing authentication and sending back the answer to the browser
     /// at the other end of the proto_connexion.

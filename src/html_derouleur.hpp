@@ -42,7 +42,7 @@ extern "C"
 #include "html_button.hpp"
 
     /// class html_derouleur is a pure virtual class
-    ///
+
     /// it groups adopted objets under several labeled sections
     /// which can be expanded and shrinked, still the section
     /// title stay visible, but only one section content is visible

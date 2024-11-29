@@ -109,10 +109,11 @@ public:
     static const std::string changed;  /// default event name for all object of this clas
 
         /// constructor
-    html_form_dynamic_table(bool has_left_labels,
-                            bool selector_below,
+    html_form_dynamic_table(bool has_left_labels,            ///< whether to display label on a left column
+                            bool selector_below,             ///< whether the selector is above or below the table
                             const std::string & adder_text,  ///< fixed label shown beside the add drop list
-                            const std::string & adder_default_choice); ///< default choice in the drop list
+                            const std::string & adder_default_choice ///< default choice in the drop list
+	);
 
     html_form_dynamic_table(const html_form_dynamic_table & ref) = delete;
     html_form_dynamic_table(html_form_dynamic_table && ref) noexcept = delete;

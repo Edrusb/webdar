@@ -53,31 +53,36 @@ extern "C"
     /// body_builder component, providing an html interface to libdar::user_interaction
 
     /// adoption tree (= how the component show on the browser)
-    /// +-h_global----------------------------------+
-    /// |                                           |
-    /// |                                           |
-    /// |+-h_logs----------------------------------+|
-    /// || h_warnings (libdar messages/warnings    ||
-    /// |+-----------------------------------------+|
-    /// |+-h_form----------------------------------+|
-    /// ||+-h_inter-------------------------------+||
-    /// ||| h_inter_text (question from libdar)   |||
-    /// ||| h_pause (radio button yes/no)         |||
-    /// ||+---------------------------------------+||
-    /// ||+---------------------------------------+||
-    /// ||| h_get_string(string asked from libdar)|||
-    /// ||+---------------------------------------+||
-    /// |+-----------------------------------------+|
-    /// |                                           |
-    /// |+-----------------------------------------+|
-    /// || stats (libdar::statistics)              ||
-    /// |+-----------------------------------------+|
-    /// |                                           |
-    /// | +-------+  +-------+             +-------+|
-    /// | | ask   |  | force |             |finish ||
-    /// | | close |  | close |             |       ||
-    /// | +-------+  +-------+             +-------+|
-    /// +-------------------------------------------+
+    ///
+
+    /** \verbatim
+	+-h_global----------------------------------+
+	|                                           |
+	|                                           |
+	|+-h_logs----------------------------------+|
+	|| h_warnings (libdar messages/warnings    ||
+	|+-----------------------------------------+|
+	|+-h_form----------------------------------+|
+	||+-h_inter-------------------------------+||
+	||| h_inter_text (question from libdar)   |||
+	||| h_pause (radio button yes/no)         |||
+	||+---------------------------------------+||
+	||+---------------------------------------+||
+	||| h_get_string(string asked from libdar)|||
+	||+---------------------------------------+||
+	|+-----------------------------------------+|
+	|                                           |
+	|+-----------------------------------------+|
+	|| stats (libdar::statistics)              ||
+	|+-----------------------------------------+|
+	|                                           |
+	| +-------+  +-------+             +-------+|
+	| | ask   |  | force |             |finish ||
+	| | close |  | close |             |       ||
+	| +-------+  +-------+             +-------+|
+	+-------------------------------------------+
+
+	\endverbatim **/
 
     /// usage: once created, this component can be adopted from another body_builder
     /// The caller should use get_user_interaction() to provide a user interaction to a libthreadar::thread object

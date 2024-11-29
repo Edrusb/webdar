@@ -51,7 +51,7 @@ public:
     virtual bool valid_credentials(const std::string & username, const std::string & credential) const = 0;
 };
 
-
+    /// place holder class for Unix PAM authentication (not implemented for now)
 
 class authentication_unix : public authentication
 {

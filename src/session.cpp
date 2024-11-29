@@ -398,7 +398,7 @@ session::session_summary session::publish(map<string, table>::iterator it)
     ret.clear();
     ret.owner = it->second.owner;
     ret.session_ID = it->first;
-    ret.session_name = it->second.reference->wui.get_session_name();
+    ret.session_name = it->second.reference->wui.get_session_name(); // yes session name is stored and managed in the GUI component
     ret.locked = it->second.reference->has_working_server();
     ret.libdar_running = it->second.reference->wui.is_libdar_running(); // yes an access without locking the object but read only and on an atomic field
     ret.closing = it->second.closing;

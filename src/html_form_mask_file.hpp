@@ -44,22 +44,26 @@ extern "C"
 
     /// this html components is consitued of:
     ///
-    /// +----html_fieldset----------------------------------+
-    /// |                                                   |
-    /// |          +-----------------------------+          |
-    /// | filename |                             |          |
-    /// |          +-----------------------------+          |
-    /// |                                                   |
-    /// | exclude checkbox : +-+                            |
-    /// |                    | |                            |
-    /// |                    +-+                            |
-    /// | casesensit       : +-+                            |
-    /// |                    | |                            |
-    /// |                    +-+                            |
 
-    /// |                                                   |
-    /// +---------------------------------------------------+
-    ///
+    /** \verbatim
+
+	+----html_fieldset----------------------------------+
+	|                                                   |
+	|          +-----------------------------+          |
+	| filename |                             |          |
+	|          +-----------------------------+          |
+	|                                                   |
+	| exclude checkbox : +-+                            |
+	|                    | |                            |
+	|                    +-+                            |
+	| casesensit       : +-+                            |
+	|                    | |                            |
+	|                    +-+                            |
+	|                                                   |
+	+---------------------------------------------------+
+
+    \endverbatim **/
+
     /// \note this component includes an html_form by default
     /// (see constructor argument), but should not when used
     /// recursively from another html_form_mask_file

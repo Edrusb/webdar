@@ -39,7 +39,7 @@ extern "C"
 #include "body_builder.hpp"
 
     /// class html_level is a pure virtual class
-    ///
+
     /// it implements the management of a mixed list of object and static html text
     /// and provides method to read this list. This class does not implement the
     /// get_body_part() pure virtual method of its body_builder ancestor class

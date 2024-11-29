@@ -39,7 +39,7 @@ extern "C"
 #include "html_div.hpp"
 
     /// class html_popup is the implementation of <div> </div> as popup over rest of the the screen
-    ///
+
     /// the object shows a full screen with partial opacity (outerbox) on top of which a fully opaque box (innerbox)
     /// sits. Object adopted by the html_popup are passed to this inner box and take place inside it
     /// There is no mechanism (button) to remove this box from the screen. This is duty of the class using

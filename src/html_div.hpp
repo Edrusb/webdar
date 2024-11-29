@@ -38,7 +38,7 @@ extern "C"
 #include "html_level.hpp"
 
     /// class html_div is the implementation of <div> </div>
-    ///
+
     /// objects get enclosed in the <div> </div> if they are
     /// adopted (from body_builder::adopt() method)
 

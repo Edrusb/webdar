@@ -39,8 +39,8 @@ extern "C"
     // webdar headers
 #include "css.hpp"
 
-    /// class css_class
-    ///
+    /// class css_class gather css attributed under a given label
+
     /// associate a name to a css object
     /// in other words contains what HTML standard
     /// defines as a css class: a name associated

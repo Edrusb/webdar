@@ -38,7 +38,7 @@ extern "C"
 #include "body_builder.hpp"
 
     /// html_focus class provides a mean to temporarily have an object show at a particular place in a page
-    ///
+
     /// the html_focus is adopted as any body_builder object but does not show anything
     /// until a body_builder object is given_for_temporary_adoption(). Any previous object
     /// given that way are foresaken and replaced by the new one.

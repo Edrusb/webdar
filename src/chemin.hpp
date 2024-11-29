@@ -40,6 +40,7 @@ extern "C"
 
 
     /// class chemin definition
+
     /// \note "chemin" means path in French, this class
     /// implements path objects. There is no relative/absolute
     /// caracteristics in these objects, Only at display() time

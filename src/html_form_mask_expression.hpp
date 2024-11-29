@@ -47,24 +47,28 @@ extern "C"
 
     /// this html components is consitued of:
     ///
-    /// +----html_fieldset----------------------------------+
-    /// |                                                   |
-    /// | mask type:  +----------------+                    |
-    /// |             |dropdown list   |                    |
-    /// |             +----------------+                    |
-    /// |                                                   |
-    /// |             +--+                                  |
-    /// | negate      |  |                                  |
-    /// |             +--+                                  |
-    /// |             +--+                                  |
-    /// | case sensit.|  |                                  |
-    /// |             +--+                                  |
-    /// |                                                   |
-    /// | mask expr.  +----------------------------+        |
-    /// |             |  input form                |        |
-    /// |             +----------------------------+        |
-    /// +---------------------------------------------------+
-    ///
+
+    /** \verbatim
+	+----html_fieldset----------------------------------+
+	|                                                   |
+	| mask type:  +----------------+                    |
+	|             |dropdown list   |                    |
+	|             +----------------+                    |
+	|                                                   |
+	|             +--+                                  |
+	| negate      |  |                                  |
+	|             +--+                                  |
+	|             +--+                                  |
+	| case sensit.|  |                                  |
+	|             +--+                                  |
+	|                                                   |
+	| mask expr.  +----------------------------+        |
+	|             |  input form                |        |
+	|             +----------------------------+        |
+	+---------------------------------------------------+
+
+	\endverbatim **/
+
     /// \note: this component does must have an html_form object
     /// as parent or ancestor for validation to be processed and
     /// changes to be recorded. Avoiding including the html_form
