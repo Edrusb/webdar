@@ -334,28 +334,26 @@ void css::css_position_right(const string & right,
 
 void css::css_overflow(overflowing val, bool inherit)
 {
-    string arg = " overflow: ";
+    string arg = " overflow: " + overflow_to_string(val);
 
-    switch(val)
-    {
-    case ov_visible:
-	arg += "visible;";
-	break;
-    case ov_hidden:
-	arg += "hidden;";
-	break;
-    case ov_scroll:
-	arg += "scroll;";
-	break;
-    case ov_auto:
-	arg += "auto;";
-	break;
-    case ov_inherit:
-	arg += "inherit;";
-	break;
-    default:
-	throw WEBDAR_BUG;
-    }
+    overflow.set_value(arg);
+    overflow.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
+void css::css_overflow_x(overflowing val, bool inherit)
+{
+    string arg = " overflow-x: " + overflow_to_string(val);
+
+    overflow.set_value(arg);
+    overflow.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
+void css::css_overflow_y(overflowing val, bool inherit)
+{
+    string arg = " overflow-y: " + overflow_to_string(val);
+
     overflow.set_value(arg);
     overflow.set_inheritance(inherit);
     css_updated(inherit);
@@ -910,4 +908,32 @@ string css::border_to_string(border val)
     }
 
     return ret;
+}
+
+string css::overflow_to_string(overflowing val)
+{
+    string arg;
+
+    switch(val)
+    {
+    case ov_visible:
+	arg = "visible;";
+	break;
+    case ov_hidden:
+	arg = "hidden;";
+	break;
+    case ov_scroll:
+	arg = "scroll;";
+	break;
+    case ov_auto:
+	arg = "auto;";
+	break;
+    case ov_inherit:
+	arg = "inherit;";
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+
+    return arg;
 }

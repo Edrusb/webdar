@@ -150,9 +150,19 @@ public:
 		       ov_auto,      //< scrollbar shows only if necessary
 		       ov_inherit }; //< inherited from HTML parent
 
-    void css_overflow(overflowing val, bool inherit=false);
-    void css_overflow() { overflow.clear(); };
+	/// set both x and y overflow
 
+	/// \note css_overflow, css_overflow_x and css_overflow_y are mutual exclusive
+    void css_overflow(overflowing val, bool inherit=false);
+
+	/// set only x overflow
+    void css_overflow_x(overflowing val, bool inherit=false);
+
+	/// set only y overflow
+    void css_overflow_y(overflowing val, bool inherit=false);
+
+	/// clear both x and y overflow (default value)
+    void css_overflow() { overflow.clear(); };
 
 	// floating
 
@@ -392,6 +402,7 @@ private:
     std::map<std::string, css_property> custom_css;
 
     std::string border_to_string(border val);
+    std::string overflow_to_string(overflowing val);
 };
 
 #endif
