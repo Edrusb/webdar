@@ -94,6 +94,18 @@ bool server_pool::run_new_server(const shared_ptr<const authentication> & auth,
     if(!source)
 	throw WEBDAR_BUG;
 
+    if(!is_running())
+    {
+	    // our local thread has ended!!!
+
+	join();           // either an exception is propagated
+	throw WEBDAR_BUG; // or we throw an error ourselves
+
+	    // without this thread running
+	    // server object recycling cannot
+	    // be performed
+    }
+
     verrou.lock();
 
     try
@@ -170,6 +182,11 @@ void server_pool::inherited_run()
 	    }
 	    catch(libthreadar::thread::cancel_except & e)
 	    {
+		throw;
+	    }
+	    catch(exception_bug & e)
+	    {
+		log->report(priority_t::crit, e.get_message());
 		throw;
 	    }
 	    catch(exception_base & e)
