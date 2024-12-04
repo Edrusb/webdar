@@ -86,7 +86,7 @@ public:
 
 	// relayed from html_select_file
 
-    enum select_mode { select_dir, select_file, select_slice };
+    enum select_mode { select_dir, select_file, select_slice, select_symlink };
 
     void set_select_mode(select_mode val);
     void set_can_create_dir(bool val) { user_select.set_can_create_dir(val); };

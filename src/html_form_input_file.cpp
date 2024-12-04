@@ -109,15 +109,19 @@ void html_form_input_file::set_select_mode(select_mode val)
     switch(val)
     {
     case select_dir:
-	user_select.set_select_dir(true);
+	user_select.set_select_mode(html_select_file::sel_dir);
 	break;
     case select_file:
-	user_select.set_select_dir(false);
+	user_select.set_select_mode(html_select_file::sel_file);
 	user_select.set_filter("");
 	break;
     case select_slice:
-	user_select.set_select_dir(false);
+	user_select.set_select_mode(html_select_file::sel_file);
 	user_select.set_filter("*.dar");
+	break;
+    case select_symlink:
+	user_select.set_select_mode(html_select_file::sel_symlinks);
+	user_select.set_filter("");
 	break;
     default:
 	throw WEBDAR_BUG;
@@ -169,6 +173,7 @@ void html_form_input_file::on_event(const string & event_name)
 	{
 	case select_dir:
 	case select_file:
+	case select_symlink:
 	    input.set_value(user_select.get_selected_path());
 	    break;
 	case select_slice:

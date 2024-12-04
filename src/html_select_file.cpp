@@ -64,7 +64,7 @@ html_select_file::html_select_file(const string & message):
     html_popup(width_pct,height_pct),
     status(st_init),
     which_thread(run_nothing),
-    select_dir(false),
+    cur_select_mode(sel_file),
     filter(""),
     should_refresh(false),
     title(2, message),
@@ -182,7 +182,7 @@ void html_select_file::on_event(const string & event_name)
 {
     if(event_name == entry_selected)
     {
-	if(!select_dir && fieldset_isdir)
+	if(fieldset_isdir && cur_select_mode != sel_dir)
 	{
 	    warning.add_text(3, string("This is a directory, please select a non-directory file"));
 		// not necessary to call my_body_part_has_changed() as we just changed "warning" one of our own children
@@ -556,6 +556,7 @@ void html_select_file::fill_content()
     unsigned int count = 0;
     deque<string> entry_dirs;
     deque<string> entry_files;
+    deque<string> entry_symlinks;
     deque<string> entry_unknown;
     libdar::inode_type tp;
 
@@ -585,6 +586,9 @@ void html_select_file::fill_content()
 	    case libdar::inode_type::nondir:
 		entry_files.push_back(entry);
 		break;
+	    case libdar::inode_type::symlink:
+		entry_symlinks.push_back(entry);
+		break;
 	    case libdar::inode_type::unknown:
 		entry_unknown.push_back(entry);
 		break;
@@ -600,14 +604,15 @@ void html_select_file::fill_content()
 
     sort(entry_dirs.begin(), entry_dirs.end());
     sort(entry_files.begin(), entry_files.end());
+    sort(entry_symlinks.begin(), entry_symlinks.end());
     sort(entry_unknown.begin(), entry_unknown.end());
 
     deque<string>::iterator it = entry_dirs.begin();
 
 	// we do the following complicated thing to
 	// have the listing starting with directories
-	// then non directories followed by those we
-	// don't even know what's their type is.
+	// then symlinks, then non directories, followed
+	// last by those we don't even know what's their type is.
 
     while(it != entry_dirs.end())
     {
@@ -616,6 +621,17 @@ void html_select_file::fill_content()
 	if(listed.find(event_name) != listed.end())
 	    throw WEBDAR_BUG; // event already exists!?!
 	add_content_entry(event_name, libdar::inode_type::isdir, *it);
+	++it;
+    }
+
+    it = entry_symlinks.begin();
+    while(it != entry_symlinks.end())
+    {
+	cancellation_checkpoint();
+	event_name = "x_" + to_string(count++);
+	if(listed.find(event_name) != listed.end())
+	    throw WEBDAR_BUG; // event already exists!?!
+	add_content_entry(event_name, libdar::inode_type::symlink, *it);
 	++it;
     }
 
@@ -660,26 +676,32 @@ void html_select_file::create_dir()
 void html_select_file::add_content_entry(const string & event_name, libdar::inode_type tp, const string & entry)
 {
     item current;
+    bool hyperlink = false;
 
     switch(tp)
     {
     case libdar::inode_type::isdir:
 	content.adopt_static_html(" DIR ");
+	hyperlink = true;
+	break;
+    case libdar::inode_type::symlink:
+	content.adopt_static_html(" LNK ");
+	hyperlink = true;
 	break;
     case libdar::inode_type::nondir:
 	content.adopt_static_html("");
+	hyperlink = (cur_select_mode == sel_file);
 	break;
     case libdar::inode_type::unknown:
 	content.adopt_static_html("?");
+	hyperlink = true; // because it may be a directory or symlink to a directory user would like to chdir into
 	break;
     default:
 	throw WEBDAR_BUG;
     }
 
     current.type = tp;
-    if(!select_dir
-       || tp == libdar::inode_type::isdir
-       || tp == libdar::inode_type::unknown)
+    if(hyperlink)
     {
 	current.btn = new (nothrow) html_button(entry, event_name);
 	if(current.btn == nullptr)

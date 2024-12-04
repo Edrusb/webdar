@@ -32,7 +32,7 @@ extern "C"
 
 
     // webdar headers
-
+#include "html_form_input_file.hpp"
 
     //
 #include "html_form_ignore_as_symlink.hpp"
@@ -66,7 +66,7 @@ set<string> html_form_ignore_as_symlink::get_symlink_list() const
 		throw WEBDAR_BUG;
 	    else
 	    {
-		html_form_input* hfi = dynamic_cast<html_form_input*>(obj.get());
+		html_form_input_file* hfi = dynamic_cast<html_form_input_file*>(obj.get());
 		if(hfi == nullptr)
 		    throw WEBDAR_BUG; // the body_builder object is not an html_form_input
 		ret.insert(hfi->get_value());
@@ -84,25 +84,27 @@ set<string> html_form_ignore_as_symlink::get_symlink_list() const
 unique_ptr<body_builder> html_form_ignore_as_symlink::provide_object_of_type(unsigned int num,
 									     const string & context) const
 {
-    unique_ptr<body_builder> ret;
+    unique_ptr<html_form_input_file> tmp;
 
     switch(num)
     {
     case 0:
-	ret.reset(new (nothrow)
-		  html_form_input("Followed symlink",
-				  html_form_input::text,
-				  "",
-				  "80%"));
+	tmp.reset(new (nothrow)
+		  html_form_input_file("Followed symlink",
+				       "/",
+				       "80%",
+				       "Select a symlink..."));
 	break;
     default:
 	throw WEBDAR_BUG;
     }
 
-    if(! ret)
+    if(! tmp)
 	throw exception_memory();
+    else
+	tmp->set_select_mode(html_form_input_file::select_symlink);
 
-    return ret;
+    return tmp;
 }
 
 

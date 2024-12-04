@@ -115,6 +115,13 @@ public:
 	/// event when the user cancelled file selection
     static const std::string op_cancelled;
 
+    enum select_mode
+    {
+	sel_file,    ///< only non dir and symlinks and non symlink should be selectable
+	sel_dir,     ///< only directories and symlinks should be selectable
+	sel_symlinks ///< only symlinks should be selectable
+    };
+
 	/// constructor
 
 	/// \param[in] message is show to the user and should tell what it is expected to select for
@@ -129,7 +136,7 @@ public:
 	/// ask the user to select a file path (false) or a directory path (true)
 
 	/// \note should be setup before calling go_select()
-    void set_select_dir(bool val) { if(status != st_init) throw WEBDAR_BUG; select_dir = val; };
+    void set_select_mode(select_mode val) { if(status != st_init) throw WEBDAR_BUG; cur_select_mode = val; };
 
 	/// whether to show the button allowing the user to create a subdirectory
 
@@ -148,7 +155,7 @@ public:
 	/// \note if start_dir is not a directory not is an absolute path
 	/// an exception is thrown
     void go_select(const std::shared_ptr<libdar::entrepot> & x_entr,
-	     const std::string & start_dir);
+		   const std::string & start_dir);
 
 	/// obtain the path selected by the user (mandatory after entry_selected event, in order to reuse this object)
     std::string get_selected_path() const { if(status != st_completed) throw WEBDAR_BUG; status = st_init; return fieldset.get_label(); };
@@ -225,7 +232,7 @@ private:
 	// settings
     std::string x_message;            ///< message passed at constructor time
 
-    bool select_dir;                  ///< whether user is expected to select a directory
+    select_mode cur_select_mode;      ///< whether user is expected to select a directory
     std::string filter;               ///< only display files matching this filter (glob expression)
     std::shared_ptr<libdar::entrepot> entr;  ///< the entrepot we should fetch info from
     std::shared_ptr<libdar::user_interaction> mem_ui;  ///< the original UI the entrepot had when given to go_select()
@@ -259,7 +266,7 @@ private:
 
 
 	// status field about html components
-    bool is_loading_mode;             ///< whether the content place holder shows
+    bool is_loading_mode;             ///< whether the content placeholder shows
     bool fieldset_isdir;              ///< whether fieldset points to a directory or not
 
 
