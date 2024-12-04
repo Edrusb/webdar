@@ -166,11 +166,11 @@ public:
 	/// \note the run_and_control_thread() method can be invoked while a thread is already managed
 	/// by this object. THe object monitors the liveness status of all managed thread and join() it
 	/// but only triggers the event close_libdar_screen once all thread have ended and user has clicked
-	/// on the "close" button (or all thread have ended and auto_hide() was set. This does not prevent
+	/// on the "close" button (or all thread have ended and auto_hide() was set). This does not prevent
 	/// the caller to join() any thread it need to wait for its termination. Of course if the user
 	/// asks to abort the libdar process, first only the last provided thread is requested to stop or
 	/// in a second time (upon user action) all threads are stopped in reverse order they have been
-	/// given to management.
+	/// given for management.
 
 	///
 	/// \note, this is the duty of the caller to give to the thread as libdar::user_interaction
