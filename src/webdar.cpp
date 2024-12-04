@@ -86,7 +86,7 @@ extern "C"
 #define WEBDAR_EXIT_RESOURCE 6
 
 #define DEFAULT_TCP_PORT 8008
-#define POOL_SIZE 50
+#define DEFAULT_POOL_SIZE 50
 
     /// \mainpage
     /// The following describes the overall architecture of the webdar software
@@ -497,7 +497,7 @@ static void parse_cmd(int argc, char *argv[],
     verbose = false;
     background = false;
     facility = LOG_USER;
-    max_srv = POOL_SIZE;
+    max_srv = DEFAULT_POOL_SIZE;
     ecoute.clear();
 
     while((lu = getopt(argc, argv, "vl:bC:K:hm:" )) != -1)
