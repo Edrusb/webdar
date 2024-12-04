@@ -216,39 +216,6 @@ int main(int argc, char *argv[], char** env)
 	    // not using std::make_share above in order
 	    // to through an exception from the class tree of exception_base
 
-	    /////////////////////////////////////////////////
-	    // set signal handlers for type 1 and type 2
-
-	libthreadar::thread_signal::change_default_signal(THREAD_SIGNAL);
-	    // SIGUSR2 is used by libthread::thread_signal
-
-	set<int> signals_list;
-	set<int>::iterator sl_it;
-
-	signals_list.insert(SIGHUP);
-	signals_list.insert(SIGINT);
-	signals_list.insert(SIGALRM);
-	signals_list.insert(SIGTERM);
-	signals_list.insert(SIGUSR1);
-
-	sl_it = signals_list.begin();
-	while(sl_it != signals_list.end())
-	{
-	    const char *signal_name = strsignal(*sl_it);
-	    if(signal_name != nullptr)
-		cout << "Adding hanlder for signal " << strsignal(*sl_it) << endl;
-	    else
-		cout << "Adding hanlder for signal " << *sl_it << endl;
-	    if(signal(*sl_it, signal_handler) == SIG_ERR)
-	    {
-		if(signal_name != nullptr)
-		    throw exception_system(string("Cannot set signal handle for ") + string(strsignal(*sl_it)), errno);
-		else
-		    throw exception_system(string("Cannot set signal handle for ") + to_string(*sl_it), errno);
-	    }
-	    ++sl_it;
-	}
-
 
 	    /////////////////////////////////////////////////
 	    // analysing command-line arguments
@@ -280,6 +247,40 @@ int main(int argc, char *argv[], char** env)
 	    throw exception_feature("background as a daemon");
 
 	creport->report(debug, "central report object has been created");
+
+	    /////////////////////////////////////////////////
+	    // set signal handlers for type 1 and type 2
+
+	libthreadar::thread_signal::change_default_signal(THREAD_SIGNAL);
+	    // SIGUSR2 is used by libthread::thread_signal
+
+	set<int> signals_list;
+	set<int>::iterator sl_it;
+
+	signals_list.insert(SIGHUP);
+	signals_list.insert(SIGINT);
+	signals_list.insert(SIGALRM);
+	signals_list.insert(SIGTERM);
+	signals_list.insert(SIGUSR1);
+
+	sl_it = signals_list.begin();
+	while(sl_it != signals_list.end())
+	{
+	    const char *signal_name = strsignal(*sl_it);
+	    if(signal_name != nullptr)
+		creport->report(debug, libdar::tools_printf("Adding hanlder for signal %s", strsignal(*sl_it)));
+	    else
+		creport->report(debug, libdar::tools_printf("Adding hanlder for signal %d", *sl_it));
+
+	    if(signal(*sl_it, signal_handler) == SIG_ERR)
+	    {
+		if(signal_name != nullptr)
+		    throw exception_system(string("Cannot set signal handle for ") + string(strsignal(*sl_it)), errno);
+		else
+		    throw exception_system(string("Cannot set signal handle for ") + to_string(*sl_it), errno);
+	    }
+	    ++sl_it;
+	}
 
 	    /////////////////////////////////////////////////
 	    // creating the server_pool, managing servers
