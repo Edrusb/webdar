@@ -1,4 +1,4 @@
-.TH WEBDAR 1 "August 6th, 2012"
+.TH WEBDAR 1 "December 4th, 2025"
 .UC 8
 .SH NAME
 webdar \- web interface to libdar
@@ -32,6 +32,10 @@ Without -l option, webdar listens on loopback interface (127.0.0.1) on port 8008
 .TP 20
 -v, --verbose
 set webdar to be verbose mode
+.TP 20
+-m, --max-server-thread <num>
+maximum number of concurrent server threads. Note a server is used for each incoming TCP connection, the number of 'session' (configuration and running state of a workload)
+is independant from the number of session and can even be larger than the number of server threads.
 .TP 20
 -b, --background <facility>
 set webdar as a daemon, <facility> is the syslog facility used to report the error messages that without this option are reported on stdout/stderr.

@@ -165,7 +165,8 @@ static void parse_cmd(int argc, char *argv[],
 		      bool & background,
 		      int & facility,
 		      string & certificate,
-		      string & privateK);
+		      string & privateK,
+		      unsigned int & max_srv);
 
 static void add_item_to_list(const char *optarg, vector<interface_port> & ecoute);
 static void close_all_listeners(int sig);
@@ -196,6 +197,7 @@ int main(int argc, char *argv[], char** env)
     string fixed_pass;
     string certificate;
     string privateK;
+    unsigned int max_srv;
     unique_ptr<ssl_context> cipher(nullptr);
 
     last_trigger = time(nullptr) - 1;
@@ -225,7 +227,8 @@ int main(int argc, char *argv[], char** env)
 		  background,
 		  facility,
 		  certificate,
-		  privateK);
+		  privateK,
+		  max_srv);
 
 
 	    /////////////////////////////////////////////////
@@ -287,9 +290,11 @@ int main(int argc, char *argv[], char** env)
 	    // which each, interact with a browser through an
 	    // http/https connection.
 
-	pool.reset(new (nothrow) server_pool(POOL_SIZE, creport));
+	pool.reset(new (nothrow) server_pool(max_srv, creport));
 	if(!pool)
 	    throw exception_memory();
+
+	creport->report(debug, libdar::tools_printf("A pool of %d server(s) has been created", max_srv));
 
 
 	    /////////////////////////////////////////////////
@@ -482,7 +487,8 @@ static void parse_cmd(int argc, char *argv[],
 		      bool & background,
 		      int & facility,
 		      string & certificate,
-		      string & privateK)
+		      string & privateK,
+		      unsigned int & max_srv)
 {
     int lu;
 	// prevents getopt to show a message when unknown option is met
@@ -491,9 +497,10 @@ static void parse_cmd(int argc, char *argv[],
     verbose = false;
     background = false;
     facility = LOG_USER;
+    max_srv = POOL_SIZE;
     ecoute.clear();
 
-    while((lu = getopt(argc, argv, "vl:bC:K:h" )) != -1)
+    while((lu = getopt(argc, argv, "vl:bC:K:hm:" )) != -1)
     {
 	switch(lu)
 	{
@@ -523,6 +530,9 @@ static void parse_cmd(int argc, char *argv[],
 	    break;
 	case '?':
 	    cerr << "Ignoring Unknown argument given on command line: " << lu << endl;
+	    break;
+	case 'm':
+	    max_srv = webdar_tools_convert_to_int(optarg);
 	    break;
 	default:
 	    throw WEBDAR_BUG; // "known option by getopt but not known by webdar!
