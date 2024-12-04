@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "exceptions.hpp"
@@ -93,7 +93,8 @@ saisie::saisie():
     go_isolate("Isolate", event_isolate),
     go_merge("Merge", event_merge),
     go_repair("Repair", event_repair),
-    close("Do you really want to close this session?", false)
+    close("Do you really want to close this session?", false),
+    disco(libdar::tools_printf("WebDar - %s", WEBDAR_VERSION))
 {
     status = st_idle;
     html_text text; // used to build static text content

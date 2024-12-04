@@ -30,6 +30,7 @@ extern "C"
 
     // C++ system header files
 #include <new>
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "html_form.hpp"
@@ -52,6 +53,7 @@ const string choose::css_class_normal_text = "choose_normal_text";
 
 choose::choose():
     page("Webdar - Choose a session"),
+    disco(libdar::tools_printf("WebDar - %s", WEBDAR_VERSION)),
     owner(""),
     confirm_mode(false),
     disconnect_req(false),

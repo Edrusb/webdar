@@ -41,17 +41,23 @@ using namespace std;
 
 const string html_disconnect::event_disconn = "disconnect";
 const string html_disconnect::css_global = "html_disco_global";
+const string html_disconnect::css_title = "html_disco_title";
+const string html_disconnect::css_title_box = "html_disco_title_box";
 const string html_disconnect::css_status = "html_disco_status";
 const string html_disconnect::css_status_box = "html_disco_status_box";
 const string html_disconnect::css_quit_box = "html_disco_quit_box";
 const string html_disconnect::css_quit_link = "html_disco_quit_lnk";
 
-html_disconnect::html_disconnect():
+html_disconnect::html_disconnect(const string & webdar_title):
     quit("Disconnect", event_disconn)
 {
 	// components configuration
+    title.clear();
+    title.add_text(0, webdar_title);
 
 	// adoption tree
+    title_box.adopt(&title);
+    adopt(&title_box);
     adopt(&quit);
     status_box.adopt(&status);
     adopt(&status_box);
@@ -62,6 +68,8 @@ html_disconnect::html_disconnect():
 
 	// css
     add_css_class(css_global);
+    title.add_css_class(css_title);
+    title_box.add_css_class(css_title_box);
     status.add_css_class(css_status);
     status_box.add_css_class(css_status_box);
     quit.add_css_class(css_quit_box);
@@ -106,7 +114,31 @@ void html_disconnect::new_css_library_available()
 
 	csslib->add(css_global, tmp);
 
-	    // for the html_text
+
+	    // for the html_text title
+	tmp.clear();
+
+	tmp.css_font_weight_bold();
+	tmp.css_text_shadow("0.1em", "0.1em", "0");
+	tmp.css_text_v_align(css::al_middle);
+	tmp.css_margin_right("1em");
+	tmp.css_color(COLOR_MENU_BORDER_OFF);
+
+	csslib->add(css_title, tmp);
+
+	    // the transparent title_box
+	tmp.clear();
+
+	tmp.css_border_color(css::bd_all, COLOR_TOPBAR_BACK, true);
+	tmp.css_border_style(css::bd_all, css::bd_solid, true);
+	tmp.css_border_width(css::bd_all, css::bd_medium, true);
+	tmp.css_margin("0.2em", true);
+	tmp.css_float(css::fl_left);
+
+	csslib->add(css_title_box, tmp);
+
+
+	    // for the html_text status
 	tmp.clear();
 
 	tmp.css_font_weight_bold();
