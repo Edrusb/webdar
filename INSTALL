@@ -1,5 +1,3 @@
-Currently, webdar is still a work in progress,
-
 REQUIREMENTS
 
 you need:
@@ -27,23 +25,23 @@ variable:
 
    ./configure --prefix=/usr
 
-Last if you want to build a package you can use
+Last if you want to build a distro package, you can use
 the DESTDIR variable in addition, and no more need root
 priviledge:
 
    make DESTDIR=/tmp install
 
 If you want to uninstall webdar you can use the
-'uninstall' target, with or without DESTDIR and PREFIX:
+'uninstall' target,  DESTDIR and/or --prefix should
+be the same as the one used at installation step:
 
    make uninstall
 
 or
 
-   make DESTDIR=/tmp uninstall
+   make DESTDIR=/tmp --prefix=/usr uninstall
 
 
 What's next? Read the man page:
 
        man webdar
-
