@@ -56,6 +56,7 @@ user_interface::user_interface()
     parametrage.record_actor_on_event(this, saisie::event_compare);
     parametrage.record_actor_on_event(this, saisie::event_test);
     parametrage.record_actor_on_event(this, saisie::event_list);
+    parametrage.record_actor_on_event(this, saisie::event_summary);
     parametrage.record_actor_on_event(this, saisie::event_create);
     parametrage.record_actor_on_event(this, saisie::event_isolate);
     parametrage.record_actor_on_event(this, saisie::event_merge);
@@ -71,6 +72,7 @@ user_interface::user_interface()
 
 	/// messages received from html_listring_page object named in_list
     in_list.record_actor_on_event(this, html_listing_page::event_close);
+    in_summ.record_actor_on_event(this, html_summary_page::event_close);
 
     current_thread = nullptr;
 
@@ -112,7 +114,11 @@ answer user_interface::give_answer(const request & req)
 	    case listing:
 		ret.add_body(in_list.get_body_part(req.get_uri().get_path(), req));
 		break;
+	    case summary:
+		ret.add_body(in_summ.get_body_part(req.get_uri().get_path(), req));
+		break;
 	    case listing_open:
+	    case summary_open:
 	    case running:
 		ret.add_body(in_action.get_body_part(req.get_uri().get_path(), req));
 		break;
@@ -162,7 +168,11 @@ void user_interface::on_event(const string & event_name)
 	    break;
 	case listing_open:
 	    throw WEBDAR_BUG;
+	case summary_open:
+	    throw WEBDAR_BUG;
 	case listing:
+	    throw WEBDAR_BUG;
+	case summary:
 	    throw WEBDAR_BUG;
 	case running:
 	    throw WEBDAR_BUG;
@@ -181,11 +191,23 @@ void user_interface::on_event(const string & event_name)
 	case config:
 	    throw WEBDAR_BUG;
 	case listing_open:
+	case summary_open:
 	    mode_changed = true;
 	    if(! in_action.has_libdar_been_aborted())
 	    {
-		mode = listing;
-		in_list.set_source(&arch_init_list);
+		switch(mode)
+		{
+		case listing_open:
+		    mode = listing;
+		    in_list.set_source(&arch_init_list);
+		    break;
+		case summary_open:
+		    mode = summary;
+		    in_summ.set_source(&arch_init_list);
+		    break;
+		default:
+		    throw WEBDAR_BUG;
+		}
 	    }
 	    else
 	    {
@@ -194,6 +216,8 @@ void user_interface::on_event(const string & event_name)
 	    }
 	    break;
 	case listing:
+	    throw WEBDAR_BUG;
+	case summary:
 	    throw WEBDAR_BUG;
 	case running:
 	    mode_changed = true;
@@ -211,15 +235,19 @@ void user_interface::on_event(const string & event_name)
 	    || event_name == saisie::event_create
 	    || event_name == saisie::event_isolate
 	    || event_name == saisie::event_list
+	    || event_name == saisie::event_summary
 	    || event_name == saisie::event_merge
 	    || event_name == saisie::event_repair)
     {
 	if(mode != config)
 	    throw WEBDAR_BUG;
-	if(event_name != saisie::event_list)
-	    mode = running;
-	else
+	if(event_name == saisie::event_list)
 	    mode = listing_open;
+	else if(event_name == saisie::event_summary)
+	    mode = summary_open;
+	else
+	    mode = running;
+
 	in_action.get_html_user_interaction()->clear();
 	mode_changed = true;
 
@@ -237,7 +265,8 @@ void user_interface::on_event(const string & event_name)
 		go_isolate();
 	    else if(event_name == saisie::event_merge)
 		go_merge();
-	    else if(event_name == saisie::event_list)
+	    else if(event_name == saisie::event_list
+		    || event_name == saisie::event_summary)
 		go_init_list();
 	    else if(event_name == saisie::event_repair)
 		go_repair();
@@ -257,7 +286,7 @@ void user_interface::on_event(const string & event_name)
     }
     else if(event_name == html_error::acknowledged)
     {
-	if(return_mode != listing)
+	if(return_mode != listing && return_mode != summary)
 	    mode = return_mode;
 	else
 	    mode = config;
@@ -272,6 +301,17 @@ void user_interface::on_event(const string & event_name)
 	if(!arch_init_list.opened())
 	    throw WEBDAR_BUG;
 	in_list.clear();
+	arch_init_list.close_archive();
+	mode = config;
+	mode_changed = true;
+    }
+    else if(event_name == html_summary_page::event_close)
+    {
+	if(mode != summary)
+	    throw WEBDAR_BUG;
+	if(!arch_init_list.opened())
+	    throw WEBDAR_BUG;
+	in_summ.clear();
 	arch_init_list.close_archive();
 	mode = config;
 	mode_changed = true;
@@ -325,6 +365,7 @@ void user_interface::set_session_name(const string & name)
     in_action.set_session_name(name);
     in_error.set_session_name(name);
     in_list.set_session_name(name);
+    in_summ.set_session_name(name);
 	// note, parametrage is already set with the new session name
 	// the session name is filled by the user using the saisie class (parametrage)
 	// which update itself and triggers the event "saisie::changed_session_name"
@@ -338,6 +379,7 @@ void user_interface::prefix_has_changed()
     in_action.set_prefix(get_prefix());
     in_error.set_prefix(get_prefix());
     in_list.set_prefix(get_prefix());
+    in_summ.set_prefix(get_prefix());
 
 	// by the way the prefix is also the session ID used as initial session name
     if(parametrage.get_session_name() == "")

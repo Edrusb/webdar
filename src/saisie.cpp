@@ -47,6 +47,7 @@ const string saisie::event_restore = "saisie_restore";
 const string saisie::event_compare = "saisie_compare";
 const string saisie::event_test    = "saisie_test";
 const string saisie::event_list    = "saisie_list";
+const string saisie::event_summary = "saisie_summ";
 const string saisie::event_create  = "saisie_create";
 const string saisie::event_isolate = "saisie_isolate";
 const string saisie::event_merge   = "saisie_merge";
@@ -191,6 +192,7 @@ saisie::saisie():
     select.adopt_in_section(menu_test, &go_test);
 
 	// listing sub-page
+    select.adopt_in_section(menu_list, &list_or_summ);
     select.adopt_in_section(menu_list, &go_list);
 
 	// creation sub-page
@@ -248,6 +250,7 @@ saisie::saisie():
     register_name(event_compare);
     register_name(event_test);
     register_name(event_list);
+    register_name(event_summary);
     register_name(event_create);
     register_name(event_isolate);
     register_name(event_merge);
@@ -342,6 +345,8 @@ string saisie::inherited_get_body_part(const chemin & path,
 
 void saisie::on_event(const string & event_name)
 {
+    string propagated_event_name = event_name;
+
     if(event_name == html_menu::changed
        || event_name == html_form_input::changed
        || event_name == "")
@@ -380,7 +385,15 @@ void saisie::on_event(const string & event_name)
 	else if(event_name == event_test)
 	    status = st_test;
 	else if(event_name == event_list)
-	    status = st_list;
+	{
+	    if(list_or_summ.do_we_list())
+		status = st_list;
+	    else
+	    {
+		propagated_event_name = event_summary;
+		status = st_summary;
+	    }
+	}
 	else if(event_name == event_create)
 	    status = st_create;
 	else if(event_name == event_isolate)
@@ -391,7 +404,7 @@ void saisie::on_event(const string & event_name)
 	    status = st_repair;
 	else
 	    throw WEBDAR_BUG;
-	act(event_name); // propagate the event to the subscribers
+	act(propagated_event_name); // propagate the event to the subscribers
 
 	// must not call my_body_part_has_changed()!
 	// this would trigger the inherited_get_body_part()
@@ -428,6 +441,7 @@ string saisie::get_archive_path() const
     case st_compare:
     case st_test:
     case st_list:
+    case st_summary:
     case st_isolate:
     case st_repair:
     case st_merge:
@@ -449,6 +463,7 @@ string saisie::get_archive_basename() const
     case st_compare:
     case st_test:
     case st_list:
+    case st_summary:
     case st_isolate:
     case st_repair:
     case st_merge:
@@ -466,6 +481,7 @@ libdar::archive_options_read saisie::get_read_options(shared_ptr<html_web_user_i
        && status != st_compare
        && status != st_test
        && status != st_list
+       && status != st_summary
        && status != st_isolate
        && status != st_merge
        && status != st_repair)
@@ -487,6 +503,8 @@ const string & saisie::get_fs_root() const
     case st_test:
 	throw WEBDAR_BUG;
     case st_list:
+	throw WEBDAR_BUG;
+    case st_summary:
 	throw WEBDAR_BUG;
     case st_create:
 	return create.get_fs_root();
@@ -552,6 +570,15 @@ libdar::archive_options_merge saisie::get_merging_options(shared_ptr<html_web_us
 libdar::archive_options_repair saisie::get_repairing_options(shared_ptr<html_web_user_interaction> dialog) const
 {
     return repair.get_options(dialog);
+}
+
+bool saisie::do_we_list() const
+{
+    if(status != st_list
+       && status != st_summary)
+	throw WEBDAR_BUG;
+
+    return list_or_summ.do_we_list();
 }
 
 void saisie::new_css_library_available()

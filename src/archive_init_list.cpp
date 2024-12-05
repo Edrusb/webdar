@@ -54,6 +54,14 @@ bool archive_init_list::has_subdirectory(const string & dir) const
     return ptr->has_subdirectory(dir);
 }
 
+libdar::archive_summary archive_init_list::get_summary() const
+{
+    if(!ptr)
+	throw WEBDAR_BUG;
+
+    return ptr->summary_data();
+}
+
 void archive_init_list::inherited_run()
 {
     if(ptr)

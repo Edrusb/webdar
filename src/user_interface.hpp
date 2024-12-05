@@ -42,6 +42,7 @@ extern "C"
 #include "html_libdar_running_page.hpp"
 #include "html_error.hpp"
 #include "html_listing_page.hpp"
+#include "html_summary_page.hpp"
 #include "archive_test.hpp"
 #include "archive_restore.hpp"
 #include "archive_compare.hpp"
@@ -98,6 +99,8 @@ private:
 	config,        ///< should display parameter selection
 	listing_open,  ///< should display the web_user_interface, progressive_report an cancellation button
 	listing,       ///< should display listing navigation window
+	summary_open,  ///< should display the web_user_interface, progressive_report and cancellation button
+	summary,       ///< should display the summary window
 	running,       ///< should display web_user_interface, progressive_report and cancellation button
 	error,         ///< should display the error
     };
@@ -114,6 +117,7 @@ private:
     html_libdar_running_page in_action; ///< page issued when a libdar thread is running (mode == running)
     html_error in_error;           ///< page issued when an exception has been caught (mode == error)
     html_listing_page in_list;     ///< page issued when proceeding to archive listing
+    html_summary_page in_summ;     ///< page issued when proceeding to archive summary
 
     libthreadar::thread *current_thread; ///< points to the running thread (either arch_test, arch_merge, ....)
     archive_test arch_test;        ///< holds thread created for testing archives

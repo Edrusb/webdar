@@ -75,6 +75,9 @@ public:
     const std::vector<libdar::list_entry> get_children_in_table(const std::string & dir) const;
     bool has_subdirectory(const std::string & dir) const;
 
+	/// obtain the archive summary
+    libdar::archive_summary get_summary() const;
+
 	/// close the opened archive run in the calling thread
     void close_archive() { ptr.reset(); };
 

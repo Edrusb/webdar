@@ -56,6 +56,7 @@ extern "C"
 #include "html_derouleur.hpp"
 #include "html_demo.hpp"
 #include "html_disconnect.hpp"
+#include "html_options_list.hpp"
 
     /// class saisie
 
@@ -99,6 +100,7 @@ public:
     static const std::string event_compare;
     static const std::string event_test;
     static const std::string event_list;
+    static const std::string event_summary;
     static const std::string event_create;
     static const std::string event_isolate;
     static const std::string event_merge;
@@ -155,6 +157,9 @@ public:
     std::string get_repairing_basename() const { return repair.get_archive_basename(); };
     libdar::archive_options_repair get_repairing_options(std::shared_ptr<html_web_user_interaction> dialog) const;
 
+	// listing or archive summary
+    bool do_we_list() const;
+
 	/// defines the name of the session
 	///
 	/// \note this call does not trigger any event
@@ -181,7 +186,8 @@ private:
 	st_restore, ///< user clicked on the restore button
 	st_compare, ///< user clicked on the compare button
 	st_test,    ///< user clicked on the test button
-	st_list,    ///< user clicked on the list button
+	st_list,    ///< user clicked on the list button with list options set
+	st_summary, ///< user clicked on the list button with summary options set
 	st_create,  ///< user clicked on the create button
 	st_isolate, ///< user clicked on the isolate button
 	st_merge,   ///< user clicked on the merge button
@@ -217,6 +223,7 @@ private:
     html_options_test test;
     html_double_button go_test;
 	//
+    html_options_list list_or_summ;
     html_double_button go_list;
 	//
     html_archive_create create;
