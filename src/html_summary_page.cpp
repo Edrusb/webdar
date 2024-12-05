@@ -164,7 +164,7 @@ void html_summary_page::set_source(const archive_init_list *ref)
     slice_table.adopt_static_html("Value");
     slice_table.adopt_static_html("Number of slices");
     slice_table.adopt_static_html(libdar::deci(sum.get_slice_number()).human());
-    if(sum.get_slice_number() > 1)
+    if(sum.get_slice_number() > 1 && sum.get_first_slice_size() != sum.get_slice_size())
     {
 	slice_table.adopt_static_html("First slice size");
 	slice_table.adopt_static_html(libdar::deci(sum.get_first_slice_size()).human() + " bytes");
@@ -186,8 +186,11 @@ void html_summary_page::set_source(const archive_init_list *ref)
     if(sum.get_ref_first_slice_size() != sum.get_first_slice_size()
        || sum.get_ref_slice_size() != sum.get_slice_size())
     {
-	slice_table.adopt_static_html("Ref first slice size");
-	slice_table.adopt_static_html(libdar::deci(sum.get_ref_first_slice_size()).human() + " bytes");
+	if(sum.get_ref_first_slice_size() != sum.get_ref_slice_size())
+	{
+	    slice_table.adopt_static_html("Ref first slice size");
+	    slice_table.adopt_static_html(libdar::deci(sum.get_ref_first_slice_size()).human() + " bytes");
+	}
 	slice_table.adopt_static_html("Ref slice size");
 	slice_table.adopt_static_html(libdar::deci(sum.get_ref_slice_size()).human() + " bytes");
     }
