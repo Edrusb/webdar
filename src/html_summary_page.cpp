@@ -159,7 +159,7 @@ void html_summary_page::set_source(const archive_init_list *ref)
 	throw WEBDAR_BUG;
 
     about_text.clear();
-    about_text.add_text(2, libdar::tools_printf("Properties of %s", ref->get_archive_full_name().c_str()));
+    about_text.add_text(3, libdar::tools_printf("Properties of %s", ref->get_archive_full_name().c_str()));
 
     libdar::archive_summary sum = ref->get_summary();
 
@@ -314,7 +314,7 @@ void html_summary_page::new_css_library_available()
     if(!csslib->class_exists(css_title))
     {
 	tmp.clear();
-	tmp.css_text_shadow("0.1em", "0.1em", "0");
+	tmp.css_text_shadow("0.2em", "0.2em", "0.1em", "#888888");
 	csslib->add(css_title, tmp);
     }
 
@@ -380,7 +380,7 @@ void html_summary_page::new_css_library_available()
     {
 	tmp.clear();
 	tmp.css_font_weight_bold();
-	tmp.css_text_shadow("0.1em", "0.1em", "0");
+	tmp.css_text_shadow("0.2em", "0.2em", "0.1em", "#888888");
 	tmp.css_text_v_align(css::al_middle);
 	tmp.css_margin_right("1em");
 	tmp.css_color(COLOR_MENU_BORDER_OFF);

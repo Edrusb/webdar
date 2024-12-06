@@ -53,7 +53,7 @@ html_disconnect::html_disconnect(const string & webdar_title):
 {
 	// components configuration
     title.clear();
-    title.add_text(0, webdar_title);
+    title.add_text(3, webdar_title);
 
 	// adoption tree
     title_box.adopt(&title);
@@ -119,9 +119,9 @@ void html_disconnect::new_css_library_available()
 	tmp.clear();
 
 	tmp.css_font_weight_bold();
-	tmp.css_text_shadow("0.1em", "0.1em", "0");
-	tmp.css_text_v_align(css::al_middle);
+	tmp.css_text_shadow("0.2em", "0.2em", "0.1em", "#888888");
 	tmp.css_margin_right("1em");
+	tmp.css_margin_left("1em");
 	tmp.css_color(COLOR_MENU_BORDER_OFF);
 
 	csslib->add(css_title, tmp);
@@ -129,10 +129,6 @@ void html_disconnect::new_css_library_available()
 	    // the transparent title_box
 	tmp.clear();
 
-	tmp.css_border_color(css::bd_all, COLOR_TOPBAR_BACK, true);
-	tmp.css_border_style(css::bd_all, css::bd_solid, true);
-	tmp.css_border_width(css::bd_all, css::bd_medium, true);
-	tmp.css_margin("0.2em", true);
 	tmp.css_float(css::fl_left);
 
 	csslib->add(css_title_box, tmp);
