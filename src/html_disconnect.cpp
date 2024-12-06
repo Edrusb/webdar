@@ -48,6 +48,8 @@ const string html_disconnect::css_status_box = "html_disco_status_box";
 const string html_disconnect::css_quit_box = "html_disco_quit_box";
 const string html_disconnect::css_quit_link = "html_disco_quit_lnk";
 
+bool html_disconnect::default_basic_auth = true;
+
 html_disconnect::html_disconnect(const string & webdar_title):
     quit("Disconnect", event_disconn)
 {
@@ -65,6 +67,10 @@ html_disconnect::html_disconnect(const string & webdar_title):
 	// events
     quit.record_actor_on_event(this, event_disconn);
     register_name(event_disconn); // to be able to propagate the event
+
+	// visible status
+    if(default_basic_auth)
+	quit.set_visible(false);
 
 	// css
     add_css_class(css_global);

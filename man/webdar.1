@@ -3,7 +3,7 @@
 .SH NAME
 webdar \- web interface to libdar
 .SH SYNOPSIS
-webdar [-l <network interface>[:port] [,<network interface>[:port] [,...]]] [-v] [-b <facility>] [-C <certificate file> -K <private key file>]
+webdar [-l <network interface>[:port] [,<network interface>[:port] [,...]]] [-v] [-b <facility>] [-w <yes|no>] [-C <certificate file> -K <private key file>]
 .P
 webdar -h
 .P
@@ -45,6 +45,12 @@ provide path to a file containing a certificate for the private key to use for S
 .TP 20
 -K <private key file>
 provide the path to a file holding the private key, to use to encrypt ssl sessions, without -K option and provided private key, connection to webdar in https sessions is not available
+.TP 20
+-w <yes|no>
+with "yes", using normal webauth to authenticate (at least with webdar 1.0), which means disconnection is not available unless the browser is restarted.
+Using "no" still uses basic authentication but new TCP session are forced to reauthenticate and disconnection within a given TCP session
+is kept by ignoring the basic authentication token until user reauthenticate. The drawback is the user reauthentication needed whenever the
+browser decides to teardown and restart an new TCP session to webdar.
 .TP 20
 -h
 shows a very light help information

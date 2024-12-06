@@ -64,6 +64,11 @@ public:
 	/// used by another server to ask this object to release the session it uses
     void release_session() { can_keep_session = false; }; // no need of mutex here, several concurrent call will lead to the same result.
 
+
+	/// wether to emulate user logout while using basic authentication (see also class html_disconnect)
+    static void force_disconnection_at_end_of_session(bool val) { default_basic_auth = ! val; };
+
+
 protected:
 
 	/// inherited from libthreadar::thread
@@ -88,6 +93,9 @@ private:
     auth_consideration ignore_auth;      ///< how to consider authentication info in request
 
     void end_all_peers();
+
+    static bool default_basic_auth;     ///< if true, no disconnection is provided (unless browser is restarted)
+
 };
 
 #endif

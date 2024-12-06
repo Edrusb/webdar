@@ -86,7 +86,7 @@ answer challenge::give_answer(const request & req)
 	// Request a login/password
     ret.set_status(STATUS_CODE_UNAUTHORIZED);
     ret.set_reason("login/password requested");
-    ret.set_attribute(HDR_WWW_AUTHENTICATE, "Basic realm=\"/\"");
+    ret.set_attribute(HDR_WWW_AUTHENTICATE, "Basic realm=\"/Webdar\"");
     ret.add_body(page.get_body_part(req.get_uri().get_path(), req));
 
     return ret;

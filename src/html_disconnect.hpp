@@ -62,6 +62,21 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
+	/// whether to emulate user logout while using basic authentication (see also class server)
+
+	/// \note in version 1.0 web authentication relies on basic authentication schema, which does not
+	/// have any mean to provide disconnection. To emulate such disconnection, each new TCP session requires
+	/// to reauthentification from the user. A web browser may decide to tear down and recreate a new TCP session
+	/// after some time, which will requirer the user to reauthenticate while from user stand point this is
+	/// the same web/http session. To avoid this, it is possible to only rely on the basic authnentication
+	/// and upon new TCP session, the server object only validate that the HTTP header has a valid credentials.
+	/// The drawback is that deauthentication is not possible unless the browser is restarted. The following call
+	/// define the either the first (true) ot the second (false) previously described behaviors for all server
+	/// objects. This is a static method because it is expected to be removed in the future when the session object
+	/// will keep trace of valid authentication tokens (stored as cookies or basic authentication with volatile temporary
+	/// password also stored and eventually removed from an internal base the challenge object would have access to.
+    static void force_disconnection_at_end_of_session(bool val) { default_basic_auth = ! val; };
+
 protected:
 
 	/// inherited from body_builder from html_button
@@ -82,6 +97,9 @@ private:
     html_div status_box;
     html_text status;
     html_button quit;
+
+    static bool default_basic_auth;     ///< if true, no disconnection is provided (unless browser is restarted)
+
 };
 
 #endif

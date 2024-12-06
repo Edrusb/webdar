@@ -54,13 +54,15 @@ using namespace std;
 
 static string get_session_ID_from(const request & req);
 
+bool server::default_basic_auth = true;
+
 server::server(const shared_ptr<central_report> & log,
 	       const shared_ptr<const authentication> & auth,
 	       unique_ptr<proto_connexion> & source) :
     src(source, log),
     can_keep_session(true),
     locked_session(nullptr),
-    ignore_auth(ignore_auth_steady)
+    ignore_auth(default_basic_auth? no_ignore: ignore_auth_steady)
 {
     if(!log)
 	throw WEBDAR_BUG;
@@ -173,7 +175,7 @@ void server::inherited_run()
 
 					    initial = false;
 					    ans = chooser.give_answer(req);
-					    if(chooser.disconnection_requested())
+					    if(chooser.disconnection_requested() && !default_basic_auth)
 					    {
 						ignore_auth = ignore_auth_redir;
 						disconned.set_redirect(true);
@@ -194,7 +196,7 @@ void server::inherited_run()
 					}
 					    // obtaining the answer from the session object
 					ans = sess->give_answer(req);
-					if(sess->disconnection_requested())
+					if(sess->disconnection_requested() && !default_basic_auth)
 					{
 					    ignore_auth = ignore_auth_redir;
 					    disconned.set_redirect(true);

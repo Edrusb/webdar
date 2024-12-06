@@ -490,6 +490,7 @@ static void parse_cmd(int argc, char *argv[],
 		      string & privateK,
 		      unsigned int & max_srv)
 {
+    bool default_basic_auth = true;
     int lu;
 	// prevents getopt to show a message when unknown option is met
 	// we will report that ourselfves:
@@ -500,7 +501,7 @@ static void parse_cmd(int argc, char *argv[],
     max_srv = DEFAULT_POOL_SIZE;
     ecoute.clear();
 
-    while((lu = getopt(argc, argv, "vl:bC:K:hm:" )) != -1)
+    while((lu = getopt(argc, argv, "vl:bC:K:hm:w:")) != -1)
     {
 	switch(lu)
 	{
@@ -533,6 +534,20 @@ static void parse_cmd(int argc, char *argv[],
 	    break;
 	case 'm':
 	    max_srv = webdar_tools_convert_to_int(optarg);
+	    break;
+	case 'w':
+	    if(optarg != nullptr && strncasecmp("yes", optarg, strlen("yes")) == 0)
+	    {
+		server::force_disconnection_at_end_of_session(false);
+		html_disconnect::force_disconnection_at_end_of_session(false);
+	    }
+	    else if(optarg != nullptr && strncasecmp("no", optarg, strlen("no")) == 0)
+	    {
+		server::force_disconnection_at_end_of_session(true);
+		html_disconnect::force_disconnection_at_end_of_session(true);
+	    }
+	    else
+		throw exception_range("-w option needs \"yes\" or \"no\" as argument");
 	    break;
 	default:
 	    throw WEBDAR_BUG; // "known option by getopt but not known by webdar!
@@ -728,7 +743,7 @@ static void signal_handler(int x)
 
 static void usage(const char* argv0)
 {
-    string msg = libdar::tools_printf("Usage: %s [-l <IP>[:port]] [-v] [-b] [-C <certificate file> -K <private key file>]\n", argv0);
+    string msg = libdar::tools_printf("Usage: %s [-l <IP>[:port]] [-v] [-b] [-w <yes|no>] [-C <certificate file> -K <private key file>]\n", argv0);
 
     cout << msg << endl;
     exit(1);
