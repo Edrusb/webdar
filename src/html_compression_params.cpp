@@ -54,7 +54,7 @@ html_compression_params::html_compression_params(bool show_resave,
     compression_block("Block compression for parallel compression (zero to zero to disable)", 0, "30"),
     never_resave_uncompressed("Never resave uncompressed if compressed file took more place than uncompressed", html_form_input::check, "", "1"),
     keep_compressed("Keep file compressed", html_form_input::check, "", "1"),
-    compr_threads("Number of threads for compression", html_form_input::number, "2", "5"),
+    compr_threads("Number of threads for parallel compression", html_form_input::number, "2", "5"),
     x_show_resave(show_resave),
     x_show_min_size(show_min_size)
 {
@@ -77,8 +77,8 @@ html_compression_params::html_compression_params(bool show_resave,
     compr_fs.adopt(&compression);
     compr_fs.adopt(&compression_level);
     compr_fs.adopt(&min_compr_size);
-    compr_fs.adopt(&compression_block);
     compr_fs.adopt(&never_resave_uncompressed);
+    compr_fs.adopt(&compression_block);
     compr_fs.adopt(&compr_threads);
     form_compr.adopt(&compr_fs);
     adopt(&form_compr);
@@ -87,17 +87,19 @@ html_compression_params::html_compression_params(bool show_resave,
     register_name(changed);
     compression.record_actor_on_event(this, html_compression::changed);
     keep_compressed.record_actor_on_event(this, html_form_input::changed);
+    compression_block.record_actor_on_event(this, html_form_input_unit::changed);
 
+    on_event(html_compression::changed);
 
 	// css
-    on_event(html_compression::changed);
 
 }
 
 void html_compression_params::on_event(const string & event_name)
 {
     if(event_name == html_compression::changed
-       || event_name == html_form_input::changed)
+       || event_name == html_form_input::changed
+       || event_name == html_form_input_unit::changed)
     {
 	if(keep_compressed.get_value_as_bool())
 	{
@@ -156,6 +158,16 @@ void html_compression_params::on_event(const string & event_name)
 		break;
 	    default:
 		throw WEBDAR_BUG;
+	    }
+
+	    if(compression_block.get_value_as_infinint() == 0)
+	    {
+		compr_threads.set_value_as_int(1);
+		compr_threads.set_enabled(false);
+	    }
+	    else
+	    {
+		compr_threads.set_enabled(true);
 	    }
 	}
 
