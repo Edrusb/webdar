@@ -62,6 +62,9 @@ html_form_input_unit::html_form_input_unit(const string & label,
     field.set_no_CR();
     set_field_val();
     field.set_min_only(0);
+    if(initial_value.is_zero())
+	unit_box.set_unit_and_ratio_indexes(1, 1); // SI and K -> kio by default when zero is given
+	// else we use the biggest possible unit
 
 	// adoption tree
     adopt(&field);
