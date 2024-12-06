@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_css_style.hpp"
@@ -53,6 +53,7 @@ html_summary_page::html_summary_page():
 
 	// components setup
     set_session_name("");
+
     format_table.css_border_collapsed(true);
     slice_table.css_border_collapsed(true);
     overall_table.css_border_collapsed(true);
@@ -60,16 +61,30 @@ html_summary_page::html_summary_page():
     saved_table.css_border_collapsed(true);
 
 	// the body_builder tree
-    adopt(&format_title);
-    adopt(&format_table);
-    adopt(&slice_title);
-    adopt(&slice_table);
-    adopt(&overall_title);
-    adopt(&overall_table);
-    adopt(&content_title);
-    adopt(&content_table);
-    adopt(&saved_title);
-    adopt(&saved_table);
+
+    about.adopt(&about_text);
+    adopt(&about);
+
+    format_float.adopt(&format_title);
+    format_float.adopt(&format_table);
+    adopt(&format_float);
+
+    slice_float.adopt(&slice_title);
+    slice_float.adopt(&slice_table);
+    adopt(&slice_float);
+
+    overall_float.adopt(&overall_title);
+    overall_float.adopt(&overall_table);
+    adopt(&overall_float);
+
+    content_float.adopt(&content_title);
+    content_float.adopt(&content_table);
+    adopt(&content_float);
+
+    saved_float.adopt(&saved_title);
+    saved_float.adopt(&saved_table);
+    adopt(&saved_float);
+
     adopt(&close);
 
 	// event binding
@@ -77,8 +92,9 @@ html_summary_page::html_summary_page():
     close.record_actor_on_event(this, event_close);
 
 	// css
-    webdar_css_style::normal_button(close, false);
-    close.add_css_class(css_close);
+    about.add_css_class(css_about_box);
+    about_text.add_css_class(css_about_text);
+
     format_title.add_css_class(css_title);
     slice_title.add_css_class(css_title);
     overall_title.add_css_class(css_title);
@@ -86,20 +102,31 @@ html_summary_page::html_summary_page():
     saved_title.add_css_class(css_title);
 
     format_table.set_css_class_cells(css_table_rest);
-    format_table.set_css_class_first_row(css_table_top);
-    format_table.set_css_class_first_column(css_table_left);
     slice_table.set_css_class_cells(css_table_rest);
-    slice_table.set_css_class_first_row(css_table_top);
-    slice_table.set_css_class_first_column(css_table_left);
     overall_table.set_css_class_cells(css_table_rest);
-    overall_table.set_css_class_first_row(css_table_top);
-    overall_table.set_css_class_first_column(css_table_left);
     content_table.set_css_class_cells(css_table_rest);
-    content_table.set_css_class_first_row(css_table_top);
-    content_table.set_css_class_first_column(css_table_left);
     saved_table.set_css_class_cells(css_table_rest);
+
+    format_table.set_css_class_first_row(css_table_top);
+    slice_table.set_css_class_first_row(css_table_top);
+    overall_table.set_css_class_first_row(css_table_top);
+    content_table.set_css_class_first_row(css_table_top);
     saved_table.set_css_class_first_row(css_table_top);
+
+    content_table.set_css_class_first_column(css_table_left);
+    format_table.set_css_class_first_column(css_table_left);
+    slice_table.set_css_class_first_column(css_table_left);
+    overall_table.set_css_class_first_column(css_table_left);
     saved_table.set_css_class_first_column (css_table_left);
+
+    format_float.add_css_class(css_div_float);
+    slice_float.add_css_class(css_div_float);
+    overall_float.add_css_class(css_div_float);
+    content_float.add_css_class(css_div_float);
+    saved_float.add_css_class(css_div_float);
+
+    webdar_css_style::normal_button(close, false);
+    close.add_css_class(css_close);
 }
 
 void html_summary_page::on_event(const string & event_name)
@@ -130,6 +157,9 @@ void html_summary_page::set_source(const archive_init_list *ref)
 
     if(! ref->opened())
 	throw WEBDAR_BUG;
+
+    about_text.clear();
+    about_text.add_text(2, libdar::tools_printf("Properties of %s", ref->get_archive_full_name().c_str()));
 
     libdar::archive_summary sum = ref->get_summary();
 
@@ -326,6 +356,35 @@ void html_summary_page::new_css_library_available()
 	tmp.css_border_style(css::bd_all, css::bd_solid, true);
 	tmp.css_text_h_align(css::al_right, false);
 	csslib->add(css_table_rest, tmp);
+    }
+
+    if(!csslib->class_exists(css_div_float))
+    {
+	tmp.clear();
+	tmp.css_float(css::fl_left);
+	tmp.css_margin("1em", false);
+	csslib->add(css_div_float, tmp);
+    }
+
+    if(!csslib->class_exists(css_about_box))
+    {
+	tmp.clear();
+	tmp.css_background_color(COLOR_BACK);
+	tmp.css_overflow(css::ov_hidden);
+	tmp.css_width("100%", true);
+	tmp.css_background_color(COLOR_TOPBAR_BACK, true);
+	csslib->add(css_about_box, tmp);
+    }
+
+    if(!csslib->class_exists(css_about_text))
+    {
+	tmp.clear();
+	tmp.css_font_weight_bold();
+	tmp.css_text_shadow("0.1em", "0.1em", "0");
+	tmp.css_text_v_align(css::al_middle);
+	tmp.css_margin_right("1em");
+	tmp.css_color(COLOR_MENU_BORDER_OFF);
+	csslib->add(css_about_text, tmp);
     }
 
     webdar_css_style::update_library(*csslib);

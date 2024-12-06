@@ -77,6 +77,7 @@ public:
 
 	/// obtain the archive summary
     libdar::archive_summary get_summary() const;
+    std::string get_archive_full_name() const;
 
 	/// close the opened archive run in the calling thread
     void close_archive() { ptr.reset(); };

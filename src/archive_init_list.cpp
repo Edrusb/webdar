@@ -61,6 +61,16 @@ libdar::archive_summary archive_init_list::get_summary() const
 
     return ptr->summary_data();
 }
+string archive_init_list::get_archive_full_name() const
+{
+    if(!ptr)
+	throw WEBDAR_BUG;
+
+    if(param == nullptr)
+	throw WEBDAR_BUG;
+
+    return (libdar::path(param->get_archive_path()) + param->get_archive_basename()).display();
+}
 
 void archive_init_list::inherited_run()
 {

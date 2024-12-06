@@ -86,20 +86,30 @@ private:
     static constexpr const char* css_table_top = "html_sum_page_table_top";
     static constexpr const char* css_table_left = "html_sum_page_table_left";
     static constexpr const char* css_table_rest = "html_sum_page_table_rest";
+    static constexpr const char* css_div_float = "html_sum_page_div";
+    static constexpr const char* css_about_box = "html_sum_page_about";
+    static constexpr const char* css_about_text = "html_sum_page_about_text";
 
+    html_div about;
+    html_text about_text;
 
+    html_div format_float;
     html_text format_title;
     html_table format_table;
 
+    html_div slice_float;
     html_text slice_title;
     html_table slice_table;
 
+    html_div overall_float;
     html_text overall_title;
     html_table overall_table;
 
+    html_div content_float;
     html_text content_title;
     html_table content_table;
 
+    html_div saved_float;
     html_text saved_title;
     html_table saved_table;
 
