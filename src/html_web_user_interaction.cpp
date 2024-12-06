@@ -81,6 +81,8 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     h_pause.add_choice("no", "No");
     h_pause.add_choice("yes", "Yes");
 
+    helper_text.add_text(0, "you need to answer the question for this to take effect");
+
     h_warnings.ignore_body_changed_from_my_children(true);
 
 	// adoption tree
@@ -96,6 +98,7 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     h_global.adopt(&ask_close);
     h_global.adopt(&force_close);
     h_global.adopt(&finish);
+    h_global.adopt(&helper_text);
     adopt(&h_global);
 
 	// events we provide
@@ -126,6 +129,8 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
 
     webdar_css_style::normal_button(finish);
     finish.add_css_class(class_button);
+
+    helper_text.add_css_class(class_button);
 }
 
 html_web_user_interaction::~html_web_user_interaction()
@@ -142,6 +147,7 @@ html_web_user_interaction::~html_web_user_interaction()
 	    }
 	    catch(...)
 	    {
+		    // no exception propagation (destructor context)
 	    }
 	}
     }
@@ -194,6 +200,11 @@ string html_web_user_interaction::inherited_get_body_part(const chemin & path,
 	// any event triggered during that first generation may
 	// need further re-display (rebuild_body_part is set to true in that case)
     ret = get_body_part_from_all_children(path, req);
+
+	// whether to display the helper_text
+    helper_text.set_visible((h_inter.get_visible()
+			     || h_gtstr_fs.get_visible())
+			    && mode != normal);
 
     return ret;
 }

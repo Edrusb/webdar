@@ -243,6 +243,7 @@ private:
     html_statistics stats;        ///< holds a libdar::statistics for progressive report of libdar operations on archives
     html_button ask_close;        ///< button that shows to query libdar clean shutdown
     html_button force_close;      ///< button that shows to query libdar immediate shutdown
+    html_text helper_text;        ///< shows when abortion requested but a question from libdar need an answer first
     html_button finish;           ///< button that shows to let the user read last logs before closing
 
     bool ignore_event;      ///< if true the on_event() method does not take any action
