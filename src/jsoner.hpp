@@ -33,6 +33,7 @@ extern "C"
 
     // C++ system header files
 #include <dar/libdar.hpp>
+#include <string>
 
     // webdar headers
 
@@ -55,13 +56,37 @@ public:
     jsoner & operator = (jsoner && ref) noexcept(false) = default;
     virtual ~jsoner() = default;
 
-	/// read from an already open file the part that will provide the object status
+	/// setup the components from the json provided information
 
-	/// \note in case of unexpected data exception_range should be thrown
-    virtual void read_json(const libdar::fichier_global & ref) = 0;
+	/// \note exception exception_range should be throw if the
+	/// provided data does not follow the expected structure
+    virtual void load_json(const std::string & json) = 0;
 
-	/// write at its turn in the already open file data that will let it read from read_json in the future
-    virtual void write_json(const libdar::fichier_global & ref) const = 0;
+	/// produce a json structure from the component configuration
+
+	/// \note the json structure should contain:
+	/// - a json format version
+	/// - a json component identifier (name the class for example)
+	/// - an arbitrary configuration under
+	///  { "version": "<version">, "id": "<class name>", "config": {...} }
+    virtual std::string save_json() const = 0;
+
+protected:
+
+	/// given a version, class_id and configuration generates the global and common json structure
+
+    static std::string wrap_config_with_json_header(const std::string & version,
+						    const std::string & class_id,
+						    const std::string & config);
+
+
+	/// from a given json global and common json structure split header parts and return the config part
+
+	/// \note may throw exception upon format error regarding expected json fields.
+    static std::string unwrap_config_from_json_header(const std::string & json,
+						      std::string & version,
+						      std::string & class_id);
+
 
 };
 

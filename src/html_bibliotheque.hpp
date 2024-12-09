@@ -38,8 +38,6 @@ extern "C"
 
     // webdar headers
 #include "jsoner.hpp"
-#include "bibli_renvoi.hpp"
-#include "bibli_referable.hpp"
 #include "body_builder.hpp"
 #include "html_text.hpp"
 #include "html_tabs.hpp"
@@ -70,61 +68,29 @@ public:
     html_bibliotheque & operator = (html_bibliotheque && ref) noexcept(false) = delete;
     virtual ~html_bibliotheque() = default;
 
-	////// attention, les objets references ne sont copiables etc. seulement s'ils sont sans reference !!!
-	////// ca veut dire que s'ils sont crees en dehors de Bibiotheque et y sont ajoutes apres
-	////// il faut les fournir par leur reference/adress/unique_ptr
-        //////
-	////// corolaire le remplacement d'un objet par un autre
-        //////
-	////// le reference d'un objet par une autre lors de sa creation se fait par son nom au sein de la
-	////// bibiotheque, le parent doit aller chercher l'objet et l'adopter. Ainsi un enfant peut avoir plusieurs parents [!]
 
-    void add(category cat, const std::string & name, const  bibli_referable & obj, bool can_replace = false);
-    bool remove(category cat, const std::string & name); ///< \returns true if an object was found and deleted
+	/// inherited from jsoner
+    virtual void load_json(const std::string & json) override {};
 
-    void reset_read(category cat) const;
-    bool read_next(category cat, std::string & name) const;
-
-	/// only child are available for lookup per name
-	/// target of this call is for a json_parent to register a child given its name
-    bool find_by_name(category cat, std::string & name, bibli_referable & found) const;
-
-    virtual void read_json(const libdar::fichier_global & ref) override {};
-    virtual void write_json(const libdar::fichier_global & ref) const override {};
+    	/// inherited from jsoner
+    virtual std::string save_json() const override { return ""; };
 
 
 protected:
-	// from body_builder
+	/// inheroted from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+    	/// inheroted from body_builder
     virtual void new_css_library_available() override;
 
 private:
 
 	/// structure used to record components stored in the bibliotheque
-    struct referable_list
-    {
-	std::map<std::string, bibli_referable> refs;
-	mutable std::map<std::string, bibli_referable>::const_iterator read_index;
-
-	referable_list() { refs.clear(); reset_read(); };
-	void reset_read() const { read_index = refs.begin(); };
-    };
-
-    typedef std::map<category, referable_list>::iterator content_index;
-    typedef std::map<category, referable_list>::const_iterator const_content_index;
-    typedef std::map<std::string, bibli_referable>::iterator refs_index;
-    typedef std::map<std::string, bibli_referable>::const_iterator const_refs_index;
-
-    std::map<category, referable_list> content;
 
     html_tabs tabs;
     static constexpr unsigned int numtabs = EOE; // EOE for End Of Enumeration
     html_text text[numtabs];
-
-    void initialize_content_and_indexes();
-    void reset_read_iterators();
 
     static const char* css_tabs;
 };

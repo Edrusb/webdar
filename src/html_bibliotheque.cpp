@@ -55,7 +55,6 @@ void html_bibliotheque::incr(category & v)
 
 html_bibliotheque::html_bibliotheque()
 {
-    initialize_content_and_indexes();
     adopt(&tabs);
     tabs.add_tab("File Filters");
     tabs.add_tab("Path Filters");
@@ -77,77 +76,6 @@ html_bibliotheque::html_bibliotheque()
     tabs.add_css_class(css_tabs);
 }
 
-void html_bibliotheque::add(category cat, const string & name, const bibli_referable & obj, bool can_replace)
-{
-    content_index it = content.find(cat);
-    if(it == content.end())
-	throw WEBDAR_BUG;
-
-    refs_index rit = it->second.refs.find(name);
-    if(rit != it->second.refs.end() && ! can_replace)
-	throw exception_range("an object of the same name already exists in that category and overwriting disabled, cannot add this item");
-    else
-	it->second.refs[name] = obj;
-}
-
-bool html_bibliotheque::remove(category cat, const string & name)
-{
-    content_index it = content.find(cat);
-    if(it == content.end())
-	throw WEBDAR_BUG;
-
-    refs_index rit = it->second.refs.find(name);
-    if(rit != it->second.refs.end()) // object found
-    {
-	if(rit->second.referred())
-	    throw exception_range("cannot remove, the object is still referred by another configuration");
-	it->second.refs.erase(rit);
-	return true;
-    }
-    else
-	return false;
-}
-
-void html_bibliotheque::reset_read(category cat) const
-{
-    const_content_index it = content.find(cat);
-    if(it == content.end())
-	throw WEBDAR_BUG;
-
-    it->second.reset_read();
-}
-
-bool html_bibliotheque::read_next(category cat, string & name) const
-{
-    const_content_index it = content.find(cat);
-    if(it == content.end())
-	throw WEBDAR_BUG;
-
-    if(it->second.read_index != it->second.refs.end())
-    {
-	name = it->second.read_index->first;
-	it->second.read_index++;
-	return true;
-    }
-    else
-	return false; // end of referable_list
-}
-
-bool html_bibliotheque::find_by_name(category cat, string & name, bibli_referable & found) const
-{
-    const_content_index it = content.find(cat);
-    if(it == content.end())
-	throw WEBDAR_BUG;
-
-    const_refs_index rit = it->second.refs.find(name);
-    if(rit != it->second.refs.end()) // item found
-    {
-	found = rit->second;
-	return true;
-    }
-    else
-	return false;
-}
 
 string html_bibliotheque::inherited_get_body_part(const chemin & path,
 					     const request & req)
@@ -167,29 +95,4 @@ void html_bibliotheque::new_css_library_available()
 
     if(!csslib->class_exists(css_tabs))
 	csslib->add(css_tabs, tmp);
-}
-
-void html_bibliotheque::initialize_content_and_indexes()
-{
-    category cat;
-
-    begin(cat);
-    content.clear();
-    while(!end(cat))
-    {
-	content[category(cat)] = referable_list();
-	incr(cat);
-    }
-}
-
-void html_bibliotheque::reset_read_iterators()
-{
-    category cat;
-
-    begin(cat);
-    while(!end(cat))
-    {
-	reset_read(category(cat));
-	incr(cat);
-    }
 }
