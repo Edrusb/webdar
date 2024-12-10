@@ -213,6 +213,30 @@ else
    fi
 fi
 
+AC_MSG_CHECKING([for Niels Lohmann's Json library for C++])
+
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+					#include <nlohmann/json.hpp>
+				   ]],
+				   [[
+				       using nljson = nlohmann::json;
+
+				       nljson j, k;
+				       j["one"] = 1;
+				       k.push_back("a");
+				       k.push_back("b");
+				       k.push_back("c");
+				       j["two"] = k;
+				   ]]
+                   )
+		   ],
+		   [ AC_MSG_RESULT(Found) ],
+		   [ AC_MSG_RESULT([Not Found])
+		     AC_MSG_ERROR([Niels Lohmann's Json library for C++ is missing])
+		   ])
+
+#include <nlohmann/json.hpp>
+
 AC_MSG_CHECKING([for getopt() in <unistd.h>])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[extern "C" {
                                     #if HAVE_UNISTD_H
