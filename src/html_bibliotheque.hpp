@@ -70,10 +70,10 @@ public:
 
 
 	/// inherited from jsoner
-    virtual void load_json(const std::string & json) override {};
+    virtual void load_json(const json & source) override {};
 
     	/// inherited from jsoner
-    virtual std::string save_json() const override { return ""; };
+    virtual json save_json() const override { return json(); };
 
 
 protected:

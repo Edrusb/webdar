@@ -34,11 +34,31 @@ extern "C"
     // C++ system header files
 #include <dar/libdar.hpp>
 #include <string>
+#include <nlohmann/json.hpp>
 
     // webdar headers
+#include "exceptions.hpp"
+
+    /// \file jsoner.hpp defines jsoner class and class exception_json
+
+using json = nlohmann::json;
 
 
-    /// \file jsoner.hpp defines jsoner class
+    /// class exception_json
+
+    /// cast exception from json library under the umbrella of our own exception types
+
+class exception_json: public exception_base
+{
+public:
+    exception_json(const json::exception & e): exception_base(e.what()) {};
+    exception_json(const std::string & context, const json::exception & e):
+	exception_base(context + ": " + e.what()) {};
+    exception_json(const std::string & s): exception_base(s) {};
+
+    virtual exception_base *clone() const override { return cloner<exception_json>((void *)this); };
+};
+
 
     /// class jsoner
 
@@ -58,9 +78,9 @@ public:
 
 	/// setup the components from the json provided information
 
-	/// \note exception exception_range should be throw if the
+	/// \note exception exception_json should be throw if the
 	/// provided data does not follow the expected structure
-    virtual void load_json(const std::string & json) = 0;
+    virtual void load_json(const json & source) = 0;
 
 	/// produce a json structure from the component configuration
 
@@ -68,24 +88,30 @@ public:
 	/// - a json format version
 	/// - a json component identifier (name the class for example)
 	/// - an arbitrary configuration under
-	///  { "version": "<version">, "id": "<class name>", "config": {...} }
-    virtual std::string save_json() const = 0;
+	///  { "version": <num>, "id": "<class name>", "config": {...} }
+	/// see the protected static methods that implement this.
+    virtual json save_json() const = 0;
 
 protected:
 
 	/// given a version, class_id and configuration generates the global and common json structure
 
-    static std::string wrap_config_with_json_header(const std::string & version,
-						    const std::string & class_id,
-						    const std::string & config);
+    static json wrap_config_with_json_header(unsigned int version,
+					     const std::string & class_id,
+					     const json & config);
 
 
 	/// from a given json global and common json structure split header parts and return the config part
 
 	/// \note may throw exception upon format error regarding expected json fields.
-    static std::string unwrap_config_from_json_header(const std::string & json,
-						      std::string & version,
-						      std::string & class_id);
+    static json unwrap_config_from_json_header(const json & source,
+					       unsigned int & version,
+					       std::string & class_id);
+
+private:
+    static constexpr const char* version_label = "version";
+    static constexpr const char* id_label = "version";
+    static constexpr const char* config_label = "config";
 
 
 };
