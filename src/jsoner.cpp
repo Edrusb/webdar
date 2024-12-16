@@ -46,9 +46,16 @@ json jsoner::wrap_config_with_json_header(unsigned int version,
 {
     json ret;
 
-    ret[version_label] = version;
-    ret[id_label] = class_id;
-    ret[config_label] = config;
+    try
+    {
+	ret[version_label] = version;
+	ret[id_label] = class_id;
+	ret[config_label] = config;
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json("wrapping config with json header", e);
+    }
 
     return ret;
 }
@@ -62,16 +69,16 @@ json jsoner::unwrap_config_from_json_header(const json & source,
 
     try
     {
-	step = "while parsing version information";
+	step = "parsing version information";
 	version = source.at(version_label);
-	step = "while parsing id information";
+	step = "parsing id information";
 	class_id = source.at(id_label);
-	step = "while parsing config information";
+	step = "parsing config information";
 	ret = source.at(config_label);
     }
     catch(json::exception & e)
     {
-	throw exception_json(step, e);
+	throw exception_json(string("unwrapping config from json header: ") + step + ": ", e);
     }
 
     return ret;

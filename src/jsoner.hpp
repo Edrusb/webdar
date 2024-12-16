@@ -46,7 +46,7 @@ using json = nlohmann::json;
 
     /// class exception_json
 
-    /// cast exception from json library under the umbrella of our own exception types
+    /// cast exception from nlohmann::json library under the umbrella of our own exception types
 
 class exception_json: public exception_base
 {
@@ -64,7 +64,7 @@ public:
 
     /// jsoner class is the base class of all others that
     /// are able to save their status and read their status
-    /// from a configuration file (json formated)
+    /// from a json formated configuration.
 
 class jsoner
 {
@@ -78,12 +78,14 @@ public:
 
 	/// setup the components from the json provided information
 
+	/// \param[in] source json formated configuration to use for configuration
 	/// \note exception exception_json should be throw if the
 	/// provided data does not follow the expected structure
     virtual void load_json(const json & source) = 0;
 
 	/// produce a json structure from the component configuration
 
+	/// \return the current component configuration as a json object
 	/// \note the json structure should contain:
 	/// - a json format version
 	/// - a json component identifier (name the class for example)
@@ -96,6 +98,10 @@ protected:
 
 	/// given a version, class_id and configuration generates the global and common json structure
 
+	/// \param[in] version define the expected field and structure of the config json parameter
+	/// \param[in] class_id is expected to be the class name that implements the jsoner interface
+	/// \param[in] config this is the resulting current configuration as a json object to be wrapped wil
+	/// version and class_id.
     static json wrap_config_with_json_header(unsigned int version,
 					     const std::string & class_id,
 					     const json & config);
@@ -103,6 +109,10 @@ protected:
 
 	/// from a given json global and common json structure split header parts and return the config part
 
+	/// \param[in] json the global json configuration to apply to the current object
+	/// \param[in] version the format and expected fields of the returned json configuration
+	/// \param[in] class_id should match the name of the class this static method is used by
+	/// \return inherited class specific data to apply to the current object following the format version 'version'
 	/// \note may throw exception upon format error regarding expected json fields.
     static json unwrap_config_from_json_header(const json & source,
 					       unsigned int & version,
