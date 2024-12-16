@@ -120,7 +120,7 @@ protected:
 
 private:
     static constexpr const char* version_label = "version";
-    static constexpr const char* id_label = "version";
+    static constexpr const char* id_label = "class_id";
     static constexpr const char* config_label = "config";
 
 
