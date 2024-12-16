@@ -52,7 +52,6 @@ extern "C"
 #include "html_archive_compare.hpp"
 #include "html_double_button.hpp"
 #include "html_double_button.hpp"
-#include "html_bibliotheque.hpp"
 #include "html_derouleur.hpp"
 #include "html_demo.hpp"
 #include "html_disconnect.hpp"
@@ -238,7 +237,6 @@ private:
     html_archive_repair repair;
     html_double_button go_repair;
 	//
-    html_bibliotheque biblio;
 	//
     html_yes_no_box close;
 	//

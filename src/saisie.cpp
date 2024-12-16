@@ -212,7 +212,6 @@ saisie::saisie():
     select.adopt_in_section(menu_repair, &go_repair);
 
 	// configuration sub-page
-    select.adopt_in_section(menu_biblio, &biblio);
 
 	// other sessions sub_page
 	// nothing to add "saisie" is not involved in that context
