@@ -45,10 +45,11 @@ extern "C"
 #include "actor.hpp"
 #include "events.hpp"
 #include "html_web_user_interaction.hpp"
+#include "jsoner.hpp"
 
     /// class html_entrepot let user define an entrepot parameters
 
-class html_entrepot: public body_builder, public actor, public events, public libthreadar::thread_signal
+class html_entrepot: public body_builder, public actor, public events, public libthreadar::thread_signal, public jsoner
 {
 public:
     static const std::string changed; ///< triggered when the entrepot parameters has changed
@@ -72,6 +73,12 @@ public:
 
 	/// change the change event name
     void set_event_name(const std::string & name);
+
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
 
 protected:
 	/// inherited from body_builder
@@ -124,6 +131,22 @@ private:
     void update_visible();
     void trigger_event();
     void clear_form();
+
+    static constexpr const unsigned int format_version = 1;
+
+    static constexpr const char* jlabel_type = "type";
+    static constexpr const char* jlabel_host = "host";
+    static constexpr const char* jlabel_port = "port";
+    static constexpr const char* jlabel_authtype = "authtype";
+    static constexpr const char* jlabel_login = "login";
+    static constexpr const char* jlabel_pass = "pass";
+    static constexpr const char* jlabel_auth_from_file = "auth_file";
+    static constexpr const char* jlabel_pubkey = "pubkey";
+    static constexpr const char* jlabel_prvkey = "prvkey";
+    static constexpr const char* jlabel_knownhosts = "knownhosts";
+    static constexpr const char* jlabel_knownhosts_file = "knownhosts_file";
+    static constexpr const char* jlabel_waittime = "wait";
+    static constexpr const char* jlabel_verbose = "verbose";
 };
 
 #endif

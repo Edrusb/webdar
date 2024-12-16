@@ -29,9 +29,10 @@ extern "C"
 }
 
     // C++ system header files
-#include "webdar_tools.hpp"
+#include <dar/tools.hpp>
 
     // webdar headers
+#include "webdar_tools.hpp"
 #include "environment.hpp"
 #include "webdar_tools.hpp"
 #include "css.hpp"
@@ -242,6 +243,79 @@ void html_entrepot::set_event_name(const string & name)
 
     custom_event_name = name;
     register_name(custom_event_name);
+}
+
+
+void html_entrepot::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != "html_entrepot")
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting html_entrepot",
+						       class_id.c_str()));
+
+	if(version > format_version)
+	    throw exception_range("Json format version too hight for html_entrepot, upgrade your webdar software");
+
+	ignore_events = true;
+
+	try
+	{
+	    repo_type.set_selected(config.at(jlabel_type).template get<unsigned int>());
+	    host.set_value(config.at(jlabel_host));
+	    port.set_value(config.at(jlabel_port));
+	    login.set_value(config.at(jlabel_login));
+	    auth_type.set_selected(config.at(jlabel_authtype).template get<unsigned int>());
+	    pass.set_value(config.at(jlabel_pass));
+	    auth_from_file.set_value(config.at(jlabel_auth_from_file));
+	    pub_keyfile.set_value(config.at(jlabel_pubkey));
+	    prv_keyfile.set_value(config.at(jlabel_prvkey));
+	    knownhosts_check.set_value_as_bool(config.at(jlabel_knownhosts));
+	    known_hosts_file.set_value(config.at(jlabel_knownhosts_file));
+	    wait_time.set_value(config.at(jlabel_waittime));
+	    verbose.set_value(config.at(jlabel_verbose));
+	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
+	update_visible();
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json("Error loading html_entrepot config", e);
+    }
+}
+
+json html_entrepot::save_json() const
+{
+    json config;
+
+    config[jlabel_type] = repo_type.get_selected_num();
+    config[jlabel_host] = host.get_value();
+    config[jlabel_port] = port.get_value();
+    config[jlabel_login] = login.get_value();
+    config[jlabel_authtype] = auth_type.get_selected_num();
+    config[jlabel_pass] = pass.get_value();
+    config[jlabel_auth_from_file] = auth_from_file.get_value_as_bool();
+    config[jlabel_pubkey] = pub_keyfile.get_value();
+    config[jlabel_prvkey] = prv_keyfile.get_value();
+    config[jlabel_knownhosts] = knownhosts_check.get_value_as_bool();
+    config[jlabel_knownhosts_file] = known_hosts_file.get_value();
+    config[jlabel_waittime] = wait_time.get_value();
+    config[jlabel_verbose] = verbose.get_value_as_bool();
+
+    return wrap_config_with_json_header(format_version,
+					"html_entrepot",
+					config);
 }
 
 string html_entrepot::inherited_get_body_part(const chemin & path,
