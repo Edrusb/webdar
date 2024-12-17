@@ -105,7 +105,7 @@ private:
 	error,         ///< should display the error
     };
 
-    std::string sessname;  //< customized name of that session (empty string by default)
+    std::string sessname;  ///< customized name of that session (empty string by default)
     mutable libthreadar::mutex mut_sessname; ///< drives the access to sessname, by set and get session name methods
     mode_type mode;        ///< current mode
     mode_type return_mode; ///< mode in which to return from error status
