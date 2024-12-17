@@ -100,6 +100,10 @@ saisie::saisie():
     status = st_idle;
     html_text text; // used to build static text content
 
+    biblio.reset(new (nothrow) bibliotheque());
+    if(!biblio)
+	throw exception_memory();
+
 	// disconnect
     adopt(&disco);
 

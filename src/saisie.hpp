@@ -56,6 +56,8 @@ extern "C"
 #include "html_demo.hpp"
 #include "html_disconnect.hpp"
 #include "html_options_list.hpp"
+#include "bibliotheque.hpp"
+
 
     /// class saisie
 
@@ -192,6 +194,8 @@ private:
 	st_merge,   ///< user clicked on the merge button
 	st_repair   ///< user clicked in the repair button
     } status;       ///< status is used to determine which field to user to provide information toward libdar
+
+    std::shared_ptr<bibliotheque> biblio; ///< the sored configuration elements (given access to 'parametrage')
 
     html_menu choice;      ///< left main menu
     html_div right_pan;    ///< holds all that is beside main menu
