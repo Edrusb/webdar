@@ -273,7 +273,7 @@ void html_entrepot::load_json(const json & source)
 	    login.set_value(config.at(jlabel_login));
 	    auth_type.set_selected(config.at(jlabel_authtype).template get<unsigned int>());
 	    pass.set_value(config.at(jlabel_pass));
-	    auth_from_file.set_value(config.at(jlabel_auth_from_file));
+	    auth_from_file.set_value_as_bool(config.at(jlabel_auth_from_file));
 	    pub_keyfile.set_value(config.at(jlabel_pubkey));
 	    prv_keyfile.set_value(config.at(jlabel_prvkey));
 	    knownhosts_check.set_value_as_bool(config.at(jlabel_knownhosts));
