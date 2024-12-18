@@ -84,6 +84,15 @@ void html_form_radio::set_selected(unsigned int x)
     value_set = true;
 }
 
+const string & html_form_radio::get_selected_id() const
+{
+    if(selected < choices.size())
+	return choices[selected].id;
+    else
+	throw WEBDAR_BUG;
+}
+
+
 void html_form_radio::set_selected(const string & id)
 {
     unsigned int val = 0;

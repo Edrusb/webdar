@@ -65,7 +65,7 @@ public:
 
     void set_selected(unsigned int x); /// \note index zero is the first choice
     void set_selected(const std::string & id);
-    const std::string & get_selected_id() const { return choices[selected].id; };
+    const std::string & get_selected_id() const;
     unsigned int get_selected_num() const { return selected; };
 
 	/// the number of currently available options
