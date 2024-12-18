@@ -61,9 +61,11 @@ public:
     ~html_form_radio() = default;
 
     void add_choice(const std::string & id, const std::string & label);
-    void clear() { choices.clear(); selected = 0; my_body_part_has_changed(); };
+    void clear() { choices.clear(); unset_selected(); my_body_part_has_changed(); };
 
     void set_selected(unsigned int x); /// \note index zero is the first choice
+    void unset_selected();             ///< set nothing as selected
+    bool is_selected() const { return selected < choices.size(); };
     void set_selected(const std::string & id);
     const std::string & get_selected_id() const;
     unsigned int get_selected_num() const { return selected; };
