@@ -96,12 +96,14 @@ public:
 	/// provide a storedf configuration
 
 	/// \note throw exception_range if name does not exist
-    json fetch_config(category categ, const std::string & name);
+    json fetch_config(category categ, const std::string & name) const;
 
 
 	/// display beautifulized json data for the given category and name
-    std::string display_config(category categ, const std::string & name);
+    std::string display_config(category categ, const std::string & name) const;
 
+	/// list existing configurations under the provided category
+    std::deque<std::string> listing(category categ) const;
 
 
 	/// inherited from jsoner
@@ -123,7 +125,10 @@ private:
 	/// \param[out] it if found a pointer to the std::pair containing the search cat/name
 	/// \param[out] catit if found a pointer to the std::pair of "content" field for that category
 	/// \return true if cat+name found. Both it and catit are modified in any case
-    bool lookup(category cat, const std::string & name, asso::iterator & it, table::iterator & catit);
+    bool lookup(category cat,
+		const std::string & name,
+		asso::iterator & it,
+		table::iterator & catit) const;
 
 
 	/// convert category to json used string

@@ -83,7 +83,7 @@ void bibliotheque::delete_config(category categ, const string & name)
     catit->second.erase(it);
 }
 
-json bibliotheque::fetch_config(category categ, const string & name)
+json bibliotheque::fetch_config(category categ, const string & name) const
 {
     table::iterator catit;
     asso::iterator it;
@@ -94,7 +94,7 @@ json bibliotheque::fetch_config(category categ, const string & name)
     return it->second;
 }
 
-string bibliotheque::display_config(category categ, const string & name)
+string bibliotheque::display_config(category categ, const string & name) const
 {
     return fetch_config(categ, name).dump(4);
 }
@@ -189,9 +189,9 @@ json bibliotheque::save_json() const
 
 
 
-bool bibliotheque::lookup(category cat, const string & name, asso::iterator & it, table::iterator & catit)
+bool bibliotheque::lookup(category cat, const string & name, asso::iterator & it, table::iterator & catit) const
 {
-    catit = content.find(cat);
+    catit = const_cast<table*>(&content)->find(cat);
 
     if(catit == content.end())
 	throw WEBDAR_BUG;
