@@ -74,7 +74,7 @@ html_tabs::~html_tabs()
     }
 }
 
-void html_tabs::add_tab(const string & label)
+void html_tabs::add_tab(const string & label, const string & tag)
 {
     unsigned int tab_num = tabs.size();
     string event_name = to_string(tab_num);
@@ -93,7 +93,7 @@ void html_tabs::add_tab(const string & label)
 	if(it != corres.end())
 	    throw WEBDAR_BUG; // event name already exisits!?!
 	corres[event_name] = tab_num;
-	content.add_section(label, "");
+	content.add_section(tag, label);
 	if(content.size() == 1) // by default no section is active
 	    content.set_active_section(0);  // we activate the first tab content at its creation
 
@@ -125,9 +125,9 @@ void html_tabs::on_event(const string & event_name)
     set_mode(it->second);
 }
 
-void html_tabs::adopt_in_section(const string & tab_label, body_builder *obj)
+void html_tabs::adopt_in_section(const string & tag, body_builder *obj)
 {
-    content.adopt_in_section(tab_label, obj);
+    content.adopt_in_section(tag, obj);
 }
 
 void html_tabs::adopt_in_section(signed int num, body_builder* obj)

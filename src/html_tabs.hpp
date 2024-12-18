@@ -61,13 +61,17 @@ public:
     virtual ~html_tabs();
 
 	/// add a new tab to the tab bar
-    void add_tab(const std::string & label);
+
+	/// \param[in] label shows to the user and is translatable
+	/// \param[in] tag is not translatable and does not show to the user
+	/// but can be used programmatically (see adopt_in_section() below)
+    void add_tab(const std::string & label, const std::string & tag);
 
 	/// inherited from actor class
     virtual void on_event(const std::string & event_name) override;
 
 	/// adopt_in_section replaces body_builder::adopt()
-    void adopt_in_section(const std::string & tab_label, body_builder *obj);
+    void adopt_in_section(const std::string & tag, body_builder *obj);
 
 	/// adopt in section replaces body_builder::adopt()
     void adopt_in_section(signed int num, body_builder* obj);
