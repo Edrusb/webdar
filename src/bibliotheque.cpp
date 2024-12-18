@@ -99,6 +99,20 @@ string bibliotheque::display_config(category categ, const string & name) const
     return fetch_config(categ, name).dump(4);
 }
 
+deque<string> bibliotheque::listing(category categ) const
+{
+    deque<string> ret;
+    table::const_iterator catit = content.find(categ);
+
+    if(catit == content.end())
+	throw WEBDAR_BUG;
+
+    for(asso::const_iterator it = catit->second.begin(); it != catit->second.end(); ++it)
+	ret.push_back(it->first);
+
+    return ret;
+}
+
 void bibliotheque::load_json(const json & source)
 {
     unsigned int version;
