@@ -57,7 +57,7 @@ extern "C"
 #include "html_disconnect.hpp"
 #include "html_options_list.hpp"
 #include "bibliotheque.hpp"
-
+#include "html_bibliotheque.hpp"
 
     /// class saisie
 
@@ -241,6 +241,7 @@ private:
     html_archive_repair repair;
     html_double_button go_repair;
 	//
+    std::unique_ptr<html_bibliotheque> h_biblio;  // need a pointer as the bibliotheque object is needed to construct html_bibliotheque
 	//
     html_yes_no_box close;
 	//

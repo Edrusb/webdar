@@ -104,6 +104,10 @@ saisie::saisie():
     if(!biblio)
 	throw exception_memory();
 
+    h_biblio.reset(new (nothrow) html_bibliotheque(biblio));
+    if(! h_biblio)
+	throw exception_memory();
+
 	// disconnect
     adopt(&disco);
 
@@ -216,6 +220,7 @@ saisie::saisie():
     select.adopt_in_section(menu_repair, &go_repair);
 
 	// configuration sub-page
+    select.adopt_in_section(menu_biblio, h_biblio.get());
 
 	// other sessions sub_page
 	// nothing to add "saisie" is not involved in that context
