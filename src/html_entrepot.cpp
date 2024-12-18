@@ -279,7 +279,7 @@ void html_entrepot::load_json(const json & source)
 	    knownhosts_check.set_value_as_bool(config.at(jlabel_knownhosts));
 	    known_hosts_file.set_value(config.at(jlabel_knownhosts_file));
 	    wait_time.set_value(config.at(jlabel_waittime));
-	    verbose.set_value(config.at(jlabel_verbose));
+	    verbose.set_value_as_bool(config.at(jlabel_verbose));
 	}
 	catch(...)
 	{
