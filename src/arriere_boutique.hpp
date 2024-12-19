@@ -311,7 +311,6 @@ template <class T> void arriere_boutique<T>::load_listing()
 
 template <class T> void arriere_boutique<T>::new_css_library_available()
 {
-    css_class page("html_summary_page");
     css tmp;
     std::unique_ptr<css_library> & csslib = lookup_css_library();
 
@@ -335,6 +334,8 @@ template <class T> void arriere_boutique<T>::new_css_library_available()
 	tmp.css_text_shadow("0.1em", "0.1em", "0.1em", "#888888");
 	csslib->add(css_warn, tmp);
     }
+
+    webdar_css_style::update_library(*csslib);
 }
 
 template <class T> void arriere_boutique<T>::set_warning(const std::string & wm)
