@@ -91,6 +91,8 @@ public:
     arriere_boutique & operator = (arriere_boutique && ref) noexcept = delete;
     ~arriere_boutique() = default;
 
+	/// refresh displayed status from the referred bibliotheque object
+    void refresh();
 
 	/// inherited from class actor
     virtual void on_event(const std::string & event_name) override;
@@ -210,6 +212,15 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     need_saving.add_css_class(css_warn);
 }
 
+template <class T> void arriere_boutique<T>::refresh()
+{
+    config_name.set_value("");
+    currently_loaded = "";
+    need_saving.set_visible(false);
+    clear_warning();
+    load_listing();
+}
+
 template <class T> void arriere_boutique<T>::on_event(const std::string & event_name)
 {
     if(ignore_events)
@@ -259,11 +270,7 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 	    {
 		todelete = listing.get_selected_id();
 		biblio->delete_config(categ, todelete);
-		config_name.set_value("");
-		currently_loaded = "";
-		need_saving.set_visible(false);
-		clear_warning();
-		load_listing();
+		refresh();
 	    }
 	    else
 		set_warning("Select and load first the configuration to be deleted");
