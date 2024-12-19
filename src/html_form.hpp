@@ -56,6 +56,8 @@ public:
     html_form & operator = (html_form && ref) noexcept = default;
     ~html_form() = default;
 
+    void set_enctype(const std::string & enc) { enctype = enc; };
+
 protected:
 	/// inherited methods from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
@@ -63,6 +65,7 @@ protected:
 
 private:
     std::string go_mesg;
+    std::string enctype;
 
 };
 

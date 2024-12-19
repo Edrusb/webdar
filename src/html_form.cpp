@@ -45,7 +45,10 @@ string html_form::inherited_get_body_part(const chemin & path,
 {
     string ret = "";
 
-    ret += "<form method=\"post\" action=\"" + get_path().display() + "\">\n";
+    ret += "<form method=\"post\" action=\"" + get_path().display() + "\"";
+    if(!enctype.empty())
+	ret += " enctype=\""+enctype+"\"";
+    ret += ">\n";
     if( ! req.get_uri().get_path().is_the_beginning_of(get_path()) && req.get_method() == "POST")
     {
 	request tmp = req;
