@@ -48,6 +48,9 @@ extern "C"
 #include "html_form_radio.hpp"
 #include "html_double_button.hpp"
 #include "jsoner.hpp"
+#include "webdar_css_style.hpp"
+#include "html_div.hpp"
+#include "tokens.hpp"
 
     /// class arriere_boutique provides mean to add/load a given component type to/from a bibliotheque object
 
@@ -104,16 +107,21 @@ protected:
 						const request & req) override;
 
 
+	/// inherited from class body_builder
+    virtual void new_css_library_available() override;
+
 
 private:
     static constexpr const char* event_delete = "delete_conf";
+    static constexpr const char* css_float = "arriere_boutique_float";
+    static constexpr const char* css_warn = "arriere_boutique_warn";
 
-    bool saved;
     std::string currently_loaded;
     std::shared_ptr<bibliotheque> biblio;
     bibliotheque::category categ;
 
     html_text warning_message;
+    html_text need_saving;
     html_form_fieldset config_fs;
     html_form config_form;
     html_form_input config_name;
@@ -121,12 +129,14 @@ private:
     html_form_fieldset listing_fs;
     html_form_radio listing;
     html_double_button delete_selected;
+    html_div floteur;
 
     std::unique_ptr<T> wrapped;
     jsoner* wrapped_jsoner;
     body_builder* wrapped_body_builder;
     events* wrapped_events;
 
+    bool ignore_events;
 
     void load_listing(); ///< fills the listing from existing config in biblio
     void set_warning(const std::string & wm);
@@ -137,15 +147,15 @@ private:
 template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<bibliotheque> & ptr,
 							 bibliotheque::category cat,
 							 std::unique_ptr<T> & obj):
-    saved(false),
     currently_loaded(""),
     categ(cat),
     config_form("Save/Save as"),
     config_fs(""),
     config_name("Configuration name", html_form_input::text, "", "50"),
-    listing_form("Select"),
+    listing_form("Load selected"),
     listing_fs("Available configurations"),
-    delete_selected("Delete Selected", event_delete)
+    delete_selected("Delete loaded config", event_delete),
+    ignore_events(false)
 {
 	// non html field settup
     biblio = ptr;
@@ -171,20 +181,25 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
 	// html components setup
     clear_warning();
     load_listing();
+    need_saving.clear();
+    need_saving.add_text(0, "configuration not saved");
+    need_saving.set_visible(false);
 
 	// adoption tree
-    adopt(&warning_message);
-    adopt(wrapped_body_builder);
-
-    config_fs.adopt(&config_name);
-    config_form.adopt(&config_fs);
-    adopt(&config_form);
-
     listing_fs.adopt(&listing);
     listing_form.adopt(&listing_fs);
-    adopt(&listing_form);
+    floteur.adopt(&listing_form);
 
-    adopt(&delete_selected);
+    floteur.adopt(&delete_selected);
+    adopt(&floteur);
+
+    adopt(&warning_message);
+
+    adopt(wrapped_body_builder);
+    config_fs.adopt(&config_name);
+    config_fs.adopt(&need_saving);
+    config_form.adopt(&config_fs);
+    adopt(&config_form);
 
 	// events and actors
     wrapped_events->record_actor_on_event(this, T::changed);
@@ -193,65 +208,92 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     listing.record_actor_on_event(this, html_form_radio::changed);
 
 	// css
-
+    webdar_css_style::normal_button(delete_selected);
+    floteur.add_css_class(css_float);
+    warning_message.add_css_class(css_warn);
+    need_saving.add_css_class(css_warn);
 }
 
 template <class T> void arriere_boutique<T>::on_event(const std::string & event_name)
 {
-    if(event_name == T::changed)
+    if(ignore_events)
+	return;
+
+    ignore_events = true;
+    try
     {
-	saved = false;
-    }
-    else if(event_name == html_form_input::changed)
-    {
-	saved = false;
-	if(config_name.get_value().empty())
-	    set_warning("Cannot save a configuration without a name");
-	else
+	if(event_name == T::changed)
 	{
-	    try
+	    need_saving.set_visible(true);
+	    clear_warning();
+	}
+	else if(event_name == html_form_input::changed)
+	{
+	    need_saving.set_visible(true);
+	    if(config_name.get_value().empty())
+		set_warning("Cannot save a configuration without a name");
+	    else
 	    {
-		if(config_name.get_value() != currently_loaded)
+		try
 		{
-		    biblio->add_config(categ, config_name.get_value(), wrapped_jsoner->save_json());
-		    currently_loaded = config_name.get_value();
+		    if(config_name.get_value() != currently_loaded)
+		    {
+			biblio->add_config(categ, config_name.get_value(), wrapped_jsoner->save_json());
+			currently_loaded = config_name.get_value();
+		    }
+		    else
+			biblio->update_config(categ, currently_loaded,  wrapped_jsoner->save_json());
+		    need_saving.set_visible(false);
+		    clear_warning();
+		    load_listing();
 		}
-		else
-		    biblio->update_config(categ, currently_loaded,  wrapped_jsoner->save_json());
-		saved = true;
+		catch(exception_range & e)
+		{
+		    set_warning(libdar::tools_printf("Failed saving configuration as %s: %s",
+						     config_name.get_value().c_str(),
+						     e.get_message().c_str()));
+		}
+	    }
+	}
+	else if(event_name == event_delete)
+	{
+	    std::string todelete;
+
+	    if(listing.is_selected())
+	    {
+		todelete = listing.get_selected_id();
+		biblio->delete_config(categ, todelete);
+		config_name.set_value("");
+		currently_loaded = "";
+		need_saving.set_visible(false);
 		clear_warning();
 		load_listing();
 	    }
-	    catch(exception_range & e)
-	    {
-		set_warning(libdar::tools_printf("Failed saving configuration as %s: %s",
-						 config_name.get_value().c_str(),
-						 e.get_message().c_str()));
-	    }
+	    else
+		set_warning("Select and load first the configuration to be deleted");
 	}
-    }
-    else if(event_name == event_delete)
-    {
-	std::string todelete = listing.get_selected_id();
-	biblio->delete_config(categ, todelete);
-	clear_warning();
-	load_listing();
-    }
-    else if(event_name == html_form_radio::changed)
-    {
-	    // if not saved issue a warning/confirmation
-
-	if(listing.is_selected())
+	else if(event_name == html_form_radio::changed)
 	{
-	    currently_loaded = listing.get_selected_id();
-	    wrapped_jsoner->load_json(biblio->fetch_config(categ, currently_loaded));
+	    if(listing.is_selected())
+	    {
+		currently_loaded = listing.get_selected_id();
+		config_name.set_value(currently_loaded);
+		wrapped_jsoner->load_json(biblio->fetch_config(categ, currently_loaded));
+		need_saving.set_visible(false);
+		clear_warning();
+	    }
+	    else
+		set_warning("Select first the configuration to load");
 	}
 	else
-	    set_warning("Select first the configuration to load");
+	    throw WEBDAR_BUG;
     }
-    else
-	throw WEBDAR_BUG;
-
+    catch(...)
+    {
+	ignore_events = false;
+	throw;
+    }
+    ignore_events = false;
 }
 
 template <class T> std::string arriere_boutique<T>::inherited_get_body_part(const chemin & path,
@@ -263,24 +305,39 @@ template <class T> std::string arriere_boutique<T>::inherited_get_body_part(cons
 template <class T> void arriere_boutique<T>::load_listing()
 {
     std::deque<std::string> content = biblio->listing(categ);
-    std::string cursel = listing.is_selected() ? listing.get_selected_id() : "";
-    bool cursel_found = false;
-
     listing.clear();
 
     for(std::deque<std::string>::iterator it = content.begin(); it != content.end(); ++it)
-    {
 	listing.add_choice(*it, *it);
-	if(*it == cursel)
-	    cursel_found = true;
+
+    listing.unset_selected();
+}
+
+template <class T> void arriere_boutique<T>::new_css_library_available()
+{
+    css_class page("html_summary_page");
+    css tmp;
+    std::unique_ptr<css_library> & csslib = lookup_css_library();
+
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    if(!csslib->class_exists(css_float))
+    {
+	tmp.clear();
+	tmp.css_border_width(css::bd_all, css::bd_medium, true);
+	tmp.css_float(css::fl_right);
+	tmp.css_margin_left("1em", true);
+	csslib->add(css_float, tmp);
     }
 
-    if(cursel_found)
-	listing.set_selected(cursel);
-    else
+    if(!csslib->class_exists(css_warn))
     {
-	if(listing.num_choices() > 0)
-	    listing.unset_selected();
+	tmp.clear();
+	tmp.css_color(RED);
+	tmp.css_font_weight_bold();
+	tmp.css_text_shadow("0.1em", "0.1em", "0.1em", "#888888");
+	csslib->add(css_warn, tmp);
     }
 }
 
