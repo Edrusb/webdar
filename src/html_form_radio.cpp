@@ -89,7 +89,6 @@ void html_form_radio::unset_selected()
     if(selected != choices.size())
     {
 	selected = choices.size();
-	my_act();
 	my_body_part_has_changed();
     }
 }
