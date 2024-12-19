@@ -195,6 +195,7 @@ private:
 	st_repair   ///< user clicked in the repair button
     } status;       ///< status is used to determine which field to user to provide information toward libdar
 
+    std::string default_biblio_path;      ///< default path where to fetch and store the bibliotheque (~/.wedarrc)
     std::shared_ptr<bibliotheque> biblio; ///< the sored configuration elements (given access to 'parametrage')
 
     html_menu choice;      ///< left main menu

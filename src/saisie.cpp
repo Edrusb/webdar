@@ -35,6 +35,7 @@ extern "C"
 #include "exceptions.hpp"
 #include "webdar_css_style.hpp"
 #include "tokens.hpp"
+#include "environment.hpp"
 
     //
 #include "saisie.hpp"
@@ -100,11 +101,13 @@ saisie::saisie():
     status = st_idle;
     html_text text; // used to build static text content
 
+    default_biblio_path = (chemin(global_envir.get_value_with_default("HOME", "/")) + chemin(".webdarrc")).display();
+
     biblio.reset(new (nothrow) bibliotheque());
     if(!biblio)
 	throw exception_memory();
 
-    h_biblio.reset(new (nothrow) html_bibliotheque(biblio));
+    h_biblio.reset(new (nothrow) html_bibliotheque(biblio, default_biblio_path));
     if(! h_biblio)
 	throw exception_memory();
 
