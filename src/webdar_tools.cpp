@@ -357,7 +357,7 @@ string webdar_tools_get_title(const string & sessname, const string & status)
 }
 
 
-string webdar_tools_html_display(const std::string & arg)
+string webdar_tools_html_display(const string & arg)
 {
     string ret;
     string::const_iterator it = arg.begin();
