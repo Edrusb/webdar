@@ -68,9 +68,9 @@ extern "C"
 	|+------+ +------+                                     |
 	+------------------------------------------------------+
 	+-------------------<bot_fs>---------------------------+
-	|+----------+ +--------+                               |
-	|| download | | upload |                               |
-	|+----------+ +--------+                               |
+	| +---- -----------+                                   |
+	| | file selector  |                                   |
+	| +----------------+                                   |
 	+------------------------------------------------------+
 
 	\endverbatim **/
@@ -112,15 +112,16 @@ private:
     html_double_button save;
     html_double_button load;
     html_form_fieldset bot_fs;
-    html_double_button download;
-    html_double_button upload;
+    html_form upload_form;
+    html_form_input upload_file;
+    html_text ok_message;
+
+    bool expect_upload;
 
     static constexpr const char* tab_main = "main";
     static constexpr const char* tab_repo = "repo";
     static constexpr const char* event_save = "save";
     static constexpr const char* event_load = "load";
-    static constexpr const char* event_down = "down";
-    static constexpr const char* event_up = "up";
     static constexpr const char* css_float = "hmtl_biblio_float";
 };
 

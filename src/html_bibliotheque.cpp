@@ -48,8 +48,9 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     save("Save", event_save),
     load("Load", event_load),
     bot_fs(""),
-    download("Download", event_down),
-    upload("Upload", event_up)
+    upload_form("Upload"),
+    upload_file("Webdar configuration to upload", html_form_input::file, "", "50"),
+    expect_upload(false)
 {
     unique_ptr<html_entrepot> tmp;
 
@@ -60,6 +61,9 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     if(! biblio)
 	throw WEBDAR_BUG;
 
+    upload_form.set_enctype("multipart/form-data");
+    ok_message.add_text(0, "Configuration uploaded successfully!");
+
 	// main tab
 
     top_fs.adopt(&form);
@@ -68,9 +72,9 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     top_fs.adopt(&save);
     top_fs.adopt(&load);
 
-    bot_fs.adopt(&download);
-    bot_fs.adopt(&upload);
-
+    upload_form.adopt(&upload_file);
+    bot_fs.adopt(&upload_form);
+    bot_fs.adopt(&ok_message);
 
 	// entrepot tab
 
@@ -83,7 +87,6 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 								    tmp));
     if(!ab_entrepot)
 	throw exception_memory();
-
 
 
     	// global component setups
@@ -103,19 +106,17 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
     save.record_actor_on_event(this, event_save);
     load.record_actor_on_event(this, event_load);
-    download.record_actor_on_event(this, event_down);
-    upload.record_actor_on_event(this, event_up);
+    upload_form.record_actor_on_event(this, html_form::changed);
+
+	// visibility
+    ok_message.set_visible(false);
 
 	// css
     webdar_css_style::normal_button(load);
     webdar_css_style::normal_button(save);
-    webdar_css_style::normal_button(download);
-    webdar_css_style::normal_button(upload);
 
     load.add_css_class(css_float);
     save.add_css_class(css_float);
-    download.add_css_class(css_float);
-    upload.add_css_class(css_float);
 }
 
 void html_bibliotheque::on_event(const std::string & event_name)
@@ -125,6 +126,7 @@ void html_bibliotheque::on_event(const std::string & event_name)
 
     if(event_name == event_save)
     {
+	ok_message.set_visible(false);
 	string config = biblio->save_json().dump();
 	ofstream output(filename.get_value());
 	if(output)
@@ -139,6 +141,7 @@ void html_bibliotheque::on_event(const std::string & event_name)
     }
     else if(event_name == event_load)
     {
+	ok_message.set_visible(false);
 	ifstream input(filename.get_value());
 	if(input)
 	{
@@ -154,13 +157,10 @@ void html_bibliotheque::on_event(const std::string & event_name)
 	else
 	    throw exception_system(libdar::tools_printf("Failed openning %s", filename.get_value().c_str()), errno);
     }
-    else if(event_name == event_down)
+    else if(event_name == html_form::changed)
     {
-
-    }
-    else if(event_name == event_up)
-    {
-
+	ok_message.set_visible(false);
+	expect_upload = true;
     }
     else
 	throw WEBDAR_BUG;
@@ -169,7 +169,46 @@ void html_bibliotheque::on_event(const std::string & event_name)
 string html_bibliotheque::inherited_get_body_part(const chemin & path,
 						  const request & req)
 {
-    return get_body_part_from_all_children(path, req);
+    string ret;
+
+    expect_upload = false;
+    ret = get_body_part_from_all_children(path, req);
+
+    if(expect_upload)
+    {
+	try
+	{
+	    unsigned int num = req.get_multipart_number();
+
+	    if(num >= 1) // we look only for the first part as a json configuration
+	    {
+		try
+		{
+		    troncon tronc = req.get_body_of_multipart(0);
+		    istringstream str(string(tronc.begin, tronc.end));
+		    json data = json::parse(str);
+
+		    biblio->load_json(data);
+		    ab_entrepot->refresh();
+		    ok_message.set_visible(true);
+		}
+		catch(json::exception & e)
+		{
+		    throw exception_json("Error reading configuration from json data", e);
+		}
+	    }
+	    else
+		throw exception_input("Missing uploaded configuration in http request", STATUS_CODE_EXPECTATION_FAILED);
+	}
+	catch(...)
+	{
+	    expect_upload = false;
+	    throw;
+	}
+	expect_upload = false;
+    }
+
+    return ret;
 }
 
 void html_bibliotheque::new_css_library_available()
