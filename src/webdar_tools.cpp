@@ -45,6 +45,33 @@ extern "C"
 
 using namespace std;
 
+bool troncon::operator < (const troncon & ref) const
+{
+    string::const_iterator itme = begin;
+    string::const_iterator itref = ref.begin;
+
+    while(itme != end && itref != ref.end && *itme == *itref)
+    {
+	++itme;
+	++itref;
+    }
+
+    if(itme != end)
+    {
+	if(itref != ref.end)
+	    return *itme < *itref;
+	else
+	    return false; // ref shorter string than me
+    }
+    else
+    {
+	if(itref != ref.end)
+	    return true;  // we are a shorter string than ref
+	else
+	    return false; // we are the exact same string as ref
+    }
+}
+
 int webdar_tools_convert_to_int(const string & ref)
 {
     int ret = -1;
@@ -93,6 +120,78 @@ void webdar_tools_split_in_two(char sep, const string &aggregate, string & first
     if(it != aggregate.end())
 	++it;
     second = string(it, aggregate.end());
+}
+
+deque<troncon> webdar_tools_split_by_substring(const string & substring,
+					       const troncon & aggregate)
+{
+    deque<troncon> ret;
+    troncon tronc = aggregate;
+    string::const_iterator first_match;
+
+    do
+    {
+	first_match = webdar_tools_seek_to_substring(substring, tronc);
+	if(first_match != tronc.end)
+	{
+
+	       // fully matching string
+
+	    ret.push_back(troncon(tronc.begin, first_match)); // may push a empty troncon / string
+	    tronc.begin = first_match + substring.size();
+	}
+    }
+    while(first_match != tronc.end);
+
+    ret.push_back(tronc);
+
+    return ret;
+}
+
+string::const_iterator webdar_tools_seek_to_substring(const string & substring, const troncon & aggregate)
+{
+    string::const_iterator ret = aggregate.begin;
+    string::const_iterator offset;
+    string::const_iterator suit = substring.begin();
+    bool matching = false;
+    bool found = false;
+
+    while(ret != aggregate.end && ! found)
+    {
+	if(!matching)
+	{
+	    if(*ret == *suit)
+	    {
+		matching = true;
+		offset = ret;
+		++ret;
+		++suit;
+	    }
+	    else
+		++ret;
+	}
+	else // currently processing a matching substring
+	{
+	    if(suit != substring.end()) // still not complete match
+	    {
+		if(*ret != *suit) // failed fully matching substring
+		{
+		    matching = false;
+		    suit = substring.begin();
+		    ret = offset + 1; // yes, we may have portition of substring inside substring
+		}
+		else
+		{
+		    ++ret;
+		    ++suit;
+		}
+	    }
+	    else // fully matching string
+		found = true;
+	}
+    }
+
+    return found ? offset : ret;
 }
 
 string webdar_tools_remove_leading_spaces(const string & input)
