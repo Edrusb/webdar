@@ -36,6 +36,7 @@ extern "C"
 
     // webdar headers
 #include "body_builder.hpp"
+#include "events.hpp"
 
     /// class html_form implements HTML form feature
 
@@ -46,10 +47,12 @@ extern "C"
     /// set by the user in the displayed form. The text of the button
     /// is given as argument of this class constructor
 
-class html_form : public body_builder
+class html_form : public body_builder, public events
 {
 public:
-    html_form(const std::string & validate_msg = "send") { go_mesg = validate_msg; };
+    static const std::string changed;
+
+    html_form(const std::string & validate_msg = "send") { go_mesg = validate_msg; register_name(changed); };
     html_form(const html_form & ref) = default;
     html_form(html_form && ref) noexcept = default;
     html_form & operator = (const html_form & ref) = default;

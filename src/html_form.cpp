@@ -40,6 +40,8 @@ extern "C"
 
 using namespace std;
 
+const string html_form::changed = "form_changed";
+
 string html_form::inherited_get_body_part(const chemin & path,
 					  const request & req)
 {
@@ -56,7 +58,11 @@ string html_form::inherited_get_body_part(const chemin & path,
 	ret += get_body_part_from_all_children(path, tmp);
     }
     else
+    {
 	ret += get_body_part_from_all_children(path, req);
+	if(req.get_method() == "POST")
+	    act(changed);
+    }
     ret += "<input " +  get_css_classes() + " type=\"submit\" value=\"" + go_mesg + "\" />\n";
     ret += "</form>\n";
 
