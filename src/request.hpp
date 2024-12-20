@@ -113,8 +113,30 @@ public:
 	/// raw request header header access
     bool find_attribute(const std::string & key, std::string & value) const;
 
+
+	/// analyse body as a MIME multipart component (RFC 1521)
+
+	/// \return the number of multipart found in the body of the request
+	/// \note the request's header must have a header "Content-type: multipart/form-data; boundary=.....\r\n"
+	/// \note if the request is not properly formated or is not a multipart one, an exception_range is thrown
+    unsigned int get_multipart_number() const;
+
+	/// obtains the headers of multiparts once get_multipart_number() has been executed
+
+	/// \param[in] num the part number of the multipart in this request, first part is starting at index zero
+	/// \return a map of key/value pair corresponding to the key/values pair found in the
+	/// header the multipart number <num> found in the body
+    std::map<troncon,troncon> get_header_of_multipart(unsigned int num) const; ///< first part is starting at index zero
+
+	/// obtains the body of multiparts once get_multipart_number() has been executed
+
+	/// \param[in] num the part number of the multipart in this request, first part is starting at index zero
+	/// \return the document inclosed in the multipart number <num> of the body
+    troncon get_body_of_multipart(unsigned int num) const;
+
 private:
     enum { init, method_read, uri_read, reading_all, completed } status;
+
     std::string cached_method;    //< method already read from the next request
     uri coordinates;              //< uri spit in fields
     unsigned int maj_vers;        //< HTTP major version of the last request received
@@ -123,6 +145,14 @@ private:
     std::map<std::string, std::string> cookies;    //< request cookies
     std::string body;             //< request body if any
     std::shared_ptr<central_report> clog; //< central report logging
+
+	/// multipart pointers
+    typedef std::map<troncon, troncon> mp_header_map;
+
+    mutable std::deque<mp_header_map> mp_headers;
+    mutable std::deque<troncon> mp_body;
+
+    void clear_multipart() { mp_headers.clear(); mp_body.clear(); };
 
 	/// try reading the method and uri from the connexion
     bool read_method_uri(proto_connexion & input, bool blocking);

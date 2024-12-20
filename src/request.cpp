@@ -21,6 +21,9 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
+#include <dar/tools.hpp>
+#include <string.h>
+
 #include "request.hpp"
 #include "exceptions.hpp"
 #include "webdar_tools.hpp"
@@ -35,6 +38,7 @@ void request::clear()
     coordinates.clear();
     attributes.clear();
     body = "";
+    clear_multipart();
 }
 
 bool request::try_reading(proto_connexion & input)
@@ -47,6 +51,8 @@ void request::read(proto_connexion & input)
 {
     string key;
     string val, valorig;
+
+    clear_multipart();
 
 	///////////////////////////////////////////
 	// reading the first line of the request
@@ -220,6 +226,214 @@ bool request::find_attribute(const string & key, string & value) const
     }
     else
 	return false;
+}
+
+unsigned int request::get_multipart_number() const
+{
+    string tmp, tmp2;
+    string boundary;
+
+	// according to RFC1521 the header "MIME-Version: 1.0"
+	// should be looked for, however it seems that several
+	// browsers (firefox 128.5.0esr at least) do not include
+	// it in HTTP requests
+    if(find_attribute("MIME-Version", tmp))
+    {
+	if(tmp != "1.0" &&
+	   (tmp.size() <= 4 || strncmp("1.0 ", tmp.c_str(), 4) != 0))
+	    throw exception_input(libdar::tools_printf("Unsupported Mime-Version type %s (only supported is 1.0)", tmp.c_str()),
+				  STATUS_CODE_EXPECTATION_FAILED);
+    }
+
+	// parsing the Content-Type to obtain the boundary string
+
+    if(!find_attribute("Content-Type", tmp))
+	throw exception_input("Missing Content-Type field in request header",
+			      STATUS_CODE_EXPECTATION_FAILED);
+    else
+    {
+	static const char* expected_type = "multipart/";
+
+	if(tmp.size() <= strlen(expected_type)
+	   || strncasecmp(tmp.c_str(), expected_type, strlen(expected_type) != 0))
+	    throw exception_input(libdar::tools_printf("Content-Type is not of type %s", expected_type),
+				  STATUS_CODE_EXPECTATION_FAILED);
+
+	vector<string> splitted;
+
+	webdar_tools_split_by(';', tmp, splitted);
+	if(splitted.size() <= 1)
+	    throw exception_input("Missing boundary field information in multipart Content-Type",
+				  STATUS_CODE_EXPECTATION_FAILED);
+
+	vector<string>::iterator it = splitted.begin();
+	++it; // skipping the "multipart/" part of the header value
+
+	if(it == splitted.end())
+	    throw WEBDAR_BUG; // splitted.size() > 1, this should not occur
+
+	do
+	{
+		// we can reuse tmp here as its content is now stored in the splitted vector
+	    webdar_tools_split_in_two('=', *it, tmp, tmp2);
+	    tmp = webdar_tools_remove_leading_spaces(tmp);
+	    if(strcasecmp(tmp.c_str(), "boundary") == 0)
+		boundary = tmp2; // which ends the while loop
+	    ++it;
+	}
+	while(it != splitted.end() && boundary.empty());
+
+	if(boundary.empty())
+	    throw exception_input("Missing boundary field information in multipart Content-Type",
+				  STATUS_CODE_EXPECTATION_FAILED);
+
+	if(*(boundary.begin()) == '"' && *(boundary.rbegin()) == '"')
+	{
+	    if(boundary.size() > 2)
+	    {
+		    // removing enclosing quotes
+
+		boundary.pop_back();
+		boundary.erase(boundary.begin());
+	    }
+	    else
+		throw exception_input("Invalid boundary value: quoted empty string",
+				      STATUS_CODE_EXPECTATION_FAILED);
+	}
+
+	boundary = "--" + boundary;
+    }
+	// boundary is now known
+
+
+	// "Content-Transfer-Encoding" not (yet?) implemented. See RFC1521 paragraph 5.
+
+    if(find_attribute("Content-Transfer-Encoding", tmp))
+	throw exception_input("Content-Transfer-Encoding not implemented",
+			      STATUS_CODE_EXPECTATION_FAILED);
+
+	// analysing the body as a multipart structured data
+
+	// split body from boundary occurence -
+	// - the first occurence is not be preceeded by \r\n unlike the others
+	// - the last occurence is followed by two dashes (--)
+
+    deque<troncon> parts = webdar_tools_split_by_substring(boundary, troncon(body));
+
+    if(parts.empty())
+	throw exception_input("Body does not contain any multi-part data",
+			      STATUS_CODE_EXPECTATION_FAILED);
+    else
+    {
+	parts.pop_front();
+	    // dropping the preample part (any char before the first boundary)
+    }
+
+    if(parts.empty())
+	throw exception_input("Body does not contain any multi-part data",
+			      STATUS_CODE_EXPECTATION_FAILED);
+
+	// check and dropping the the epilogue (which always exists because of the -- added
+	// to the last boundary:
+    if(strncmp(string(parts.rbegin()->begin, parts.rbegin()->end).c_str(), "--", 2) == 0)
+    {
+	    // this is a well formated last boundary (with the added -- after it)
+	parts.pop_back(); // dropping the epilogue for the available parts
+    }
+    else
+	throw exception_input("Badly formated last boundary, missing the two dashes",
+			      STATUS_CODE_EXPECTATION_FAILED);
+
+	// removing the initial CRLF (\r\n) at the beginning of all parts
+	// as the bondary is always followed by CRLF (except for the last delimiter
+	// which has been addressed with the epligue above).
+    if(parts.empty())
+	throw exception_input("Body does not contain any multi-part data",
+			      STATUS_CODE_EXPECTATION_FAILED);
+
+    for(deque<troncon>::iterator it = parts.begin(); it != parts.end(); ++it)
+    {
+	int num = 2;
+
+	while(num > 0 && it->begin != it->end)
+	{
+	    --num;
+	    ++(it->begin);
+	}
+
+	if(num > 0)
+	    throw exception_input("Badly formated multipart, missing CR+LF after boundary",
+				  STATUS_CODE_EXPECTATION_FAILED);
+    }
+
+	// now analysing each part
+	// the expected stucture is a list of field: value one per line
+	// we expect to find the field "
+	// followed by an empty line
+	// followed by the data
+
+    static const string newline = "\r\n";
+    static const string header_sep = ": ";
+
+    mp_headers.clear();
+    mp_body.clear();
+
+    for(deque<troncon>::iterator it = parts.begin(); it != parts.end(); ++it)
+    {
+	troncon tmp(*it);
+	string::const_iterator offset;
+	bool finished = false;
+	mp_header_map headers;
+
+	do
+	{
+	    offset = webdar_tools_seek_to_substring(newline, tmp);
+	    if(offset == tmp.end) // no newline found and still no body found
+		throw exception_input("Missing empty newline in multipart to signal the start of a multi-part body",
+				      STATUS_CODE_EXPECTATION_FAILED);
+
+	    if(offset == tmp.begin) // empty new line, we have reached the body!
+	    {
+		tmp.begin = offset + newline.size();
+		mp_body.push_back(tmp);
+		finished = true;
+	    }
+	    else // still in header part, hitting an end of line
+	    {
+		troncon header_line(tmp.begin, offset);
+		tmp.begin = offset + newline.size();
+
+		string::const_iterator sep = webdar_tools_seek_to_substring(header_sep, header_line);
+		if(sep == header_line.end)
+		    throw exception_input("Invalid header in multipart, missing colon (:) on a line",
+					  STATUS_CODE_EXPECTATION_FAILED);
+		headers[troncon(header_line.begin, sep)] = troncon(sep + header_sep.size(), header_line.end);
+	    }
+	}
+	while(!finished);
+	mp_headers.push_back(headers);
+    }
+
+    if(mp_headers.size() != mp_body.size())
+	throw WEBDAR_BUG;
+
+    return mp_headers.size();
+}
+
+map<troncon,troncon> request::get_header_of_multipart(unsigned int num) const
+{
+    if(num >= mp_headers.size())
+	throw WEBDAR_BUG;
+
+    return mp_headers[num];
+}
+
+troncon request::get_body_of_multipart(unsigned int num) const
+{
+    if(num >= mp_body.size())
+	throw WEBDAR_BUG;
+
+    return mp_body[num];
 }
 
 void request::extract_cookies()
