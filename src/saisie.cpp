@@ -354,7 +354,11 @@ string saisie::inherited_get_body_part(const chemin & path,
 	    ignore_body_changed_from_my_children(false);
 	}
 	else
+	{
+		// normal display
+
 	    ret = html_page::inherited_get_body_part(path, req);
+	}
     }
 
     if(status != st_idle)
