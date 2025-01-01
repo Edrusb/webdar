@@ -128,9 +128,11 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 	// css
     webdar_css_style::normal_button(load);
     webdar_css_style::normal_button(save);
+    webdar_css_style::normal_button(download);
 
     load.add_css_class(css_float);
     save.add_css_class(css_float);
+    download.add_css_class(css_float);
 }
 
 void html_bibliotheque::on_event(const std::string & event_name)
