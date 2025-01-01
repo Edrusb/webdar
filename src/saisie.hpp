@@ -58,6 +58,7 @@ extern "C"
 #include "html_options_list.hpp"
 #include "bibliotheque.hpp"
 #include "html_bibliotheque.hpp"
+#include "html_fichier.hpp"
 
     /// class saisie
 
@@ -172,6 +173,9 @@ public:
 	/// define the username that the current session is owned by
     void set_username(const std::string & username) { disco.set_username(username); };
 
+	/// define the location where to drop data content before triggering the event_download
+    void set_data_place(std::shared_ptr<html_fichier> & ref) { to_download = ref; };
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
@@ -247,6 +251,9 @@ private:
     html_yes_no_box close;
 	//
     html_disconnect disco;
+
+	// the pointed to object is not adopted by this, but just filled with data (json bibliotheque config)
+    std::shared_ptr<html_fichier> to_download;
 
     static const std::string css_class_text;
 
