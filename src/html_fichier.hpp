@@ -52,6 +52,9 @@ public:
 	/// define the content to return upon request
     void set_data(const std::string & arg) { data = arg; };
 
+	/// clear content
+    void clear() { data.clear(); };
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
