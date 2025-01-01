@@ -93,7 +93,7 @@ public:
 	/// \note throw exception_range if name does not exist
     void delete_config(category categ, const std::string & name);
 
-	/// provide a storedf configuration
+	/// provide a stored configuration
 
 	/// \note throw exception_range if name does not exist
     json fetch_config(category categ, const std::string & name) const;
