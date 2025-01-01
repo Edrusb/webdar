@@ -54,6 +54,8 @@ user_interface::user_interface()
     if(!data)
 	throw exception_memory();
 
+    parametrage.set_data_place(data);
+
 	/// messages receved from saisie object named parametrage
     parametrage.record_actor_on_event(this, saisie::event_closing);
     parametrage.record_actor_on_event(this, saisie::event_restore);
@@ -67,6 +69,7 @@ user_interface::user_interface()
     parametrage.record_actor_on_event(this, saisie::event_repair);
     parametrage.record_actor_on_event(this, saisie::changed_session_name);
     parametrage.record_actor_on_event(this, saisie::event_disconn);
+    parametrage.record_actor_on_event(this, saisie::event_download);
 
 	/// messages received from html_libdar_running object named in_action
     in_action.record_actor_on_event(this, html_libdar_running_page::libdar_has_finished);
@@ -116,12 +119,21 @@ answer user_interface::give_answer(const request & req)
 		ret.add_body(parametrage.get_body_part(req.get_uri().get_path(), req));
 		if(mode == download)
 		{
-		    ret.clear();
-		    ret.set_status(STATUS_CODE_OK);
-		    ret.set_reason("ok");
-		    if(!data)
-			throw WEBDAR_BUG;
-		    ret.add_body(data->get_body_part(req.get_uri().get_path(), req));
+		    try
+		    {
+			ret.clear();
+			ret.set_status(STATUS_CODE_OK);
+			ret.set_reason("ok");
+			if(!data)
+			    throw WEBDAR_BUG;
+			ret.add_body(data->get_body_part(req.get_uri().get_path(), req));
+			data->clear();
+		    }
+		    catch(...)
+		    {
+			mode = config;
+			throw;
+		    }
 		    mode = config;
 		}
 		break;
@@ -337,6 +349,10 @@ void user_interface::on_event(const string & event_name)
     else if(event_name == saisie::event_disconn)
     {
 	disconnect_req = true;
+    }
+    else if(event_name == saisie::event_download)
+    {
+	mode = download;
     }
     else
 	throw WEBDAR_BUG; // what's that event !?!
