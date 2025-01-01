@@ -39,6 +39,9 @@ extern "C"
 
 using namespace std;
 
+const string html_bibliotheque::event_download = "html_bibl_download";
+
+
 html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 				     const string & bib_path):
     top_fs(""),
@@ -50,6 +53,9 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     bot_fs(""),
     upload_form("Upload"),
     upload_file("Webdar configuration to upload", html_form_input::file, "", "50"),
+    down_fs(""),
+    download("Downlaod", event_download),
+
     expect_upload(false)
 {
     unique_ptr<html_entrepot> tmp;
@@ -76,6 +82,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     bot_fs.adopt(&upload_form);
     bot_fs.adopt(&ok_message);
 
+    down_fs.adopt(&download);
+
 	// entrepot tab
 
     tmp.reset(new (nothrow) html_entrepot());
@@ -98,14 +106,18 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
     tabs.adopt_in_section(tab_main, &top_fs);
     tabs.adopt_in_section(tab_main, &bot_fs);
+    tabs.adopt_in_section(tab_main, &down_fs);
 
     tabs.adopt_in_section(tab_repo, ab_entrepot.get());
     adopt(&tabs);
 
 	// actors and events
 
+    register_name(event_download);
+
     save.record_actor_on_event(this, event_save);
     load.record_actor_on_event(this, event_load);
+    download.record_actor_on_event(this, event_download);
     upload_form.record_actor_on_event(this, html_form::changed);
 
 	// visibility
@@ -161,6 +173,10 @@ void html_bibliotheque::on_event(const std::string & event_name)
     {
 	ok_message.set_visible(false);
 	expect_upload = true;
+    }
+    else if(event_name == event_download)
+    {
+	act(event_download);
     }
     else
 	throw WEBDAR_BUG;

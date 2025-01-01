@@ -37,6 +37,7 @@ extern "C"
     // webdar headers
 #include "body_builder.hpp"
 #include "actor.hpp"
+#include "events.hpp"
 #include "html_tabs.hpp"
 #include "html_form_input_file.hpp"
 #include "html_double_button.hpp"
@@ -76,9 +77,11 @@ extern "C"
 	\endverbatim **/
 
 
-class html_bibliotheque: public body_builder, public actor
+class html_bibliotheque: public body_builder, public actor, public events
 {
 public:
+    static const std::string event_download;
+
     html_bibliotheque(std::shared_ptr<bibliotheque> & ptr, const std::string & bib_path);
     html_bibliotheque(const html_bibliotheque & ref) = default;
     html_bibliotheque(html_bibliotheque && ref) noexcept = default;
@@ -115,6 +118,8 @@ private:
     html_form upload_form;
     html_form_input upload_file;
     html_text ok_message;
+    html_form_fieldset down_fs;
+    html_double_button download;
 
     bool expect_upload;
 
