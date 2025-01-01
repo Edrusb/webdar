@@ -71,7 +71,7 @@ public:
 	EOE            ///< not a valid value, used for interating in the enum
     };
 
-    bibliotheque();
+    bibliotheque() { init(); };
     bibliotheque(const bibliotheque & ref) = default;
     bibliotheque(bibliotheque && ref) noexcept(false) = default;
     bibliotheque & operator = (const bibliotheque & ref) = default;
@@ -105,6 +105,15 @@ public:
 	/// list existing configurations under the provided category
     std::deque<std::string> listing(category categ) const;
 
+	/// get saved status
+
+	/// \note saved status is set when adding or modifying config,
+	/// but is cleared when loading or saving as json.
+    bool get_saved_status() const { return saved; };
+
+	/// clear all stored configurations
+    void clear() { init(); };
+
 
 	/// inherited from jsoner
     virtual void load_json(const json & source) override;
@@ -117,6 +126,9 @@ private:
     typedef std::map<category, asso> table;
 
     table content;
+    mutable bool saved;
+
+    void init();
 
 	/// return true if an entry name in the category cat exist
 

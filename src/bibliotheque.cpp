@@ -40,12 +40,6 @@ extern "C"
 
 using namespace std;
 
-bibliotheque::bibliotheque()
-{
-    for(int cat = filefilter; cat != EOE; ++cat)
-	content[static_cast<category>(cat)] = asso(); //empty asso
-}
-
 void bibliotheque::add_config(category categ, const string & name, const json & config)
 {
     table::iterator catit;
@@ -58,6 +52,7 @@ void bibliotheque::add_config(category categ, const string & name, const json & 
 	throw WEBDAR_BUG;
 
     (catit->second)[name] = config;
+    saved = false;
 }
 
 void bibliotheque::update_config(category categ, const string & name, const json & config)
@@ -69,6 +64,7 @@ void bibliotheque::update_config(category categ, const string & name, const json
 	throw exception_range(libdar::tools_printf("No configuration named %s exists in that category", name.c_str()));
 
     it->second = config;
+    saved = false;
 }
 
 
@@ -81,6 +77,7 @@ void bibliotheque::delete_config(category categ, const string & name)
 	throw exception_range(libdar::tools_printf("No configuration named %s exists in that category", name.c_str()));
 
     catit->second.erase(it);
+    saved = false;
 }
 
 json bibliotheque::fetch_config(category categ, const string & name) const
@@ -128,6 +125,7 @@ void bibliotheque::load_json(const json & source)
     json config_json;
 
     content.clear();
+    saved = true;
 
     try
     {
@@ -198,10 +196,17 @@ json bibliotheque::save_json() const
 	config.push_back(tmp);
     }
 
+    saved = true;
     return wrap_config_with_json_header(bibli_version, "bibliotheque", config);
 }
 
+void bibliotheque::init()
+{
+    for(int cat = filefilter; cat != EOE; ++cat)
+	content[static_cast<category>(cat)] = asso(); //empty asso
 
+    saved = true;
+}
 
 bool bibliotheque::lookup(category cat, const string & name, asso::iterator & it, table::iterator & catit) const
 {
