@@ -54,7 +54,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     upload_form("Upload"),
     upload_file("Webdar configuration to upload", html_form_input::file, "", "50"),
     down_fs(""),
-    download("Downlaod", event_download),
+    download("Download", event_download),
 
     expect_upload(false)
 {
@@ -71,6 +71,18 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     ok_message.add_text(0, "Configuration uploaded successfully!");
     download.set_download(true);
     download.set_filename("webdar.json");
+
+    intro.add_text(3, "Configurations");
+    intro.add_text(0, "This main tab gives the ability to save to file, load from file,");
+    intro.add_text(0, "download and upload the whole configurations defined in all the following tabs.");
+    intro.add_paragraph();
+    intro.add_text(0, "Note that these may include passwords to archives and backups as well as credentials to remote repositories.");
+    intro.add_text(0, "If saving to file should usually be fine (this is saved locally, on the host where webdar is running),");
+    intro.add_text(0, "this is not true while downloading or uploading over a non-secured session (non https session):");
+    intro.add_text(0, "All configuration information, including passwords, is transmitted in clear and accessible to anyone");
+    intro.add_text(0, "having access to the underneath network used between WebDar and your browser");
+    intro.add_paragraph();
+    intro.add_text(0, "This security warning also applies when using untrusted SSL certificates for WebDar (risk of man-in-the-middle attack");
 
 	// main tab
 
@@ -106,6 +118,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
 	//  global adoption tree
 
+    tabs.adopt_in_section(tab_main, &intro);
     tabs.adopt_in_section(tab_main, &top_fs);
     tabs.adopt_in_section(tab_main, &bot_fs);
     tabs.adopt_in_section(tab_main, &down_fs);
@@ -130,9 +143,15 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     webdar_css_style::normal_button(save);
     webdar_css_style::normal_button(download);
 
+
     load.add_css_class(css_float);
     save.add_css_class(css_float);
     download.add_css_class(css_float);
+
+    upload_form.add_css_class(webdar_css_style::wcs_btn_off);
+    upload_form.add_css_class(webdar_css_style::wcs_url_normal);
+    upload_form.add_css_class(webdar_css_style::wcs_8em_width);
+    upload_form.add_css_class(css_float);
 }
 
 void html_bibliotheque::on_event(const std::string & event_name)
@@ -180,6 +199,7 @@ void html_bibliotheque::on_event(const std::string & event_name)
     }
     else if(event_name == event_download)
     {
+	ok_message.set_visible(false);
 	act(event_download);
     }
     else

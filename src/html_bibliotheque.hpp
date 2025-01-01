@@ -108,6 +108,7 @@ private:
     std::unique_ptr<arriere_boutique<html_entrepot> > ab_entrepot;
 
     html_tabs tabs;
+    html_text intro;
     html_form_fieldset top_fs;
     html_form form;
     html_form_fieldset filename_fs;
