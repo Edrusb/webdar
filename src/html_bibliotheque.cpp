@@ -55,7 +55,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     upload_file("Webdar configuration to upload", html_form_input::file, "", "50"),
     down_fs(""),
     download("Download", event_download),
-
+    clear_fs(""),
+    clear_conf("Clear all configurations", event_clear),
     expect_upload(false)
 {
     unique_ptr<html_entrepot> tmp;
@@ -98,6 +99,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
     down_fs.adopt(&download);
 
+    clear_fs.adopt(&clear_conf);
+
 	// entrepot tab
 
     tmp.reset(new (nothrow) html_entrepot());
@@ -122,6 +125,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     tabs.adopt_in_section(tab_main, &top_fs);
     tabs.adopt_in_section(tab_main, &bot_fs);
     tabs.adopt_in_section(tab_main, &down_fs);
+    tabs.adopt_in_section(tab_main, &clear_fs);
 
     tabs.adopt_in_section(tab_repo, ab_entrepot.get());
     adopt(&tabs);
@@ -134,6 +138,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     load.record_actor_on_event(this, event_load);
     download.record_actor_on_event(this, event_download);
     upload_form.record_actor_on_event(this, html_form::changed);
+    clear_conf.record_actor_on_event(this, event_clear);
 
 	// visibility
     ok_message.set_visible(false);
@@ -142,11 +147,12 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     webdar_css_style::normal_button(load);
     webdar_css_style::normal_button(save);
     webdar_css_style::normal_button(download);
-
+    webdar_css_style::normal_button(clear_conf);
 
     load.add_css_class(css_float);
     save.add_css_class(css_float);
     download.add_css_class(css_float);
+    clear_conf.add_css_class(css_float);
 
     upload_form.add_css_class(webdar_css_style::wcs_btn_off);
     upload_form.add_css_class(webdar_css_style::wcs_url_normal);
@@ -202,6 +208,17 @@ void html_bibliotheque::on_event(const std::string & event_name)
 	ok_message.set_visible(false);
 	act(event_download);
     }
+    else if(event_name == event_clear)
+    {
+	ok_message.set_visible(false);
+	if(! biblio)
+	    throw WEBDAR_BUG;
+	else
+	{
+	    biblio->clear();
+	    ab_entrepot->refresh();
+	}
+    }
     else
 	throw WEBDAR_BUG;
 }
@@ -247,6 +264,8 @@ string html_bibliotheque::inherited_get_body_part(const chemin & path,
 	}
 	expect_upload = false;
     }
+
+    set_saved_status();
 
     return ret;
 }

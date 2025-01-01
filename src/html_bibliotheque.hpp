@@ -121,6 +121,10 @@ private:
     html_text ok_message;
     html_form_fieldset down_fs;
     html_double_button download;
+    html_form_fieldset clear_fs;
+    html_double_button clear_conf;
+    html_text saved_status;
+    html_text unsaved_status;
 
     bool expect_upload;
 
@@ -129,6 +133,9 @@ private:
     static constexpr const char* event_save = "save";
     static constexpr const char* event_load = "load";
     static constexpr const char* css_float = "hmtl_biblio_float";
+    static constexpr const char* event_clear = "clear";
+    static constexpr const char* css_red_text = "red";
+    static constexpr const char* css_green_text = "green";
 };
 
 #endif

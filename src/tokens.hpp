@@ -128,6 +128,7 @@ extern const char* COLOR_TOPBAR_BACK;
 extern const char* COLOR_ARED; // almost red
 extern const char* RED;
 extern const char* WHITE;
+extern const char* GREEN;
 
 extern const char* STATIC_PATH_ID;
 extern const char* STATIC_OBJ_LICENSING;

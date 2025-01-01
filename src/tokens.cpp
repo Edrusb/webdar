@@ -69,7 +69,7 @@ const char* COLOR_TOPBAR_BACK = COLOR_BACK;
 const char* COLOR_ARED = "rgb(255,30,10)";
 const char* RED = "red";
 const char* WHITE = "white";
-
+const char* GREEN = "rgb(0,150,80)";
 
 const char* STATIC_PATH_ID = "st";
 // STATIC_PATH_ID's length should be strictly less than the lenght of session_ID, as defined INITIAL_SESSION_ID_WIDTH in session.cpp to avoid collision with session_ID.

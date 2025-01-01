@@ -317,6 +317,8 @@ string saisie::inherited_get_body_part(const chemin & path,
 	// now we can generate in return the whole HTML code for "this" object
     if(choice.get_current_tag() == menu_close && close.get_value())
     {
+	    // session is closing
+
 	act(event_closing);
 	set_title(webdar_tools_get_title(get_session_name(), "Session closed"));
 	set_refresh_redirection(0, "/");
@@ -326,6 +328,8 @@ string saisie::inherited_get_body_part(const chemin & path,
     {
 	if(choice.get_current_tag() == menu_sessions)
 	{
+		// user asked to see session list
+
 	    ignore_body_changed_from_my_children(true);
 	    try
 	    {
