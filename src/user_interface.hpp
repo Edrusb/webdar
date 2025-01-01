@@ -51,6 +51,7 @@ extern "C"
 #include "archive_merge.hpp"
 #include "archive_init_list.hpp"
 #include "archive_repair.hpp"
+#include "html_fichier.hpp"
 
     /// main webdar html components that defines for a given session the type of output (config pages, libdar output, error, etc.)
 
@@ -103,6 +104,7 @@ private:
 	summary,       ///< should display the summary window
 	running,       ///< should display web_user_interface, progressive_report and cancellation button
 	error,         ///< should display the error
+	download       ///< should provide content of fichier for download or display (depending on the link used to get to this status)
     };
 
     std::string sessname;  ///< customized name of that session (empty string by default)
@@ -118,6 +120,7 @@ private:
     html_error in_error;           ///< page issued when an exception has been caught (mode == error)
     html_listing_page in_list;     ///< page issued when proceeding to archive listing
     html_summary_page in_summ;     ///< page issued when proceeding to archive summary
+    std::shared_ptr<html_fichier> data; ///< content to send in download mode
 
     libthreadar::thread *current_thread; ///< points to the running thread (either arch_test, arch_merge, ....)
     archive_test arch_test;        ///< holds thread created for testing archives

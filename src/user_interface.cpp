@@ -50,6 +50,10 @@ user_interface::user_interface()
     close_requested = false;
     disconnect_req = false;
 
+    data.reset(new (nothrow) html_fichier());
+    if(!data)
+	throw exception_memory();
+
 	/// messages receved from saisie object named parametrage
     parametrage.record_actor_on_event(this, saisie::event_closing);
     parametrage.record_actor_on_event(this, saisie::event_restore);
@@ -110,6 +114,16 @@ answer user_interface::give_answer(const request & req)
 	    {
 	    case config:
 		ret.add_body(parametrage.get_body_part(req.get_uri().get_path(), req));
+		if(mode == download)
+		{
+		    ret.clear();
+		    ret.set_status(STATUS_CODE_OK);
+		    ret.set_reason("ok");
+		    if(!data)
+			throw WEBDAR_BUG;
+		    ret.add_body(data->get_body_part(req.get_uri().get_path(), req));
+		    mode = config;
+		}
 		break;
 	    case listing:
 		ret.add_body(in_list.get_body_part(req.get_uri().get_path(), req));
@@ -125,6 +139,8 @@ answer user_interface::give_answer(const request & req)
 	    case error:
 		ret.add_body(in_error.get_body_part(req.get_uri().get_path(), req));
 		break;
+	    case download:
+		throw WEBDAR_BUG; // this mode should be transitional from config
 	    default:
 		throw WEBDAR_BUG;
 	    }
@@ -177,6 +193,8 @@ void user_interface::on_event(const string & event_name)
 	case running:
 	    throw WEBDAR_BUG;
 	case error:
+	    throw WEBDAR_BUG;
+	case download:
 	    throw WEBDAR_BUG;
 	default:
 	    throw WEBDAR_BUG;
