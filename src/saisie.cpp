@@ -55,6 +55,7 @@ const string saisie::event_merge   = "saisie_merge";
 const string saisie::event_repair  = "saisie_repair";
 const string saisie::changed_session_name = "saisie_changed_session_name";
 const string saisie::event_disconn = "saisie_disconn";
+const string saisie::event_download = "saisie_download";
 
 const string saisie::css_class_text = "saisie_text";
 
@@ -255,6 +256,10 @@ saisie::saisie():
     go_merge.record_actor_on_event(this, event_merge);
     go_repair.record_actor_on_event(this, event_repair);
     disco.record_actor_on_event(this, html_disconnect::event_disconn);
+    if(! h_biblio)
+	throw WEBDAR_BUG;
+    else
+	h_biblio->record_actor_on_event(this, html_bibliotheque::event_download);
 
     session_name.set_change_event_name(changed_session_name); // using the same event name as the we one we will trigger upon session name change
     session_name.record_actor_on_event(this, changed_session_name);
@@ -271,6 +276,7 @@ saisie::saisie():
     register_name(event_repair);
     register_name(changed_session_name);
     register_name(event_disconn);
+    register_name(event_download);
 
 	// css
     webdar_css_style::normal_button(archive_show, true);
@@ -441,6 +447,22 @@ void saisie::on_event(const string & event_name)
     }
     else if(event_name == html_disconnect::event_disconn)
 	act(event_disconn); // propagate the event
+    else if(event_name == html_bibliotheque::event_download)
+    {
+	if(!to_download)
+	    throw WEBDAR_BUG;
+	if(!biblio)
+	    throw WEBDAR_BUG;
+	try
+	{
+	    to_download->set_data(biblio->save_json().dump());
+	}
+	catch(json::exception & e)
+	{
+	    throw exception_json(string("dumping configuration from json object: "), e);
+	}
+	act(event_download);
+    }
     else
 	throw WEBDAR_BUG;
 }

@@ -109,6 +109,7 @@ public:
     static const std::string event_repair;
     static const std::string changed_session_name;
     static const std::string event_disconn;
+    static const std::string event_download;
 
 	/// constructor
     saisie();
