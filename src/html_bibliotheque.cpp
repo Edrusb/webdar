@@ -69,6 +69,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
     upload_form.set_enctype("multipart/form-data");
     ok_message.add_text(0, "Configuration uploaded successfully!");
+    download.set_download(true);
+    download.set_filename("webdar.json");
 
 	// main tab
 
