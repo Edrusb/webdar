@@ -128,6 +128,8 @@ private:
 
     bool expect_upload;
 
+    void set_saved_status();
+
     static constexpr const char* tab_main = "main";
     static constexpr const char* tab_repo = "repo";
     static constexpr const char* event_save = "save";

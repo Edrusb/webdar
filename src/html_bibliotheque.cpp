@@ -83,7 +83,10 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     intro.add_text(0, "All configuration information, including passwords, is transmitted in clear and accessible to anyone");
     intro.add_text(0, "having access to the underneath network used between WebDar and your browser");
     intro.add_paragraph();
-    intro.add_text(0, "This security warning also applies when using untrusted SSL certificates for WebDar (risk of man-in-the-middle attack");
+    intro.add_text(0, "This security warning also applies when using untrusted SSL certificates for WebDar (risk of man-in-the-middle attack)");
+
+    saved_status.add_text(3, "All configurations saved");
+    unsaved_status.add_text(3, "Not all configurations saved!");
 
 	// main tab
 
@@ -115,13 +118,15 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
 
     	// global component setups
-    tabs.add_tab(tab_main, tab_main);
-    tabs.add_tab(tab_repo, tab_repo);
+    tabs.add_tab("Main", tab_main);
+    tabs.add_tab("Repos", tab_repo);
 
 
 	//  global adoption tree
 
     tabs.adopt_in_section(tab_main, &intro);
+    tabs.adopt_in_section(tab_main, &saved_status);
+    tabs.adopt_in_section(tab_main, &unsaved_status);
     tabs.adopt_in_section(tab_main, &top_fs);
     tabs.adopt_in_section(tab_main, &bot_fs);
     tabs.adopt_in_section(tab_main, &down_fs);
@@ -142,6 +147,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
 	// visibility
     ok_message.set_visible(false);
+    set_saved_status();
 
 	// css
     webdar_css_style::normal_button(load);
@@ -158,6 +164,10 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     upload_form.add_css_class(webdar_css_style::wcs_url_normal);
     upload_form.add_css_class(webdar_css_style::wcs_8em_width);
     upload_form.add_css_class(css_float);
+
+    ok_message.add_css_class(css_green_text);
+    saved_status.add_css_class(css_green_text);
+    unsaved_status.add_css_class(css_red_text);
 }
 
 void html_bibliotheque::on_event(const std::string & event_name)
@@ -286,6 +296,30 @@ void html_bibliotheque::new_css_library_available()
 	csslib->add(css_float, tmp);
     }
 
+    if(!csslib->class_exists(css_red_text))
+    {
+	tmp.clear();
+	tmp.css_color(RED);
+	tmp.css_font_weight_bold();
+	csslib->add(css_red_text, tmp);
+    }
+
+    if(!csslib->class_exists(css_green_text))
+    {
+	tmp.clear();
+	tmp.css_color(GREEN);
+	tmp.css_font_style_italic();
+	csslib->add(css_green_text, tmp);
+    }
 
     webdar_css_style::update_library(*csslib);
+}
+
+
+void html_bibliotheque::set_saved_status()
+{
+    if(!biblio)
+	throw WEBDAR_BUG;
+    saved_status.set_visible(biblio->get_saved_status());
+    unsaved_status.set_visible(! biblio->get_saved_status());
 }
