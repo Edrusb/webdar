@@ -55,6 +55,9 @@ public:
 	/// clear content
     void clear() { data.clear(); };
 
+	/// whether some data is present
+    bool is_empty() const { return data.empty(); };
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
