@@ -101,6 +101,9 @@ saisie::saisie():
     status = st_idle;
     html_text text; // used to build static text content
 
+    licensing.set_download(true);
+    licensing.set_filename("webdar licensing.txt");
+
     default_biblio_path = (chemin(global_envir.get_value_with_default("HOME", "/")) + chemin(".webdarrc")).display();
 
     biblio.reset(new (nothrow) bibliotheque());
