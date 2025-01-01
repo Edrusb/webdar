@@ -40,6 +40,15 @@ extern "C"
 
 using namespace std;
 
+html_url::html_url(const std::string & url,
+		   const std::string & label):
+    x_url(url),
+    x_label(label),
+    download(false),
+    filename("")
+{
+}
+
 void html_url::change_url(const string & newurl)
 {
     if(x_url != newurl)
@@ -63,11 +72,15 @@ string html_url::get_body_part() const
 {
     string ret = "<a";
     string x_class = get_css_classes();
+    string dnl = download ? " download": "";
+
+    if(! filename.empty() && download)
+	dnl = dnl + "=\"" + filename + "\"";
 
     if(! x_class.empty())
 	ret += " " + x_class;
 
-    ret += " href=\"" + x_url + "\">" + x_label + "</a>";
+    ret += " href=\"" + x_url + "\"" + dnl + ">" + x_label + "</a>";
     if(!get_no_CR())
 	ret += "\n";
 

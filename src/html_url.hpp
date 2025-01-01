@@ -42,7 +42,7 @@ extern "C"
 class html_url : public body_builder, public static_body_builder
 {
 public:
-    html_url(const std::string & url, const std::string & label) { x_url = url; x_label = label; };
+    html_url(const std::string & url, const std::string & label);
     html_url(const html_url & ref) = default;
     html_url(html_url && ref) noexcept = default;
     html_url & operator = (const html_url & ref) = default;
@@ -51,6 +51,13 @@ public:
 
     void change_url(const std::string & newurl);
     void change_label(const std::string & newlabel);
+
+	/// whether to download or display the URL target
+    void set_download(bool mode) { download = mode; };
+
+	/// change the filename to create on client/browser side if download is set to true
+	/// \note providing a empty string get to the default behavior (no filename specified in URL)
+    void set_filename(const std::string & name) { filename = name; };
 
     const std::string & get_label() const { return x_label; };
     const std::string & get_url() const { return x_url; };
@@ -67,6 +74,8 @@ protected:
 private:
     std::string x_url;
     std::string x_label;
+    bool download;
+    std::string filename;
 };
 
 
