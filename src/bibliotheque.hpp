@@ -53,6 +53,7 @@ extern "C"
 class bibliotheque : public jsoner
 {
 public:
+
 	/// json objects are split into category, each used as a different "namespace"
     enum category
     {
@@ -71,6 +72,19 @@ public:
 	EOE            ///< not a valid value, used for interating in the enum
     };
 
+	/// complete configuration designation
+    struct coordinates
+    {
+	category cat;
+	std::string confname;
+
+	coordinates(category c, const std::string & name): cat(c), confname(name) {};
+	bool operator < (const coordinates & ref) const { return cat < ref.cat || (cat == ref.cat && confname < ref.confname); };
+    };
+
+	/// list of configs a given config depends on
+    typedef std::set<coordinates> using_set;
+
     bibliotheque() { init(); };
     bibliotheque(const bibliotheque & ref) = default;
     bibliotheque(bibliotheque && ref) noexcept(false) = default;
@@ -81,12 +95,12 @@ public:
 	/// add a new configuration, the name must not exist for that category
 
 	/// \note throw exception_range if name already exist
-    void add_config(category categ, const std::string & name, const json & config);
+    void add_config(category categ, const std::string & name, const json & config, const using_set & refs = std::set<coordinates>());
 
 	/// update an existing configuration for that category (name must exist)
 
 	/// \note throw exception_range if name does not exist
-    void update_config(category categ, const std::string & name, const json & config);
+    void update_config(category categ, const std::string & name, const json & config, const using_set & refs = std::set<coordinates>());
 
 	/// remove a configuration
 
@@ -122,11 +136,26 @@ public:
     virtual json save_json() const override;
 
 private:
-    typedef std::map<std::string, json> asso;
+
+	/// json configuration and list of other configs that depend on it
+    struct linked_config
+    {
+	json config;
+	std::set<coordinates> dependency;
+
+	linked_config() {};
+	linked_config(const json & conf) { config = conf; };
+	linked_config(const json & conf, const std::set<coordinates> & deps): config(conf), dependency(deps) {};
+    };
+
+	/// associate a config name to a json configuration (inside a given category)
+    typedef std::map<std::string, linked_config> asso;
+
+	///< associate a category to a list of name+config
     typedef std::map<category, asso> table;
 
-    table content;
-    mutable bool saved;
+    table content;       ///< all configurations classified per categories
+    mutable bool saved;  ///< whether content as changed since last save_json() invocation
 
     void init();
 
@@ -142,6 +171,9 @@ private:
 		asso::iterator & it,
 		table::iterator & catit) const;
 
+    void add_dependency_for(coordinates user, const using_set & referred);
+    void remove_dependency_for(coordinates user);
+
 
 	/// convert category to json used string
     static std::string category_to_string(category cat);
@@ -156,6 +188,7 @@ private:
     static constexpr const char* asso_label = "list";
     static constexpr const char* config_label = "name";
     static constexpr const char* config_def_label = "config";
+    static constexpr const char* config_depend = "used-by";
 };
 
 #endif

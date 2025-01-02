@@ -187,7 +187,11 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 	if(webdar_tools_exists_and_is_dir(bib_path, true))
 	    on_event(event_load);
     }
-    catch(exception_system & e)
+    catch(exception_bug & e)
+    {
+	throw;
+    }
+    catch(exception_base & e)
     {
 	nok_message.clear();
 	nok_message.add_text(0, libdar::tools_printf("Error while loading the configuration file %s: %s",

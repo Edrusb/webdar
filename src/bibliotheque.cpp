@@ -40,10 +40,14 @@ extern "C"
 
 using namespace std;
 
-void bibliotheque::add_config(category categ, const string & name, const json & config)
+void bibliotheque::add_config(category categ,
+			      const string & name,
+			      const json & config,
+			      const using_set & refs)
 {
     table::iterator catit;
     asso::iterator it;
+    coordinates coord(categ, name);
 
     if(lookup(categ, name, it, catit))
 	throw exception_range(libdar::tools_printf("A configuration named %s already exists in that category", name.c_str()));
@@ -51,22 +55,46 @@ void bibliotheque::add_config(category categ, const string & name, const json & 
     if(catit == content.end())
 	throw WEBDAR_BUG;
 
-    (catit->second)[name] = config;
+    try
+    {
+	add_dependency_for(coord, refs);
+    }
+    catch(...)
+    {
+	remove_dependency_for(coord);
+	throw;
+    }
+
+    (catit->second)[name] = linked_config(config);
     saved = false;
 }
 
-void bibliotheque::update_config(category categ, const string & name, const json & config)
+void bibliotheque::update_config(category categ, const
+				 string & name,
+				 const json & config,
+				 const using_set & refs)
 {
     table::iterator catit;
     asso::iterator it;
+    coordinates coord(categ, name);
 
     if(! lookup(categ, name, it, catit))
 	throw exception_range(libdar::tools_printf("No configuration named %s exists in that category", name.c_str()));
 
-    it->second = config;
+    try
+    {
+	remove_dependency_for(coord);
+	add_dependency_for(coord, refs);
+    }
+    catch(...)
+    {
+	remove_dependency_for(coord);
+	throw;
+    }
+
+    it->second.config = config;
     saved = false;
 }
-
 
 void bibliotheque::delete_config(category categ, const string & name)
 {
@@ -76,6 +104,23 @@ void bibliotheque::delete_config(category categ, const string & name)
     if(! lookup(categ, name, it, catit))
 	throw exception_range(libdar::tools_printf("No configuration named %s exists in that category", name.c_str()));
 
+    if(! it->second.dependency.empty())
+    {
+	string errmsg = libdar::tools_printf("Configuration %s/%s cannot be deleted because it is used by:",
+					     category_to_string(categ).c_str(),
+					     name.c_str());
+
+	for(set<coordinates>::iterator list = it->second.dependency.begin();
+	    list != it->second.dependency.end();
+	    ++list)
+	    errmsg += libdar::tools_printf(" %s/%s",
+					   category_to_string(list->cat).c_str(),
+					   list->confname);
+
+	throw exception_range(errmsg);
+    }
+
+    remove_dependency_for(coordinates(categ, name));
     catit->second.erase(it);
     saved = false;
 }
@@ -88,7 +133,7 @@ json bibliotheque::fetch_config(category categ, const string & name) const
     if(! lookup(categ, name, it, catit))
 	throw exception_range(libdar::tools_printf("No configuration named %s exists in that category", name.c_str()));
 
-    return it->second;
+    return it->second.config;
 }
 
 string bibliotheque::display_config(category categ, const string & name) const
@@ -119,10 +164,13 @@ void bibliotheque::load_json(const json & source)
 						 class_id);
 
     string cat_name;
-    json tmp_json;
     asso tmp_map;
     string config_name;
+    set<coordinates> depend;
+
+    json tmp_json;
     json config_json;
+    json used_by;
 
     content.clear();
     saved = true;
@@ -136,34 +184,56 @@ void bibliotheque::load_json(const json & source)
 	    throw exception_range("Version too recent for a bibliotheque json version, upgrade webdar your software");
 
 	if(! config.is_array())
-	    throw exception_range("Unexected json data: bibliotheque configuration is not an array");
+	    throw exception_range("Unexpected json data: bibliotheque configuration is not an array");
 
 	for(json::iterator catit = config.begin(); catit != config.end(); ++catit)
 	{
 
 	    if(! catit->is_object())
-		throw exception_range("Unexected json data: bibliotheque first level data is not an object");
+		throw exception_range("Unexpected json data: bibliotheque per category data is not an object");
 
 	    cat_name = catit->at(category_label);
 	    tmp_json = catit->at(asso_label);
 	    tmp_map.clear();
 
 	    if(! tmp_json.is_array() && ! tmp_json.is_null())
-		throw exception_range("Unexected json data: bibliotheque second level data is not an array");
+		throw exception_range("Unexpected json data: bibliotheque list of configuration per category is not an array");
 
 	    for(json::iterator it = tmp_json.begin(); it != tmp_json.end(); ++it)
 	    {
 		config_name = it->at(config_label);
 		config_json = it->at(config_def_label);
+		used_by = it->at(config_depend);
 
 		if(! config_json.is_object())
-		    throw exception_range("Unexected json data: bibliotheque third level value is not an object");
+		    throw exception_range("Unexpected json data: component configuration is not an object");
 
-		tmp_map[config_name] = config_json;
+		if(! used_by.is_array() && ! used_by.is_null())
+		    throw exception_range("Unexpected json data: component depency list is not a list");
+
+		depend.clear();
+		for(json::iterator usit = used_by.begin(); usit != used_by.end(); ++usit)
+		    depend.insert(coordinates(it->at(category_label), it->at(config_label)));
+
+		tmp_map[config_name] = linked_config(config_json, depend);
 	    }
 
 	    content[string_to_category(cat_name)] = tmp_map;
 	}
+
+	    // need to check that all category are present, else add them empty
+
+	string errmsg;
+
+	for(int cat = filefilter; cat != EOE; ++cat)
+	    if(content.find(static_cast<category>(cat)) == content.end()) // missing category
+	    {
+		content[static_cast<category>(cat)] = asso();
+		errmsg += " " + category_to_string(static_cast<category>(cat));
+	    }
+
+	if(!errmsg.empty())
+	    throw exception_range("The following configuration category were missing and have been reset: " + errmsg);
     }
     catch(json::exception & e)
     {
@@ -177,6 +247,8 @@ json bibliotheque::save_json() const
     json config;
     json percat_config;
     json tmp;
+    json used_by;
+    json item;
 
     for(table::const_iterator catit = content.begin(); catit != content.end(); ++catit)
     {
@@ -186,7 +258,22 @@ json bibliotheque::save_json() const
 	{
 	    tmp.clear();
 	    tmp[config_label] = it->first;
-	    tmp[config_def_label] = it->second;
+	    tmp[config_def_label] = it->second.config;
+
+	    used_by.clear();
+
+	    for(set<coordinates>::const_iterator usit = it->second.dependency.begin();
+		usit != it->second.dependency.end();
+		++usit)
+	    {
+		item.clear();
+		item[category_label] = category_to_string(usit->cat);
+		item[config_label] = usit->confname;
+		used_by.push_back(item);
+	    }
+
+	    tmp[config_depend] = used_by;
+
 	    percat_config.push_back(tmp);
 	}
 
@@ -220,6 +307,38 @@ bool bibliotheque::lookup(category cat, const string & name, asso::iterator & it
     return it != catit->second.end();
 }
 
+void bibliotheque::add_dependency_for(coordinates user, const using_set & referred)
+{
+    asso::iterator it;
+    table::iterator catit;
+
+    for(set<coordinates>::const_iterator usit = referred.begin();
+	usit != referred.end();
+	++usit)
+    {
+	if(! lookup(usit->cat, usit->confname, it, catit))
+	    throw exception_range(libdar::tools_printf("config %s/%s relies on non-existant %s/%s configuration",
+						       category_to_string(user.cat).c_str(),
+						       user.confname.c_str(),
+						       category_to_string(usit->cat),
+						       usit->confname.c_str()));
+
+	it->second.dependency.insert(user);
+    }
+}
+
+void bibliotheque::remove_dependency_for(coordinates user)
+{
+    for(table::iterator catit = content.begin();
+	catit != content.end();
+	++catit)
+    {
+	for(asso::iterator it = catit->second.begin();
+	    it != catit->second.end();
+	    ++it)
+	    it->second.dependency.erase(user);
+    }
+}
 
 string bibliotheque::category_to_string(category cat)
 {
