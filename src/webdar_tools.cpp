@@ -31,6 +31,14 @@ extern "C"
 #if HAVE_TIME_H
 #include <time.h>
 #endif
+
+#if HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#endif
+
+#if HAVE_FCNTL_H
+#include <fcntl.h>
+#endif
 }
 
     // libraries header files
@@ -379,4 +387,30 @@ string webdar_tools_html_display(const string & arg)
     }
 
     return ret;
+}
+
+bool webdar_tools_exists_and_is_file(const std::string & path, bool follow_symlink)
+{
+    struct stat info;
+    int ret;
+
+    if(follow_symlink)
+	ret = stat(path.c_str(), & info);
+    else
+	ret = lstat(path.c_str(), & info);
+
+    return ret == 0 && (info.st_mode && S_IFREG) != 0;
+}
+
+bool webdar_tools_exists_and_is_dir(const std::string & path, bool follow_symlink)
+{
+    struct stat info;
+    int ret;
+
+    if(follow_symlink)
+	ret = stat(path.c_str(), & info);
+    else
+	ret = lstat(path.c_str(), & info);
+
+    return ret == 0 && (info.st_mode && S_IFDIR) != 0;
 }

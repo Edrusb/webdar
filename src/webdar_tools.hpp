@@ -139,4 +139,7 @@ extern std::string webdar_tools_get_title(const std::string & sessname, const st
 
 extern std::string webdar_tools_html_display(const std::string & arg);
 
+extern bool webdar_tools_exists_and_is_file(const std::string & path, bool follow_symlink);
+extern bool webdar_tools_exists_and_is_dir(const std::string & path, bool follow_symlink);
+
 #endif
