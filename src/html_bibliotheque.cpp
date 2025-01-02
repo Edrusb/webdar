@@ -25,11 +25,11 @@
 #include "my_config.h"
 extern "C"
 {
-
 }
 
     // C++ system header files
 #include <fstream>
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "environment.hpp"
@@ -137,6 +137,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     tabs.adopt_in_section(tab_main, &bot_fs);
     tabs.adopt_in_section(tab_main, &down_fs);
     tabs.adopt_in_section(tab_main, &clear_fs);
+    tabs.adopt_in_section(tab_main, &nok_message);
 
     tabs.adopt_in_section(tab_repo, ab_entrepot.get());
     adopt(&tabs);
@@ -175,8 +176,25 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     ok_saved.add_css_class(css_green_text);
     ok_uploaded.add_css_class(css_green_text);
     ok_cleared.add_css_class(css_green_text);
+    nok_message.add_css_class(css_red_text);
     saved_status.add_css_class(css_green_text);
     unsaved_status.add_css_class(css_red_text);
+
+	// loading the default configuration if present
+
+    try
+    {
+	if(webdar_tools_exists_and_is_dir(bib_path, true))
+	    on_event(event_load);
+    }
+    catch(exception_system & e)
+    {
+	nok_message.clear();
+	nok_message.add_text(0, libdar::tools_printf("Error while loading the configuration file %s: %s",
+						     bib_path.c_str(),
+						     e.get_message().c_str()));
+	nok_message.set_visible(true);
+    }
 }
 
 void html_bibliotheque::on_event(const std::string & event_name)
@@ -343,4 +361,5 @@ void html_bibliotheque::clear_ok_messages()
     ok_saved.set_visible(false);
     ok_uploaded.set_visible(false);
     ok_cleared.set_visible(false);
+    nok_message.set_visible(false);
 }

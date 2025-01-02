@@ -128,6 +128,7 @@ private:
     html_text ok_saved;
     html_text ok_uploaded;
     html_text ok_cleared;
+    html_text nok_message;
 
 
     bool expect_upload;
