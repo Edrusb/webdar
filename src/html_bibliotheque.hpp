@@ -118,17 +118,22 @@ private:
     html_form_fieldset bot_fs;
     html_form upload_form;
     html_form_input upload_file;
-    html_text ok_message;
     html_form_fieldset down_fs;
     html_double_button download;
     html_form_fieldset clear_fs;
     html_double_button clear_conf;
     html_text saved_status;
     html_text unsaved_status;
+    html_text ok_loaded;
+    html_text ok_saved;
+    html_text ok_uploaded;
+    html_text ok_cleared;
+
 
     bool expect_upload;
 
     void set_saved_status();
+    void clear_ok_messages();
 
     static constexpr const char* tab_main = "main";
     static constexpr const char* tab_repo = "repo";

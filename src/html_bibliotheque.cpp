@@ -69,7 +69,10 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 	throw WEBDAR_BUG;
 
     upload_form.set_enctype("multipart/form-data");
-    ok_message.add_text(0, "Configuration uploaded successfully!");
+    ok_loaded.add_text(0, "Configuration loaded successfully!");
+    ok_saved.add_text(0, "Configuration saved successfully!");
+    ok_uploaded.add_text(0, "Configuration uploaded successfully!");
+    ok_cleared.add_text(0, "Configuration cleared successfully!");
     download.set_download(true);
     download.set_filename("webdar.json");
 
@@ -95,14 +98,17 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     filename_fs.adopt(&filename);
     top_fs.adopt(&save);
     top_fs.adopt(&load);
+    top_fs.adopt(&ok_loaded);
+    top_fs.adopt(&ok_saved);
 
     upload_form.adopt(&upload_file);
     bot_fs.adopt(&upload_form);
-    bot_fs.adopt(&ok_message);
+    bot_fs.adopt(&ok_uploaded);
 
     down_fs.adopt(&download);
 
     clear_fs.adopt(&clear_conf);
+    clear_fs.adopt(&ok_cleared);
 
 	// entrepot tab
 
@@ -146,7 +152,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     clear_conf.record_actor_on_event(this, event_clear);
 
 	// visibility
-    ok_message.set_visible(false);
+    clear_ok_messages();
     set_saved_status();
 
 	// css
@@ -165,7 +171,10 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     upload_form.add_css_class(webdar_css_style::wcs_8em_width);
     upload_form.add_css_class(css_float);
 
-    ok_message.add_css_class(css_green_text);
+    ok_loaded.add_css_class(css_green_text);
+    ok_saved.add_css_class(css_green_text);
+    ok_uploaded.add_css_class(css_green_text);
+    ok_cleared.add_css_class(css_green_text);
     saved_status.add_css_class(css_green_text);
     unsaved_status.add_css_class(css_red_text);
 }
@@ -177,7 +186,7 @@ void html_bibliotheque::on_event(const std::string & event_name)
 
     if(event_name == event_save)
     {
-	ok_message.set_visible(false);
+	clear_ok_messages();
 	string config = biblio->save_json().dump();
 	ofstream output(filename.get_value());
 	if(output)
@@ -189,10 +198,11 @@ void html_bibliotheque::on_event(const std::string & event_name)
 	}
 	else
 	    throw exception_system(libdar::tools_printf("Failed openning %s", filename.get_value().c_str()), errno);
+	ok_saved.set_visible(true);
     }
     else if(event_name == event_load)
     {
-	ok_message.set_visible(false);
+	clear_ok_messages();
 	ifstream input(filename.get_value());
 	if(input)
 	{
@@ -207,20 +217,21 @@ void html_bibliotheque::on_event(const std::string & event_name)
 	}
 	else
 	    throw exception_system(libdar::tools_printf("Failed openning %s", filename.get_value().c_str()), errno);
+	ok_loaded.set_visible(true);
     }
     else if(event_name == html_form::changed)
     {
-	ok_message.set_visible(false);
+	clear_ok_messages();
 	expect_upload = true;
     }
     else if(event_name == event_download)
     {
-	ok_message.set_visible(false);
+	clear_ok_messages();
 	act(event_download);
     }
     else if(event_name == event_clear)
     {
-	ok_message.set_visible(false);
+	clear_ok_messages();
 	if(! biblio)
 	    throw WEBDAR_BUG;
 	else
@@ -228,6 +239,7 @@ void html_bibliotheque::on_event(const std::string & event_name)
 	    biblio->clear();
 	    ab_entrepot->refresh();
 	}
+	ok_cleared.set_visible(true);
     }
     else
 	throw WEBDAR_BUG;
@@ -257,7 +269,7 @@ string html_bibliotheque::inherited_get_body_part(const chemin & path,
 
 		    biblio->load_json(data);
 		    ab_entrepot->refresh();
-		    ok_message.set_visible(true);
+		    ok_uploaded.set_visible(true);
 		}
 		catch(json::exception & e)
 		{
@@ -322,4 +334,13 @@ void html_bibliotheque::set_saved_status()
 	throw WEBDAR_BUG;
     saved_status.set_visible(biblio->get_saved_status());
     unsaved_status.set_visible(! biblio->get_saved_status());
+}
+
+
+void html_bibliotheque::clear_ok_messages()
+{
+    ok_loaded.set_visible(false);
+    ok_saved.set_visible(false);
+    ok_uploaded.set_visible(false);
+    ok_cleared.set_visible(false);
 }
