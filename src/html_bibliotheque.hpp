@@ -54,6 +54,11 @@ extern "C"
     /// class html_bibliotheque let user (thanks to its web interface) to:
     /// - define, update, remove components to the bibliotheque (per category)
     /// - save/load, upload/download the whole bibliotheque to file or throw the http(s) channel
+    ///
+    /// \note the downloading process is the following: the download button triggers an event
+    /// which drives the html_bibiliotheque to trigger its event_download event. But the download
+    /// button has a link that lead the browser to save to file the body of the next http response.
+    ///
     /** \verbatim
 
 	+--------------------<top_fs>--------------------------+
@@ -71,6 +76,14 @@ extern "C"
 	+-------------------<bot_fs>---------------------------+
 	| +---- -----------+                                   |
 	| | file selector  |                                   |
+	| +----------------+                                   |
+	+------------------------------------------------------+
+	| +----------------+                                   |
+	| |  Download      |                                   |
+	| +----------------+                                   |
+	+------------------------------------------------------+
+	| +----------------+                                   |
+	| | clear configs  |                                   |
 	| +----------------+                                   |
 	+------------------------------------------------------+
 

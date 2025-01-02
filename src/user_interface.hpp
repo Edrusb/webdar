@@ -55,6 +55,15 @@ extern "C"
 
     /// main webdar html components that defines for a given session the type of output (config pages, libdar output, error, etc.)
 
+    /// \note the configuration downloading process is the following: at construction time, the parametrage field (saisie class)
+    /// is set with an html_fichier object using saisie::set_data_place() method. When the user clicks on the download button
+    /// inside class saisie (html_bibliotheque field) this triggers the browser to save to file the body of the next http response,
+    /// and the saisie object saves into the html_fichier the json configuration of the bibiliotheque and triggers the event
+    /// event_download. The user_interface class has registered to this event which leads to change to mode to "download", but
+    /// the body_builder evaluation of field parametrage continues to its end. When it has finished if the mode has been changed to
+    /// download the obtained http body is just dropped and replaced by the content of the html_fichier we provided to the
+    /// parametrage object and the mode is set back to config before returning the http response.
+
 class user_interface : public responder, public events, public actor
 {
 public:

@@ -72,6 +72,14 @@ extern "C"
     ///- just below and beside the menu, an html_aiguille "select"
     /// shows the different "pages" for parameters and options depending on the selection
     /// action
+    ///
+    /// \note the downloading process is the following: this object as first to be set set_data_place()
+    /// Upon download event from html_bibliotheque field (h_biblio), which triggers the browser to save
+    /// to file the body of the next http response, the saisie object stores to the provided html_fichier
+    /// by mean of set_data_place() the content of the bibliotheque (field biblio) as json file and triggers
+    /// the event_download event (which is registered by the user_interface class, mainly).
+    ///
+
 
     /** \verbatim
 
