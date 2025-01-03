@@ -40,7 +40,7 @@ extern "C"
 
 using namespace std;
 
-const string bibliotheque::changed = "bibli_changed";
+const string bibliotheque::changed = "bibliotheque::changed";
 
 void bibliotheque::add_config(category categ,
 			      const string & name,
