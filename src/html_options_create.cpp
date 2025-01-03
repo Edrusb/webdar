@@ -106,6 +106,10 @@ html_options_create::html_options_create():
 
 	// set field parameters
 
+    entrep.reset(new (nothrow) html_entrepot());
+    if(!entrep)
+	throw exception_memory();
+
     archtype.add_choice("full", "Full backup");
     archtype.add_choice("diff", "Differential/Incremental backup");
     archtype.add_choice("diffdelta", "Differential/Incremental backup with binary delta (*)");
@@ -205,7 +209,7 @@ html_options_create::html_options_create():
     adopt(&deroule);
 
 	// repo
-    deroule.adopt_in_section(sect_repo, &entrep);
+    deroule.adopt_in_section(sect_repo, &guichet_entrep);
 
 	// archive type and associated optional fields
     archtype_fs.adopt(&archtype);
@@ -317,13 +321,21 @@ html_options_create::html_options_create():
     exclude_by_ea.record_actor_on_event(this, html_form_input::changed);
     default_ea.record_actor_on_event(this, html_form_input::changed);
     compr_params.record_actor_on_event(this, html_compression_params::changed);
-    entrep.record_actor_on_event(this, html_entrepot::changed);
+    entrep->record_actor_on_event(this, html_entrepot::changed);
 
     on_event(html_form_radio::changed); // used to initialize the html components visibility
 
 	// css
     webdar_css_style::grey_button(deroule, true);
     display_treated_only_dir.add_css_class(webdar_css_style::wcs_indent);
+}
+
+void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
+{
+    guichet_entrep.set_child(ptr,
+			     bibliotheque::repo,
+			     entrep,
+			     false);
 }
 
 libdar::archive_options_create html_options_create::get_options(shared_ptr<html_web_user_interaction> & webui) const
@@ -443,7 +455,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_slice_min_digits(slicing.get_min_digits());
     ret.set_ignore_unknown_inode_type(! dont_ignore_unknown_inode_type.get_value_as_bool());
     ret.set_execute(execute.get_value());
-    ret.set_entrepot(entrep.get_entrepot(webui));
+    ret.set_entrepot(entrep->get_entrepot(webui));
     ret.set_selection(*(filename_mask.get_mask()));
     ret.set_subtree(*(path_mask.get_mask()));
 

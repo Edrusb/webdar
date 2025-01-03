@@ -90,10 +90,13 @@ class guichet: public body_builder, public jsoner, public bibliotheque_subconfig
 public:
 
 	/// constructor
+    guichet();
+
+	/// mandatory call to provide the object to adopt and use to display configurations
 
 	/// \param[in] ptr the bibliotheque object where to fetch from configurations
 	/// \param[in] cat the category for configurations to use in the bibliotheque
-	/// \param[in] to_adopt the jsoner inherited object to adopt and apply configurations to.
+	/// \param[in] to_adopt a body_builder and a jsoner inherited object to adopt and apply configurations to.
 	/// Important: the pointed to object by to_adopt is not expected to be changed during the
 	/// lifetime of this guichet object!
 	/// \param[in] add_form_around adopt to_adopt in a form in turn adopted by "this" (needed for
@@ -107,10 +110,11 @@ public:
 	/// but should pass through this guichet object to either get the to_adopted json config (wrapped
 	/// with some metadata provided by guichet) or a guichet structure pointing to the configuration
 	/// name to use in the bibliotheque.
-    guichet(const std::shared_ptr<bibliotheque> & ptr,
-	    bibliotheque::category cat,
-	    const std::shared_ptr<body_builder> & to_adopt,
-	    bool add_form_around);
+    void set_child(const std::shared_ptr<bibliotheque> & ptr,
+		   bibliotheque::category cat,
+		   const std::shared_ptr<body_builder> & to_adopt,
+		   bool add_form_around);
+
 
 	/// inherited from jsoner (used when this object is used as subconfig of another object)
     virtual void load_json(const json & source) override;
@@ -150,6 +154,8 @@ private:
     void update_selected();
     void set_adopted();
     void set_visibility();
+
+    void check_adopted() const { if(!adopted) throw WEBDAR_BUG; };
 
     static constexpr const char* event_select = "select";
     static constexpr const char* event_edit = "edit";

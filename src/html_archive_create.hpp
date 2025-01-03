@@ -55,6 +55,9 @@ public:
     html_archive_create & operator = (html_archive_create && ref) noexcept = delete;
     ~html_archive_create() = default;
 
+	/// mandatory call to invoke ASAP after constructor
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr) { options.set_biblio(ptr); };
+
     const std::string & get_archive_path() const { return sauv_path.get_value(); };
     const std::string & get_archive_basename() const { return basename.get_value(); };
     const std::string & get_fs_root() const { return fs_root.get_value(); };

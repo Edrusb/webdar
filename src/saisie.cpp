@@ -111,6 +111,8 @@ saisie::saisie():
     if(!biblio)
 	throw exception_memory();
 
+    create.set_biblio(biblio);
+
     h_biblio.reset(new (nothrow) html_bibliotheque(biblio, default_biblio_path));
     if(! h_biblio)
 	throw exception_memory();

@@ -33,19 +33,12 @@ extern "C"
     // webdar headers
 
 
-
     //
 #include "guichet.hpp"
 
 using namespace std;
 
-guichet::guichet(const shared_ptr<bibliotheque> & ptr,
-		 bibliotheque::category cat,
-		 const shared_ptr<body_builder> & to_adopt,
-		 bool add_form_around):
-    categ(cat),
-    biblio(ptr),
-    adopted(to_adopt),
+guichet::guichet():
     ignore_events(false),
     select_form("Update"),
     select_fs(""),
@@ -58,8 +51,22 @@ guichet::guichet(const shared_ptr<bibliotheque> & ptr,
     saveas_fs(""),
     saveas_name("New configuration name", html_form_input::text, "", "50")
 {
-    if(!adopted)
+	// all the rest of initialization is done in set_child()
+}
+
+void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
+			bibliotheque::category cat,
+			const shared_ptr<body_builder> & to_adopt,
+			bool add_form_around)
+{
+    biblio = ptr;
+    if(!biblio)
 	throw WEBDAR_BUG;
+
+    categ = cat;
+
+    adopted = to_adopt;
+    check_adopted();
 
     adopted_jsoner = dynamic_cast<jsoner*>(adopted.get());
     if(adopted_jsoner == nullptr)
@@ -68,7 +75,6 @@ guichet::guichet(const shared_ptr<bibliotheque> & ptr,
     adopted_subconfig = dynamic_cast<bibliotheque_subconfig*>(adopted.get());
 	// adopted_subconfig may be null if the adopted object
 	// does not implement this optional interface
-
 
 	// component configuration
     update_selected();
@@ -114,6 +120,8 @@ guichet::guichet(const shared_ptr<bibliotheque> & ptr,
     set_visibility();
 
 	// csss
+
+
 }
 
 void guichet::load_json(const json & source)
@@ -122,6 +130,8 @@ void guichet::load_json(const json & source)
     unsigned int vers;
     string id;
     bool mode;
+
+    check_adopted();
 
     try
     {
@@ -191,6 +201,8 @@ json guichet::save_json() const
 {
     json ret;
 
+    check_adopted();
+
     if(select.get_selected_num() == 0)
     {
 	    // manual mode
@@ -215,6 +227,8 @@ json guichet::save_json() const
 
 void guichet::clear_json()
 {
+    check_adopted();
+
     adopted_jsoner->clear_json();
 }
 
@@ -222,6 +236,8 @@ void guichet::clear_json()
 bibliotheque::using_set guichet::get_using_set() const
 {
     bibliotheque::using_set ret;
+
+    check_adopted();
 
     if(select.get_selected_num() != 0)
     {
@@ -237,6 +253,8 @@ bibliotheque::using_set guichet::get_using_set() const
 
 void guichet::on_event(const std::string & event_name)
 {
+    check_adopted();
+
     if(ignore_events)
 	return;
 
@@ -313,9 +331,17 @@ void guichet::on_event(const std::string & event_name)
 	throw WEBDAR_BUG;
 }
 
+string guichet::inherited_get_body_part(const chemin & path,
+					const request & req)
+{
+    return get_body_part_from_all_children(path, req);
+}
+
 void guichet::update_selected()
 {
     deque<string> available;
+
+    check_adopted();
 
     if(!biblio)
 	throw WEBDAR_BUG;
@@ -345,6 +371,8 @@ void guichet::update_selected()
 
 void guichet::set_adopted()
 {
+    check_adopted();
+
     if(select.get_selected_num() > 0) // not the "manual config"
     {
 	if(!biblio)
@@ -358,6 +386,8 @@ void guichet::set_adopted()
 void guichet::set_visibility()
 {
     bool manualmode = select.get_selected_num() == 0;
+
+    check_adopted();
 
     if(adopted_frame == nullptr)
 	throw WEBDAR_BUG;

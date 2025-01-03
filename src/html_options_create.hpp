@@ -61,6 +61,7 @@ extern "C"
 #include "html_slicing.hpp"
 #include "html_ciphering.hpp"
 #include "html_fsa_scope.hpp"
+#include "guichet.hpp"
 
     /// html component used for the user to provide the parameters to create a new archive
 
@@ -76,6 +77,10 @@ public:
     html_options_create & operator = (html_options_create && ref) noexcept = delete;
     ~html_options_create() = default;
 
+	/// mandatory call to invoke ASAP after constructor
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
+
+
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -87,7 +92,7 @@ public:
     libdar::archive_options_create get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
 
 	/// optain the current entrepot object where is expected to be create the archive
-    std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const { return entrep.get_entrepot(webui); };
+    std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const { return entrep->get_entrepot(webui); };
 
 	/// needed for path based filtering to filter accordingly to the current root_fs
     void set_fs_root(const std::string & prefix) { path_mask.set_fs_root(prefix); };
@@ -105,7 +110,8 @@ private:
 
     html_derouleur deroule;
 
-    html_entrepot entrep;
+    guichet guichet_entrep;
+    std::shared_ptr<html_entrepot> entrep;
 
     html_form form_archtype;
 
