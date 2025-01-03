@@ -74,6 +74,13 @@ public:
 	EOE            ///< not a valid value, used for interating in the enum
     };
 
+	/// convert category to json used string
+    static std::string category_to_string(category cat);
+
+	/// convert json used string to category
+    static category string_to_category(const std::string & s);
+
+
 	/// complete configuration designation
     struct coordinates
     {
@@ -178,13 +185,6 @@ private:
 
     void add_dependency_for(coordinates user, const using_set & referred);
     void remove_dependency_for(coordinates user);
-
-
-	/// convert category to json used string
-    static std::string category_to_string(category cat);
-
-	/// convert json used string to category
-    static category string_to_category(const std::string & s);
 
 
 	/// current json output version for this class
