@@ -63,7 +63,7 @@ public:
     void add_choice(const std::string & id, const std::string & label);
     void clear() { choices.clear(); unset_selected(); my_body_part_has_changed(); };
 
-    void set_selected(unsigned int x); /// \note index zero is the first choice
+    void set_selected(unsigned int x); ///< \note index zero is the first choice
     void unset_selected();             ///< set nothing as selected
     bool is_selected() const { return selected < choices.size(); };
     void set_selected(const std::string & id);
