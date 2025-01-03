@@ -21,9 +21,6 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
-#ifndef BIBLIOTHEQUE_SUBCONFIG_HPP
-#define BIBLIOTHEQUE_SUBCONFIG_HPP
-
     // C system header files
 extern "C"
 {
@@ -34,27 +31,20 @@ extern "C"
 
 
     // webdar headers
-#include "bibliotheque.hpp"
 
-    /// class bibliotheque_subconfig is an interface (pure virtual class)
 
-    /// jsoner objects added to a bibliotheque *MAY* implement this interface in addition to jsoner
-    /// when their configuration is subject to depend on other configurations from the same bibliotheque
-    /// they are about to be added to (bibliotheque::add_config) or updated in (bibliotheque::update_config).
-    /// the class arriere_boutique checks whether this interface is implemented or not and managed this
-    /// transparently.
 
-class bibliotheque_subconfig
+    //
+#include "bibliotheque_subconfig.hpp"
+
+using namespace std;
+
+
+void bibliotheque_subconfig::subconfig_add_to(bibliotheque::using_set & added_to, const bibliotheque::using_set & to_add)
 {
-public:
+    for(bibliotheque::using_set::const_iterator it = to_add.begin();
+	it != to_add.end();
+	++it)
+	added_to.insert(*it);
+}
 
-	/// provide a standard mean for an object to tell its configuration relies on other configuration(s)
-    virtual bibliotheque::using_set get_using_set() const = 0;
-
-protected:
-
-	/// helper routing for objects of inheriting of that class
-    static void subconfig_add_to(bibliotheque::using_set & added_to, const bibliotheque::using_set & to_add);
-};
-
-#endif
