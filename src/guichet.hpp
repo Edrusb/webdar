@@ -131,6 +131,11 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
+protected:
+	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
+
 private:
     bibliotheque::category categ;
     std::shared_ptr<bibliotheque> biblio;
