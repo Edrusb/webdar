@@ -38,6 +38,7 @@ extern "C"
 
     // webdar headers
 #include "jsoner.hpp"
+#include "events.hpp"
 
     /// \file bibliotheque.hpp defines bibliotheque class
 
@@ -50,9 +51,10 @@ extern "C"
     /// configuration (including configuration of it stores) as a jsoner
     /// class.
 
-class bibliotheque : public jsoner
+class bibliotheque : public jsoner, public events
 {
 public:
+    static const std::string changed; /// triggered only if an existing configuration is changed or removed (not when a new is added)
 
 	/// json objects are split into category, each used as a different "namespace"
     enum category

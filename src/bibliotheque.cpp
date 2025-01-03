@@ -40,6 +40,8 @@ extern "C"
 
 using namespace std;
 
+const string bibliotheque::changed = "bibli_changed";
+
 void bibliotheque::add_config(category categ,
 			      const string & name,
 			      const json & config,
@@ -94,6 +96,7 @@ void bibliotheque::update_config(category categ, const
 
     it->second.config = config;
     saved = false;
+    act(changed);
 }
 
 void bibliotheque::delete_config(category categ, const string & name)
@@ -123,6 +126,7 @@ void bibliotheque::delete_config(category categ, const string & name)
     remove_dependency_for(coordinates(categ, name));
     catit->second.erase(it);
     saved = false;
+    act(changed);
 }
 
 json bibliotheque::fetch_config(category categ, const string & name) const
@@ -232,6 +236,8 @@ void bibliotheque::load_json(const json & source)
 		errmsg += " " + category_to_string(static_cast<category>(cat));
 	    }
 
+	act(changed);
+
 	if(!errmsg.empty())
 	    throw exception_range("The following configuration category were missing and have been reset: " + errmsg);
     }
@@ -293,6 +299,7 @@ void bibliotheque::init()
 	content[static_cast<category>(cat)] = asso(); //empty asso
 
     saved = true;
+    register_name(changed);
 }
 
 bool bibliotheque::lookup(category cat, const string & name, asso::iterator & it, table::iterator & catit) const
