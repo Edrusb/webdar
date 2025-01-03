@@ -80,6 +80,9 @@ public:
 	/// inherited from jsoner
     virtual json save_json() const override;
 
+	/// inherited from jsoner
+    virtual void clear_json() override;
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
@@ -131,6 +134,7 @@ private:
     void update_visible();
     void trigger_event();
     void clear_form();
+    void reset_ssh_files();
 
     static constexpr const unsigned int format_version = 1;
 
@@ -147,6 +151,8 @@ private:
     static constexpr const char* jlabel_knownhosts_file = "knownhosts_file";
     static constexpr const char* jlabel_waittime = "wait";
     static constexpr const char* jlabel_verbose = "verbose";
+    static constexpr const char* default_waittime = "30";
+    static constexpr const char* default_verbose = "";
 };
 
 #endif

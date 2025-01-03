@@ -135,6 +135,9 @@ public:
 	/// inherited from jsoner
     virtual json save_json() const override;
 
+	/// inherited from jsoner
+    virtual void clear_json() override { clear(); };
+
 private:
 
 	/// json configuration and list of other configs that depend on it

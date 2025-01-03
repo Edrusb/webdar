@@ -94,6 +94,10 @@ public:
 	/// see the protected static methods that implement this.
     virtual json save_json() const = 0;
 
+
+	/// instruct the object to get to its default/initial configuration
+    virtual void clear_json() = 0;
+
 protected:
 
 	/// given a version, class_id and configuration generates the global and common json structure

@@ -60,17 +60,13 @@ html_entrepot::html_entrepot():
     prv_keyfile("Private key file", "/", "80%", "Select the private key file..."),
     knownhosts_check("Check remote host from the known-hosts file", html_form_input::check, "1", "1"),
     known_hosts_file("Known-hosts file", "/", "80%", "Select the knowhosts file..."),
-    wait_time("Network retry delay (s)", html_form_input::number, "30", "5"),
-    verbose("Verbose network connection", html_form_input::check, "", "1"),
+    wait_time("Network retry delay (s)", html_form_input::number, default_waittime, "5"),
+    verbose("Verbose network connection", html_form_input::check, default_verbose, "1"),
     custom_event_name(""),
     ignore_events(false),
     entrep_type_has_changed(false),
     entrep_need_update(false)
 {
-    chemin home = global_envir.get_value_with_default("HOME", "/");
-    chemin tmp;
-    string val;
-
 	// component configuration
     repo_type.add_choice(type_local, "local file system");        // index 0
     repo_type.add_choice(type_ftp, "FTP protocol (unciphered)");  // index 1
@@ -86,39 +82,11 @@ html_entrepot::html_entrepot():
 
     pub_keyfile.set_select_mode(html_form_input_file::select_file);
     pub_keyfile.set_can_create_dir(false);
-    if(global_envir.get_value_of("DAR_SFTP_PUBLIC_KEYFILE", val))
-	pub_keyfile.set_value(val);
-    else
-    {
-	tmp = home;
-	tmp.push_back(".ssh");
-	tmp.push_back("id_rsa.pub");
-	pub_keyfile.set_value(tmp.display());
-    }
-
     prv_keyfile.set_select_mode(html_form_input_file::select_file);
     prv_keyfile.set_can_create_dir(false);
-    if(global_envir.get_value_of("DAR_SFTP_PRIVATE_KEYFILE", val))
-	prv_keyfile.set_value(val);
-    else
-    {
-	tmp = home;
-	tmp.push_back(".ssh");
-	tmp.push_back("id_rsa");
-	prv_keyfile.set_value(tmp.display());
-    }
-
     known_hosts_file.set_select_mode(html_form_input_file::select_file);
     known_hosts_file.set_can_create_dir(false);
-    if(global_envir.get_value_of("DAR_SFTP_KNOWNHOSTS_FILE", val))
-	known_hosts_file.set_value(val);
-    else
-    {
-	tmp = home;
-	tmp.push_back(".ssh");
-	tmp.push_back("known_hosts");
-	known_hosts_file.set_value(tmp.display());
-    }
+    reset_ssh_files();
 
     	// adoption tree
     fs.adopt(&repo_type);
@@ -318,6 +286,15 @@ json html_entrepot::save_json() const
 					config);
 }
 
+void html_entrepot::clear_json()
+{
+    reset_ssh_files();
+    wait_time.set_value(default_waittime);
+    verbose.set_value(default_verbose);
+    repo_type.set_selected(0);
+}
+
+
 string html_entrepot::inherited_get_body_part(const chemin & path,
 					      const request & req)
 {
@@ -515,4 +492,42 @@ void html_entrepot::clear_form()
     auth_type.set_selected(0);
     pass.set_value("");
     auth_from_file.set_value("");
+}
+
+void html_entrepot::reset_ssh_files()
+{
+    chemin home = global_envir.get_value_with_default("HOME", "/");
+    string val;
+    chemin tmp;
+
+    if(global_envir.get_value_of("DAR_SFTP_PUBLIC_KEYFILE", val))
+	pub_keyfile.set_value(val);
+    else
+    {
+	tmp = home;
+	tmp.push_back(".ssh");
+	tmp.push_back("id_rsa.pub");
+	pub_keyfile.set_value(tmp.display());
+    }
+
+    if(global_envir.get_value_of("DAR_SFTP_PRIVATE_KEYFILE", val))
+	prv_keyfile.set_value(val);
+    else
+    {
+	tmp = home;
+	tmp.push_back(".ssh");
+	tmp.push_back("id_rsa");
+	prv_keyfile.set_value(tmp.display());
+    }
+
+        if(global_envir.get_value_of("DAR_SFTP_KNOWNHOSTS_FILE", val))
+	known_hosts_file.set_value(val);
+    else
+    {
+	tmp = home;
+	tmp.push_back(".ssh");
+	tmp.push_back("known_hosts");
+	known_hosts_file.set_value(tmp.display());
+    }
+
 }
