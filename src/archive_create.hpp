@@ -37,7 +37,6 @@ extern "C"
 
     // webdar headers
 #include "web_user_interaction.hpp"
-#include "html_options_create.hpp"
 #include "saisie.hpp"
 
     /// class archive_create run libdar creation in a dedicated thread
