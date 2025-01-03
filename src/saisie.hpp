@@ -209,7 +209,7 @@ private:
     } status;       ///< status is used to determine which field to user to provide information toward libdar
 
     std::string default_biblio_path;      ///< default path where to fetch and store the bibliotheque (~/.wedarrc)
-    std::shared_ptr<bibliotheque> biblio; ///< the sored configuration elements (given access to 'parametrage')
+    std::shared_ptr<bibliotheque> biblio; ///< the stored configuration elements (given access to 'parametrage')
 
     html_menu choice;      ///< left main menu
     html_div right_pan;    ///< holds all that is beside main menu
