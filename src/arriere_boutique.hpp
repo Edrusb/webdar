@@ -48,6 +48,7 @@ extern "C"
 #include "html_form_radio.hpp"
 #include "html_double_button.hpp"
 #include "jsoner.hpp"
+#include "bibliotheque_subconfig.hpp"
 #include "webdar_css_style.hpp"
 #include "html_div.hpp"
 #include "tokens.hpp"
@@ -133,6 +134,7 @@ private:
     jsoner* wrapped_jsoner;
     body_builder* wrapped_body_builder;
     events* wrapped_events;
+    bibliotheque_subconfig* wrapped_subconfig;
 
     bool ignore_events;
 
@@ -175,6 +177,10 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     wrapped_events = dynamic_cast<events*>(wrapped.get());
     if(wrapped_events == nullptr)
 	throw WEBDAR_BUG; // shold also be object inheriting from class events
+
+    wrapped_subconfig = dynamic_cast<bibliotheque_subconfig*>(wrapped.get());
+	// it is ok if wrapped_subconfig is nullptr, wrapped may not implement
+	// the bibliotheque_subconfig interface
 
 	// html components setup
     clear_warning();
@@ -245,11 +251,29 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 		{
 		    if(config_name.get_value() != currently_loaded)
 		    {
-			biblio->add_config(categ, config_name.get_value(), wrapped_jsoner->save_json());
+			if(wrapped_subconfig == nullptr)
+			    biblio->add_config(categ,
+					       config_name.get_value(),
+					       wrapped_jsoner->save_json());
+			else
+			    biblio->add_config(categ,
+					       config_name.get_value(),
+					       wrapped_jsoner->save_json(),
+					       wrapped_subconfig->get_using_set());
 			currently_loaded = config_name.get_value();
 		    }
 		    else
-			biblio->update_config(categ, currently_loaded,  wrapped_jsoner->save_json());
+		    {
+			if(wrapped_subconfig == nullptr)
+			    biblio->update_config(categ,
+						  currently_loaded,
+						  wrapped_jsoner->save_json());
+			else
+			    biblio->update_config(categ,
+						  currently_loaded,
+						  wrapped_jsoner->save_json(),
+						  wrapped_subconfig->get_using_set());
+		    }
 		    need_saving.set_visible(false);
 		    clear_warning();
 		    load_listing();
