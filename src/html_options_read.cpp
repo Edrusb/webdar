@@ -69,6 +69,14 @@ html_options_read::html_options_read():
     ref_execute("Command to execute locally before reading each slice", html_form_input::text, "", "80%"),
     ref_slice_min_digits("Slice minimum digit", html_form_input::number, "0", "80%")
 {
+    entrep.reset(new (nothrow) html_entrepot());
+    if(!entrep)
+	throw exception_memory();
+
+    ref_entrep.reset(new (nothrow) html_entrepot());
+    if(!ref_entrep)
+	throw exception_memory();
+
     ref_path.set_select_mode(html_form_input_file::select_slice);
     ref_path.set_can_create_dir(false);
     multi_thread_crypto.set_min_only(1);
@@ -106,7 +114,7 @@ html_options_read::html_options_read():
     deroule.add_section(sect_extcat, "External Catalog");
     deroule.add_section(sect_ref_entrep, "External Catalog location");
 
-    deroule.adopt_in_section(sect_entrep, &entrep);
+    deroule.adopt_in_section(sect_entrep, &guichet_entrep);
 
     fs_src.adopt(&src_crypto_algo);
     fs_src.adopt(&src_crypto_pass);
@@ -123,7 +131,7 @@ html_options_read::html_options_read():
     form_src.adopt(&fs_src);
     deroule.adopt_in_section(sect_opt, &form_src);
 
-    deroule.adopt_in_section(sect_ref_entrep, &ref_entrep);
+    deroule.adopt_in_section(sect_ref_entrep, &guichet_ref_entrep);
 
     fs_ref.adopt(&ref_use_external_catalogue);
     fs_ref.adopt(&ref_path);
@@ -138,13 +146,15 @@ html_options_read::html_options_read():
     adopt(&deroule);
     adopt(&ref_webui);
 
+	// events
+
 	// modyfing entrepot objects to be able to differentiate which one has changed:
-    entrep.set_event_name(entrepot_has_changed);
-    ref_entrep.set_event_name(ref_entrepot_has_changed);
+    entrep->set_event_name(entrepot_has_changed);
+    ref_entrep->set_event_name(ref_entrepot_has_changed);
 
 	// these are the same event name as the ones we used for ourself
-    entrep.record_actor_on_event(this, entrepot_has_changed);
-    ref_entrep.record_actor_on_event(this, ref_entrepot_has_changed);
+    entrep->record_actor_on_event(this, entrepot_has_changed);
+    ref_entrep->record_actor_on_event(this, ref_entrepot_has_changed);
     ref_path.record_actor_on_event(this, html_form_input_file::changed_entrepot);
     ref_path.record_actor_on_event(this, html_form_input_file::changed_event);
     ref_webui.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
@@ -166,6 +176,18 @@ html_options_read::html_options_read():
     webdar_css_style::grey_button(deroule, true);
 }
 
+void html_options_read::set_biblio(const shared_ptr<bibliotheque> & ptr)
+{
+    guichet_entrep.set_child(ptr,
+			     bibliotheque::repo,
+			     entrep,
+			     false);
+    guichet_ref_entrep.set_child(ptr,
+				 bibliotheque::repo,
+				 ref_entrep,
+				 false);
+}
+
 libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_user_interaction> & webui) const
 {
     libdar::archive_options_read opts;
@@ -178,7 +200,7 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
     opts.set_ignore_signature_check_failure(src_ignore_sig_failure.get_value_as_bool());
     opts.set_execute(src_execute.get_value());
     opts.set_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(src_slice_min_digits.get_value())));
-    opts.set_entrepot(entrep.get_entrepot(webui));
+    opts.set_entrepot(entrep->get_entrepot(webui));
     opts.set_info_details(info_details.get_value_as_bool());
     opts.set_lax(lax.get_value_as_bool());
     opts.set_sequential_read(sequential_read.get_value_as_bool());
@@ -204,7 +226,7 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
 	opts.set_ref_crypto_size(webdar_tools_convert_to_int(ref_crypto_size.get_value()));
 	opts.set_ref_execute(ref_execute.get_value());
 	opts.set_ref_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(ref_slice_min_digits.get_value())));
-	opts.set_ref_entrepot(ref_entrep.get_entrepot(webui));
+	opts.set_ref_entrepot(ref_entrep->get_entrepot(webui));
 	opts.set_force_first_slice(force_first_slice.get_value_as_bool());
     }
     else
@@ -309,7 +331,7 @@ void html_options_read::inherited_run()
     if(!localui)
 	throw WEBDAR_BUG;
 
-    ref_path.set_entrepot(ref_entrep.get_entrepot(localui));
+    ref_path.set_entrepot(ref_entrep->get_entrepot(localui));
 }
 
 void html_options_read::signaled_inherited_cancel()

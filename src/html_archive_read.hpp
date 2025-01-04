@@ -59,6 +59,9 @@ public:
     html_archive_read & operator = (html_archive_read && ref) noexcept = delete;
     ~html_archive_read() { cancel(); join(); };
 
+	/// mandatory call to invoke ASAP after constructor
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr) { opt_read.set_biblio(ptr); };
+
 	// available fields for libdar
 
     std::string get_archive_path() const;

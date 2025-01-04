@@ -50,6 +50,8 @@ extern "C"
 #include "html_text.hpp"
 #include "html_entrepot.hpp"
 #include "html_libdar_running_popup.hpp"
+#include "bibliotheque.hpp"
+#include "guichet.hpp"
 
     /// class html_options_read implementes the html components to setup optional parameters while reading an archive
 
@@ -85,12 +87,15 @@ public:
     html_options_read & operator = (html_options_read && ref) noexcept = delete;
     ~html_options_read() { cancel(); join(); };
 
+	/// mandatory call to invoke ASAP after constructor
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
+
 	/// obtain the libdar archive_option_read object from the html filled fields
     libdar::archive_options_read get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
 
 	/// obtain just the entrepot object from the option fields
     std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const
-    { return entrep.get_entrepot(webui); };
+    { return entrep->get_entrepot(webui); };
 
 	/// set min-digits field for the archive to read (not the archive of reference if any)
     void set_src_min_digits(const std::string & val);
@@ -128,7 +133,8 @@ private:
     html_form_fieldset fs_ref;
 
 	// archive entrepot fields
-    html_entrepot entrep;
+    guichet guichet_entrep;
+    std::shared_ptr<html_entrepot> entrep;
 
 	// archive_options_read fields
     html_crypto_algo src_crypto_algo;
@@ -146,7 +152,8 @@ private:
 
 
 	// external catalogue entrepot
-    html_entrepot ref_entrep;
+    guichet guichet_ref_entrep;
+    std::shared_ptr<html_entrepot> ref_entrep;
 
     html_form_input ref_use_external_catalogue;
     html_form form_ref;
