@@ -62,7 +62,7 @@ html_entrepot::html_entrepot():
     known_hosts_file("Known-hosts file", "/", "80%", "Select the knowhosts file..."),
     wait_time("Network retry delay (s)", html_form_input::number, default_waittime, "5"),
     verbose("Verbose network connection", html_form_input::check, default_verbose, "1"),
-    custom_event_name(""),
+    custom_event_name(changed),
     ignore_events(false),
     entrep_type_has_changed(false),
     entrep_need_update(false)
@@ -112,7 +112,7 @@ html_entrepot::html_entrepot():
     port.record_actor_on_event(this, html_form_input::changed);
 
 	// my own events
-    register_name(changed);
+    register_name(custom_event_name); // equal to "changed" at cosntruction time, here
 
 	// css
 
@@ -206,11 +206,8 @@ void html_entrepot::on_event(const string & event_name)
 
 void html_entrepot::set_event_name(const string & name)
 {
-    if(!custom_event_name.empty())
-	throw WEBDAR_BUG; // only one alternative event name is allowed
-
+    rename_name(custom_event_name, name);
     custom_event_name = name;
-    register_name(custom_event_name);
 }
 
 
@@ -261,6 +258,7 @@ void html_entrepot::load_json(const json & source)
     {
 	throw exception_json("Error loading html_entrepot config", e);
     }
+    trigger_event();
 }
 
 json html_entrepot::save_json() const
