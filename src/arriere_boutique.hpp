@@ -85,7 +85,8 @@ template <class T> class arriere_boutique: public body_builder, public actor
 public:
     arriere_boutique(const std::shared_ptr<bibliotheque> & ptr,
 		     bibliotheque::category cat,
-		     std::unique_ptr<T> & obj);
+		     std::unique_ptr<T> & obj,
+		     const std::string change_event_name); ///< event name on obj triggered upon object changes
     arriere_boutique(const arriere_boutique & ref) = delete;
     arriere_boutique(arriere_boutique && ref) noexcept = delete;
     arriere_boutique & operator = (const arriere_boutique & ref) = delete;
@@ -144,7 +145,8 @@ private:
 
 template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<bibliotheque> & ptr,
 							 bibliotheque::category cat,
-							 std::unique_ptr<T> & obj):
+							 std::unique_ptr<T> & obj,
+							 const std::string change_event_name):
     currently_loaded(""),
     categ(cat),
     config_form("Save/Save as"),
@@ -204,7 +206,7 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     adopt(&config_form);
 
 	// events and actors
-    wrapped_events->record_actor_on_event(this, T::changed);
+    wrapped_events->record_actor_on_event(this, change_event_name);
     config_name.record_actor_on_event(this, html_form_input::changed);
     delete_selected.record_actor_on_event(this, event_delete);
     listing.record_actor_on_event(this, html_form_radio::changed);
