@@ -37,9 +37,9 @@ extern "C"
 #include "html_form_input_file.hpp"
 #include "html_options_isolate.hpp"
 #include "body_builder.hpp"
-#include "html_archive_read.hpp"
 #include "html_derouleur.hpp"
 #include "actor.hpp"
+#include "html_libdar_running_popup.hpp"
 
     /// html component used to let the user provide parameters for an isolation operation
 
