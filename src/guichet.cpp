@@ -52,6 +52,9 @@ guichet::guichet():
     saveas_name("New configuration name", html_form_input::text, "", "50")
 {
 	// all the rest of initialization is done in set_child()
+    adopted_jsoner = nullptr;
+    adopted_subconfig = nullptr;
+    adopted_frame = nullptr;
 }
 
 void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
@@ -59,6 +62,16 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
 			const shared_ptr<body_builder> & to_adopt,
 			bool add_form_around)
 {
+	// set_child should be run only once
+
+    if(biblio)
+	throw WEBDAR_BUG;
+
+    if(adopted)
+	throw WEBDAR_BUG;
+
+	// and run with correct arguments
+
     biblio = ptr;
     if(!biblio)
 	throw WEBDAR_BUG;
@@ -77,15 +90,12 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
 	// does not implement this optional interface
 
 	// component configuration
-    update_selected();
-    set_adopted();
-
     saveas_name.set_change_event_name(event_saveas);
 
 	// adption tree
     select_fs.adopt(&select);
     select_form.adopt(&select_fs);
-    adopt(&select);
+    adopt(&select_form);
 
     if(add_form_around)
     {
@@ -111,12 +121,15 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
     adopt(&saveas_form);
 
 	// events
-    select_form.record_actor_on_event(this, event_select);
+    select.record_actor_on_event(this, event_select);
     edit.record_actor_on_event(this, event_edit);
     clear.record_actor_on_event(this, event_clear);
     saveas_name.record_actor_on_event(this, event_saveas);
     biblio->record_actor_on_event(this, bibliotheque::changed);
-	// visibility
+
+	// visibility & config
+    update_selected();
+    set_adopted();
     set_visibility();
 
 	// csss
@@ -260,13 +273,13 @@ void guichet::on_event(const std::string & event_name)
 
     if(event_name == event_select)
     {
+	set_adopted();
 	set_visibility();
     }
     else if(event_name == event_edit)
     {
 	if(select.get_selected_num() != 0)
 	{
-	    set_adopted();
 	    select.set_selected(0);
 		// this trigers an new event
 		// which sets visibility()
@@ -276,12 +289,9 @@ void guichet::on_event(const std::string & event_name)
     }
     else if(event_name == event_clear)
     {
-	if(select.get_selected_num() != 0)
+	if(select.get_selected_num() == 0)
 	{
 	    adopted_jsoner->clear_json();
-	    select.set_selected(0);
-		// this trigers an new event
-		// which sets visibility()
 	}
 	else
 	    throw WEBDAR_BUG;
@@ -334,6 +344,7 @@ void guichet::on_event(const std::string & event_name)
 string guichet::inherited_get_body_part(const chemin & path,
 					const request & req)
 {
+    check_adopted();
     return get_body_part_from_all_children(path, req);
 }
 
@@ -396,5 +407,17 @@ void guichet::set_visibility()
     clear.set_visible(manualmode);
     saveas_form.set_visible(manualmode);
     if(!manualmode)
-	saveas_name.set_value("");
+    {
+	ignore_events = true;
+	try
+	{
+	    saveas_name.set_value("");
+	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
+    }
 }

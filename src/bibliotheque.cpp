@@ -69,6 +69,7 @@ void bibliotheque::add_config(category categ,
 
     (catit->second)[name] = linked_config(config);
     saved = false;
+    act(changed);
 }
 
 void bibliotheque::update_config(category categ, const
@@ -127,6 +128,14 @@ void bibliotheque::delete_config(category categ, const string & name)
     catit->second.erase(it);
     saved = false;
     act(changed);
+}
+
+bool bibliotheque::has_config(category categ, const std::string & name) const
+{
+    table::iterator catit;
+    asso::iterator it;
+
+    return lookup(categ, name, it, catit);
 }
 
 json bibliotheque::fetch_config(category categ, const string & name) const

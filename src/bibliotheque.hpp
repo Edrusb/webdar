@@ -54,7 +54,7 @@ extern "C"
 class bibliotheque : public jsoner, public events
 {
 public:
-    static const std::string changed; /// triggered only if an existing configuration is changed or removed (not when a new is added)
+    static const std::string changed; /// triggered when the bibliotheque content changes
 
 	/// json objects are split into category, each used as a different "namespace"
     enum category
@@ -116,6 +116,10 @@ public:
 	/// \note throw exception_range if name does not exist
     void delete_config(category categ, const std::string & name);
 
+
+	/// tells whether a given cat/config exists
+    bool has_config(category categ, const std::string & name) const;
+
 	/// provide a stored configuration
 
 	/// \note throw exception_range if name does not exist
@@ -135,7 +139,7 @@ public:
     bool get_saved_status() const { return saved; };
 
 	/// clear all stored configurations
-    void clear() { init(); };
+    void clear() { init(); act(changed); };
 
 
 	/// inherited from jsoner

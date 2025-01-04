@@ -235,7 +235,6 @@ void html_bibliotheque::on_event(const std::string & event_name)
 	    biblio->load_json(config);
 	    if(!ab_entrepot)
 		throw WEBDAR_BUG;
-	    ab_entrepot->refresh();
 	}
 	else
 	    throw exception_system(libdar::tools_printf("Failed openning %s", filename.get_value().c_str()), errno);
@@ -259,7 +258,6 @@ void html_bibliotheque::on_event(const std::string & event_name)
 	else
 	{
 	    biblio->clear();
-	    ab_entrepot->refresh();
 	}
 	ok_cleared.set_visible(true);
     }
@@ -290,7 +288,6 @@ string html_bibliotheque::inherited_get_body_part(const chemin & path,
 		    json data = json::parse(str);
 
 		    biblio->load_json(data);
-		    ab_entrepot->refresh();
 		    ok_uploaded.set_visible(true);
 		}
 		catch(json::exception & e)

@@ -92,9 +92,6 @@ public:
     arriere_boutique & operator = (arriere_boutique && ref) noexcept = delete;
     ~arriere_boutique() = default;
 
-	/// refresh displayed status from the referred bibliotheque object
-    void refresh();
-
 	/// inherited from class actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -138,9 +135,10 @@ private:
 
     bool ignore_events;
 
-    void load_listing(); ///< fills the listing from existing config in biblio
+    void load_listing(); ///< fills the listing from existing config in biblio and triggers html_form_radio::changed event
     void set_warning(const std::string & wm);
     void clear_warning() { warning_message.set_visible(false); };
+    void silently_update_config_name(const std::string & val);
 };
 
 
@@ -210,6 +208,7 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     config_name.record_actor_on_event(this, html_form_input::changed);
     delete_selected.record_actor_on_event(this, event_delete);
     listing.record_actor_on_event(this, html_form_radio::changed);
+    ptr->record_actor_on_event(this, bibliotheque::changed);
 
 	// css
     webdar_css_style::normal_button(delete_selected);
@@ -218,109 +217,121 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     need_saving.add_css_class(css_warn);
 }
 
-template <class T> void arriere_boutique<T>::refresh()
-{
-    config_name.set_value("");
-    currently_loaded = "";
-    need_saving.set_visible(false);
-    clear_warning();
-    load_listing();
-}
-
 template <class T> void arriere_boutique<T>::on_event(const std::string & event_name)
 {
     if(ignore_events)
 	return;
 
-    ignore_events = true;
-    try
-    {
-	if(event_name == T::changed)
-	{
-	    need_saving.set_visible(true);
-	    clear_warning();
-	}
-	else if(event_name == html_form_input::changed)
-	{
-	    need_saving.set_visible(true);
-	    if(config_name.get_value().empty())
-		set_warning("Cannot save a configuration without a name");
-	    else
-	    {
-		try
-		{
-		    if(config_name.get_value() != currently_loaded)
-		    {
-			if(wrapped_subconfig == nullptr)
-			    biblio->add_config(categ,
-					       config_name.get_value(),
-					       wrapped_jsoner->save_json());
-			else
-			    biblio->add_config(categ,
-					       config_name.get_value(),
-					       wrapped_jsoner->save_json(),
-					       wrapped_subconfig->get_using_set());
-			currently_loaded = config_name.get_value();
-		    }
-		    else
-		    {
-			if(wrapped_subconfig == nullptr)
-			    biblio->update_config(categ,
-						  currently_loaded,
-						  wrapped_jsoner->save_json());
-			else
-			    biblio->update_config(categ,
-						  currently_loaded,
-						  wrapped_jsoner->save_json(),
-						  wrapped_subconfig->get_using_set());
-		    }
-		    need_saving.set_visible(false);
-		    clear_warning();
-		    load_listing();
-		}
-		catch(exception_range & e)
-		{
-		    set_warning(libdar::tools_printf("Failed saving configuration as %s: %s",
-						     config_name.get_value().c_str(),
-						     e.get_message().c_str()));
-		}
-	    }
-	}
-	else if(event_name == event_delete)
-	{
-	    std::string todelete;
+    if(!biblio)
+	throw WEBDAR_BUG;
 
-	    if(listing.is_selected())
-	    {
-		todelete = listing.get_selected_id();
-		biblio->delete_config(categ, todelete);
-		refresh();
-	    }
-	    else
-		set_warning("Select and load first the configuration to be deleted");
-	}
-	else if(event_name == html_form_radio::changed)
+    if(event_name == T::changed)
+    {
+	    // the hosted object configuration has been changed by the user
+
+	need_saving.set_visible(true);
+	clear_warning();
+    }
+    else if(event_name == html_form_input::changed)
+    {
+
+	    // save as form has changed (-> asked to save as)
+
+	need_saving.set_visible(true);
+	if(config_name.get_value().empty())
+	    set_warning("Cannot save a configuration without a name");
+	else
 	{
-	    if(listing.is_selected())
+	    try
 	    {
-		currently_loaded = listing.get_selected_id();
-		config_name.set_value(currently_loaded);
-		wrapped_jsoner->load_json(biblio->fetch_config(categ, currently_loaded));
+		if(config_name.get_value() != currently_loaded)
+		{
+		    if(wrapped_subconfig == nullptr)
+			biblio->add_config(categ,
+					   config_name.get_value(),
+					   wrapped_jsoner->save_json());
+		    else
+			biblio->add_config(categ,
+					   config_name.get_value(),
+					   wrapped_jsoner->save_json(),
+					   wrapped_subconfig->get_using_set());
+		    currently_loaded = config_name.get_value();
+		}
+		else
+		{
+		    if(wrapped_subconfig == nullptr)
+			biblio->update_config(categ,
+					      currently_loaded,
+					      wrapped_jsoner->save_json());
+		    else
+			biblio->update_config(categ,
+					      currently_loaded,
+					      wrapped_jsoner->save_json(),
+					      wrapped_subconfig->get_using_set());
+		}
+		    // these previous alternatives all trigger bibliotheque::changed event
 		need_saving.set_visible(false);
 		clear_warning();
 	    }
-	    else
-		set_warning("Select first the configuration to load");
+	    catch(exception_range & e)
+	    {
+		set_warning(libdar::tools_printf("Failed saving configuration as %s: %s",
+						 config_name.get_value().c_str(),
+						 e.get_message().c_str()));
+	    }
+	}
+    }
+    else if(event_name == event_delete)
+    {
+	    // user asked to delete the selected configuration
+
+	if(listing.is_selected())
+	{
+	    std::string todelete = listing.get_selected_id();
+
+	    currently_loaded = "";
+	    silently_update_config_name(currently_loaded);
+	    biblio->delete_config(categ, todelete);
+		// this triggers bibliotheque::changed event
+	    need_saving.set_visible(true);
+	    clear_warning();
 	}
 	else
-	    throw WEBDAR_BUG;
+	    set_warning("Select and load first the configuration to be deleted");
     }
-    catch(...)
+    else if(event_name == html_form_radio::changed)
     {
-	ignore_events = false;
-	throw;
+	    // user selected a configuration to load
+
+	if(listing.is_selected())
+	{
+	    currently_loaded = listing.get_selected_id();
+	    silently_update_config_name(currently_loaded);
+	    wrapped_jsoner->load_json(biblio->fetch_config(categ, currently_loaded));
+	    need_saving.set_visible(false);
+	    clear_warning();
+	}
+	else
+	    set_warning("Select first the configuration to load");
     }
-    ignore_events = false;
+    else if(event_name == bibliotheque::changed)
+    {
+	load_listing();
+
+	    // repositionning the selected object to the currently loaded config if any
+	if(!currently_loaded.empty())
+	{
+	    if(biblio->has_config(categ, currently_loaded))
+		listing.set_selected(currently_loaded);
+	    else
+	    {
+		currently_loaded = "";
+		silently_update_config_name(currently_loaded);
+	    }
+	}
+    }
+    else
+	throw WEBDAR_BUG;
 }
 
 template <class T> std::string arriere_boutique<T>::inherited_get_body_part(const chemin & path,
@@ -376,5 +387,22 @@ template <class T> void arriere_boutique<T>::set_warning(const std::string & wm)
     warning_message.set_visible(true);
 }
 
+template <class T> void arriere_boutique<T>::silently_update_config_name(const std::string & val)
+{
+    ignore_events = true;
+    try
+    {
+	config_name.set_value(val);
+	    // without ignore_events, this would
+	    // trigger the html_form_input::changed event
+	    // leading to save the configuration
+    }
+    catch(...)
+    {
+	ignore_events = false;
+	throw;
+    }
+    ignore_events = false;
+}
 
 #endif
