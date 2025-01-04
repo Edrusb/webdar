@@ -136,6 +136,9 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 private:
     bibliotheque::category categ;
     std::shared_ptr<bibliotheque> biblio;
@@ -173,6 +176,8 @@ private:
     static constexpr const char* jlabel_categ = "category";  // string: config category
     static constexpr const char* jlabel_name = "configname"; // string: config name
     static constexpr const char* jlabel_conf = "config";   ; // json; object configuration
+
+    static constexpr const char* css_float = "guichet_float";
 };
 
 

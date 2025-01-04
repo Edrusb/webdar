@@ -31,7 +31,7 @@ extern "C"
 #include <dar/tools.hpp>
 
     // webdar headers
-
+#include "webdar_css_style.hpp"
 
     //
 #include "guichet.hpp"
@@ -93,10 +93,13 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
     saveas_name.set_change_event_name(event_saveas);
 
 	// adption tree
+
+    adopt(&edit);
     select_fs.adopt(&select);
     select_form.adopt(&select_fs);
     adopt(&select_form);
 
+    adopt(&clear);
     if(add_form_around)
     {
 	around_adopted_fs.adopt(adopted.get());
@@ -112,9 +115,6 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
 
     if(adopted_frame == nullptr)
 	throw WEBDAR_BUG;
-
-    adopt(&edit);
-    adopt(&clear);
 
     saveas_fs.adopt(&saveas_name);
     saveas_form.adopt(&saveas_fs);
@@ -134,7 +134,11 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
 
 	// csss
 
+    webdar_css_style::normal_button(edit);
+    webdar_css_style::normal_button(clear);
 
+    edit.add_css_class(css_float);
+    clear.add_css_class(css_float);
 }
 
 void guichet::load_json(const json & source)
@@ -347,6 +351,25 @@ string guichet::inherited_get_body_part(const chemin & path,
     check_adopted();
     return get_body_part_from_all_children(path, req);
 }
+
+void guichet::new_css_library_available()
+{
+    css tmp;
+    std::unique_ptr<css_library> & csslib = lookup_css_library();
+
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    if(!csslib->class_exists(css_float))
+    {
+	tmp.clear();
+	tmp.css_float(css::fl_right);
+	csslib->add(css_float, tmp);
+    }
+
+    webdar_css_style::update_library(*csslib);
+}
+
 
 void guichet::update_selected()
 {
