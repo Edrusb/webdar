@@ -66,6 +66,10 @@ html_options_isolate::html_options_isolate():
     info_details("Detailed informations", html_form_input::check, "1", "1"),
     compr_params(false, false, false)
 {
+    entrep.reset(new (nothrow) html_entrepot());
+    if(!entrep)
+	throw exception_memory();
+
     libdar::archive_options_isolate defaults;
 
 	// configure html components
@@ -110,7 +114,7 @@ html_options_isolate::html_options_isolate():
     deroule.add_section(sect_slice, "Slicing options");
     deroule.add_section(sect_cipher, "Encryption options");
 
-    deroule.adopt_in_section(sect_entrep, &entrep);
+    deroule.adopt_in_section(sect_entrep, &guichet_entrep);
 
     delta_fs.adopt(&delta_sig);
     delta_fs.adopt(&delta_transfer_mode);
@@ -148,12 +152,20 @@ html_options_isolate::html_options_isolate():
 
     delta_sig.record_actor_on_event(this, html_form_input::changed);
     delta_transfer_mode.record_actor_on_event(this, html_form_input::changed);
-    entrep.record_actor_on_event(this, html_entrepot::changed);
+    entrep->record_actor_on_event(this, html_entrepot::changed);
 
     on_event(html_form_input::changed);
 
 	// css
     webdar_css_style::grey_button(deroule, true);
+}
+
+void html_options_isolate::set_biblio(const shared_ptr<bibliotheque> & ptr)
+{
+    guichet_entrep.set_child(ptr,
+			     bibliotheque::repo,
+			     entrep,
+			     false);
 }
 
 void html_options_isolate::on_event(const string & event_name)
@@ -193,7 +205,7 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     libdar::infinint compr_bs = compr_params.get_compression_block();
     libdar::U_I val = 0;
 
-    ret.set_entrepot(entrep.get_entrepot(webui));
+    ret.set_entrepot(entrep->get_entrepot(webui));
     ret.set_allow_over(allow_over.get_value_as_bool());
     ret.set_warn_over(warn_over.get_value_as_bool());
     ret.set_pause(libdar::deci(pause.get_value()).computer());

@@ -50,6 +50,7 @@ extern "C"
 #include "html_compression_params.hpp"
 #include "html_slicing.hpp"
 #include "html_ciphering.hpp"
+#include "guichet.hpp"
 
     /// html components for the user to provide parameters of a isolation operation
 
@@ -65,6 +66,10 @@ public:
     html_options_isolate & operator = (html_options_isolate && ref) noexcept = delete;
     ~html_options_isolate() = default;
 
+	/// mandatory call to invoke ASAP after constructor
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
+
+
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -74,7 +79,7 @@ public:
     libdar::archive_options_isolate get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
 
 	/// optain the current entrepot object where is expected to be create the archive
-    std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const { return entrep.get_entrepot(webui); };
+    std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const { return entrep->get_entrepot(webui); };
 
 protected:
 
@@ -99,7 +104,9 @@ private:
     html_form_sig_block_size sig_block_size;
     html_mask_form_filename delta_mask;
 
-    html_entrepot entrep;
+    guichet guichet_entrep;
+    std::shared_ptr<html_entrepot> entrep;
+
     html_form form_archgen;
     html_form_fieldset fs_archgen;
     html_form_input allow_over;

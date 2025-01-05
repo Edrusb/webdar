@@ -53,6 +53,10 @@ public:
     html_archive_isolate & operator = (html_archive_isolate && ref) noexcept = delete;
     ~html_archive_isolate() = default;
 
+	/// mandatory call to invoke ASAP after constructor
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr) { options.set_biblio(ptr); };
+
+
     const std::string & get_archive_path() const { return sauv_path.get_value(); };
     const std::string & get_archive_basename() const { return basename.get_value(); };
     libdar::archive_options_isolate get_options_isolate(std::shared_ptr<html_web_user_interaction> & webui) const { return options.get_options(webui); };
