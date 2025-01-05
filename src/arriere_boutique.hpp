@@ -55,8 +55,11 @@ extern "C"
 
     /// class arriere_boutique provides mean to add/load a given component type to/from a bibliotheque object
 
-    /// this template receive as type the class to manipulate, which must be from a jsoner *and* a
-    /// body_builder *and* events inherited classes.
+    /// this template receive as type the class to manipulate, which must:
+    /// - inherit from a jsoner
+    /// - inherit from body_builder
+    /// - inherit from events and provide a event name triggered upon component changes
+    /// - in option, it must inherit from bibliotheque_subconfig if its configuration depends on other configuration parts
     ///
     /** \verbatim
 
