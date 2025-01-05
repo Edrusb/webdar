@@ -34,9 +34,11 @@ extern "C"
     // C++ system header files
 
     // webdar headers
+#include "html_form.hpp"
+#include "jsoner.hpp"
+#include "bibliotheque_subconfig.hpp"
 #include "html_form_mask_bool.hpp"
 #include "html_form_mask_expression.hpp"
-#include "html_form.hpp"
 
     /// class html_mask_form_filename let user define mask applied to strings (filename, extended attributes, ...)
 
@@ -44,7 +46,9 @@ extern "C"
     /// this class is a full html_form dedicated to the specific case of mask for filename filtering
 
 class html_mask_form_filename : public html_form,
-				public html_form_dynamic_table_object_provider
+				public html_form_dynamic_table_object_provider,
+				public jsoner,
+				public bibliotheque_subconfig
 {
 public:
 
@@ -65,6 +69,19 @@ public:
 	/// inherited from html_form_dynamic_table
     virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num,
 								 const std::string & context) const override;
+
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
+
+	/// inherited from bibliotheque_subconfig
+    virtual bibliotheque::using_set get_using_set() const override;
+
 
 private:
     html_form_mask_bool root;

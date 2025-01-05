@@ -87,6 +87,28 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
     return ret;
 }
 
+ void html_mask_form_filename::load_json(const json & source)
+ {
+     throw exception_feature("jsoner implementation in html_mask_form_filename");
+ }
+
+ json html_mask_form_filename::save_json() const
+ {
+     throw exception_feature("jsoner implementation in html_mask_form_filename");
+     return json();
+ }
+
+ void html_mask_form_filename::clear_json()
+ {
+     throw exception_feature("jsoner implementation in html_mask_form_filename");
+ }
+
+ bibliotheque::using_set html_mask_form_filename::get_using_set() const
+ {
+     throw exception_feature("bibliotheque_subconfig implementation in html_mask_form_filename");
+     return bibliotheque::using_set();
+ }
+
 
 void html_mask_form_filename::init_bool_obj(html_form_mask_bool & obj) const
 {

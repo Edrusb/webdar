@@ -59,7 +59,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     clear_conf("Clear all configurations", event_clear),
     expect_upload(false)
 {
-    unique_ptr<html_entrepot> tmp;
+    unique_ptr<html_entrepot> tmp_e;
+    unique_ptr<html_mask_form_filename> tmp_fm;
 
     if(!ptr)
 	throw WEBDAR_BUG;
@@ -112,21 +113,35 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
 	// entrepot tab
 
-    tmp.reset(new (nothrow) html_entrepot());
-    if(!tmp)
+    tmp_e.reset(new (nothrow) html_entrepot());
+    if(!tmp_e)
 	throw exception_memory();
 
     ab_entrepot.reset(new (nothrow) arriere_boutique<html_entrepot>(ptr,
 								    bibliotheque::repo,
-								    tmp,
+								    tmp_e,
 								    html_entrepot::changed));
     if(!ab_entrepot)
+	throw exception_memory();
+
+	// file mask tab
+
+    tmp_fm.reset(new (nothrow) html_mask_form_filename("general purpose filename mask"));
+    if(!tmp_fm)
+	throw exception_memory();
+
+    ab_filemask.reset(new (nothrow) arriere_boutique<html_mask_form_filename>(ptr,
+									      bibliotheque::filefilter,
+									      tmp_fm,
+									      html_form::changed));
+    if(!ab_filemask)
 	throw exception_memory();
 
 
     	// global component setups
     tabs.add_tab("Main", tab_main);
     tabs.add_tab("Repos", tab_repo);
+    tabs.add_tab("Filename Masks", tab_filemask);
 
 
 	//  global adoption tree
@@ -141,6 +156,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     tabs.adopt_in_section(tab_main, &nok_message);
 
     tabs.adopt_in_section(tab_repo, ab_entrepot.get());
+    tabs.adopt_in_section(tab_filemask, ab_filemask.get());
+
     adopt(&tabs);
 
 	// actors and events
@@ -234,8 +251,6 @@ void html_bibliotheque::on_event(const std::string & event_name)
 		throw exception_system(libdar::tools_printf("Failed reading configuration from %s", filename.get_value().c_str()), errno);
 	    input.close();
 	    biblio->load_json(config);
-	    if(!ab_entrepot)
-		throw WEBDAR_BUG;
 	}
 	else
 	    throw exception_system(libdar::tools_printf("Failed openning %s", filename.get_value().c_str()), errno);

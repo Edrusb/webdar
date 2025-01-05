@@ -46,7 +46,7 @@ extern "C"
 #include "bibliotheque.hpp"
 #include "arriere_boutique.hpp"
 #include "html_entrepot.hpp"
-
+#include "html_mask_form_filename.hpp"
 
 
     /// class html_bibliotheque provide graphical mean to manipulate a bibliotheque object
@@ -119,6 +119,7 @@ private:
     std::shared_ptr<bibliotheque> biblio;
 
     std::unique_ptr<arriere_boutique<html_entrepot> > ab_entrepot;
+    std::unique_ptr<arriere_boutique<html_mask_form_filename> > ab_filemask;
 
     html_tabs tabs;
     html_text intro;
@@ -151,10 +152,13 @@ private:
 
     static constexpr const char* tab_main = "main";
     static constexpr const char* tab_repo = "repo";
+    static constexpr const char* tab_filemask = "filemask";
+
     static constexpr const char* event_save = "save";
     static constexpr const char* event_load = "load";
-    static constexpr const char* css_float = "hmtl_biblio_float";
     static constexpr const char* event_clear = "clear";
+
+    static constexpr const char* css_float = "hmtl_biblio_float";
     static constexpr const char* css_red_text = "red";
     static constexpr const char* css_green_text = "green";
 };
