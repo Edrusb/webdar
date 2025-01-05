@@ -106,12 +106,14 @@ html_options_repair::html_options_repair():
     libdar::archive_options_repair defaults;
 
 	// component configuration
+    static const char* sect_entrep = "entrepot";
     static const char* sect_display = "display";
     static const char* sect_process = "process";
     static const char* sect_target = "target";
     static const char* sect_slice = "slicing";
     static const char* sect_crypt = "crypto";
 
+    deroule.add_section(sect_entrep, "Repaired Catalog Repository");
     deroule.add_section(sect_display, "What to show during the operation");
     deroule.add_section(sect_process, "How to process the operation");
     deroule.add_section(sect_target, "Target properties");
@@ -131,6 +133,9 @@ html_options_repair::html_options_repair():
     slicing.set_group_ownership(defaults.get_slice_group_ownership());
     slicing.set_min_digits(defaults.get_slice_min_digits());
     slicing.set_slicing(defaults.get_slice_size(), defaults.get_first_slice_size());
+
+	// repo adoption
+    deroule.adopt_in_section(sect_entrep, &entrep);
 
 	// adoption tree
     display_fs.adopt(&info_details);
@@ -185,7 +190,6 @@ void html_options_repair::on_event(const string & event_name)
     }
     else if(event_name == html_entrepot::changed)
     {
-	throw WEBDAR_BUG; // a implementer
 	act(entrepot_changed);
     }
     else

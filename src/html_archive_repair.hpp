@@ -32,17 +32,21 @@ extern "C"
 }
 
     // C++ system header files
+#include <libthreadar/libthreadar.hpp>
+
 
     // webdar headers
 #include "body_builder.hpp"
+#include "actor.hpp"
 #include "html_form_input_file.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_derouleur.hpp"
 #include "html_options_repair.hpp"
+#include "html_libdar_running_popup.hpp"
 
     /// html component used to collect repairing operation parameters from the user
 
-class html_archive_repair: public body_builder
+class html_archive_repair: public body_builder, public libthreadar::thread_signal, public actor
 {
 public:
     html_archive_repair();
@@ -56,13 +60,24 @@ public:
     const std::string & get_archive_basename() const { return basename.get_value(); };
     libdar::archive_options_repair get_options(std::shared_ptr<html_web_user_interaction> dialog) const { return opt_repair.get_options(dialog); };
 
+            /// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
+
 protected:
 
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// inherited from body_builder
     virtual void new_css_library_available() override;
+
+	/// inherited from libthreadar::thread
+    virtual void inherited_run() override;
+
+	/// inherited from libthreadar::thread
+    virtual void signaled_inherited_cancel() override;
+
 
 private:
     html_derouleur deroule;
@@ -71,6 +86,7 @@ private:
     html_form_fieldset repair_fs;
     html_form repair_form;
     html_options_repair opt_repair;
+    html_libdar_running_popup repoxfer;
 };
 
 #endif

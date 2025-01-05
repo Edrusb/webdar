@@ -56,12 +56,16 @@ html_archive_repair::html_archive_repair():
 	// components initialization
 
     static const char* sect_repair = "repair";
-
     deroule.add_section(sect_repair, "Repairing parameters");
     deroule.set_active_section(0);
 
     repair_dest.set_select_mode(html_form_input_file::select_dir);
     repair_dest.set_can_create_dir(true);
+
+    if(repoxfer.get_html_user_interaction())
+	repoxfer.get_html_user_interaction()->auto_hide(true, false);
+    else
+	throw WEBDAR_BUG;
 
 	// adoption tree
 
@@ -71,19 +75,31 @@ html_archive_repair::html_archive_repair():
     deroule.adopt_in_section(sect_repair, &repair_form);
     deroule.adopt_in_section(sect_repair, &opt_repair);
     adopt(&deroule);
+    adopt(&repoxfer);
 
 	// events
 
+    opt_repair.record_actor_on_event(this, html_options_repair::entrepot_changed);
+
 
 	// visibility
-
+    repoxfer.set_visible(false);
 
 	// css
 
     webdar_css_style::normal_button(deroule, true);
 }
 
-
+void html_archive_repair::on_event(const string & event_name)
+{
+    if(event_name == html_options_repair::entrepot_changed)
+    {
+	repoxfer.set_visible(true);
+	repoxfer.run_and_control_thread(this);
+    }
+    else
+	throw WEBDAR_BUG;
+}
 
 string html_archive_repair::inherited_get_body_part(const chemin & path,
 						    const request & req)
@@ -100,3 +116,20 @@ void html_archive_repair::new_css_library_available()
     webdar_css_style::update_library(*csslib);
 }
 
+void html_archive_repair::inherited_run()
+{
+    shared_ptr<html_web_user_interaction> ptr(repoxfer.get_html_user_interaction());
+
+    if(!ptr)
+	throw WEBDAR_BUG;
+    repair_dest.set_entrepot(opt_repair.get_entrepot(ptr));
+}
+
+void html_archive_repair::signaled_inherited_cancel()
+{
+    pthread_t libdar_tid;
+    libdar::thread_cancellation th;
+
+    if(is_running(libdar_tid))
+	th.cancel(libdar_tid, true, 0);
+}
