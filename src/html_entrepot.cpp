@@ -305,6 +305,10 @@ void html_entrepot::clear_json()
     wait_time.set_value(default_waittime);
     verbose.set_value(default_verbose);
     repo_type.set_selected(0);
+
+	// same remark here as load_json() above
+    entrep_need_update = true;
+    trigger_event();
 }
 
 
