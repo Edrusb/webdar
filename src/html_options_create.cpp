@@ -336,6 +336,7 @@ void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
 			     bibliotheque::repo,
 			     entrep,
 			     false);
+    reference.set_biblio(ptr);
 }
 
 libdar::archive_options_create html_options_create::get_options(shared_ptr<html_web_user_interaction> & webui) const
