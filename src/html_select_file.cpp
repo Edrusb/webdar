@@ -170,6 +170,7 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
     mem_ui = entr->get_current_user_interaction();
     entr->change_user_interaction(webui.get_user_interaction());
     entrepot_url.clear();
+    entrepot_url.add_text(0, "Entrepot location: ");
     entrepot_url.add_text(0, entr->get_url());
     fieldset.change_label(start_dir);
     createdir_form.set_visible(false);
