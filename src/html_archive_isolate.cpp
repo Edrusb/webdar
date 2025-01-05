@@ -85,10 +85,6 @@ void html_archive_isolate::on_event(const string & event_name)
 	repoxfer.set_visible(true);
 	repoxfer.run_and_control_thread(this);
     }
-    else if(event_name == html_libdar_running_popup::libdar_has_finished)
-    {
-	repoxfer.set_visible(false);
-    }
     else
 	throw WEBDAR_BUG;
 }
