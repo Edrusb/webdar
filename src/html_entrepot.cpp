@@ -258,6 +258,21 @@ void html_entrepot::load_json(const json & source)
     {
 	throw exception_json("Error loading html_entrepot config", e);
     }
+
+	// the object may be changed by load_json() even when this
+	// component is not visible, thus the entrep_need_update will
+	// not be set as inherited_get_body_part() will not be invoked
+	// for that reason we force the entrep_need_update to true
+	// in order for get_entrepot() to consider the changes and
+	// return when requested a re-generated libdar::entrepot
+    entrep_need_update = true;
+
+	// the change event was disabled above to (ignore events)
+	// to prevent the event generation for each parameter change,
+	// we can/must now also force the change event for object
+	// that depend on it be informed the component has change,
+	// but doing that way, they will be only informed once and
+	// when all parameters are set to their correct value
     trigger_event();
 }
 
