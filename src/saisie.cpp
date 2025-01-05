@@ -113,6 +113,7 @@ saisie::saisie():
 
     create.set_biblio(biblio);
     archread.set_biblio(biblio);
+    merge.set_biblio(biblio);
 
     h_biblio.reset(new (nothrow) html_bibliotheque(biblio, default_biblio_path));
     if(! h_biblio)

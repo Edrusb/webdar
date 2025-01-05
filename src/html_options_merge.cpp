@@ -85,6 +85,10 @@ html_options_merge::html_options_merge():
     compr_mask("file name")
 {
 
+    entrep.reset(new (nothrow) html_entrepot());
+    if(!entrep)
+	throw exception_memory();
+
 	// components setups
     pause.set_min_only(0);
 
@@ -153,7 +157,7 @@ html_options_merge::html_options_merge():
     deroule.add_section(sect_slice, "Slicing Options");
     deroule.add_section(sect_cipher, "Encryption Options");
 
-    deroule.adopt_in_section(sect_entrep, &entrep);
+    deroule.adopt_in_section(sect_entrep, &guichet_entrep);
 
     fs_archgen.adopt(&allow_over);
     fs_archgen.adopt(&warn_over);
@@ -216,7 +220,7 @@ html_options_merge::html_options_merge():
     display_treated.record_actor_on_event(this, html_form_input::changed);
     compr_params.record_actor_on_event(this, html_compression_params::changed);
     has_aux.record_actor_on_event(this, html_form_input::changed);
-    entrep.record_actor_on_event(this, html_entrepot::changed);
+    entrep->record_actor_on_event(this, html_entrepot::changed);
 
     on_event(html_form_input::changed);
 
@@ -225,6 +229,14 @@ html_options_merge::html_options_merge():
     display_treated_only_dir.add_css_class(webdar_css_style::wcs_indent);
 }
 
+void html_options_merge::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
+{
+    auxiliary.set_biblio(ptr);
+    guichet_entrep.set_child(ptr,
+			     bibliotheque::repo,
+			     entrep,
+			     false);
+}
 
 void html_options_merge::on_event(const string & event_name)
 {
@@ -263,7 +275,7 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
     libdar::archive_options_merge ret;
     shared_ptr<libdar::archive> aux;
 
-    ret.set_entrepot(entrep.get_entrepot(webui));
+    ret.set_entrepot(entrep->get_entrepot(webui));
     ret.set_allow_over(allow_over.get_value_as_bool());
     ret.set_warn_over(warn_over.get_value_as_bool());
     ret.set_pause(libdar::deci(pause.get_value()).computer());

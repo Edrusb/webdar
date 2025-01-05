@@ -57,6 +57,7 @@ extern "C"
 #include "html_form_sig_block_size.hpp"
 #include "html_form_select.hpp"
 #include "html_fsa_scope.hpp"
+#include "guichet.hpp"
 
     /// html component for the user to provided parameters of a libdar merging operation
 
@@ -72,6 +73,9 @@ public:
     html_options_merge & operator = (html_options_merge && ref) noexcept = delete;
     ~html_options_merge() = default;
 
+	/// mandatory call to invoke ASAP after constructor
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
+
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -83,7 +87,7 @@ public:
     libdar::archive_options_merge get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
 
 	/// optain the current entrepot object where is expected to be create the archive
-    std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const { return entrep.get_entrepot(webui); };
+    std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const { return entrep->get_entrepot(webui); };
 
 
 protected:
@@ -99,7 +103,10 @@ private:
     html_derouleur deroule;
 
     html_form form_archgen;
-    html_entrepot entrep;
+
+    guichet guichet_entrep;
+    std::shared_ptr<html_entrepot> entrep;
+
     html_form_fieldset fs_archgen;
     html_form_input allow_over;
     html_form_input warn_over;

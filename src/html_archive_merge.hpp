@@ -59,6 +59,9 @@ public:
     const std::string & get_archive_basename() const { return basename.get_value(); };
     libdar::archive_options_merge get_options_merge(std::shared_ptr<html_web_user_interaction> dialog) const { return options.get_options(dialog); };
 
+	/// mandatory call to invoke ASAP after constructor
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr) { options.set_biblio(ptr); };
+
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
