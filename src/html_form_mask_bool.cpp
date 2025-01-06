@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_css_style.hpp"
@@ -167,6 +167,130 @@ string html_form_mask_bool::invert_logic(const std::string & logic)
 	return and_op;
     else
 	throw WEBDAR_BUG;
+}
+
+void html_form_mask_bool::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != "html_form_mask_bool")
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting html_entrepot",
+						       class_id.c_str()));
+
+	if(version > format_version)
+	    throw exception_range("Json format version too hight for html_entrepot, upgrade your webdar software");
+
+	    // setting back the bool mode and mask_type selected value
+
+	current_bool_mode = config.at(jlabel_logic);
+	mask_type.set_selected(current_bool_mode);
+
+	    // setting back prefix
+
+	root_prefix = libdar::path(config.at(jlabel_prefix));
+
+	    // filling the table for each component found
+
+	html_form_dynamic_table::iterator dynptr;
+	jsoner* intable = nullptr;
+	json components = config.at(jlabel_components);
+
+	table.clear();
+
+	if(!components.is_array())
+	    throw exception_range(libdar::tools_printf("Expecting table of components for label %s in %s json configuration",
+						       jlabel_components,
+						       class_id.c_str()));
+
+	for(json::iterator it = components.begin();
+	    it != components.end();
+	    ++it)
+	{
+		// the following leads the object provider to create
+		// a new line with the correct object type
+	    table.add_line(it->at(jlabel_compo_type));
+
+		// now we get acces to the just create object of the expected type
+	    dynptr = table.last();
+	    if(dynptr == table.end())
+		throw WEBDAR_BUG;
+
+	    intable = dynamic_cast<jsoner*>(dynptr.get_object().get());
+	    if(intable == nullptr)
+		throw WEBDAR_BUG;
+
+		// restoring its configuration based on the json info found for it
+	    intable->load_json(it->at(jlabel_compo_conf));
+	}
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json("Error loading html_entrepot config", e);
+    }
+}
+
+json html_form_mask_bool::save_json() const
+{
+    json ret;
+    json tmp;
+    jsoner* itjson = nullptr;
+
+    ret[jlabel_logic] = current_bool_mode;
+    ret[jlabel_prefix] = root_prefix.display();
+
+    for(html_form_dynamic_table::iterator it = table.begin();
+	it != table.end();
+	++it)
+    {
+	tmp.clear();
+	    // tmp will contain
+	    // - type of compoent : value
+	    // - config : configuration
+
+	tmp[jlabel_compo_type] = it.get_object_type();
+
+	itjson = dynamic_cast<jsoner*>(it.get_object().get());
+	if(itjson == nullptr)
+	    throw WEBDAR_BUG;
+	tmp[jlabel_compo_conf] = itjson->save_json();
+
+	    // jlabel_components is a list of components
+	    // each with two fields : type and config
+	ret[jlabel_components].push_back(tmp);
+    }
+
+    return wrap_config_with_json_header(format_version,
+					"html_form_mask_bool",
+					ret);
+}
+
+void html_form_mask_bool::clear_json()
+{
+    table.clear();
+}
+
+bibliotheque::using_set html_form_mask_bool::get_using_set() const
+{
+    bibliotheque::using_set ret;
+    bibliotheque_subconfig* subconf = nullptr;
+
+    for(html_form_dynamic_table::iterator it = table.begin();
+	it != table.end();
+	++it)
+    {
+	subconf = dynamic_cast<bibliotheque_subconfig*>(it.get_object().get());
+
+	if(subconf != nullptr)
+	    subconfig_add_to(ret, subconf->get_using_set());
+    }
+
+    return ret;
 }
 
 string html_form_mask_bool::inherited_get_body_part(const chemin & path,

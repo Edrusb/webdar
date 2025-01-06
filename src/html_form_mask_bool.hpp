@@ -41,6 +41,8 @@ extern "C"
     // webdar headers
 #include "html_mask.hpp"
 #include "actor.hpp"
+#include "jsoner.hpp"
+#include "bibliotheque_subconfig.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_form_select.hpp"
 #include "html_table.hpp"
@@ -72,7 +74,9 @@ extern "C"
 	\endverbatim **/
 
 class html_form_mask_bool : public html_mask,
-			    public actor
+			    public actor,
+			    public jsoner,
+			    public bibliotheque_subconfig
 {
 public:
 	/// constructor
@@ -124,6 +128,18 @@ public:
 	/// cascading several html_form_mask_bool components
     static std::string invert_logic(const std::string & logic);
 
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
+
+	/// inherited from bibliotheque_subconfig
+    virtual bibliotheque::using_set get_using_set() const override;
+
 protected:
 	/// inherited methods from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
@@ -148,6 +164,14 @@ private:
     void update_table_content_logic(bool unconditionally); // update labels in the first column in regard to the current AND/OR selected logic
     void propagate_root_prefix();
     std::string tell_action() const;
+
+    static constexpr const unsigned int format_version = 1;
+
+    static constexpr const char* jlabel_logic = "logic";
+    static constexpr const char* jlabel_prefix = "prefix";
+    static constexpr const char* jlabel_components = "components";
+    static constexpr const char* jlabel_compo_type = "type";
+    static constexpr const char* jlabel_compo_conf = "config";
 };
 
 #endif
