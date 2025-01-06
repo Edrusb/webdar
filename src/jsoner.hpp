@@ -122,12 +122,9 @@ protected:
 					       unsigned int & version,
 					       std::string & class_id);
 
-private:
-    static constexpr const char* version_label = "version";
-    static constexpr const char* id_label = "class_id";
-    static constexpr const char* config_label = "config";
-
-
+    static constexpr const char* jsoner_version_label = "version";
+    static constexpr const char* jsoner_id_label = "class_id";
+    static constexpr const char* jsoner_config_label = "config";
 };
 
 #endif
