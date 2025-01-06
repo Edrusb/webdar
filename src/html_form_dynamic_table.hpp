@@ -147,6 +147,7 @@ public:
 
     iterator begin() const { iterator ret; ret.ptr = table_content.begin(); return ret; };
     iterator end() const { iterator ret; ret.ptr = table_content.end(); return ret; };
+    iterator last() const { iterator ret; ret.ptr = prev(table_content.end()); return ret; };
 
 	/// whether the current dynamic_table is empty
     bool empty() const { return table_content.empty(); };
