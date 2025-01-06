@@ -192,6 +192,15 @@ public:
         /// clear table content
     void clear() { table_content.clear(); del_event_to_content.clear(); events_to_delete.clear(); };
 
+	/// manually add an line in the table with the object type give in number
+
+	/// \note this is only needed to build programmatically the dynamic_table, but
+	/// a dynamic_table is more than a table, it is dynamic in the sense that this
+	/// through user action in web interface that normally this method is invoked
+	/// to add (but also remove) lines to the table
+    void add_line(unsigned int typenum);
+
+
         /// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -252,7 +261,6 @@ private:
     html_table table;
     html_form_select adder;
 
-    void add_line(unsigned int typenum);
     void del_line(const std::string & event_name);
     void purge_to_delete();
 

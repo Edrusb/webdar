@@ -90,44 +90,6 @@ void html_form_dynamic_table::add_obj_type(const string & label)
     adder.set_selected(0);
 }
 
-void html_form_dynamic_table::on_event(const std::string & event_name)
-{
-    if(event_name == new_line_to_add)
-    {
-	if(adder.get_selected_num() != 0)
-	{
-		// there is a shift by one between adder which first position (index 0)
-		// tells the user to select a filter and list_of_mask_types that have the
-		// first valid mask at position 0.
-	    add_line(adder.get_selected_num() - 1);
-	    adder.set_selected(0); // resetting 'adder' to undefined
-	    act(changed);
-	}
-    }
-    else // check whether this is an event from a delete button
-	del_line(event_name); // may throw exception if event_name is not a del event
-	// act(changed) will be done by purge_to_delete() outside the on_event()
-	// cascada calls
-}
-
-string html_form_dynamic_table::inherited_get_body_part(const chemin & path,
-							const request & req)
-{
-    string ret = html_div::inherited_get_body_part(path, req);
-    purge_to_delete();
-    return ret;
-}
-
-void html_form_dynamic_table::new_css_library_available()
-{
-    unique_ptr<css_library> & csslib = lookup_css_library();
-    if(!csslib)
-	throw WEBDAR_BUG;
-
-    webdar_css_style::update_library(*csslib);
-}
-
-
 void html_form_dynamic_table::add_line(unsigned int typenum)
 {
     line newline;
@@ -166,6 +128,44 @@ void html_form_dynamic_table::add_line(unsigned int typenum)
 						    std::move(newline));
     del_event_to_content[event_name] = pos;
 }
+
+void html_form_dynamic_table::on_event(const std::string & event_name)
+{
+    if(event_name == new_line_to_add)
+    {
+	if(adder.get_selected_num() != 0)
+	{
+		// there is a shift by one between adder which first position (index 0)
+		// tells the user to select a filter and list_of_mask_types that have the
+		// first valid mask at position 0.
+	    add_line(adder.get_selected_num() - 1);
+	    adder.set_selected(0); // resetting 'adder' to undefined
+	    act(changed);
+	}
+    }
+    else // check whether this is an event from a delete button
+	del_line(event_name); // may throw exception if event_name is not a del event
+	// act(changed) will be done by purge_to_delete() outside the on_event()
+	// cascada calls
+}
+
+string html_form_dynamic_table::inherited_get_body_part(const chemin & path,
+							const request & req)
+{
+    string ret = html_div::inherited_get_body_part(path, req);
+    purge_to_delete();
+    return ret;
+}
+
+void html_form_dynamic_table::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
+}
+
 
 void html_form_dynamic_table::del_line(const string & event_name)
 {
