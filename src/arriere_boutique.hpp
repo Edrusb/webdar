@@ -89,7 +89,7 @@ public:
     arriere_boutique(const std::shared_ptr<bibliotheque> & ptr,
 		     bibliotheque::category cat,
 		     std::unique_ptr<T> & obj,
-		     const std::string change_event_name); ///< event name on obj triggered upon object changes
+		     const std::string ch_event_name); ///< event name on obj triggered upon object changes
     arriere_boutique(const arriere_boutique & ref) = delete;
     arriere_boutique(arriere_boutique && ref) noexcept = delete;
     arriere_boutique & operator = (const arriere_boutique & ref) = delete;
@@ -136,6 +136,7 @@ private:
     body_builder* wrapped_body_builder;
     events* wrapped_events;
     bibliotheque_subconfig* wrapped_subconfig;
+    std::string change_event_name;
 
     bool ignore_events;
 
@@ -149,7 +150,7 @@ private:
 template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<bibliotheque> & ptr,
 							 bibliotheque::category cat,
 							 std::unique_ptr<T> & obj,
-							 const std::string change_event_name):
+							 const std::string ch_event_name):
     currently_loaded(""),
     categ(cat),
     config_form("Save/Save as"),
@@ -158,6 +159,7 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     listing_form("Load selected"),
     listing_fs("Available configurations"),
     delete_selected("Delete loaded config", event_delete),
+    change_event_name(ch_event_name),
     ignore_events(false)
 {
 	// non html field settup
@@ -185,6 +187,18 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
 	// it is ok if wrapped_subconfig is nullptr, wrapped may not implement
 	// the bibliotheque_subconfig interface
 
+    if(change_event_name == html_form_input::changed)
+	throw WEBDAR_BUG; // event name collides with our own components
+    if(change_event_name == event_delete)
+	throw WEBDAR_BUG; // event name collides with our own components
+    if(change_event_name == html_form_radio::changed)
+	throw WEBDAR_BUG; // event name collides with our own components
+    if(change_event_name == bibliotheque::changed)
+	throw WEBDAR_BUG; // event name collides with our own components
+    if(change_event_name == html_form::changed)
+	throw WEBDAR_BUG; // event name collides with our own components
+
+
 	// html components setup
     clear_warning();
     load_listing();
@@ -211,6 +225,7 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
 	// events and actors
     wrapped_events->record_actor_on_event(this, change_event_name);
     config_name.record_actor_on_event(this, html_form_input::changed);
+    config_form.record_actor_on_event(this, html_form::changed);
     delete_selected.record_actor_on_event(this, event_delete);
     listing.record_actor_on_event(this, html_form_radio::changed);
     ptr->record_actor_on_event(this, bibliotheque::changed);
@@ -230,14 +245,15 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
     if(!biblio)
 	throw WEBDAR_BUG;
 
-    if(event_name == T::changed)
+    if(event_name == change_event_name)
     {
 	    // the hosted object configuration has been changed by the user
 
 	need_saving.set_visible(true);
 	clear_warning();
     }
-    else if(event_name == html_form_input::changed)
+    else if(event_name == html_form_input::changed
+	    || event_name == html_form::changed)
     {
 
 	    // save as form has changed (-> asked to save as)

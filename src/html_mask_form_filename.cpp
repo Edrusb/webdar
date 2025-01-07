@@ -40,8 +40,10 @@ extern "C"
 
 using namespace std;
 
+const std::string html_mask_form_filename::changed = "hmff_changed";
+
 html_mask_form_filename::html_mask_form_filename(const string & subject):
-    html_form("Update"),
+    form("Update"),
     sujet(subject)
 {
 	// we use tools_printf to ease future message translation
@@ -51,7 +53,14 @@ html_mask_form_filename::html_mask_form_filename(const string & subject):
     labels.push_back("Logical combination");
     init_bool_obj(root);
 
-    adopt(&root);
+	// adoption tree
+
+    form.adopt(&root);
+    adopt(&form);
+
+	// events
+    register_name(changed);
+    form.record_actor_on_event(this, html_form::changed);
 }
 
 
@@ -90,6 +99,7 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
 void html_mask_form_filename::load_json(const json & source)
 {
     root.load_json(source);
+    act(changed);
 }
 
 json html_mask_form_filename::save_json() const
@@ -100,11 +110,26 @@ json html_mask_form_filename::save_json() const
 void html_mask_form_filename::clear_json()
 {
     root.clear_json();
+    act(changed);
 }
 
 bibliotheque::using_set html_mask_form_filename::get_using_set() const
 {
     return root.get_using_set();
+}
+
+void html_mask_form_filename::on_event(const std::string & event_name)
+{
+    if(event_name == html_form::changed)
+	act(changed);
+    else
+	throw WEBDAR_BUG;
+}
+
+string html_mask_form_filename::inherited_get_body_part(const chemin & path,
+							const request & req)
+{
+    return get_body_part_from_all_children(path, req);
 }
 
 void html_mask_form_filename::init_bool_obj(html_form_mask_bool & obj) const

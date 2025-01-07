@@ -41,6 +41,7 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_form_select.hpp"
 #include "actor.hpp"
+#include "jsoner.hpp"
 
 
     /// class html_form_mask_expression provide mean to setup libdar::mask component for filename filtering
@@ -76,7 +77,9 @@ extern "C"
     /// like *and* and *or* combinasons.
 
 
-class html_form_mask_expression : public html_mask, public actor
+class html_form_mask_expression : public html_mask,
+				  public actor,
+				  public jsoner
 {
 public:
 
@@ -92,12 +95,23 @@ public:
     html_form_mask_expression & operator = (html_form_mask_expression && ref) noexcept = default;
     ~html_form_mask_expression() = default;
 
+	/// reset object to default
+    void clear();
+
 	/// inherited from html_mask
     std::unique_ptr<libdar::mask> get_mask() const override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override { clear(); };
 
 protected:
 	/// inherited methods from body_builder
@@ -117,6 +131,13 @@ private:
 
     void init();
     std::string tell_action() const;
+
+    static constexpr const unsigned int format_version = 1;
+
+    static constexpr const char* jlabel_mask_type = "type";
+    static constexpr const char* jlabel_negate = "negate";
+    static constexpr const char* jlabel_casesensit = "case-sentitive";
+    static constexpr const char* jlabel_expression = "mask";
 };
 
 #endif

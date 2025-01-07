@@ -29,9 +29,10 @@ extern "C"
 }
 
     // C++ system header files
-#include "webdar_css_style.hpp"
+#include <dar/tools.hpp>
 
     // webdar headers
+#include "webdar_css_style.hpp"
 
 
 
@@ -44,18 +45,18 @@ using namespace std;
 html_form_mask_expression::html_form_mask_expression(const string & subject):
     sujet(subject),
     fs(""),
-    mask_type("Mask Type"),
+    mask_type("Mask Type"), // see clear()
     negate("Negate",
 	   html_form_input::check,
-	   "", // unckecked
+	   "", // unckecked (see clear())
 	   "1"),
     casesensitivity("Case Sensitive",
 		    html_form_input::check,
-		    "1", // checked
+		    "1", // checked (see clear())
 		    "1"),
     mask_expression("Mask Expression",
 		    html_form_input::text,
-		    "",
+		    "",   // (see clear())
 		    "80%")
 {
 
@@ -63,7 +64,6 @@ html_form_mask_expression::html_form_mask_expression(const string & subject):
 
     mask_type.add_choice("0", "Glob Expression");
     mask_type.add_choice("1", "Regular Expression");
-    mask_type.set_selected(0);
 
     init();
 }
@@ -78,6 +78,14 @@ html_form_mask_expression::html_form_mask_expression(const html_form_mask_expres
     mask_expression(ref.mask_expression)
 {
     init();
+}
+
+void html_form_mask_expression::clear()
+{
+    mask_type.set_selected(0);
+    negate.set_value_as_bool(false);
+    casesensitivity.set_value_as_bool(true);
+    mask_expression.set_value("");
 }
 
 unique_ptr<libdar::mask> html_form_mask_expression::get_mask() const
@@ -127,6 +135,51 @@ void html_form_mask_expression::on_event(const std::string & event_name)
 	throw WEBDAR_BUG;
 }
 
+
+
+void html_form_mask_expression::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != "html_form_mask_expression")
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting html_form_mask_expression",
+						       class_id.c_str()));
+
+	if(version > format_version)
+	    throw exception_range("Json format version too hight for html_form_mask_expression, upgrade your webdar software");
+
+	mask_type.set_selected(config.at(jlabel_mask_type).template get<string>());
+	negate.set_value_as_bool(config.at(jlabel_negate));
+	casesensitivity.set_value_as_bool(config.at(jlabel_casesensit));
+	mask_expression.set_value(config.at(jlabel_expression));
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json("Error loading html_form_mask_expression config", e);
+    }
+}
+
+
+json html_form_mask_expression::save_json() const
+{
+    json ret;
+
+    ret[jlabel_mask_type] = mask_type.get_selected_id();
+    ret[jlabel_negate] = negate.get_value_as_bool();
+    ret[jlabel_casesensit] = casesensitivity.get_value_as_bool();
+    ret[jlabel_expression] = mask_expression.get_value();
+
+    return wrap_config_with_json_header(format_version,
+					"html_form_mask_expression",
+					ret);
+}
+
 string html_form_mask_expression::inherited_get_body_part(const chemin & path,
 						   const request & req)
 {
@@ -166,6 +219,8 @@ void html_form_mask_expression::init()
 
 	// css stuff
     fs.add_label_css_class(webdar_css_style::wcs_bold_text);
+
+    clear();
 }
 
 string html_form_mask_expression::tell_action() const

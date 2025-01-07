@@ -34,8 +34,11 @@ extern "C"
     // C++ system header files
 
     // webdar headers
-#include "html_form.hpp"
+#include "body_builder.hpp"
+#include "actor.hpp"
+#include "events.hpp"
 #include "jsoner.hpp"
+#include "html_form.hpp"
 #include "bibliotheque_subconfig.hpp"
 #include "html_form_mask_bool.hpp"
 #include "html_form_mask_expression.hpp"
@@ -45,12 +48,15 @@ extern "C"
     /// at the difference of the html_form_* classes which are component to be included into html_form
     /// this class is a full html_form dedicated to the specific case of mask for filename filtering
 
-class html_mask_form_filename : public html_form,
+class html_mask_form_filename : public body_builder,
+				public actor,
+				public events,
 				public html_form_dynamic_table_object_provider,
 				public jsoner,
 				public bibliotheque_subconfig
 {
 public:
+    static const std::string changed;
 
 	/// constructor
 
@@ -83,7 +89,17 @@ public:
     virtual bibliotheque::using_set get_using_set() const override;
 
 
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
+
+protected:
+
+	/// inherited from body_builder
+    virtual std::string inherited_get_body_part(const chemin & path,
+						const request & req) override;
+
 private:
+    html_form form;
     html_form_mask_bool root;
     std::deque<std::string> labels;
     std::string sujet;

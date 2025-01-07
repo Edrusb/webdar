@@ -180,11 +180,11 @@ void html_form_mask_bool::load_json(const json & source)
 						     class_id);
 
 	if(class_id != "html_form_mask_bool")
-	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting html_entrepot",
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting html_form_mask_bool",
 						       class_id.c_str()));
 
 	if(version > format_version)
-	    throw exception_range("Json format version too hight for html_entrepot, upgrade your webdar software");
+	    throw exception_range("Json format version too hight for html_form_mask_bool, upgrade your webdar software");
 
 	    // setting back the bool mode and mask_type selected value
 
@@ -203,7 +203,7 @@ void html_form_mask_bool::load_json(const json & source)
 
 	table.clear();
 
-	if(!components.is_array())
+	if(! components.is_array() && ! components.is_null())
 	    throw exception_range(libdar::tools_printf("Expecting table of components for label %s in %s json configuration",
 						       jlabel_components,
 						       class_id.c_str()));
@@ -231,7 +231,7 @@ void html_form_mask_bool::load_json(const json & source)
     }
     catch(json::exception & e)
     {
-	throw exception_json("Error loading html_entrepot config", e);
+	throw exception_json("Error loading html_form_mask_bool config", e);
     }
 }
 
