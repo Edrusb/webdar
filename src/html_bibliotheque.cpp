@@ -61,6 +61,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 {
     unique_ptr<html_entrepot> tmp_e;
     unique_ptr<html_mask_form_filename> tmp_fm;
+    unique_ptr<html_mask_form_path> tmp_fp;
 
     if(!ptr)
 	throw WEBDAR_BUG;
@@ -114,14 +115,14 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 	// entrepot tab
 
     tmp_e.reset(new (nothrow) html_entrepot());
-    if(!tmp_e)
+    if(! tmp_e)
 	throw exception_memory();
 
     ab_entrepot.reset(new (nothrow) arriere_boutique<html_entrepot>(ptr,
 								    bibliotheque::repo,
 								    tmp_e,
 								    html_entrepot::changed));
-    if(!ab_entrepot)
+    if(! ab_entrepot)
 	throw exception_memory();
 
 	// file mask tab
@@ -137,11 +138,26 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     if(!ab_filemask)
 	throw exception_memory();
 
+	// path mask tab
+
+    tmp_fp.reset(new (nothrow) html_mask_form_path(true));
+    if(! tmp_fp)
+	throw exception_memory();
+
+    ab_pathmask.reset(new (nothrow) arriere_boutique<html_mask_form_path>(ptr,
+									  bibliotheque::pathfilter,
+									  tmp_fp,
+									  html_mask_form_path::changed));
+    if(! ab_pathmask)
+	throw exception_memory();
+
 
     	// global component setups
+
     tabs.add_tab("Main", tab_main);
     tabs.add_tab("Repos", tab_repo);
     tabs.add_tab("Filename Masks", tab_filemask);
+    tabs.add_tab("Path Masks", tab_pathmask);
 
 
 	//  global adoption tree
@@ -157,6 +173,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
     tabs.adopt_in_section(tab_repo, ab_entrepot.get());
     tabs.adopt_in_section(tab_filemask, ab_filemask.get());
+    tabs.adopt_in_section(tab_pathmask, ab_pathmask.get());
 
     adopt(&tabs);
 

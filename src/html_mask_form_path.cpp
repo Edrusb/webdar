@@ -40,15 +40,25 @@ extern "C"
 
 using namespace std;
 
+const std::string html_mask_form_path::changed = "hmff_changed";
+
 html_mask_form_path::html_mask_form_path(bool allow_absolute_paths):
-    html_form("Update"),
+    form("Update"),
     allow_abs_paths(allow_absolute_paths)
 {
     labels.push_back("Path expression");
     labels.push_back("File listing");
     labels.push_back("Logical combination");
     init_bool_obj(root);
-    adopt(&root);
+
+	// adoption tree
+
+    form.adopt(&root);
+    adopt(&form);
+
+	// events
+    register_name(changed);
+    form.record_actor_on_event(this, html_form::changed);
 }
 
 void html_mask_form_path::set_fs_root(const std::string & prefix)
@@ -103,6 +113,41 @@ unique_ptr<body_builder> html_mask_form_path::provide_object_of_type(unsigned in
     return ret;
 }
 
+void html_mask_form_path::load_json(const json & source)
+{
+    root.load_json(source);
+    act(changed);
+}
+
+json html_mask_form_path::save_json() const
+{
+    return root.save_json();
+}
+
+void html_mask_form_path::clear_json()
+{
+    root.clear_json();
+    act(changed);
+}
+
+bibliotheque::using_set html_mask_form_path::get_using_set() const
+{
+    return root.get_using_set();
+}
+
+void html_mask_form_path::on_event(const std::string & event_name)
+{
+    if(event_name == html_form::changed)
+	act(changed);
+    else
+	throw WEBDAR_BUG;
+}
+
+string html_mask_form_path::inherited_get_body_part(const chemin & path,
+							const request & req)
+{
+    return get_body_part_from_all_children(path, req);
+}
 
 void html_mask_form_path::init_bool_obj(html_form_mask_bool & obj) const
 {

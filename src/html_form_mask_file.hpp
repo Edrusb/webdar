@@ -39,6 +39,7 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_form_input_file.hpp"
 #include "actor.hpp"
+#include "jsoner.hpp"
 
     /// class html_form_mask_file provide interface to include or exclude a list of entry taken from a text file
 
@@ -69,7 +70,9 @@ extern "C"
     /// recursively from another html_form_mask_file
 
 
-class html_form_mask_file : public html_mask, public actor
+class html_form_mask_file : public html_mask,
+			    public actor,
+			    public jsoner
 {
 public:
     html_form_mask_file();
@@ -79,11 +82,24 @@ public:
     html_form_mask_file & operator = (html_form_mask_file && ref) noexcept = delete;
     ~html_form_mask_file() = default;
 
-    	/// inherited from html_mask
+	/// reset object to default
+    void clear();
+
+	/// inherited from html_mask
     virtual void set_root_prefix(const libdar::path & x_prefix) override { prefix = x_prefix; };
 
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override;
+
+        /// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override { clear(); };
+
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -106,6 +122,14 @@ private:
 
     void init();
     std::string tell_action() const;
+
+    static constexpr const unsigned int format_version = 1;
+
+    static constexpr const char* jlabel_filename = "filename";
+    static constexpr const char* jlabel_exclude = "excluding";
+    static constexpr const char* jlabel_casesensit = "casesensit";
+    static constexpr const char* jlabel_prefix = "prefix";
+
 };
 
 #endif

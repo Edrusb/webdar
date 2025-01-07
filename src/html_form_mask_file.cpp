@@ -30,6 +30,7 @@ extern "C"
 
     // C++ system header files
 #include <dar/libdar.hpp>
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_css_style.hpp"
@@ -41,19 +42,23 @@ extern "C"
 using namespace std;
 
 html_form_mask_file::html_form_mask_file():
-    filename("File name", "/", "80%", "Select a listing text file..."),
+    filename("File name",
+	     "/",   // see clear() for defaults
+	     "80%",
+	     "Select a listing text file..."),
     exclude_checkbox("Exclude listed files",
 		     html_form_input::check,
-		     "", // unchecked
+		     "", // see clear() for defaults
 		     "1"),
     casesensit("Case sensitivivity",
 	       html_form_input::check,
-	       "1", // checked
+	       "1", // see clear() for defaults
 	       "1"),
     fs("File listing"),
     prefix(libdar::FAKE_ROOT)
 {
     init();
+    clear();
 }
 
 html_form_mask_file::html_form_mask_file(const html_form_mask_file & ref):
@@ -63,8 +68,15 @@ html_form_mask_file::html_form_mask_file(const html_form_mask_file & ref):
     fs(ref.fs),
     prefix(ref.prefix)
 {
-
     init();
+}
+
+void html_form_mask_file::clear()
+{
+    filename.set_value("/");
+    exclude_checkbox.set_value_as_bool(false);
+    casesensit.set_value_as_bool(true);
+    prefix = libdar::FAKE_ROOT;
 }
 
 unique_ptr<libdar::mask> html_form_mask_file::get_mask() const
@@ -90,10 +102,46 @@ unique_ptr<libdar::mask> html_form_mask_file::get_mask() const
     return tmp;
 }
 
-string html_form_mask_file::inherited_get_body_part(const chemin & path,
-						    const request & req)
+void html_form_mask_file::load_json(const json & source)
 {
-    return get_body_part_from_all_children(path, req);
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != "html_form_mask_file")
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting html_form_mask_file",
+						       class_id.c_str()));
+
+	if(version > format_version)
+	    throw exception_range("Json format version too hight for html_form_mask_file, upgrade your webdar software");
+
+	filename.set_value(config.at(jlabel_filename));
+	exclude_checkbox.set_value_as_bool(config.at(jlabel_exclude));
+	casesensit.set_value_as_bool(config.at(jlabel_casesensit));
+	prefix = libdar::path(config.at(jlabel_prefix));
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json("Error loading html_form_mask_expression config", e);
+    }
+}
+
+json html_form_mask_file::save_json() const
+{
+    json ret;
+
+    ret[jlabel_filename] = filename.get_value();
+    ret[jlabel_exclude] = exclude_checkbox.get_value_as_bool();
+    ret[jlabel_casesensit] = casesensit.get_value_as_bool();
+    ret[jlabel_prefix] = prefix.display();
+
+    return wrap_config_with_json_header(format_version,
+					"html_form_mask_file",
+					ret);
 }
 
 void html_form_mask_file::on_event(const std::string & event_name)
@@ -105,6 +153,12 @@ void html_form_mask_file::on_event(const std::string & event_name)
     }
     else
 	throw WEBDAR_BUG;
+}
+
+string html_form_mask_file::inherited_get_body_part(const chemin & path,
+						    const request & req)
+{
+    return get_body_part_from_all_children(path, req);
 }
 
 void html_form_mask_file::new_css_library_available()

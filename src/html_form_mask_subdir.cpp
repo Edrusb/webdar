@@ -48,11 +48,11 @@ html_form_mask_subdir::html_form_mask_subdir(bool absolute_path_accepted):
     mask_type("Mask Type"),
     casesensitivity("Case Sensitive",
 		    html_form_input::check,
-		    "1", // checked
+		    "", // see clear() method for defaults
 		    "1"),
     regex("Regular expression in place of glob expression",
 	  html_form_input::check,
-	  "", // unchecked
+	  "", // see clear() method for defaults
 	  "1"),
     mask_subdir("Concerned path",
 		html_form_input::text,
@@ -64,9 +64,9 @@ html_form_mask_subdir::html_form_mask_subdir(bool absolute_path_accepted):
 
     mask_type.add_choice("0", "Include path and subdirs (no wildcard)");
     mask_type.add_choice("1", "Exclude path and subdirs");
-    mask_type.set_selected(0);
 
     init();
+    clear();
 }
 
 html_form_mask_subdir::html_form_mask_subdir(const html_form_mask_subdir & ref):
@@ -80,6 +80,16 @@ html_form_mask_subdir::html_form_mask_subdir(const html_form_mask_subdir & ref):
     mask_subdir(ref.mask_subdir)
 {
     init();
+}
+
+void html_form_mask_subdir::clear()
+{
+	// absolute_ok is not changed
+    prefix = libdar::FAKE_ROOT;
+    mask_type.set_selected(0);
+    casesensitivity.set_value_as_bool(true);
+    regex.set_value_as_bool(false);
+    mask_subdir.set_value("");
 }
 
 void html_form_mask_subdir::set_root_prefix(const libdar::path & x_prefix)
@@ -143,6 +153,52 @@ unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
 	throw exception_memory();
 
     return ret;
+}
+
+void html_form_mask_subdir::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != "html_form_mask_subdir")
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting html_form_mask_subdir",
+						       class_id.c_str()));
+
+	if(version > format_version)
+	    throw exception_range("Json format version too hight for html_form_mask_subdir, upgrade your webdar software");
+
+	absolute_ok = config.at(jlabel_absolute);
+	prefix = libdar::path(config.at(jlabel_prefix));
+	mask_type.set_selected(config.at(jlabel_type).template get<string>());
+	casesensitivity.set_value_as_bool(config.at(jlabel_casesensit));
+	regex.set_value_as_bool(config.at(jlabel_regex));
+	mask_subdir.set_value(config.at(jlabel_mask));
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json("Error loading html_form_mask_expression config", e);
+    }
+}
+
+json html_form_mask_subdir::save_json() const
+{
+    json ret;
+
+    ret[jlabel_absolute] = absolute_ok;
+    ret[jlabel_prefix] = prefix.display();
+    ret[jlabel_type] = mask_type.get_selected_id();
+    ret[jlabel_casesensit] = casesensitivity.get_value_as_bool();
+    ret[jlabel_regex] = regex.get_value_as_bool();
+    ret[jlabel_mask] = mask_subdir.get_value();
+
+    return wrap_config_with_json_header(format_version,
+					"html_form_mask_subdir",
+					ret);
 }
 
 void html_form_mask_subdir::on_event(const std::string & event_name)
