@@ -41,7 +41,7 @@ extern "C"
 using namespace std;
 
 
-html_form_mask_subdir::html_form_mask_subdir(bool absolute_path_accepted):
+html_form_mask_subdir::html_form_mask_subdir(const shared_ptr<const bool> & absolute_path_accepted):
     absolute_ok(absolute_path_accepted),
     prefix(libdar::FAKE_ROOT),
     fs(""),
@@ -172,7 +172,7 @@ void html_form_mask_subdir::load_json(const json & source)
 	if(version > format_version)
 	    throw exception_range("Json format version too hight for html_form_mask_subdir, upgrade your webdar software");
 
-	absolute_ok = config.at(jlabel_absolute);
+	    // absolute_OK is not set nor saved as json
 	prefix = libdar::path(config.at(jlabel_prefix));
 	mask_type.set_selected(config.at(jlabel_type).template get<string>());
 	casesensitivity.set_value_as_bool(config.at(jlabel_casesensit));
@@ -189,7 +189,7 @@ json html_form_mask_subdir::save_json() const
 {
     json ret;
 
-    ret[jlabel_absolute] = absolute_ok;
+	// absolute_OK is not set nor saved as json
     ret[jlabel_prefix] = prefix.display();
     ret[jlabel_type] = mask_type.get_selected_id();
     ret[jlabel_casesensit] = casesensitivity.get_value_as_bool();
@@ -221,7 +221,11 @@ string html_form_mask_subdir::inherited_get_body_part(const chemin & path,
 						      const request & req)
 {
     string ret = get_body_part_from_all_children(path, req);
+
     if(!absolute_ok)
+	throw WEBDAR_BUG;
+
+    if(! (*absolute_ok))
     {
 	string val = mask_subdir.get_value();
 

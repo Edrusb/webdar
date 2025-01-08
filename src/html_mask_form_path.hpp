@@ -59,6 +59,10 @@ class html_mask_form_path : public body_builder,
 public:
     static const std::string changed;
 
+	/// constructor
+
+	/// \param[in] allow_absolute_paths determines if path masks we will generate
+	/// will allow or not absolute paths.
     html_mask_form_path(bool allow_absolute_paths);
     html_mask_form_path(const html_mask_form_path & ref) = default;
     html_mask_form_path(html_mask_form_path && ref) noexcept = delete;
@@ -67,6 +71,9 @@ public:
     ~html_mask_form_path() = default;
 
     void set_fs_root(const std::string & prefix);
+
+	/// change the value given at construction
+    void set_allow_absolute_paths(bool val);
 
 	/// inherited from html_mask
     std::unique_ptr<libdar::mask> get_mask() const { return root.get_mask(); };
@@ -100,7 +107,13 @@ private:
     html_form form;
     html_form_mask_bool root;
     std::deque<std::string> labels;
-    bool allow_abs_paths;
+    std::shared_ptr<bool> allow_abs_paths;
+	// the use of a shared_ptr is done here because this
+	// information will be shared with a possibly wide
+	// range of objects we will provide (as object
+	// provider) stored in a possibly rich tree-like structure
+	// (html_form_mask_bool) and this info may be needed
+	// to be updated from time to time.
 
     void init_bool_obj(html_form_mask_bool & obj) const;
 };

@@ -78,7 +78,7 @@ class html_form_mask_subdir : public html_mask,
 			      public jsoner
 {
 public:
-    html_form_mask_subdir(bool absolute_path_accepted);
+    html_form_mask_subdir(const std::shared_ptr<const bool> & absolute_path_accepted);
     html_form_mask_subdir(const html_form_mask_subdir & ref);
     html_form_mask_subdir(html_form_mask_subdir && ref) noexcept = default;
     html_form_mask_subdir & operator = (const html_form_mask_subdir & ref) = default;
@@ -116,7 +116,7 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
-    bool absolute_ok;
+    std::shared_ptr<const bool> absolute_ok;
     libdar::path prefix;
     html_form_fieldset fs;
     html_form_select mask_type;

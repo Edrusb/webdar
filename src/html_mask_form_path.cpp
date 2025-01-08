@@ -43,9 +43,12 @@ using namespace std;
 const std::string html_mask_form_path::changed = "hmff_changed";
 
 html_mask_form_path::html_mask_form_path(bool allow_absolute_paths):
-    form("Update"),
-    allow_abs_paths(allow_absolute_paths)
+    form("Update")
 {
+    allow_abs_paths.reset(new (nothrow) bool(allow_absolute_paths));
+    if(!allow_abs_paths)
+	throw exception_memory();
+
     labels.push_back("Path expression");
     labels.push_back("File listing");
     labels.push_back("Logical combination");
@@ -76,6 +79,16 @@ void html_mask_form_path::set_fs_root(const std::string & prefix)
 	e.prepend_message("Error while setting prefix for path base filtering");
 	throw exception_libcall(e);
     }
+}
+
+void html_mask_form_path::set_allow_absolute_paths(bool val)
+{
+    if(!allow_abs_paths)
+	throw WEBDAR_BUG;
+
+    *allow_abs_paths = val;
+	// this shared_ptr owned value will be accessible by and updated to
+	// all objects we have provided with that parameter
 }
 
 unique_ptr<body_builder> html_mask_form_path::provide_object_of_type(unsigned int num,
