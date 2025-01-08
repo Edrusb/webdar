@@ -41,8 +41,10 @@ extern "C"
 
 using namespace std;
 
+const string html_form_mask_expression::update = "hfme_update";
 
-html_form_mask_expression::html_form_mask_expression(const string & subject):
+
+html_form_mask_expression::html_form_mask_expression(const shared_ptr<const string> & subject):
     sujet(subject),
     fs(""),
     mask_type("Mask Type"), // see clear()
@@ -131,11 +133,11 @@ void html_form_mask_expression::on_event(const std::string & event_name)
     if(event_name == html_form_select::changed
        || event_name == html_form_input::changed)
 	fs.change_label(tell_action());
+    else if(event_name == update)
+	fs.change_label(tell_action());
     else
 	throw WEBDAR_BUG;
 }
-
-
 
 void html_form_mask_expression::load_json(const json & source)
 {
@@ -225,7 +227,12 @@ void html_form_mask_expression::init()
 
 string html_form_mask_expression::tell_action() const
 {
-    string ret = sujet + " ";
+    string ret;
+
+    if(!sujet)
+	throw WEBDAR_BUG;
+
+    ret = *sujet + " ";
 
     if(negate.get_value_as_bool())
 	ret += "does not match ";

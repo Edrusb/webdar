@@ -70,6 +70,9 @@ public:
     html_mask_form_filename & operator = (html_mask_form_filename && ref) noexcept = delete;
     ~html_mask_form_filename() = default;
 
+	/// change the value provided at construction time
+    void change_subject(const std::string & subject);
+
 	/// inherited from html_mask
     std::unique_ptr<libdar::mask> get_mask() const { return root.get_mask(); };
 
@@ -103,9 +106,15 @@ private:
     html_form form;
     html_form_mask_bool root;
     std::deque<std::string> labels;
-    std::string sujet;
+    std::shared_ptr<std::string> sujet; ///< shared with provided objects
 
     void init_bool_obj(html_form_mask_bool & obj) const;
+    void set_labels();
+    void check_ptr() const { if(!sujet) throw WEBDAR_BUG; };
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* jlabel_sujet = "subject";
+    static constexpr const char* jlabel_bool_config = "bool-config";
 
 };
 

@@ -214,7 +214,6 @@ void html_form_mask_subdir::on_event(const std::string & event_name)
     else if(event_name == update)
     {
 	fs.change_label(tell_action());
-	my_body_part_has_changed();
     }
     else
 	throw WEBDAR_BUG;
