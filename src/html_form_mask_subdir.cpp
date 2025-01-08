@@ -40,10 +40,12 @@ extern "C"
 
 using namespace std;
 
+const string html_form_mask_subdir::update = "hfms_update";
 
-html_form_mask_subdir::html_form_mask_subdir(const shared_ptr<const bool> & absolute_path_accepted):
+html_form_mask_subdir::html_form_mask_subdir(const shared_ptr<const bool> & absolute_path_accepted,
+					     const std::shared_ptr<const libdar::path> & fs_root):
     absolute_ok(absolute_path_accepted),
-    prefix(libdar::FAKE_ROOT),
+    prefix(fs_root),
     fs(""),
     mask_type("Mask Type"),
     casesensitivity("Case Sensitive",
@@ -85,26 +87,21 @@ html_form_mask_subdir::html_form_mask_subdir(const html_form_mask_subdir & ref):
 void html_form_mask_subdir::clear()
 {
 	// absolute_ok is not changed
-    prefix = libdar::FAKE_ROOT;
     mask_type.set_selected(0);
     casesensitivity.set_value_as_bool(true);
     regex.set_value_as_bool(false);
     mask_subdir.set_value("");
 }
 
-void html_form_mask_subdir::set_root_prefix(const libdar::path & x_prefix)
-{
-    prefix = x_prefix;
-    fs.change_label(tell_action());
-    my_body_part_has_changed();
-};
-
-
 unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
 {
     bool casesensit = casesensitivity.get_value_as_bool();
     unique_ptr<libdar::mask> ret;
     libdar::path pathval("/");
+
+
+    if(! prefix)
+	throw WEBDAR_BUG;
 
     try
     {
@@ -119,7 +116,7 @@ unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
     switch(mask_type.get_selected_num())
     {
     case 0: // Include path
-	ret.reset(new (nothrow) libdar::simple_path_mask(prefix + pathval,
+	ret.reset(new (nothrow) libdar::simple_path_mask(*prefix + pathval,
 							 casesensit));
 	break;
     case 1: // Exclude path
@@ -134,13 +131,13 @@ unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
 	    if(!ret || tmp == nullptr)
 		throw exception_memory();
 
-	    tmp->add_mask(libdar::not_mask(libdar::simple_mask((prefix + pathval).display(), casesensit)));
-	    tmp->add_mask(libdar::not_mask(libdar::simple_mask((prefix + pathval).display() + "/*", casesensit)));
+	    tmp->add_mask(libdar::not_mask(libdar::simple_mask((*prefix + pathval).display(), casesensit)));
+	    tmp->add_mask(libdar::not_mask(libdar::simple_mask((*prefix + pathval).display() + "/*", casesensit)));
 	}
 	else
 	{
 		// regular expression (temporary variable used for debugging purposes if needed)
-	    string tmp = libdar::tools_build_regex_for_exclude_mask(prefix.display(), mask_subdir.get_value());
+	    string tmp = libdar::tools_build_regex_for_exclude_mask(prefix->display(), mask_subdir.get_value());
 
 	    ret.reset(new (nothrow) libdar::not_mask(libdar::regular_mask(tmp, casesensit)));
 	}
@@ -172,8 +169,6 @@ void html_form_mask_subdir::load_json(const json & source)
 	if(version > format_version)
 	    throw exception_range("Json format version too hight for html_form_mask_subdir, upgrade your webdar software");
 
-	    // absolute_OK is not set nor saved as json
-	prefix = libdar::path(config.at(jlabel_prefix));
 	mask_type.set_selected(config.at(jlabel_type).template get<string>());
 	casesensitivity.set_value_as_bool(config.at(jlabel_casesensit));
 	regex.set_value_as_bool(config.at(jlabel_regex));
@@ -190,7 +185,6 @@ json html_form_mask_subdir::save_json() const
     json ret;
 
 	// absolute_OK is not set nor saved as json
-    ret[jlabel_prefix] = prefix.display();
     ret[jlabel_type] = mask_type.get_selected_id();
     ret[jlabel_casesensit] = casesensitivity.get_value_as_bool();
     ret[jlabel_regex] = regex.get_value_as_bool();
@@ -212,6 +206,11 @@ void html_form_mask_subdir::on_event(const std::string & event_name)
     else if(event_name == html_form_input::changed)
     {
 	fs.change_label(tell_action());
+    }
+    else if(event_name == update)
+    {
+	fs.change_label(tell_action());
+	my_body_part_has_changed();
     }
     else
 	throw WEBDAR_BUG;
@@ -300,6 +299,9 @@ string html_form_mask_subdir::tell_action() const
 {
     string ret = "";
 
+    if(!prefix)
+	throw WEBDAR_BUG;
+
     switch(mask_type.get_selected_num())
     {
     case 0:
@@ -321,7 +323,7 @@ string html_form_mask_subdir::tell_action() const
     {
 	try
 	{
-	    ret += (prefix + libdar::path(mask_subdir.get_value())).display();
+	    ret += (*prefix + libdar::path(mask_subdir.get_value())).display();
 	}
 	catch(libdar::Egeneric & e)
 	{

@@ -75,7 +75,7 @@ class html_form_mask_file : public html_mask,
 			    public jsoner
 {
 public:
-    html_form_mask_file();
+    html_form_mask_file(const std::shared_ptr<const libdar::path> & fs_root);
     html_form_mask_file(const html_form_mask_file & ref);
     html_form_mask_file(html_form_mask_file && ref) noexcept = delete;
     html_form_mask_file & operator = (const html_form_mask_file & ref) = delete;
@@ -84,9 +84,6 @@ public:
 
 	/// reset object to default
     void clear();
-
-	/// inherited from html_mask
-    virtual void set_root_prefix(const libdar::path & x_prefix) override { prefix = x_prefix; };
 
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override;
@@ -118,7 +115,7 @@ private:
     html_form_input exclude_checkbox;
     html_form_input casesensit;
     html_form_fieldset fs;
-    libdar::path prefix;
+    std::shared_ptr<const libdar::path> prefix;
 
     void init();
     std::string tell_action() const;
@@ -128,7 +125,6 @@ private:
     static constexpr const char* jlabel_filename = "filename";
     static constexpr const char* jlabel_exclude = "excluding";
     static constexpr const char* jlabel_casesensit = "casesensit";
-    static constexpr const char* jlabel_prefix = "prefix";
 
 };
 

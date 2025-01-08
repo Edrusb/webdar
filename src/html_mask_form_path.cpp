@@ -49,6 +49,10 @@ html_mask_form_path::html_mask_form_path(bool allow_absolute_paths):
     if(!allow_abs_paths)
 	throw exception_memory();
 
+    fs_root.reset(new (nothrow) libdar::path(libdar::FAKE_ROOT));
+    if(!fs_root)
+	throw exception_memory();
+
     labels.push_back("Path expression");
     labels.push_back("File listing");
     labels.push_back("Logical combination");
@@ -61,7 +65,9 @@ html_mask_form_path::html_mask_form_path(bool allow_absolute_paths):
 
 	// events
     register_name(changed);
+    register_name(html_form_mask_subdir::update);
     form.record_actor_on_event(this, html_form::changed);
+
 }
 
 void html_mask_form_path::set_fs_root(const std::string & prefix)
@@ -70,8 +76,14 @@ void html_mask_form_path::set_fs_root(const std::string & prefix)
     {
 	if(!prefix.empty())
 	{
-	    libdar::path tmp(prefix);
-	    root.set_root_prefix(tmp);
+	    if(!fs_root)
+		throw WEBDAR_BUG;
+
+	    *fs_root = libdar::path(prefix);
+	    act(html_form_mask_subdir::update);
+		// this to trigger objects of html_form_mask_subdir class
+		// we created so far to reconsider both
+		// fs_root and absolute_ok fields
 	}
     }
     catch(libdar::Egeneric & e)
@@ -89,6 +101,11 @@ void html_mask_form_path::set_allow_absolute_paths(bool val)
     *allow_abs_paths = val;
 	// this shared_ptr owned value will be accessible by and updated to
 	// all objects we have provided with that parameter
+
+    act(html_form_mask_subdir::update);
+	// this to trigger objects of html_form_mask_subdir class
+	// we created so far to reconsider both
+	// fs_root and absolute_ok fields
 }
 
 unique_ptr<body_builder> html_mask_form_path::provide_object_of_type(unsigned int num,
@@ -96,14 +113,18 @@ unique_ptr<body_builder> html_mask_form_path::provide_object_of_type(unsigned in
 {
     unique_ptr<body_builder> ret;
     unique_ptr<html_form_mask_bool> tmp;
+    unique_ptr<html_form_mask_subdir> as_actor;
 
     switch(num)
     {
     case 0: // path expression
-	ret.reset(new (nothrow) html_form_mask_subdir(allow_abs_paths));
+	as_actor.reset(new (nothrow) html_form_mask_subdir(allow_abs_paths, fs_root));
+	if(as_actor)
+	    const_cast<html_mask_form_path*>(this)->record_actor_on_event(as_actor.get(), html_form_mask_subdir::update);
+	ret = std::move(as_actor); // we check below globally for all cases that memory allocation succeeded
 	break;
     case 1: /// file listing
-	ret.reset(new (nothrow) html_form_mask_file());
+	ret.reset(new (nothrow) html_form_mask_file(fs_root));
 	break;
     case 2: // "logical combination"
 	tmp.reset(new (nothrow) html_form_mask_bool(html_form_mask_bool::invert_logic(context)));

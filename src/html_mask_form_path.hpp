@@ -32,6 +32,7 @@ extern "C"
 }
 
     // C++ system header files
+#include <dar/libdar.hpp>
 
     // webdar headers
 #include "body_builder.hpp"
@@ -70,9 +71,16 @@ public:
     html_mask_form_path & operator = (html_mask_form_path && ref) noexcept = delete;
     ~html_mask_form_path() = default;
 
+	/// set filesystem root value
+
+	/// \note this is used by some object we create to translate a relative path
+	/// to an absolute path when context requires it
     void set_fs_root(const std::string & prefix);
 
 	/// change the value given at construction
+
+	/// \param[in] val when set to true allow the user to specify absolute paths
+	/// in mask expressions
     void set_allow_absolute_paths(bool val);
 
 	/// inherited from html_mask
@@ -107,6 +115,7 @@ private:
     html_form form;
     html_form_mask_bool root;
     std::deque<std::string> labels;
+
     std::shared_ptr<bool> allow_abs_paths;
 	// the use of a shared_ptr is done here because this
 	// information will be shared with a possibly wide
@@ -114,6 +123,9 @@ private:
 	// provider) stored in a possibly rich tree-like structure
 	// (html_form_mask_bool) and this info may be needed
 	// to be updated from time to time.
+
+    std::shared_ptr<libdar::path> fs_root;
+	// same principle here too
 
     void init_bool_obj(html_form_mask_bool & obj) const;
 };

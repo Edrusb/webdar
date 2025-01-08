@@ -41,7 +41,7 @@ extern "C"
 
 using namespace std;
 
-html_form_mask_file::html_form_mask_file():
+html_form_mask_file::html_form_mask_file(const std::shared_ptr<const libdar::path> & fs_root):
     filename("File name",
 	     "/",   // see clear() for defaults
 	     "80%",
@@ -55,7 +55,7 @@ html_form_mask_file::html_form_mask_file():
 	       "1", // see clear() for defaults
 	       "1"),
     fs("File listing"),
-    prefix(libdar::FAKE_ROOT)
+    prefix(fs_root)
 {
     init();
     clear();
@@ -76,16 +76,18 @@ void html_form_mask_file::clear()
     filename.set_value("/");
     exclude_checkbox.set_value_as_bool(false);
     casesensit.set_value_as_bool(true);
-    prefix = libdar::FAKE_ROOT;
 }
 
 unique_ptr<libdar::mask> html_form_mask_file::get_mask() const
 {
+    if(!prefix)
+	throw WEBDAR_BUG;
+
     deque<string> empty_list;
     unique_ptr<libdar::mask> tmp(new (nothrow) libdar::mask_list(
 				     filename.get_value(),
 				     casesensit.get_value_as_bool(),
-				     prefix,
+				     *prefix,
 				     ! exclude_checkbox.get_value_as_bool(),
 				     empty_list));
 
@@ -122,7 +124,6 @@ void html_form_mask_file::load_json(const json & source)
 	filename.set_value(config.at(jlabel_filename));
 	exclude_checkbox.set_value_as_bool(config.at(jlabel_exclude));
 	casesensit.set_value_as_bool(config.at(jlabel_casesensit));
-	prefix = libdar::path(config.at(jlabel_prefix));
     }
     catch(json::exception & e)
     {
@@ -137,7 +138,6 @@ json html_form_mask_file::save_json() const
     ret[jlabel_filename] = filename.get_value();
     ret[jlabel_exclude] = exclude_checkbox.get_value_as_bool();
     ret[jlabel_casesensit] = casesensit.get_value_as_bool();
-    ret[jlabel_prefix] = prefix.display();
 
     return wrap_config_with_json_header(format_version,
 					"html_form_mask_file",

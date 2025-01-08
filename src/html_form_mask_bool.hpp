@@ -92,9 +92,6 @@ public:
 
 
 	/// inherited from html_mask
-    virtual void set_root_prefix(const libdar::path & x_prefix) override;
-
-	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override;
 
 	/// inherited from actor
@@ -158,17 +155,14 @@ private:
     html_form_select mask_type;
     html_form_dynamic_table table;
     std::string current_bool_mode; ///< currently displayed logic in table
-    libdar::path root_prefix;
 
     std::string bool_op_to_name(const std::string & op);
     void update_table_content_logic(bool unconditionally); // update labels in the first column in regard to the current AND/OR selected logic
-    void propagate_root_prefix();
     std::string tell_action() const;
 
     static constexpr const unsigned int format_version = 1;
 
     static constexpr const char* jlabel_logic = "logic";
-    static constexpr const char* jlabel_prefix = "prefix";
     static constexpr const char* jlabel_components = "components";
     static constexpr const char* jlabel_compo_type = "type";
     static constexpr const char* jlabel_compo_conf = "config";
