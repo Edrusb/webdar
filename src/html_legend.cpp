@@ -32,7 +32,7 @@ extern "C"
 
 
     // webdar headers
-
+#include "webdar_tools.hpp"
 
 
     //
@@ -54,7 +54,7 @@ string html_legend::inherited_get_body_part(const chemin & path,
 {
     string ret = "";
 
-    ret += "<legend " + get_css_classes() + ">" + x_label + "</legend>\n";
+    ret += "<legend " + get_css_classes() + ">" + webdar_tools_html_display(x_label) + "</legend>\n";
     ret += get_body_part_from_all_children(path, req);
 
     return ret;
