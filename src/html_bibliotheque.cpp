@@ -82,13 +82,13 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     intro.add_text(0, "This main tab gives the ability to save to file, load from file,");
     intro.add_text(0, "download and upload the whole configurations defined in all the following tabs.");
     intro.add_paragraph();
-    intro.add_text(0, "Note that these may include passwords to archives and backups as well as credentials to remote repositories.");
-    intro.add_text(0, "If saving to file should usually be fine (this is saved locally, on the host where webdar is running),");
-    intro.add_text(0, "this is not true while downloading or uploading over a non-secured session (non https session):");
-    intro.add_text(0, "All configuration information, including passwords, is transmitted in clear and accessible to anyone");
-    intro.add_text(0, "having access to the underneath network used between WebDar and your browser");
+    intro.add_text(0, "Note: If saving to file or loading from file should usually be fine in term of security (this is saved locally, on the host where webdar is running),");
+    intro.add_text(0, "this is not true while downloading or uploading over a non-secured session (not secured for http sessions, but OK for https session):");
+    intro.add_text(0, "All configuration information, including login and passwords used to cipher archive and backups or to connect to remote repositories, if you have enterred such type of information");
+    intro.add_text(0, "in the followin tabs, would be transmitted in clear and accessible to anyone");
+    intro.add_text(0, "having access to the underneath network used between WebDar and your browser.");
     intro.add_paragraph();
-    intro.add_text(0, "This security warning also applies when using untrusted SSL certificates for WebDar (risk of man-in-the-middle attack)");
+    intro.add_text(0, "This security warning also applies when using untrusted SSL certificates for WebDar (risk of man-in-the-middle attack).");
 
     saved_status.add_text(3, "All configurations saved");
     unsaved_status.add_text(3, "Not all configurations saved!");
