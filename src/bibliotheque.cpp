@@ -306,9 +306,7 @@ void bibliotheque::init()
 {
     for(int cat = filefilter; cat != EOE; ++cat)
 	content[static_cast<category>(cat)] = asso(); //empty asso
-
     saved = true;
-    register_name(changed);
 }
 
 bool bibliotheque::lookup(category cat, const string & name, asso::iterator & it, table::iterator & catit) const

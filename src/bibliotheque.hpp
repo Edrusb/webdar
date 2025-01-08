@@ -94,7 +94,7 @@ public:
 	/// list of configs a given config depends on
     typedef std::set<coordinates> using_set;
 
-    bibliotheque() { init(); };
+    bibliotheque() { init(); register_name(changed); };
     bibliotheque(const bibliotheque & ref) = default;
     bibliotheque(bibliotheque && ref) noexcept(false) = default;
     bibliotheque & operator = (const bibliotheque & ref) = default;
