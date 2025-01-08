@@ -65,7 +65,7 @@ html_options_test::html_options_test():
 		    "1",
 		    "1"),
     filename_mask("file name"),
-    path_mask(true)
+    path_mask(false)
 {
     libdar::archive_options_test defaults;
 

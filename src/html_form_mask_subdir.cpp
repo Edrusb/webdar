@@ -61,6 +61,7 @@ html_form_mask_subdir::html_form_mask_subdir(const shared_ptr<const bool> & abso
 		"",
 		"80%")
 {
+    check_ptr();
 
 	// component configuration
 
@@ -81,12 +82,12 @@ html_form_mask_subdir::html_form_mask_subdir(const html_form_mask_subdir & ref):
     regex(ref.regex),
     mask_subdir(ref.mask_subdir)
 {
+    check_ptr();
     init();
 }
 
 void html_form_mask_subdir::clear()
 {
-	// absolute_ok is not changed
     mask_type.set_selected(0);
     casesensitivity.set_value_as_bool(true);
     regex.set_value_as_bool(false);
@@ -99,13 +100,16 @@ unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
     unique_ptr<libdar::mask> ret;
     libdar::path pathval("/");
 
-
-    if(! prefix)
-	throw WEBDAR_BUG;
+    check_ptr();
 
     try
     {
 	pathval = libdar::path(mask_subdir.get_value());
+	if(pathval.is_absolute() && ! (*absolute_ok))
+	    throw exception_range("Cannot proceed to the operation due to forbidden absolute paths. Please first remove absolute paths");
+
+	if(! pathval.is_absolute())
+	    pathval = *prefix + pathval;
     }
     catch(libdar::Egeneric & e)
     {
@@ -116,7 +120,7 @@ unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
     switch(mask_type.get_selected_num())
     {
     case 0: // Include path
-	ret.reset(new (nothrow) libdar::simple_path_mask(*prefix + pathval,
+	ret.reset(new (nothrow) libdar::simple_path_mask(pathval,
 							 casesensit));
 	break;
     case 1: // Exclude path
@@ -131,8 +135,8 @@ unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
 	    if(!ret || tmp == nullptr)
 		throw exception_memory();
 
-	    tmp->add_mask(libdar::not_mask(libdar::simple_mask((*prefix + pathval).display(), casesensit)));
-	    tmp->add_mask(libdar::not_mask(libdar::simple_mask((*prefix + pathval).display() + "/*", casesensit)));
+	    tmp->add_mask(libdar::not_mask(libdar::simple_mask(pathval.display(), casesensit)));
+	    tmp->add_mask(libdar::not_mask(libdar::simple_mask(pathval.display() + "/*", casesensit)));
 	}
 	else
 	{
@@ -299,8 +303,7 @@ string html_form_mask_subdir::tell_action() const
 {
     string ret = "";
 
-    if(!prefix)
-	throw WEBDAR_BUG;
+    check_ptr();
 
     switch(mask_type.get_selected_num())
     {
@@ -323,7 +326,12 @@ string html_form_mask_subdir::tell_action() const
     {
 	try
 	{
-	    ret += (*prefix + libdar::path(mask_subdir.get_value())).display();
+	    libdar::path tmp(mask_subdir.get_value());
+
+	    if(! tmp.is_absolute())
+		tmp = *prefix + tmp;
+
+	    ret += tmp.display();
 	}
 	catch(libdar::Egeneric & e)
 	{
@@ -340,4 +348,13 @@ string html_form_mask_subdir::tell_action() const
 	ret += "(case INsensitive)";
 
     return ret;
+}
+
+void html_form_mask_subdir::check_ptr() const
+{
+    if(! absolute_ok)
+	throw WEBDAR_BUG;
+
+    if(! prefix)
+	throw WEBDAR_BUG;
 }

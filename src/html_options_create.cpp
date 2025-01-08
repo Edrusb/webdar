@@ -54,7 +54,7 @@ html_options_create::html_options_create():
     form_shown("Update"),
     form_perimeter("Update"),
     filename_mask("file name"),
-    path_mask(false),
+    path_mask(true),
     ea_mask("extended attribute"),
     form_same_fs("Update"),
     archtype_fs(""),

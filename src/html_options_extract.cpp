@@ -102,7 +102,7 @@ html_options_extract::html_options_extract():
 		   "",
 		   "1"),
     filename_mask("file name"),
-    path_mask(false)
+    path_mask(true)
 {
 	// set html fields to default value used by libdar
 

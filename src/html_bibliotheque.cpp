@@ -140,8 +140,9 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
 	// path mask tab
 
-    tmp_fp.reset(new (nothrow) html_mask_form_path(false));
-	 // forbidding absolute path in bibliotheque for it can be used anywhere
+    tmp_fp.reset(new (nothrow) html_mask_form_path(true));
+	// allowing forbidding absolute path in bibliotheque, if used in a context where not allowed
+	// this will trigger error and red-highlight the concerned fields.
     if(! tmp_fp)
 	throw exception_memory();
 

@@ -29,10 +29,11 @@ extern "C"
 }
 
     // C++ system header files
-#include "html_form_mask_subdir.hpp"
-#include "html_form_mask_file.hpp"
+#include <dar/tools.hpp>
 
     // webdar headers
+#include "html_form_mask_subdir.hpp"
+#include "html_form_mask_file.hpp"
 
 
     //
@@ -76,8 +77,7 @@ void html_mask_form_path::set_fs_root(const std::string & prefix)
     {
 	if(!prefix.empty())
 	{
-	    if(!fs_root)
-		throw WEBDAR_BUG;
+	    check_ptr();
 
 	    *fs_root = libdar::path(prefix);
 	    act(html_form_mask_subdir::update);
@@ -95,8 +95,7 @@ void html_mask_form_path::set_fs_root(const std::string & prefix)
 
 void html_mask_form_path::set_allow_absolute_paths(bool val)
 {
-    if(!allow_abs_paths)
-	throw WEBDAR_BUG;
+    check_ptr();
 
     *allow_abs_paths = val;
 	// this shared_ptr owned value will be accessible by and updated to
@@ -114,6 +113,8 @@ unique_ptr<body_builder> html_mask_form_path::provide_object_of_type(unsigned in
     unique_ptr<body_builder> ret;
     unique_ptr<html_form_mask_bool> tmp;
     unique_ptr<html_form_mask_subdir> as_actor;
+
+    check_ptr();
 
     switch(num)
     {
@@ -149,18 +150,62 @@ unique_ptr<body_builder> html_mask_form_path::provide_object_of_type(unsigned in
 
 void html_mask_form_path::load_json(const json & source)
 {
-    root.load_json(source);
+    check_ptr();
+
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != "html_mask_form_path")
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting html_mask_form_path",
+						       class_id.c_str()));
+
+	if(version > format_version)
+	    throw exception_range("Json format version too hight for html_form_mask_bool, upgrade your webdar software");
+
+	    // setting back the bool mode and mask_type selected value
+
+	*allow_abs_paths = config.at(jlabel_allow_absolute);
+	*fs_root = libdar::path(config.at(jlabel_fs_root));
+	root.load_json(config.at(jlabel_bool_config));
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json("Error loading html_form_mask_bool config", e);
+    }
+
+    act(html_form_mask_subdir::update);
     act(changed);
 }
 
 json html_mask_form_path::save_json() const
 {
-    return root.save_json();
+    json ret;
+
+    check_ptr();
+
+    ret[jlabel_allow_absolute] = *allow_abs_paths;
+    ret[jlabel_fs_root] = fs_root->display();
+    ret[jlabel_bool_config] = root.save_json();
+
+    return wrap_config_with_json_header(format_version,
+					"html_mask_form_path",
+					ret);
 }
 
 void html_mask_form_path::clear_json()
 {
+    check_ptr();
+
+    *allow_abs_paths = true;
+    *fs_root = libdar::FAKE_ROOT;
     root.clear_json();
+
+    act(html_form_mask_subdir::update);
     act(changed);
 }
 
@@ -188,4 +233,14 @@ void html_mask_form_path::init_bool_obj(html_form_mask_bool & obj) const
     obj.set_obj_type_provider(this);
     for(deque<string>::const_iterator it = labels.begin(); it != labels.end(); ++it)
 	obj.add_mask_type(*it);
+}
+
+
+void html_mask_form_path::check_ptr() const
+{
+    if(!allow_abs_paths)
+	throw WEBDAR_BUG;
+
+    if(!fs_root)
+	throw WEBDAR_BUG;
 }

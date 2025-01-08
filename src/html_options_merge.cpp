@@ -78,7 +78,7 @@ html_options_merge::html_options_merge():
     empty_dir("Store ignored directories as empty directories", html_form_input::check, "", "1"),
     filename_mask("file name"),
     ea_mask("extended attribute"),
-    path_mask(true),
+    path_mask(false),
     overwriting_policy(""),
     form_overwriting("Update"),
     compr_params(true, true, true),

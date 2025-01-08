@@ -137,6 +137,7 @@ private:
 
     void init();
     std::string tell_action() const;
+    void check_ptr() const;
 
     static constexpr const unsigned int format_version = 1;
 
