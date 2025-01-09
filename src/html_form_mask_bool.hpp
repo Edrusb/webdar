@@ -109,6 +109,11 @@ public:
 	/// \note this is a passthrough access to the html_form_dynamic_table method of the same name
     void add_mask_type(const std::string & label) { table.add_obj_type(label); };
 
+	/// clear all mask type added by mean of add_mask_type() method
+
+	/// \note this method does remove or change the already adopted ojects
+	/// but clears the list of possible available object types.
+    void clear_all_masks_type() { table.clear_obj_type(); };
 
 	/// get the current boolean combining mode
     const std::string & get_bool_mode() const { return current_bool_mode; };
