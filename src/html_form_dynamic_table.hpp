@@ -187,6 +187,9 @@ public:
         /// \param[in] label the column number for this object (starts at zero)
     void add_obj_type(const std::string & label);
 
+	/// clear all object types added by mean of add_obj_type
+    void clear_obj_type();
+
 	/// return the number of object type available to the user
     unsigned int obj_type_size() const { return adder.size() - 1; };
 

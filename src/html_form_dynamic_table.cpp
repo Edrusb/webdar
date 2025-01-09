@@ -81,6 +81,12 @@ void html_form_dynamic_table::set_obj_type_provider(const html_form_dynamic_tabl
     my_provider = provider;
 }
 
+
+void html_form_dynamic_table::clear_obj_type()
+{
+    adder.clear();
+}
+
 void html_form_dynamic_table::add_obj_type(const string & label)
 {
     if(my_provider == nullptr)
