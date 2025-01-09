@@ -49,11 +49,11 @@ html_mask_form_filename::html_mask_form_filename(const string & subject):
     if(!sujet)
 	throw exception_memory();
 
-	// we use tools_printf to ease future message translation
-	// if in other languages the subject is not at the beginning
-	// but in the middle or at the end of the translated string:
-    labels.push_back(libdar::tools_printf("%S expression", sujet.get()));
-    labels.push_back("Logical combination");
+    labels.reset(new (nothrow) deque<string>);
+    if(!labels)
+	throw exception_memory();
+
+    update_labels();
     init_bool_obj(root);
 
 	// adoption tree
@@ -64,6 +64,7 @@ html_mask_form_filename::html_mask_form_filename(const string & subject):
 	// events
     register_name(changed);
     register_name(html_form_mask_expression::update);
+    register_name(html_form_mask_bool::update);
     form.record_actor_on_event(this, html_form::changed);
 }
 
@@ -75,6 +76,11 @@ void html_mask_form_filename::change_subject(const std::string & subject)
     act(html_form_mask_expression::update);
 	// inform objects we have created about
 	// the change of subject string
+
+    update_labels();
+    act(html_form_mask_bool::update);
+	// inform objects we have created about
+	// the change of subject string
 }
 
 
@@ -84,6 +90,8 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
     unique_ptr<body_builder> ret;
     unique_ptr<html_form_mask_bool> tmp;
     unique_ptr<html_form_mask_expression> as_actor;
+
+    check_ptr();
 
     switch(num)
     {
@@ -103,7 +111,7 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
 	ret = std::move(tmp);
 	break;
     default:
-	if(num < labels.size())
+	if(num < labels->size())
 	    throw WEBDAR_BUG; // problem in html_mask_form_filename?
 	else
 	    throw WEBDAR_BUG; // problem in html_form_mask_bool?
@@ -145,6 +153,7 @@ void html_mask_form_filename::load_json(const json & source)
     }
 
     act(html_form_mask_expression::update);
+    act(html_form_mask_bool::update);
     act(changed);
 }
 
@@ -170,6 +179,7 @@ void html_mask_form_filename::clear_json()
     root.clear_json();
 
     act(html_form_mask_expression::update);
+    act(html_form_mask_bool::update);
     act(changed);
 }
 
@@ -195,6 +205,27 @@ string html_mask_form_filename::inherited_get_body_part(const chemin & path,
 void html_mask_form_filename::init_bool_obj(html_form_mask_bool & obj) const
 {
     obj.set_obj_type_provider(this);
-    for(deque<string>::const_iterator it = labels.begin(); it != labels.end(); ++it)
-	obj.add_mask_type(*it);
+    obj.set_labels_ptr(labels);
+    const_cast<html_mask_form_filename*>(this)->record_actor_on_event(&obj, html_form_mask_bool::update);
+}
+
+void html_mask_form_filename::update_labels()
+{
+    check_ptr();
+
+    labels->clear();
+	// we use tools_printf to ease future message translation
+	// if in other languages the subject is not at the beginning
+	// but in the middle or at the end of the translated string:
+    labels->push_back(libdar::tools_printf("%S expression", sujet.get()));
+    labels->push_back("Logical combination");
+}
+
+void html_mask_form_filename::check_ptr() const
+{
+    if(!sujet)
+	throw WEBDAR_BUG;
+
+    if(!labels)
+	throw WEBDAR_BUG;
 }

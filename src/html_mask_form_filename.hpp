@@ -105,12 +105,12 @@ protected:
 private:
     html_form form;
     html_form_mask_bool root;
-    std::deque<std::string> labels;
+    std::shared_ptr< std::deque<std::string> >labels;
     std::shared_ptr<std::string> sujet; ///< shared with provided objects
 
     void init_bool_obj(html_form_mask_bool & obj) const;
-    void set_labels();
-    void check_ptr() const { if(!sujet) throw WEBDAR_BUG; };
+    void update_labels();
+    void check_ptr() const;
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* jlabel_sujet = "subject";

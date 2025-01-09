@@ -39,6 +39,8 @@ extern "C"
 
 using namespace std;
 
+const string html_form_mask_bool::update = "hfmb_update";
+
 html_form_mask_bool::html_form_mask_bool(const string & initial_mode):
     fs(""),
     mask_type("Combining with", bool_changed_event),
@@ -74,6 +76,12 @@ html_form_mask_bool::html_form_mask_bool(const string & initial_mode):
 
 	// final table update
     update_table_content_logic(true); // true = update unconditionally
+}
+
+void html_form_mask_bool::set_labels_ptr(const std::shared_ptr<const std::deque<std::string> > & lbls)
+{
+    labels = lbls;
+    push_labels();
 }
 
 unique_ptr<libdar::mask> html_form_mask_bool::get_mask() const
@@ -143,6 +151,8 @@ void html_form_mask_bool::on_event(const string & event_name)
 	update_table_content_logic(false);
     else if(event_name == html_form_dynamic_table::changed)
 	update_table_content_logic(true);
+    else if(event_name == update)
+	push_labels();
     else
 	throw WEBDAR_BUG;
 
@@ -358,4 +368,13 @@ string html_form_mask_bool::tell_action() const
 	ret += "invovled if...";
 
     return ret;
+}
+
+void html_form_mask_bool::push_labels()
+{
+    check_ptr();
+
+    clear_all_masks_type();
+    for(deque<string>::const_iterator it = labels->begin(); it != labels->end(); ++it)
+	add_mask_type(*it);
 }
