@@ -75,7 +75,6 @@ html_options_merge::html_options_merge():
     form_perimeter("Update"),
     fs_perimeter(""),
     empty_dir("Store ignored directories as empty directories", html_form_input::check, "", "1"),
-    path_mask(false),
     overwriting_policy(""),
     form_overwriting("Update"),
     compr_params(true, true, true)
@@ -101,6 +100,9 @@ html_options_merge::html_options_merge():
     if(!compr_mask)
 	throw exception_memory();
 
+    path_mask.reset(new (nothrow) html_mask_form_path(false));
+    if(!path_mask)
+	throw exception_memory();
 
 	// components setups
     pause.set_min_only(0);
@@ -216,7 +218,7 @@ html_options_merge::html_options_merge():
     deroule.adopt_in_section(sect_filter, &form_perimeter);
 
     deroule.adopt_in_section(sect_mask_file, &guichet_filename_mask);
-    deroule.adopt_in_section(sect_mask_path, &path_mask);
+    deroule.adopt_in_section(sect_mask_path, &guichet_path_mask);
     deroule.adopt_in_section(sect_ea_mask, &guichet_ea_mask);
     deroule.adopt_in_section(sect_fsa_scope, &fsa_scope);
 
@@ -271,6 +273,10 @@ void html_options_merge::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 				 bibliotheque::filefilter,
 				 compr_mask,
 				 false);
+    guichet_path_mask.set_child(ptr,
+				bibliotheque::pathfilter,
+				path_mask,
+				false);
     auxiliary.set_biblio(ptr);
 }
 
@@ -338,7 +344,7 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
     ret.set_display_skipped(display_skipped.get_value_as_bool());
     ret.set_empty_dir(empty_dir.get_value_as_bool());
     ret.set_selection(*(filename_mask->get_mask()));
-    ret.set_subtree(*(path_mask.get_mask()));
+    ret.set_subtree(*(path_mask->get_mask()));
     ret.set_overwriting_rules(*(overwriting_policy.get_overwriting_action()));
     if(! compr_params.get_keep_compressed())
     {
