@@ -64,10 +64,13 @@ html_options_test::html_options_test():
 		    html_form_input::check,
 		    "1",
 		    "1"),
-    filename_mask("file name"),
     path_mask(false)
 {
     libdar::archive_options_test defaults;
+
+    filename_mask.reset(new (nothrow) html_mask_form_filename("file name"));
+    if(!filename_mask)
+	throw exception_memory();
 
 	// default values
     empty.set_value_as_bool(defaults.get_empty());
@@ -94,7 +97,7 @@ html_options_test::html_options_test():
     form_show.adopt(&fs_show);
     deroule.adopt_in_section(sect_show, &form_show);
 
-    deroule.adopt_in_section(sect_mask, &filename_mask);
+    deroule.adopt_in_section(sect_mask, &guichet_filename_mask);
 
     deroule.adopt_in_section(sect_path, &path_mask);
 
@@ -113,6 +116,15 @@ html_options_test::html_options_test():
 
 }
 
+void html_options_test::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
+{
+    guichet_filename_mask.set_child(ptr,
+				    bibliotheque::filefilter,
+				    filename_mask,
+				    false);
+}
+
+
 libdar::archive_options_test html_options_test::get_options() const
 {
     libdar::archive_options_test ret;
@@ -124,7 +136,7 @@ libdar::archive_options_test html_options_test::get_options() const
 			    display_treated_only_dir.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
 
-    ret.set_selection(*(filename_mask.get_mask()));
+    ret.set_selection(*(filename_mask->get_mask()));
     ret.set_subtree(*(path_mask.get_mask()));
 
     return ret;

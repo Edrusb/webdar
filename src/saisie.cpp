@@ -115,6 +115,7 @@ saisie::saisie():
     archread.set_biblio(biblio);
     merge.set_biblio(biblio);
     isolate.set_biblio(biblio);
+    test.set_biblio(biblio);
 
     h_biblio.reset(new (nothrow) html_bibliotheque(biblio, default_biblio_path));
     if(! h_biblio)

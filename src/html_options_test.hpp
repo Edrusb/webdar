@@ -43,6 +43,7 @@ extern "C"
 #include "html_derouleur.hpp"
 #include "html_mask_form_filename.hpp"
 #include "html_mask_form_path.hpp"
+#include "guichet.hpp"
 
     /// html component for the user to provide parameters of libdar archive testing operation
 
@@ -55,6 +56,10 @@ public:
     html_options_test & operator = (const html_options_test & ref) = delete;
     html_options_test & operator = (html_options_test && ref) noexcept = delete;
     ~html_options_test() = default;
+
+	/// mandatory call to invoke ASAP after constructor
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
+
 
     libdar::archive_options_test get_options() const;
 
@@ -84,7 +89,8 @@ private:
     html_form_input display_treated_only_dir;
     html_form_input display_skipped;
 
-    html_mask_form_filename filename_mask;
+    guichet guichet_filename_mask;
+    std::shared_ptr<html_mask_form_filename> filename_mask;
     html_mask_form_path path_mask;
 };
 
