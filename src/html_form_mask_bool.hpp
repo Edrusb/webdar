@@ -54,9 +54,13 @@ extern "C"
 
     /// class html_form_mask_bool provide mean to combines with OR and AND different html_masks
 
+    /// this component is used by both html_mask_form_filename and html_mask_form_path classes.
+    /// these classes are object providers for the html_form_dynamic_table mask_form_mask_bool
+    /// class owns and provide different types depending on the user selection.
+    /// see their respective implementation of method provide_object_of_type().
+    ///
     /// this html components is consitued of:
     ///
-
     /** \verbatim
 	+----html_fieldset----------------------------------+
 	|                                                   |
