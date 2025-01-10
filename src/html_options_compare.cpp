@@ -82,8 +82,7 @@ html_options_compare::html_options_compare():
     display_skipped("Display skipped files",
 		    html_form_input::check,
 		    "1",
-		    "1"),
-    path_mask(false)
+		    "1")
 {
 
     filename_mask.reset(new (nothrow) html_mask_form_filename("file name"));
@@ -92,6 +91,10 @@ html_options_compare::html_options_compare():
 
     ea_mask.reset(new (nothrow) html_mask_form_filename("extended attribute"));
     if(!ea_mask)
+	throw exception_memory();
+
+    path_mask.reset(new (nothrow) html_mask_form_path(false));
+    if(!path_mask)
 	throw exception_memory();
 
 	/// component setup
@@ -153,7 +156,7 @@ html_options_compare::html_options_compare():
 
     deroule.adopt_in_section(sect_mask_filename, &guichet_filename_mask);
 
-    deroule.adopt_in_section(sect_mask_path, &path_mask);
+    deroule.adopt_in_section(sect_mask_path, &guichet_path_mask);
 
     deroule.adopt_in_section(sect_ea_mask, &guichet_ea_mask);
 
@@ -185,6 +188,10 @@ void html_options_compare::set_biblio(const shared_ptr<bibliotheque> & ptr)
 			      bibliotheque::filefilter,
 			      ea_mask,
 			      false);
+    guichet_path_mask.set_child(ptr,
+				bibliotheque::pathfilter,
+				path_mask,
+				false);
 }
 
 libdar::archive_options_diff html_options_compare::get_options() const
@@ -203,7 +210,7 @@ libdar::archive_options_diff html_options_compare::get_options() const
     ret.set_hourshift(libdar::infinint(webdar_tools_convert_to_int(hourshift.get_value())));
     ret.set_compare_symlink_date(compare_symlink_date.get_value_as_bool());
     ret.set_selection(*(filename_mask->get_mask()));
-    ret.set_subtree(*(path_mask.get_mask()));
+    ret.set_subtree(*(path_mask->get_mask()));
     ret.set_ea_mask(*(ea_mask->get_mask()));
     ret.set_fsa_scope(fsa_scope.get_scope());
 
