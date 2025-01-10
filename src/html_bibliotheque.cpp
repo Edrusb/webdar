@@ -127,7 +127,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
 	// file mask tab
 
-    tmp_fm.reset(new (nothrow) html_mask_form_filename("general purpose filename mask"));
+    tmp_fm.reset(new (nothrow) html_mask_form_filename("mask"));
     if(!tmp_fm)
 	throw exception_memory();
 

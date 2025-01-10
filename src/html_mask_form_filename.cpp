@@ -145,7 +145,6 @@ void html_mask_form_filename::load_json(const json & source)
 
 	    // setting back the bool mode and mask_type selected value
 
-	*sujet = config.at(jlabel_sujet);
 	root.load_json(config.at(jlabel_bool_config));
     }
     catch(json::exception & e)
@@ -164,7 +163,11 @@ json html_mask_form_filename::save_json() const
 
     check_ptr();
 
-    ret[jlabel_sujet] = *sujet;
+	// the 'subjet' is not to be saved,
+	// it depends on the context where
+	// the html_mask_form_filename is used
+	// file filtering, EA filtering, bibliotheque
+
     ret[jlabel_bool_config] = root.save_json();
 
     return wrap_config_with_json_header(format_version,
@@ -176,7 +179,6 @@ void html_mask_form_filename::clear_json()
 {
     check_ptr();
 
-    *sujet = "default subject ???";
     root.clear_json();
 
     act(html_form_mask_expression::update);
