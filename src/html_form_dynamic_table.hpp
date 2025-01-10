@@ -260,6 +260,7 @@ private:
     unsigned int event_del_count;        ///< used to build new event name for each new "delete" button
     std::map<std::string, std::list<line>::iterator> del_event_to_content; /// find the table_content entry corresponding to a given event
     std::deque<std::string> events_to_delete; ///< temporary list of events pending for deletion
+    std::string default_choice;          ///< adder first choice used to invite user to select an option (provided with constructor)
 
     bool left_label;
     html_table table;

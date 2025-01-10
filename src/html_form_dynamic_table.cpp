@@ -50,11 +50,12 @@ html_form_dynamic_table::html_form_dynamic_table(bool has_left_labels,
     my_provider(nullptr),
     left_label(has_left_labels),
     table(has_left_labels ? 3 : 2),
-    adder(adder_label, new_line_to_add)
+    adder(adder_label, new_line_to_add),
+    default_choice(adder_default_choice)
 {
 
 	// components configuration/
-    adder.add_choice("", adder_default_choice);
+    adder.add_choice("", default_choice);
     adder.set_selected(0);
 
 	// adoption tree
@@ -85,6 +86,7 @@ void html_form_dynamic_table::set_obj_type_provider(const html_form_dynamic_tabl
 void html_form_dynamic_table::clear_obj_type()
 {
     adder.clear();
+    adder.add_choice("", default_choice);
 }
 
 void html_form_dynamic_table::add_obj_type(const string & label)
