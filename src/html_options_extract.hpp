@@ -64,7 +64,7 @@ public:
     void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
 
 	/// needed for path based filtering to filter accordingly to the current root_fs
-    void set_fs_root(const std::string & prefix) { path_mask.set_fs_root(prefix); };
+    void set_fs_root(const std::string & prefix) { path_mask->set_fs_root(prefix); };
 
     libdar::archive_options_extract get_options() const;
 
@@ -109,7 +109,8 @@ private:
     guichet guichet_filename_mask;
     std::shared_ptr<html_mask_form_filename> filename_mask;
 
-    html_mask_form_path path_mask;
+    guichet guichet_path_mask;
+    std::shared_ptr<html_mask_form_path> path_mask;
 
     guichet guichet_ea_mask;
     std::shared_ptr<html_mask_form_filename> ea_mask;
