@@ -53,7 +53,6 @@ html_options_create::html_options_create():
     form_delta_sig("Update"),
     form_shown("Update"),
     form_perimeter("Update"),
-    path_mask(true),
     form_same_fs("Update"),
     archtype_fs(""),
     fixed_date("Only record files changed since:"),
@@ -121,6 +120,11 @@ html_options_create::html_options_create():
     compr_mask.reset(new (nothrow) html_mask_form_filename("file name"));
     if(!compr_mask)
 	throw exception_memory();
+
+    path_mask.reset(new (nothrow) html_mask_form_path(true));
+    if(!path_mask)
+	throw exception_memory();
+
 
     archtype.add_choice("full", "Full backup");
     archtype.add_choice("diff", "Differential/Incremental backup");
@@ -304,7 +308,7 @@ html_options_create::html_options_create():
     deroule.adopt_in_section(sect_mask_file, &guichet_filename_mask);
 
 	// path based masks
-    deroule.adopt_in_section(sect_mask_path, &path_mask);
+    deroule.adopt_in_section(sect_mask_path, &guichet_path_mask);
 
 	// mount point filtering
     same_fs_fs.adopt(&same_fs);
@@ -370,6 +374,10 @@ void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				 bibliotheque::filefilter,
 				 compr_mask,
 				 false);
+    guichet_path_mask.set_child(ptr,
+				bibliotheque::pathfilter,
+				path_mask,
+				false);
     reference.set_biblio(ptr);
 }
 
@@ -492,7 +500,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_execute(execute.get_value());
     ret.set_entrepot(entrep->get_entrepot(webui));
     ret.set_selection(*(filename_mask->get_mask()));
-    ret.set_subtree(*(path_mask.get_mask()));
+    ret.set_subtree(*(path_mask->get_mask()));
 
     vector<string> mp = same_fs.get_included_fs_path();
     for(vector<string>::iterator it = mp.begin(); it != mp.end(); ++it)
