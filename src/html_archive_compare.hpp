@@ -55,6 +55,10 @@ public:
     html_archive_compare & operator = (html_archive_compare && ref) noexcept = delete;
     ~html_archive_compare() = default;
 
+	/// mandatory call to invoke ASAP after constructor
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr) { opt_diff.set_biblio(ptr); };
+
+
     const std::string & get_fs_root() const { return diff_fs_root.get_value(); };
 
     libdar::archive_options_diff get_options() const { return opt_diff.get_options(); };

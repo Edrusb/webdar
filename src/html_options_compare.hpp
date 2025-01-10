@@ -45,6 +45,7 @@ extern "C"
 #include "html_mask_form_filename.hpp"
 #include "html_mask_form_path.hpp"
 #include "html_fsa_scope.hpp"
+#include "guichet.hpp"
 
     /// html component providing a way for the user to set the parameter of libdar comparison operation
 
@@ -57,6 +58,9 @@ public:
     html_options_compare & operator = (const html_options_compare & ref) = delete;
     html_options_compare & operator = (html_options_compare && ref) noexcept = delete;
     ~html_options_compare() = default;
+
+	/// mandatory call to invoke ASAP after constructor
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
 
 	/// needed for path based filtering to filter accordingly to the current root_fs
     void set_fs_root(const std::string & prefix) { path_mask.set_fs_root(prefix); };
@@ -102,9 +106,14 @@ private:
     html_form_input display_treated_only_dir;
     html_form_input display_skipped;
 
-    html_mask_form_filename filename_mask;
+    guichet guichet_filename_mask;
+    std::shared_ptr<html_mask_form_filename> filename_mask;
+
     html_mask_form_path path_mask;
-    html_mask_form_filename ea_mask;
+
+    guichet guichet_ea_mask;
+    std::shared_ptr<html_mask_form_filename> ea_mask;
+
     html_fsa_scope fsa_scope;
 
 };
