@@ -52,9 +52,7 @@ html_mask_form_filename::html_mask_form_filename(const string & subject):
     labels.reset(new (nothrow) deque<string>);
     if(!labels)
 	throw exception_memory();
-
     update_labels();
-    init_bool_obj(root);
 
 	// adoption tree
 
@@ -66,6 +64,9 @@ html_mask_form_filename::html_mask_form_filename(const string & subject):
     register_name(html_form_mask_expression::update);
     register_name(html_form_mask_bool::update);
     form.record_actor_on_event(this, html_form::changed);
+
+	// must be done after event registration above
+    init_bool_obj(root);
 }
 
 void html_mask_form_filename::change_subject(const std::string & subject)
