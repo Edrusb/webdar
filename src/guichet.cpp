@@ -374,12 +374,17 @@ void guichet::new_css_library_available()
 void guichet::update_selected()
 {
     deque<string> available;
+    bool try_keep_selected = select.num_choices() > 0;
+    string current_choice = try_keep_selected ? select.get_selected_id(): "";
+    bool still_exists = false;
 
     check_adopted();
 
     if(!biblio)
 	throw WEBDAR_BUG;
     available = biblio->listing(categ);
+
+
 
     ignore_events = true;
     try
@@ -391,7 +396,12 @@ void guichet::update_selected()
 	    ++it)
 	{
 	    select.add_choice(*it, *it); // id and label are the same
+	    if(try_keep_selected && *it == current_choice)
+		still_exists = true;
 	}
+
+	if(still_exists)
+	    select.set_selected(current_choice);
     }
     catch(...)
     {
