@@ -53,6 +53,9 @@ public:
     html_archive_extract & operator = (html_archive_extract && ref) noexcept = delete;
     ~html_archive_extract() = default;
 
+	/// mandatory call to invoke ASAP after constructor
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr) { opt_extract.set_biblio(ptr); };
+
     const std::string & get_fs_root() const { return extract_fs_root.get_value(); };
 
     libdar::archive_options_extract get_options() const { return opt_extract.get_options(); };

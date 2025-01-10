@@ -101,13 +101,20 @@ html_options_extract::html_options_extract():
 		   html_form_input::check,
 		   "",
 		   "1"),
-    filename_mask("file name"),
-    ea_mask("extended attribute"),
     path_mask(true)
 {
 	// set html fields to default value used by libdar
 
     libdar::archive_options_extract defaults;
+
+    filename_mask.reset(new (nothrow) html_mask_form_filename("file name"));
+    if(!filename_mask)
+	throw exception_memory();
+
+    ea_mask.reset(new (nothrow) html_mask_form_filename("extended attribute"));
+    if(!ea_mask)
+	throw exception_memory();
+
 
     in_place.set_value_as_bool(defaults.get_in_place());
     flat.set_value_as_bool(defaults.get_flat());
@@ -177,11 +184,11 @@ html_options_extract::html_options_extract():
     form_show.adopt(&fs_show);
     deroule.adopt_in_section(sect_show, &form_show);
 
-    deroule.adopt_in_section(sect_mask_file, &filename_mask);
+    deroule.adopt_in_section(sect_mask_file, &guichet_filename_mask);
 
     deroule.adopt_in_section(sect_mask_path, &path_mask);
 
-    deroule.adopt_in_section(sect_ea_mask, &ea_mask);
+    deroule.adopt_in_section(sect_ea_mask, &guichet_ea_mask);
 
     deroule.adopt_in_section(sect_fsa_scope, &fsa_scope);
 
@@ -200,8 +207,18 @@ html_options_extract::html_options_extract():
 
 	// components visibility status
     on_event(html_form_input::changed);
+}
 
-
+void html_options_extract::set_biblio(const shared_ptr<bibliotheque> & ptr)
+{
+    guichet_filename_mask.set_child(ptr,
+				    bibliotheque::filefilter,
+				    filename_mask,
+				    false);
+    guichet_ea_mask.set_child(ptr,
+			      bibliotheque::filefilter,
+			      ea_mask,
+			      false);
 }
 
 libdar::archive_options_extract html_options_extract::get_options() const
@@ -241,9 +258,9 @@ libdar::archive_options_extract html_options_extract::get_options() const
     ret.set_ignore_deleted(ignore_deleted.get_value_as_bool());
     ret.set_ignore_unix_sockets(ignore_sockets.get_value_as_bool());
 
-    ret.set_selection(*(filename_mask.get_mask()));
+    ret.set_selection(*(filename_mask->get_mask()));
     ret.set_subtree(*(path_mask.get_mask()));
-    ret.set_ea_mask(*(ea_mask.get_mask()));
+    ret.set_ea_mask(*(ea_mask->get_mask()));
     ret.set_fsa_scope(fsa_scope.get_scope());
     ret.set_overwriting_rules(*(overwriting_policy.get_overwriting_action()));
 

@@ -46,6 +46,7 @@ extern "C"
 #include "html_mask_form_path.hpp"
 #include "html_form_overwrite_action.hpp"
 #include "html_fsa_scope.hpp"
+#include "guichet.hpp"
 
     /// html components used for the user to provide parameters of libdar archive restoration operation
 
@@ -58,6 +59,9 @@ public:
     html_options_extract & operator = (const html_options_extract & ref) = delete;
     html_options_extract & operator = (html_options_extract && ref) noexcept = delete;
     ~html_options_extract() = default;
+
+	/// mandatory call to invoke ASAP after constructor
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
 
 	/// needed for path based filtering to filter accordingly to the current root_fs
     void set_fs_root(const std::string & prefix) { path_mask.set_fs_root(prefix); };
@@ -102,9 +106,14 @@ private:
     html_form_input only_deleted;
     html_form_input ignore_deleted;
 
-    html_mask_form_filename filename_mask;
+    guichet guichet_filename_mask;
+    std::shared_ptr<html_mask_form_filename> filename_mask;
+
     html_mask_form_path path_mask;
-    html_mask_form_filename ea_mask;
+
+    guichet guichet_ea_mask;
+    std::shared_ptr<html_mask_form_filename> ea_mask;
+
     html_fsa_scope fsa_scope;
 };
 
