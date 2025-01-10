@@ -50,7 +50,6 @@ html_options_isolate::html_options_isolate():
     delta_sig("Transfer binary delta signature", html_form_input::check, "", "1"),
     delta_transfer_mode("Compute delta signature when they are missing", html_form_input::check, "", "1"),
     delta_sig_min_size("Avoid calculating delta signature for file smaller than", 0, "30"),
-    delta_mask("file name"),
     form_archgen("Update"),
     fs_archgen(""),
     allow_over("Allow slice overwriting", html_form_input::check, "", "1"),
@@ -69,6 +68,13 @@ html_options_isolate::html_options_isolate():
     entrep.reset(new (nothrow) html_entrepot());
     if(!entrep)
 	throw exception_memory();
+
+    delta_mask.reset(new (nothrow) html_mask_form_filename("file name"));
+    if(!delta_mask)
+	throw exception_memory();
+
+    delta_filter_title.add_paragraph();
+    delta_filter_title.add_text(3, "Delta signature filename based filtering");
 
     libdar::archive_options_isolate defaults;
 
@@ -122,7 +128,8 @@ html_options_isolate::html_options_isolate():
     delta_fs.adopt(&sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
-    deroule.adopt_in_section(sect_delta, &delta_mask);
+    deroule.adopt_in_section(sect_delta, &delta_filter_title);
+    deroule.adopt_in_section(sect_delta, &guichet_delta_mask);
 
     fs_archgen.adopt(&allow_over);
     fs_archgen.adopt(&warn_over);
@@ -166,6 +173,10 @@ void html_options_isolate::set_biblio(const shared_ptr<bibliotheque> & ptr)
 			     bibliotheque::repo,
 			     entrep,
 			     false);
+    guichet_delta_mask.set_child(ptr,
+				 bibliotheque::filefilter,
+				 delta_mask,
+				 false);
 }
 
 void html_options_isolate::on_event(const string & event_name)
@@ -178,14 +189,16 @@ void html_options_isolate::on_event(const string & event_name)
 	    delta_transfer_mode.set_visible(true);
 	    delta_sig_min_size.set_visible(delta_transfer_mode.get_value_as_bool());
 	    sig_block_size.set_visible(delta_transfer_mode.get_value_as_bool());
-	    delta_mask.set_visible(delta_transfer_mode.get_value_as_bool());
+	    delta_filter_title.set_visible(delta_transfer_mode.get_value_as_bool());
+	    guichet_delta_mask.set_visible(delta_transfer_mode.get_value_as_bool());
 	}
 	else
 	{
 	    delta_transfer_mode.set_visible(false);
 	    delta_sig_min_size.set_visible(false);
 	    sig_block_size.set_visible(false);
-	    delta_mask.set_visible(false);
+	    delta_filter_title.set_visible(false);
+	    guichet_delta_mask.set_visible(false);
 	}
 
 	    // no need to call my_body_part_has_changed()
@@ -228,7 +241,7 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     if(delta_sig.get_value_as_bool()
        && delta_transfer_mode.get_value_as_bool())
     {
-	unique_ptr<libdar::mask> dmask = delta_mask.get_mask();
+	unique_ptr<libdar::mask> dmask = delta_mask->get_mask();
 
 	if(dmask)
 	    ret.set_delta_mask(*dmask);
