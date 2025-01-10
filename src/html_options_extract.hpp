@@ -101,8 +101,10 @@ private:
     html_form form_overwriting;
     html_form_input only_deleted;
     html_form_input ignore_deleted;
+
     html_mask_form_filename filename_mask;
     html_mask_form_path path_mask;
+    html_mask_form_filename ea_mask;
     html_fsa_scope fsa_scope;
 };
 
