@@ -54,7 +54,6 @@ html_options_create::html_options_create():
     form_shown("Update"),
     form_perimeter("Update"),
     path_mask(true),
-    ea_mask("extended attribute"),
     form_same_fs("Update"),
     archtype_fs(""),
     fixed_date("Only record files changed since:"),
@@ -63,7 +62,6 @@ html_options_create::html_options_create():
     delta_fs(""),
     delta_sig("Compute binary delta signature", html_form_input::check, "", "1"),
     delta_sig_min_size("Avoid calculating delta signature for file smaller than", 0, "30"),
-    delta_mask("file name"),
     archgen_fs(""),
     allow_over("Allow slice overwriting", html_form_input::check, "", "1"),
     warn_over("Warn before overwriting", html_form_input::check, "", "1"),
@@ -98,8 +96,7 @@ html_options_create::html_options_create():
     zeroing_neg_date("Automatically zeroing negative dates while reading", html_form_input::check, "", "1"),
     fs_mod_data_detect("How data (not metadata) changes are detected"),
     same_fs_fs("Select the file systems based on their mount point"),
-    compr_params(true, true, false),
-    compr_mask("file name")
+    compr_params(true, true, false)
 {
     libdar::archive_options_create defaults;
 
@@ -113,12 +110,28 @@ html_options_create::html_options_create():
     if(!filename_mask)
 	throw exception_memory();
 
+    ea_mask.reset(new (nothrow) html_mask_form_filename("extended attribute"));
+    if(!ea_mask)
+	throw exception_memory();
+
+    delta_mask.reset(new (nothrow) html_mask_form_filename("file name"));
+    if(!delta_mask)
+	throw exception_memory();
+
+    compr_mask.reset(new (nothrow) html_mask_form_filename("file name"));
+    if(!compr_mask)
+	throw exception_memory();
+
     archtype.add_choice("full", "Full backup");
     archtype.add_choice("diff", "Differential/Incremental backup");
     archtype.add_choice("diffdelta", "Differential/Incremental backup with binary delta (*)");
     archtype.add_choice("snap", "Snapshot backup");
     archtype.add_choice("date", "Date based differential backup");
     binary_delta_note.add_text(0, "(*) delta signatures need to be present in the backup of reference");
+    delta_filter_title.add_paragraph();
+    delta_filter_title.add_text(3, "Delta signature filename based filtering");
+    compr_filter_title.add_paragraph();
+    compr_filter_title.add_text(3, "Compression filename based filtering");
     alter_atime.add_choice("atime", "Data last access time (atime)");
     alter_atime.add_choice("ctime", "Inode last change time (ctime)");
     mod_data_detect.add_choice("any_inode_change", "Any inode change (behavior before libdar 2.6.0)");
@@ -235,7 +248,8 @@ html_options_create::html_options_create():
     delta_fs.adopt(&sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
-    deroule.adopt_in_section(sect_delta, &delta_mask);
+    deroule.adopt_in_section(sect_delta, &delta_filter_title);
+    deroule.adopt_in_section(sect_delta, &guichet_delta_mask);
 
 	// source data
     fs_alter_atime.adopt(&alter_atime);
@@ -298,14 +312,15 @@ html_options_create::html_options_create():
     deroule.adopt_in_section(sect_mount_points, &form_same_fs);
 
 	// EA masks
-    deroule.adopt_in_section(sect_ea_mask, &ea_mask);
+    deroule.adopt_in_section(sect_ea_mask, &guichet_ea_mask);
 
 	// FSA scope
     deroule.adopt_in_section(sect_fsa_scope, &fsa_scope);
 
 	// compression
     deroule.adopt_in_section(sect_compr, &compr_params);
-    deroule.adopt_in_section(sect_compr,&compr_mask);
+    deroule.adopt_in_section(sect_compr, &compr_filter_title);
+    deroule.adopt_in_section(sect_compr,&guichet_compr_mask);
 
 
 	// slicing
@@ -343,6 +358,18 @@ void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				    bibliotheque::filefilter,
 				    filename_mask,
 				    false);
+    guichet_ea_mask.set_child(ptr,
+			      bibliotheque::filefilter,
+			      ea_mask,
+			      false);
+    guichet_delta_mask.set_child(ptr,
+				 bibliotheque::filefilter,
+				 delta_mask,
+				 false);
+    guichet_compr_mask.set_child(ptr,
+				 bibliotheque::filefilter,
+				 compr_mask,
+				 false);
     reference.set_biblio(ptr);
 }
 
@@ -404,7 +431,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 
     if(compr_params.get_compression_algo() != libdar::compression::none)
     {
-	unique_ptr<libdar::mask> libcompmask = compr_mask.get_mask();
+	unique_ptr<libdar::mask> libcompmask = compr_mask->get_mask();
 	if(!libcompmask)
 	    throw WEBDAR_BUG;
 	ret.set_compr_mask(*libcompmask);
@@ -415,7 +442,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     slicing.get_slicing(s_size, f_s_size);
     ret.set_slicing(s_size, f_s_size);
 
-    ret.set_ea_mask(*(ea_mask.get_mask()));
+    ret.set_ea_mask(*(ea_mask->get_mask()));
     ret.set_fsa_scope(fsa_scope.get_scope());
 
     ret.set_crypto_algo(ciphering.get_crypto_algo());
@@ -477,7 +504,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 
     if(delta_sig.get_value_as_bool())
     {
-	unique_ptr<libdar::mask> dmask = delta_mask.get_mask();
+	unique_ptr<libdar::mask> dmask = delta_mask->get_mask();
 
 	if(dmask)
 	{
@@ -551,7 +578,8 @@ void html_options_create::on_event(const string & event_name)
 	    throw WEBDAR_BUG;
 	}
 
-	delta_mask.set_visible(delta_sig.get_value_as_bool());
+	delta_filter_title.set_visible(delta_sig.get_value_as_bool());
+	guichet_delta_mask.set_visible(delta_sig.get_value_as_bool());
 	delta_sig_min_size.set_visible(delta_sig.get_value_as_bool());
 	sig_block_size.set_visible(delta_sig.get_value_as_bool());
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
@@ -574,7 +602,8 @@ void html_options_create::on_event(const string & event_name)
 	    exclude_by_ea_name.set_visible(false);
 	}
 
-	compr_mask.set_visible(compr_params.get_compression_algo() != libdar::compression::none);
+	compr_filter_title.set_visible(compr_params.get_compression_algo() != libdar::compression::none);
+	guichet_compr_mask.set_visible(compr_params.get_compression_algo() != libdar::compression::none);
 
 	    // no need to call my_body_part_has_changed()
 	    // because changed done in on_event concern
