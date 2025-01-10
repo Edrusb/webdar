@@ -53,7 +53,6 @@ html_options_create::html_options_create():
     form_delta_sig("Update"),
     form_shown("Update"),
     form_perimeter("Update"),
-    filename_mask("file name"),
     path_mask(true),
     ea_mask("extended attribute"),
     form_same_fs("Update"),
@@ -108,6 +107,10 @@ html_options_create::html_options_create():
 
     entrep.reset(new (nothrow) html_entrepot());
     if(!entrep)
+	throw exception_memory();
+
+    filename_mask.reset(new (nothrow) html_mask_form_filename("file name"));
+    if(!filename_mask)
 	throw exception_memory();
 
     archtype.add_choice("full", "Full backup");
@@ -284,7 +287,7 @@ html_options_create::html_options_create():
     deroule.adopt_in_section(sect_perimeter, &form_perimeter);
 
 	// filename based masks
-    deroule.adopt_in_section(sect_mask_file, &filename_mask);
+    deroule.adopt_in_section(sect_mask_file, &guichet_filename_mask);
 
 	// path based masks
     deroule.adopt_in_section(sect_mask_path, &path_mask);
@@ -336,6 +339,10 @@ void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
 			     bibliotheque::repo,
 			     entrep,
 			     false);
+    guichet_filename_mask.set_child(ptr,
+				    bibliotheque::filefilter,
+				    filename_mask,
+				    false);
     reference.set_biblio(ptr);
 }
 
@@ -457,7 +464,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_ignore_unknown_inode_type(! dont_ignore_unknown_inode_type.get_value_as_bool());
     ret.set_execute(execute.get_value());
     ret.set_entrepot(entrep->get_entrepot(webui));
-    ret.set_selection(*(filename_mask.get_mask()));
+    ret.set_selection(*(filename_mask->get_mask()));
     ret.set_subtree(*(path_mask.get_mask()));
 
     vector<string> mp = same_fs.get_included_fs_path();
