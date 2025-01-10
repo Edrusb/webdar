@@ -169,8 +169,6 @@ void html_mask_form_path::load_json(const json & source)
 
 	    // setting back the bool mode and mask_type selected value
 
-	*allow_abs_paths = config.at(jlabel_allow_absolute);
-	*fs_root = libdar::path(config.at(jlabel_fs_root));
 	root.load_json(config.at(jlabel_bool_config));
     }
     catch(json::exception & e)
@@ -188,8 +186,10 @@ json html_mask_form_path::save_json() const
 
     check_ptr();
 
-    ret[jlabel_allow_absolute] = *allow_abs_paths;
-    ret[jlabel_fs_root] = fs_root->display();
+	// we do not save prefix nor allow_abs_paths as json
+	// for these configurations stay local to the component
+	// that has created/adopted an html_mask_form_path object
+
     ret[jlabel_bool_config] = root.save_json();
 
     return wrap_config_with_json_header(format_version,
@@ -201,8 +201,6 @@ void html_mask_form_path::clear_json()
 {
     check_ptr();
 
-    *allow_abs_paths = true;
-    *fs_root = libdar::FAKE_ROOT;
     root.clear_json();
 
     act(html_form_mask_subdir::update);

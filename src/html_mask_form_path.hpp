@@ -131,8 +131,6 @@ private:
     void check_ptr() const;
 
     static constexpr const unsigned int format_version = 1;
-    static constexpr const char* jlabel_allow_absolute = "allow-absolute-path";
-    static constexpr const char* jlabel_fs_root = "fs-root";
     static constexpr const char* jlabel_bool_config = "bool-config";
 
 };
