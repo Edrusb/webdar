@@ -66,7 +66,6 @@ html_options_merge::html_options_merge():
     delta_fs(""),
     delta_sig("delta signatures"),
     delta_sig_min_size("Avoid calculating delta signature for file smaller than", 0, "30"),
-    delta_mask("file name"),
     form_shown("Update"),
     fs_shown(""),
     info_details("Detailed informations", html_form_input::check, "1", "1"),
@@ -76,18 +75,32 @@ html_options_merge::html_options_merge():
     form_perimeter("Update"),
     fs_perimeter(""),
     empty_dir("Store ignored directories as empty directories", html_form_input::check, "", "1"),
-    filename_mask("file name"),
-    ea_mask("extended attribute"),
     path_mask(false),
     overwriting_policy(""),
     form_overwriting("Update"),
-    compr_params(true, true, true),
-    compr_mask("file name")
+    compr_params(true, true, true)
 {
 
     entrep.reset(new (nothrow) html_entrepot());
     if(!entrep)
 	throw exception_memory();
+
+    delta_mask.reset(new (nothrow) html_mask_form_filename("file name"));
+    if(!delta_mask)
+	throw exception_memory();
+
+    filename_mask.reset(new (nothrow) html_mask_form_filename("file name"));
+    if(!filename_mask)
+	throw exception_memory();
+
+    ea_mask.reset(new (nothrow) html_mask_form_filename("extended attribute"));
+    if(!ea_mask)
+	throw exception_memory();
+
+    compr_mask.reset(new (nothrow) html_mask_form_filename("file name"));
+    if(!compr_mask)
+	throw exception_memory();
+
 
 	// components setups
     pause.set_min_only(0);
@@ -111,6 +124,11 @@ html_options_merge::html_options_merge():
     empty.set_value_as_bool(defaults.get_empty());
     empty_dir.set_value_as_bool(defaults.get_empty_dir());
     delta_sig_min_size.set_value_as_infinint(defaults.get_delta_sig_min_size());
+
+    delta_filter_title.add_paragraph();
+    delta_filter_title.add_text(3, "Delta signature filename based filtering");
+    compr_filter_title.add_paragraph();
+    compr_filter_title.add_text(3, "Compression filename based filtering");
 
     compr_params.set_keep_compressed(true); // bypass default value from libdar
     compr_params.set_compression_algo(defaults.get_compression());
@@ -183,7 +201,8 @@ html_options_merge::html_options_merge():
     delta_fs.adopt(&sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
-    deroule.adopt_in_section(sect_delta, &delta_mask);
+    deroule.adopt_in_section(sect_delta, &delta_filter_title);
+    deroule.adopt_in_section(sect_delta, &guichet_delta_mask);
 
     fs_shown.adopt(&info_details);
     fs_shown.adopt(&display_treated);
@@ -196,16 +215,17 @@ html_options_merge::html_options_merge():
     form_perimeter.adopt(&fs_perimeter);
     deroule.adopt_in_section(sect_filter, &form_perimeter);
 
-    deroule.adopt_in_section(sect_mask_file, &filename_mask);
+    deroule.adopt_in_section(sect_mask_file, &guichet_filename_mask);
     deroule.adopt_in_section(sect_mask_path, &path_mask);
-    deroule.adopt_in_section(sect_ea_mask, &ea_mask);
+    deroule.adopt_in_section(sect_ea_mask, &guichet_ea_mask);
     deroule.adopt_in_section(sect_fsa_scope, &fsa_scope);
 
     form_overwriting.adopt(&overwriting_policy);
     deroule.adopt_in_section(sect_overwrite, &form_overwriting);
 
     deroule.adopt_in_section(sect_compr, &compr_params);
-    deroule.adopt_in_section(sect_compr, &compr_mask);
+    deroule.adopt_in_section(sect_compr, &compr_filter_title);
+    deroule.adopt_in_section(sect_compr, &guichet_compr_mask);
 
     deroule.adopt_in_section(sect_slice, &slicing);
 
@@ -231,11 +251,27 @@ html_options_merge::html_options_merge():
 
 void html_options_merge::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 {
-    auxiliary.set_biblio(ptr);
     guichet_entrep.set_child(ptr,
 			     bibliotheque::repo,
 			     entrep,
 			     false);
+    guichet_filename_mask.set_child(ptr,
+				    bibliotheque::filefilter,
+				    filename_mask,
+				    false);
+    guichet_ea_mask.set_child(ptr,
+			      bibliotheque::filefilter,
+			      ea_mask,
+			      false);
+    guichet_delta_mask.set_child(ptr,
+				 bibliotheque::filefilter,
+				 delta_mask,
+				 false);
+    guichet_compr_mask.set_child(ptr,
+				 bibliotheque::filefilter,
+				 compr_mask,
+				 false);
+    auxiliary.set_biblio(ptr);
 }
 
 void html_options_merge::on_event(const string & event_name)
@@ -246,16 +282,23 @@ void html_options_merge::on_event(const string & event_name)
     {
 	auxiliary.set_visible(has_aux.get_value_as_bool());
 	decremental.set_visible(has_aux.get_value_as_bool());
-	delta_mask.set_visible(delta_sig.get_selected_num() == 2);
+	delta_filter_title.set_visible(delta_sig.get_selected_num() == 2);
+	guichet_delta_mask.set_visible(delta_sig.get_selected_num() == 2);
 	delta_sig_min_size.set_visible(delta_sig.get_selected_num() == 2);
 	sig_block_size.set_visible(delta_sig.get_selected_num() == 2);
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
 
 	if(! compr_params.get_keep_compressed()
 	   && compr_params.get_compression_algo() != libdar::compression::none)
-	    compr_mask.set_visible(true);
+	{
+	    compr_filter_title.set_visible(true);
+	    guichet_compr_mask.set_visible(true);
+	}
 	else
-	    compr_mask.set_visible(false);
+	{
+	    compr_filter_title.set_visible(false);
+	    guichet_compr_mask.set_visible(false);
+	}
 
 	    // no need to call my_body_part_has_changed()
 	    // because changed done in on_event concern
@@ -294,7 +337,7 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
 			    display_treated_only_dir.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
     ret.set_empty_dir(empty_dir.get_value_as_bool());
-    ret.set_selection(*(filename_mask.get_mask()));
+    ret.set_selection(*(filename_mask->get_mask()));
     ret.set_subtree(*(path_mask.get_mask()));
     ret.set_overwriting_rules(*(overwriting_policy.get_overwriting_action()));
     if(! compr_params.get_keep_compressed())
@@ -311,7 +354,7 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
 	    throw exception_range(libdar::tools_printf("compression block size is too small, select either zero to disable compression per block or a block size greater or equal to %d", tokens_min_compr_bs));
 	ret.set_compression_block_size(val);
 
-	unique_ptr<libdar::mask> libcompmask = compr_mask.get_mask();
+	unique_ptr<libdar::mask> libcompmask = compr_mask->get_mask();
 	if(!libcompmask)
 	    throw WEBDAR_BUG;
 	ret.set_compr_mask(*libcompmask);
@@ -325,7 +368,7 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
     libdar::infinint f_s_size;
     slicing.get_slicing(s_size, f_s_size);
     ret.set_slicing(s_size, f_s_size);
-    ret.set_ea_mask(*(ea_mask.get_mask()));
+    ret.set_ea_mask(*(ea_mask->get_mask()));
     ret.set_fsa_scope(fsa_scope.get_scope());
 
     ret.set_crypto_algo(ciphering.get_crypto_algo());
@@ -374,7 +417,7 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
 	ret.set_delta_signature(true);
 	break;
     case 2: // transfer and recompute
-	dmask = delta_mask.get_mask();
+	dmask = delta_mask->get_mask();
 
 	if(dmask)
 	{

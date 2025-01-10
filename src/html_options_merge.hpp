@@ -131,7 +131,10 @@ private:
     html_form_select delta_sig;
     html_form_input_unit delta_sig_min_size;
     html_form_sig_block_size sig_block_size;
-    html_mask_form_filename delta_mask;
+    html_text delta_filter_title;
+
+    guichet guichet_delta_mask;
+    std::shared_ptr<html_mask_form_filename> delta_mask;
 
     html_form form_shown;
     html_form_fieldset fs_shown;
@@ -144,16 +147,24 @@ private:
     html_form_fieldset fs_perimeter;
     html_form_input empty_dir;
 
-    html_mask_form_filename filename_mask;
+    guichet guichet_filename_mask;
+    std::shared_ptr<html_mask_form_filename> filename_mask;
+
     html_mask_form_path path_mask;
-    html_mask_form_filename ea_mask;
+
+    guichet guichet_ea_mask;
+    std::shared_ptr<html_mask_form_filename> ea_mask;
+
     html_fsa_scope fsa_scope;
 
     html_form_overwrite_action overwriting_policy;
     html_form form_overwriting;
 
     html_compression_params compr_params;
-    html_mask_form_filename compr_mask;
+    html_text compr_filter_title;
+
+    guichet guichet_compr_mask;
+    std::shared_ptr<html_mask_form_filename> compr_mask;
 
     html_slicing slicing;
 
