@@ -63,13 +63,16 @@ html_options_test::html_options_test():
     display_skipped("Display skipped files",
 		    html_form_input::check,
 		    "1",
-		    "1"),
-    path_mask(false)
+		    "1")
 {
     libdar::archive_options_test defaults;
 
     filename_mask.reset(new (nothrow) html_mask_form_filename("file name"));
     if(!filename_mask)
+	throw exception_memory();
+
+    path_mask.reset(new (nothrow) html_mask_form_path(false));
+    if(!path_mask)
 	throw exception_memory();
 
 	// default values
@@ -99,7 +102,7 @@ html_options_test::html_options_test():
 
     deroule.adopt_in_section(sect_mask, &guichet_filename_mask);
 
-    deroule.adopt_in_section(sect_path, &path_mask);
+    deroule.adopt_in_section(sect_path, &guichet_path_mask);
 
     adopt(&deroule);
 
@@ -122,6 +125,10 @@ void html_options_test::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 				    bibliotheque::filefilter,
 				    filename_mask,
 				    false);
+    guichet_path_mask.set_child(ptr,
+				bibliotheque::pathfilter,
+				path_mask,
+				false);
 }
 
 
@@ -137,7 +144,7 @@ libdar::archive_options_test html_options_test::get_options() const
     ret.set_display_skipped(display_skipped.get_value_as_bool());
 
     ret.set_selection(*(filename_mask->get_mask()));
-    ret.set_subtree(*(path_mask.get_mask()));
+    ret.set_subtree(*(path_mask->get_mask()));
 
     return ret;
 }
