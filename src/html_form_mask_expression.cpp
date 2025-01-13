@@ -44,7 +44,7 @@ using namespace std;
 const string html_form_mask_expression::update = "hfme_update";
 
 
-html_form_mask_expression::html_form_mask_expression(const shared_ptr<const string> & subject):
+html_form_mask_expression::html_form_mask_expression(const string & subject):
     sujet(subject),
     fs(""),
     mask_type("Mask Type"), // see clear()
@@ -229,10 +229,7 @@ string html_form_mask_expression::tell_action() const
 {
     string ret;
 
-    if(!sujet)
-	throw WEBDAR_BUG;
-
-    ret = *sujet + " ";
+    ret = sujet + " ";
 
     if(negate.get_value_as_bool())
 	ret += "does not match ";

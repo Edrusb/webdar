@@ -75,9 +75,6 @@ public:
     void set_child(const std::shared_ptr<bibliotheque> & ptr,
 		   bibliotheque::category cat);
 
-	/// change the value provided at construction time
-    void change_subject(const std::string & subject);
-
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override { return root.get_mask(); };
 
@@ -109,14 +106,13 @@ protected:
 private:
     html_form form;
     html_form_mask_bool root;
-    std::shared_ptr< std::deque<std::string> >labels;
-    std::shared_ptr<std::string> sujet; ///< shared with provided objects
+    std::deque<std::string> labels;
+    std::string sujet;
     bibliotheque::category categ;
     std::shared_ptr<bibliotheque> biblio;
 
     template <class T> void init_bool_obj(T & obj) const;
     void update_labels();
-    void check_ptr() const;
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* jlabel_bool_config = "bool-config";
@@ -126,8 +122,8 @@ private:
 template <class T> void html_mask_form_filename::init_bool_obj(T & obj) const
 {
     obj.set_obj_type_provider(this);
-    obj.set_labels_ptr(labels);
-    const_cast<html_mask_form_filename*>(this)->record_actor_on_event(&obj, html_form_mask_bool::update);
+    for(std::deque<std::string>::const_iterator it = labels.begin(); it != labels.end(); ++it)
+	obj.add_mask_type(*it);
 }
 
 #endif
