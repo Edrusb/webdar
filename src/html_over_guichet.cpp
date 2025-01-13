@@ -71,10 +71,16 @@ void html_over_guichet::set_child(const std::shared_ptr<bibliotheque> & ptr,
 
 }
 
-void html_over_guichet::set_labels_ptr(const shared_ptr<const deque<string> > & lbls)
+void html_over_guichet::add_mask_type(const std::string & label)
 {
     check_inner();
-    inner->set_labels_ptr(lbls);
+    inner->add_mask_type(label);
+}
+
+void html_over_guichet::clear_all_masks_type()
+{
+    check_inner();
+    inner->clear_all_masks_type();
 }
 
 void html_over_guichet::set_obj_type_provider(const html_form_dynamic_table_object_provider* provider)
@@ -107,16 +113,6 @@ void html_over_guichet::clear_json()
 bibliotheque::using_set html_over_guichet::get_using_set() const
 {
     return wicket.get_using_set();
-}
-
-void html_over_guichet::on_event(const std::string & event_name)
-{
-    check_inner();
-
-    if(event_name == html_form_mask_bool::update)
-	inner->on_event(event_name);
-    else
-	guichet::on_event(event_name);
 }
 
 string html_over_guichet::inherited_get_body_part(const chemin & path,

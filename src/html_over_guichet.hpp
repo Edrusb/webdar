@@ -58,9 +58,19 @@ public:
 	/// \note to_give must also be a jsoner and a html_mask, it pass under the managment responsibility of the
 	/// html_over_guichet object.
     void set_child(const std::shared_ptr<bibliotheque> & ptr,
-		   bibliotheque::category cat,
-		   std::unique_ptr<body_builder> & to_give,
-		   bool add_form_around);
+		   bibliotheque::category cat);
+
+
+	/// surface method from our html_form_bool field
+    void add_mask_type(const std::string & label);
+
+	/// surface method from our html_form_bool field
+    void clear_all_masks_type();
+
+
+	/// surface method from our html_form_bool field
+    void set_obj_type_provider(const html_form_dynamic_table_object_provider* provider);
+
 
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override;
