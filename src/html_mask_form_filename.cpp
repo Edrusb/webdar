@@ -55,7 +55,6 @@ html_mask_form_filename::html_mask_form_filename(const string & subject):
 
 	// events
     register_name(changed);
-    register_name(html_form_mask_expression::update);
     form.record_actor_on_event(this, html_form::changed);
 
 	// must be done after event registration above
@@ -74,17 +73,12 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
 {
     unique_ptr<body_builder> ret;
     unique_ptr<html_form_mask_bool> tmp;
-    unique_ptr<html_form_mask_expression> as_actor;
     unique_ptr<html_over_guichet> ovgui;
 
     switch(num)
     {
     case 0: // title provided in constructor
-	as_actor.reset(new (nothrow) html_form_mask_expression(sujet));
-	if(as_actor)
-	    const_cast<html_mask_form_filename*>(this)->record_actor_on_event(as_actor.get(),
-									      html_form_mask_expression::update);
-	ret = std::move(as_actor);
+	ret.reset(new (nothrow) html_form_mask_expression(sujet));
 	break;
     case 1: // "logical combination"
 	tmp.reset(new (nothrow) html_form_mask_bool(html_form_mask_bool::invert_logic(context)));
@@ -142,7 +136,6 @@ void html_mask_form_filename::load_json(const json & source)
 	throw exception_json("Error loading html_form_mask_bool config", e);
     }
 
-    act(html_form_mask_expression::update);
     act(changed);
 }
 
@@ -166,7 +159,6 @@ void html_mask_form_filename::clear_json()
 {
     root.clear_json();
 
-    act(html_form_mask_expression::update);
     act(changed);
 }
 
