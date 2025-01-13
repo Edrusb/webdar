@@ -121,17 +121,19 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
     saveas_form.adopt(&saveas_fs);
     adopt(&saveas_form);
 
+	// visibility & config
+	// this is done before events cabling to avoid
+	// a lot of useless events firing that may lead
+	// to a lot of useless cascade of events.
+    update_selected();
+    set_visibility();
+
 	// events
     select.record_actor_on_event(this, event_select);
     edit.record_actor_on_event(this, event_edit);
     clear.record_actor_on_event(this, event_clear);
     saveas_name.record_actor_on_event(this, event_saveas);
     biblio->record_actor_on_event(this, bibliotheque::changed);
-
-	// visibility & config
-    update_selected();
-    set_adopted();
-    set_visibility();
 
 	// csss
 
