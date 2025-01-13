@@ -36,6 +36,7 @@ extern "C"
 #include <memory>
 
     // webdar headers
+#include "body_builder.hpp"
 #include "html_mask.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_form_input.hpp"
@@ -77,7 +78,8 @@ extern "C"
     /// like *and* and *or* combinasons.
 
 
-class html_form_mask_expression : public html_mask,
+class html_form_mask_expression : public body_builder,
+				  public html_mask,
 				  public actor,
 				  public jsoner
 {

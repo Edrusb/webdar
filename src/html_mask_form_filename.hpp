@@ -40,6 +40,7 @@ extern "C"
 #include "html_form_dynamic_table.hpp"
 #include "jsoner.hpp"
 #include "html_form.hpp"
+#include "html_mask.hpp"
 #include "bibliotheque_subconfig.hpp"
 #include "html_form_mask_bool.hpp"
 #include "html_form_mask_expression.hpp"
@@ -54,6 +55,7 @@ class html_mask_form_filename : public body_builder,
 				public events,
 				public html_form_dynamic_table_object_provider,
 				public jsoner,
+				public html_mask,
 				public bibliotheque_subconfig
 {
 public:
@@ -74,7 +76,7 @@ public:
     void change_subject(const std::string & subject);
 
 	/// inherited from html_mask
-    std::unique_ptr<libdar::mask> get_mask() const { return root.get_mask(); };
+    virtual std::unique_ptr<libdar::mask> get_mask() const override { return root.get_mask(); };
 
 	/// inherited from html_form_dynamic_table
     virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num,
@@ -91,7 +93,6 @@ public:
 
 	/// inherited from bibliotheque_subconfig
     virtual bibliotheque::using_set get_using_set() const override;
-
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;

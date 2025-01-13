@@ -40,6 +40,7 @@ extern "C"
 #include "events.hpp"
 #include "html_form_dynamic_table.hpp"
 #include "jsoner.hpp"
+#include "html_mask.hpp"
 #include "bibliotheque_subconfig.hpp"
 #include "html_form.hpp"
 #include "html_form_mask_bool.hpp"
@@ -55,6 +56,7 @@ class html_mask_form_path : public body_builder,
 			    public events,
 			    public html_form_dynamic_table_object_provider,
 			    public jsoner,
+			    public html_mask,
 			    public bibliotheque_subconfig
 {
 public:
@@ -84,7 +86,7 @@ public:
     void set_allow_absolute_paths(bool val);
 
 	/// inherited from html_mask
-    std::unique_ptr<libdar::mask> get_mask() const { return root.get_mask(); };
+    virtual std::unique_ptr<libdar::mask> get_mask() const override { return root.get_mask(); };
 
 	/// inherited from html_form_dynamic_table
     virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num,

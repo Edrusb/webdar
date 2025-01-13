@@ -40,7 +40,7 @@ extern "C"
 
     /// class html_mask defines the interface of all masks
 
-class html_mask : public body_builder
+class html_mask
 {
 public:
     html_mask() {};

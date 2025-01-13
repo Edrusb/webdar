@@ -39,6 +39,7 @@ extern "C"
 #include <deque>
 
     // webdar headers
+#include "body_builder.hpp"
 #include "html_mask.hpp"
 #include "actor.hpp"
 #include "jsoner.hpp"
@@ -77,7 +78,8 @@ extern "C"
 
 	\endverbatim **/
 
-class html_form_mask_bool : public html_mask,
+class html_form_mask_bool : public body_builder,
+			    public html_mask,
 			    public actor,
 			    public jsoner,
 			    public bibliotheque_subconfig

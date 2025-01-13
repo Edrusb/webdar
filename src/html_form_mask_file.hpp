@@ -34,6 +34,7 @@ extern "C"
     // C++ system header files
 
     // webdar headers
+#include "body_builder.hpp"
 #include "html_mask.hpp"
 #include "html_form_input.hpp"
 #include "html_form_fieldset.hpp"
@@ -70,7 +71,8 @@ extern "C"
     /// recursively from another html_form_mask_file
 
 
-class html_form_mask_file : public html_mask,
+class html_form_mask_file : public body_builder,
+			    public html_mask,
 			    public actor,
 			    public jsoner
 {
