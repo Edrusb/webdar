@@ -44,12 +44,9 @@ using namespace std;
 const std::string html_mask_form_path::changed = "hmff_changed";
 
 html_mask_form_path::html_mask_form_path(bool allow_absolute_paths):
-    form("Update")
+    form("Update"),
+    allow_abs_paths(allow_absolute_paths)
 {
-    allow_abs_paths.reset(new (nothrow) bool(allow_absolute_paths));
-    if(!allow_abs_paths)
-	throw exception_memory();
-
     fs_root.reset(new (nothrow) libdar::path(libdar::FAKE_ROOT));
     if(!fs_root)
 	throw exception_memory();
@@ -82,8 +79,7 @@ void html_mask_form_path::set_fs_root(const std::string & prefix)
 	    *fs_root = libdar::path(prefix);
 	    act(html_form_mask_subdir::update);
 		// this to trigger objects of html_form_mask_subdir class
-		// we created so far to reconsider both
-		// fs_root and absolute_ok fields
+		// we created so far to reconsider both fs_root field
 	}
     }
     catch(libdar::Egeneric & e)
@@ -91,20 +87,6 @@ void html_mask_form_path::set_fs_root(const std::string & prefix)
 	e.prepend_message("Error while setting prefix for path base filtering");
 	throw exception_libcall(e);
     }
-}
-
-void html_mask_form_path::set_allow_absolute_paths(bool val)
-{
-    check_ptr();
-
-    *allow_abs_paths = val;
-	// this shared_ptr owned value will be accessible by and updated to
-	// all objects we have provided with that parameter
-
-    act(html_form_mask_subdir::update);
-	// this to trigger objects of html_form_mask_subdir class
-	// we created so far to reconsider both
-	// fs_root and absolute_ok fields
 }
 
 unique_ptr<body_builder> html_mask_form_path::provide_object_of_type(unsigned int num,
@@ -236,9 +218,6 @@ void html_mask_form_path::init_bool_obj(html_form_mask_bool & obj) const
 
 void html_mask_form_path::check_ptr() const
 {
-    if(!allow_abs_paths)
-	throw WEBDAR_BUG;
-
     if(!fs_root)
 	throw WEBDAR_BUG;
 }

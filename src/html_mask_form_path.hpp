@@ -79,12 +79,6 @@ public:
 	/// to an absolute path when context requires it
     void set_fs_root(const std::string & prefix);
 
-	/// change the value given at construction
-
-	/// \param[in] val when set to true allow the user to specify absolute paths
-	/// in mask expressions
-    void set_allow_absolute_paths(bool val);
-
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override { return root.get_mask(); };
 
@@ -116,18 +110,17 @@ protected:
 private:
     html_form form;
     html_form_mask_bool root;
+    bool allow_abs_paths;
     std::deque<std::string> labels;
-
-    std::shared_ptr<bool> allow_abs_paths;
+    std::shared_ptr<libdar::path> fs_root;
 	// the use of a shared_ptr is done here because this
 	// information will be shared with a possibly wide
 	// range of objects we will provide (as object
 	// provider) stored in a possibly rich tree-like structure
 	// (html_form_mask_bool) and this info may be needed
-	// to be updated from time to time.
-
-    std::shared_ptr<libdar::path> fs_root;
-	// same principle here too
+	// to be updated from time to time. Other objects
+	// get notified of changes by mean of events triggered
+	// by this html_mask_form_path object
 
     void init_bool_obj(html_form_mask_bool & obj) const;
     void check_ptr() const;

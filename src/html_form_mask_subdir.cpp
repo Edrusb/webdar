@@ -42,7 +42,7 @@ using namespace std;
 
 const string html_form_mask_subdir::update = "hfms_update";
 
-html_form_mask_subdir::html_form_mask_subdir(const shared_ptr<const bool> & absolute_path_accepted,
+html_form_mask_subdir::html_form_mask_subdir(bool absolute_path_accepted,
 					     const std::shared_ptr<const libdar::path> & fs_root):
     absolute_ok(absolute_path_accepted),
     prefix(fs_root),
@@ -224,10 +224,7 @@ string html_form_mask_subdir::inherited_get_body_part(const chemin & path,
 {
     string ret = get_body_part_from_all_children(path, req);
 
-    if(!absolute_ok)
-	throw WEBDAR_BUG;
-
-    if(! (*absolute_ok))
+    if(! absolute_ok)
     {
 	string val = mask_subdir.get_value();
 
@@ -351,9 +348,6 @@ string html_form_mask_subdir::tell_action() const
 
 void html_form_mask_subdir::check_ptr() const
 {
-    if(! absolute_ok)
-	throw WEBDAR_BUG;
-
     if(! prefix)
 	throw WEBDAR_BUG;
 }
@@ -362,7 +356,7 @@ libdar::path html_form_mask_subdir::check_absolute_path_requirement() const
 {
     libdar::path ret = libdar::path(mask_subdir.get_value());
 
-    if(ret.is_absolute() && ! (*absolute_ok))
+    if(ret.is_absolute() && ! absolute_ok)
 	throw exception_range("Cannot proceed to the operation due to forbidden absolute paths. Please first remove absolute paths");
 
     return ret;
