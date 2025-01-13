@@ -136,6 +136,8 @@ shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(shared_ptr<html_web_use
     {
 	if(! webui->is_libdar_running())
 	    webui->auto_hide(true, true);
+	if(is_running())
+	    throw WEBDAR_BUG;
 
 	webui->run_and_control_thread(const_cast<html_entrepot*>(this)); // this launches a new thread running inherited_run() and the caller returns
 	join();

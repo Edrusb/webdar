@@ -443,6 +443,9 @@ void user_interface::go_restore()
 
 	// launching libdar in a separated thread
     current_thread = & arch_rest;
+    if(current_thread->is_running())
+	throw WEBDAR_BUG;
+    current_thread->join(); // in case a previous execution triggered an exception
     in_action.run_and_control_thread(current_thread);
 }
 
@@ -460,6 +463,9 @@ void user_interface::go_diff()
 
 	// launching libdar in a separated thread
     current_thread = & arch_diff;
+    if(current_thread->is_running())
+	throw WEBDAR_BUG;
+    current_thread->join(); // in case a previous execution triggered an exception
     in_action.run_and_control_thread(current_thread);
 }
 
@@ -478,6 +484,9 @@ void user_interface::go_test()
 
 	// launching libdar in a separated thread
     current_thread = & arch_test;
+    if(current_thread->is_running())
+	throw WEBDAR_BUG;
+    current_thread->join(); // in case a previous execution triggered an exception
     in_action.run_and_control_thread(current_thread);
 }
 
@@ -495,6 +504,9 @@ void user_interface::go_create()
 
 	// launching libdar in a separated thread
     current_thread = & arch_create;
+    if(current_thread->is_running())
+	throw WEBDAR_BUG;
+    current_thread->join(); // in case a previous execution triggered an exception
     in_action.run_and_control_thread(current_thread);
 }
 
@@ -512,6 +524,9 @@ void user_interface::go_isolate()
 
 	// launching libdar in a separated thread
     current_thread = & arch_isolate;
+    if(current_thread->is_running())
+	throw WEBDAR_BUG;
+    current_thread->join(); // in case a previous execution triggered an exception
     in_action.run_and_control_thread(current_thread);
 }
 
@@ -529,6 +544,9 @@ void user_interface::go_merge()
 
 	// launching libdar in a separated thread
     current_thread = & arch_merge;
+    if(current_thread->is_running())
+	throw WEBDAR_BUG;
+    current_thread->join(); // in case a previous execution triggered an exception
     in_action.run_and_control_thread(current_thread);
 }
 
@@ -546,6 +564,9 @@ void user_interface::go_init_list()
 
     	// launching libdar in a separated thread
     current_thread = & arch_init_list;
+    if(current_thread->is_running())
+	throw WEBDAR_BUG;
+    current_thread->join(); // in case a previous execution triggered an exception
     in_action.run_and_control_thread(current_thread);
 }
 
@@ -563,5 +584,8 @@ void user_interface::go_repair()
 
 	// launching libdar in a separated thread
     current_thread = & arch_repair;
+    if(current_thread->is_running())
+	throw WEBDAR_BUG;
+    current_thread->join(); // in case a previous execution triggered an exception
     in_action.run_and_control_thread(current_thread);
 }

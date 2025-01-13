@@ -87,7 +87,8 @@ extern "C"
     /// usage: once created, this component can be adopted from another body_builder
     /// The caller should use get_user_interaction() to provide a user interaction to a libthreadar::thread object
     /// for it can interact with the user thanks to this html_web_user_interaction but the thread should not be
-    /// run by the caller, but passed to the run_and_control_thread() method for that.
+    /// run by the caller (though the caller will still have to join() to cleanup/propagate its exception status),
+    /// but passed to the run_and_control_thread() method for that.
     /// the caller (code) can still access the thread. While the user (Web UI/browser) can also stop the thread
     /// using the button that show in turn at the bottom of the component. Once the thread has finished, the component
     /// can automatically hide from the UI (auto_hide(true)) or stay visible until the user press the "finish"
@@ -100,7 +101,6 @@ extern "C"
     ///- dont_refresh
     /// are availabe and can be registered from the caller to avoid freshing the HTML page when it conflicts with
     /// the expected HTML behavior.
-
     /// \note to communicate with a libdar thread, this class relies on a web_user_interaction
     /// objects that manages exclusive access (using mutex) to data structures provided and
     /// requested by libdar.

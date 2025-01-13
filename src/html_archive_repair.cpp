@@ -94,6 +94,9 @@ void html_archive_repair::on_event(const string & event_name)
 {
     if(event_name == html_options_repair::entrepot_changed)
     {
+	if(is_running())
+	    throw WEBDAR_BUG;
+	join(); // in case a previous execution triggered an exception
 	repoxfer.set_visible(true);
 	repoxfer.run_and_control_thread(this);
     }

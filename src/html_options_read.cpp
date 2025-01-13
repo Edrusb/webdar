@@ -262,6 +262,9 @@ void html_options_read::on_event(const string & event_name)
 	    throw WEBDAR_BUG;
 	localui->auto_hide(true, true);
 	localui->clear();
+	if(is_running())
+	    throw WEBDAR_BUG;
+	join(); // in case a previous execution triggered an exception
 	localui->run_and_control_thread(this);
 	my_body_part_has_changed();
     }

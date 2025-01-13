@@ -78,6 +78,7 @@ void html_archive_read::on_event(const string & event_name)
 	webui->auto_hide(true, true);
 	if(!is_running())
 	{
+	    join(); // in case a previous execution triggered an exception
 	    libdarexec.set_visible(true);
 	    my_body_part_has_changed();
 	    webui->run_and_control_thread(this);
