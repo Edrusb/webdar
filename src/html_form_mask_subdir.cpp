@@ -187,6 +187,7 @@ json html_form_mask_subdir::save_json() const
     json ret;
 
 	// absolute_OK is not set nor saved as json
+	// prefix is not set nor saved
     ret[jlabel_type] = mask_type.get_selected_id();
     ret[jlabel_casesensit] = casesensitivity.get_value_as_bool();
     ret[jlabel_regex] = regex.get_value_as_bool();
