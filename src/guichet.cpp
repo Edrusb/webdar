@@ -384,8 +384,6 @@ void guichet::update_selected()
 	throw WEBDAR_BUG;
     available = biblio->listing(categ);
 
-
-
     ignore_events = true;
     try
     {

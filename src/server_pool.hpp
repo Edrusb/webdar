@@ -41,7 +41,7 @@ extern "C"
 #include "proto_connexion.hpp"
 #include "server.hpp"
 
-    /// html component used for the user to define a has algorithm
+    /// class managing a pool of server objects
 
 class server_pool : public libthreadar::thread_signal, public reference
 {
