@@ -422,7 +422,16 @@ void guichet::set_adopted()
 	if(!biblio)
 	    throw WEBDAR_BUG;
 
-	adopted_jsoner->load_json(biblio->fetch_config(categ, select.get_selected_id()));
+	try
+	{
+	    adopted_jsoner->load_json(biblio->fetch_config(categ, select.get_selected_id()));
+	}
+	catch(...)
+	{
+	    select.set_selected(0); // passing on manual mode
+	    throw;
+	}
+
     }
 	// else adopted is unchanged
 }

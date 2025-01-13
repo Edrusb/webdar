@@ -104,9 +104,7 @@ unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
 
     try
     {
-	pathval = libdar::path(mask_subdir.get_value());
-	if(pathval.is_absolute() && ! (*absolute_ok))
-	    throw exception_range("Cannot proceed to the operation due to forbidden absolute paths. Please first remove absolute paths");
+	pathval = check_absolute_path_requirement();
 
 	if(! pathval.is_absolute())
 	    pathval = *prefix + pathval;
@@ -214,6 +212,7 @@ void html_form_mask_subdir::on_event(const std::string & event_name)
     else if(event_name == update)
     {
 	fs.change_label(tell_action());
+	check_absolute_path_requirement();
     }
     else
 	throw WEBDAR_BUG;
@@ -356,4 +355,14 @@ void html_form_mask_subdir::check_ptr() const
 
     if(! prefix)
 	throw WEBDAR_BUG;
+}
+
+libdar::path html_form_mask_subdir::check_absolute_path_requirement() const
+{
+    libdar::path ret = libdar::path(mask_subdir.get_value());
+
+    if(ret.is_absolute() && ! (*absolute_ok))
+	throw exception_range("Cannot proceed to the operation due to forbidden absolute paths. Please first remove absolute paths");
+
+    return ret;
 }

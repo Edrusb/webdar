@@ -138,6 +138,7 @@ private:
     void init();
     std::string tell_action() const;
     void check_ptr() const;
+    libdar::path check_absolute_path_requirement() const; ///< throws exception if not coherent
 
     static constexpr const unsigned int format_version = 1;
 
