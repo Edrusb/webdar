@@ -173,6 +173,8 @@ void html_options_isolate::set_biblio(const shared_ptr<bibliotheque> & ptr)
 			     bibliotheque::repo,
 			     entrep,
 			     false);
+
+    delta_mask->set_child(ptr, bibliotheque::filefilter);
     guichet_delta_mask.set_child(ptr,
 				 bibliotheque::filefilter,
 				 delta_mask,

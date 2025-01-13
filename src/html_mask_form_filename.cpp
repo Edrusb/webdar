@@ -32,7 +32,7 @@ extern "C"
 #include <dar/tools.hpp>
 
     // webdar headers
-
+#include "html_over_guichet.hpp"
 
 
     //
@@ -69,6 +69,13 @@ html_mask_form_filename::html_mask_form_filename(const string & subject):
     init_bool_obj(root);
 }
 
+void html_mask_form_filename::set_child(const std::shared_ptr<bibliotheque> & ptr,
+					bibliotheque::category cat)
+{
+    biblio = ptr;
+    categ = cat;
+}
+
 void html_mask_form_filename::change_subject(const std::string & subject)
 {
     check_ptr();
@@ -91,6 +98,7 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
     unique_ptr<body_builder> ret;
     unique_ptr<html_form_mask_bool> tmp;
     unique_ptr<html_form_mask_expression> as_actor;
+    unique_ptr<html_over_guichet> ovgui;
 
     check_ptr();
 
@@ -110,6 +118,15 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
 
 	init_bool_obj(*tmp);
 	ret = std::move(tmp);
+	break;
+    case 2: // "recorded configuration"
+	ovgui.reset(new (nothrow) html_over_guichet());
+	if(!ovgui)
+	    throw exception_memory();
+
+	ovgui->set_child(biblio, categ);
+	init_bool_obj(*ovgui);
+	ret = std::move(ovgui);
 	break;
     default:
 	if(num < labels->size())
@@ -205,13 +222,6 @@ string html_mask_form_filename::inherited_get_body_part(const chemin & path,
     return get_body_part_from_all_children(path, req);
 }
 
-void html_mask_form_filename::init_bool_obj(html_form_mask_bool & obj) const
-{
-    obj.set_obj_type_provider(this);
-    obj.set_labels_ptr(labels);
-    const_cast<html_mask_form_filename*>(this)->record_actor_on_event(&obj, html_form_mask_bool::update);
-}
-
 void html_mask_form_filename::update_labels()
 {
     check_ptr();
@@ -222,6 +232,7 @@ void html_mask_form_filename::update_labels()
 	// but in the middle or at the end of the translated string:
     labels->push_back(libdar::tools_printf("%S expression", sujet.get()));
     labels->push_back("Logical combination");
+    labels->push_back("Recorded configuration");
 }
 
 void html_mask_form_filename::check_ptr() const

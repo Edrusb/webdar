@@ -137,7 +137,7 @@ unique_ptr<body_builder> html_mask_form_path::provide_object_of_type(unsigned in
 	break;
     default:
 	if(num < labels.size())
-	    throw WEBDAR_BUG; // problem in html_mask_form_filename?
+	    throw WEBDAR_BUG; // problem in html_mask_form_path?
 	else
 	    throw WEBDAR_BUG; // problem in html_form_mask_bool?
     }

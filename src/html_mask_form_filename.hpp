@@ -66,11 +66,14 @@ public:
 	/// \param[in] subject is the name of the type of object we filter like "file name" or "extended attributes"
 	/// this string is used to build the summary phrase describing the action the filter will perform
     html_mask_form_filename(const std::string & subject);
-    html_mask_form_filename(const html_mask_form_filename & ref) = default;
+    html_mask_form_filename(const html_mask_form_filename & ref) = delete;
     html_mask_form_filename(html_mask_form_filename && ref) noexcept = delete;
     html_mask_form_filename & operator = (const html_mask_form_filename & ref) = delete;
     html_mask_form_filename & operator = (html_mask_form_filename && ref) noexcept = delete;
     ~html_mask_form_filename() = default;
+
+    void set_child(const std::shared_ptr<bibliotheque> & ptr,
+		   bibliotheque::category cat);
 
 	/// change the value provided at construction time
     void change_subject(const std::string & subject);
@@ -108,8 +111,10 @@ private:
     html_form_mask_bool root;
     std::shared_ptr< std::deque<std::string> >labels;
     std::shared_ptr<std::string> sujet; ///< shared with provided objects
+    bibliotheque::category categ;
+    std::shared_ptr<bibliotheque> biblio;
 
-    void init_bool_obj(html_form_mask_bool & obj) const;
+    template <class T> void init_bool_obj(T & obj) const;
     void update_labels();
     void check_ptr() const;
 
@@ -117,5 +122,12 @@ private:
     static constexpr const char* jlabel_bool_config = "bool-config";
 
 };
+
+template <class T> void html_mask_form_filename::init_bool_obj(T & obj) const
+{
+    obj.set_obj_type_provider(this);
+    obj.set_labels_ptr(labels);
+    const_cast<html_mask_form_filename*>(this)->record_actor_on_event(&obj, html_form_mask_bool::update);
+}
 
 #endif

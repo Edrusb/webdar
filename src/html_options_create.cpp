@@ -358,22 +358,31 @@ void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
 			     bibliotheque::repo,
 			     entrep,
 			     false);
+
+    filename_mask->set_child(ptr, bibliotheque::filefilter);
     guichet_filename_mask.set_child(ptr,
 				    bibliotheque::filefilter,
 				    filename_mask,
 				    false);
+
+    ea_mask->set_child(ptr, bibliotheque::filefilter);
     guichet_ea_mask.set_child(ptr,
 			      bibliotheque::filefilter,
 			      ea_mask,
 			      false);
+
+    delta_mask->set_child(ptr, bibliotheque::filefilter);
     guichet_delta_mask.set_child(ptr,
 				 bibliotheque::filefilter,
 				 delta_mask,
 				 false);
+
+    compr_mask->set_child(ptr, bibliotheque::filefilter);
     guichet_compr_mask.set_child(ptr,
 				 bibliotheque::filefilter,
 				 compr_mask,
 				 false);
+
     guichet_path_mask.set_child(ptr,
 				bibliotheque::pathfilter,
 				path_mask,

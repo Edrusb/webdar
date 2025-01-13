@@ -130,6 +130,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     tmp_fm.reset(new (nothrow) html_mask_form_filename("mask"));
     if(!tmp_fm)
 	throw exception_memory();
+    else
+	tmp_fm->set_child(ptr, bibliotheque::filefilter);
 
     ab_filemask.reset(new (nothrow) arriere_boutique<html_mask_form_filename>(ptr,
 									      bibliotheque::filefilter,

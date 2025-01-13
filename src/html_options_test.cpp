@@ -121,10 +121,12 @@ html_options_test::html_options_test():
 
 void html_options_test::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 {
+    filename_mask->set_child(ptr, bibliotheque::filefilter);
     guichet_filename_mask.set_child(ptr,
 				    bibliotheque::filefilter,
 				    filename_mask,
 				    false);
+
     guichet_path_mask.set_child(ptr,
 				bibliotheque::pathfilter,
 				path_mask,

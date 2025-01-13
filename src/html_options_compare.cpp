@@ -180,14 +180,18 @@ html_options_compare::html_options_compare():
 
 void html_options_compare::set_biblio(const shared_ptr<bibliotheque> & ptr)
 {
+    filename_mask->set_child(ptr, bibliotheque::filefilter);
     guichet_filename_mask.set_child(ptr,
 				    bibliotheque::filefilter,
 				    filename_mask,
 				    false);
+
+    ea_mask->set_child(ptr, bibliotheque::filefilter);
     guichet_ea_mask.set_child(ptr,
 			      bibliotheque::filefilter,
 			      ea_mask,
 			      false);
+
     guichet_path_mask.set_child(ptr,
 				bibliotheque::pathfilter,
 				path_mask,
