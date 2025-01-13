@@ -147,6 +147,7 @@ private:
     bibliotheque_subconfig* adopted_subconfig; ///< may be null if adopted does not implement bibliotheque_subconfig interface
     bool ignore_events;
     body_builder* adopted_frame;   ///< which wrapper object to change visibility of
+    bool clear_adopted;
 
     html_form select_form;
     html_form_fieldset select_fs;

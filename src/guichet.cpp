@@ -40,6 +40,7 @@ using namespace std;
 
 guichet::guichet():
     ignore_events(false),
+    clear_adopted(true),
     select_form("Update"),
     select_fs(""),
     select("Configuration", event_select),
@@ -277,16 +278,23 @@ void guichet::on_event(const std::string & event_name)
 
     if(event_name == event_select)
     {
-	set_adopted();
+	if(clear_adopted && select.get_selected_num() == 0)
+	    adopted_jsoner->clear_json();
+	    // clear_adopted is true when the user has selected "manual mode"
+	    // but is false when the user clicked the "edit" button
+	else
+	    set_adopted();
 	set_visibility();
     }
     else if(event_name == event_edit)
     {
 	if(select.get_selected_num() != 0)
 	{
+	    clear_adopted = false;
 	    select.set_selected(0);
 		// this trigers an new event
-		// which sets visibility()
+		// which in particular sets visibility()
+		// (see just above the event_select)
 	}
 	else
 	    throw WEBDAR_BUG;
@@ -349,6 +357,7 @@ string guichet::inherited_get_body_part(const chemin & path,
 					const request & req)
 {
     check_adopted();
+    clear_adopted = true;
     return get_body_part_from_all_children(path, req);
 }
 
