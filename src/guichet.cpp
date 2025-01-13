@@ -437,6 +437,7 @@ void guichet::set_adopted()
 	}
 	catch(...)
 	{
+	    clear_adopted = false;
 	    select.set_selected(0); // passing on manual mode
 	    throw;
 	}
