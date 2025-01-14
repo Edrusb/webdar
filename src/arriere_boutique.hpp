@@ -228,7 +228,6 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
 
 	// events and actors
     wrapped_events->record_actor_on_event(this, change_event_name);
-    config_name.record_actor_on_event(this, html_form_input::changed);
     config_form.record_actor_on_event(this, html_form::changed);
     delete_selected.record_actor_on_event(this, event_delete);
     clear_cur_config.record_actor_on_event(this, event_clear);
@@ -259,8 +258,7 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 	need_saving.set_visible(true);
 	clear_warning();
     }
-    else if(event_name == html_form_input::changed
-	    || event_name == html_form::changed)
+    else if(event_name == html_form::changed)
     {
 
 	    // save as form has changed (-> asked to save as)
