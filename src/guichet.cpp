@@ -151,6 +151,7 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
 
     edit.add_css_class(css_float);
     clear.add_css_class(css_float);
+    select_fs.add_label_css_class(css_bold);
 }
 
 void guichet::load_json(const json & source)
@@ -295,6 +296,18 @@ void guichet::on_event(const std::string & event_name)
 	    // but is false when the user clicked the "edit" button
 	else
 	    set_adopted();
+
+	if(is_sub)
+	{
+	    string fs_title = string(fs_title_subcomp);
+
+	    if(select.get_selected_num() == 0)
+		fs_title += "...";
+	    else
+		fs_title += " "  + select.get_selected_id();
+	    select_fs.change_label(fs_title);
+	}
+
 	set_visibility();
     }
     else if(event_name == event_edit)
@@ -385,6 +398,15 @@ void guichet::new_css_library_available()
 	tmp.clear();
 	tmp.css_float(css::fl_right);
 	csslib->add(css_float, tmp);
+    }
+
+    if(!csslib->class_exists(css_bold))
+    {
+	css tmp;
+
+	tmp.css_font_weight_bold();
+
+	csslib->add(css_bold, tmp);
     }
 
     webdar_css_style::update_library(*csslib);

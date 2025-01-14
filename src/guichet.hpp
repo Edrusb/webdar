@@ -184,6 +184,9 @@ private:
     static constexpr const char* jlabel_conf = "config";   ; // json; object configuration
 
     static constexpr const char* css_float = "guichet_float";
+    static constexpr const char* css_bold = "guichet_bold";
+
+    static constexpr const char* fs_title_subcomp = "Matches configuration named";
 };
 
 
