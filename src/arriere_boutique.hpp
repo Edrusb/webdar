@@ -113,6 +113,7 @@ protected:
 
 private:
     static constexpr const char* event_delete = "delete_conf";
+    static constexpr const char* event_clear = "clear_cur_conf";
     static constexpr const char* css_float = "arriere_boutique_float";
     static constexpr const char* css_warn = "arriere_boutique_warn";
 
@@ -129,6 +130,7 @@ private:
     html_form_fieldset listing_fs;
     html_form_radio listing;
     html_double_button delete_selected;
+    html_double_button clear_cur_config;
     html_div floteur;
 
     std::unique_ptr<T> wrapped;
@@ -159,6 +161,7 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     listing_form("Load selected"),
     listing_fs("Available configurations"),
     delete_selected("Delete loaded config", event_delete),
+    clear_cur_config("Clear", event_clear),
     change_event_name(ch_event_name),
     ignore_events(false)
 {
@@ -212,6 +215,7 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     floteur.adopt(&listing_form);
 
     floteur.adopt(&delete_selected);
+    floteur.adopt(&clear_cur_config);
     adopt(&floteur);
 
     adopt(&warning_message);
@@ -227,11 +231,14 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     config_name.record_actor_on_event(this, html_form_input::changed);
     config_form.record_actor_on_event(this, html_form::changed);
     delete_selected.record_actor_on_event(this, event_delete);
+    clear_cur_config.record_actor_on_event(this, event_clear);
+
     listing.record_actor_on_event(this, html_form_radio::changed);
     ptr->record_actor_on_event(this, bibliotheque::changed);
 
 	// css
     webdar_css_style::normal_button(delete_selected);
+    webdar_css_style::normal_button(clear_cur_config);
     floteur.add_css_class(css_float);
     warning_message.add_css_class(css_warn);
     need_saving.add_css_class(css_warn);
@@ -320,6 +327,15 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 	}
 	else
 	    set_warning("Select and load first the configuration to be deleted");
+    }
+    else if(event_name == event_clear)
+    {
+	currently_loaded = "";
+	config_name.set_value("");
+	wrapped_jsoner->clear_json();
+	need_saving.set_visible(true);
+	listing.unset_selected();
+	clear_warning();
     }
     else if(event_name == html_form_radio::changed)
     {
