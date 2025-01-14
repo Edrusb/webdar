@@ -228,6 +228,7 @@ json html_form_mask_bool::save_json() const
     jsoner* itjson = nullptr;
 
     ret[jlabel_logic] = current_bool_mode;
+    ret[jlabel_components] = {};
 
     for(html_form_dynamic_table::iterator it = table.begin();
 	it != table.end();
