@@ -38,7 +38,8 @@ extern "C"
 
 using namespace std;
 
-guichet::guichet():
+guichet::guichet(bool subcomponent):
+    is_sub(subcomponent),
     ignore_events(false),
     clear_adopted(true),
     select_form("Update"),
@@ -97,10 +98,18 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
 
     adopt(&edit);
     select_fs.adopt(&select);
-    select_form.adopt(&select_fs);
-    adopt(&select_form);
+
+	// adding a form around fieldset to select config when not a subconfig
+    if(is_sub)
+	adopt(&select_fs);
+    else
+    {
+	select_form.adopt(&select_fs);
+	adopt(&select_form);
+    }
 
     adopt(&clear);
+
     if(add_form_around)
     {
 	around_adopted_fs.adopt(adopted.get());
@@ -399,7 +408,12 @@ void guichet::update_selected()
     try
     {
 	select.clear();
-	select.add_choice("0", "---- manual config ----");
+
+	if(is_sub)
+	    select.add_choice("0", "---- select a configuration ----");
+	else
+	    select.add_choice("0", "---- manual config ----");
+
 	for(deque<string>::iterator it = available.begin();
 	    it != available.end();
 	    ++it)
@@ -452,24 +466,35 @@ void guichet::set_visibility()
 
     check_adopted();
 
-    if(adopted_frame == nullptr)
-	throw WEBDAR_BUG;
-    adopted_frame->set_visible(manualmode);
-    edit.set_visible(!manualmode);
-    clear.set_visible(manualmode);
-    saveas_form.set_visible(manualmode);
-    if(!manualmode)
+    if(is_sub)
     {
-	ignore_events = true;
-	try
+	adopted_frame->set_visible(false);
+	edit.set_visible(false);
+	clear.set_visible(false);
+	saveas_form.set_visible(false);
+    }
+    else
+    {
+
+	if(adopted_frame == nullptr)
+	    throw WEBDAR_BUG;
+	adopted_frame->set_visible(manualmode);
+	edit.set_visible(!manualmode);
+	clear.set_visible(manualmode);
+	saveas_form.set_visible(manualmode);
+	if(!manualmode)
 	{
-	    saveas_name.set_value("");
-	}
-	catch(...)
-	{
+	    ignore_events = true;
+	    try
+	    {
+		saveas_name.set_value("");
+	    }
+	    catch(...)
+	    {
+		ignore_events = false;
+		throw;
+	    }
 	    ignore_events = false;
-	    throw;
 	}
-	ignore_events = false;
     }
 }

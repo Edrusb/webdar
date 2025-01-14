@@ -90,7 +90,11 @@ class guichet: public body_builder, public jsoner, public bibliotheque_subconfig
 public:
 
 	/// constructor
-    guichet();
+
+	/// \param[in] subcomponent has to be set to true when it is used as indirect (or direct) subcomponent
+	/// of another mask object (for example another guichet object) and used to refer existing configurations
+	/// from a bibliotheque. This avoids the form to be used, the edit button to show, and other cosmetic things
+    guichet(bool subcomponent = false);
 
 	/// mandatory call to provide the object to adopt and use to display configurations
 
@@ -148,6 +152,7 @@ private:
     bool ignore_events;
     body_builder* adopted_frame;   ///< which wrapper object to change visibility of
     bool clear_adopted;
+    bool is_sub;
 
     html_form select_form;
     html_form_fieldset select_fs;
