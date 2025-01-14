@@ -157,7 +157,7 @@ private:
     struct linked_config
     {
 	json config;
-	std::set<coordinates> dependency;
+	using_set dependency;
 
 	linked_config() {};
 	linked_config(const json & conf) { config = conf; };
@@ -189,7 +189,8 @@ private:
 
     void add_dependency_for(coordinates user, const using_set & referred);
     void remove_dependency_for(coordinates user);
-
+    using_set get_direct_dependencies_of(coordinates user) const;
+    void check_against_cyclic_dependencies(coordinates source, const std::set<coordinates> & seen);
 
 	/// current json output version for this class
     static constexpr const unsigned int bibli_version = 1;

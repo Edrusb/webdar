@@ -59,7 +59,10 @@ void bibliotheque::add_config(category categ,
 
     try
     {
+	using_set empty;
+
 	add_dependency_for(coord, refs);
+	check_against_cyclic_dependencies(coord, empty);
     }
     catch(...)
     {
@@ -86,8 +89,11 @@ void bibliotheque::update_config(category categ, const
 
     try
     {
+	using_set empty;
+
 	remove_dependency_for(coord);
 	add_dependency_for(coord, refs);
+	check_against_cyclic_dependencies(coord, empty);
     }
     catch(...)
     {
@@ -352,6 +358,42 @@ void bibliotheque::remove_dependency_for(coordinates user)
 	    ++it)
 	    it->second.dependency.erase(user);
     }
+}
+
+bibliotheque::using_set bibliotheque::get_direct_dependencies_of(coordinates user) const
+{
+    using_set ret;
+
+    for(table::const_iterator catit = content.begin();
+	catit != content.end();
+	++catit)
+    {
+	for(asso::const_iterator it = catit->second.begin();
+	    it != catit->second.end();
+	    ++it)
+	    if(it->second.dependency.find(user) != it->second.dependency.end())
+		ret.insert(coordinates(catit->first, it->first));
+    }
+
+    return ret;
+}
+
+void bibliotheque::check_against_cyclic_dependencies(coordinates source, const std::set<coordinates> & seen)
+{
+    using_set next = seen;
+    using_set children = get_direct_dependencies_of(source);
+
+    if(seen.find(source) != seen.end())
+	throw exception_range(libdar::tools_printf("Cyclic dependency found, %s/%s depends on itself",
+						   category_to_string(source.cat).c_str(),
+						   source.confname.c_str()));
+
+    next.insert(source);
+
+    for(using_set::iterator it = children.begin();
+	it != children.end();
+	++it)
+	check_against_cyclic_dependencies(*it, next); // recursion
 }
 
 string bibliotheque::category_to_string(category cat)
