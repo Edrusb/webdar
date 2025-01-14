@@ -226,7 +226,7 @@ void bibliotheque::load_json(const json & source)
 
 		depend.clear();
 		for(json::iterator usit = used_by.begin(); usit != used_by.end(); ++usit)
-		    depend.insert(coordinates(it->at(category_label), it->at(config_label)));
+		    depend.insert(coordinates(string_to_category(usit->at(category_label)), usit->at(config_label)));
 
 		tmp_map[config_name] = linked_config(config_json, depend);
 	    }
