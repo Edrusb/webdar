@@ -267,6 +267,8 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 	    {
 		if(config_name.get_value() != currently_loaded)
 		{
+		    currently_loaded = config_name.get_value();
+
 		    if(wrapped_subconfig == nullptr)
 			biblio->add_config(categ,
 					   config_name.get_value(),
@@ -276,7 +278,6 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 					   config_name.get_value(),
 					   wrapped_jsoner->save_json(),
 					   wrapped_subconfig->get_using_set());
-		    currently_loaded = config_name.get_value();
 		}
 		else
 		{
