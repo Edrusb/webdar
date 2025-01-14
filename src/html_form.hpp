@@ -59,6 +59,7 @@ public:
     html_form & operator = (html_form && ref) noexcept = default;
     ~html_form() = default;
 
+	/// encoding type for HTTP code generation ; "multipart/form-data" for example
     void set_enctype(const std::string & enc) { enctype = enc; };
 
 protected:
