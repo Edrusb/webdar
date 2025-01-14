@@ -119,7 +119,7 @@ void bibliotheque::delete_config(category categ, const string & name)
 	    ++list)
 	    errmsg += libdar::tools_printf(" %s/%s",
 					   category_to_string(list->cat).c_str(),
-					   list->confname);
+					   list->confname.c_str());
 
 	throw exception_range(errmsg);
     }
