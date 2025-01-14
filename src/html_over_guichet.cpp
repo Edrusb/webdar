@@ -39,17 +39,20 @@ extern "C"
 
 using namespace std;
 
-html_over_guichet::html_over_guichet()
+html_over_guichet::html_over_guichet():
+    wicket(true)
 {
-    inner.reset(new (nothrow) html_form_mask_bool());
-    if(!inner)
-	throw exception_memory();
 }
 
 void html_over_guichet::set_child(const std::shared_ptr<bibliotheque> & ptr,
+				  unique_ptr<html_mask_form_filename> & to_give,
 				  bibliotheque::category cat)
 {
     if(!ptr)
+	throw WEBDAR_BUG;
+
+    inner = std::move(to_give);
+    if(!inner)
 	throw WEBDAR_BUG;
 
 	// component configuration
@@ -69,24 +72,6 @@ void html_over_guichet::set_child(const std::shared_ptr<bibliotheque> & ptr,
 
 	// css
 
-}
-
-void html_over_guichet::add_mask_type(const std::string & label)
-{
-    check_inner();
-    inner->add_mask_type(label);
-}
-
-void html_over_guichet::clear_all_masks_type()
-{
-    check_inner();
-    inner->clear_all_masks_type();
-}
-
-void html_over_guichet::set_obj_type_provider(const html_form_dynamic_table_object_provider* provider)
-{
-    check_inner();
-    inner->set_obj_type_provider(provider);
 }
 
 unique_ptr<libdar::mask> html_over_guichet::get_mask() const

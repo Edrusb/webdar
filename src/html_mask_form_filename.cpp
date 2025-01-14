@@ -46,19 +46,17 @@ html_mask_form_filename::html_mask_form_filename(const string & subject):
     form("Update"),
     sujet(subject)
 {
-    update_labels();
+    init();
+}
 
-	// adoption tree
-
-    form.adopt(&root);
-    adopt(&form);
-
-	// events
-    register_name(changed);
-    form.record_actor_on_event(this, html_form::changed);
-
-	// must be done after event registration above
-    init_bool_obj(root);
+html_mask_form_filename::html_mask_form_filename(const html_mask_form_filename & ref):
+    form(ref.form),
+    root(ref.root.get_bool_mode()),
+    sujet(ref.sujet),
+    categ(ref.categ),
+    biblio(ref.biblio)
+{
+    init();
 }
 
 void html_mask_form_filename::set_child(const std::shared_ptr<bibliotheque> & ptr,
@@ -73,6 +71,7 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
 {
     unique_ptr<body_builder> ret;
     unique_ptr<html_form_mask_bool> tmp;
+    unique_ptr<html_mask_form_filename> clone;
     unique_ptr<html_over_guichet> ovgui;
 
     switch(num)
@@ -89,12 +88,15 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
 	ret = std::move(tmp);
 	break;
     case 2: // "recorded configuration"
+	clone.reset(new (nothrow) html_mask_form_filename(*this));
+	if(!clone)
+	    throw exception_memory();
+
 	ovgui.reset(new (nothrow) html_over_guichet());
 	if(!ovgui)
 	    throw exception_memory();
 
-	ovgui->set_child(biblio, categ);
-	init_bool_obj(*ovgui);
+	ovgui->set_child(biblio, clone, categ);
 	ret = std::move(ovgui);
 	break;
     default:
@@ -181,7 +183,7 @@ string html_mask_form_filename::inherited_get_body_part(const chemin & path,
     return get_body_part_from_all_children(path, req);
 }
 
-void html_mask_form_filename::update_labels()
+void html_mask_form_filename::init()
 {
     labels.clear();
 	// we use tools_printf to ease future message translation
@@ -190,4 +192,16 @@ void html_mask_form_filename::update_labels()
     labels.push_back(libdar::tools_printf("%S expression", sujet));
     labels.push_back("Logical combination");
     labels.push_back("Recorded configuration");
+
+	// adoption tree
+
+    form.adopt(&root);
+    adopt(&form);
+
+	// events
+    register_name(changed);
+    form.record_actor_on_event(this, html_form::changed);
+
+	// must be done after event registration above
+    init_bool_obj(root);
 }

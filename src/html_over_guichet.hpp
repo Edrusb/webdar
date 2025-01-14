@@ -40,7 +40,7 @@ extern "C"
 #include "bibliotheque_subconfig.hpp"
 #include "guichet.hpp"
 #include "html_form_dynamic_table.hpp"
-#include "html_form_mask_bool.hpp"
+#include "html_mask_form_filename.hpp"
 
 class html_over_guichet : public guichet,
 			  public html_mask
@@ -58,19 +58,8 @@ public:
 	/// \note to_give must also be a jsoner and a html_mask, it pass under the managment responsibility of the
 	/// html_over_guichet object.
     void set_child(const std::shared_ptr<bibliotheque> & ptr,
+		   std::unique_ptr<html_mask_form_filename> & to_give,
 		   bibliotheque::category cat);
-
-
-	/// surface method from our html_form_bool field
-    void add_mask_type(const std::string & label);
-
-	/// surface method from our html_form_bool field
-    void clear_all_masks_type();
-
-
-	/// surface method from our html_form_bool field
-    void set_obj_type_provider(const html_form_dynamic_table_object_provider* provider);
-
 
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override;
@@ -84,7 +73,6 @@ public:
     	/// inherited_from jsoner
     virtual void clear_json() override;
 
-
 	/// inherited from bibliotheque_subconfig
     virtual bibliotheque::using_set get_using_set() const override;
 
@@ -97,7 +85,7 @@ protected:
 
 private:
     guichet wicket;
-    std::shared_ptr<html_form_mask_bool> inner;
+    std::shared_ptr<html_mask_form_filename> inner;
 
     void check_inner() const { if(!inner) throw WEBDAR_BUG; };
 };

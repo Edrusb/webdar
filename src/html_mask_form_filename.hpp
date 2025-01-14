@@ -66,7 +66,7 @@ public:
 	/// \param[in] subject is the name of the type of object we filter like "file name" or "extended attributes"
 	/// this string is used to build the summary phrase describing the action the filter will perform
     html_mask_form_filename(const std::string & subject);
-    html_mask_form_filename(const html_mask_form_filename & ref) = delete;
+    html_mask_form_filename(const html_mask_form_filename & ref);
     html_mask_form_filename(html_mask_form_filename && ref) noexcept = delete;
     html_mask_form_filename & operator = (const html_mask_form_filename & ref) = delete;
     html_mask_form_filename & operator = (html_mask_form_filename && ref) noexcept = delete;
@@ -111,8 +111,8 @@ private:
     bibliotheque::category categ;
     std::shared_ptr<bibliotheque> biblio;
 
+    void init();
     template <class T> void init_bool_obj(T & obj) const;
-    void update_labels();
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* jlabel_bool_config = "bool-config";
