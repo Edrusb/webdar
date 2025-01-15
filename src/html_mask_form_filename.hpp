@@ -72,6 +72,7 @@ public:
     html_mask_form_filename & operator = (html_mask_form_filename && ref) noexcept = delete;
     ~html_mask_form_filename() = default;
 
+	/// should be invoked ASAP after object construction
     void set_child(const std::shared_ptr<bibliotheque> & ptr,
 		   bibliotheque::category cat);
 
