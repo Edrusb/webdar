@@ -67,11 +67,16 @@ public:
 	/// \param[in] allow_absolute_paths determines if path masks we will generate
 	/// will allow or not absolute paths.
     html_mask_form_path(bool allow_absolute_paths);
-    html_mask_form_path(const html_mask_form_path & ref) = default;
+    html_mask_form_path(const html_mask_form_path & ref);
     html_mask_form_path(html_mask_form_path && ref) noexcept = delete;
     html_mask_form_path & operator = (const html_mask_form_path & ref) = delete;
     html_mask_form_path & operator = (html_mask_form_path && ref) noexcept = delete;
     ~html_mask_form_path() = default;
+
+	/// should be invoked ASAP after object construction
+    void set_child(const std::shared_ptr<bibliotheque> & ptr,
+		   bibliotheque::category cat);
+
 
 	/// set filesystem root value
 
@@ -122,6 +127,10 @@ private:
 	// get notified of changes by mean of events triggered
 	// by this html_mask_form_path object
 
+    bibliotheque::category categ;
+    std::shared_ptr<bibliotheque> biblio;
+
+    void init();
     void init_bool_obj(html_form_mask_bool & obj) const;
     void check_ptr() const;
 

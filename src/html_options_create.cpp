@@ -366,6 +366,7 @@ void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				    false);
 
     ea_mask->set_child(ptr, bibliotheque::filefilter);
+    path_mask->set_child(ptr, bibliotheque::pathfilter);
     guichet_ea_mask.set_child(ptr,
 			      bibliotheque::filefilter,
 			      ea_mask,

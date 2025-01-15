@@ -147,6 +147,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 	// this will trigger error and red-highlight the concerned fields.
     if(! tmp_fp)
 	throw exception_memory();
+    else
+	tmp_fp->set_child(ptr, bibliotheque::pathfilter);
 
     ab_pathmask.reset(new (nothrow) arriere_boutique<html_mask_form_path>(ptr,
 									  bibliotheque::pathfilter,

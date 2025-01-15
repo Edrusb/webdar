@@ -34,7 +34,7 @@ extern "C"
     // webdar headers
 #include "html_form_mask_subdir.hpp"
 #include "html_form_mask_file.hpp"
-
+#include "html_over_guichet.hpp"
 
     //
 #include "html_mask_form_path.hpp"
@@ -54,18 +54,37 @@ html_mask_form_path::html_mask_form_path(bool allow_absolute_paths):
     labels.push_back("Path expression");
     labels.push_back("File listing");
     labels.push_back("Logical combination");
-    init_bool_obj(root);
+    labels.push_back("Recorded configuration");
 
-	// adoption tree
+    init();
+}
 
-    form.adopt(&root);
-    adopt(&form);
+html_mask_form_path::html_mask_form_path(const html_mask_form_path & ref):
+    form(ref.form),
+    root(ref.root.get_bool_mode()),
+    allow_abs_paths(ref.allow_abs_paths),
+    labels(ref.labels),
+    fs_root(ref.fs_root),
+    categ(ref.categ),
+    biblio(ref.biblio)
+{
+    init();
 
-	// events
-    register_name(changed);
-    register_name(html_form_mask_subdir::update);
-    form.record_actor_on_event(this, html_form::changed);
+	// both new and ref objects share the same fs_root
+	// but only the ref one should have its set_fs_root() method
+	// invoked, thus it does not matter that nobody acts upon
+	// the new objects events.
+	// But, the html_form_mask_subdirs objects created from this new
+	// object will register to this new object events, thus this new one
+	// must cascade the event from its parent:
+    const_cast<html_mask_form_path*>(&ref)->record_actor_on_event(this, html_form_mask_subdir::update);
+}
 
+void html_mask_form_path::set_child(const std::shared_ptr<bibliotheque> & ptr,
+				    bibliotheque::category cat)
+{
+    biblio = ptr;
+    categ = cat;
 }
 
 void html_mask_form_path::set_fs_root(const std::string & prefix)
@@ -95,6 +114,7 @@ unique_ptr<body_builder> html_mask_form_path::provide_object_of_type(unsigned in
     unique_ptr<body_builder> ret;
     unique_ptr<html_form_mask_bool> tmp;
     unique_ptr<html_form_mask_subdir> as_actor;
+    unique_ptr<html_over_guichet> ovgui;
 
     check_ptr();
 
@@ -116,6 +136,25 @@ unique_ptr<body_builder> html_mask_form_path::provide_object_of_type(unsigned in
 
 	init_bool_obj(*tmp);
 	ret = std::move(tmp);
+	break;
+    case 3: // "recorded configuration"
+	ret.reset(new (nothrow) html_mask_form_path(*this));
+	if(!ret)
+	    throw WEBDAR_BUG;
+
+	ovgui.reset(new (nothrow) html_over_guichet());
+	if(!ovgui)
+	    throw exception_memory();
+
+	ovgui->set_child(biblio, ret, categ);
+
+	if(ret)
+	    throw WEBDAR_BUG;
+	    // object pointed to by ret
+	    // should have been passed to the
+	    // object pointed to by ovgui
+
+	ret = std::move(ovgui);
 	break;
     default:
 	if(num < labels.size())
@@ -198,6 +237,8 @@ void html_mask_form_path::on_event(const std::string & event_name)
 {
     if(event_name == html_form::changed)
 	act(changed);
+    else if(event_name == html_form_mask_subdir::update)
+	act(html_form_mask_subdir::update); // cascading from copy constructed parent
     else
 	throw WEBDAR_BUG;
 }
@@ -206,6 +247,21 @@ string html_mask_form_path::inherited_get_body_part(const chemin & path,
 							const request & req)
 {
     return get_body_part_from_all_children(path, req);
+}
+
+void html_mask_form_path::init()
+{
+    init_bool_obj(root);
+
+	// adoption tree
+
+    form.adopt(&root);
+    adopt(&form);
+
+	// events
+    register_name(changed);
+    register_name(html_form_mask_subdir::update);
+    form.record_actor_on_event(this, html_form::changed);
 }
 
 void html_mask_form_path::init_bool_obj(html_form_mask_bool & obj) const
