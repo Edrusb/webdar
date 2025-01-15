@@ -71,7 +71,6 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
 {
     unique_ptr<body_builder> ret;
     unique_ptr<html_form_mask_bool> tmp;
-    unique_ptr<html_mask_form_filename> clone;
     unique_ptr<html_over_guichet> ovgui;
 
     switch(num)
@@ -88,15 +87,22 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
 	ret = std::move(tmp);
 	break;
     case 2: // "recorded configuration"
-	clone.reset(new (nothrow) html_mask_form_filename(*this));
-	if(!clone)
+	ret.reset(new (nothrow) html_mask_form_filename(*this));
+	if(!ret)
 	    throw exception_memory();
 
 	ovgui.reset(new (nothrow) html_over_guichet());
 	if(!ovgui)
 	    throw exception_memory();
 
-	ovgui->set_child(biblio, clone, categ);
+	ovgui->set_child(biblio, ret, categ);
+
+	if(ret)
+	    throw WEBDAR_BUG;
+	    // object pointed to by ret
+	    // should have been passed to the
+	    // object pointed to by ovgui
+
 	ret = std::move(ovgui);
 	break;
     default:

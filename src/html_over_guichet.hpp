@@ -57,7 +57,7 @@ public:
 	/// \note to_give must also be a jsoner and a html_mask, it pass under the managment responsibility of the
 	/// html_over_guichet object.
     void set_child(const std::shared_ptr<bibliotheque> & ptr,
-		   std::unique_ptr<html_mask_form_filename> & to_give,
+		   std::unique_ptr<body_builder> & to_give,
 		   bibliotheque::category cat);
 
 	/// inherited from html_mask
@@ -84,7 +84,7 @@ protected:
 
 private:
     guichet wicket;
-    std::shared_ptr<html_mask_form_filename> inner;
+    std::shared_ptr<body_builder> inner;
 
     void check_inner() const { if(!inner) throw WEBDAR_BUG; };
 };

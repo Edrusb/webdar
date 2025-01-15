@@ -45,7 +45,7 @@ html_over_guichet::html_over_guichet():
 }
 
 void html_over_guichet::set_child(const std::shared_ptr<bibliotheque> & ptr,
-				  unique_ptr<html_mask_form_filename> & to_give,
+				  unique_ptr<body_builder> & to_give,
 				  bibliotheque::category cat)
 {
     if(!ptr)
@@ -77,7 +77,12 @@ void html_over_guichet::set_child(const std::shared_ptr<bibliotheque> & ptr,
 unique_ptr<libdar::mask> html_over_guichet::get_mask() const
 {
     check_inner();
-    return inner->get_mask();
+
+    const html_mask* inner_mask = dynamic_cast<const html_mask*>(inner.get());
+    if(inner_mask == nullptr)
+	throw WEBDAR_BUG;
+
+    return inner_mask->get_mask();
 }
 
 void html_over_guichet::load_json(const json & source)
