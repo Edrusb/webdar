@@ -125,13 +125,13 @@ public:
 
 	/// \param[in] num the part number of the multipart in this request, first part is starting at index zero
 	/// \return a map of key/value pair corresponding to the key/values pair found in the
-	/// header the multipart number <num> found in the body
+	/// header the multipart number "num" found in the body
     std::map<troncon,troncon> get_header_of_multipart(unsigned int num) const; ///< first part is starting at index zero
 
 	/// obtains the body of multiparts once get_multipart_number() has been executed
 
 	/// \param[in] num the part number of the multipart in this request, first part is starting at index zero
-	/// \return the document inclosed in the multipart number <num> of the body
+	/// \return the document inclosed in the multipart number "num" of the body
     troncon get_body_of_multipart(unsigned int num) const;
 
 private:

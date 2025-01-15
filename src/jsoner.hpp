@@ -90,7 +90,7 @@ public:
 	/// - a json format version
 	/// - a json component identifier (name the class for example)
 	/// - an arbitrary configuration under
-	///  { "version": <num>, "id": "<class name>", "config": {...} }
+	///  { "version": num, "id": "class name", "config": {...} }
 	/// see the protected static methods that implement this.
     virtual json save_json() const = 0;
 
@@ -113,7 +113,7 @@ protected:
 
 	/// from a given json global and common json structure split header parts and return the config part
 
-	/// \param[in] json the global json configuration to apply to the current object
+	/// \param[in] source the global json configuration to apply to the current object
 	/// \param[in] version the format and expected fields of the returned json configuration
 	/// \param[in] class_id should match the name of the class this static method is used by
 	/// \return inherited class specific data to apply to the current object following the format version 'version'

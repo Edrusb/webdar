@@ -21,8 +21,10 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
+#ifndef XXX
+#define XXX
+
     // C system header files
-#include "my_config.h"
 extern "C"
 {
 
@@ -34,20 +36,20 @@ extern "C"
     // webdar headers
 
 
-    //
-#include "XXX.hpp"
+    /// class YYY description
 
-using namespace std;
+    /// class YYY long description
+    ///
 
-const string XXX::changed = "XXX_changed";
-
-XXX::XXX()
+class YYY
 {
+public:
+    YYY(const std::string & title);
+    YYY(const YYY & ref) = default;
+    YYY(YYY && ref) noexcept = default;
+    YYY & operator = (const YYY & ref) = default;
+    YYY & operator = (YYY && ref) noexcept = default;
+    ~YYY() = default;
+};
 
-}
-
-void XXX::get_value() const
-{
-
-
-}
+#endif

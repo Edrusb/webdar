@@ -52,9 +52,8 @@ public:
     	/// mandatory call to provide the object to adopt and use to load/save json and get mask configurations
 
 	/// \param[in] ptr pointer to a bibliotheque where from to fetch configurations
-	/// \param[in] cat category in which to look for named in the bibliotheque
 	/// \param[in] to_give object of the type corresponding to the category be given to this html_over_guichet
-	/// \param[in] add_form_around whether a form around to_give is necessary for proper functionning
+	/// \param[in] cat category in which to look for named in the bibliotheque
 	/// \note to_give must also be a jsoner and a html_mask, it pass under the managment responsibility of the
 	/// html_over_guichet object.
     void set_child(const std::shared_ptr<bibliotheque> & ptr,

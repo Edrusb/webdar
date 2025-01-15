@@ -269,7 +269,7 @@ private:
     void del_line(const std::string & event_name);
     void purge_to_delete();
 
-    friend html_form_dynamic_table::iterator;
+    friend class html_form_dynamic_table::iterator;
 };
 
 #endif

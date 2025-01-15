@@ -21,12 +21,7 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
-#ifndef XXX_HPP
-#define XXX_HPP
-
     // C system header files
-#include "my_config.h"
-
 extern "C"
 {
 
@@ -34,22 +29,19 @@ extern "C"
 
     // C++ system header files
 
+
     // webdar headers
 
-    /// class XXX description
 
-    /// class XXX long description
-    ///
 
-class XXX
+    //
+#include "XXX.hpp"
+
+using namespace std;
+
+YYY::YYY()
 {
-public:
-    XXX(const std::string & title);
-    XXX(const XXX & ref) = default;
-    XXX(XXX && ref) noexcept = default;
-    XXX & operator = (const XXX & ref) = default;
-    XXX & operator = (XXX && ref) noexcept = default;
-    ~XXX() = default;
-};
 
-#endif
+}
+
+
