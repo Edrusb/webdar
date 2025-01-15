@@ -54,7 +54,7 @@ extern "C"
     /// - edit : which lead the component to show and the dropbox to be set to manual mode
     /// - save-as : in manual mode to save the current configuration as a new one in the bibliotheque
     ///   (the save-as button is associated to a box to provide a name)
-    /** \verbatime
+    /** \verbatim
 
 	+--------<form>-----------------------------------+
 	| +----------------------------------+            |
