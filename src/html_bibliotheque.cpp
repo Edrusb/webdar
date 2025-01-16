@@ -62,6 +62,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     unique_ptr<html_entrepot> tmp_e;
     unique_ptr<html_mask_form_filename> tmp_fm;
     unique_ptr<html_mask_form_path> tmp_fp;
+    unique_ptr<html_compression_params> tmp_compr;
 
     if(!ptr)
 	throw WEBDAR_BUG;
@@ -157,6 +158,22 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     if(! ab_pathmask)
 	throw exception_memory();
 
+	// compression tab
+
+    tmp_compr.reset(new (nothrow) html_compression_params(true,   // resave uncompressed
+							  true,   // min size
+							  true)); // show keep compressed
+    if(! tmp_compr)
+	throw exception_memory();
+
+    ab_compr.reset(new (nothrow) arriere_boutique<html_compression_params>(ptr,
+									   bibliotheque::compress,
+									   tmp_compr,
+									   html_compression_params::changed));
+    if(!ab_compr)
+	throw exception_memory();
+
+
 
     	// global component setups
 
@@ -164,6 +181,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     tabs.add_tab("Repos", tab_repo);
     tabs.add_tab("Filename Masks", tab_filemask);
     tabs.add_tab("Path Masks", tab_pathmask);
+    tabs.add_tab("Compression", tab_compression);
 
 
 	//  global adoption tree
@@ -180,6 +198,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     tabs.adopt_in_section(tab_repo, ab_entrepot.get());
     tabs.adopt_in_section(tab_filemask, ab_filemask.get());
     tabs.adopt_in_section(tab_pathmask, ab_pathmask.get());
+    tabs.adopt_in_section(tab_compression, ab_compr.get());
 
     adopt(&tabs);
 

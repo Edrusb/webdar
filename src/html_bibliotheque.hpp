@@ -48,6 +48,7 @@ extern "C"
 #include "html_entrepot.hpp"
 #include "html_mask_form_filename.hpp"
 #include "html_mask_form_path.hpp"
+#include "html_compression_params.hpp"
 
     /// class html_bibliotheque provide graphical mean to manipulate a bibliotheque object
 
@@ -121,6 +122,7 @@ private:
     std::unique_ptr<arriere_boutique<html_entrepot> > ab_entrepot;
     std::unique_ptr<arriere_boutique<html_mask_form_filename> > ab_filemask;
     std::unique_ptr<arriere_boutique<html_mask_form_path> > ab_pathmask;
+    std::unique_ptr<arriere_boutique<html_compression_params> > ab_compr;
 
     html_tabs tabs;
     html_text intro;
@@ -155,6 +157,7 @@ private:
     static constexpr const char* tab_repo = "repo";
     static constexpr const char* tab_filemask = "filemask";
     static constexpr const char* tab_pathmask = "pathmask";
+    static constexpr const char* tab_compression = "compression";
 
     static constexpr const char* event_save = "save";
     static constexpr const char* event_load = "load";
