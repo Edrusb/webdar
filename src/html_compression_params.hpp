@@ -45,11 +45,15 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_form_input_unit.hpp"
 #include "webdar_tools.hpp"
-
+#include "jsoner.hpp"
 
     /// html component used for the user to define a compression algorithm
 
-class html_compression_params : public body_builder, public actor, public events
+class html_compression_params : public body_builder,
+				public actor,
+				public events,
+				public jsoner
+
 {
 public:
 	// change event
@@ -78,6 +82,15 @@ public:
     libdar::U_I get_num_threads() const { return compr_threads.get_value_as_int(); };
     bool get_keep_compressed() const { return keep_compressed.get_value_as_bool(); };
 
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
+
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -101,6 +114,24 @@ private:
 
     bool x_show_resave;
     bool x_show_min_size;
+
+    static constexpr const unsigned int default_level = 9;
+    static constexpr const unsigned int default_min_compr_size = 100;
+    static constexpr const unsigned int default_compression_block = 240*1024;
+    static constexpr const bool default_never_resave_uncompressed = false;
+    static constexpr const unsigned int default_compr_threads = 4;
+    static constexpr const bool default_keep_compressed = true;
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_compression_params";
+
+    static constexpr const char* jlabel_algo = "compr-algo";
+    static constexpr const char* jlabel_level = "compr-level";
+    static constexpr const char* jlabel_min_compr_sz = "min-compr-size";
+    static constexpr const char* jlabel_compr_block = "compr-block";
+    static constexpr const char* jlabel_never_resave_uncompr = "never-resave-uncompr";
+    static constexpr const char* jlabel_compr_threads = "compr-threads";
+    static constexpr const char* jlabel_keep_compr = "keep-compressed";
 };
 
 #endif

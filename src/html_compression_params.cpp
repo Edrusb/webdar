@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 
@@ -50,7 +50,7 @@ html_compression_params::html_compression_params(bool show_resave,
     compr_fs("Compression parameters"),
     compression("Compression algorithm"),
     compression_level("Compression level", html_form_input::number, "", "5"),
-    min_compr_size("Minimum file sized compressed", 0, "30"),
+    min_compr_size("Minimum file sized compressed", default_min_compr_size, "30"),
     compression_block("Block compression for parallel compression (zero to zero to disable)", 0, "30"),
     never_resave_uncompressed("Never resave uncompressed if compressed file took more place than uncompressed", html_form_input::check, "", "1"),
     keep_compressed("Keep file compressed", html_form_input::check, "", "1"),
@@ -70,7 +70,12 @@ html_compression_params::html_compression_params(bool show_resave,
     if(! x_show_min_size)
 	min_compr_size.set_visible(false);
     if(! show_keep_compressed)
+    {
 	keep_compressed.set_visible(false);
+	keep_compressed.set_value_as_bool(false);
+	    // needed to have other fields
+	    // visible
+    }
 
 	// adoption tree
     compr_fs.adopt(&keep_compressed);
@@ -89,10 +94,99 @@ html_compression_params::html_compression_params(bool show_resave,
     keep_compressed.record_actor_on_event(this, html_form_input::changed);
     compression_block.record_actor_on_event(this, html_form_input_unit::changed);
 
-    on_event(html_compression::changed);
+    clear_json();
+	// to set the fields to their default values
+	// this also trigger html_compression::changed event
+	// wich setup the visibility of components
 
 	// css
 
+}
+
+void html_compression_params::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
+
+	    // setting back the bool mode and mask_type selected value
+
+	compression.set_selected(config.at(jlabel_algo).template get<string>());
+	compression_level.set_value_as_int(config.at(jlabel_level));
+	min_compr_size.set_value_as_infinint(libdar::deci(config.at(jlabel_min_compr_sz)).computer());
+	compression_block.set_value_as_infinint(libdar::deci(config.at(jlabel_compr_block)).computer());
+	never_resave_uncompressed.set_value_as_bool(config.at(jlabel_never_resave_uncompr));
+	compr_threads.set_value_as_int(config.at(jlabel_compr_threads));
+	keep_compressed.set_value_as_bool(config.at(jlabel_keep_compr));
+
+	if(!keep_compressed.get_visible() && keep_compressed.get_value_as_bool())
+	{
+	    clear_json();
+	    throw exception_range("Error loading compression configuration, keep compression parameter is not applicable in that context");
+	}
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id),
+			     e);
+    }
+
+    on_event(html_compression::changed); // this update component visibility and trigger the change event
+}
+
+json html_compression_params::save_json() const
+{
+    json ret;
+
+	// the following object field are not saved/restored as json
+	// - show_resave
+	// - show min_size
+	// they stay local to the context the object is located in
+	// However the values of the fieds they drive the visibility of:
+	// - never_resave_uncompressed
+	// - min_compr_size
+	// are saved/restored as json
+
+    ret[jlabel_algo] = compression.get_selected_id();
+    ret[jlabel_level] = compression_level.get_value_as_int();
+    ret[jlabel_min_compr_sz] = libdar::deci(min_compr_size.get_value_as_infinint()).human();
+    ret[jlabel_compr_block] = libdar::deci(compression_block.get_value_as_infinint()).human();
+    ret[jlabel_never_resave_uncompr] = never_resave_uncompressed.get_value_as_bool();
+    ret[jlabel_compr_threads] = compr_threads.get_value_as_int();
+    ret[jlabel_keep_compr] = keep_compressed.get_value_as_bool();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					ret);
+}
+
+void html_compression_params::clear_json()
+{
+    compression.set_selected(0);
+    compression_level.set_value_as_int(default_level);
+    min_compr_size.set_value_as_infinint(libdar::infinint(default_min_compr_size));
+    compression_block.set_value_as_infinint(libdar::infinint(default_compression_block));
+    never_resave_uncompressed.set_value_as_bool(default_never_resave_uncompressed);
+    compr_threads.set_value_as_int(default_compr_threads);
+    keep_compressed.set_value_as_bool(default_keep_compressed);
+
+    if(!keep_compressed.get_visible()) // we thus ignore the keep_compressed value loaded from json
+	keep_compressed.set_value_as_bool(false); // this drives to get visible other components
+
+    on_event(html_compression::changed); // this update component visibility and trigger the change event
 }
 
 void html_compression_params::on_event(const string & event_name)
