@@ -477,6 +477,8 @@ string bibliotheque::category_to_string(category cat)
 	return "command";
     case repo:
 	return "repo";
+    case compress:
+	return "compress";
     case confsave:
 	return "confsave";
     case conftest:
@@ -510,6 +512,8 @@ bibliotheque::category bibliotheque::string_to_category(const string & s)
 	return command;
     else if(s == "repo")
 	return repo;
+    else if(s == "compress")
+	return compress;
     else if(s == "confsave")
 	return confsave;
     else if(s == "conftest")

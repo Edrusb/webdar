@@ -64,6 +64,7 @@ public:
 	pathfilter,
 	command,
 	repo,
+	compress,
 	confsave,
 	conftest,
 	confdiff,
