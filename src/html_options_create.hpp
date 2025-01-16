@@ -197,7 +197,8 @@ private:
     html_form_same_fs same_fs;
     html_form_fieldset same_fs_fs;
 
-    html_compression_params compr_params;
+    guichet guichet_compr_params;
+    std::shared_ptr<html_compression_params> compr_params;
 
     html_text compr_filter_title;
     guichet guichet_compr_mask;

@@ -94,8 +94,7 @@ html_options_create::html_options_create():
     furtive_read_mode("Furtive read mode (if available)", html_form_input::check, "", "1"),
     zeroing_neg_date("Automatically zeroing negative dates while reading", html_form_input::check, "", "1"),
     fs_mod_data_detect("How data (not metadata) changes are detected"),
-    same_fs_fs("Select the file systems based on their mount point"),
-    compr_params(true, true, false)
+    same_fs_fs("Select the file systems based on their mount point")
 {
     libdar::archive_options_create defaults;
 
@@ -115,6 +114,10 @@ html_options_create::html_options_create():
 
     delta_mask.reset(new (nothrow) html_mask_form_filename("file name"));
     if(!delta_mask)
+	throw exception_memory();
+
+    compr_params.reset(new (nothrow) html_compression_params(true, true, false));
+    if(!compr_params)
 	throw exception_memory();
 
     compr_mask.reset(new (nothrow) html_mask_form_filename("file name"));
@@ -159,10 +162,6 @@ html_options_create::html_options_create():
     allow_over.set_value_as_bool(defaults.get_allow_over());
     warn_over.set_value_as_bool(defaults.get_warn_over());
     pause.set_value(libdar::deci(defaults.get_pause()).human());
-    compr_params.set_compression_algo(defaults.get_compression());
-    compr_params.set_compression_level(defaults.get_compression_level());
-    compr_params.set_compression_block(defaults.get_compression_block_size());
-    compr_params.set_min_compression_size(defaults.get_min_compr_size());
     execute.set_value(defaults.get_execute());
     delta_sig_min_size.set_value_as_infinint(defaults.get_delta_sig_min_size());
     what_to_check.set_value(defaults.get_comparison_fields());
@@ -322,7 +321,7 @@ html_options_create::html_options_create():
     deroule.adopt_in_section(sect_fsa_scope, &fsa_scope);
 
 	// compression
-    deroule.adopt_in_section(sect_compr, &compr_params);
+    deroule.adopt_in_section(sect_compr, &guichet_compr_params);
     deroule.adopt_in_section(sect_compr, &compr_filter_title);
     deroule.adopt_in_section(sect_compr,&guichet_compr_mask);
 
@@ -342,7 +341,7 @@ html_options_create::html_options_create():
     display_treated.record_actor_on_event(this, html_form_input::changed);
     exclude_by_ea.record_actor_on_event(this, html_form_input::changed);
     default_ea.record_actor_on_event(this, html_form_input::changed);
-    compr_params.record_actor_on_event(this, html_compression_params::changed);
+    compr_params->record_actor_on_event(this, html_compression_params::changed);
     entrep->record_actor_on_event(this, html_entrepot::changed);
 
     on_event(html_form_radio::changed); // used to initialize the html components visibility
@@ -377,7 +376,10 @@ void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				 bibliotheque::filefilter,
 				 delta_mask,
 				 false);
-
+    guichet_compr_params.set_child(ptr,
+				   bibliotheque::compress,
+				   compr_params,
+				   false);
     compr_mask->set_child(ptr, bibliotheque::filefilter);
     guichet_compr_mask.set_child(ptr,
 				 bibliotheque::filefilter,
@@ -395,7 +397,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 {
     libdar::archive_options_create ret;
     shared_ptr<libdar::archive> ref_arch; // used locally to pass the archive of reference we may build for diff/incr backup
-    libdar::infinint compr_bs = compr_params.get_compression_block();
+    libdar::infinint compr_bs = compr_params->get_compression_block();
     libdar::U_I val = 0;
 
     switch(archtype.get_selected_num())
@@ -434,11 +436,11 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_display_finished(display_dir_summary.get_value_as_bool());
     ret.set_pause(libdar::deci(pause.get_value()).computer());
     ret.set_empty_dir(empty_dir.get_value_as_bool());
-    ret.set_compression(compr_params.get_compression_algo());
-    ret.set_compression_level(compr_params.get_compression_level());
-    ret.set_min_compr_size(compr_params.get_min_compression_size());
-    ret.set_never_resave_uncompressed(compr_params.get_resave_uncompressed());
-    ret.set_multi_threaded_compress(compr_params.get_num_threads());
+    ret.set_compression(compr_params->get_compression_algo());
+    ret.set_compression_level(compr_params->get_compression_level());
+    ret.set_min_compr_size(compr_params->get_min_compression_size());
+    ret.set_never_resave_uncompressed(compr_params->get_resave_uncompressed());
+    ret.set_multi_threaded_compress(compr_params->get_num_threads());
 
     val = webdar_tools_convert_from_infinint<libdar::U_I>(compr_bs,
 							  string("compression block size is too large for the underlying operating system, please reduce"));
@@ -447,7 +449,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 	throw exception_range(libdar::tools_printf("compression block size is too small, select either zero to disable compression per block or a block size greater or equal to %d", tokens_min_compr_bs));
     ret.set_compression_block_size(val);
 
-    if(compr_params.get_compression_algo() != libdar::compression::none)
+    if(compr_params->get_compression_algo() != libdar::compression::none)
     {
 	unique_ptr<libdar::mask> libcompmask = compr_mask->get_mask();
 	if(!libcompmask)
@@ -620,8 +622,8 @@ void html_options_create::on_event(const string & event_name)
 	    exclude_by_ea_name.set_visible(false);
 	}
 
-	compr_filter_title.set_visible(compr_params.get_compression_algo() != libdar::compression::none);
-	guichet_compr_mask.set_visible(compr_params.get_compression_algo() != libdar::compression::none);
+	compr_filter_title.set_visible(compr_params->get_compression_algo() != libdar::compression::none);
+	guichet_compr_mask.set_visible(compr_params->get_compression_algo() != libdar::compression::none);
 
 	    // no need to call my_body_part_has_changed()
 	    // because changed done in on_event concern
