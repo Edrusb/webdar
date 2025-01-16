@@ -441,6 +441,7 @@ void guichet::update_selected()
     bool try_keep_selected = select.num_choices() > 0;
     string current_choice = try_keep_selected ? select.get_selected_id(): "";
     bool still_exists = false;
+    bool manual_mode = select.get_selected_num() == 0;
 
     check_adopted();
 
@@ -477,7 +478,15 @@ void guichet::update_selected()
     }
     ignore_events = false;
 
-    on_event(event_select); // calling the event only once
+    if(! manual_mode)
+	on_event(event_select); // calling the event only once
+	// we do not trigger a event_select event
+	// when current selection is the manual mode
+	// because first this is the same selection number
+	// and second a change of configuration for a given
+	// configuration name in the bibliotheque has no impact
+	// here in manual mode as the configuration is local
+	// to the guichet object.
 }
 
 void guichet::set_adopted()
