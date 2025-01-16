@@ -96,6 +96,13 @@ public:
 	/// from a bibliotheque. This avoids the form to be used, the edit button to show, and other cosmetic things
     guichet(bool subcomponent = false);
 
+    guichet(const guichet & ref) = default;
+    guichet(guichet && ref) noexcept = default;
+    guichet & operator = (const guichet & ref) = default;
+    guichet & operator = (guichet && ref) noexcept = default;
+    virtual ~guichet();
+
+
 	/// mandatory call to provide the object to adopt and use to display configurations
 
 	/// \param[in] ptr the bibliotheque object where to fetch from configurations
@@ -153,6 +160,7 @@ private:
     body_builder* adopted_frame;   ///< which wrapper object to change visibility of
     bool clear_adopted;
     bool is_sub;
+    std::string currently_locked; ///< name of the config we locked in the bibliotheque for the categ category (empty string = no lock)
 
     html_form select_form;
     html_form_fieldset select_fs;

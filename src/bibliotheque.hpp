@@ -35,6 +35,7 @@ extern "C"
 #include <map>
 #include <string>
 #include <memory>
+#include <set>
 
     // webdar headers
 #include "jsoner.hpp"
@@ -106,6 +107,11 @@ public:
 	/// \note throw exception_range if name already exist
     void add_config(category categ, const std::string & name, const json & config, const using_set & refs = std::set<coordinates>());
 
+	/// add external reference to a config (avoiding it to be deleted)
+
+	/// \note this only put a flag on a given config for it does not be deleted until the external refs are all cleared
+    void add_external_ref_to(category categ, const std::string & name, const void* from_where);
+
 	/// update an existing configuration for that category (name must exist)
 
 	/// \note throw exception_range if name does not exist
@@ -116,6 +122,11 @@ public:
 	/// \note throw exception_range if name does not exist
     void delete_config(category categ, const std::string & name);
 
+
+	/// remove external ref to a configuration
+
+	/// \note from_where must be the same string as the one passed to add_external_ref_to
+    void delete_external_ref_to(category categ, const std::string & name, const void* from_where);
 
 	/// tells whether a given cat/config exists
     bool has_config(category categ, const std::string & name) const;
@@ -153,6 +164,10 @@ public:
 
 private:
 
+	////////////////////////////////////
+	// DATASTRUCTURE FOR INTERNAL DATA
+	//
+
 	/// json configuration and list of other configs that depend on it
     struct linked_config
     {
@@ -172,6 +187,17 @@ private:
 
     table content;       ///< all configurations classified per categories
     mutable bool saved;  ///< whether content as changed since last save_json() invocation
+
+	////////////////////////////////////
+	// DATASTRUCTURE STORING REFERENCE
+	// FROM EXTERNAL DATA
+	//
+
+    typedef std::set<const void*> refs;
+
+    std::map<coordinates, refs> outside;
+
+	////////////////////////////////////
 
     void init();
 

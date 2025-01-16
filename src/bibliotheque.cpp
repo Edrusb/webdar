@@ -31,6 +31,7 @@ extern "C"
     // C++ system header files
 #include <utility>
 #include <string>
+#include <deque>
 #include <dar/tools.hpp>
 
     // webdar headers
@@ -75,6 +76,44 @@ void bibliotheque::add_config(category categ,
     act(changed);
 }
 
+
+void bibliotheque::add_external_ref_to(category categ, const string & name, const void* from_where)
+{
+    asso::iterator it;
+    table::iterator catit;
+    coordinates coord(categ, name);
+
+    map<coordinates, refs>::iterator ut = outside.find(coord);
+
+    if(!lookup(categ,
+	       name,
+	       it,
+	       catit))
+    {
+	    // problem, the configuration we refer to does not exist!
+
+	if(ut != outside.end())
+	    throw WEBDAR_BUG; // but an external ref to it already exist!
+	else
+	    throw WEBDAR_BUG; // config unknown from external refs datastructure
+    }
+
+    if(ut != outside.end())
+    {
+	if(ut->second.find(from_where) != ut->second.end())
+	    throw WEBDAR_BUG; // already referred by the same object/place/ref
+
+	ut->second.insert(from_where);
+    }
+    else
+    {
+	refs tmp;
+	tmp.insert(from_where);
+
+	outside[coord] = tmp;
+    }
+}
+
 void bibliotheque::update_config(category categ, const
 				 string & name,
 				 const json & config,
@@ -110,6 +149,7 @@ void bibliotheque::delete_config(category categ, const string & name)
 {
     table::iterator catit;
     asso::iterator it;
+    map<coordinates, refs>::iterator outit = outside.find(coordinates(categ, name));
 
     if(! lookup(categ, name, it, catit))
 	throw exception_range(libdar::tools_printf("No configuration named %s exists in that category", name.c_str()));
@@ -130,10 +170,39 @@ void bibliotheque::delete_config(category categ, const string & name)
 	throw exception_range(errmsg);
     }
 
+    if(outit != outside.end()) // having external references
+    {
+	throw exception_range(
+	    libdar::tools_printf("This configuration cannot be deleted, it is used %d time(s) in the user interface (but not used by other configurations)",
+				 outit->second.size())
+	    );
+
+    }
+
     remove_dependency_for(coordinates(categ, name));
     catit->second.erase(it);
     saved = false;
     act(changed);
+}
+
+void bibliotheque::delete_external_ref_to(category categ, const std::string & name, const void* from_where)
+{
+    coordinates coord(categ, name);
+
+    map<coordinates, refs>::iterator ut = outside.find(coord);
+
+    if(ut == outside.end())
+	throw WEBDAR_BUG; // no ref to this config!!!
+
+    refs::iterator refit = ut->second.find(from_where);
+
+    if(refit == ut->second.end())
+	throw WEBDAR_BUG; // no ref from from_where for this config!!!
+
+    ut->second.erase(refit); // removing the ref
+
+    if(ut->second.empty())  // no more ref to this config
+       outside.erase(ut);   // removing entry for that config from outside
 }
 
 bool bibliotheque::has_config(category categ, const std::string & name) const

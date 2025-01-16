@@ -59,6 +59,15 @@ guichet::guichet(bool subcomponent):
     adopted_frame = nullptr;
 }
 
+guichet::~guichet()
+{
+    if(!currently_locked.empty())
+    {
+	biblio->delete_external_ref_to(categ, currently_locked, this);
+	currently_locked.clear();
+    }
+}
+
 void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
 			bibliotheque::category cat,
 			const shared_ptr<body_builder> & to_adopt,
@@ -259,7 +268,8 @@ void guichet::clear_json()
 {
     check_adopted();
 
-    adopted_jsoner->clear_json();
+    clear_adopted = true;
+    select.set_selected(0);
 }
 
 
@@ -290,10 +300,22 @@ void guichet::on_event(const std::string & event_name)
 
     if(event_name == event_select)
     {
-	if(clear_adopted && select.get_selected_num() == 0)
-	    adopted_jsoner->clear_json();
-	    // clear_adopted is true when the user has selected "manual mode"
-	    // but is false when the user clicked the "edit" button
+	if(select.get_selected_num() == 0)
+	{
+	    if(!biblio)
+		throw WEBDAR_BUG;
+
+	    if(! currently_locked.empty())
+	    {
+		biblio->delete_external_ref_to(categ, currently_locked, this);
+		currently_locked.clear();
+	    }
+
+	    if(clear_adopted)
+		adopted_jsoner->clear_json();
+		// clear_adopted is true when the user has selected "manual mode"
+		// but is false when the user clicked the "edit" button
+	}
 	else
 	    set_adopted();
 
@@ -469,7 +491,14 @@ void guichet::set_adopted()
 
 	try
 	{
+	    if(!currently_locked.empty())
+	    {
+		biblio->delete_external_ref_to(categ, currently_locked, this);
+		currently_locked.empty();
+	    }
 	    adopted_jsoner->load_json(biblio->fetch_config(categ, select.get_selected_id()));
+	    currently_locked = select.get_selected_id();
+	    biblio->add_external_ref_to(categ, currently_locked, this);
 	}
 	catch(...)
 	{
