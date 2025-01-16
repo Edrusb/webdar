@@ -126,7 +126,8 @@ private:
     html_form_fieldset fs_shown;
     html_form_input info_details;
 
-    html_compression_params compr_params;
+    guichet guichet_compr_params;
+    std::shared_ptr<html_compression_params> compr_params;
 
     html_slicing slicing;
 

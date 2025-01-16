@@ -62,8 +62,7 @@ html_options_isolate::html_options_isolate():
     empty("Dry run execution", html_form_input::check, "", "1"),
     form_shown("Update"),
     fs_shown(""),
-    info_details("Detailed informations", html_form_input::check, "1", "1"),
-    compr_params(false, false, false)
+    info_details("Detailed informations", html_form_input::check, "1", "1")
 {
     entrep.reset(new (nothrow) html_entrepot());
     if(!entrep)
@@ -71,6 +70,10 @@ html_options_isolate::html_options_isolate():
 
     delta_mask.reset(new (nothrow) html_mask_form_filename("file name"));
     if(!delta_mask)
+	throw exception_memory();
+
+    compr_params.reset(new (nothrow) html_compression_params(false, false, false));
+    if(!compr_params)
 	throw exception_memory();
 
     delta_filter_title.add_paragraph();
@@ -94,9 +97,6 @@ html_options_isolate::html_options_isolate():
     hash_algo.set_value(defaults.get_hash_algo());
     execute.set_value(defaults.get_execute());
     empty.set_value_as_bool(defaults.get_empty());
-    compr_params.set_compression_algo(defaults.get_compression());
-    compr_params.set_compression_level(defaults.get_compression_level());
-    compr_params.set_compression_block(defaults.get_compression_block_size());
     slicing.set_slicing(defaults.get_slice_size(),
 			defaults.get_first_slice_size());
     ciphering.set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
@@ -146,7 +146,7 @@ html_options_isolate::html_options_isolate():
     form_shown.adopt(&fs_shown);
     deroule.adopt_in_section(sect_show, &form_shown);
 
-    deroule.adopt_in_section(sect_compr, &compr_params);
+    deroule.adopt_in_section(sect_compr, &guichet_compr_params);
 
     deroule.adopt_in_section(sect_slice, &slicing);
 
@@ -179,6 +179,10 @@ void html_options_isolate::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				 bibliotheque::filefilter,
 				 delta_mask,
 				 false);
+    guichet_compr_params.set_child(ptr,
+				   bibliotheque::compress,
+				   compr_params,
+				   false);
 }
 
 void html_options_isolate::on_event(const string & event_name)
@@ -217,7 +221,7 @@ void html_options_isolate::on_event(const string & event_name)
 libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<html_web_user_interaction> & webui) const
 {
     libdar::archive_options_isolate ret;
-    libdar::infinint compr_bs = compr_params.get_compression_block();
+    libdar::infinint compr_bs = compr_params->get_compression_block();
     libdar::U_I val = 0;
 
     ret.set_entrepot(entrep->get_entrepot(webui));
@@ -234,9 +238,9 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     ret.set_empty(empty.get_value_as_bool());
     ret.set_execute(execute.get_value());
     ret.set_info_details(info_details.get_value_as_bool());
-    ret.set_compression(compr_params.get_compression_algo());
-    ret.set_compression_level(compr_params.get_compression_level());
-    ret.set_multi_threaded_compress(compr_params.get_num_threads());
+    ret.set_compression(compr_params->get_compression_algo());
+    ret.set_compression_level(compr_params->get_compression_level());
+    ret.set_multi_threaded_compress(compr_params->get_num_threads());
     ret.set_multi_threaded_crypto(ciphering.get_multi_threaded_crypto());
 
     ret.set_delta_signature(delta_sig.get_value_as_bool());
