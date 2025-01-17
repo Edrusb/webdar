@@ -377,6 +377,9 @@ protected:
         /// access to adopted childs
     body_builder *operator[] (unsigned int i) { return order[i]; };
 
+	/// return the parent object or nullptr if no object has adopted this object
+    body_builder* get_parent() const { return parent; };
+
 	/// access to the closest ancestor (parent) matching (dynamic_cast) the provided type
 
 	/// \param[in] ancestor point to the found ancestor if found (points to nullptr else)
