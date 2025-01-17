@@ -177,7 +177,14 @@ public:
     void set_visible(bool mode);
 
         /// returns the current visible status of the object
+
+	/// \note if the object is adopted by another object that is not visible, this first object will
+	/// have get_visible() returning true (while its parent will return false) but will not be effectively
+	/// visible to the user. See get_visible_recursively().
     bool get_visible() const { return visible; };
+
+	/// return the effective visible status of an object taking into account all of ancestors that adopted it
+    bool get_visible_recursively() const;
 
         /// set this object with a additional css_class (assuming it is defined in a css_library available for this object)
     void add_css_class(const std::string & name);

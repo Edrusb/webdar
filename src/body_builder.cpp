@@ -221,6 +221,17 @@ void body_builder::set_visible(bool mode)
     }
 }
 
+bool body_builder::get_visible_recursively() const
+{
+    bool ret = get_visible();
+
+    if(parent != nullptr)
+	ret &= parent->get_visible_recursively();
+
+    return ret;
+}
+
+
 void body_builder::add_css_class(const string & name)
 {
     if(css_class_names.find(name) != css_class_names.end())
