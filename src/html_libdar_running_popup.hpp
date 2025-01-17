@@ -40,7 +40,7 @@ extern "C"
 #include "actor.hpp"
 #include "html_web_user_interaction.hpp"
 
-    /// html_libdar_running_popup wraps up an html_web_user_interaction in a html_page
+    /// html_libdar_running_popup wraps up an html_web_user_interaction in a html_popup component
 
     /// also handle page title and for that need to know the session name
 

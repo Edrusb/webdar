@@ -470,6 +470,8 @@ void guichet::update_selected()
 
 	if(still_exists)
 	    select.set_selected(current_choice);
+	    // does not triggers event_select
+	    // because ignore_event is true
     }
     catch(...)
     {
