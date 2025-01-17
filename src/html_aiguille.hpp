@@ -39,6 +39,7 @@ extern "C"
     // webdar headers
 #include "body_builder.hpp"
 #include "actor.hpp"
+#include "html_void.hpp"
 
     /// class html_aiguille is a pure virtual class
 
@@ -50,7 +51,8 @@ extern "C"
     /// adopt other objects.
     /// adopt() method from body_builder is replaced by adopt_in_section()
 
-class html_aiguille : public body_builder
+class html_aiguille : public body_builder,
+		      public html_void_parent_notifier
 {
 public:
     static constexpr const signed int noactive = -1;
@@ -112,8 +114,8 @@ public:
 
 protected:
 
-	// inherited from body_builder
-    virtual void will_foresake(body_builder *obj) override;
+	// inherited from html_void_parent_notifier
+    virtual void void_child_will_foresake(body_builder* voidobj, body_builder* obj) override;
 
 	// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
@@ -134,12 +136,14 @@ protected:
 	/// return the name of the section knowing its index
     std::string num_to_section_name(unsigned int num) const { return order[num]; };
 
+
 private:
 
 	/// used to store the objects adopted in each section
     struct section
     {
 	std::string title;
+	html_void global_visibility; // parent of all objects from the adopted list, and child of "this"
 	std::list<body_builder*> adopted;
     };
 
@@ -148,6 +152,8 @@ private:
     std::map<body_builder*, std::string> obj_to_section; ///< maps back an object to it section name
     signed int active_section; ///< set to noactive if no section is expanded
     bool selfcleaning; ///< when true, ignore will_foresake() calls, we are at the root of this
+
+    void set_visibility(signed int section_num, bool visible);
 };
 
 #endif

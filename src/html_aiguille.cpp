@@ -65,6 +65,7 @@ signed int html_aiguille::add_section(const string & name, const string & title)
 		throw WEBDAR_BUG;
 
 	    it->second.title = title;
+	    adopt(&(it->second.global_visibility));
 	}
 	catch(...)
 	{
@@ -89,6 +90,7 @@ signed int html_aiguille::add_section(const string & name, const string & title)
 void html_aiguille::adopt_in_section(const string & section_name, body_builder* obj)
 {
     map<string, section>::iterator it = sections.find(section_name);
+    unsigned int sect_num = section_name_to_num(section_name);
 
     if(it == sections.end())
 	throw exception_range("unknown section named: " + section_name);
@@ -96,9 +98,9 @@ void html_aiguille::adopt_in_section(const string & section_name, body_builder* 
     if(obj == nullptr)
 	throw WEBDAR_BUG;
 
-    it->second.adopted.push_back(obj);
     obj_to_section[obj] = section_name;
-    adopt(obj); // this will trigger body_builder::my_body_part_has_changed()
+    it->second.adopted.push_back(obj);
+    it->second.global_visibility.adopt(obj); // this will trigger body_builder::my_body_part_has_changed()
 }
 
 void html_aiguille::adopt_in_section(signed int num, body_builder* obj)
@@ -129,7 +131,7 @@ void html_aiguille::clear_section(const string & section_name)
 	    if(revt == obj_to_section.end())
 		throw WEBDAR_BUG;
 	    obj_to_section.erase(revt);
-	    foresake(*objt);  // will trigger body_builder::my_body_part_has_changed()
+	    it->second.global_visibility.foresake(*objt);
 	    *objt = nullptr;
 	    ++objt;
 	}
@@ -203,12 +205,16 @@ void html_aiguille::set_active_section(signed int num)
 
     if(active_section != num)
     {
-	my_body_part_has_changed();
+	if(active_section != noactive)
+	    set_visibility(active_section, false);
+	if(num != noactive)
+	    set_visibility(num, true);
 	active_section = num;
+	my_body_part_has_changed();
     }
 }
 
-void html_aiguille::will_foresake(body_builder *obj)
+void html_aiguille::void_child_will_foresake(body_builder* voidobj, body_builder *obj)
 {
     if(selfcleaning)
 	return;
@@ -236,34 +242,7 @@ void html_aiguille::will_foresake(body_builder *obj)
 string html_aiguille::inherited_get_body_part(const chemin & path,
 					       const request & req)
 {
-    string ret = "";
-    chemin sub_path = path;
-
-    if(sub_path.size() > 0)
-	sub_path.pop_front();
-
-    if(active_section >= 0 && active_section < order.size())
-    {
-	map<string, section>::iterator sect = sections.find(order[active_section]);
-	if(sect == sections.end())
-	    throw WEBDAR_BUG;
-
-	list<body_builder*>::iterator objt = sect->second.adopted.begin();
-	while(objt != sect->second.adopted.end())
-	{
-	    if(*objt == nullptr)
-		throw WEBDAR_BUG;
-	    ret += (*objt)->get_body_part(sub_path, req);
-	    ++objt;
-	}
-    }
-    else
-    {
-	if(active_section != noactive)
-	    throw WEBDAR_BUG;
-    }
-
-    return ret;
+    return get_body_part_from_all_children(path, req);
 }
 
 unsigned int html_aiguille::section_name_to_num(const string & name) const
@@ -278,4 +257,14 @@ unsigned int html_aiguille::section_name_to_num(const string & name) const
 	throw exception_range("Unknown section name in html_aiguille");
     else
 	return found;
+}
+
+void html_aiguille::set_visibility(signed int section_num, bool visible)
+{
+    map<string, section>::iterator objects = sections.find(order[section_num]);
+
+    if(objects == sections.end())
+	throw WEBDAR_BUG;
+
+    objects->second.global_visibility.set_visible(visible);
 }
