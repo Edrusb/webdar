@@ -164,6 +164,10 @@ void html_web_user_interaction::run_and_control_thread(libthreadar::thread* arg)
 	throw WEBDAR_BUG;
     managed_threads.push_back(arg);
     set_visible(true);
+    if(! get_visible_recursively())
+	throw WEBDAR_BUG;
+	// the component will not work as it will not receive any request
+	// to provide a body part, and thus allow user to control the thread
     arg->run();
 }
 
