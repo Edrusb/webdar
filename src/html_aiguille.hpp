@@ -43,7 +43,7 @@ extern "C"
     /// class html_aiguille is a pure virtual class
 
     /// it groups adopted objets under several labeled sections
-    /// at moste one section is visible at a time and can be changed
+    /// at most one section is visible at a time and can be changed
     /// calling set_active_section(). If given "noactive" to set_active_section()
     /// no section will show. By default no section is created, one has
     /// to be created calling add_section() for the object to be able to
