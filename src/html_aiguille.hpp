@@ -24,6 +24,11 @@
 #ifndef HTML_AIGUILLE_HPP
 #define HTML_AIGUILLE_HPP
 
+    /// \file html_aiguille.hpp
+    ///
+    ///  html_aiguille class is a per section adoption tool that shows objects adopted
+    ///  in one section at a time (or no section at all), thanks to it set_active_section() method
+
     // C system header files
 #include "my_config.h"
 extern "C"
@@ -77,7 +82,7 @@ public:
 	/// localization, code should not assume anything based in the value
 	/// of this field.
 	/// \return the index of the just created section
-    signed int add_section(const std::string & name, const std::string & title);
+    void add_section(const std::string & name, const std::string & title);
 
 	/// adopt another objet in the section which name is provided
 
@@ -112,6 +117,12 @@ public:
 	/// return the total number of section
     unsigned int size() const { return order.size(); };
 
+	/// return the index of the provided section name
+    unsigned int section_name_to_num(const std::string & name) const;
+
+	/// return the name of the section knowing its index
+    std::string num_to_section_name(unsigned int num) const { return order[num]; };
+
 protected:
 
 	// inherited from html_void_parent_notifier
@@ -129,12 +140,6 @@ protected:
 
 	// for inherited class to act upon section removal
     virtual void section_removed(const std::string & name) {};
-
-	/// return the index of the provided section name
-    unsigned int section_name_to_num(const std::string & name) const;
-
-	/// return the name of the section knowing its index
-    std::string num_to_section_name(unsigned int num) const { return order[num]; };
 
 
 private:

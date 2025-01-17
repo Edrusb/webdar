@@ -37,6 +37,7 @@ extern "C"
 #include <map>
 
     // webdar headers
+#include "body_builder.hpp"
 #include "html_aiguille.hpp"
 #include "actor.hpp"
 #include "html_button.hpp"
@@ -49,10 +50,11 @@ extern "C"
     /// at a any given time
 
 
-class html_derouleur : public html_aiguille, public actor
+class html_derouleur : public body_builder,
+		       public actor
 {
 public:
-    html_derouleur() { clear(); };
+    html_derouleur() { adopt(&switcher); clear(); };
     html_derouleur(const html_derouleur & ref) = delete;
     html_derouleur(html_derouleur && ref) noexcept = delete;
     html_derouleur & operator = (const html_derouleur & ref) = delete;
@@ -62,11 +64,25 @@ public:
 	/// clear all adopted data and remove all sections
     void clear();
 
-	/// hide/unhide  a section
+    void add_section(const std::string & name, const std::string & title);
 
-	/// use the inherited add_section(), adopt_in_section(), clear_section()...
-	/// from class html_aiguille to create and manipulate sections
-	/// \note by default all created sections are visible
+    void adopt_in_section(const std::string & section_name, body_builder* obj) { switcher.adopt_in_section(section_name, obj); };
+
+    void adopt_in_section(signed int num, body_builder* obj) { switcher.adopt_in_section(num, obj); };
+
+    void clear_section(const std::string & section_name) { switcher.clear_section(section_name); };
+
+    void clear_section(signed int num) { switcher.clear_section(num); };
+
+    void remove_section(const std::string & section_name);
+
+    void set_active_section(const std::string & name) { switcher.set_active_section(name); };
+
+    void set_active_section(signed int num) { switcher.set_active_section(num); };
+
+    unsigned int size() const { return switcher.size(); };
+
+	/// hide/unhide a section
     void section_set_visible(const std::string & name, bool visible);
 
 	/// set css of URL titles
@@ -86,12 +102,6 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
-	// inherited from html_aiguille
-    virtual void section_added(const std::string & name, const std::string & title) override;
-
-	// inherited from html_aiguille
-    virtual void section_removed(const std::string & name) override;
-
 
 private:
     static const std::string shrink_event;
@@ -102,7 +112,7 @@ private:
     {
 	html_button* title;
 	html_button* shrinker;
-	bool visible;
+	bool visible;    ///< a section can be expanded or shrinked or totally hidden (visible == false)
 
 	    // by default shrinker is hidden and title is
 	    // visible (when the section is not expanded)
@@ -118,11 +128,12 @@ private:
 	~section() { if(title != nullptr) delete title; if(shrinker != nullptr) delete shrinker; };
     };
 
-    std::map<std::string, section> sections;    ///< map section name to its content
-    css_class_group css_url;                    ///< css classes to apply to title urls
+    html_aiguille switcher;                     ///< holds the objects adopted inside the different sections
+    std::map<std::string, section> sections;    ///< map section name to its content and provide the title bars above each
+    css_class_group css_url;                    ///< css classes to apply to title bar urls
 
 
-	/// used from inherited_get_body_part to avoid duplcated code
+	/// used from inherited_get_body_part to avoid duplicated code
     std::string generate_html(const chemin & path,
 			      const request & req);
 

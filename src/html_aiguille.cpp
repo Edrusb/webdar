@@ -48,7 +48,7 @@ void html_aiguille::clear()
     my_body_part_has_changed();
 }
 
-signed int html_aiguille::add_section(const string & name, const string & title)
+void html_aiguille::add_section(const string & name, const string & title)
 {
     if(find(order.begin(), order.end(), name) != order.end())
 	throw exception_range("section name already used in this html_aiguille");
@@ -66,6 +66,7 @@ signed int html_aiguille::add_section(const string & name, const string & title)
 
 	    it->second.title = title;
 	    adopt(&(it->second.global_visibility));
+	    it->second.global_visibility.set_visible(false);
 	}
 	catch(...)
 	{
@@ -83,8 +84,7 @@ signed int html_aiguille::add_section(const string & name, const string & title)
 
 	// adding a section has no influence on the return
 	// of inherited_get_body_part()
-
-    return sections.size() - 1;
+	// no need to fire my_body_part_has_changed()
 }
 
 void html_aiguille::adopt_in_section(const string & section_name, body_builder* obj)
@@ -214,6 +214,20 @@ void html_aiguille::set_active_section(signed int num)
     }
 }
 
+unsigned int html_aiguille::section_name_to_num(const string & name) const
+{
+    unsigned int size = order.size();
+    unsigned int found = 0;
+
+    while(found < size && order[found] != name)
+	++found;
+
+    if(found >= size)
+	throw exception_range("Unknown section name in html_aiguille");
+    else
+	return found;
+}
+
 void html_aiguille::void_child_will_foresake(body_builder* voidobj, body_builder *obj)
 {
     if(selfcleaning)
@@ -243,20 +257,6 @@ string html_aiguille::inherited_get_body_part(const chemin & path,
 					       const request & req)
 {
     return get_body_part_from_all_children(path, req);
-}
-
-unsigned int html_aiguille::section_name_to_num(const string & name) const
-{
-    unsigned int size = order.size();
-    unsigned int found = 0;
-
-    while(found < size && order[found] != name)
-	++found;
-
-    if(found >= size)
-	throw exception_range("Unknown section name in html_aiguille");
-    else
-	return found;
 }
 
 void html_aiguille::set_visibility(signed int section_num, bool visible)

@@ -43,7 +43,7 @@ const string html_derouleur::shrink_event = "shrink";
 
 void html_derouleur::clear()
 {
-    html_aiguille::clear();
+    switcher.clear();
     css_url.clear_css_classes();
 }
 
@@ -57,14 +57,14 @@ void html_derouleur::section_set_visible(const string & name, bool visible)
     it->second.visible = visible;
     if(!visible)
     {
-	unsigned int active = get_active_section();
-	unsigned int modified = section_name_to_num(name);
+	unsigned int active = switcher.get_active_section();
+	unsigned int modified = switcher.section_name_to_num(name);
 
 	if(active == modified)
-	    set_active_section(noactive);
+	    switcher.set_active_section(html_aiguille::noactive);
 	    // we hidded the current active section
-	    // by coherence we set the parent class
-	    // with no active section
+	    // by coherence we set switcher with
+	    // no active section
     }
 }
 
@@ -109,9 +109,9 @@ void html_derouleur::url_add_css_class(const css_class_group & cg)
 void html_derouleur::on_event(const string & event_name)
 {
     if(event_name == shrink_event)
-	set_active_section(noactive);
+	switcher.set_active_section(html_aiguille::noactive);
     else
-	set_active_section(event_name);
+	switcher.set_active_section(event_name);
 
 	// my_body_part_has_changed() is called from html_aiguille::set_active_section()
 }
@@ -146,8 +146,10 @@ string html_derouleur::inherited_get_body_part(const chemin & path,
 }
 
 
-void html_derouleur::section_added(const string & name, const string & title)
+void html_derouleur::add_section(const string & name, const string & title)
 {
+    switcher.add_section(name, title);
+
     sections[name] = section();
 
     try
@@ -197,7 +199,7 @@ void html_derouleur::section_added(const string & name, const string & title)
     }
 }
 
-void html_derouleur::section_removed(const string & section_name)
+void html_derouleur::remove_section(const string & section_name)
 {
     map<string, section>::iterator it = sections.find(section_name);
 
@@ -205,18 +207,19 @@ void html_derouleur::section_removed(const string & section_name)
 	throw WEBDAR_BUG; // unknown section !?!
 
     sections.erase(it);
+    switcher.remove_section(section_name);
 }
 
 string html_derouleur::generate_html(const chemin & path,
 				     const request & req)
 {
-    const unsigned int num_sect = html_aiguille::size();
+    const unsigned int num_sect = switcher.size();
     map<string, section>::iterator sect;
     string ret = "";
 
     for(unsigned int i = 0; i < num_sect; ++i)
     {
-	sect = sections.find(num_to_section_name(i));
+	sect = sections.find(switcher.num_to_section_name(i));
 	if(sect == sections.end())
 	    throw WEBDAR_BUG;
 
@@ -229,17 +232,17 @@ string html_derouleur::generate_html(const chemin & path,
 	    // if section is active, display its content
 	if(sect->second.visible)
 	{
-	    if(i == get_active_section())
+	    if(i == switcher.get_active_section())
 	    {
 		ret += sect->second.shrinker->get_body_part(path, req);
-		ret += html_aiguille::inherited_get_body_part(path, req);
+		ret += switcher.get_body_part(path, req);
 	    }
 	    else
 		ret += sect->second.title->get_body_part(path, req);
 	}
 	else
 	{
-	    if(i == get_active_section())
+	    if(i == switcher.get_active_section())
 		throw WEBDAR_BUG;
 		// active section is set as invisible!!!
 
