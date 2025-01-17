@@ -505,7 +505,7 @@ void guichet::set_adopted()
 	    if(!currently_locked.empty())
 	    {
 		biblio->delete_external_ref_to(categ, currently_locked, this);
-		currently_locked.empty();
+		currently_locked.clear();
 	    }
 	    adopted_jsoner->load_json(biblio->fetch_config(categ, select.get_selected_id()));
 	    currently_locked = select.get_selected_id();
