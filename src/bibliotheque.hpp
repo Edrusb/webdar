@@ -55,26 +55,31 @@ extern "C"
 class bibliotheque : public jsoner, public events
 {
 public:
-    static const std::string changed; /// triggered when the bibliotheque content changes
+
+	/// change event is replaced by a static method with category in argument
 
 	/// json objects are split into category, each used as a different "namespace"
     enum category
     {
-	filefilter,
-	pathfilter,
-	command,
-	repo,
-	compress,
-	confsave,
-	conftest,
-	confdiff,
-	conflist,
-	confrest,
-	confmerg,
-	confrepair,
-	confcommon,
-	EOE            ///< not a valid value, used for interating in the enum
+	filefilter = 0,
+	pathfilter = 1,
+	command = 2,
+	repo = 3,
+	compress = 4,
+	confsave = 5,
+	conftest = 6,
+	confdiff = 7,
+	conflist = 8,
+	confrest = 9,
+	confmerg = 10,
+	confrepair = 11,
+	confcommon = 12,
+	EOE = 13 ///< not a valid value, used for interating in the enum
     };
+
+	/// change event per category
+    static std::string changed(category cat);
+
 
 	/// convert category to json used string
     static std::string category_to_string(category cat);
@@ -96,7 +101,7 @@ public:
 	/// list of configs a given config depends on
     typedef std::set<coordinates> using_set;
 
-    bibliotheque() { init(); register_name(changed); };
+    bibliotheque();
     bibliotheque(const bibliotheque & ref) = default;
     bibliotheque(bibliotheque && ref) noexcept(false) = default;
     bibliotheque & operator = (const bibliotheque & ref) = default;
@@ -151,7 +156,7 @@ public:
     bool get_saved_status() const { return saved; };
 
 	/// clear all stored configurations
-    void clear() { init(); act(changed); };
+    void clear();
 
 
 	/// inherited from jsoner
@@ -227,5 +232,7 @@ private:
     static constexpr const char* config_def_label = "config";
     static constexpr const char* config_depend = "used-by";
 };
+
+bibliotheque::category & operator++(bibliotheque::category & cat);
 
 #endif

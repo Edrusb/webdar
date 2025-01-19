@@ -196,7 +196,7 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
 	throw WEBDAR_BUG; // event name collides with our own components
     if(change_event_name == html_form_radio::changed)
 	throw WEBDAR_BUG; // event name collides with our own components
-    if(change_event_name == bibliotheque::changed)
+    if(change_event_name == bibliotheque::changed(categ))
 	throw WEBDAR_BUG; // event name collides with our own components
     if(change_event_name == html_form::changed)
 	throw WEBDAR_BUG; // event name collides with our own components
@@ -233,7 +233,7 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     clear_cur_config.record_actor_on_event(this, event_clear);
 
     listing.record_actor_on_event(this, html_form_radio::changed);
-    ptr->record_actor_on_event(this, bibliotheque::changed);
+    ptr->record_actor_on_event(this, bibliotheque::changed(categ));
 
 	// css
     webdar_css_style::normal_button(delete_selected);
@@ -296,7 +296,7 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 					      wrapped_jsoner->save_json(),
 					      wrapped_subconfig->get_using_set());
 		}
-		    // these previous alternatives all trigger bibliotheque::changed event
+		    // these previous alternatives all trigger bibliotheque::changed(categ) event
 		need_saving.set_visible(false);
 		clear_warning();
 	    }
@@ -319,7 +319,7 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 	    currently_loaded = "";
 	    silently_update_config_name(currently_loaded);
 	    biblio->delete_config(categ, todelete);
-		// this triggers bibliotheque::changed event
+		// this triggers bibliotheque::changed(categ) event
 	    need_saving.set_visible(true);
 	    clear_warning();
 	}
@@ -350,7 +350,7 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 	else
 	    set_warning("Select first the configuration to load");
     }
-    else if(event_name == bibliotheque::changed)
+    else if(event_name == bibliotheque::changed(categ))
     {
 	load_listing();
 

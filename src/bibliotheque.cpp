@@ -41,7 +41,83 @@ extern "C"
 
 using namespace std;
 
-const string bibliotheque::changed = "bibliotheque::changed";
+std::string bibliotheque::changed(category cat)
+{
+    string ret("bibliotheque::");
+
+    switch(cat)
+    {
+    case filefilter:
+	ret += "filefilter";
+	break;
+    case pathfilter:
+	ret += "pathfilter";
+	break;
+    case command:
+	ret += "command";
+	break;
+    case repo:
+	ret += "repo";
+	break;
+    case compress:
+	ret += "compr";
+	break;
+    case confsave:
+	ret += "save";
+	break;
+    case conftest:
+	ret += "test";
+	break;
+    case confdiff:
+	ret += "diff";
+	break;
+    case conflist:
+	ret += "list";
+	break;
+    case confrest:
+	ret += "restore";
+	break;
+    case confmerg:
+	ret += "merge";
+	break;
+    case confrepair:
+	ret += "repaor";
+	break;
+    case confcommon:
+	ret += "common";
+	break;
+    case EOE:
+	throw WEBDAR_BUG;
+    default:
+	throw WEBDAR_BUG;
+    }
+
+    return ret;
+}
+
+bibliotheque::category & operator++(bibliotheque::category & cat)
+{
+    if(cat < bibliotheque::filefilter)
+	throw WEBDAR_BUG;
+
+    if(cat >= bibliotheque::EOE)
+	throw WEBDAR_BUG;
+
+    cat = static_cast<bibliotheque::category>(cat + 1);
+    return cat;
+}
+
+bibliotheque::bibliotheque()
+{
+    category cat = filefilter;
+    init();
+
+    while(cat != EOE)
+    {
+	register_name(changed(cat));
+	++cat;
+    }
+}
 
 void bibliotheque::add_config(category categ,
 			      const string & name,
@@ -73,7 +149,7 @@ void bibliotheque::add_config(category categ,
 
     (catit->second)[name] = linked_config(config);
     saved = false;
-    act(changed);
+    act(changed(categ));
 }
 
 
@@ -142,7 +218,7 @@ void bibliotheque::update_config(category categ, const
 
     it->second.config = config;
     saved = false;
-    act(changed);
+    act(changed(categ));
 }
 
 void bibliotheque::delete_config(category categ, const string & name)
@@ -182,7 +258,7 @@ void bibliotheque::delete_config(category categ, const string & name)
     remove_dependency_for(coordinates(categ, name));
     catit->second.erase(it);
     saved = false;
-    act(changed);
+    act(changed(categ));
 }
 
 void bibliotheque::delete_external_ref_to(category categ, const std::string & name, const void* from_where)
@@ -243,6 +319,15 @@ deque<string> bibliotheque::listing(category categ) const
     return ret;
 }
 
+void bibliotheque::clear()
+{
+    init();
+    for(category cat = filefilter;
+	cat != EOE;
+	++cat)
+	act(changed(cat));
+}
+
 void bibliotheque::load_json(const json & source)
 {
     unsigned int version;
@@ -252,6 +337,8 @@ void bibliotheque::load_json(const json & source)
 						 class_id);
 
     string cat_name;
+    category cat;
+    set<category> events_to_fire;
     asso tmp_map;
     string config_name;
     set<coordinates> depend;
@@ -306,7 +393,10 @@ void bibliotheque::load_json(const json & source)
 		tmp_map[config_name] = linked_config(config_json, depend);
 	    }
 
-	    content[string_to_category(cat_name)] = tmp_map;
+	    cat = string_to_category(cat_name);
+	    content[cat] = tmp_map;
+	    if(tmp_json.begin() != tmp_json.end()) // non empty definition for that category
+		events_to_fire.insert(cat);
 	}
 
 	    // need to check that all category are present, else add them empty
@@ -320,7 +410,10 @@ void bibliotheque::load_json(const json & source)
 		errmsg += " " + category_to_string(static_cast<category>(cat));
 	    }
 
-	act(changed);
+	for(set<category>::iterator fireit = events_to_fire.begin();
+	    fireit != events_to_fire.end();
+	    ++fireit)
+	    act(changed(*fireit));
 
 	if(!errmsg.empty())
 	    throw exception_range("The following configuration category were missing and have been reset: " + errmsg);

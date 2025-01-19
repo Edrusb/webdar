@@ -151,7 +151,7 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
     edit.record_actor_on_event(this, event_edit);
     clear.record_actor_on_event(this, event_clear);
     saveas_name.record_actor_on_event(this, event_saveas);
-    biblio->record_actor_on_event(this, bibliotheque::changed);
+    biblio->record_actor_on_event(this, bibliotheque::changed(categ));
 
 	// csss
 
@@ -391,7 +391,7 @@ void guichet::on_event(const std::string & event_name)
 	    throw WEBDAR_BUG;
 	}
     }
-    else if(event_name == bibliotheque::changed)
+    else if(event_name == bibliotheque::changed(categ))
     {
 	update_selected();
     }
