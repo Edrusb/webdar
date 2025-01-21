@@ -49,6 +49,7 @@ extern "C"
 #include "html_form_input_unit.hpp"
 #include "html_slicing.hpp"
 #include "html_ciphering.hpp"
+#include "guichet.hpp"
 
     /// html component used for the user to provide the parameters to repair an archive
 
@@ -64,6 +65,9 @@ public:
     html_options_repair & operator = (html_options_repair && ref) noexcept = delete;
     ~html_options_repair() = default;
 
+	/// mandatory call to invoke ASAP after constructor
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
+
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -71,7 +75,7 @@ public:
     libdar::archive_options_repair get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
 
 	/// optain the current entrepot object where is expected to be repaired the archive
-    std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const { return entrep.get_entrepot(webui); };
+    std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const { return entrep->get_entrepot(webui); };
 
 protected:
 
@@ -87,7 +91,8 @@ private:
 
 	// entrepot
 
-    html_entrepot entrep;
+    guichet guichet_entrep;
+    std::shared_ptr<html_entrepot> entrep;
 
 
 	// display settings

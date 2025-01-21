@@ -105,6 +105,10 @@ html_options_repair::html_options_repair():
 {
     libdar::archive_options_repair defaults;
 
+    entrep.reset(new (nothrow) html_entrepot());
+    if(!entrep)
+	throw exception_memory();
+
 	// component configuration
     static const char* sect_entrep = "entrepot";
     static const char* sect_display = "display";
@@ -135,7 +139,7 @@ html_options_repair::html_options_repair():
     slicing.set_slicing(defaults.get_slice_size(), defaults.get_first_slice_size());
 
 	// repo adoption
-    deroule.adopt_in_section(sect_entrep, &entrep);
+    deroule.adopt_in_section(sect_entrep, &guichet_entrep);
 
 	// adoption tree
     display_fs.adopt(&info_details);
@@ -171,7 +175,7 @@ html_options_repair::html_options_repair():
     register_name(entrepot_changed);
 
     display_treated.record_actor_on_event(this, html_form_input::changed);
-    entrep.record_actor_on_event(this, html_entrepot::changed);
+    entrep->record_actor_on_event(this, html_entrepot::changed);
 
     on_event(html_form_input::changed); // first initialization
 
@@ -181,6 +185,13 @@ html_options_repair::html_options_repair():
     webdar_css_style::grey_button(deroule, true);
 }
 
+void html_options_repair::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
+{
+    guichet_entrep.set_child(ptr,
+			     bibliotheque::repo,
+			     entrep,
+			     false);
+}
 
 void html_options_repair::on_event(const string & event_name)
 {
@@ -244,7 +255,7 @@ libdar::archive_options_repair html_options_repair::get_options(shared_ptr<html_
     ret.set_user_comment(user_comment.get_value());
     ret.set_hash_algo(hash_algo.get_value());
     ret.set_slice_min_digits(slicing.get_min_digits());
-    ret.set_entrepot(entrep.get_entrepot(webui));
+    ret.set_entrepot(entrep->get_entrepot(webui));
     ret.set_multi_threaded_compress(webdar_tools_convert_to_int(multi_thread_compress.get_value()));
 
     return ret;
