@@ -33,6 +33,7 @@ extern "C"
 
     // webdar headers
 #include "environment.hpp"
+#include "tokens.hpp"
 
     //
 #include "html_bibliotheque.hpp"
@@ -91,14 +92,14 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     intro.add_paragraph();
     intro.add_text(0, "This security warning also applies when using untrusted SSL certificates for WebDar (risk of man-in-the-middle attack).");
 
-    saved_status.add_text(3, "All configurations saved");
-    unsaved_status.add_text(3, "Not all configurations saved!");
+    saved_status.add_text(0, "All configurations saved to file");
+    unsaved_status.add_text(0, "Not all configurations saved to file!");
 
 	// main tab
 
-    top_fs.adopt(&form);
-    form.adopt(&filename_fs);
     filename_fs.adopt(&filename);
+    form.adopt(&filename_fs);
+    top_fs.adopt(&form);
     top_fs.adopt(&save);
     top_fs.adopt(&load);
     top_fs.adopt(&ok_loaded);
@@ -186,9 +187,11 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
 	//  global adoption tree
 
+    statusbar.adopt(&saved_status);
+    statusbar.adopt(&unsaved_status);
+    adopt(&statusbar);
+
     tabs.adopt_in_section(tab_main, &intro);
-    tabs.adopt_in_section(tab_main, &saved_status);
-    tabs.adopt_in_section(tab_main, &unsaved_status);
     tabs.adopt_in_section(tab_main, &top_fs);
     tabs.adopt_in_section(tab_main, &bot_fs);
     tabs.adopt_in_section(tab_main, &down_fs);
@@ -239,6 +242,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     nok_message.add_css_class(css_red_text);
     saved_status.add_css_class(css_green_text);
     unsaved_status.add_css_class(css_red_text);
+
+    statusbar.add_css_class(css_statusbar);
 
 	// loading the default configuration if present
 
@@ -399,6 +404,20 @@ void html_bibliotheque::new_css_library_available()
 	tmp.css_color(GREEN);
 	tmp.css_font_style_italic();
 	csslib->add(css_green_text, tmp);
+    }
+
+    if(!csslib->class_exists(css_statusbar))
+    {
+	tmp.clear();
+	tmp.css_text_h_align(css::al_center);
+	tmp.css_margin("0px");
+	tmp.css_padding_top("0.1em");
+	tmp.css_padding_bottom("0.5em");
+	tmp.css_box_sizing(css::bx_border);
+	tmp.css_width("100%", false);
+	tmp.css_background_color(COLOR_TOPBAR_BACK);
+	tmp.css_font_weight_bold();
+	csslib->add(css_statusbar, tmp);
     }
 
     webdar_css_style::update_library(*csslib);

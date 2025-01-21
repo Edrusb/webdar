@@ -139,13 +139,16 @@ private:
     html_double_button download;
     html_form_fieldset clear_fs;
     html_double_button clear_conf;
-    html_text saved_status;
-    html_text unsaved_status;
     html_text ok_loaded;
     html_text ok_saved;
     html_text ok_uploaded;
     html_text ok_cleared;
     html_text nok_message;
+
+    html_div statusbar;
+    html_text saved_status;
+    html_text unsaved_status;
+
 
 
     bool expect_upload;
@@ -166,6 +169,7 @@ private:
     static constexpr const char* css_float = "hmtl_biblio_float";
     static constexpr const char* css_red_text = "red";
     static constexpr const char* css_green_text = "green";
+    static constexpr const char* css_statusbar = "html_biblio_bar";
 };
 
 #endif
