@@ -123,10 +123,10 @@ public:
 	/// return the name of the section knowing its index
     std::string num_to_section_name(unsigned int num) const { return order[num]; };
 
-protected:
-
-	// inherited from html_void_parent_notifier
+	/// inherited from html_void_parent_notifier
     virtual void void_child_will_foresake(body_builder* voidobj, body_builder* obj) override;
+
+protected:
 
 	// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,

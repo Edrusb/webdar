@@ -44,7 +44,7 @@ void html_aiguille::clear()
     while(order.begin() != order.end())
 	remove_section(*(order.begin()));
     active_section = noactive;
-    selfcleaning = true;
+    selfcleaning = false;
     my_body_part_has_changed();
 }
 
@@ -118,7 +118,7 @@ void html_aiguille::clear_section(const string & section_name)
     try
     {
 	if(it == sections.end())
-	    throw exception_range("unknown section to clear named: " + section_name);
+	    throw exception_range("unknown section to clear, named: " + section_name);
 
 	list<body_builder*>::iterator objt = it->second.adopted.begin();
 	map<body_builder*, string>::iterator revt;
