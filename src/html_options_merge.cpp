@@ -76,8 +76,7 @@ html_options_merge::html_options_merge():
     fs_perimeter(""),
     empty_dir("Store ignored directories as empty directories", html_form_input::check, "", "1"),
     overwriting_policy(""),
-    form_overwriting("Update"),
-    compr_params(true, true, true)
+    form_overwriting("Update")
 {
 
     entrep.reset(new (nothrow) html_entrepot());
@@ -94,6 +93,10 @@ html_options_merge::html_options_merge():
 
     ea_mask.reset(new (nothrow) html_mask_form_filename("extended attribute"));
     if(!ea_mask)
+	throw exception_memory();
+
+    compr_params.reset(new (nothrow) html_compression_params(true, true, true));
+    if(!compr_params)
 	throw exception_memory();
 
     compr_mask.reset(new (nothrow) html_mask_form_filename("file name"));
@@ -131,12 +134,6 @@ html_options_merge::html_options_merge():
     delta_filter_title.add_text(3, "Delta signature filename based filtering");
     compr_filter_title.add_paragraph();
     compr_filter_title.add_text(3, "Compression filename based filtering");
-
-    compr_params.set_keep_compressed(true); // bypass default value from libdar
-    compr_params.set_compression_algo(defaults.get_compression());
-    compr_params.set_compression_level(defaults.get_compression_level());
-    compr_params.set_min_compression_size(defaults.get_min_compr_size());
-    compr_params.set_keep_compressed(defaults.get_keep_compressed());
 
     slicing.set_permission(defaults.get_slice_permission());
     slicing.set_user_ownership(defaults.get_slice_user_ownership());
@@ -225,7 +222,7 @@ html_options_merge::html_options_merge():
     form_overwriting.adopt(&overwriting_policy);
     deroule.adopt_in_section(sect_overwrite, &form_overwriting);
 
-    deroule.adopt_in_section(sect_compr, &compr_params);
+    deroule.adopt_in_section(sect_compr, &guichet_compr_params);
     deroule.adopt_in_section(sect_compr, &compr_filter_title);
     deroule.adopt_in_section(sect_compr, &guichet_compr_mask);
 
@@ -240,7 +237,7 @@ html_options_merge::html_options_merge():
 
     delta_sig.record_actor_on_event(this, html_form_select::changed);
     display_treated.record_actor_on_event(this, html_form_input::changed);
-    compr_params.record_actor_on_event(this, html_compression_params::changed);
+    compr_params->record_actor_on_event(this, html_compression_params::changed);
     has_aux.record_actor_on_event(this, html_form_input::changed);
     entrep->record_actor_on_event(this, html_entrepot::changed);
 
@@ -277,6 +274,10 @@ void html_options_merge::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 				 delta_mask,
 				 false);
 
+    guichet_compr_params.set_child(ptr,
+				   bibliotheque::compress,
+				   compr_params,
+				   false);
     compr_mask->set_child(ptr, bibliotheque::filefilter);
     guichet_compr_mask.set_child(ptr,
 				 bibliotheque::filefilter,
@@ -304,8 +305,8 @@ void html_options_merge::on_event(const string & event_name)
 	sig_block_size.set_visible(delta_sig.get_selected_num() == 2);
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
 
-	if(! compr_params.get_keep_compressed()
-	   && compr_params.get_compression_algo() != libdar::compression::none)
+	if(! compr_params->get_keep_compressed()
+	   && compr_params->get_compression_algo() != libdar::compression::none)
 	{
 	    compr_filter_title.set_visible(true);
 	    guichet_compr_mask.set_visible(true);
@@ -356,14 +357,14 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
     ret.set_selection(*(filename_mask->get_mask()));
     ret.set_subtree(*(path_mask->get_mask()));
     ret.set_overwriting_rules(*(overwriting_policy.get_overwriting_action()));
-    if(! compr_params.get_keep_compressed())
+    if(! compr_params->get_keep_compressed())
     {
 	ret.set_keep_compressed(false);
-	ret.set_compression(compr_params.get_compression_algo());
-	ret.set_compression_level(compr_params.get_compression_level());
-	ret.set_min_compr_size(compr_params.get_min_compression_size());
+	ret.set_compression(compr_params->get_compression_algo());
+	ret.set_compression_level(compr_params->get_compression_level());
+	ret.set_min_compr_size(compr_params->get_min_compression_size());
 
-	libdar::U_I val = webdar_tools_convert_from_infinint<libdar::U_I>(compr_params.get_compression_block(),
+	libdar::U_I val = webdar_tools_convert_from_infinint<libdar::U_I>(compr_params->get_compression_block(),
 									  string("compression block size is too large for the underlying operating system, please reduce"));
 
 	if(val < tokens_min_compr_bs && val != 0)
@@ -374,7 +375,7 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
 	if(!libcompmask)
 	    throw WEBDAR_BUG;
 	ret.set_compr_mask(*libcompmask);
-	ret.set_multi_threaded_compress(compr_params.get_num_threads());
+	ret.set_multi_threaded_compress(compr_params->get_num_threads());
     }
     else
 	ret.set_keep_compressed(true);

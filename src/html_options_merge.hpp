@@ -161,7 +161,8 @@ private:
     html_form_overwrite_action overwriting_policy;
     html_form form_overwriting;
 
-    html_compression_params compr_params;
+    guichet guichet_compr_params;
+    std::shared_ptr<html_compression_params> compr_params;
     html_text compr_filter_title;
 
     guichet guichet_compr_mask;
