@@ -53,7 +53,7 @@ exception_system::exception_system(const string & context, int error_code) : exc
 	change_message(context + ": " + buffer);
     else
 #endif
-	change_message(string(strerror(error_code)));
+	change_message(context + ": " + string(strerror(error_code)));
 }
 
 exception_libcall::exception_libcall(const libdar::Egeneric & e): exception_base(e.get_message())
