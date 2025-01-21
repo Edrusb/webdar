@@ -237,6 +237,7 @@ void html_menu::new_css_library_available()
 	// Common aspects
     tmp_set.css_border_style(css::bd_all, css::bd_solid, true);
     tmp_set.css_border_width(css::bd_all, css::bd_medium, true);
+    tmp_set.css_box_sizing(css::bx_border);
     tmp_set.css_width("8em", true, true);
     tmp_set.css_padding("0.5em", true);
     tmp_set.css_margin("0.2em", true);

@@ -647,7 +647,8 @@ void saisie::new_css_library_available()
 	throw WEBDAR_BUG;
 
     tmp.clear();
-    tmp.css_margin_left("9.4em");
+    tmp.css_margin_left("10em");
+    tmp.css_box_sizing(css::bx_border);
     csslib->add(css_class_rightpan, tmp);
     right_pan.add_css_class(css_class_rightpan);
 
