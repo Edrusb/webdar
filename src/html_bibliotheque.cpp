@@ -49,6 +49,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     form("Update"),
     filename_fs(""),
     filename("Filename", bib_path, "50", "Select file used to store configurations"),
+    autosave("Auto-saving to file", html_form_input::check, "x", "1"),
     save("Save", event_save),
     load("Load", event_load),
     bot_fs(""),
@@ -98,6 +99,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 	// main tab
 
     filename_fs.adopt(&filename);
+    filename_fs.adopt(&autosave);
     form.adopt(&filename_fs);
     top_fs.adopt(&form);
     top_fs.adopt(&save);
@@ -211,6 +213,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
     save.record_actor_on_event(this, event_save);
     load.record_actor_on_event(this, event_load);
+    autosave.record_actor_on_event(this, html_form_input::changed);
     download.record_actor_on_event(this, event_download);
     upload_form.record_actor_on_event(this, html_form::changed);
     clear_conf.record_actor_on_event(this, event_clear);
@@ -298,10 +301,16 @@ void html_bibliotheque::on_event(const std::string & event_name)
 		throw exception_system(libdar::tools_printf("Failed reading configuration from %s", filename.get_value().c_str()), errno);
 	    input.close();
 	    biblio->load_json(config);
+	    autosave.set_value_as_bool(biblio->get_autosave_status());
 	}
 	else
 	    throw exception_system(libdar::tools_printf("Failed openning %s", filename.get_value().c_str()), errno);
 	ok_loaded.set_visible(true);
+    }
+    else if(event_name == html_form_input::changed)
+    {
+	bool target_autosave = autosave.get_value_as_bool();
+	biblio->set_autosave_status(target_autosave);
     }
     else if(event_name == html_form::changed)
     {
@@ -321,6 +330,7 @@ void html_bibliotheque::on_event(const std::string & event_name)
 	else
 	{
 	    biblio->clear();
+	    autosave.set_value_as_bool(biblio->get_autosave_status());
 	}
 	ok_cleared.set_visible(true);
     }
@@ -351,6 +361,7 @@ string html_bibliotheque::inherited_get_body_part(const chemin & path,
 		    json data = json::parse(str);
 
 		    biblio->load_json(data);
+		    autosave.set_value_as_bool(biblio->get_autosave_status());
 		    ok_uploaded.set_visible(true);
 		}
 		catch(json::exception & e)
@@ -428,8 +439,19 @@ void html_bibliotheque::set_saved_status()
 {
     if(!biblio)
 	throw WEBDAR_BUG;
-    saved_status.set_visible(biblio->get_saved_status());
-    unsaved_status.set_visible(! biblio->get_saved_status());
+
+    if(!autosave.get_value_as_bool())
+    {
+	statusbar.set_visible(true);
+	saved_status.set_visible(biblio->get_saved_status());
+	unsaved_status.set_visible(! biblio->get_saved_status());
+    }
+    else
+    {
+	statusbar.set_visible(false);
+	if(! biblio->get_saved_status())
+	    on_event(event_save); // auto saving the bibliotheque
+    }
 }
 
 

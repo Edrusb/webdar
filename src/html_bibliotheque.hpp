@@ -130,6 +130,7 @@ private:
     html_form form;
     html_form_fieldset filename_fs;
     html_form_input_file filename;
+    html_form_input autosave;
     html_double_button save;
     html_double_button load;
     html_form_fieldset bot_fs;

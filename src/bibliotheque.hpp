@@ -155,6 +155,18 @@ public:
 	/// but is cleared when loading or saving as json.
     bool get_saved_status() const { return saved; };
 
+	/// get the autosave property
+
+	/// \note this property does not drive any action here
+	/// but is left available to decide whether or not to save
+	/// the bibliotheque upon change by component using it (html_bibliotheque)
+    bool get_autosave_status() const { return autosave; };
+
+	/// set the autosave property
+
+	/// \note same note as the one for get_autosave_status()
+    void set_autosave_status(bool val) { autosave = val; };
+
 	/// clear all stored configurations
     void clear();
 
@@ -195,6 +207,12 @@ private:
     mutable bool saved;  ///< whether content as changed since last save_json() invocation
 
 	////////////////////////////////////
+	// GLOBAL PROPERTIES
+    bool autosave;
+
+
+
+	////////////////////////////////////
 	// DATASTRUCTURE STORING REFERENCE
 	// FROM EXTERNAL DATA
 	//
@@ -231,6 +249,12 @@ private:
     static constexpr const char* config_label = "name";
     static constexpr const char* config_def_label = "config";
     static constexpr const char* config_depend = "used-by";
+
+    static constexpr const char* jlabel_categprop  = "categories";
+    static constexpr const char* jlabel_globalprop = "global";
+
+    static constexpr const char* jlabel_autosave   = "auto-save";
+
 };
 
 bibliotheque::category & operator++(bibliotheque::category & cat);

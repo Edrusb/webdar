@@ -346,6 +346,8 @@ void bibliotheque::load_json(const json & source)
     json tmp_json;
     json config_json;
     json used_by;
+    json categories;
+    json globalprop;
 
     content.clear();
     saved = true;
@@ -358,10 +360,15 @@ void bibliotheque::load_json(const json & source)
 	if(version > bibli_version)
 	    throw exception_range("Version too recent for a bibliotheque json version, upgrade webdar your software");
 
-	if(! config.is_array())
+	globalprop = config.at(jlabel_globalprop);
+	categories = config.at(jlabel_categprop);
+
+	autosave = globalprop.at(jlabel_autosave);
+
+	if(! categories.is_array())
 	    throw exception_range("Unexpected json data: bibliotheque configuration is not an array");
 
-	for(json::iterator catit = config.begin(); catit != config.end(); ++catit)
+	for(json::iterator catit = categories.begin(); catit != categories.end(); ++catit)
 	{
 
 	    if(! catit->is_object())
@@ -428,6 +435,7 @@ json bibliotheque::save_json() const
 {
 
     json config;
+    json allcategs;
     json percat_config;
     json tmp;
     json used_by;
@@ -463,8 +471,14 @@ json bibliotheque::save_json() const
 	tmp.clear();
 	tmp[category_label] = category_to_string(catit->first);
 	tmp[asso_label] = percat_config;
-	config.push_back(tmp);
+	allcategs.push_back(tmp);
     }
+
+    config[jlabel_categprop] = allcategs;
+
+    tmp.clear();
+    tmp[jlabel_autosave] = autosave;
+    config[jlabel_globalprop] = tmp;
 
     saved = true;
     return wrap_config_with_json_header(bibli_version, "bibliotheque", config);
@@ -475,6 +489,7 @@ void bibliotheque::init()
     for(int cat = filefilter; cat != EOE; ++cat)
 	content[static_cast<category>(cat)] = asso(); //empty asso
     saved = true;
+    autosave = true;
 }
 
 bool bibliotheque::lookup(category cat, const string & name, asso::iterator & it, table::iterator & catit) const
