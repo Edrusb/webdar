@@ -74,6 +74,3 @@ html_void_parent_notifier* html_void::parent_notifier()
 {
     return dynamic_cast<html_void_parent_notifier*>(get_parent());
 }
-
-
-

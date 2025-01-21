@@ -26,10 +26,11 @@
 
     /// \file defines two classes html_void and html_void_parent_notifier
 
-    /// - html_void is a transparent type of object (they do not generate any HTTP body)
-    ///   used to provide a globa visibility switch to objects they have been in adoption
-    /// - html_void_parent_notifier is an interface object adopting an html_void component
-    ///   can implement (but are not obliged to) to be notified of status changes of the
+    /// - html_void is a transparent type of object (it do not generate any HTTP body
+    ///   outside what its adopted children produce). It is used to provide a global
+    ///   visibility switch to objects they have adopted
+    /// - html_void_parent_notifier is an interface. An object adopting an html_void component
+    ///   can implement (but is not obliged to) this interface to be notified of status changes of the
     ///   html_void object, by implementing (overriding) the specified methods of that class.
 
     // C system header files
