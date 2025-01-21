@@ -42,6 +42,11 @@ extern "C"
 #include "html_form_dynamic_table.hpp"
 #include "html_mask_form_filename.hpp"
 
+    /// class html_over_guichet is used to insert configuration from a bibliotheque in-place of a subconfiguration
+
+    /// this allows configuration in a bibliotheque to rely on some other configurations from the sam bibliotheque store.
+    /// It is used for file and mask filtering mainly.
+
 class html_over_guichet : public guichet,
 			  public html_mask
 {
