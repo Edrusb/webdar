@@ -88,6 +88,15 @@ private:
     html_form_input_file arch_path;
     html_options_read opt_read;
     html_libdar_running_popup libdarexec;
+
+	/// delay entrepot update when waiting inherited_get_body_part() to be executed
+
+	/// \note not doing so may lead to run() this object which involves an html_web_user_interaction
+	/// while the object is not visible and this this interaction component not operational
+    bool need_entrepot_update;
+
+    void update_entrepot();
+
 };
 
 #endif

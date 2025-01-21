@@ -44,7 +44,8 @@ html_archive_isolate::html_archive_isolate():
     form("Update"),
     fs(""),
     sauv_path("Where to create the isolated catalog", "/", "80%", "Select the directory where to create the isolated catalog..."),
-    basename("Isolated Catalog basename", html_form_input::text, "", "80%")
+    basename("Isolated Catalog basename", html_form_input::text, "", "80%"),
+    need_entrepot_update(false)
 {
     static const char* sect_archive = "isolation options";
     deroule.add_section(sect_archive, "Backup Isolation");
@@ -82,11 +83,7 @@ void html_archive_isolate::on_event(const string & event_name)
 {
     if(event_name == html_options_isolate::entrepot_changed)
     {
-	if(is_running())
-	    throw WEBDAR_BUG;
-	join(); // in case a previous execution triggered an exception
-	repoxfer.set_visible(true);
-	repoxfer.run_and_control_thread(this);
+	need_entrepot_update = true;
     }
     else
 	throw WEBDAR_BUG;
@@ -95,6 +92,8 @@ void html_archive_isolate::on_event(const string & event_name)
 string html_archive_isolate::inherited_get_body_part(const chemin & path,
 						     const request & req)
 {
+    if(need_entrepot_update)
+	update_entrepot();
     return get_body_part_from_all_children(path, req);
 }
 
@@ -123,4 +122,14 @@ void html_archive_isolate::signaled_inherited_cancel()
 
     if(is_running(libdar_tid))
 	th.cancel(libdar_tid, true, 0);
+}
+
+void html_archive_isolate::update_entrepot()
+{
+    if(is_running())
+	throw WEBDAR_BUG;
+    join(); // in case a previous execution triggered an exception
+    repoxfer.set_visible(true);
+    need_entrepot_update = false;
+    repoxfer.run_and_control_thread(this);
 }

@@ -67,7 +67,8 @@ html_options_read::html_options_read():
     ref_crypto_pass("Passphrase", html_form_input::password, "", "80%"),
     ref_crypto_size("Cipher block size", html_form_input::number, "0", "80%"),
     ref_execute("Command to execute locally before reading each slice", html_form_input::text, "", "80%"),
-    ref_slice_min_digits("Slice minimum digit", html_form_input::number, "0", "80%")
+    ref_slice_min_digits("Slice minimum digit", html_form_input::number, "0", "80%"),
+    need_ref_entrepot_update(false)
 {
     entrep.reset(new (nothrow) html_entrepot());
     if(!entrep)
@@ -257,16 +258,7 @@ void html_options_read::on_event(const string & event_name)
 	act(entrepot_has_changed);
     else if(event_name == ref_entrepot_has_changed)
     {
-	shared_ptr<html_web_user_interaction> localui = ref_webui.get_html_user_interaction();
-	if(!localui)
-	    throw WEBDAR_BUG;
-	localui->auto_hide(true, true);
-	localui->clear();
-	if(is_running())
-	    throw WEBDAR_BUG;
-	join(); // in case a previous execution triggered an exception
-	localui->run_and_control_thread(this);
-	my_body_part_has_changed();
+	need_ref_entrepot_update = true;
     }
     else if(event_name == html_libdar_running_popup::libdar_has_finished)
 	join();
@@ -314,6 +306,8 @@ void html_options_read::on_event(const string & event_name)
 string html_options_read::inherited_get_body_part(const chemin & path,
 						  const request & req)
 {
+    if(need_ref_entrepot_update)
+	update_ref_entrepot();
     return get_body_part_from_all_children(path, req);
 }
 
@@ -344,4 +338,20 @@ void html_options_read::signaled_inherited_cancel()
 
     if(is_running(libdar_tid))
 	th.cancel(libdar_tid, true, 0);
+}
+
+void html_options_read::update_ref_entrepot()
+{
+    shared_ptr<html_web_user_interaction> localui(ref_webui.get_html_user_interaction());
+    if(!localui)
+	throw WEBDAR_BUG;
+    localui->clear();
+    localui->auto_hide(true, true);
+
+    if(is_running())
+	throw WEBDAR_BUG;
+    join(); // in case a previous execution triggered an exception
+    ref_webui.set_visible(true);
+    need_ref_entrepot_update = false;
+    ref_webui.run_and_control_thread(this);
 }

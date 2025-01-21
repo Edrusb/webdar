@@ -50,7 +50,8 @@ html_archive_repair::html_archive_repair():
 	     "",
 	     "80%"),
     repair_fs(""),
-    repair_form("Update")
+    repair_form("Update"),
+    need_entrepot_update(false)
 {
 
 	// components initialization
@@ -94,11 +95,7 @@ void html_archive_repair::on_event(const string & event_name)
 {
     if(event_name == html_options_repair::entrepot_changed)
     {
-	if(is_running())
-	    throw WEBDAR_BUG;
-	join(); // in case a previous execution triggered an exception
-	repoxfer.set_visible(true);
-	repoxfer.run_and_control_thread(this);
+	need_entrepot_update = true;
     }
     else
 	throw WEBDAR_BUG;
@@ -107,6 +104,8 @@ void html_archive_repair::on_event(const string & event_name)
 string html_archive_repair::inherited_get_body_part(const chemin & path,
 						    const request & req)
 {
+    if(need_entrepot_update)
+	update_entrepot();
     return get_body_part_from_all_children(path, req);
 }
 
@@ -135,4 +134,14 @@ void html_archive_repair::signaled_inherited_cancel()
 
     if(is_running(libdar_tid))
 	th.cancel(libdar_tid, true, 0);
+}
+
+void html_archive_repair::update_entrepot()
+{
+    if(is_running())
+	throw WEBDAR_BUG;
+    join(); // in case a previous execution triggered an exception
+    repoxfer.set_visible(true);
+    need_entrepot_update = false;
+    repoxfer.run_and_control_thread(this);
 }

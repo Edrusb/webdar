@@ -46,7 +46,8 @@ html_archive_read::html_archive_read(const string & archive_description):
     arch_path("Backup Path",
 	      "/",
 	      "80%",
-	      "Select the backup to read...")
+	      "Select the backup to read..."),
+    need_entrepot_update(false)
 {
 
 	// web components layout
@@ -71,17 +72,9 @@ void html_archive_read::on_event(const string & event_name)
 {
     if(event_name == html_options_read::entrepot_has_changed)
     {
-	shared_ptr<html_web_user_interaction> webui(libdarexec.get_html_user_interaction());
-	if(!webui)
-	    throw WEBDAR_BUG;
-	webui->clear();
-	webui->auto_hide(true, true);
 	if(!is_running())
 	{
-	    join(); // in case a previous execution triggered an exception
-	    libdarexec.set_visible(true);
-	    my_body_part_has_changed();
-	    webui->run_and_control_thread(this);
+	    need_entrepot_update = true;
 	}
 	else
 	{
@@ -110,6 +103,8 @@ void html_archive_read::on_event(const string & event_name)
 string html_archive_read::inherited_get_body_part(const chemin & path,
 						  const request & req)
 {
+    if(need_entrepot_update)
+	update_entrepot();
     return get_body_part_from_all_children(path, req);
 }
 
@@ -152,4 +147,20 @@ void html_archive_read::signaled_inherited_cancel()
 
     if(is_running(libdar_tid))
 	th.cancel(libdar_tid, true, 0);
+}
+
+void html_archive_read::update_entrepot()
+{
+    shared_ptr<html_web_user_interaction> webui(libdarexec.get_html_user_interaction());
+    if(!webui)
+	throw WEBDAR_BUG;
+    webui->clear();
+    webui->auto_hide(true, true);
+
+    if(is_running())
+	throw WEBDAR_BUG;
+    join(); // in case a previous execution triggered an exception
+    libdarexec.set_visible(true);
+    need_entrepot_update = false;
+    libdarexec.run_and_control_thread(this);
 }

@@ -45,7 +45,8 @@ html_archive_create::html_archive_create():
     fs(""),
     fs_root("Directory to take as root for the backup", "/", "80%", "Select root directory to backup..."),
     sauv_path("Where to create the backup", "/", "80%", "Select path where to create the backup..."),
-    basename("Backup basename", html_form_input::text, "", "80%")
+    basename("Backup basename", html_form_input::text, "", "80%"),
+    need_entrepot_update(false)
 {
     static const char* sect_archive = "archive";
 
@@ -91,11 +92,7 @@ void html_archive_create::on_event(const string & event_name)
 {
     if(event_name == html_options_create::entrepot_changed)
     {
-	if(is_running())
-	    throw WEBDAR_BUG;
-	join(); // in case a previous execution triggered an exception
-	repoxfer.set_visible(true);
-	repoxfer.run_and_control_thread(this);
+	need_entrepot_update = true;
     }
     else if(event_name == html_libdar_running_popup::libdar_has_finished)
     {
@@ -112,6 +109,8 @@ void html_archive_create::on_event(const string & event_name)
 string html_archive_create::inherited_get_body_part(const chemin & path,
 						    const request & req)
 {
+    if(need_entrepot_update)
+	update_entrepot();
     return get_body_part_from_all_children(path, req);
 }
 
@@ -140,4 +139,14 @@ void html_archive_create::signaled_inherited_cancel()
 
     if(is_running(libdar_tid))
 	th.cancel(libdar_tid, true, 0);
+}
+
+void html_archive_create::update_entrepot()
+{
+    if(is_running())
+	throw WEBDAR_BUG;
+    join(); // in case a previous execution triggered an exception
+    repoxfer.set_visible(true);
+    need_entrepot_update = false;
+    repoxfer.run_and_control_thread(this);
 }

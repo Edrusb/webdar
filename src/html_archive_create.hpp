@@ -90,6 +90,15 @@ private:
     html_form_input basename;
     html_options_create options;
     html_libdar_running_popup repoxfer;
+
+	/// delay entrepot update when waiting inherited_get_body_part() to be executed
+
+	/// \note not doing so may lead to run() this object which involves an html_web_user_interaction
+	/// while the object is not visible and this this interaction component not operational
+    bool need_entrepot_update;
+
+    void update_entrepot();
+
 };
 
 #endif
