@@ -82,7 +82,10 @@ public:
 
     unsigned int size() const { return switcher.size(); };
 
-	/// hide/unhide a section
+	/// hide/unhide a section (Warning! this is not the same thing as shrinking/expanding a section!)
+
+	/// \node invisible section not only shrink (their content is no more visible) but the
+	/// section title itself disapears and the section does not show at all to the user
     void section_set_visible(const std::string & name, bool visible);
 
 	/// set css of URL titles
