@@ -74,7 +74,7 @@ html_entrepot::html_entrepot():
     repo_type.set_selected(0);
 
     port.set_range(1, 65536); // actually set to zero to track value change, but 0 is invalid
-    wait_time.set_min_only(30);
+    wait_time.set_min_only(5);
 
     auth_type.add_choice(auth_pass, "Password authentication");
     auth_type.add_choice(auth_key, "Keyfile authentication");
