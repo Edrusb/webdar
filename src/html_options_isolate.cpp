@@ -114,7 +114,7 @@ html_options_isolate::html_options_isolate():
 
     deroule.add_section(sect_entrep, "Isolated Catalog Repository");
     deroule.add_section(sect_delta, "Delta signatures");
-    deroule.add_section(sect_general, "General Isolation Options");
+    deroule.add_section(sect_general, "How to process the operation");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_compr, "Compression options");
     deroule.add_section(sect_slice, "Slicing options");

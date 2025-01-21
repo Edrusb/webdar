@@ -47,6 +47,7 @@ html_options_list::html_options_list():
 	// component setup
     static const char* listing_opt = "listing_opt";
     deroule.add_section(listing_opt, "Listing parameters");
+    deroule.set_active_section(listing_opt);
 
     action.add_choice("list", "display backup contents");
     action.add_choice("summ", "display backup properties");

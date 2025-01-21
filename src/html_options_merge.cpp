@@ -160,10 +160,10 @@ html_options_merge::html_options_merge():
     static const char* sect_cipher = "ciphering";
 
     deroule.add_section(sect_entrep, "Backup Repository");
-    deroule.add_section(sect_general, "General Merging Options");
+    deroule.add_section(sect_general, "How to process the operation");
+    deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_aux, "Auxiliary Backup of Reference");
     deroule.add_section(sect_delta, "Delta signatures");
-    deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_filter, "What to take into consideration for Merging");
     deroule.add_section(sect_mask_file, "File name based filtering");
     deroule.add_section(sect_mask_path, "Path based filterting");

@@ -84,7 +84,7 @@ html_options_test::html_options_test():
     static const char* sect_show = "archive show opt";
     static const char* sect_mask = "mask";
     static const char* sect_path = "path";
-    deroule.add_section(sect_opt, "Testing options");
+    deroule.add_section(sect_opt, "How to process the operation");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_mask, "File name based filtering");
     deroule.add_section(sect_path, "Path based filtering");

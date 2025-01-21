@@ -157,7 +157,7 @@ html_options_extract::html_options_extract():
     static const char* sect_ea_mask = "EA masks";
     static const char* sect_fsa_scope = "FSA Scope";
     static const char* sect_overwriting = "overwriting";
-    deroule.add_section(sect_opt, "Restoration options");
+    deroule.add_section(sect_opt, "How to process the operation");
     deroule.add_section(sect_show, "What to show during the operation");
     deroule.add_section(sect_mask_file, "File name based filtering");
     deroule.add_section(sect_mask_path, "Path based filtering");
