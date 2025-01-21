@@ -649,7 +649,10 @@ string body_builder::get_body_part_or_cache(const chemin & path,
        && req.get_body() == last_body_req_body
        && ! body_changed)
     {
-	ret = last_body_part;
+	if(visible)
+	    ret = last_body_part;
+	else
+	    ret = "";
     }
     else
     {
