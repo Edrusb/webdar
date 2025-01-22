@@ -116,6 +116,8 @@ private:
     template <class T> void init_bool_obj(T & obj) const;
 
     static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_mask_form_filename";
+
     static constexpr const char* jlabel_bool_config = "bool-config";
 
 };
