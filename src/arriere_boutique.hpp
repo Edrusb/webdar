@@ -358,7 +358,7 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 	if(!currently_loaded.empty())
 	{
 	    if(biblio->has_config(categ, currently_loaded))
-		listing.set_selected(currently_loaded);
+		listing.set_selected_id(currently_loaded);
 	    else
 	    {
 		currently_loaded = "";

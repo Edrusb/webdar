@@ -143,7 +143,7 @@ html_options_create::html_options_create():
     alter_atime.add_choice("ctime", "Inode last change time (ctime)");
     mod_data_detect.add_choice("any_inode_change", "Any inode change (behavior before libdar 2.6.0)");
     mod_data_detect.add_choice("mtime_size", "only mtime and file size change (default)");
-    mod_data_detect.set_selected("mtime_size");
+    mod_data_detect.set_selected_id("mtime_size");
     pause.set_min_only(0);
     hourshift.set_range(0, 23);
     if(defaults.get_reference() != nullptr)

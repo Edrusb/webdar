@@ -153,7 +153,7 @@ void html_form_mask_expression::load_json(const json & source)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
 						       myclass_id));
 
-	mask_type.set_selected(config.at(jlabel_mask_type).template get<string>());
+	mask_type.set_selected_id(config.at(jlabel_mask_type));
 	negate.set_value_as_bool(config.at(jlabel_negate));
 	casesensitivity.set_value_as_bool(config.at(jlabel_casesensit));
 	mask_expression.set_value(config.at(jlabel_expression));

@@ -63,11 +63,34 @@ public:
     void add_choice(const std::string & id, const std::string & label);
     void clear() { choices.clear(); unset_selected(); my_body_part_has_changed(); };
 
-    void set_selected(unsigned int x); ///< \note index zero is the first choice
-    void unset_selected();             ///< set nothing as selected
+	/// set the radio buttons to item given in argument
+
+	/// \note index zero is the first choice
+    void set_selected(unsigned int x);
+
+	/// set the radio buttons to the item id given in argument
+
+	/// \note set_selected() and set_selected_id() do the same
+	/// thing but using different way to design the radio button
+	/// to select
+    void set_selected_id(const std::string & id);
+
+	/// unselect all radio buttons
+    void unset_selected();
+
+	/// returns whether a radio button is selected
     bool is_selected() const { return selected < choices.size(); };
-    void set_selected(const std::string & id);
+
+	/// obtain the id of the selected radio button
+
+	/// \note if no item is selected exception is thrown (BUG).
+	/// first check with is_selected() before calling this method
     const std::string & get_selected_id() const;
+
+	/// obtain the index (starts at zero) of the selected radio button
+
+	/// \note if nothing is selected the index passed the last valid
+	/// index is returned
     unsigned int get_selected_num() const { return selected; };
 
 	/// the number of currently available options

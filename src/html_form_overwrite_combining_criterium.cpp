@@ -52,7 +52,7 @@ html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium
     crit_type.add_choice(or_op, "OR");
     if(crit_type.num_choices() != 2)
 	throw WEBDAR_BUG;
-    crit_type.set_selected(initial_mode);
+    crit_type.set_selected_id(initial_mode);
     current_bool_mode = crit_type.get_selected_id();
 
     table.set_obj_type_provider(this);

@@ -51,7 +51,7 @@ html_form_mask_bool::html_form_mask_bool(const string & initial_mode):
     mask_type.add_choice(or_op, "OR");
     if(mask_type.num_choices() != 2)
 	throw WEBDAR_BUG;
-    mask_type.set_selected(initial_mode);
+    mask_type.set_selected_id(initial_mode);
     current_bool_mode = mask_type.get_selected_id();
     fs.change_label(tell_action());
 
@@ -180,7 +180,7 @@ void html_form_mask_bool::load_json(const json & source)
 	    // setting back the bool mode and mask_type selected value
 
 	current_bool_mode = config.at(jlabel_logic);
-	mask_type.set_selected(current_bool_mode);
+	mask_type.set_selected_id(current_bool_mode);
 
 	    // filling the table for each component found
 

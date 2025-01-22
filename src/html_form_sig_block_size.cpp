@@ -54,7 +54,7 @@ html_form_sig_block_size::html_form_sig_block_size():
     function.add_choice("log2", "Natural logarithm of the file size");
     function.add_choice("root2", "Square root of the file size");
     function.add_choice("root3", "Cube root of the file size");
-    function.set_selected("root2");
+    function.set_selected_id("root2");
     multiply.set_min_only(1);
     divisor.set_min_only(1);
     min_size.set_value_as_infinint(libdar::infinint(RS_DEFAULT_BLOCK_LEN));

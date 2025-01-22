@@ -67,7 +67,7 @@ html_ciphering::html_ciphering():
     crypto_kdf_hash.add_choice("sha512","sha512");
     crypto_kdf_hash.add_choice("whirlpool","whirlpool");
     crypto_kdf_hash.add_choice("argon2","argon2");
-    crypto_kdf_hash.set_selected("argon2");
+    crypto_kdf_hash.set_selected_id("argon2");
 
 
 	// adoption tree

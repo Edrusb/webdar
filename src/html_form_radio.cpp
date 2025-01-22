@@ -84,6 +84,18 @@ void html_form_radio::set_selected(unsigned int x)
     value_set = true;
 }
 
+void html_form_radio::set_selected_id(const string & id)
+{
+    unsigned int val = 0;
+    while(val < choices.size() && choices[val].id != id)
+	++val;
+
+    if(val < choices.size())
+	set_selected(val);
+    else
+	throw WEBDAR_BUG;
+}
+
 void html_form_radio::unset_selected()
 {
     if(selected != choices.size())
@@ -97,19 +109,6 @@ const string & html_form_radio::get_selected_id() const
 {
     if(selected < choices.size())
 	return choices[selected].id;
-    else
-	throw WEBDAR_BUG;
-}
-
-
-void html_form_radio::set_selected(const string & id)
-{
-    unsigned int val = 0;
-    while(val < choices.size() && choices[val].id != id)
-	++val;
-
-    if(val < choices.size())
-	set_selected(val);
     else
 	throw WEBDAR_BUG;
 }

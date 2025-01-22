@@ -209,7 +209,7 @@ void guichet::load_json(const json & source)
 							   bibliotheque::category_to_string(categ)));
 	    try
 	    {
-		select.set_selected(conf_name);
+		select.set_selected_id(conf_name);
 	    }
 	    catch(exception_base & e)
 	    {
@@ -384,7 +384,7 @@ void guichet::on_event(const std::string & event_name)
 	    // setting the selected to the new created configuration
 	try
 	{
-	    select.set_selected(saveas_name.get_value());
+	    select.set_selected_id(saveas_name.get_value());
 	}
 	catch(exception_base & e)
 	{
@@ -469,7 +469,7 @@ void guichet::update_selected()
 	}
 
 	if(still_exists)
-	    select.set_selected(current_choice);
+	    select.set_selected_id(current_choice);
 	    // does not triggers event_select
 	    // because ignore_event is true
     }
