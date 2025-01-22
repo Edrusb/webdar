@@ -43,7 +43,7 @@ using namespace std;
 
 std::string bibliotheque::changed(category cat)
 {
-    string ret("bibliotheque::");
+    string ret(string(myclass_id) + "::");
 
     switch(cat)
     {
@@ -354,11 +354,11 @@ void bibliotheque::load_json(const json & source)
 
     try
     {
-	if(class_id != "bibliotheque")
-	    throw exception_range("Unexpected json data: wrong class_id in json header for class bibliotheque");
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected json data: wrong class_id in json header for class %s", myclass_id));
 
 	if(version > bibli_version)
-	    throw exception_range("Version too recent for a bibliotheque json version, upgrade webdar your software");
+	    throw exception_range(libdar::tools_printf("Version too recent for a %s json version, upgrade webdar your software", myclass_id));
 
 	globalprop = config.at(jlabel_globalprop);
 	categories = config.at(jlabel_categprop);
@@ -366,20 +366,20 @@ void bibliotheque::load_json(const json & source)
 	autosave = globalprop.at(jlabel_autosave);
 
 	if(! categories.is_array())
-	    throw exception_range("Unexpected json data: bibliotheque configuration is not an array");
+	    throw exception_range(libdar::tools_printf("Unexpected json data: %s configuration is not an array", myclass_id));
 
 	for(json::iterator catit = categories.begin(); catit != categories.end(); ++catit)
 	{
 
 	    if(! catit->is_object())
-		throw exception_range("Unexpected json data: bibliotheque per category data is not an object");
+		throw exception_range(libdar::tools_printf("Unexpected json data: %s per category data is not an object", myclass_id));
 
 	    cat_name = catit->at(category_label);
 	    tmp_json = catit->at(asso_label);
 	    tmp_map.clear();
 
 	    if(! tmp_json.is_array() && ! tmp_json.is_null())
-		throw exception_range("Unexpected json data: bibliotheque list of configuration per category is not an array");
+		throw exception_range(libdar::tools_printf("Unexpected json data: %s list of configuration per category is not an array", myclass_id));
 
 	    for(json::iterator it = tmp_json.begin(); it != tmp_json.end(); ++it)
 	    {
@@ -481,7 +481,7 @@ json bibliotheque::save_json() const
     config[jlabel_globalprop] = tmp;
 
     saved = true;
-    return wrap_config_with_json_header(bibli_version, "bibliotheque", config);
+    return wrap_config_with_json_header(bibli_version, myclass_id, config);
 }
 
 void bibliotheque::init()
@@ -639,6 +639,6 @@ bibliotheque::category bibliotheque::string_to_category(const string & s)
     else if(s == "confcommon")
 	return confcommon;
     else
-	throw exception_range(libdar::tools_printf("Unknown bibliotheque category: %s", s.c_str()));
+	throw exception_range(libdar::tools_printf("Unknown category: %s", s.c_str()));
 }
 

@@ -255,6 +255,7 @@ private:
 
     static constexpr const char* jlabel_autosave   = "auto-save";
 
+    static constexpr const char* myclass_id = "bibliotheque";
 };
 
 bibliotheque::category & operator++(bibliotheque::category & cat);
