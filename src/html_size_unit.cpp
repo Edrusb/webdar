@@ -49,7 +49,7 @@ html_size_unit::html_size_unit() : unit(""),
 	// set components value
     SI_mode.add_choice("SI", "SI");
     SI_mode.add_choice("bin", "binary");
-    SI_mode.set_selected(1); // defaulting to binary family units
+    SI_mode.set_selected_num(1); // defaulting to binary family units
     unit.set_no_CR();
     set_fields();
 
@@ -127,7 +127,7 @@ void html_size_unit::set_unit_and_ratio_indexes(unsigned int base_index,
 	{
 	    if(base_index != SI_mode.get_selected_num())
 	    {
-		SI_mode.set_selected(base_index);
+		SI_mode.set_selected_num(base_index);
 		set_fields();
 		has_changed = true;
 	    }
@@ -140,7 +140,7 @@ void html_size_unit::set_unit_and_ratio_indexes(unsigned int base_index,
 	{
 	if(power_index != unit.get_selected_num())
 	{
-	    unit.set_selected(power_index);
+	    unit.set_selected_num(power_index);
 	    has_changed = true;
 	}
 	    // else nothing changes here, thus nothing to do

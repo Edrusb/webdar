@@ -132,13 +132,13 @@ html_options_extract::html_options_extract():
     switch(defaults.get_dirty_behavior())
     {
     case libdar::archive_options_extract::dirty_ignore:
-	dirty_behavior.set_selected(0);
+	dirty_behavior.set_selected_num(0);
 	break;
     case libdar::archive_options_extract::dirty_warn:
-	dirty_behavior.set_selected(1);
+	dirty_behavior.set_selected_num(1);
 	break;
     case libdar::archive_options_extract::dirty_ok:
-	dirty_behavior.set_selected(2);
+	dirty_behavior.set_selected_num(2);
 	break;
     default:
 	throw WEBDAR_BUG;

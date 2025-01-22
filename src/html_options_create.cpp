@@ -150,12 +150,12 @@ html_options_create::html_options_create():
 	throw WEBDAR_BUG; // not expected default value!!!
     else
 	if(defaults.get_snapshot())
-	    archtype.set_selected(2);
+	    archtype.set_selected_num(2);
 	else
 	    if(defaults.get_fixed_date() != 0)
-		archtype.set_selected(3);
+		archtype.set_selected_num(3);
 	    else
-		archtype.set_selected(0);
+		archtype.set_selected_num(0);
     retry_on_change_times.set_min_only(0);
 
 	// set default values
@@ -168,9 +168,9 @@ html_options_create::html_options_create():
     hourshift.set_value(libdar::deci(defaults.get_hourshift()).human());
     empty.set_value_as_bool(defaults.get_empty());
     if(defaults.get_alter_atime())
-	alter_atime.set_selected(0);
+	alter_atime.set_selected_num(0);
     else
-	alter_atime.set_selected(1);
+	alter_atime.set_selected_num(1);
     furtive_read_mode.set_value_as_bool(defaults.get_furtive_read_mode());
     zeroing_neg_date.set_value_as_bool(defaults.get_auto_zeroing_neg_dates());
     fixed_date.set_value(defaults.get_fixed_date());

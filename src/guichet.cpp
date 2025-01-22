@@ -192,7 +192,7 @@ void guichet::load_json(const json & source)
 	{
 		// manual mode
 
-	    select.set_selected(0);
+	    select.set_selected_num(0);
 	    adopted_jsoner->load_json(conf.at(jlabel_conf));
 	}
 	else
@@ -269,7 +269,7 @@ void guichet::clear_json()
     check_adopted();
 
     clear_adopted = true;
-    select.set_selected(0);
+    select.set_selected_num(0);
 }
 
 
@@ -337,7 +337,7 @@ void guichet::on_event(const std::string & event_name)
 	if(select.get_selected_num() != 0)
 	{
 	    clear_adopted = false;
-	    select.set_selected(0);
+	    select.set_selected_num(0);
 		// this trigers an new event
 		// which in particular sets visibility()
 		// (see just above the event_select)
@@ -514,7 +514,7 @@ void guichet::set_adopted()
 	catch(...)
 	{
 	    clear_adopted = false;
-	    select.set_selected(0); // passing on manual mode
+	    select.set_selected_num(0); // passing on manual mode
 	    throw;
 	}
 

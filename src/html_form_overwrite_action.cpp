@@ -54,7 +54,7 @@ html_form_overwrite_action::html_form_overwrite_action(const string & label):
     action_type.add_choice(action_type_const, "constant action");
     action_type.add_choice(action_type_condition, "conditional action");
     action_type.add_choice(action_type_chain, "chain action");
-    action_type.set_selected(0);
+    action_type.set_selected_num(0);
 
     set_visible();
 

@@ -175,7 +175,7 @@ json html_compression_params::save_json() const
 
 void html_compression_params::clear_json()
 {
-    compression.set_selected(0);
+    compression.set_selected_num(0);
     compression_level.set_value_as_int(default_level);
     min_compr_size.set_value_as_infinint(libdar::infinint(default_min_compr_size));
     compression_block.set_value_as_infinint(libdar::infinint(default_compression_block));

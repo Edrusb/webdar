@@ -71,14 +71,14 @@ html_entrepot::html_entrepot():
     repo_type.add_choice(type_local, "local file system");        // index 0
     repo_type.add_choice(type_ftp, "FTP protocol (unciphered)");  // index 1
     repo_type.add_choice(type_sftp, "SFTP protocol (ciphered)");  // index 2
-    repo_type.set_selected(0);
+    repo_type.set_selected_num(0);
 
     port.set_range(1, 65536); // actually set to zero to track value change, but 0 is invalid
     wait_time.set_min_only(5);
 
     auth_type.add_choice(auth_pass, "Password authentication");
     auth_type.add_choice(auth_key, "Keyfile authentication");
-    auth_type.set_selected(0);
+    auth_type.set_selected_num(0);
 
     pub_keyfile.set_select_mode(html_form_input_file::select_file);
     pub_keyfile.set_can_create_dir(false);
@@ -236,11 +236,11 @@ void html_entrepot::load_json(const json & source)
 
 	try
 	{
-	    repo_type.set_selected(config.at(jlabel_type).template get<unsigned int>());
+	    repo_type.set_selected_num(config.at(jlabel_type));
 	    host.set_value(config.at(jlabel_host));
 	    port.set_value(config.at(jlabel_port));
 	    login.set_value(config.at(jlabel_login));
-	    auth_type.set_selected(config.at(jlabel_authtype).template get<unsigned int>());
+	    auth_type.set_selected_num(config.at(jlabel_authtype));
 	    pass.set_value(config.at(jlabel_pass));
 	    auth_from_file.set_value_as_bool(config.at(jlabel_auth_from_file));
 	    pub_keyfile.set_value(config.at(jlabel_pubkey));
@@ -308,7 +308,7 @@ void html_entrepot::clear_json()
     reset_ssh_files();
     wait_time.set_value(default_waittime);
     verbose.set_value(default_verbose);
-    repo_type.set_selected(0);
+    repo_type.set_selected_num(0);
 
 	// same remark here as load_json() above
     entrep_need_update = true;
@@ -510,7 +510,7 @@ void html_entrepot::clear_form()
     host.set_value("");
     port.set_value("0");
     login.set_value("");
-    auth_type.set_selected(0);
+    auth_type.set_selected_num(0);
     pass.set_value("");
     auth_from_file.set_value("");
 }

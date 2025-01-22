@@ -56,7 +56,7 @@ html_form_dynamic_table::html_form_dynamic_table(bool has_left_labels,
 
 	// components configuration/
     adder.add_choice("", default_choice);
-    adder.set_selected(0);
+    adder.set_selected_num(0);
 
 	// adoption tree
     if(!selector_below)
@@ -95,7 +95,7 @@ void html_form_dynamic_table::add_obj_type(const string & label)
 	throw WEBDAR_BUG;
 
     adder.add_choice(label, label);
-    adder.set_selected(0);
+    adder.set_selected_num(0);
 }
 
 void html_form_dynamic_table::add_line(unsigned int typenum)
@@ -147,7 +147,7 @@ void html_form_dynamic_table::on_event(const std::string & event_name)
 		// tells the user to select a filter and list_of_mask_types that have the
 		// first valid mask at position 0.
 	    add_line(adder.get_selected_num() - 1);
-	    adder.set_selected(0); // resetting 'adder' to undefined
+	    adder.set_selected_num(0); // resetting 'adder' to undefined
 	    act(changed);
 	}
     }

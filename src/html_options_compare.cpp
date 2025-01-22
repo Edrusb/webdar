@@ -107,9 +107,9 @@ html_options_compare::html_options_compare():
     alter_atime.add_choice("atime", "Data last access time (atime)");
     alter_atime.add_choice("ctime", "Inode last change time (ctime)");
     if(defaults.get_alter_atime())
-	alter_atime.set_selected(0);
+	alter_atime.set_selected_num(0);
     else
-	alter_atime.set_selected(1);
+	alter_atime.set_selected_num(1);
     what_to_check.set_value(defaults.get_what_to_check());
     furtive_read_mode.set_value_as_bool(defaults.get_furtive_read_mode());
     zeroing_neg_date.set_value_as_bool(defaults.get_auto_zeroing_neg_dates());

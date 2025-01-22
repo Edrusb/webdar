@@ -88,7 +88,7 @@ html_form_mask_subdir::html_form_mask_subdir(const html_form_mask_subdir & ref):
 
 void html_form_mask_subdir::clear()
 {
-    mask_type.set_selected(0);
+    mask_type.set_selected_num(0);
     casesensitivity.set_value_as_bool(true);
     regex.set_value_as_bool(false);
     mask_subdir.set_value("");

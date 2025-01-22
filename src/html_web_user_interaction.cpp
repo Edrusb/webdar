@@ -428,7 +428,7 @@ void html_web_user_interaction::update_html_from_libdar_status()
 		h_inter.set_visible(true);
 		h_inter_text.clear();
 		h_inter_text.add_text(0, msg);
-		h_pause.set_selected(0);
+		h_pause.set_selected_num(0);
 	    }
 	}
 

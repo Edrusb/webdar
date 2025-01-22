@@ -46,7 +46,7 @@ html_yes_no_box::html_yes_no_box(const string & message, bool default_value)
 {
     rd.add_choice("no", "No");
     rd.add_choice("yes", "Yes");
-    rd.set_selected(default_value ? 1 : 0);
+    rd.set_selected_num(default_value ? 1 : 0);
 
 	/// building the body_builder tree
     form_fs.adopt(&rd);

@@ -51,7 +51,7 @@ html_options_list::html_options_list():
 
     action.add_choice("list", "display backup contents");
     action.add_choice("summ", "display backup properties");
-    action.set_selected(0);
+    action.set_selected_num(0);
 
 	// adoption tree
     fs.adopt(&action);

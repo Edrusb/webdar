@@ -59,7 +59,7 @@ void html_form_radio::add_choice(const string & id, const string & label)
     my_body_part_has_changed();
 }
 
-void html_form_radio::set_selected(unsigned int x)
+void html_form_radio::set_selected_num(unsigned int x)
 {
     if(x >= choices.size())
     {
@@ -91,7 +91,7 @@ void html_form_radio::set_selected_id(const string & id)
 	++val;
 
     if(val < choices.size())
-	set_selected(val);
+	set_selected_num(val);
     else
 	throw WEBDAR_BUG;
 }

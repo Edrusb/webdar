@@ -66,7 +66,7 @@ public:
 	/// set the radio buttons to item given in argument
 
 	/// \note index zero is the first choice
-    void set_selected(unsigned int x);
+    void set_selected_num(unsigned int x);
 
 	/// set the radio buttons to the item id given in argument
 
@@ -81,17 +81,18 @@ public:
 	/// returns whether a radio button is selected
     bool is_selected() const { return selected < choices.size(); };
 
+	/// obtain the index (starts at zero) of the selected radio button
+
+	/// \note if nothing is selected the index passed the last valid
+	/// index is returned
+    unsigned int get_selected_num() const { return selected; };
+
 	/// obtain the id of the selected radio button
 
 	/// \note if no item is selected exception is thrown (BUG).
 	/// first check with is_selected() before calling this method
     const std::string & get_selected_id() const;
 
-	/// obtain the index (starts at zero) of the selected radio button
-
-	/// \note if nothing is selected the index passed the last valid
-	/// index is returned
-    unsigned int get_selected_num() const { return selected; };
 
 	/// the number of currently available options
     const unsigned int num_choices() const { return choices.size(); };

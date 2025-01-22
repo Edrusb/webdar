@@ -81,7 +81,7 @@ html_form_mask_expression::html_form_mask_expression(const html_form_mask_expres
 
 void html_form_mask_expression::clear()
 {
-    mask_type.set_selected(0);
+    mask_type.set_selected_num(0);
     negate.set_value_as_bool(false);
     casesensitivity.set_value_as_bool(true);
     mask_expression.set_value("");

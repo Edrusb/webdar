@@ -51,7 +51,7 @@ html_crypto_algo::html_crypto_algo(const string & title): html_form_select(title
     add_choice("twofish", "Twofish");
     add_choice("serpent", "Serpent");
     add_choice("camellia", "Camellia");
-    set_selected(0);
+    set_selected_num(0);
     register_name(changed);
     record_actor_on_event(this, html_form_select::changed);
 }
@@ -84,25 +84,25 @@ void html_crypto_algo::set_value(libdar::crypto_algo val)
     switch(val)
     {
     case libdar::crypto_algo::none:
-	set_selected(0);
+	set_selected_num(0);
 	break;
     case libdar::crypto_algo::scrambling:
-	set_selected(1);
+	set_selected_num(1);
 	break;
     case libdar::crypto_algo::blowfish:
-	set_selected(2);
+	set_selected_num(2);
 	break;
     case libdar::crypto_algo::aes256:
-	set_selected(3);
+	set_selected_num(3);
 	break;
     case libdar::crypto_algo::twofish256:
-	set_selected(4);
+	set_selected_num(4);
 	break;
     case libdar::crypto_algo::serpent256:
-	set_selected(5);
+	set_selected_num(5);
 	break;
     case libdar::crypto_algo::camellia256:
-	set_selected(6);
+	set_selected_num(6);
 	break;
     default:
 	throw WEBDAR_BUG;

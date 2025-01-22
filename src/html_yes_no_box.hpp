@@ -55,7 +55,7 @@ public:
 
     bool get_value() const { return rd.get_selected_num() != 0; };
 
-    void set_value(bool val) { rd.set_selected(val ? 1 : 0); };
+    void set_value(bool val) { rd.set_selected_num(val ? 1 : 0); };
 
 protected:
 	/// inherited from body_builder

@@ -47,7 +47,7 @@ html_comparison_fields::html_comparison_fields() : html_form_select("Comparison 
     add_choice("ignore_owner", "Ignore ownership");
     add_choice("mtime", "Ignore ownership and permission");
     add_choice("inode_type", "ignore all but inode type");
-    set_selected(0);
+    set_selected_num(0);
 }
 
 libdar::comparison_fields html_comparison_fields::get_value() const
@@ -72,16 +72,16 @@ void html_comparison_fields::set_value(libdar::comparison_fields val)
     switch(val)
     {
     case libdar::comparison_fields::all:
-	set_selected(0);
+	set_selected_num(0);
 	break;
     case libdar::comparison_fields::ignore_owner:
-	set_selected(1);
+	set_selected_num(1);
 	break;
     case libdar::comparison_fields::mtime:
-	set_selected(2);
+	set_selected_num(2);
 	break;
     case libdar::comparison_fields::inode_type:
-	set_selected(3);
+	set_selected_num(3);
 	break;
     default:
 	throw WEBDAR_BUG;

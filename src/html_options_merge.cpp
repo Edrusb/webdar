@@ -116,7 +116,7 @@ html_options_merge::html_options_merge():
     delta_sig.add_choice("drop", "Drop all signatures");
     delta_sig.add_choice("transfer", "Transfer signatures as is");
     delta_sig.add_choice("compute", "Define signatures to transfer or compute");
-    delta_sig.set_selected(1); // transfer by default
+    delta_sig.set_selected_num(1); // transfer by default
 
     allow_over.set_value_as_bool(defaults.get_allow_over());
     warn_over.set_value_as_bool(defaults.get_warn_over());

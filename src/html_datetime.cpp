@@ -273,9 +273,9 @@ string html_datetime::inherited_get_body_part(const chemin & path,
 
 void html_datetime::update_from(const struct tm & val)
 {
-    minute.set_selected(val.tm_min);
-    hour.set_selected(val.tm_hour);
-    day.set_selected(val.tm_mday);
-    month.set_selected(val.tm_mon);
+    minute.set_selected_num(val.tm_min);
+    hour.set_selected_num(val.tm_hour);
+    day.set_selected_num(val.tm_mday);
+    month.set_selected_num(val.tm_mon);
     year.set_value(webdar_tools_convert_to_string(val.tm_year + 1900));
 }

@@ -83,12 +83,12 @@ html_demo::html_demo():
     left_radio.add_choice("0", choice1);
     left_radio.add_choice("1", choice2);
     left_radio.add_choice("2", choice3);
-    left_radio.set_selected(2);
+    left_radio.set_selected_num(2);
 
     right_radio.add_choice("0", choice1);
     right_radio.add_choice("1", choice2);
     right_radio.add_choice("2", choice3);
-    right_radio.set_selected(0);
+    right_radio.set_selected_num(0);
 
 	// adoption tree
 
@@ -145,7 +145,7 @@ void html_demo::on_event(const string & event_name)
 	right_input.set_value(left_input.get_value());
     else if(event_name == html_form_radio::changed)
     {
-	right_radio.set_selected(left_radio.get_selected_num());
+	right_radio.set_selected_num(left_radio.get_selected_num());
 	switch(left_radio.get_selected_num())
 	{
 	case 0: // hidden
