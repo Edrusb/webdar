@@ -76,6 +76,10 @@ html_options_isolate::html_options_isolate():
     if(!compr_params)
 	throw exception_memory();
 
+    slicing.reset(new (nothrow) html_slicing());
+    if(! slicing)
+	throw exception_memory();
+
     delta_filter_title.add_paragraph();
     delta_filter_title.add_text(3, "Delta signature filename based filtering");
 
@@ -88,17 +92,11 @@ html_options_isolate::html_options_isolate():
     warn_over.set_value_as_bool(defaults.get_warn_over());
     pause.set_value(libdar::deci(defaults.get_pause()).human());
     pause.set_min_only(0);
-    slicing.set_permission(defaults.get_slice_permission());
-    slicing.set_user_ownership(defaults.get_slice_user_ownership());
-    slicing.set_group_ownership(defaults.get_slice_group_ownership());
     sequential_marks.set_value_as_bool(defaults.get_sequential_marks());
     user_comment.set_value(defaults.get_user_comment());
-    slicing.set_min_digits(defaults.get_slice_min_digits());
     hash_algo.set_value(defaults.get_hash_algo());
     execute.set_value(defaults.get_execute());
     empty.set_value_as_bool(defaults.get_empty());
-    slicing.set_slicing(defaults.get_slice_size(),
-			defaults.get_first_slice_size());
     ciphering.set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
     delta_sig_min_size.set_value_as_infinint(defaults.get_delta_sig_min_size());
 
@@ -148,7 +146,7 @@ html_options_isolate::html_options_isolate():
 
     deroule.adopt_in_section(sect_compr, &guichet_compr_params);
 
-    deroule.adopt_in_section(sect_slice, &slicing);
+    deroule.adopt_in_section(sect_slice, &guichet_slicing);
 
     deroule.adopt_in_section(sect_cipher, &ciphering);
 
@@ -183,6 +181,10 @@ void html_options_isolate::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				   bibliotheque::compress,
 				   compr_params,
 				   false);
+    guichet_slicing.set_child(ptr,
+			      bibliotheque::slicing,
+			      slicing,
+			      false);
 }
 
 void html_options_isolate::on_event(const string & event_name)
@@ -228,12 +230,12 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     ret.set_allow_over(allow_over.get_value_as_bool());
     ret.set_warn_over(warn_over.get_value_as_bool());
     ret.set_pause(libdar::deci(pause.get_value()).computer());
-    ret.set_slice_permission(slicing.get_permission());
-    ret.set_slice_user_ownership(slicing.get_user_ownership());
-    ret.set_slice_group_ownership(slicing.get_group_ownership());
+    ret.set_slice_permission(slicing->get_permission());
+    ret.set_slice_user_ownership(slicing->get_user_ownership());
+    ret.set_slice_group_ownership(slicing->get_group_ownership());
     ret.set_sequential_marks(sequential_marks.get_value_as_bool());
     ret.set_user_comment(user_comment.get_value());
-    ret.set_slice_min_digits(slicing.get_min_digits());
+    ret.set_slice_min_digits(slicing->get_min_digits());
     ret.set_hash_algo(hash_algo.get_value());
     ret.set_empty(empty.get_value_as_bool());
     ret.set_execute(execute.get_value());
@@ -269,7 +271,7 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     libdar::infinint s_size;
     libdar::infinint f_s_size;
 
-    slicing.get_slicing(s_size, f_s_size);
+    slicing->get_slicing(s_size, f_s_size);
     ret.set_slicing(s_size, f_s_size);
 
     ret.set_crypto_algo(ciphering.get_crypto_algo());

@@ -129,7 +129,8 @@ private:
     guichet guichet_compr_params;
     std::shared_ptr<html_compression_params> compr_params;
 
-    html_slicing slicing;
+    guichet guichet_slicing;
+    std::shared_ptr<html_slicing> slicing;
 
     html_ciphering ciphering;
 };
