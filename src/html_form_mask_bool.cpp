@@ -169,12 +169,13 @@ void html_form_mask_bool::load_json(const json & source)
 						     version,
 						     class_id);
 
-	if(class_id != "html_form_mask_bool")
-	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting html_form_mask_bool",
-						       class_id.c_str()));
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
 
 	if(version > format_version)
-	    throw exception_range("Json format version too hight for html_form_mask_bool, upgrade your webdar software");
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software", myclass_id));
 
 	    // setting back the bool mode and mask_type selected value
 
@@ -217,7 +218,7 @@ void html_form_mask_bool::load_json(const json & source)
     }
     catch(json::exception & e)
     {
-	throw exception_json("Error loading html_form_mask_bool config", e);
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
     }
 }
 
@@ -252,7 +253,7 @@ json html_form_mask_bool::save_json() const
     }
 
     return wrap_config_with_json_header(format_version,
-					"html_form_mask_bool",
+					myclass_id,
 					ret);
 }
 

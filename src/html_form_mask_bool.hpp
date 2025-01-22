@@ -171,6 +171,7 @@ private:
     std::string tell_action() const;
 
     static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_mask_bool";
 
     static constexpr const char* jlabel_logic = "logic";
     static constexpr const char* jlabel_components = "components";
