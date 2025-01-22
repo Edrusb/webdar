@@ -75,6 +75,7 @@ html_slicing::html_slicing():
 	// events
     slicing.record_actor_on_event(this, html_form_input::changed);
     different_first_slice.record_actor_on_event(this, html_form_input::changed);
+    register_name(changed);
 
 	// css
 
@@ -261,6 +262,8 @@ void html_slicing::on_event(const std::string & event_name)
 	    different_first_slice.set_visible(false);
 	    first_slice_size.set_visible(false);
 	}
+
+	act(changed);
     }
     else
 	throw WEBDAR_BUG;

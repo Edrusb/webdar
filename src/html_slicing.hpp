@@ -38,6 +38,7 @@ extern "C"
     // webdar headers
 #include "body_builder.hpp"
 #include "actor.hpp"
+#include "events.hpp"
 #include "html_form.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_form_input.hpp"
@@ -48,6 +49,7 @@ extern "C"
 
 class html_slicing : public body_builder,
 		     public actor,
+		     public events,
 		     public jsoner
 {
 public:
