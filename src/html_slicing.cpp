@@ -40,6 +40,8 @@ extern "C"
 
 using namespace std;
 
+const string html_slicing::changed = "html_slicing_changed";
+
 html_slicing::html_slicing():
     form_slicing("Update"),
     slicing_fs(""),
