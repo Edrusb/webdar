@@ -109,6 +109,10 @@ html_options_repair::html_options_repair():
     if(!entrep)
 	throw exception_memory();
 
+    slicing.reset(new (nothrow) html_slicing());
+    if(! slicing)
+	throw exception_memory();
+
 	// component configuration
     static const char* sect_entrep = "entrepot";
     static const char* sect_display = "display";
@@ -131,12 +135,6 @@ html_options_repair::html_options_repair():
 
     pause.set_min_only(0);
     multi_thread_compress.set_min_only(1);
-
-    slicing.set_permission(defaults.get_slice_permission());
-    slicing.set_user_ownership(defaults.get_slice_user_ownership());
-    slicing.set_group_ownership(defaults.get_slice_group_ownership());
-    slicing.set_min_digits(defaults.get_slice_min_digits());
-    slicing.set_slicing(defaults.get_slice_size(), defaults.get_first_slice_size());
 
 	// repo adoption
     deroule.adopt_in_section(sect_entrep, &guichet_entrep);
@@ -164,7 +162,7 @@ html_options_repair::html_options_repair():
     target_form.adopt(&target_fs);
     deroule.adopt_in_section(sect_target, &target_form);
 
-    deroule.adopt_in_section(sect_slice, &slicing);
+    deroule.adopt_in_section(sect_slice, &guichet_slicing);
 
     deroule.adopt_in_section(sect_crypt, &ciphering);
 
@@ -191,6 +189,10 @@ void html_options_repair::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 			     bibliotheque::repo,
 			     entrep,
 			     false);
+    guichet_slicing.set_child(ptr,
+			      bibliotheque::slicing,
+			      slicing,
+			      false);
 }
 
 void html_options_repair::on_event(const string & event_name)
@@ -222,7 +224,7 @@ libdar::archive_options_repair html_options_repair::get_options(shared_ptr<html_
 
     libdar::infinint s_size;
     libdar::infinint f_s_size;
-    slicing.get_slicing(s_size, f_s_size);
+    slicing->get_slicing(s_size, f_s_size);
     ret.set_slicing(s_size, f_s_size);
 
     ret.set_execute(execute.get_value());
@@ -249,12 +251,12 @@ libdar::archive_options_repair html_options_repair::get_options(shared_ptr<html_
     }
 
     ret.set_empty(dry_run.get_value_as_bool());
-    ret.set_slice_permission(slicing.get_permission());
-    ret.set_slice_user_ownership(slicing.get_user_ownership());
-    ret.set_slice_group_ownership(slicing.get_group_ownership());
+    ret.set_slice_permission(slicing->get_permission());
+    ret.set_slice_user_ownership(slicing->get_user_ownership());
+    ret.set_slice_group_ownership(slicing->get_group_ownership());
     ret.set_user_comment(user_comment.get_value());
     ret.set_hash_algo(hash_algo.get_value());
-    ret.set_slice_min_digits(slicing.get_min_digits());
+    ret.set_slice_min_digits(slicing->get_min_digits());
     ret.set_entrepot(entrep->get_entrepot(webui));
     ret.set_multi_threaded_compress(webdar_tools_convert_to_int(multi_thread_compress.get_value()));
 

@@ -125,7 +125,8 @@ private:
 
 	// slicing
 
-    html_slicing slicing;
+    guichet guichet_slicing;
+    std::shared_ptr<html_slicing> slicing;
 
 	// crypto
 
