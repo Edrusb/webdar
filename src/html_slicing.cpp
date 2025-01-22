@@ -200,7 +200,7 @@ void html_slicing::load_json(const json & source)
 	slice_permission.set_value(config.at(jlabel_slice_permission));
 	slice_user_ownership.set_value(config.at(jlabel_user_owner));
 	slice_group_ownership.set_value(config.at(jlabel_group_owner));
-	slice_min_digits.set_value(config.at(jlabel_min_digits));
+	slice_min_digits.set_value_as_int(config.at(jlabel_min_digits));
 
 	on_event(html_form_input::changed);
     }
