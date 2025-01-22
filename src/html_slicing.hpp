@@ -42,11 +42,13 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_form_input.hpp"
 #include "html_form_input_unit.hpp"
-
+#include "jsoner.hpp"
 
     /// html component used for the user to define a has algorithm
 
-class html_slicing : public body_builder, public actor
+class html_slicing : public body_builder,
+		     public actor,
+		     public jsoner
 {
 public:
     static const std::string changed;
@@ -72,6 +74,15 @@ public:
     std::string get_user_ownership() const;
     std::string get_group_ownership() const;
 
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
+
 	/// inherited from class actor
     virtual void on_event(const std::string & event_name) override;
 
@@ -93,6 +104,17 @@ private:
     html_form_input slice_group_ownership;
     html_form_input slice_min_digits;
 
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_slicing";
+
+    static constexpr const char* jlabel_slicing = "slicing"; // bool
+    static constexpr const char* jlabel_diff_first = "specific-first-slice"; // bool
+    static constexpr const char* jlabel_slice_size = "slice-size"; // infinint
+    static constexpr const char* jlabel_first_slice_size = "first-slice-size"; // infinint
+    static constexpr const char* jlabel_slice_permission = "permission"; // string
+    static constexpr const char* jlabel_user_owner = "user-ownership"; // string
+    static constexpr const char* jlabel_group_owner = "group-ownership"; // string
+    static constexpr const char* jlabel_min_digits = "min-digits"; // num
 };
 
 #endif

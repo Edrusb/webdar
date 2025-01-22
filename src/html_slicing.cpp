@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 
@@ -171,6 +171,74 @@ std::string html_slicing::get_group_ownership() const
 {
     return slice_group_ownership.get_value();
 }
+
+void html_slicing::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software", myclass_id));
+
+	slicing.set_value_as_bool(config.at(jlabel_slicing));
+	different_first_slice.set_value_as_bool(config.at(jlabel_diff_first));
+	slice_size.set_value_as_infinint(libdar::deci(config.at(jlabel_slice_size)).computer());
+	first_slice_size.set_value_as_infinint(libdar::deci(config.at(jlabel_first_slice_size)).computer());
+	slice_permission.set_value(config.at(jlabel_slice_permission));
+	slice_user_ownership.set_value(config.at(jlabel_user_owner));
+	slice_group_ownership.set_value(config.at(jlabel_group_owner));
+	slice_min_digits.set_value(config.at(jlabel_min_digits));
+
+	on_event(html_form_input::changed);
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_slicing::save_json() const
+{
+    json ret;
+
+    ret[jlabel_slicing] = slicing.get_value_as_bool();
+    ret[jlabel_diff_first] = different_first_slice.get_value_as_bool();
+    ret[jlabel_slice_size] = libdar::deci(slice_size.get_value_as_infinint()).human();
+    ret[jlabel_first_slice_size] = libdar::deci(first_slice_size.get_value_as_infinint()).human();
+    ret[jlabel_slice_permission] = slice_permission.get_value();
+    ret[jlabel_user_owner] = slice_user_ownership.get_value();
+    ret[jlabel_group_owner] = slice_group_ownership.get_value();
+    ret[jlabel_min_digits] = slice_min_digits.get_value_as_int();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					ret);
+}
+
+void html_slicing::clear_json()
+{
+    slicing.set_value_as_bool(false);
+    slice_size.set_value_as_infinint(0);
+    different_first_slice.set_value_as_bool(false);
+    first_slice_size.set_value_as_infinint(0);
+    slice_permission.set_value("");
+    slice_user_ownership.set_value("");
+    slice_group_ownership.set_value("");
+    slice_min_digits.set_value_as_int(3);
+
+    on_event(html_form_input::changed);
+}
+
 
 void html_slicing::on_event(const std::string & event_name)
 {
