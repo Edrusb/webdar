@@ -143,6 +143,7 @@ private:
     libdar::path check_absolute_path_requirement() const; ///< throws exception if not coherent
 
     static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_mask_subdir";
 
     static constexpr const char* jlabel_type = "type";
     static constexpr const char* jlabel_casesensit = "casesensit";

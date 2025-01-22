@@ -164,12 +164,14 @@ void html_form_mask_subdir::load_json(const json & source)
 						     version,
 						     class_id);
 
-	if(class_id != "html_form_mask_subdir")
-	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting html_form_mask_subdir",
-						       class_id.c_str()));
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
 
 	if(version > format_version)
-	    throw exception_range("Json format version too hight for html_form_mask_subdir, upgrade your webdar software");
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+				  myclass_id));
 
 	mask_type.set_selected(config.at(jlabel_type).template get<string>());
 	casesensitivity.set_value_as_bool(config.at(jlabel_casesensit));
@@ -194,7 +196,7 @@ json html_form_mask_subdir::save_json() const
     ret[jlabel_mask] = mask_subdir.get_value();
 
     return wrap_config_with_json_header(format_version,
-					"html_form_mask_subdir",
+					myclass_id,
 					ret);
 }
 
