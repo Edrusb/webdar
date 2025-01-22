@@ -114,12 +114,14 @@ void html_form_mask_file::load_json(const json & source)
 						     version,
 						     class_id);
 
-	if(class_id != "html_form_mask_file")
-	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting html_form_mask_file",
-						       class_id.c_str()));
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
 
 	if(version > format_version)
-	    throw exception_range("Json format version too hight for html_form_mask_file, upgrade your webdar software");
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
 
 	filename.set_value(config.at(jlabel_filename));
 	exclude_checkbox.set_value_as_bool(config.at(jlabel_exclude));
@@ -140,7 +142,7 @@ json html_form_mask_file::save_json() const
     ret[jlabel_casesensit] = casesensit.get_value_as_bool();
 
     return wrap_config_with_json_header(format_version,
-					"html_form_mask_file",
+					myclass_id,
 					ret);
 }
 

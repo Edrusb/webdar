@@ -123,6 +123,7 @@ private:
     std::string tell_action() const;
 
     static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_mask_file";
 
     static constexpr const char* jlabel_filename = "filename";
     static constexpr const char* jlabel_exclude = "excluding";
