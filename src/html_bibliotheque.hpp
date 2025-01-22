@@ -49,6 +49,7 @@ extern "C"
 #include "html_mask_form_filename.hpp"
 #include "html_mask_form_path.hpp"
 #include "html_compression_params.hpp"
+#include "html_slicing.hpp"
 
     /// class html_bibliotheque provide graphical mean to manipulate a bibliotheque object
 
@@ -123,6 +124,7 @@ private:
     std::unique_ptr<arriere_boutique<html_mask_form_filename> > ab_filemask;
     std::unique_ptr<arriere_boutique<html_mask_form_path> > ab_pathmask;
     std::unique_ptr<arriere_boutique<html_compression_params> > ab_compr;
+    std::unique_ptr<arriere_boutique<html_slicing> > ab_slicing;
 
     html_tabs tabs;
     html_text intro;
@@ -150,8 +152,6 @@ private:
     html_text saved_status;
     html_text unsaved_status;
 
-
-
     bool expect_upload;
 
     void set_saved_status();
@@ -162,6 +162,7 @@ private:
     static constexpr const char* tab_filemask = "filemask";
     static constexpr const char* tab_pathmask = "pathmask";
     static constexpr const char* tab_compression = "compression";
+    static constexpr const char* tab_slicing = "slicing";
 
     static constexpr const char* event_save = "save";
     static constexpr const char* event_load = "load";
