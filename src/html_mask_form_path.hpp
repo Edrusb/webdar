@@ -135,6 +135,8 @@ private:
     void check_ptr() const;
 
     static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_mask_form_path";
+
     static constexpr const char* jlabel_bool_config = "bool-config";
 
 };
