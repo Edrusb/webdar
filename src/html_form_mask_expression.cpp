@@ -144,12 +144,14 @@ void html_form_mask_expression::load_json(const json & source)
 						     version,
 						     class_id);
 
-	if(class_id != "html_form_mask_expression")
-	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting html_form_mask_expression",
-						       class_id.c_str()));
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
 
 	if(version > format_version)
-	    throw exception_range("Json format version too hight for html_form_mask_expression, upgrade your webdar software");
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
 
 	mask_type.set_selected(config.at(jlabel_mask_type).template get<string>());
 	negate.set_value_as_bool(config.at(jlabel_negate));
@@ -158,7 +160,9 @@ void html_form_mask_expression::load_json(const json & source)
     }
     catch(json::exception & e)
     {
-	throw exception_json("Error loading html_form_mask_expression config", e);
+	throw exception_json(libdar::tools_printf("Error loading %s config",
+						  myclass_id),
+			     e);
     }
 }
 
@@ -173,7 +177,7 @@ json html_form_mask_expression::save_json() const
     ret[jlabel_expression] = mask_expression.get_value();
 
     return wrap_config_with_json_header(format_version,
-					"html_form_mask_expression",
+					myclass_id,
 					ret);
 }
 

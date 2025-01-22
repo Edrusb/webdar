@@ -135,6 +135,7 @@ private:
     std::string tell_action() const;
 
     static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_mask_expression";
 
     static constexpr const char* jlabel_mask_type = "type";
     static constexpr const char* jlabel_negate = "negate";
