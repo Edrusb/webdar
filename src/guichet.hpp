@@ -195,6 +195,8 @@ private:
     static constexpr const char* css_bold = "guichet_bold";
 
     static constexpr const char* fs_title_subcomp = "Matches configuration named";
+
+    static constexpr const char* myclass_id = "guichet";
 };
 
 

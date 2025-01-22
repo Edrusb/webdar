@@ -184,7 +184,7 @@ void guichet::load_json(const json & source)
 						       class_id));
 
 	if(vers > jversion)
-	    throw exception_range("Json format version too hight for class guichet, upgrade your webdar software");
+	    throw exception_range(libdar::tools_printf("Json format version too hight for class %s, upgrade your webdar software", myclass_id));
 
 	mode = conf.at(jlabel_mode);
 	update_selected(); // be sure to have all config name recorded
@@ -229,7 +229,7 @@ void guichet::load_json(const json & source)
     }
     catch(exception_base & e)
     {
-	e.change_message(string("Error met while parsing json configuration for guichet object: ") + e.get_message());
+	e.change_message(libdar::tools_printf("Error met while parsing json configuration for %s object: %s", myclass_id, e.get_message().c_str()));
 	throw;
     }
 
