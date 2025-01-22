@@ -206,7 +206,8 @@ private:
 
     html_fsa_scope fsa_scope;
 
-    html_slicing slicing;
+    guichet guichet_slicing;
+    std::shared_ptr<html_slicing> slicing;
 
     html_ciphering ciphering;
 };

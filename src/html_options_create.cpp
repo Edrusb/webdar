@@ -128,6 +128,10 @@ html_options_create::html_options_create():
     if(!path_mask)
 	throw exception_memory();
 
+    slicing.reset(new (nothrow) html_slicing());
+    if(! slicing)
+	throw exception_memory();
+
 
     archtype.add_choice("full", "Full backup");
     archtype.add_choice("diff", "Differential/Incremental backup");
@@ -182,11 +186,6 @@ html_options_create::html_options_create():
     user_comment.set_value(defaults.get_user_comment());
     hash_algo.set_value(defaults.get_hash_algo());
     dont_ignore_unknown_inode_type.set_value_as_bool(! defaults.get_ignore_unknown_inode_type());
-    slicing.set_slicing(defaults.get_slice_size(), defaults.get_first_slice_size());
-    slicing.set_permission(defaults.get_slice_permission());
-    slicing.set_user_ownership(defaults.get_slice_user_ownership());
-    slicing.set_group_ownership(defaults.get_slice_group_ownership());
-    slicing.set_min_digits(defaults.get_slice_min_digits());
     ciphering.set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
 
 	// build tree dependancy
@@ -328,7 +327,7 @@ html_options_create::html_options_create():
 
 	// slicing
 
-    deroule.adopt_in_section(sect_slice, &slicing);
+    deroule.adopt_in_section(sect_slice, &guichet_slicing);
 
 	// ciphering
     deroule.adopt_in_section(sect_cipher, &ciphering);
@@ -390,6 +389,10 @@ void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				bibliotheque::pathfilter,
 				path_mask,
 				false);
+    guichet_slicing.set_child(ptr,
+			      bibliotheque::slicing,
+			      slicing,
+			      false);
     reference.set_biblio(ptr);
 }
 
@@ -459,7 +462,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 
     libdar::infinint s_size;
     libdar::infinint f_s_size;
-    slicing.get_slicing(s_size, f_s_size);
+    slicing->get_slicing(s_size, f_s_size);
     ret.set_slicing(s_size, f_s_size);
 
     ret.set_ea_mask(*(ea_mask->get_mask()));
@@ -497,9 +500,9 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 	ret.set_ignored_as_symlink(follow_symlinks.get_symlink_list());
     ret.set_cache_directory_tagging(cache_directory_tagging.get_value_as_bool());
     ret.set_display_skipped(display_skipped.get_value_as_bool());
-    ret.set_slice_permission(slicing.get_permission());
-    ret.set_slice_user_ownership(slicing.get_user_ownership());
-    ret.set_slice_group_ownership(slicing.get_group_ownership());
+    ret.set_slice_permission(slicing->get_permission());
+    ret.set_slice_user_ownership(slicing->get_user_ownership());
+    ret.set_slice_group_ownership(slicing->get_group_ownership());
     ret.set_retry_on_change(libdar::deci(retry_on_change_times.get_value()).computer(),
 			    retry_on_change_overhead.get_value_as_infinint());
     ret.set_sequential_marks(sequential_marks.get_value_as_bool());
@@ -507,7 +510,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_security_check(security_check.get_value_as_bool());
     ret.set_user_comment(user_comment.get_value());
     ret.set_hash_algo(hash_algo.get_value());
-    ret.set_slice_min_digits(slicing.get_min_digits());
+    ret.set_slice_min_digits(slicing->get_min_digits());
     ret.set_ignore_unknown_inode_type(! dont_ignore_unknown_inode_type.get_value_as_bool());
     ret.set_execute(execute.get_value());
     ret.set_entrepot(entrep->get_entrepot(webui));
