@@ -74,7 +74,13 @@ html_slicing::html_slicing():
 
 	// events
     slicing.record_actor_on_event(this, html_form_input::changed);
+    slice_size.record_actor_on_event(this, html_form_input_unit::changed);
     different_first_slice.record_actor_on_event(this, html_form_input::changed);
+    first_slice_size.record_actor_on_event(this, html_form_input_unit::changed);
+    slice_permission.record_actor_on_event(this, html_form_input::changed);
+    slice_user_ownership.record_actor_on_event(this, html_form_input::changed);
+    slice_group_ownership.record_actor_on_event(this, html_form_input::changed);
+    slice_min_digits.record_actor_on_event(this, html_form_input::changed);
     register_name(changed);
 
 	// css
@@ -245,7 +251,8 @@ void html_slicing::clear_json()
 
 void html_slicing::on_event(const std::string & event_name)
 {
-    if(event_name == html_form_input::changed)
+    if(event_name == html_form_input::changed
+       || event_name == html_form_input_unit::changed)
     {
 	if(slicing.get_value_as_bool())
 	{
