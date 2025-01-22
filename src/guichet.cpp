@@ -183,7 +183,7 @@ void guichet::load_json(const json & source)
 						       id.c_str(),
 						       class_id));
 
-	if(vers > jversion)
+	if(vers > format_version)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for class %s, upgrade your webdar software", myclass_id));
 
 	mode = conf.at(jlabel_mode);
@@ -259,7 +259,7 @@ json guichet::save_json() const
     }
 
 
-    return wrap_config_with_json_header(jversion,
+    return wrap_config_with_json_header(format_version,
 					class_id,
 					ret);
 }

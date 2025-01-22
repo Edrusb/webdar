@@ -357,7 +357,7 @@ void bibliotheque::load_json(const json & source)
 	if(class_id != myclass_id)
 	    throw exception_range(libdar::tools_printf("Unexpected json data: wrong class_id in json header for class %s", myclass_id));
 
-	if(version > bibli_version)
+	if(version > format_version)
 	    throw exception_range(libdar::tools_printf("Version too recent for a %s json version, upgrade webdar your software", myclass_id));
 
 	globalprop = config.at(jlabel_globalprop);
@@ -481,7 +481,7 @@ json bibliotheque::save_json() const
     config[jlabel_globalprop] = tmp;
 
     saved = true;
-    return wrap_config_with_json_header(bibli_version, myclass_id, config);
+    return wrap_config_with_json_header(format_version, myclass_id, config);
 }
 
 void bibliotheque::init()

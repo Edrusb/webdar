@@ -243,7 +243,9 @@ private:
     void check_against_cyclic_dependencies(coordinates source, const std::set<coordinates> & seen);
 
 	/// current json output version for this class
-    static constexpr const unsigned int bibli_version = 1;
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "bibliotheque";
+
     static constexpr const char* category_label = "category";
     static constexpr const char* asso_label = "list";
     static constexpr const char* config_label = "name";
@@ -255,7 +257,6 @@ private:
 
     static constexpr const char* jlabel_autosave   = "auto-save";
 
-    static constexpr const char* myclass_id = "bibliotheque";
 };
 
 bibliotheque::category & operator++(bibliotheque::category & cat);

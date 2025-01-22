@@ -184,7 +184,9 @@ private:
     static constexpr const char* event_clear = "clear";
     static constexpr const char* event_saveas = "saveas";
 
-    static constexpr const unsigned int jversion = 1;
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "guichet";
+
     static constexpr const char* class_id = "guichet";
     static constexpr const char* jlabel_mode = "manual-mode"; // boolean (either categ+name or config)
     static constexpr const char* jlabel_categ = "category";  // string: config category
@@ -196,7 +198,6 @@ private:
 
     static constexpr const char* fs_title_subcomp = "Matches configuration named";
 
-    static constexpr const char* myclass_id = "guichet";
 };
 
 
