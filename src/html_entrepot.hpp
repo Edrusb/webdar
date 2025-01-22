@@ -137,6 +137,7 @@ private:
     void reset_ssh_files();
 
     static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_entrepot";
 
     static constexpr const char* jlabel_type = "type";
     static constexpr const char* jlabel_host = "host";

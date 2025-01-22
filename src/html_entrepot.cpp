@@ -223,12 +223,14 @@ void html_entrepot::load_json(const json & source)
 						     version,
 						     class_id);
 
-	if(class_id != "html_entrepot")
-	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting html_entrepot",
-						       class_id.c_str()));
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
 
 	if(version > format_version)
-	    throw exception_range("Json format version too hight for html_entrepot, upgrade your webdar software");
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
 
 	ignore_events = true;
 
@@ -258,7 +260,7 @@ void html_entrepot::load_json(const json & source)
     }
     catch(json::exception & e)
     {
-	throw exception_json("Error loading html_entrepot config", e);
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
     }
 
 	// the object may be changed by load_json() even when this
@@ -297,7 +299,7 @@ json html_entrepot::save_json() const
     config[jlabel_verbose] = verbose.get_value_as_bool();
 
     return wrap_config_with_json_header(format_version,
-					"html_entrepot",
+					myclass_id,
 					config);
 }
 
