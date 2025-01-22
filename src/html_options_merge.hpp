@@ -168,7 +168,8 @@ private:
     guichet guichet_compr_mask;
     std::shared_ptr<html_mask_form_filename> compr_mask;
 
-    html_slicing slicing;
+    guichet guichet_slicing;
+    std::shared_ptr<html_slicing> slicing;
 
     html_ciphering ciphering;
 

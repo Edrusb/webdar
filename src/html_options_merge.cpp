@@ -107,6 +107,10 @@ html_options_merge::html_options_merge():
     if(!path_mask)
 	throw exception_memory();
 
+    slicing.reset(new (nothrow) html_slicing());
+    if(! slicing)
+	throw exception_memory();
+
 	// components setups
     pause.set_min_only(0);
 
@@ -135,11 +139,6 @@ html_options_merge::html_options_merge():
     compr_filter_title.add_paragraph();
     compr_filter_title.add_text(3, "Compression filename based filtering");
 
-    slicing.set_permission(defaults.get_slice_permission());
-    slicing.set_user_ownership(defaults.get_slice_user_ownership());
-    slicing.set_group_ownership(defaults.get_slice_group_ownership());
-    slicing.set_min_digits(defaults.get_slice_min_digits());
-    slicing.set_slicing(defaults.get_slice_size(), defaults.get_first_slice_size());
     ciphering.set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
 
 	// building HTML structure
@@ -226,7 +225,7 @@ html_options_merge::html_options_merge():
     deroule.adopt_in_section(sect_compr, &compr_filter_title);
     deroule.adopt_in_section(sect_compr, &guichet_compr_mask);
 
-    deroule.adopt_in_section(sect_slice, &slicing);
+    deroule.adopt_in_section(sect_slice, &guichet_slicing);
 
     deroule.adopt_in_section(sect_cipher, &ciphering);
 
@@ -289,6 +288,10 @@ void html_options_merge::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 				path_mask,
 				false);
     auxiliary.set_biblio(ptr);
+    guichet_slicing.set_child(ptr,
+			      bibliotheque::slicing,
+			      slicing,
+			      false);
 }
 
 void html_options_merge::on_event(const string & event_name)
@@ -339,13 +342,13 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
     ret.set_allow_over(allow_over.get_value_as_bool());
     ret.set_warn_over(warn_over.get_value_as_bool());
     ret.set_pause(libdar::deci(pause.get_value()).computer());
-    ret.set_slice_permission(slicing.get_permission());
-    ret.set_slice_user_ownership(slicing.get_user_ownership());
-    ret.set_slice_group_ownership(slicing.get_group_ownership());
+    ret.set_slice_permission(slicing->get_permission());
+    ret.set_slice_user_ownership(slicing->get_user_ownership());
+    ret.set_slice_group_ownership(slicing->get_group_ownership());
     ret.set_sequential_marks(sequential_marks.get_value_as_bool());
     ret.set_sparse_file_min_size(sparse_file_min_size.get_value_as_infinint());
     ret.set_user_comment(user_comment.get_value());
-    ret.set_slice_min_digits(slicing.get_min_digits());
+    ret.set_slice_min_digits(slicing->get_min_digits());
     ret.set_hash_algo(hash_algo.get_value());
     ret.set_empty(empty.get_value_as_bool());
     ret.set_execute(execute.get_value());
@@ -383,7 +386,7 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
 
     libdar::infinint s_size;
     libdar::infinint f_s_size;
-    slicing.get_slicing(s_size, f_s_size);
+    slicing->get_slicing(s_size, f_s_size);
     ret.set_slicing(s_size, f_s_size);
     ret.set_ea_mask(*(ea_mask->get_mask()));
     ret.set_fsa_scope(fsa_scope.get_scope());
