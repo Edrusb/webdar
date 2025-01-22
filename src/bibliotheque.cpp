@@ -86,6 +86,9 @@ std::string bibliotheque::changed(category cat)
     case confcommon:
 	ret += "common";
 	break;
+    case slicing:
+	ret += "slicing";
+	break;
     case EOE:
 	throw WEBDAR_BUG;
     default:
@@ -603,6 +606,8 @@ string bibliotheque::category_to_string(category cat)
 	return "confrepair";
     case confcommon:
 	return "confcommon";
+    case slicing:
+	return "slicing";
     case EOE:
 	throw WEBDAR_BUG;
     default:
@@ -638,6 +643,8 @@ bibliotheque::category bibliotheque::string_to_category(const string & s)
 	return confrepair;
     else if(s == "confcommon")
 	return confcommon;
+    else if(s == "slicing")
+	return slicing;
     else
 	throw exception_range(libdar::tools_printf("Unknown category: %s", s.c_str()));
 }
