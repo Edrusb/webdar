@@ -40,6 +40,9 @@ extern "C"
 
 using namespace std;
 
+const string html_ciphering::changed = "html_ciphering_changed";
+
+
 html_ciphering::html_ciphering():
     form_crypto("Update"),
     crypto_fs(""),
@@ -89,8 +92,14 @@ html_ciphering::html_ciphering():
 
     crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
     crypto_type.record_actor_on_event(this, html_form_select::changed);
+    crypto_pass1.record_actor_on_event(this, html_form_input::changed);
+    crypto_pass2.record_actor_on_event(this, html_form_input::changed);
+    crypto_size.record_actor_on_event(this, html_form_input_unit::changed);
+    gnupg.record_actor_on_event(this, html_form_gnupg_list::changed);
     crypto_kdf_hash.set_change_event_name(kdf_algo_changed);
     crypto_kdf_hash.record_actor_on_event(this, kdf_algo_changed);
+    iteration_count.record_actor_on_event(this, html_form_input::changed);
+    register_name(changed);
 
 	// setup visibility
 
@@ -293,6 +302,7 @@ void html_ciphering::on_event(const string & event_name)
 	default:
 	    throw WEBDAR_BUG;
 	}
+	act(changed);
     }
     else if(event_name == kdf_algo_changed)
     {
@@ -324,7 +334,12 @@ void html_ciphering::on_event(const string & event_name)
 		// unless the value is the default one (thus user can change the hash
 		// algorithm and stick to the default value for the selected hash algo).
 	}
+	act(changed);
     }
+    else if(event_name == html_form_input::changed
+	    || event_name == html_form_input_unit::changed
+	    || event_name == html_form_gnupg_list::changed)
+	act(changed);
     else
 	throw WEBDAR_BUG;
 }

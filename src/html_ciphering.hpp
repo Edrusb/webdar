@@ -53,9 +53,12 @@ extern "C"
 
 class html_ciphering : public body_builder,
 		       public actor,
-		       public jsoner
+		       public jsoner,
+		       public events
 {
 public:
+    static const std::string changed;
+
     enum crypto_type_t
 	{
 	    sym = 0,
