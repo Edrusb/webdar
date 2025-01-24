@@ -75,7 +75,8 @@ public:
 	confrepair = 11,
 	confcommon = 12,
 	slicing = 13,
-	EOE = 14 ///< not a valid value, used for interating in the enum
+	ciphering = 14,
+	EOE = 15 ///< not a valid value, used for interating in the enum
     };
 
 	/// change event per category

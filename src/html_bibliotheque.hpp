@@ -50,6 +50,7 @@ extern "C"
 #include "html_mask_form_path.hpp"
 #include "html_compression_params.hpp"
 #include "html_slicing.hpp"
+#include "html_ciphering.hpp"
 
     /// class html_bibliotheque provide graphical mean to manipulate a bibliotheque object
 
@@ -125,6 +126,7 @@ private:
     std::unique_ptr<arriere_boutique<html_mask_form_path> > ab_pathmask;
     std::unique_ptr<arriere_boutique<html_compression_params> > ab_compr;
     std::unique_ptr<arriere_boutique<html_slicing> > ab_slicing;
+    std::unique_ptr<arriere_boutique<html_ciphering> > ab_ciphering;
 
     html_tabs tabs;
     html_text intro;
@@ -163,6 +165,7 @@ private:
     static constexpr const char* tab_pathmask = "pathmask";
     static constexpr const char* tab_compression = "compression";
     static constexpr const char* tab_slicing = "slicing";
+    static constexpr const char* tab_ciphering = "ciphering";
 
     static constexpr const char* event_save = "save";
     static constexpr const char* event_load = "load";
