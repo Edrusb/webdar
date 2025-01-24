@@ -35,6 +35,7 @@ extern "C"
 
     // webdar headers
 #include "html_form_dynamic_table.hpp"
+#include "jsoner.hpp"
 
     /// class html_form_gnupg_list provide interface for the user to give a list of gnupg signatories and gnupg recipients
 
@@ -68,7 +69,9 @@ extern "C"
 
 
 
-class html_form_gnupg_list : public body_builder, public html_form_dynamic_table_object_provider
+class html_form_gnupg_list : public body_builder,
+			     public html_form_dynamic_table_object_provider,
+			     public jsoner
 {
 public:
     html_form_gnupg_list();
@@ -88,6 +91,14 @@ public:
     virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num,
 								 const std::string & context) const override;
 
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
 
 protected:
 	/// inherited methods from body_builder
@@ -98,6 +109,14 @@ private:
     html_form_dynamic_table table;
 
     std::vector<std::string> gather_content_of_type(unsigned int type) const;
+
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_gnupg_list";
+
+    static constexpr const char* jlabel_recipients = "recipients";
+    static constexpr const char* jlabel_signatories = "signatories";
+    static constexpr const char* jlabel_email = "email";
 };
 
 #endif
