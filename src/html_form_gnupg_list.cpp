@@ -39,6 +39,9 @@ extern "C"
 
 using namespace std;
 
+const string html_form_gnupg_list::changed = "hfgl_changed";
+
+
 html_form_gnupg_list::html_form_gnupg_list():
     table(false,
 	  true,
@@ -49,6 +52,11 @@ html_form_gnupg_list::html_form_gnupg_list():
     table.add_obj_type("Gnupg recipient"); // index 0 in provide_object_of_type()
     table.add_obj_type("Gnupg signatory"); // index 1 in provide_object_of_type()
     adopt(&table);
+
+	// events & actors
+    register_name(changed);
+    table.record_actor_on_event(this, html_form_dynamic_table::changed);
+
 }
 
 vector<string> html_form_gnupg_list::get_gnupg_recipients() const
@@ -202,6 +210,14 @@ json html_form_gnupg_list::save_json() const
 void html_form_gnupg_list::clear_json()
 {
     table.clear();
+}
+
+void html_form_gnupg_list::on_event(const std::string & event_name)
+{
+    if(event_name == html_form_dynamic_table::changed)
+	act(changed);
+    else
+	throw WEBDAR_BUG;
 }
 
 string html_form_gnupg_list::inherited_get_body_part(const chemin & path,

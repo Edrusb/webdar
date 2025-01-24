@@ -36,6 +36,7 @@ extern "C"
     // webdar headers
 #include "html_form_dynamic_table.hpp"
 #include "jsoner.hpp"
+#include "events.hpp"
 
     /// class html_form_gnupg_list provide interface for the user to give a list of gnupg signatories and gnupg recipients
 
@@ -71,9 +72,13 @@ extern "C"
 
 class html_form_gnupg_list : public body_builder,
 			     public html_form_dynamic_table_object_provider,
-			     public jsoner
+			     public jsoner,
+			     public events,
+			     public actor
 {
 public:
+    static const std::string changed;
+
     html_form_gnupg_list();
     html_form_gnupg_list(const html_form_gnupg_list & ref);
     html_form_gnupg_list(html_form_gnupg_list && ref) noexcept = delete;
@@ -99,6 +104,10 @@ public:
 
 	/// inherited from jsoner
     virtual void clear_json() override;
+
+
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
 
 protected:
 	/// inherited methods from body_builder
