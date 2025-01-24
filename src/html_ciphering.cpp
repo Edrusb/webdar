@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_tools.hpp"
@@ -177,6 +177,75 @@ libdar::U_32 html_ciphering::get_crypto_size() const
 	string("Value too large for a cipher block size"));
 }
 
+void html_ciphering::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software", myclass_id));
+
+	crypto_type.set_selected_id(config.at(jlabel_type));
+	crypto_algo.set_selected_id(config.at(jlabel_algo));
+	crypto_pass1.set_value(config.at(jlabel_pass));
+	crypto_pass2.set_value(config.at(jlabel_pass));
+	crypto_size.set_value_as_infinint(libdar::deci(config.at(jlabel_size)).computer());
+	crypto_threads.set_value_as_int(config.at(jlabel_threads));
+	gnupg.load_json(config.at(jlabel_gnupg));
+	crypto_kdf_hash.set_selected_id(config.at(jlabel_kdf_hash));
+	iteration_count.set_value_as_int(config.at(jlabel_kdf_iter));
+
+	on_event(html_form_input::changed);
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+
+}
+
+json html_ciphering::save_json() const
+{
+    json ret;
+
+    ret[jlabel_type] = crypto_type.get_selected_id();
+    ret[jlabel_algo] = crypto_algo.get_selected_id();
+    ret[jlabel_pass] = crypto_pass1.get_value(); // assuming pass2 is equal to pass1
+    ret[jlabel_size] = libdar::deci(crypto_size.get_value_as_infinint()).human();
+    ret[jlabel_threads] = crypto_threads.get_value_as_int();
+    ret[jlabel_gnupg] = gnupg.save_json();
+    ret[jlabel_kdf_hash] = crypto_kdf_hash.get_selected_id();
+    ret[jlabel_kdf_iter] = iteration_count.get_value_as_int();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					ret);
+}
+
+void html_ciphering::clear_json()
+{
+    libdar::archive_options_create defaults;
+
+    crypto_type.set_selected_num(0);
+    crypto_algo.set_selected_num(0);
+    crypto_pass1.set_value("");
+    crypto_pass2.set_value("");
+    crypto_size.set_value_as_infinint(defaults.get_crypto_size());
+    crypto_threads.set_value_as_int(defaults.get_multi_threaded_crypto());
+    gnupg.clear_json();
+    set_kdf_hash(defaults.get_kdf_hash());
+    iteration_count.set_value(libdar::deci(defaults.get_iteration_count()).human());
+}
 
 void html_ciphering::on_event(const string & event_name)
 {
@@ -236,7 +305,9 @@ void html_ciphering::on_event(const string & event_name)
 	    iteration_count.set_min_only(
 		webdar_tools_convert_from_infinint<int>(
 		    libdar::default_iteration_count,
-		    string("too large integer default value provided by libdar")));
+		    string("too large integer default value provided by libdar")
+		    )
+		);
 	}
 	else
 	{
@@ -262,4 +333,28 @@ string html_ciphering::inherited_get_body_part(const chemin & path,
 					       const request & req)
 {
     return get_body_part_from_all_children(path, req);
+}
+
+void html_ciphering::set_kdf_hash(libdar::hash_algo hash)
+{
+    switch(hash)
+    {
+    case libdar::hash_algo::md5:
+	crypto_kdf_hash.set_selected_num(0);
+	break;
+    case libdar::hash_algo::sha1:
+	crypto_kdf_hash.set_selected_num(1);
+	break;
+    case libdar::hash_algo::sha512:
+	crypto_kdf_hash.set_selected_num(2);
+	break;
+    case libdar::hash_algo::whirlpool:
+	crypto_kdf_hash.set_selected_num(3);
+	break;
+    case libdar::hash_algo::argon2:
+	crypto_kdf_hash.set_selected_num(4);
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
 }

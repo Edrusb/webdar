@@ -47,11 +47,13 @@ extern "C"
 #include "html_form_input_unit.hpp"
 #include "html_form_gnupg_list.hpp"
 #include "html_form_radio.hpp"
-
+#include "jsoner.hpp"
 
     /// html component used for the user to define a has algorithm
 
-class html_ciphering : public body_builder, public actor
+class html_ciphering : public body_builder,
+		       public actor,
+		       public jsoner
 {
 public:
     enum crypto_type_t
@@ -80,6 +82,15 @@ public:
     std::vector<std::string> get_gnupg_signatories() const;
     libdar::U_32 get_crypto_size() const;
 
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
+
 	/// actor indirect inheritance
     virtual void on_event(const std::string & event_name) override;
 
@@ -105,6 +116,21 @@ private:
     html_form_fieldset crypto_fs_kdf_hash;
     html_form_radio crypto_kdf_hash;
     html_form_input iteration_count;
+
+    void set_kdf_hash(libdar::hash_algo hash);
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_ciphering";
+
+    static constexpr const char* jlabel_type = "type";
+    static constexpr const char* jlabel_algo = "algo";
+    static constexpr const char* jlabel_pass = "key";
+    static constexpr const char* jlabel_size = "block-size";
+    static constexpr const char* jlabel_threads = "threads";
+    static constexpr const char* jlabel_gnupg = "gnupg";
+    static constexpr const char* jlabel_kdf_hash = "hash";
+    static constexpr const char* jlabel_kdf_iter = "iterations";
+
 };
 
 #endif
