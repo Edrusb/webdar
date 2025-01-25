@@ -209,7 +209,8 @@ private:
     guichet guichet_slicing;
     std::shared_ptr<html_slicing> slicing;
 
-    html_ciphering ciphering;
+    guichet guichet_ciphering;
+    std::shared_ptr<html_ciphering> ciphering;
 };
 
 #endif

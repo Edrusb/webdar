@@ -132,6 +132,10 @@ html_options_create::html_options_create():
     if(! slicing)
 	throw exception_memory();
 
+    ciphering.reset(new (nothrow) html_ciphering());
+    if(! ciphering)
+	throw exception_memory();
+
 
     archtype.add_choice("full", "Full backup");
     archtype.add_choice("diff", "Differential/Incremental backup");
@@ -186,7 +190,7 @@ html_options_create::html_options_create():
     user_comment.set_value(defaults.get_user_comment());
     hash_algo.set_value(defaults.get_hash_algo());
     dont_ignore_unknown_inode_type.set_value_as_bool(! defaults.get_ignore_unknown_inode_type());
-    ciphering.set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
+    ciphering->set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
 
 	// build tree dependancy
 
@@ -330,7 +334,7 @@ html_options_create::html_options_create():
     deroule.adopt_in_section(sect_slice, &guichet_slicing);
 
 	// ciphering
-    deroule.adopt_in_section(sect_cipher, &ciphering);
+    deroule.adopt_in_section(sect_cipher, &guichet_ciphering);
 
 	// events and visibility
     register_name(entrepot_changed);
@@ -393,6 +397,10 @@ void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
 			      bibliotheque::slicing,
 			      slicing,
 			      false);
+    guichet_ciphering.set_child(ptr,
+				bibliotheque::ciphering,
+				ciphering,
+				false);
     reference.set_biblio(ptr);
 }
 
@@ -468,25 +476,25 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     ret.set_ea_mask(*(ea_mask->get_mask()));
     ret.set_fsa_scope(fsa_scope.get_scope());
 
-    ret.set_crypto_algo(ciphering.get_crypto_algo());
-    if(ciphering.get_crypto_algo() != libdar::crypto_algo::none)
+    ret.set_crypto_algo(ciphering->get_crypto_algo());
+    if(ciphering->get_crypto_algo() != libdar::crypto_algo::none)
     {
-	switch(ciphering.get_crypto_type())
+	switch(ciphering->get_crypto_type())
 	{
 	case html_ciphering::sym:
-	    ret.set_crypto_pass(ciphering.get_crypto_pass());
-	    ret.set_iteration_count(ciphering.get_iteration_count());
-	    ret.set_kdf_hash(ciphering.get_kdf_hash());
+	    ret.set_crypto_pass(ciphering->get_crypto_pass());
+	    ret.set_iteration_count(ciphering->get_iteration_count());
+	    ret.set_kdf_hash(ciphering->get_kdf_hash());
 	    break;
 	case html_ciphering::asym:
-	    ret.set_gnupg_recipients(ciphering.get_gnupg_recipients());
-	    ret.set_gnupg_signatories(ciphering.get_gnupg_signatories());
+	    ret.set_gnupg_recipients(ciphering->get_gnupg_recipients());
+	    ret.set_gnupg_signatories(ciphering->get_gnupg_signatories());
 	    break;
 	default:
 	    throw WEBDAR_BUG;
 	}
-	ret.set_crypto_size(ciphering.get_crypto_size());
-	ret.set_multi_threaded_crypto(ciphering.get_multi_threaded_crypto());
+	ret.set_crypto_size(ciphering->get_crypto_size());
+	ret.set_multi_threaded_crypto(ciphering->get_multi_threaded_crypto());
     }
     ret.set_nodump(nodump.get_value_as_bool());
     if(exclude_by_ea.get_value_as_bool())
