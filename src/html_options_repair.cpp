@@ -113,6 +113,10 @@ html_options_repair::html_options_repair():
     if(! slicing)
 	throw exception_memory();
 
+    ciphering.reset(new (nothrow) html_ciphering());
+    if(! ciphering)
+	throw exception_memory();
+
 	// component configuration
     static const char* sect_entrep = "entrepot";
     static const char* sect_display = "display";
@@ -131,7 +135,7 @@ html_options_repair::html_options_repair():
     allow_over.set_value_as_bool(defaults.get_allow_over());
     warn_over.set_value_as_bool(defaults.get_warn_over());
     pause.set_value(libdar::deci(defaults.get_pause()).human());
-    ciphering.set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
+    ciphering->set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
 
     pause.set_min_only(0);
     multi_thread_compress.set_min_only(1);
@@ -164,7 +168,7 @@ html_options_repair::html_options_repair():
 
     deroule.adopt_in_section(sect_slice, &guichet_slicing);
 
-    deroule.adopt_in_section(sect_crypt, &ciphering);
+    deroule.adopt_in_section(sect_crypt, &guichet_ciphering);
 
     adopt(&deroule);
 
@@ -193,6 +197,10 @@ void html_options_repair::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 			      bibliotheque::slicing,
 			      slicing,
 			      false);
+    guichet_ciphering.set_child(ptr,
+				bibliotheque::ciphering,
+				ciphering,
+				false);
 }
 
 void html_options_repair::on_event(const string & event_name)
@@ -229,25 +237,25 @@ libdar::archive_options_repair html_options_repair::get_options(shared_ptr<html_
 
     ret.set_execute(execute.get_value());
 
-    ret.set_crypto_algo(ciphering.get_crypto_algo());
-    if(ciphering.get_crypto_algo() != libdar::crypto_algo::none)
+    ret.set_crypto_algo(ciphering->get_crypto_algo());
+    if(ciphering->get_crypto_algo() != libdar::crypto_algo::none)
     {
-	switch(ciphering.get_crypto_type())
+	switch(ciphering->get_crypto_type())
 	{
 	case html_ciphering::sym:
-	    ret.set_crypto_pass(ciphering.get_crypto_pass());
-	    ret.set_iteration_count(ciphering.get_iteration_count());
-	    ret.set_kdf_hash(ciphering.get_kdf_hash());
+	    ret.set_crypto_pass(ciphering->get_crypto_pass());
+	    ret.set_iteration_count(ciphering->get_iteration_count());
+	    ret.set_kdf_hash(ciphering->get_kdf_hash());
 	    break;
 	case html_ciphering::asym:
-	    ret.set_gnupg_recipients(ciphering.get_gnupg_recipients());
-	    ret.set_gnupg_signatories(ciphering.get_gnupg_signatories());
+	    ret.set_gnupg_recipients(ciphering->get_gnupg_recipients());
+	    ret.set_gnupg_signatories(ciphering->get_gnupg_signatories());
 	    break;
 	default:
 	    throw WEBDAR_BUG;
 	}
-	ret.set_crypto_size(ciphering.get_crypto_size());
-	ret.set_multi_threaded_crypto(ciphering.get_multi_threaded_crypto());
+	ret.set_crypto_size(ciphering->get_crypto_size());
+	ret.set_multi_threaded_crypto(ciphering->get_multi_threaded_crypto());
     }
 
     ret.set_empty(dry_run.get_value_as_bool());

@@ -130,7 +130,8 @@ private:
 
 	// crypto
 
-    html_ciphering ciphering;
+    guichet guichet_ciphering;
+    std::shared_ptr<html_ciphering> ciphering;
 
     static const std::string css_indent;
 };
