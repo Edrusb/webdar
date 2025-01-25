@@ -56,21 +56,35 @@ html_ciphering::html_ciphering():
     iteration_count("Iteration count", html_form_input::number, "1", "30")
 
 {
+    libdar::archive_options_create defaults;
+
+	// we set encryption by default and use argon2 (libdar does not encrypt by default)
+	// libdar will provide other parameter in coherence
+	// like interation count.
+    defaults.set_crypto_algo(libdar::crypto_algo::aes256);
+    defaults.set_kdf_hash(libdar::hash_algo::argon2);
+
+
 	// components configuration
 
 	// the order in the following must match the html_ciphering::crypto_type_t enum
     crypto_type.add_choice("sym", "Symmetric encryption");
     crypto_type.add_choice("asym", "Asymmetric encryption");
+    crypto_type.set_selected_id("sym");
+    crypto_algo.set_value(defaults.get_crypto_algo());
 
     crypto_pass1.set_value("");
     crypto_pass2.set_value("");
     crypto_threads.set_min_only(1);
+    crypto_threads.set_value_as_int(defaults.get_multi_threaded_crypto());
     crypto_kdf_hash.add_choice("md5","md5");
     crypto_kdf_hash.add_choice("sha1","sha1");
     crypto_kdf_hash.add_choice("sha512","sha512");
     crypto_kdf_hash.add_choice("whirlpool","whirlpool");
     crypto_kdf_hash.add_choice("argon2","argon2");
     crypto_kdf_hash.set_selected_id("argon2");
+    crypto_size.set_value_as_infinint(defaults.get_crypto_size());
+    iteration_count.set_value(libdar::deci(defaults.get_iteration_count()).human());
 
 
 	// adoption tree
