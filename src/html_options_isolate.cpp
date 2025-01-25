@@ -80,6 +80,10 @@ html_options_isolate::html_options_isolate():
     if(! slicing)
 	throw exception_memory();
 
+    ciphering.reset(new (nothrow) html_ciphering());
+    if(! ciphering)
+	throw exception_memory();
+
     delta_filter_title.add_paragraph();
     delta_filter_title.add_text(3, "Delta signature filename based filtering");
 
@@ -97,7 +101,7 @@ html_options_isolate::html_options_isolate():
     hash_algo.set_value(defaults.get_hash_algo());
     execute.set_value(defaults.get_execute());
     empty.set_value_as_bool(defaults.get_empty());
-    ciphering.set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
+    ciphering->set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
     delta_sig_min_size.set_value_as_infinint(defaults.get_delta_sig_min_size());
 
 	// building HTML structure
@@ -148,7 +152,7 @@ html_options_isolate::html_options_isolate():
 
     deroule.adopt_in_section(sect_slice, &guichet_slicing);
 
-    deroule.adopt_in_section(sect_cipher, &ciphering);
+    deroule.adopt_in_section(sect_cipher, &guichet_ciphering);
 
     adopt(&deroule);
 
@@ -185,6 +189,10 @@ void html_options_isolate::set_biblio(const shared_ptr<bibliotheque> & ptr)
 			      bibliotheque::slicing,
 			      slicing,
 			      false);
+    guichet_ciphering.set_child(ptr,
+				bibliotheque::ciphering,
+				ciphering,
+				false);
 }
 
 void html_options_isolate::on_event(const string & event_name)
@@ -243,7 +251,7 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     ret.set_compression(compr_params->get_compression_algo());
     ret.set_compression_level(compr_params->get_compression_level());
     ret.set_multi_threaded_compress(compr_params->get_num_threads());
-    ret.set_multi_threaded_crypto(ciphering.get_multi_threaded_crypto());
+    ret.set_multi_threaded_crypto(ciphering->get_multi_threaded_crypto());
 
     ret.set_delta_signature(delta_sig.get_value_as_bool());
     if(delta_sig.get_value_as_bool()
@@ -274,25 +282,25 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     slicing->get_slicing(s_size, f_s_size);
     ret.set_slicing(s_size, f_s_size);
 
-    ret.set_crypto_algo(ciphering.get_crypto_algo());
-    if(ciphering.get_crypto_algo() != libdar::crypto_algo::none)
+    ret.set_crypto_algo(ciphering->get_crypto_algo());
+    if(ciphering->get_crypto_algo() != libdar::crypto_algo::none)
     {
-	switch(ciphering.get_crypto_type())
+	switch(ciphering->get_crypto_type())
 	{
 	case html_ciphering::sym:
-	    ret.set_crypto_pass(ciphering.get_crypto_pass());
-	    ret.set_iteration_count(ciphering.get_iteration_count());
-	    ret.set_kdf_hash(ciphering.get_kdf_hash());
+	    ret.set_crypto_pass(ciphering->get_crypto_pass());
+	    ret.set_iteration_count(ciphering->get_iteration_count());
+	    ret.set_kdf_hash(ciphering->get_kdf_hash());
 	    break;
 	case html_ciphering::asym:
-	    ret.set_gnupg_recipients(ciphering.get_gnupg_recipients());
-	    ret.set_gnupg_signatories(ciphering.get_gnupg_signatories());
+	    ret.set_gnupg_recipients(ciphering->get_gnupg_recipients());
+	    ret.set_gnupg_signatories(ciphering->get_gnupg_signatories());
 	    break;
 	default:
 	    throw WEBDAR_BUG;
 	}
-	ret.set_crypto_size(ciphering.get_crypto_size());
-	ret.set_multi_threaded_crypto(ciphering.get_multi_threaded_crypto());
+	ret.set_crypto_size(ciphering->get_crypto_size());
+	ret.set_multi_threaded_crypto(ciphering->get_multi_threaded_crypto());
     }
 
     return ret;
