@@ -49,7 +49,6 @@ html_options_isolate::html_options_isolate():
     delta_fs(""),
     delta_sig("Transfer binary delta signature", html_form_input::check, "", "1"),
     delta_transfer_mode("Compute delta signature when they are missing", html_form_input::check, "", "1"),
-    delta_sig_min_size("Avoid calculating delta signature for file smaller than", 0, "30"),
     form_archgen("Update"),
     fs_archgen(""),
     allow_over("Allow slice overwriting", html_form_input::check, "", "1"),
@@ -102,7 +101,7 @@ html_options_isolate::html_options_isolate():
     execute.set_value(defaults.get_execute());
     empty.set_value_as_bool(defaults.get_empty());
     ciphering->set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
-    delta_sig_min_size.set_value_as_infinint(defaults.get_delta_sig_min_size());
+    sig_block_size.set_delta_sig_min_size(defaults.get_delta_sig_min_size());
 
 	// building HTML structure
 
@@ -126,7 +125,6 @@ html_options_isolate::html_options_isolate():
 
     delta_fs.adopt(&delta_sig);
     delta_fs.adopt(&delta_transfer_mode);
-    delta_fs.adopt(&delta_sig_min_size);
     delta_fs.adopt(&sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
@@ -203,7 +201,6 @@ void html_options_isolate::on_event(const string & event_name)
 	if(delta_sig.get_value_as_bool())
 	{
 	    delta_transfer_mode.set_visible(true);
-	    delta_sig_min_size.set_visible(delta_transfer_mode.get_value_as_bool());
 	    sig_block_size.set_visible(delta_transfer_mode.get_value_as_bool());
 	    delta_filter_title.set_visible(delta_transfer_mode.get_value_as_bool());
 	    guichet_delta_mask.set_visible(delta_transfer_mode.get_value_as_bool());
@@ -211,7 +208,6 @@ void html_options_isolate::on_event(const string & event_name)
 	else
 	{
 	    delta_transfer_mode.set_visible(false);
-	    delta_sig_min_size.set_visible(false);
 	    sig_block_size.set_visible(false);
 	    delta_filter_title.set_visible(false);
 	    guichet_delta_mask.set_visible(false);
@@ -265,7 +261,7 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
 	    throw WEBDAR_BUG;
 
 	ret.set_sig_block_len(sig_block_size.get_value());
-	ret.set_delta_sig_min_size(delta_sig_min_size.get_value_as_infinint());
+	ret.set_delta_sig_min_size(sig_block_size.get_delta_sig_min_size());
     }
 
     val = webdar_tools_convert_from_infinint<libdar::U_I>(compr_bs,
