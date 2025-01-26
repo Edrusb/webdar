@@ -107,6 +107,8 @@ private:
     html_form_input_unit min_size;
     html_form_input_unit max_size;
 
+    bool ignore_events;
+
     void make_summary();
 
 

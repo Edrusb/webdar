@@ -48,7 +48,8 @@ html_form_sig_block_size::html_form_sig_block_size():
     multiply("Multicative factor", html_form_input::number, "1", "10"),
     divisor("Divisor factor", html_form_input::number, "1", "10"),
     min_size("Minimum block size", 1, "10"),
-    max_size("Maximum block size (set to zero to disable max size)", 1, "10")
+    max_size("Maximum block size (set to zero to disable max size)", 1, "10"),
+    ignore_events(false)
 {
 
 	// components setup
@@ -141,12 +142,22 @@ void html_form_sig_block_size::load_json(const json & source)
 	if(version > format_version)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software", myclass_id));
 
-	delta_sig_min_size.set_value_as_infinint(libdar::deci(config.at(jlabel_min_file_size)).computer());
-	function.set_selected_id(config.at(jlabel_function));
-	multiply.set_value_as_int(config.at(jlabel_multiply));
-	divisor.set_value_as_int(config.at(jlabel_divisor));
-	min_size.set_value_as_infinint(libdar::deci(config.at(jlabel_min_size)).computer());
-	max_size.set_value_as_infinint(libdar::deci(config.at(jlabel_max_size)).computer());
+	ignore_events = true;
+	try
+	{
+	    delta_sig_min_size.set_value_as_infinint(libdar::deci(config.at(jlabel_min_file_size)).computer());
+	    function.set_selected_id(config.at(jlabel_function));
+	    multiply.set_value_as_int(config.at(jlabel_multiply));
+	    divisor.set_value_as_int(config.at(jlabel_divisor));
+	    min_size.set_value_as_infinint(libdar::deci(config.at(jlabel_min_size)).computer());
+	    max_size.set_value_as_infinint(libdar::deci(config.at(jlabel_max_size)).computer());
+	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
 
 	on_event(html_form_input::changed);
     }
@@ -154,8 +165,6 @@ void html_form_sig_block_size::load_json(const json & source)
     {
 	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
     }
-
-
 }
 
 json html_form_sig_block_size::save_json() const
@@ -177,16 +186,29 @@ json html_form_sig_block_size::save_json() const
 
 void html_form_sig_block_size::clear_json()
 {
-    delta_sig_min_size.set_value_as_infinint(0);
-    function.set_selected_id("root2");
-    min_size.set_value_as_infinint(libdar::infinint(RS_DEFAULT_BLOCK_LEN));
-    max_size.set_value_as_infinint(libdar::infinint(64*RS_DEFAULT_BLOCK_LEN));
+    ignore_events = true;
+    try
+    {
+	delta_sig_min_size.set_value_as_infinint(0);
+	function.set_selected_id("root2");
+	min_size.set_value_as_infinint(libdar::infinint(RS_DEFAULT_BLOCK_LEN));
+	max_size.set_value_as_infinint(libdar::infinint(64*RS_DEFAULT_BLOCK_LEN));
+    }
+    catch(...)
+    {
+	ignore_events = false;
+	throw;
+    }
+    ignore_events = false;
 
     on_event(html_form_input::changed);
 }
 
 void html_form_sig_block_size::on_event(const string & event_name)
 {
+    if(ignore_events)
+	return;
+
     if(event_name == html_form_input::changed
        || event_name == html_form_radio::changed
        || event_name == html_form_input_unit::changed)
