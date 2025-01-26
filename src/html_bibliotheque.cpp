@@ -127,7 +127,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     ab_entrepot.reset(new (nothrow) arriere_boutique<html_entrepot>(ptr,
 								    bibliotheque::repo,
 								    tmp_e,
-								    html_entrepot::changed));
+								    html_entrepot::changed,
+								    false));
     if(! ab_entrepot)
 	throw exception_memory();
 
@@ -142,7 +143,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     ab_filemask.reset(new (nothrow) arriere_boutique<html_mask_form_filename>(ptr,
 									      bibliotheque::filefilter,
 									      tmp_fm,
-									      html_mask_form_filename::changed));
+									      html_mask_form_filename::changed,
+									      false));
     if(!ab_filemask)
 	throw exception_memory();
 
@@ -159,7 +161,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     ab_pathmask.reset(new (nothrow) arriere_boutique<html_mask_form_path>(ptr,
 									  bibliotheque::pathfilter,
 									  tmp_fp,
-									  html_mask_form_path::changed));
+									  html_mask_form_path::changed,
+									  false));
     if(! ab_pathmask)
 	throw exception_memory();
 
@@ -174,7 +177,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     ab_compr.reset(new (nothrow) arriere_boutique<html_compression_params>(ptr,
 									   bibliotheque::compress,
 									   tmp_compr,
-									   html_compression_params::changed));
+									   html_compression_params::changed,
+									   false));
     if(!ab_compr)
 	throw exception_memory();
 
@@ -185,7 +189,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     ab_slicing.reset(new (nothrow) arriere_boutique<html_slicing>(ptr,
 								  bibliotheque::slicing,
 								  tmp_slicing,
-								  html_slicing::changed));
+								  html_slicing::changed,
+								  false));
     if(! ab_slicing)
 	throw exception_memory();
 
@@ -196,7 +201,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     ab_ciphering.reset(new (nothrow) arriere_boutique<html_ciphering>(ptr,
 								      bibliotheque::ciphering,
 								      tmp_ciphering,
-								      html_ciphering::changed));
+								      html_ciphering::changed,
+								      false));
 
 
     	// global component setups

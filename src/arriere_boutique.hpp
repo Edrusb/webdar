@@ -89,7 +89,8 @@ public:
     arriere_boutique(const std::shared_ptr<bibliotheque> & ptr,
 		     bibliotheque::category cat,
 		     std::unique_ptr<T> & obj,
-		     const std::string ch_event_name); ///< event name on obj triggered upon object changes
+		     const std::string ch_event_name, ///< event name on obj triggered upon object changes
+		     bool add_form_around);
     arriere_boutique(const arriere_boutique & ref) = delete;
     arriere_boutique(arriere_boutique && ref) noexcept = delete;
     arriere_boutique & operator = (const arriere_boutique & ref) = delete;
@@ -133,6 +134,9 @@ private:
     html_double_button clear_cur_config;
     html_div floteur;
 
+    html_form_fieldset around_fs;
+    html_form around_form;
+
     std::unique_ptr<T> wrapped;
     jsoner* wrapped_jsoner;
     body_builder* wrapped_body_builder;
@@ -152,7 +156,8 @@ private:
 template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<bibliotheque> & ptr,
 							 bibliotheque::category cat,
 							 std::unique_ptr<T> & obj,
-							 const std::string ch_event_name):
+							 const std::string ch_event_name,
+							 bool add_form_around):
     currently_loaded(""),
     categ(cat),
     config_form("Save/Save as"),
@@ -163,6 +168,8 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     delete_selected("Delete loaded config", event_delete),
     clear_cur_config("Clear", event_clear),
     change_event_name(ch_event_name),
+    around_fs(""),
+    around_form("Update"),
     ignore_events(false)
 {
 	// non html field settup
@@ -220,7 +227,15 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
 
     adopt(&warning_message);
 
-    adopt(wrapped_body_builder);
+    if(add_form_around)
+    {
+	around_fs.adopt(wrapped_body_builder);
+	around_form.adopt(&around_fs);
+	adopt(&around_form);
+    }
+    else
+	adopt(wrapped_body_builder);
+
     config_fs.adopt(&config_name);
     config_fs.adopt(&need_saving);
     config_form.adopt(&config_fs);
