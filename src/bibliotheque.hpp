@@ -76,7 +76,8 @@ public:
 	confcommon = 12,
 	slicing = 13,
 	ciphering = 14,
-	EOE = 15 ///< not a valid value, used for interating in the enum
+	delta_sig = 15,
+	EOE = 16 ///< not a valid value, used for interating in the enum
     };
 
 	/// change event per category

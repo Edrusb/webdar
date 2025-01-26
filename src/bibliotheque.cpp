@@ -92,6 +92,9 @@ std::string bibliotheque::changed(category cat)
     case ciphering:
 	ret += "ciphering";
 	break;
+    case delta_sig:
+	ret += "delta-sig";
+	break;
     case EOE:
 	throw WEBDAR_BUG;
     default:
@@ -613,6 +616,8 @@ string bibliotheque::category_to_string(category cat)
 	return "slicing";
     case ciphering:
 	return "ciphering";
+    case delta_sig:
+	return "delta-sig";
     case EOE:
 	throw WEBDAR_BUG;
     default:
@@ -652,6 +657,8 @@ bibliotheque::category bibliotheque::string_to_category(const string & s)
 	return slicing;
     else if(s == "ciphering")
 	return ciphering;
+    else if(s == "delta-sig")
+	return delta_sig;
     else
 	throw exception_range(libdar::tools_printf("Unknown category: %s", s.c_str()));
 }
