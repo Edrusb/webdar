@@ -65,7 +65,6 @@ html_options_merge::html_options_merge():
     form_delta_sig("Update"),
     delta_fs(""),
     delta_sig("delta signatures"),
-    delta_sig_min_size("Avoid calculating delta signature for file smaller than", 0, "30"),
     form_shown("Update"),
     fs_shown(""),
     info_details("Detailed informations", html_form_input::check, "1", "1"),
@@ -115,6 +114,10 @@ html_options_merge::html_options_merge():
     if(! ciphering)
 	throw exception_memory();
 
+    sig_block_size.reset(new (nothrow) html_form_sig_block_size());
+    if(! sig_block_size)
+	throw exception_memory();
+
 	// components setups
     pause.set_min_only(0);
 
@@ -136,7 +139,7 @@ html_options_merge::html_options_merge():
     execute.set_value(defaults.get_execute());
     empty.set_value_as_bool(defaults.get_empty());
     empty_dir.set_value_as_bool(defaults.get_empty_dir());
-    delta_sig_min_size.set_value_as_infinint(defaults.get_delta_sig_min_size());
+    sig_block_size->set_delta_sig_min_size(defaults.get_delta_sig_min_size());
 
     delta_filter_title.add_paragraph();
     delta_filter_title.add_text(3, "Delta signature filename based filtering");
@@ -199,8 +202,7 @@ html_options_merge::html_options_merge():
     deroule.adopt_in_section(sect_aux, &aux_block);
 
     delta_fs.adopt(&delta_sig);
-    delta_fs.adopt(&delta_sig_min_size);
-    delta_fs.adopt(&sig_block_size);
+    delta_fs.adopt(&guichet_sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
     deroule.adopt_in_section(sect_delta, &delta_filter_title);
@@ -300,6 +302,10 @@ void html_options_merge::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 				bibliotheque::ciphering,
 				ciphering,
 				false);
+    guichet_sig_block_size.set_child(ptr,
+				     bibliotheque::delta_sig,
+				     sig_block_size,
+				     true);
 }
 
 void html_options_merge::on_event(const string & event_name)
@@ -312,8 +318,7 @@ void html_options_merge::on_event(const string & event_name)
 	decremental.set_visible(has_aux.get_value_as_bool());
 	delta_filter_title.set_visible(delta_sig.get_selected_num() == 2);
 	guichet_delta_mask.set_visible(delta_sig.get_selected_num() == 2);
-	delta_sig_min_size.set_visible(delta_sig.get_selected_num() == 2);
-	sig_block_size.set_visible(delta_sig.get_selected_num() == 2);
+	guichet_sig_block_size.set_visible(delta_sig.get_selected_num() == 2);
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
 
 	if(! compr_params->get_keep_compressed()
@@ -455,8 +460,8 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
 	else
 	    throw WEBDAR_BUG;
 
-	ret.set_sig_block_len(sig_block_size.get_value());
-	ret.set_delta_sig_min_size(delta_sig_min_size.get_value_as_infinint());
+	ret.set_sig_block_len(sig_block_size->get_value());
+	ret.set_delta_sig_min_size(sig_block_size->get_delta_sig_min_size());
 	break;
     default:
 	throw WEBDAR_BUG;
