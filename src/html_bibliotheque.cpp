@@ -182,6 +182,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     if(!ab_compr)
 	throw exception_memory();
 
+	// slicing tab
+
     tmp_slicing.reset(new (nothrow) html_slicing());
     if(! tmp_slicing)
 	throw exception_memory();
@@ -194,6 +196,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     if(! ab_slicing)
 	throw exception_memory();
 
+	// ciphering tab
+
     tmp_ciphering.reset(new (nothrow) html_ciphering());
     if(! tmp_ciphering)
 	throw exception_memory();
@@ -203,6 +207,9 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 								      tmp_ciphering,
 								      html_ciphering::changed,
 								      false));
+    if(!ab_ciphering)
+	throw exception_memory();
+
 
 
     	// global component setups
