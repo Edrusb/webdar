@@ -135,6 +135,9 @@ html_options_create::html_options_create():
     if(! ciphering)
 	throw exception_memory();
 
+    sig_block_size.reset(new (nothrow) html_form_sig_block_size());
+    if(! sig_block_size)
+	throw exception_memory();
 
     archtype.add_choice("full", "Full backup");
     archtype.add_choice("diff", "Differential/Incremental backup");
@@ -170,7 +173,7 @@ html_options_create::html_options_create():
     warn_over.set_value_as_bool(defaults.get_warn_over());
     pause.set_value(libdar::deci(defaults.get_pause()).human());
     execute.set_value(defaults.get_execute());
-    sig_block_size.set_delta_sig_min_size(defaults.get_delta_sig_min_size());
+    sig_block_size->set_delta_sig_min_size(defaults.get_delta_sig_min_size());
     what_to_check.set_value(defaults.get_comparison_fields());
     hourshift.set_value(libdar::deci(defaults.get_hourshift()).human());
     empty.set_value_as_bool(defaults.get_empty());
@@ -249,7 +252,7 @@ html_options_create::html_options_create():
 
 	// delta signatures
     delta_fs.adopt(&delta_sig);
-    delta_fs.adopt(&sig_block_size);
+    delta_fs.adopt(&guichet_sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
     deroule.adopt_in_section(sect_delta, &delta_filter_title);
@@ -386,7 +389,6 @@ void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				 bibliotheque::filefilter,
 				 compr_mask,
 				 false);
-
     guichet_path_mask.set_child(ptr,
 				bibliotheque::pathfilter,
 				path_mask,
@@ -399,6 +401,10 @@ void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				bibliotheque::ciphering,
 				ciphering,
 				false);
+    guichet_sig_block_size.set_child(ptr,
+				     bibliotheque::delta_sig,
+				     sig_block_size,
+				     true);
     reference.set_biblio(ptr);
 }
 
@@ -543,8 +549,8 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 	else
 	    throw WEBDAR_BUG;
 
-	ret.set_sig_block_len(sig_block_size.get_value());
-	ret.set_delta_sig_min_size(sig_block_size.get_delta_sig_min_size());
+	ret.set_sig_block_len(sig_block_size->get_value());
+	ret.set_delta_sig_min_size(sig_block_size->get_delta_sig_min_size());
     }
 
     if(mod_data_detect.get_selected_id() == "any_inode_change")
@@ -609,7 +615,7 @@ void html_options_create::on_event(const string & event_name)
 
 	delta_filter_title.set_visible(delta_sig.get_value_as_bool());
 	guichet_delta_mask.set_visible(delta_sig.get_value_as_bool());
-	sig_block_size.set_visible(delta_sig.get_value_as_bool());
+	guichet_sig_block_size.set_visible(delta_sig.get_value_as_bool());
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
 
 	if(exclude_by_ea.get_value_as_bool())
