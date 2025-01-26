@@ -83,6 +83,10 @@ html_options_isolate::html_options_isolate():
     if(! ciphering)
 	throw exception_memory();
 
+    sig_block_size.reset(new (nothrow) html_form_sig_block_size());
+    if(! sig_block_size)
+	throw exception_memory();
+
     delta_filter_title.add_paragraph();
     delta_filter_title.add_text(3, "Delta signature filename based filtering");
 
@@ -101,7 +105,7 @@ html_options_isolate::html_options_isolate():
     execute.set_value(defaults.get_execute());
     empty.set_value_as_bool(defaults.get_empty());
     ciphering->set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
-    sig_block_size.set_delta_sig_min_size(defaults.get_delta_sig_min_size());
+    sig_block_size->set_delta_sig_min_size(defaults.get_delta_sig_min_size());
 
 	// building HTML structure
 
@@ -125,7 +129,7 @@ html_options_isolate::html_options_isolate():
 
     delta_fs.adopt(&delta_sig);
     delta_fs.adopt(&delta_transfer_mode);
-    delta_fs.adopt(&sig_block_size);
+    delta_fs.adopt(&guichet_sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
     deroule.adopt_in_section(sect_delta, &delta_filter_title);
@@ -191,6 +195,10 @@ void html_options_isolate::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				bibliotheque::ciphering,
 				ciphering,
 				false);
+    guichet_sig_block_size.set_child(ptr,
+				     bibliotheque::delta_sig,
+				     sig_block_size,
+				     true);
 }
 
 void html_options_isolate::on_event(const string & event_name)
@@ -201,14 +209,14 @@ void html_options_isolate::on_event(const string & event_name)
 	if(delta_sig.get_value_as_bool())
 	{
 	    delta_transfer_mode.set_visible(true);
-	    sig_block_size.set_visible(delta_transfer_mode.get_value_as_bool());
+	    guichet_sig_block_size.set_visible(delta_transfer_mode.get_value_as_bool());
 	    delta_filter_title.set_visible(delta_transfer_mode.get_value_as_bool());
 	    guichet_delta_mask.set_visible(delta_transfer_mode.get_value_as_bool());
 	}
 	else
 	{
 	    delta_transfer_mode.set_visible(false);
-	    sig_block_size.set_visible(false);
+	    guichet_sig_block_size.set_visible(false);
 	    delta_filter_title.set_visible(false);
 	    guichet_delta_mask.set_visible(false);
 	}
@@ -260,8 +268,8 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
 	else
 	    throw WEBDAR_BUG;
 
-	ret.set_sig_block_len(sig_block_size.get_value());
-	ret.set_delta_sig_min_size(sig_block_size.get_delta_sig_min_size());
+	ret.set_sig_block_len(sig_block_size->get_value());
+	ret.set_delta_sig_min_size(sig_block_size->get_delta_sig_min_size());
     }
 
     val = webdar_tools_convert_from_infinint<libdar::U_I>(compr_bs,
