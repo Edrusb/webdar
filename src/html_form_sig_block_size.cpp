@@ -41,6 +41,7 @@ extern "C"
 using namespace std;
 
 html_form_sig_block_size::html_form_sig_block_size():
+    delta_sig_min_size("Avoid calculating delta signature for file smaller than", 0, "30"),
     fs_function("Function used to derive delta signature block size from the file size to sign"),
     multiply("Multicative factor", html_form_input::number, "1", "10"),
     divisor("Divisor factor", html_form_input::number, "1", "10"),
@@ -64,6 +65,7 @@ html_form_sig_block_size::html_form_sig_block_size():
     make_summary();
 
 	// adoption tree
+    adopt(&delta_sig_min_size);
     adopt(&summary_f);
     adopt(&summary_l);
     fs_function.adopt(&function);

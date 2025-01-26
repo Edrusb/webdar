@@ -47,7 +47,7 @@ extern "C"
 #include "html_form_input_unit.hpp"
 #include "html_form_fieldset.hpp"
 
-    /// html component used for to logically combine (and / or) criteria to setup an overwriting policies
+    /// html component used to define how/when delta signature are calculated
 
 class html_form_sig_block_size: public html_div,
 				public actor
@@ -59,6 +59,12 @@ public:
     html_form_sig_block_size & operator = (const html_form_sig_block_size & ref) = default;
     html_form_sig_block_size & operator = (html_form_sig_block_size && ref) noexcept = default;
     ~html_form_sig_block_size() = default;
+
+	/// define default/initial file size value below which to never try performing binary delta
+    void set_delta_sig_min_size(const libdar::infinint & val) { delta_sig_min_size.set_value_as_infinint(val); };
+
+	/// read the currently file size value set below which to never try perfoming binary delta
+    libdar::infinint get_delta_sig_min_size() const { return delta_sig_min_size.get_value_as_infinint(); }
 
 	/// return the corresponding value for libdar
     libdar::delta_sig_block_size get_value() const;
@@ -76,6 +82,7 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    html_form_input_unit delta_sig_min_size;
     html_text summary_f; // formula
     html_text summary_l; // limits
     html_form_fieldset fs_function;

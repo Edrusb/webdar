@@ -60,7 +60,6 @@ html_options_create::html_options_create():
     reference("Archive of reference"),
     delta_fs(""),
     delta_sig("Compute binary delta signature", html_form_input::check, "", "1"),
-    delta_sig_min_size("Avoid calculating delta signature for file smaller than", 0, "30"),
     archgen_fs(""),
     allow_over("Allow slice overwriting", html_form_input::check, "", "1"),
     warn_over("Warn before overwriting", html_form_input::check, "", "1"),
@@ -171,7 +170,7 @@ html_options_create::html_options_create():
     warn_over.set_value_as_bool(defaults.get_warn_over());
     pause.set_value(libdar::deci(defaults.get_pause()).human());
     execute.set_value(defaults.get_execute());
-    delta_sig_min_size.set_value_as_infinint(defaults.get_delta_sig_min_size());
+    sig_block_size.set_delta_sig_min_size(defaults.get_delta_sig_min_size());
     what_to_check.set_value(defaults.get_comparison_fields());
     hourshift.set_value(libdar::deci(defaults.get_hourshift()).human());
     empty.set_value_as_bool(defaults.get_empty());
@@ -250,7 +249,6 @@ html_options_create::html_options_create():
 
 	// delta signatures
     delta_fs.adopt(&delta_sig);
-    delta_fs.adopt(&delta_sig_min_size);
     delta_fs.adopt(&sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
@@ -546,7 +544,7 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
 	    throw WEBDAR_BUG;
 
 	ret.set_sig_block_len(sig_block_size.get_value());
-	ret.set_delta_sig_min_size(delta_sig_min_size.get_value_as_infinint());
+	ret.set_delta_sig_min_size(sig_block_size.get_delta_sig_min_size());
     }
 
     if(mod_data_detect.get_selected_id() == "any_inode_change")
@@ -611,7 +609,6 @@ void html_options_create::on_event(const string & event_name)
 
 	delta_filter_title.set_visible(delta_sig.get_value_as_bool());
 	guichet_delta_mask.set_visible(delta_sig.get_value_as_bool());
-	delta_sig_min_size.set_visible(delta_sig.get_value_as_bool());
 	sig_block_size.set_visible(delta_sig.get_value_as_bool());
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
 
