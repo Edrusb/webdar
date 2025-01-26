@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_css_style.hpp"
@@ -51,20 +51,16 @@ html_form_sig_block_size::html_form_sig_block_size():
     max_size("Maximum block size (set to zero to disable max size)", 1, "10")
 {
 
-	// default values
+	// components setup
     function.add_choice("fixed","Fixed value of 1");
     function.add_choice("linear", "File size (linear)");
     function.add_choice("log2", "Natural logarithm of the file size");
     function.add_choice("root2", "Square root of the file size");
     function.add_choice("root3", "Cube root of the file size");
-    function.set_selected_id("root2");
     multiply.set_min_only(1);
     divisor.set_min_only(1);
-    min_size.set_value_as_infinint(libdar::infinint(RS_DEFAULT_BLOCK_LEN));
-    max_size.set_value_as_infinint(libdar::infinint(64*RS_DEFAULT_BLOCK_LEN));
     min_size.set_min_only(8);
     max_size.set_min_only(8);
-    make_summary();
 
 	// adoption tree
     adopt(&delta_sig_min_size);
@@ -85,6 +81,10 @@ html_form_sig_block_size::html_form_sig_block_size():
     min_size.record_actor_on_event(this, html_form_input_unit::changed);
     max_size.record_actor_on_event(this, html_form_input_unit::changed);
     register_name(changed);
+
+	// initial value settings
+    clear_json();
+
 
 	// csss
     summary_f.add_css_class(webdar_css_style::wcs_bold_text);
@@ -123,6 +123,67 @@ libdar::delta_sig_block_size html_form_sig_block_size::get_value() const
     return ret;
 }
 
+void html_form_sig_block_size::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software", myclass_id));
+
+	delta_sig_min_size.set_value_as_infinint(libdar::deci(config.at(jlabel_min_file_size)).computer());
+	function.set_selected_id(config.at(jlabel_function));
+	multiply.set_value_as_int(config.at(jlabel_multiply));
+	divisor.set_value_as_int(config.at(jlabel_divisor));
+	min_size.set_value_as_infinint(libdar::deci(config.at(jlabel_min_size)).computer());
+	max_size.set_value_as_infinint(libdar::deci(config.at(jlabel_max_size)).computer());
+
+	on_event(html_form_input::changed);
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+
+
+}
+
+json html_form_sig_block_size::save_json() const
+{
+    json ret;
+
+    ret[jlabel_min_file_size] = libdar::deci(delta_sig_min_size.get_value_as_infinint()).human();
+    ret[jlabel_function] = function.get_selected_id();
+    ret[jlabel_multiply] = multiply.get_value_as_int();
+    ret[jlabel_divisor] = divisor.get_value_as_int();
+    ret[jlabel_min_size] = libdar::deci(min_size.get_value_as_infinint()).human();
+    ret[jlabel_max_size] = libdar::deci(max_size.get_value_as_infinint()).human();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					ret);
+
+}
+
+void html_form_sig_block_size::clear_json()
+{
+    delta_sig_min_size.set_value_as_infinint(0);
+    function.set_selected_id("root2");
+    min_size.set_value_as_infinint(libdar::infinint(RS_DEFAULT_BLOCK_LEN));
+    max_size.set_value_as_infinint(libdar::infinint(64*RS_DEFAULT_BLOCK_LEN));
+
+    on_event(html_form_input::changed);
+}
 
 void html_form_sig_block_size::on_event(const string & event_name)
 {

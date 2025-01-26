@@ -47,12 +47,14 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_form_input_unit.hpp"
 #include "html_form_fieldset.hpp"
+#include "jsoner.hpp"
 
     /// html component used to define how/when delta signature are calculated
 
 class html_form_sig_block_size: public html_div,
 				public actor,
-				public events
+				public events,
+				public jsoner
 {
 public:
     static const std::string changed;
@@ -72,6 +74,15 @@ public:
 
 	/// return the corresponding value for libdar
     libdar::delta_sig_block_size get_value() const;
+
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -97,6 +108,18 @@ private:
     html_form_input_unit max_size;
 
     void make_summary();
+
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_sig_block_size";
+
+    static constexpr const char* jlabel_min_file_size = "min-size";
+    static constexpr const char* jlabel_function = "function";
+    static constexpr const char* jlabel_multiply = "multiply";
+    static constexpr const char* jlabel_divisor = "divisor";
+    static constexpr const char* jlabel_min_size = "min-size";
+    static constexpr const char* jlabel_max_size = "max-size";
+
 };
 
 #endif
