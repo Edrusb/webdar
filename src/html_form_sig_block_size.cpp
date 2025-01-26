@@ -40,6 +40,8 @@ extern "C"
 
 using namespace std;
 
+const string html_form_sig_block_size::changed = "hfsbs_changed";
+
 html_form_sig_block_size::html_form_sig_block_size():
     delta_sig_min_size("Avoid calculating delta signature for file smaller than", 0, "30"),
     fs_function("Function used to derive delta signature block size from the file size to sign"),
@@ -76,11 +78,13 @@ html_form_sig_block_size::html_form_sig_block_size():
     adopt(&max_size);
 
 	// events
+    delta_sig_min_size.record_actor_on_event(this, html_form_input_unit::changed);
     function.record_actor_on_event(this, html_form_radio::changed);
     multiply.record_actor_on_event(this, html_form_input::changed);
     divisor.record_actor_on_event(this, html_form_input::changed);
     min_size.record_actor_on_event(this, html_form_input_unit::changed);
     max_size.record_actor_on_event(this, html_form_input_unit::changed);
+    register_name(changed);
 
 	// csss
     summary_f.add_css_class(webdar_css_style::wcs_bold_text);
@@ -149,6 +153,7 @@ void html_form_sig_block_size::on_event(const string & event_name)
 	}
 
 	make_summary();
+	act(changed);
     }
     else
 	throw WEBDAR_BUG;

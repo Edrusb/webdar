@@ -39,6 +39,7 @@ extern "C"
     // webdar headers
 #include "html_div.hpp"
 #include "actor.hpp"
+#include "events.hpp"
 #include "body_builder.hpp"
 #include "html_table.hpp"
 #include "html_text.hpp"
@@ -50,9 +51,12 @@ extern "C"
     /// html component used to define how/when delta signature are calculated
 
 class html_form_sig_block_size: public html_div,
-				public actor
+				public actor,
+				public events
 {
 public:
+    static const std::string changed;
+
     html_form_sig_block_size();
     html_form_sig_block_size(const html_form_sig_block_size & ref) = default;
     html_form_sig_block_size(html_form_sig_block_size && ref) noexcept = default;
