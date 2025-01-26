@@ -51,6 +51,7 @@ extern "C"
 #include "html_compression_params.hpp"
 #include "html_slicing.hpp"
 #include "html_ciphering.hpp"
+#include "html_form_sig_block_size.hpp"
 
     /// class html_bibliotheque provide graphical mean to manipulate a bibliotheque object
 
@@ -127,6 +128,7 @@ private:
     std::unique_ptr<arriere_boutique<html_compression_params> > ab_compr;
     std::unique_ptr<arriere_boutique<html_slicing> > ab_slicing;
     std::unique_ptr<arriere_boutique<html_ciphering> > ab_ciphering;
+    std::unique_ptr<arriere_boutique<html_form_sig_block_size> > ab_delta_sig;
 
     html_tabs tabs;
     html_text intro;
@@ -166,6 +168,7 @@ private:
     static constexpr const char* tab_compression = "compression";
     static constexpr const char* tab_slicing = "slicing";
     static constexpr const char* tab_ciphering = "ciphering";
+    static constexpr const char* tab_delta_sig = "delta-sig";
 
     static constexpr const char* event_save = "save";
     static constexpr const char* event_load = "load";
