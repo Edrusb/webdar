@@ -62,6 +62,23 @@ public:
 	/// encoding type for HTTP code generation ; "multipart/form-data" for example
     void set_enctype(const std::string & enc) { enctype = enc; };
 
+	/// clear css class for the form button (not for the whole form)
+
+	/// \note for the whole form, use the usual clear_css_class() method inherited
+	/// from body_builder class
+    void clear_button_css_classes();
+
+	/// add css class for the form button (not for the whole form)
+
+	/// \note for the whole form, use the usual add_css_class() method inherited
+	/// from body_builder class
+    void add_button_css_class(const std::string & name);
+
+	/// return the button assigned css classes as inlined CSS, suitable to be added in a html marker
+
+        /// \note the returned string if not empty is of the form: class="<classname> <classname>..."
+    std::string get_button_css_classes() const;
+
 protected:
 	/// inherited methods from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
@@ -71,6 +88,7 @@ private:
     std::string go_mesg;
     std::string enctype;
 
+    std::set<std::string> css_button_classes;
 };
 
 #endif

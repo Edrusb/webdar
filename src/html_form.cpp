@@ -42,6 +42,42 @@ using namespace std;
 
 const string html_form::changed = "form_changed";
 
+void html_form::clear_button_css_classes()
+{
+    css_button_classes.clear();
+    my_body_part_has_changed();
+}
+
+void html_form::add_button_css_class(const string & name)
+{
+    if(css_button_classes.find(name) != css_button_classes.end())
+        throw exception_range(string("the css_class name to add is already present: ") + name);
+
+    css_button_classes.insert(name);
+    css_classes_have_changed();
+    my_body_part_has_changed();
+}
+
+string html_form::get_button_css_classes() const
+{
+    string ret;
+    set<string>::const_iterator it = css_button_classes.begin();
+
+    while(it != css_button_classes.end())
+    {
+        if(!ret.empty())
+            ret += " ";
+        ret += *it;
+
+        ++it;
+    }
+
+    if(!ret.empty())
+        ret = "class=\"" + ret + "\"";
+
+    return ret;
+}
+
 string html_form::inherited_get_body_part(const chemin & path,
 					  const request & req)
 {
@@ -63,7 +99,7 @@ string html_form::inherited_get_body_part(const chemin & path,
 	if(req.get_method() == "POST")
 	    act(changed);
     }
-    ret += "<input type=\"submit\" value=\"" + go_mesg + "\" />\n";
+    ret += "<input " + get_button_css_classes() + " type=\"submit\" value=\"" + go_mesg + "\" />\n";
     ret += "</form>\n";
 
     return ret;
