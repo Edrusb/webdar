@@ -47,7 +47,7 @@ string html_form::inherited_get_body_part(const chemin & path,
 {
     string ret = "";
 
-    ret += "<form method=\"post\" action=\"" + get_path().display() + "\"";
+    ret += "<form " + get_css_classes() + " method=\"post\" action=\"" + get_path().display() + "\"";
     if(!enctype.empty())
 	ret += " enctype=\""+enctype+"\"";
     ret += ">\n";
@@ -63,7 +63,7 @@ string html_form::inherited_get_body_part(const chemin & path,
 	if(req.get_method() == "POST")
 	    act(changed);
     }
-    ret += "<input " +  get_css_classes() + " type=\"submit\" value=\"" + go_mesg + "\" />\n";
+    ret += "<input type=\"submit\" value=\"" + go_mesg + "\" />\n";
     ret += "</form>\n";
 
     return ret;
