@@ -88,6 +88,9 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// inherited from body_builder
+    virtual void css_classes_have_changed() override;
+
 	/// inherited from libthreadar::thread
     virtual void inherited_run() override;
 

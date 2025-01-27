@@ -349,6 +349,17 @@ string html_entrepot::inherited_get_body_part(const chemin & path,
     return ret;
 }
 
+void html_entrepot::css_classes_have_changed()
+{
+    set<string> css_classes = get_css_classes_as_a_set();
+
+    form.clear_css_classes();
+    for(set<string>::iterator it = css_classes.begin();
+	it != css_classes.end();
+	++it)
+	form.add_css_class(*it);
+}
+
 void html_entrepot::inherited_run()
 {
     if(!dialog)
