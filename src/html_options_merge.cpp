@@ -204,7 +204,6 @@ html_options_merge::html_options_merge():
     deroule.adopt_in_section(sect_aux, &aux_block);
 
     delta_fs.adopt(&delta_sig);
-    delta_fs.adopt(&guichet_sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
     deroule.adopt_in_section(sect_delta, &delta_filter_params);
