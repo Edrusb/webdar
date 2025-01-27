@@ -158,7 +158,7 @@ private:
     bibliotheque_subconfig* adopted_subconfig; ///< may be null if adopted does not implement bibliotheque_subconfig interface
     bool ignore_events;
     body_builder* adopted_frame;   ///< which wrapper object to change visibility of
-    bool clear_adopted;
+    bool clear_adopted;     ///< used to differentiate manual-mode selection (false) from clear button selection (true)
     bool is_sub;
     std::string currently_locked; ///< name of the config we locked in the bibliotheque for the categ category (empty string = no lock)
 

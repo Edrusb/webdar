@@ -527,6 +527,8 @@ void guichet::set_visibility()
     bool manualmode = select.get_selected_num() == 0;
 
     check_adopted();
+    if(adopted_frame == nullptr)
+	throw WEBDAR_BUG;
 
     if(is_sub)
     {
@@ -537,9 +539,6 @@ void guichet::set_visibility()
     }
     else
     {
-
-	if(adopted_frame == nullptr)
-	    throw WEBDAR_BUG;
 	adopted_frame->set_visible(manualmode);
 	edit.set_visible(!manualmode);
 	clear.set_visible(manualmode);
