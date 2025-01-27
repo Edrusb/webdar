@@ -195,6 +195,9 @@ private:
 
     static constexpr const char* css_float = "guichet_float";
     static constexpr const char* css_bold = "guichet_bold";
+    static constexpr const char* css_left_margin = "guichet_left_margin";
+    static constexpr const char* css_below_margin = "guichet_below_margin";
+    static constexpr const char* css_above_margin = "guichet_above_margin";
 
     static constexpr const char* fs_title_subcomp = "Matches configuration named";
 

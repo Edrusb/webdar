@@ -134,6 +134,7 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
 
     if(adopted_frame == nullptr)
 	throw WEBDAR_BUG;
+    adopted_frame->add_css_class(css_left_margin);
 
     saveas_fs.adopt(&saveas_name);
     saveas_form.adopt(&saveas_fs);
@@ -161,6 +162,8 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
     edit.add_css_class(css_float);
     clear.add_css_class(css_float);
     select_fs.add_label_css_class(css_bold);
+    select_form.add_css_class(css_below_margin);
+    saveas_fs.add_css_class(css_above_margin);
 }
 
 void guichet::load_json(const json & source)
@@ -430,6 +433,34 @@ void guichet::new_css_library_available()
 
 	csslib->add(css_bold, tmp);
     }
+
+    if(!csslib->class_exists(css_left_margin))
+    {
+	css tmp;
+
+	tmp.css_margin_left("2em");
+
+	csslib->add(css_left_margin, tmp);
+    }
+
+    if(!csslib->class_exists(css_below_margin))
+    {
+	css tmp;
+
+	tmp.css_margin_bottom("2em");
+
+	csslib->add(css_below_margin, tmp);
+    }
+
+    if(!csslib->class_exists(css_above_margin))
+    {
+	css tmp;
+
+	tmp.css_margin_top("2em");
+
+	csslib->add(css_above_margin, tmp);
+    }
+
 
     webdar_css_style::update_library(*csslib);
 }
