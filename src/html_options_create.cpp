@@ -145,6 +145,8 @@ html_options_create::html_options_create():
     archtype.add_choice("snap", "Snapshot backup");
     archtype.add_choice("date", "Date based differential backup");
     binary_delta_note.add_text(0, "(*) delta signatures need to be present in the backup of reference");
+    delta_filter_params.add_paragraph();
+    delta_filter_params.add_text(3, "Delta signature parameters");
     delta_filter_title.add_paragraph();
     delta_filter_title.add_text(3, "Delta signature filename based filtering");
     compr_filter_title.add_paragraph();
@@ -255,6 +257,8 @@ html_options_create::html_options_create():
     delta_fs.adopt(&guichet_sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
+    deroule.adopt_in_section(sect_delta, &delta_filter_params);
+    deroule.adopt_in_section(sect_delta, &guichet_sig_block_size);
     deroule.adopt_in_section(sect_delta, &delta_filter_title);
     deroule.adopt_in_section(sect_delta, &guichet_delta_mask);
 
@@ -615,6 +619,7 @@ void html_options_create::on_event(const string & event_name)
 
 	delta_filter_title.set_visible(delta_sig.get_value_as_bool());
 	guichet_delta_mask.set_visible(delta_sig.get_value_as_bool());
+	delta_filter_params.set_visible(delta_sig.get_value_as_bool());
 	guichet_sig_block_size.set_visible(delta_sig.get_value_as_bool());
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
 
