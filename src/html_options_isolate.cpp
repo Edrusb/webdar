@@ -87,6 +87,9 @@ html_options_isolate::html_options_isolate():
     if(! sig_block_size)
 	throw exception_memory();
 
+    delta_filter_params.add_paragraph();
+    delta_filter_params.add_text(3, "Delta signature parameters");
+
     delta_filter_title.add_paragraph();
     delta_filter_title.add_text(3, "Delta signature filename based filtering");
 
@@ -132,6 +135,8 @@ html_options_isolate::html_options_isolate():
     delta_fs.adopt(&guichet_sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
+    deroule.adopt_in_section(sect_delta, &delta_filter_params);
+    deroule.adopt_in_section(sect_delta, &guichet_sig_block_size);
     deroule.adopt_in_section(sect_delta, &delta_filter_title);
     deroule.adopt_in_section(sect_delta, &guichet_delta_mask);
 
@@ -209,6 +214,7 @@ void html_options_isolate::on_event(const string & event_name)
 	if(delta_sig.get_value_as_bool())
 	{
 	    delta_transfer_mode.set_visible(true);
+	    delta_filter_params.set_visible(delta_transfer_mode.get_value_as_bool());
 	    guichet_sig_block_size.set_visible(delta_transfer_mode.get_value_as_bool());
 	    delta_filter_title.set_visible(delta_transfer_mode.get_value_as_bool());
 	    guichet_delta_mask.set_visible(delta_transfer_mode.get_value_as_bool());
@@ -216,6 +222,7 @@ void html_options_isolate::on_event(const string & event_name)
 	else
 	{
 	    delta_transfer_mode.set_visible(false);
+	    delta_filter_params.set_visible(false);
 	    guichet_sig_block_size.set_visible(false);
 	    delta_filter_title.set_visible(false);
 	    guichet_delta_mask.set_visible(false);
