@@ -250,6 +250,17 @@ string html_mask_form_path::inherited_get_body_part(const chemin & path,
     return get_body_part_from_all_children(path, req);
 }
 
+void html_mask_form_path::css_classes_have_changed()
+{
+    set<string> css_classes = get_css_classes_as_a_set();
+
+    form.clear_css_classes();
+    for(set<string>::iterator it = css_classes.begin();
+	it != css_classes.end();
+	++it)
+	form.add_css_class(*it);
+}
+
 void html_mask_form_path::init()
 {
     init_bool_obj(root);
