@@ -117,6 +117,7 @@ private:
     static constexpr const char* event_clear = "clear_cur_conf";
     static constexpr const char* css_float = "arriere_boutique_float";
     static constexpr const char* css_warn = "arriere_boutique_warn";
+    static constexpr const char* css_margin_above = "arriere_boutique_margin";
 
     std::string currently_loaded;
     std::shared_ptr<bibliotheque> biblio;
@@ -256,6 +257,7 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     floteur.add_css_class(css_float);
     warning_message.add_css_class(css_warn);
     need_saving.add_css_class(css_warn);
+    config_form.add_css_class(css_margin_above);
 }
 
 template <class T> void arriere_boutique<T>::on_event(const std::string & event_name)
@@ -427,6 +429,16 @@ template <class T> void arriere_boutique<T>::new_css_library_available()
 	tmp.css_text_shadow("0.1em", "0.1em", "0.1em", "#888888");
 	csslib->add(css_warn, tmp);
     }
+
+    if(!csslib->class_exists(css_margin_above))
+    {
+	tmp.clear();
+
+	tmp.css_margin_top("2em");
+
+	csslib->add(css_margin_above, tmp);
+    }
+
 
     webdar_css_style::update_library(*csslib);
 }
