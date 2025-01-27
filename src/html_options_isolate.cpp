@@ -132,7 +132,6 @@ html_options_isolate::html_options_isolate():
 
     delta_fs.adopt(&delta_sig);
     delta_fs.adopt(&delta_transfer_mode);
-    delta_fs.adopt(&guichet_sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
     deroule.adopt_in_section(sect_delta, &delta_filter_params);
