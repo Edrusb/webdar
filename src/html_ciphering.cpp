@@ -364,6 +364,17 @@ string html_ciphering::inherited_get_body_part(const chemin & path,
     return get_body_part_from_all_children(path, req);
 }
 
+void html_ciphering::css_classes_have_changed()
+{
+    set<string> css_classes = get_css_classes_as_a_set();
+
+    form_crypto.clear_css_classes();
+    for(set<string>::iterator it = css_classes.begin();
+	it != css_classes.end();
+	++it)
+	form_crypto.add_css_class(*it);
+}
+
 void html_ciphering::set_kdf_hash(libdar::hash_algo hash)
 {
     switch(hash)
