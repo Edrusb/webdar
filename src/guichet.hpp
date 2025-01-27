@@ -159,7 +159,7 @@ private:
     bool ignore_events;
     body_builder* adopted_frame;   ///< which wrapper object to change visibility of
     bool clear_adopted;     ///< used to differentiate manual-mode selection (false) from clear button selection (true)
-    bool is_sub;
+    bool is_sub;     ///< true when guichet is used inside a config, false when it is the top level of a config recordable into a bibliotheque
     std::string currently_locked; ///< name of the config we locked in the bibliotheque for the categ category (empty string = no lock)
 
     html_form select_form;
