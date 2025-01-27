@@ -130,6 +130,8 @@ private:
     html_form_fieldset delta_fs;
     html_form_select delta_sig;
 
+    html_text delta_filter_params;
+
     guichet guichet_sig_block_size;
     std::shared_ptr<html_form_sig_block_size> sig_block_size;
 

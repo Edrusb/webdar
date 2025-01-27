@@ -141,6 +141,8 @@ html_options_merge::html_options_merge():
     empty_dir.set_value_as_bool(defaults.get_empty_dir());
     sig_block_size->set_delta_sig_min_size(defaults.get_delta_sig_min_size());
 
+    delta_filter_params.add_paragraph();
+    delta_filter_params.add_text(3, "Delta signature parameters");
     delta_filter_title.add_paragraph();
     delta_filter_title.add_text(3, "Delta signature filename based filtering");
     compr_filter_title.add_paragraph();
@@ -205,6 +207,8 @@ html_options_merge::html_options_merge():
     delta_fs.adopt(&guichet_sig_block_size);
     form_delta_sig.adopt(&delta_fs);
     deroule.adopt_in_section(sect_delta, &form_delta_sig);
+    deroule.adopt_in_section(sect_delta, &delta_filter_params);
+    deroule.adopt_in_section(sect_delta, &guichet_sig_block_size);
     deroule.adopt_in_section(sect_delta, &delta_filter_title);
     deroule.adopt_in_section(sect_delta, &guichet_delta_mask);
 
@@ -316,6 +320,7 @@ void html_options_merge::on_event(const string & event_name)
     {
 	auxiliary.set_visible(has_aux.get_value_as_bool());
 	decremental.set_visible(has_aux.get_value_as_bool());
+	delta_filter_params.set_visible(delta_sig.get_selected_num() == 2);
 	delta_filter_title.set_visible(delta_sig.get_selected_num() == 2);
 	guichet_delta_mask.set_visible(delta_sig.get_selected_num() == 2);
 	guichet_sig_block_size.set_visible(delta_sig.get_selected_num() == 2);
