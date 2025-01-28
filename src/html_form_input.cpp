@@ -168,7 +168,6 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 
     if(req.get_method() == "POST"
        && path.empty()
-       && get_visible()
        && enabled
        && !value_set)
     {
