@@ -123,9 +123,7 @@ private:
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* myclass_id = "html_form_gnupg_list";
 
-    static constexpr const char* jlabel_recipients = "recipients";
-    static constexpr const char* jlabel_signatories = "signatories";
-    static constexpr const char* jlabel_email = "email";
+    static constexpr const char* jlabel_contents = "contents";
 };
 
 #endif
