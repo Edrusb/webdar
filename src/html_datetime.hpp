@@ -40,6 +40,7 @@ extern "C"
 #include "body_builder.hpp"
 #include "html_form_input.hpp"
 #include "html_form_select.hpp"
+#include "events.hpp"
 
     /// class html_datetime is a html_form_field object
 
@@ -47,9 +48,12 @@ extern "C"
     /// or thrown an html_form_fieldset by an html_form object
     /// and let the user provide a date information
 
-class html_datetime : public body_builder
+class html_datetime : public body_builder,
+		      public events
 {
 public:
+    static const std::string changed;
+
     html_datetime(const std::string & title);
     html_datetime(const html_datetime & ref) = delete;
     html_datetime(html_datetime && ref) noexcept = delete;

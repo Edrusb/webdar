@@ -42,6 +42,8 @@ extern "C"
 
 using namespace std;
 
+const string html_datetime::changed = "html_datetime_changed";
+
 html_datetime::html_datetime(const string & title):
     year(title, html_form_input::number, "1970", "6"),
     month(""),
@@ -192,6 +194,8 @@ html_datetime::html_datetime(const string & title):
     adopt(&day);
     adopt(&hour);
     adopt(&minute);
+
+    register_name(changed);
 }
 
 libdar::infinint html_datetime::get_value() const
@@ -241,6 +245,7 @@ string html_datetime::inherited_get_body_part(const chemin & path,
     string ret;
     bool err = false;
     int annees;
+    libdar::infinint before = get_value();
 
     if(get_no_CR())
 	minute.set_no_CR();
@@ -267,6 +272,9 @@ string html_datetime::inherited_get_body_part(const chemin & path,
 	else
 	    ret = get_body_part_from_all_children(path, req);
     }
+
+    if(get_value() != before)
+	act(changed);
 
     return ret;
 }
