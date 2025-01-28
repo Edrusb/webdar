@@ -47,7 +47,8 @@ extern "C"
     /// or newline (<br />)
     /// header markup (<h*>) receive the css_class assigned to this object
 
-class html_text : public body_builder, public static_body_builder
+class html_text : public body_builder,
+		  public static_body_builder
 {
 public:
     html_text() { txt = ""; };
@@ -66,7 +67,14 @@ public:
     html_text & add_nl() { txt += "<br />"; my_body_part_has_changed(); return *this; };
     html_text & add_paragraph() { txt += "<p />"; my_body_part_has_changed(); return *this; };
 
+	/// clear and replace component value by the provided string
+
+	/// \note the provided string is used as is and is assumed to comply with HTML text
+    void set_raw_value(const std::string & val) { txt = val; };
+
+	/// clear the whole component value (gets as if it was just created)
     void clear() { txt = ""; my_body_part_has_changed(); };
+
 
 	/// inherited from static_body_builder
     virtual std::string get_body_part() const override;
