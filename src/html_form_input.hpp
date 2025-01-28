@@ -37,6 +37,7 @@ extern "C"
     // webdar headers
 #include "body_builder.hpp"
 #include "events.hpp"
+#include "jsoner.hpp"
 
     /// class html_form_input implements HTML input feature
 
@@ -48,7 +49,9 @@ extern "C"
     /// let the user select a file on his local directory (local
     /// from browser point of view).
 
-class html_form_input : public body_builder, public events
+class html_form_input : public body_builder,
+			public events,
+			public jsoner
 {
 public:
     static const std::string changed;
@@ -94,6 +97,15 @@ public:
 	/// get the event name used when the component changes
     std::string get_event_name() const { return modif_change.empty()? changed: modif_change; };
 
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
@@ -115,6 +127,11 @@ private:
     void check_min_max_change(const std::string & next_min, const std::string & next_max);
 
     static std::string string_for_type(input_type type);
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_input";
+
+    static constexpr const char* jlabel_init = "value";
 };
 
 #endif

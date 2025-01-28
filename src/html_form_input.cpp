@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_tools.hpp"
@@ -156,6 +156,48 @@ void html_form_input::set_enabled(bool val)
     }
 }
 
+void html_form_input::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
+
+	x_init = config.at(jlabel_init);
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_form_input::save_json() const
+{
+    json config;
+
+    config[jlabel_init] = x_init;
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					config);
+}
+
+void html_form_input::clear_json()
+{
+    set_value("");
+}
 
 string html_form_input::inherited_get_body_part(const chemin & path,
 						const request & req)
