@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 
@@ -148,4 +148,50 @@ unique_ptr<libdar::crit_action> html_form_overwrite_constant_action::get_overwri
     if(!ret)
 	throw exception_memory();
     return ret;
+}
+
+void html_form_overwrite_constant_action::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
+
+	data_action.set_selected_id(config.at(jlabel_data));
+	ea_action.set_selected_id(config.at(jlabel_ea));
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_form_overwrite_constant_action::save_json() const
+{
+    json config;
+
+    config[jlabel_data] = data_action.get_selected_id();
+    config[jlabel_ea] = ea_action.get_selected_id();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					config);
+}
+
+void html_form_overwrite_constant_action::clear_json()
+{
+    data_action.set_selected_num(0);
+    ea_action.set_selected_num(0);
 }

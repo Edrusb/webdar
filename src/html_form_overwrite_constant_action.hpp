@@ -38,11 +38,12 @@ extern "C"
 #include "body_builder.hpp"
 #include "html_form_select.hpp"
 #include "html_form_fieldset.hpp"
-
+#include "jsoner.hpp"
 
     /// html component to be adopted by an html_form that implements constant actions for overwriting policies
 
-class html_form_overwrite_constant_action: public html_overwrite_action
+class html_form_overwrite_constant_action: public html_overwrite_action,
+					   public jsoner
 {
 public:
     html_form_overwrite_constant_action();
@@ -55,11 +56,25 @@ public:
 	/// obtain the crit_constant_action object for libdar option
     virtual std::unique_ptr<libdar::crit_action> get_overwriting_action() const override;
 
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
+
 private:
     html_form_fieldset action_fs;
     html_form_select data_action;
     html_form_select ea_action;
 
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_overwrite_constant_action";
+
+    static constexpr const char* jlabel_data = "data";
+    static constexpr const char* jlabel_ea = "ea";
 };
 
 #endif
