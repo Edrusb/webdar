@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_css_style.hpp"
@@ -135,6 +135,113 @@ void html_form_dynamic_table::add_line(unsigned int typenum)
     list<line>::iterator pos = table_content.insert(table_content.end(),
 						    std::move(newline));
     del_event_to_content[event_name] = pos;
+}
+
+void html_form_dynamic_table::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json listing;
+	jsoner* jsnptr = nullptr;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
+
+	left_label = config.at(jlabel_has_left_label);
+	listing = config.at(jlabel_contents);
+
+	if(! listing.is_array() && ! listing.is_null())
+	    throw exception_range(libdar::tools_printf("Expecting json list as content for %s json configuration",
+						       myclass_id));
+
+	if(my_provider == nullptr)
+	    throw WEBDAR_BUG;
+
+	clear(); // removing all table content (but keeping object provider and context)
+
+	for(json::iterator it = listing.begin();
+	    it != listing.end();
+	    ++it)
+	{
+	    add_line(it->at(jlabel_index_type)); // new object is added at the end of table_content
+	    if(table_content.empty())
+		throw WEBDAR_BUG;
+	    if(table_content.back().object_type_index != it->at(jlabel_index_type))
+		throw WEBDAR_BUG;
+
+	    if(left_label)
+	    {
+		if(! table_content.back().left_label)
+		    throw WEBDAR_BUG;
+		table_content.back().left_label->set_raw_value(it->at(jlabel_left_label));
+	    }
+
+	    if(! table_content.back().dynobj)
+		throw WEBDAR_BUG;
+	    jsnptr = dynamic_cast<jsoner*>(table_content.back().dynobj.get());
+	    if(jsnptr == nullptr)
+		throw WEBDAR_BUG;
+	    jsnptr->load_json(it->at(jlabel_dynobj));
+	}
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_form_dynamic_table::save_json() const
+{
+    json config;
+    json listing;
+    json tmp;
+    const jsoner* ptr = nullptr;
+
+    for(list<line>::const_iterator it = table_content.begin();
+	it != table_content.end();
+	++it)
+    {
+	tmp.clear();
+
+	if(left_label)
+	{
+	    if(! it->left_label)
+		throw WEBDAR_BUG;
+	    tmp[jlabel_left_label] = it->left_label->get_raw_value();
+	}
+
+	tmp[jlabel_index_type] = it->object_type_index;
+
+	ptr = dynamic_cast<const jsoner*>(it->dynobj.get());
+	if(ptr == nullptr)
+	    throw WEBDAR_BUG;
+	tmp[jlabel_dynobj] = ptr->save_json();
+
+	listing.push_back(tmp);
+    }
+
+    config[jlabel_has_left_label] = left_label;
+    config[jlabel_contents] = listing;
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					config);
+}
+
+void html_form_dynamic_table::clear_json()
+{
+    clear();
 }
 
 void html_form_dynamic_table::on_event(const std::string & event_name)

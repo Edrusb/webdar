@@ -44,6 +44,7 @@ extern "C"
 #include "html_text.hpp"
 #include "html_form_input.hpp"
 #include "html_form_select.hpp"
+#include "jsoner.hpp"
 
     /// class html_form_dynamic_table_object_provider
 
@@ -100,7 +101,10 @@ public:
     /// user.
 
 
-class html_form_dynamic_table : public html_div, public actor, public events
+class html_form_dynamic_table : public html_div,
+				public actor,
+				public events,
+				public jsoner
 {
 private:
     struct line; // referred before the public part for the ::iterator nested class
@@ -204,6 +208,14 @@ public:
 	/// to add (but also remove) lines to the table
     void add_line(unsigned int typenum);
 
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
 
         /// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -268,6 +280,15 @@ private:
 
     void del_line(const std::string & event_name);
     void purge_to_delete();
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_dynamic_table";
+
+    static constexpr const char* jlabel_has_left_label = "has-lef-labels";
+    static constexpr const char* jlabel_contents = "contents";
+    static constexpr const char* jlabel_left_label = "left-label";
+    static constexpr const char* jlabel_index_type = "type";
+    static constexpr const char* jlabel_dynobj = "object";
 
     friend class html_form_dynamic_table::iterator;
 };
