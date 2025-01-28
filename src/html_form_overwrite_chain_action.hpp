@@ -42,11 +42,13 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_hr.hpp"
 #include "html_form_dynamic_table.hpp"
+#include "jsoner.hpp"
 
     /// html component to be adopted by an html_form that implements a chain of actions for overwriting policies
 
 class html_form_overwrite_chain_action: public html_overwrite_action,
-					public html_form_dynamic_table_object_provider
+					public html_form_dynamic_table_object_provider,
+					public jsoner
 
 {
 public:
@@ -62,6 +64,15 @@ public:
 
 	/// inherited from html_form_dynamic_table_object_provider
     virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num, const std::string & context) const override;
+
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override { table.load_json(source); };
+
+	/// inherited from jsoner
+    virtual json save_json() const override { return table.save_json(); };
+
+	/// inherited from jsoner
+    virtual void clear_json() override { table.clear_json(); };
 
 private:
     html_form_fieldset fs;

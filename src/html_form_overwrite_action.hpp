@@ -41,6 +41,7 @@ extern "C"
 #include "actor.hpp"
 #include "html_form_overwrite_constant_action.hpp"
 #include "html_form_overwrite_chain_action.hpp"
+#include "jsoner.hpp"
 
     /// html component to be adopted by an html_form class
 
@@ -50,7 +51,9 @@ extern "C"
     /// which are more specific implementations of html_overwrite_action ancestor
     /// class that should also be adopted by an html_form (directly or not).
 
-class html_form_overwrite_action: public html_overwrite_action, public actor
+class html_form_overwrite_action: public html_overwrite_action,
+				  public actor,
+				  public jsoner
 {
 public:
     html_form_overwrite_action(const std::string & label);
@@ -62,6 +65,15 @@ public:
 
 	/// obtain the crit_action object for libdar option
     virtual std::unique_ptr<libdar::crit_action> get_overwriting_action() const override;
+
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
 
     	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -79,6 +91,13 @@ private:
     static constexpr const char* action_type_condition = "condition";
     static constexpr const char* action_type_chain = "chain";
 
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_overwrite_action";
+
+    static constexpr const char* jlabel_type = "type";
+    static constexpr const char* jlabel_value = "value";
+
+
     html_form_fieldset fs;
     html_form_select action_type;
     html_form_overwrite_constant_action constant_action;
@@ -87,7 +106,7 @@ private:
 
 	// we use pointers for here
 	// to avoid cyclic dependency between html_form_overwrite_action
-	// and html_form_conditional_action/html_form_chain_action
+	// and html_form_conditional_action
     std::unique_ptr<html_overwrite_action> conditional_action;
 
     void make_conditional_action();

@@ -40,10 +40,12 @@ extern "C"
 #include "actor.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_form_overwrite_action.hpp"
+#include "jsoner.hpp"
 
     /// html component to be adopted by an html_form that implements conditional actions for overwriting policies
 
-class html_form_overwrite_conditional_action: public html_overwrite_action
+class html_form_overwrite_conditional_action: public html_overwrite_action,
+					      public jsoner
 {
 public:
     html_form_overwrite_conditional_action();
@@ -55,6 +57,15 @@ public:
 
 	/// obtain the crit_conditional_action object for libdar option
     virtual std::unique_ptr<libdar::crit_action> get_overwriting_action() const override;
+
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
 
 protected:
 
@@ -74,6 +85,14 @@ private:
     html_form_overwrite_combining_criterium condition;
     html_form_overwrite_action when_true;
     html_form_overwrite_action when_false;
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_overwrite_conditional_action";
+
+    static constexpr const char* jlabel_condition = "condition";
+    static constexpr const char* jlabel_when_true = "when-true";
+    static constexpr const char* jlabel_when_false = "when-false";
+
 };
 
 #endif

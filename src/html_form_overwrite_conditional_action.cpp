@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "html_form_overwrite_constant_action.hpp"
@@ -83,6 +83,55 @@ unique_ptr<libdar::crit_action> html_form_overwrite_conditional_action::get_over
 	throw exception_memory();
 
     return ret;
+}
+
+void html_form_overwrite_conditional_action::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
+
+	condition.load_json(config.at(jlabel_condition));
+	when_true.load_json(config.at(jlabel_when_true));
+	when_false.load_json(config.at(jlabel_when_false));
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_form_overwrite_conditional_action::save_json() const
+{
+    json config;
+
+    config[jlabel_condition] = condition.save_json();
+    config[jlabel_when_true] = when_true.save_json();
+    config[jlabel_when_false] = when_false.save_json();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					config);
+}
+
+void html_form_overwrite_conditional_action::clear_json()
+{
+    condition.clear_json();
+    when_true.clear_json();
+    when_false.clear_json();
 }
 
 void html_form_overwrite_conditional_action::new_css_library_available()

@@ -29,6 +29,7 @@ extern "C"
 }
 
     // C++ system header files
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "html_form_overwrite_conditional_action.hpp"
@@ -95,6 +96,101 @@ unique_ptr<libdar::crit_action> html_form_overwrite_action::get_overwriting_acti
 	throw WEBDAR_BUG;
 
     return ret;
+}
+
+void html_form_overwrite_action::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	jsoner* jsnptr = nullptr;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
+
+	clear_json(); // we must clear also the currently not selected components
+	action_type.set_selected_id(config.at(jlabel_type));
+
+	switch(action_type.get_selected_num())
+	{
+	case 0:
+	    constant_action.load_json(config.at(jlabel_value));
+	    break;
+	case 1:
+	    make_conditional_action();
+	    if(!conditional_action)
+		throw WEBDAR_BUG;
+	    jsnptr = dynamic_cast<jsoner*>(conditional_action.get());
+	    if(jsnptr == nullptr)
+		throw WEBDAR_BUG;
+	    jsnptr->load_json(config.at(jlabel_value));
+	    break;
+	case 2:
+	    chain_action.load_json(config.at(jlabel_value));
+	    break;
+	default:
+	    throw WEBDAR_BUG;
+	}
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_form_overwrite_action::save_json() const
+{
+    json config;
+    const jsoner* jsnptr = nullptr;
+
+    config[jlabel_type] = action_type.get_selected_id();
+    switch(action_type.get_selected_num())
+    {
+    case 0:
+	config[jlabel_value] = constant_action.save_json();
+	break;
+    case 1:
+	if(!conditional_action)
+	    throw WEBDAR_BUG;
+	jsnptr = dynamic_cast<const jsoner*>(conditional_action.get());
+	if(jsnptr == nullptr)
+	    throw WEBDAR_BUG;
+	config[jlabel_value] = jsnptr->save_json();
+	break;
+    case 2:
+	config[jlabel_value] = chain_action.save_json();
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					config);
+}
+
+void html_form_overwrite_action::clear_json()
+{
+    action_type.set_selected_num(0);
+    constant_action.clear_json();
+    if(conditional_action)
+    {
+	jsoner* jsnptr = dynamic_cast<jsoner*>(conditional_action.get());
+	if(jsnptr == nullptr)
+	    throw WEBDAR_BUG;
+	jsnptr->clear_json();
+    }
+    chain_action.clear_json();
 }
 
 void html_form_overwrite_action::on_event(const std::string & event_name)
