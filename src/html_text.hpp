@@ -72,6 +72,9 @@ public:
 	/// \note the provided string is used as is and is assumed to comply with HTML text
     void set_raw_value(const std::string & val) { txt = val; };
 
+	/// get raw value
+    std::string get_raw_value() const { return txt; };
+
 	/// clear the whole component value (gets as if it was just created)
     void clear() { txt = ""; my_body_part_has_changed(); };
 
