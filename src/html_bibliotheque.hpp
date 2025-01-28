@@ -52,6 +52,7 @@ extern "C"
 #include "html_slicing.hpp"
 #include "html_ciphering.hpp"
 #include "html_form_sig_block_size.hpp"
+#include "html_form_overwrite_action.hpp"
 
     /// class html_bibliotheque provide graphical mean to manipulate a bibliotheque object
 
@@ -129,6 +130,7 @@ private:
     std::unique_ptr<arriere_boutique<html_slicing> > ab_slicing;
     std::unique_ptr<arriere_boutique<html_ciphering> > ab_ciphering;
     std::unique_ptr<arriere_boutique<html_form_sig_block_size> > ab_delta_sig;
+    std::unique_ptr<arriere_boutique<html_form_overwrite_action> > ab_over_policy;
 
     html_tabs tabs;
     html_text intro;
@@ -169,6 +171,7 @@ private:
     static constexpr const char* tab_slicing = "slicing";
     static constexpr const char* tab_ciphering = "ciphering";
     static constexpr const char* tab_delta_sig = "delta-sig";
+    static constexpr const char* tab_over_policy = "over-policy";
 
     static constexpr const char* event_save = "save";
     static constexpr const char* event_load = "load";
