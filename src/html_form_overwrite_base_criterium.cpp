@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 
@@ -161,6 +161,71 @@ unique_ptr<libdar::criterium> html_form_overwrite_base_criterium::get_overwritin
     return ret;
 }
 
+void html_form_overwrite_base_criterium::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
+
+	ignore_events = true;
+
+	try
+	{
+	    negate.set_value_as_bool(config.at(jlabel_negate));
+	    invert.set_value_as_bool(config.at(jlabel_invert));
+	    base.set_selected_id(config.at(jlabel_base));
+	    date.set_value(libdar::deci(config.at(jlabel_date)).computer());
+	    hourshift.set_value_as_int(config.at(jlabel_hourshift));
+	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_form_overwrite_base_criterium::save_json() const
+{
+    json config;
+
+    config[jlabel_negate] = negate.get_value_as_bool();
+    config[jlabel_invert] = invert.get_value_as_bool();
+    config[jlabel_base] = base.get_selected_id();
+    config[jlabel_date] = libdar::deci(date.get_value()).human();
+    config[jlabel_hourshift] = hourshift.get_value_as_int();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					config);
+}
+
+void html_form_overwrite_base_criterium::clear_json()
+{
+    negate.set_value_as_bool(false);
+    invert.set_value_as_bool(false);
+    base.set_selected_num(0);
+    date.set_value(0);
+    hourshift.set_value_as_int(0);
+}
 
 void html_form_overwrite_base_criterium::on_event(const std::string & event_name)
 {

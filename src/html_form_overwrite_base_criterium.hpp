@@ -41,10 +41,14 @@ extern "C"
 #include "html_datetime.hpp"
 #include "html_form_select.hpp"
 #include "html_form_fieldset.hpp"
+#include "jsoner.hpp"
 
     /// html component to be adopted by an html_form that implements atomic/base actions for overwriting policies
 
-class html_form_overwrite_base_criterium: public html_overwrite_criterium, public actor
+class html_form_overwrite_base_criterium: public html_overwrite_criterium,
+                                          public actor,
+                                          public jsoner
+
 {
 public:
     html_form_overwrite_base_criterium();
@@ -54,17 +58,26 @@ public:
     html_form_overwrite_base_criterium & operator = (html_form_overwrite_base_criterium && ref) noexcept = default;
     ~html_form_overwrite_base_criterium() = default;
 
-	/// obtain the crit_base_criterium object for libdar option
+        /// obtain the crit_base_criterium object for libdar option
     virtual std::unique_ptr<libdar::criterium> get_overwriting_criterium() const override;
 
-	/// inherited from actor
+        /// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+        /// inherited from jsoner
+    virtual json save_json() const override;
+
+        /// inherited from jsoner
+    virtual void clear_json() override;
+
+        /// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
 protected:
 
-	/// inherited from body_builder from html_overwrite_criterium
+        /// inherited from body_builder from html_overwrite_criterium
     virtual std::string inherited_get_body_part(const chemin & path,
-						const request & req) override;
+                                                const request & req) override;
 
 private:
     html_form_fieldset crit_fs; ///< wrapps all html form components of this class
@@ -73,6 +86,18 @@ private:
     html_form_select base;  ///< selection of the base criterium
     html_datetime date; ///< for date related criterium
     html_form_input hourshift; ///< for date related criterium
+
+    bool ignore_events; ///< to be able to temporarily ignore events we subscribed to
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_overwrite_base_criterium";
+
+    static constexpr const char* jlabel_negate = "negate";
+    static constexpr const char* jlabel_invert = "invert";
+    static constexpr const char* jlabel_base = "base";
+    static constexpr const char* jlabel_date = "date";
+    static constexpr const char* jlabel_hourshift = "hourshift";
+
 
 };
 
