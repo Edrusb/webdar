@@ -46,12 +46,14 @@ extern "C"
 #include "html_form_select.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_form_dynamic_table.hpp"
+#include "jsoner.hpp"
 
     /// html component used for to logically combine (and / or) criteria to setup an overwriting policies
 
 class html_form_overwrite_combining_criterium: public html_overwrite_criterium,
 					       public actor,
-					       public html_form_dynamic_table_object_provider
+					       public html_form_dynamic_table_object_provider,
+					       public jsoner
 {
 public:
     html_form_overwrite_combining_criterium(const std::string & initial_mode = and_op);
@@ -63,6 +65,15 @@ public:
 
 	/// obtain the crit_combining_criterium object for libdar option
     virtual std::unique_ptr<libdar::criterium> get_overwriting_criterium() const override;
+
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -108,6 +119,11 @@ private:
 
     static std::string invert_logic(const std::string & logic);
 
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_overwrite_combining_criterium";
+
+    static constexpr const char* jlabel_logic = "logic";
+    static constexpr const char* jlabel_contents = "contents";
 };
 
 #endif
