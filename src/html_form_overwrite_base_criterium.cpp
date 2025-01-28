@@ -40,6 +40,7 @@ extern "C"
 
 using namespace std;
 
+const string html_form_overwrite_base_criterium::changed = "hfobc_changed";
 
 html_form_overwrite_base_criterium::html_form_overwrite_base_criterium():
     crit_fs(""),
@@ -47,7 +48,9 @@ html_form_overwrite_base_criterium::html_form_overwrite_base_criterium():
     invert("Invert roles", html_form_input::check, "", "1"),
     base("Criterium"),
     date("Date"),
-    hourshift("Hourshift", html_form_input::number, "0", "5")
+    hourshift("Hourshift", html_form_input::number, "0", "5"),
+    trigger_change(false)
+
 {
 
 	// components setup
@@ -83,7 +86,12 @@ html_form_overwrite_base_criterium::html_form_overwrite_base_criterium():
     adopt(&crit_fs);
 
 	// events
+    register_name(changed);
+    negate.record_actor_on_event(this, html_form_input::changed);
+    invert.record_actor_on_event(this, html_form_input::changed);
     base.record_actor_on_event(this, html_form_select::changed);
+    date.record_actor_on_event(this, html_datetime::changed);
+    hourshift.record_actor_on_event(this, html_form_input::changed);
 
     	// set default visibility
     on_event(html_form_select::changed);
@@ -163,6 +171,8 @@ unique_ptr<libdar::criterium> html_form_overwrite_base_criterium::get_overwritin
 
 void html_form_overwrite_base_criterium::load_json(const json & source)
 {
+    trigger_change = false;
+
     try
     {
 	unsigned int version;
@@ -180,27 +190,19 @@ void html_form_overwrite_base_criterium::load_json(const json & source)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
 						       myclass_id));
 
-	ignore_events = true;
-
-	try
-	{
-	    negate.set_value_as_bool(config.at(jlabel_negate));
-	    invert.set_value_as_bool(config.at(jlabel_invert));
-	    base.set_selected_id(config.at(jlabel_base));
-	    date.set_value(libdar::deci(config.at(jlabel_date)).computer());
-	    hourshift.set_value_as_int(config.at(jlabel_hourshift));
-	}
-	catch(...)
-	{
-	    ignore_events = false;
-	    throw;
-	}
-	ignore_events = false;
+	negate.set_value_as_bool(config.at(jlabel_negate));
+	invert.set_value_as_bool(config.at(jlabel_invert));
+	base.set_selected_id(config.at(jlabel_base));
+	date.set_value(libdar::deci(config.at(jlabel_date)).computer());
+	hourshift.set_value_as_int(config.at(jlabel_hourshift));
     }
     catch(json::exception & e)
     {
 	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
     }
+
+    if(trigger_change)
+	act(changed);
 }
 
 json html_form_overwrite_base_criterium::save_json() const
@@ -220,11 +222,16 @@ json html_form_overwrite_base_criterium::save_json() const
 
 void html_form_overwrite_base_criterium::clear_json()
 {
+    trigger_change = false;
+
     negate.set_value_as_bool(false);
     invert.set_value_as_bool(false);
     base.set_selected_num(0);
     date.set_value(0);
     hourshift.set_value_as_int(0);
+
+    if(trigger_change)
+	act(changed);
 }
 
 void html_form_overwrite_base_criterium::on_event(const std::string & event_name)
@@ -242,6 +249,12 @@ void html_form_overwrite_base_criterium::on_event(const std::string & event_name
 	    date.set_visible(false);
 	    hourshift.set_visible(false);
 	}
+	trigger_change = true;
+    }
+    else if(event_name == html_form_input::changed
+	    || event_name == html_datetime::changed)
+    {
+	trigger_change = true;
     }
     else
 	throw WEBDAR_BUG;
@@ -250,6 +263,15 @@ void html_form_overwrite_base_criterium::on_event(const std::string & event_name
 string html_form_overwrite_base_criterium::inherited_get_body_part(const chemin & path,
 								   const request & req)
 {
-    return get_body_part_from_all_children(path, req);
+    string ret;
+
+    trigger_change = false;
+
+    ret = get_body_part_from_all_children(path, req);
+
+    if(trigger_change)
+	act(changed);
+
+    return ret;
 }
 

@@ -42,15 +42,19 @@ extern "C"
 #include "html_form_select.hpp"
 #include "html_form_fieldset.hpp"
 #include "jsoner.hpp"
+#include "events.hpp"
 
     /// html component to be adopted by an html_form that implements atomic/base actions for overwriting policies
 
 class html_form_overwrite_base_criterium: public html_overwrite_criterium,
                                           public actor,
-                                          public jsoner
+                                          public jsoner,
+					  public events
 
 {
 public:
+    static const std::string changed;
+
     html_form_overwrite_base_criterium();
     html_form_overwrite_base_criterium(const html_form_overwrite_base_criterium & ref) = default;
     html_form_overwrite_base_criterium(html_form_overwrite_base_criterium && ref) noexcept = default;
@@ -87,7 +91,7 @@ private:
     html_datetime date; ///< for date related criterium
     html_form_input hourshift; ///< for date related criterium
 
-    bool ignore_events; ///< to be able to temporarily ignore events we subscribed to
+    bool trigger_change; ///< whether a change occurred in subcomponent during a inherited_get_body_part_evaluation, json_load or json_clear
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* myclass_id = "html_form_overwrite_base_criterium";
