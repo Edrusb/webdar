@@ -40,6 +40,8 @@ extern "C"
 
 using namespace std;
 
+const string html_form_overwrite_combining_criterium::changed = "hfo_comb_crit_changed";
+
 html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium(const string & initial_mode):
     fs(""),
     crit_type("Combining with", html_form_select::changed),
@@ -68,6 +70,7 @@ html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium
 	// events
     crit_type.record_actor_on_event(this, html_form_select::changed);
     table.record_actor_on_event(this, html_form_dynamic_table::changed);
+    register_name(changed);
 
 	// visibility
 
@@ -270,6 +273,7 @@ void html_form_overwrite_combining_criterium::update_table_content_logic(bool un
 
 	current_bool_mode = target_bool_mode;
 	table.set_obj_type_context(current_bool_mode);
+	act(changed);
     }
 }
 

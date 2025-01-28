@@ -39,6 +39,8 @@ extern "C"
 
 using namespace std;
 
+const string html_form_overwrite_action::changed = "hfoa_changed";
+
 html_form_overwrite_action::html_form_overwrite_action(const string & label):
     fs(label),
     chain_action("Chain of actions"),
@@ -67,7 +69,9 @@ html_form_overwrite_action::html_form_overwrite_action(const string & label):
 
 	// events
     action_type.record_actor_on_event(this, act_changed);
-
+    constant_action.record_actor_on_event(this, html_form_overwrite_constant_action::changed);
+    chain_action.record_actor_on_event(this, html_form_overwrite_chain_action::changed);
+    register_name(changed);
 	// css
 }
 
@@ -204,6 +208,13 @@ void html_form_overwrite_action::on_event(const std::string & event_name)
 	}
 
 	set_visible();
+	act(changed);
+    }
+    else if(event_name == html_form_overwrite_constant_action::changed
+	    || event_name == html_form_overwrite_chain_action::changed
+	    || event_name == html_form_overwrite_conditional_action::changed)
+    {
+	act(changed);
     }
     else // unexpected event name
 	throw WEBDAR_BUG;
@@ -230,11 +241,18 @@ void html_form_overwrite_action::make_conditional_action()
 {
     if(!conditional_action)
     {
+	html_form_overwrite_conditional_action* ptr = nullptr;
+
 	conditional_action.reset(new (nothrow) html_form_overwrite_conditional_action());
 	if(!conditional_action)
 	    throw exception_memory();
 
 	fs.adopt(conditional_action.get());
+
+	ptr = dynamic_cast<html_form_overwrite_conditional_action*>(conditional_action.get());
+	if(!ptr)
+	    throw WEBDAR_BUG;
+	ptr->record_actor_on_event(this, html_form_overwrite_conditional_action::changed);
     }
 }
 

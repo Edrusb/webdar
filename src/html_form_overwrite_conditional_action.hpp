@@ -41,13 +41,19 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_form_overwrite_action.hpp"
 #include "jsoner.hpp"
+#include "events.hpp"
+#include "actor.hpp"
 
     /// html component to be adopted by an html_form that implements conditional actions for overwriting policies
 
 class html_form_overwrite_conditional_action: public html_overwrite_action,
-					      public jsoner
+					      public jsoner,
+					      public actor,
+					      public events
 {
 public:
+    static const std::string changed;
+
     html_form_overwrite_conditional_action();
     html_form_overwrite_conditional_action(const html_form_overwrite_conditional_action & ref) = default;
     html_form_overwrite_conditional_action(html_form_overwrite_conditional_action && ref) noexcept = default;
@@ -66,6 +72,9 @@ public:
 
 	/// inherited from jsoner
     virtual void clear_json() override;
+
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
 
 protected:
 

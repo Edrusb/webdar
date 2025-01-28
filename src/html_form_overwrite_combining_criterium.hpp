@@ -47,15 +47,19 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_form_dynamic_table.hpp"
 #include "jsoner.hpp"
+#include "events.hpp"
 
     /// html component used for to logically combine (and / or) criteria to setup an overwriting policies
 
 class html_form_overwrite_combining_criterium: public html_overwrite_criterium,
 					       public actor,
 					       public html_form_dynamic_table_object_provider,
-					       public jsoner
+					       public jsoner,
+					       public events
 {
 public:
+    static const std::string changed;
+
     html_form_overwrite_combining_criterium(const std::string & initial_mode = and_op);
     html_form_overwrite_combining_criterium(const html_form_overwrite_combining_criterium & ref) = default;
     html_form_overwrite_combining_criterium(html_form_overwrite_combining_criterium && ref) noexcept = default;

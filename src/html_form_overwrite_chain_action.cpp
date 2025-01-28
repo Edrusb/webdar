@@ -40,6 +40,8 @@ extern "C"
 
 using namespace std;
 
+const string html_form_overwrite_chain_action::changed = "hfo_chain_action_changed";
+
 html_form_overwrite_chain_action::html_form_overwrite_chain_action(const std::string & label):
     fs(label),
     table(false, true, "New action", "--- select ---")
@@ -54,6 +56,8 @@ html_form_overwrite_chain_action::html_form_overwrite_chain_action(const std::st
     adopt(&fs);
 
 	// events
+    table.record_actor_on_event(this, html_form_dynamic_table::changed);
+    register_name(changed);
 
 	// css
 }
@@ -113,3 +117,11 @@ unique_ptr<body_builder> html_form_overwrite_chain_action::provide_object_of_typ
     return ret;
 }
 
+
+void html_form_overwrite_chain_action::on_event(const std::string & event_name)
+{
+    if(event_name == html_form_dynamic_table::changed)
+	act(changed);
+    else
+	throw WEBDAR_BUG;
+}

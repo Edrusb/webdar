@@ -39,6 +39,8 @@ extern "C"
 
 using namespace std;
 
+const string html_form_overwrite_chain_cell::changed = "hfo_chain_cell_changed";
+
 html_form_overwrite_chain_cell::html_form_overwrite_chain_cell(unique_ptr<html_form_overwrite_action> & insert):
     incell(std::move(insert))
 {
@@ -52,6 +54,8 @@ html_form_overwrite_chain_cell::html_form_overwrite_chain_cell(unique_ptr<html_f
     adopt(incell.get());
 
 	// events
+    incell->record_actor_on_event(this, html_form_overwrite_action::changed);
+    register_name(changed);
 
 	// css
 }
@@ -62,3 +66,11 @@ unique_ptr<libdar::crit_action> html_form_overwrite_chain_cell::get_overwriting_
     return incell->get_overwriting_action();
 }
 
+
+void html_form_overwrite_chain_cell::on_event(const std::string & event_name)
+{
+    if(event_name == html_form_overwrite_action::changed)
+	act(changed);
+    else
+	throw WEBDAR_BUG;
+}

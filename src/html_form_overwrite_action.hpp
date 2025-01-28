@@ -42,6 +42,7 @@ extern "C"
 #include "html_form_overwrite_constant_action.hpp"
 #include "html_form_overwrite_chain_action.hpp"
 #include "jsoner.hpp"
+#include "events.hpp"
 
     /// html component to be adopted by an html_form class
 
@@ -53,9 +54,12 @@ extern "C"
 
 class html_form_overwrite_action: public html_overwrite_action,
 				  public actor,
-				  public jsoner
+				  public jsoner,
+				  public events
 {
 public:
+    static const std::string changed;
+
     html_form_overwrite_action(const std::string & label);
     html_form_overwrite_action(const html_form_overwrite_action & ref) = delete;
     html_form_overwrite_action(html_form_overwrite_action && ref) noexcept = delete;

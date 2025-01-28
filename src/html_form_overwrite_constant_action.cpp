@@ -40,6 +40,8 @@ extern "C"
 
 using namespace std;
 
+const string html_form_overwrite_constant_action::changed = "hfo_constant_action_changed";
+
 html_form_overwrite_constant_action::html_form_overwrite_constant_action():
     action_fs(""),
     data_action("Policy for Data"),
@@ -72,6 +74,9 @@ html_form_overwrite_constant_action::html_form_overwrite_constant_action():
     adopt(&ea_action);
 
 	// events
+    data_action.record_actor_on_event(this, html_form_select::changed);
+    ea_action.record_actor_on_event(this, html_form_select::changed);
+    register_name(changed);
 
 	// css
 
@@ -194,4 +199,12 @@ void html_form_overwrite_constant_action::clear_json()
 {
     data_action.set_selected_num(0);
     ea_action.set_selected_num(0);
+}
+
+void html_form_overwrite_constant_action::on_event(const std::string & event_name)
+{
+    if(event_name == html_form_select::changed)
+	act(changed);
+    else
+	throw WEBDAR_BUG;
 }

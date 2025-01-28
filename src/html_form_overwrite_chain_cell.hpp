@@ -38,6 +38,8 @@ extern "C"
 #include "html_form_overwrite_action.hpp"
 #include "html_hr.hpp"
 #include "jsoner.hpp"
+#include "events.hpp"
+#include "actor.hpp"
 
     /// html component holding an element in an overwriting policy chain (class html_form_overwrite_chain_action)
 
@@ -45,9 +47,13 @@ extern "C"
     /// to separate the elements of the chain of actions.
 
 class html_form_overwrite_chain_cell: public html_overwrite_action,
-				      public jsoner
+				      public jsoner,
+				      public events,
+				      public actor
 {
 public:
+    static const std::string changed;
+
     html_form_overwrite_chain_cell(std::unique_ptr<html_form_overwrite_action> & insert);
     html_form_overwrite_chain_cell(const html_form_overwrite_chain_cell & ref) = default;
     html_form_overwrite_chain_cell(html_form_overwrite_chain_cell && ref) noexcept = default;
@@ -66,6 +72,9 @@ public:
 
 	/// inherited from jsoner
     virtual void clear_json() override { incell->clear_json(); };
+
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
 
 private:
     html_hr line;

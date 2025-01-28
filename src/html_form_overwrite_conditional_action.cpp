@@ -40,6 +40,8 @@ extern "C"
 
 using namespace std;
 
+const string html_form_overwrite_conditional_action::changed = "hfo_cond_action_changed";
+
 html_form_overwrite_conditional_action::html_form_overwrite_conditional_action():
     when_true("If condition is true"),
     when_false("If condition is false")
@@ -54,6 +56,10 @@ html_form_overwrite_conditional_action::html_form_overwrite_conditional_action()
     adopt(&when_false);
 
 	// events
+    condition.record_actor_on_event(this, html_form_overwrite_combining_criterium::changed);
+    when_true.record_actor_on_event(this, html_form_overwrite_action::changed);
+    when_false.record_actor_on_event(this, html_form_overwrite_action::changed);
+    register_name(changed);
 
 	// css
     when_true.add_css_class(css_cond);
@@ -132,6 +138,15 @@ void html_form_overwrite_conditional_action::clear_json()
     condition.clear_json();
     when_true.clear_json();
     when_false.clear_json();
+}
+
+void html_form_overwrite_conditional_action::on_event(const std::string & event_name)
+{
+    if(event_name == html_form_overwrite_combining_criterium::changed
+       || event_name == html_form_overwrite_action::changed)
+	act(changed);
+    else
+	throw WEBDAR_BUG;
 }
 
 void html_form_overwrite_conditional_action::new_css_library_available()
