@@ -77,7 +77,8 @@ public:
 	slicing = 13,
 	ciphering = 14,
 	delta_sig = 15,
-	EOE = 16 ///< not a valid value, used for interating in the enum
+	over_policy = 16,
+	EOE = 17 ///< not a valid value, used for interating in the enum
     };
 
 	/// change event per category
