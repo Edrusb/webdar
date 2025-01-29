@@ -84,7 +84,7 @@ private:
     html_form_select hour;
     html_form_select minute;
 
-    void update_from(const struct tm & val);
+    void update_from(struct tm val); /// yes, we need a copy of the argument
 };
 
 

@@ -219,18 +219,20 @@ libdar::infinint html_datetime::get_value() const
     splitted.tm_sec = 0;
     splitted.tm_min = minute.get_selected_num();
     splitted.tm_hour = hour.get_selected_num();
-    splitted.tm_mday = day.get_selected_num();
+    splitted.tm_mday = day.get_selected_num() + 1; // tm_mday starts at 1 unlike the other fields...
     splitted.tm_mon = month.get_selected_num();
     splitted.tm_year = tmp - 1900;
     splitted.tm_wday = 0;
     splitted.tm_yday = 0;
-    splitted.tm_isdst = -1; // daylight saving is not known for that date
+    splitted.tm_isdst = 0; // never consider daylight saving, but always and only GMT
 
-    tmp_ret = mktime(&splitted);
+    tmp_ret = timegm(&splitted);
     if(tmp_ret == -1)
 	throw WEBDAR_BUG;
-    else
-	const_cast<html_datetime *>(this)->update_from(splitted);
+    if(tmp_ret < 0)
+	throw WEBDAR_BUG;
+	// not supporting dates before year 1970 (a year of great things ;)
+	//timegm() should never be return negative dates but just in case
 
     return libdar::infinint(tmp_ret);
 }
@@ -243,7 +245,7 @@ void html_datetime::set_value(const libdar::infinint & val)
 
     tmp = webdar_tools_convert_from_infinint<time_t>(val,
 						     string("value given from libdar is not possible to be stored as time_t system type"));
-    ret = localtime_r(&tmp, &splitted);
+    ret = gmtime_r(&tmp, &splitted);
     if(ret == nullptr)
 	throw WEBDAR_BUG; // system failed representing this date in splitted fields
     update_from(splitted);
@@ -295,11 +297,22 @@ string html_datetime::inherited_get_body_part(const chemin & path,
     return ret;
 }
 
-void html_datetime::update_from(const struct tm & val)
+void html_datetime::update_from(struct tm val)
 {
+    unsigned int year_int = val.tm_year + 1900;
+
+    if(year_int < 1970) // sanity check, should not occur
+    {
+	val.tm_min = 0;
+	val.tm_hour = 0;
+	val.tm_mday = 0;
+	val.tm_mon = 0;
+	year_int = 1970;
+    }
+
     minute.set_selected_num(val.tm_min);
     hour.set_selected_num(val.tm_hour);
-    day.set_selected_num(val.tm_mday);
+    day.set_selected_num(val.tm_mday - 1); // day starts at 1 unlike other fields
     month.set_selected_num(val.tm_mon);
-    year.set_value(webdar_tools_convert_to_string(val.tm_year + 1900));
+    year.set_value(webdar_tools_convert_to_string(year_int));
 }
