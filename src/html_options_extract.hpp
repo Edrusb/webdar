@@ -101,8 +101,8 @@ private:
     html_form_input display_treated_only_dir;
     html_form_input display_skipped;
 
-    html_form_overwrite_action overwriting_policy;
-    html_form form_overwriting;
+    guichet guichet_overwriting_policy;
+    std::shared_ptr<html_form_overwrite_action> overwriting_policy;
     html_form_input only_deleted;
     html_form_input ignore_deleted;
 

@@ -162,8 +162,8 @@ private:
 
     html_fsa_scope fsa_scope;
 
-    html_form_overwrite_action overwriting_policy;
-    html_form form_overwriting;
+    guichet guichet_overwriting_policy;
+    std::shared_ptr<html_form_overwrite_action> overwriting_policy;
 
     guichet guichet_compr_params;
     std::shared_ptr<html_compression_params> compr_params;

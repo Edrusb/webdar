@@ -91,8 +91,6 @@ html_options_extract::html_options_extract():
 		   html_form_input::check,
 		   "",
 		   "1"),
-    overwriting_policy(""),
-    form_overwriting("Update"),
     only_deleted("Restore only deleted files",
 		 html_form_input::check,
 		 "",
@@ -116,6 +114,10 @@ html_options_extract::html_options_extract():
 
     path_mask.reset(new (nothrow) html_mask_form_path(true));
     if(!path_mask)
+	throw exception_memory();
+
+    overwriting_policy.reset(new (nothrow) html_form_overwrite_action(""));
+    if(! overwriting_policy)
 	throw exception_memory();
 
     in_place.set_value_as_bool(defaults.get_in_place());
@@ -194,8 +196,7 @@ html_options_extract::html_options_extract():
 
     deroule.adopt_in_section(sect_fsa_scope, &fsa_scope);
 
-    form_overwriting.adopt(&overwriting_policy);
-    deroule.adopt_in_section(sect_overwriting, &form_overwriting);
+    deroule.adopt_in_section(sect_overwriting, &guichet_overwriting_policy);
 
     adopt(&deroule);
 
@@ -230,6 +231,10 @@ void html_options_extract::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				bibliotheque::pathfilter,
 				path_mask,
 				false);
+    guichet_overwriting_policy.set_child(ptr,
+					 bibliotheque::over_policy,
+					 overwriting_policy,
+					 true);
 }
 
 libdar::archive_options_extract html_options_extract::get_options() const
@@ -273,7 +278,7 @@ libdar::archive_options_extract html_options_extract::get_options() const
     ret.set_subtree(*(path_mask->get_mask()));
     ret.set_ea_mask(*(ea_mask->get_mask()));
     ret.set_fsa_scope(fsa_scope.get_scope());
-    ret.set_overwriting_rules(*(overwriting_policy.get_overwriting_action()));
+    ret.set_overwriting_rules(*(overwriting_policy->get_overwriting_action()));
 
     return ret;
 }

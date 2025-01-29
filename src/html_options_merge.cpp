@@ -73,9 +73,7 @@ html_options_merge::html_options_merge():
     display_skipped("Display skipped files", html_form_input::check, "1", "1"),
     form_perimeter("Update"),
     fs_perimeter(""),
-    empty_dir("Store ignored directories as empty directories", html_form_input::check, "", "1"),
-    overwriting_policy(""),
-    form_overwriting("Update")
+    empty_dir("Store ignored directories as empty directories", html_form_input::check, "", "1")
 {
 
     entrep.reset(new (nothrow) html_entrepot());
@@ -116,6 +114,10 @@ html_options_merge::html_options_merge():
 
     sig_block_size.reset(new (nothrow) html_form_sig_block_size());
     if(! sig_block_size)
+	throw exception_memory();
+
+    overwriting_policy.reset(new (nothrow) html_form_overwrite_action(""));
+    if(! overwriting_policy)
 	throw exception_memory();
 
 	// components setups
@@ -227,8 +229,8 @@ html_options_merge::html_options_merge():
     deroule.adopt_in_section(sect_ea_mask, &guichet_ea_mask);
     deroule.adopt_in_section(sect_fsa_scope, &fsa_scope);
 
-    form_overwriting.adopt(&overwriting_policy);
-    deroule.adopt_in_section(sect_overwrite, &form_overwriting);
+
+    deroule.adopt_in_section(sect_overwrite, &guichet_overwriting_policy);
 
     deroule.adopt_in_section(sect_compr, &guichet_compr_params);
     deroule.adopt_in_section(sect_compr, &compr_filter_title);
@@ -309,6 +311,10 @@ void html_options_merge::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 				     bibliotheque::delta_sig,
 				     sig_block_size,
 				     true);
+    guichet_overwriting_policy.set_child(ptr,
+					 bibliotheque::over_policy,
+					 overwriting_policy,
+					 true);
 }
 
 void html_options_merge::on_event(const string & event_name)
@@ -376,7 +382,7 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
     ret.set_empty_dir(empty_dir.get_value_as_bool());
     ret.set_selection(*(filename_mask->get_mask()));
     ret.set_subtree(*(path_mask->get_mask()));
-    ret.set_overwriting_rules(*(overwriting_policy.get_overwriting_action()));
+    ret.set_overwriting_rules(*(overwriting_policy->get_overwriting_action()));
     if(! compr_params->get_keep_compressed())
     {
 	ret.set_keep_compressed(false);
