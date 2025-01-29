@@ -59,7 +59,20 @@ extern "C"
 class html_form_dynamic_table_object_provider
 {
 public:
-    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num, const std::string & context) const = 0;
+	/// method invoked by a html_form_dynamic_table when a new line has to be created
+
+	/// \param[in] num is the type number of the object to create
+	/// \param[in] context is a arbitrary information provided by the table as defined
+	/// by the set_obj_type_context() method of this table.
+	/// \param[out] if not provided as an empty the dynamic_table will register for an event
+	/// of that name on the provided object (which must thus inherit from events class), upon
+	/// such event, the table will trigger its own html_form_dynamic_table::changed event
+	/// propagating the change of any of its component (for those supporting the events interface and which
+	/// event name has been provided here)
+
+    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num,
+								 const std::string & context,
+								 std::string & changed_event) const = 0;
 };
 
 

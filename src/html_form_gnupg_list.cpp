@@ -70,7 +70,8 @@ vector<string> html_form_gnupg_list::get_gnupg_signatories() const
 }
 
 unique_ptr<body_builder> html_form_gnupg_list::provide_object_of_type(unsigned int num,
-								      const string & context) const
+								      const string & context,
+								      string & changed_event) const
 {
     unique_ptr<body_builder> ret;
 

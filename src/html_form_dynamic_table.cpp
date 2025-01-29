@@ -101,6 +101,7 @@ void html_form_dynamic_table::add_obj_type(const string & label)
 void html_form_dynamic_table::add_line(unsigned int typenum)
 {
     line newline;
+    string changed_event;
 
     if(left_label)
     {
@@ -114,9 +115,16 @@ void html_form_dynamic_table::add_line(unsigned int typenum)
     newline.object_type_index = typenum;
     if(my_provider == nullptr)
 	throw WEBDAR_BUG;
-    newline.dynobj = my_provider->provide_object_of_type(typenum, context);
+    newline.dynobj = my_provider->provide_object_of_type(typenum, context, changed_event);
     if(! newline.dynobj)
 	throw WEBDAR_BUG;
+    if(!changed_event.empty())
+    {
+	events* ptr = dynamic_cast<events*>(newline.dynobj.get());
+	if(ptr == nullptr)
+	    throw WEBDAR_BUG; // if an event name is given the provided object must be able to generate events
+	ptr->record_actor_on_event(this, changed_event);
+    }
 
     newline.del.reset(new (nothrow) html_form_input("delete",
 						    html_form_input::check,
@@ -258,10 +266,10 @@ void html_form_dynamic_table::on_event(const std::string & event_name)
 	    act(changed);
 	}
     }
-    else // check whether this is an event from a delete button
-	del_line(event_name); // may throw exception if event_name is not a del event
-	// act(changed) will be done by purge_to_delete() outside the on_event()
-	// cascada calls
+    else
+	del_line(event_name);
+	// checks whether this is an event from a delete button
+	// as well as handle change_events from generated and adopted objects
 }
 
 string html_form_dynamic_table::inherited_get_body_part(const chemin & path,
@@ -287,7 +295,16 @@ void html_form_dynamic_table::del_line(const string & event_name)
     map<string, list<line>::iterator>::iterator mit = del_event_to_content.find(event_name);
 
     if(mit == del_event_to_content.end())
-	throw WEBDAR_BUG; // event_name absent from the map!
+    {
+	act(changed);
+	return;
+	    // event_name absent from the map!
+	    // this may be a changed_event from a generated object
+    }
+
+	// for delete events
+	// act(changed) will be done by purge_to_delete() outside the on_event()
+	// cascada calls
 
     list<line>::iterator it = mit->second;
 

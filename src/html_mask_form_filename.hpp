@@ -81,7 +81,8 @@ public:
 
 	/// inherited from html_form_dynamic_table
     virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num,
-								 const std::string & context) const override;
+								 const std::string & context,
+								 std::string & changed_event) const override;
 
 	/// inherited from jsoner
     virtual void load_json(const json & source) override;

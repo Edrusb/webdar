@@ -67,7 +67,8 @@ void html_mask_form_filename::set_child(const std::shared_ptr<bibliotheque> & pt
 }
 
 unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigned int num,
-									 const string & context) const
+									 const string & context,
+									 std::string & changed_event) const
 {
     unique_ptr<body_builder> ret;
     unique_ptr<html_form_mask_bool> tmp;

@@ -82,7 +82,8 @@ set<string> html_form_ignore_as_symlink::get_symlink_list() const
 }
 
 unique_ptr<body_builder> html_form_ignore_as_symlink::provide_object_of_type(unsigned int num,
-									     const string & context) const
+									     const string & context,
+									     string & changed_event) const
 {
     unique_ptr<html_form_input_file> tmp;
 

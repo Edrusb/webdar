@@ -95,7 +95,8 @@ unique_ptr<libdar::crit_action> html_form_overwrite_chain_action::get_overwritin
 }
 
 unique_ptr<body_builder> html_form_overwrite_chain_action::provide_object_of_type(unsigned int num,
-										  const std::string & context) const
+										  const std::string & context,
+										  string & changed_event) const
 {
     unique_ptr<body_builder> ret;
     unique_ptr<html_form_overwrite_action> obj;
@@ -109,6 +110,7 @@ unique_ptr<body_builder> html_form_overwrite_chain_action::provide_object_of_typ
 	ret.reset(new (nothrow) html_form_overwrite_chain_cell(obj));
 	if(!ret)
 	    throw exception_memory();
+	changed_event = html_form_overwrite_chain_cell::changed;
 	break;
     default:
 	throw WEBDAR_BUG;

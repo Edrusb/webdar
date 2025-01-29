@@ -177,7 +177,8 @@ void html_form_overwrite_combining_criterium::on_event(const std::string & event
 }
 
 unique_ptr<body_builder> html_form_overwrite_combining_criterium::provide_object_of_type(unsigned int num,
-											 const string & context) const
+											 const string & context,
+											 string & changed_event) const
 {
     unique_ptr<body_builder> ret;
     unique_ptr<html_form_overwrite_combining_criterium> tmp;
@@ -186,11 +187,13 @@ unique_ptr<body_builder> html_form_overwrite_combining_criterium::provide_object
     {
     case 0:
 	ret.reset(new (nothrow) html_form_overwrite_base_criterium());
+	changed_event = html_form_overwrite_base_criterium::changed;
 	break;
     case 1:
 	tmp.reset(new (nothrow) html_form_overwrite_combining_criterium(invert_logic(context)));
 	if(!tmp)
 	    throw exception_memory();
+	changed_event = html_form_overwrite_combining_criterium::changed;
 	if(current_bool_mode == and_op)
 	    tmp->current_bool_mode = or_op;
 	else

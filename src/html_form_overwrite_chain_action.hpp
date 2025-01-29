@@ -69,7 +69,9 @@ public:
     virtual std::unique_ptr<libdar::crit_action> get_overwriting_action() const override;
 
 	/// inherited from html_form_dynamic_table_object_provider
-    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num, const std::string & context) const override;
+    virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num,
+								 const std::string & context,
+								 std::string & changed_event) const override;
 
 	/// inherited from jsoner
     virtual void load_json(const json & source) override { table.load_json(source); };
