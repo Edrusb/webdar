@@ -41,6 +41,7 @@ extern "C"
 #include "html_form_input.hpp"
 #include "html_form_select.hpp"
 #include "events.hpp"
+#include "actor.hpp"
 
     /// class html_datetime is a html_form_field object
 
@@ -49,7 +50,8 @@ extern "C"
     /// and let the user provide a date information
 
 class html_datetime : public body_builder,
-		      public events
+		      public events,
+		      public actor
 {
 public:
     static const std::string changed;
@@ -66,6 +68,9 @@ public:
 
 	/// setup the initial value displayed to the user
     void set_value(const libdar::infinint & val);
+
+	/// inherited from actor parent class
+    virtual void on_event(const std::string & event_name) override;
 
 protected:
 	/// inherited from body_builder

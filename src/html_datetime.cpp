@@ -189,12 +189,22 @@ html_datetime::html_datetime(const string & title):
     day.set_no_CR();
     hour.set_no_CR();
 
+
+	// adoption tree
+
     adopt(&year);
     adopt(&month);
     adopt(&day);
     adopt(&hour);
     adopt(&minute);
 
+	// events
+
+    year.record_actor_on_event(this, html_form_input::changed);
+    month.record_actor_on_event(this, html_form_select::changed);
+    day.record_actor_on_event(this, html_form_select::changed);
+    hour.record_actor_on_event(this, html_form_select::changed);
+    minute.record_actor_on_event(this, html_form_select::changed);
     register_name(changed);
 }
 
@@ -239,13 +249,22 @@ void html_datetime::set_value(const libdar::infinint & val)
     update_from(splitted);
 }
 
+void html_datetime::on_event(const std::string & event_name)
+{
+    if(event_name == html_form_input::changed
+       || event_name == html_form_select::changed)
+	act(changed);
+    else
+	throw WEBDAR_BUG;
+}
+
+
 string html_datetime::inherited_get_body_part(const chemin & path,
 					      const request & req)
 {
     string ret;
     bool err = false;
     int annees;
-    libdar::infinint before = get_value();
 
     if(get_no_CR())
 	minute.set_no_CR();
@@ -272,9 +291,6 @@ string html_datetime::inherited_get_body_part(const chemin & path,
 	else
 	    ret = get_body_part_from_all_children(path, req);
     }
-
-    if(get_value() != before)
-	act(changed);
 
     return ret;
 }
