@@ -236,7 +236,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 										    bibliotheque::over_policy,
 										    tmp_over_policy,
 										    html_form_overwrite_action::changed,
-										    false));
+										    true));
     if(!ab_over_policy)
 	throw exception_memory();
 
