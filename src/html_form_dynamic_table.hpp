@@ -290,6 +290,7 @@ private:
     bool left_label;
     html_table table;
     html_form_select adder;
+    bool ignore_events;
 
     void del_line(const std::string & event_name);
     void purge_to_delete();

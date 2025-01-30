@@ -51,6 +51,7 @@ html_form_dynamic_table::html_form_dynamic_table(bool has_left_labels,
     left_label(has_left_labels),
     table(has_left_labels ? 3 : 2),
     adder(adder_label, new_line_to_add),
+    ignore_events(false),
     default_choice(adder_default_choice)
 {
 
@@ -176,32 +177,44 @@ void html_form_dynamic_table::load_json(const json & source)
 	if(my_provider == nullptr)
 	    throw WEBDAR_BUG;
 
-	clear(); // removing all table content (but keeping object provider and context)
-
-	for(json::iterator it = listing.begin();
-	    it != listing.end();
-	    ++it)
+	ignore_events = true;
+	try
 	{
-	    add_line(it->at(jlabel_index_type)); // new object is added at the end of table_content
-	    if(table_content.empty())
-		throw WEBDAR_BUG;
-	    if(table_content.back().object_type_index != it->at(jlabel_index_type))
-		throw WEBDAR_BUG;
 
-	    if(left_label)
+	    clear(); // removing all table content (but keeping object provider and context)
+
+	    for(json::iterator it = listing.begin();
+		it != listing.end();
+		++it)
 	    {
-		if(! table_content.back().left_label)
+		add_line(it->at(jlabel_index_type)); // new object is added at the end of table_content
+		if(table_content.empty())
 		    throw WEBDAR_BUG;
-		table_content.back().left_label->set_raw_value(it->at(jlabel_left_label));
-	    }
+		if(table_content.back().object_type_index != it->at(jlabel_index_type))
+		    throw WEBDAR_BUG;
 
-	    if(! table_content.back().dynobj)
-		throw WEBDAR_BUG;
-	    jsnptr = dynamic_cast<jsoner*>(table_content.back().dynobj.get());
-	    if(jsnptr == nullptr)
-		throw WEBDAR_BUG;
-	    jsnptr->load_json(it->at(jlabel_dynobj));
+		if(left_label)
+		{
+		    if(! table_content.back().left_label)
+			throw WEBDAR_BUG;
+		    table_content.back().left_label->set_raw_value(it->at(jlabel_left_label));
+		}
+
+		if(! table_content.back().dynobj)
+		    throw WEBDAR_BUG;
+		jsnptr = dynamic_cast<jsoner*>(table_content.back().dynobj.get());
+		if(jsnptr == nullptr)
+		    throw WEBDAR_BUG;
+		jsnptr->load_json(it->at(jlabel_dynobj));
+	    }
 	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
+
     }
     catch(json::exception & e)
     {
@@ -263,7 +276,8 @@ void html_form_dynamic_table::on_event(const std::string & event_name)
 		// first valid mask at position 0.
 	    add_line(adder.get_selected_num() - 1);
 	    adder.set_selected_num(0); // resetting 'adder' to undefined
-	    act(changed);
+	    if(! ignore_events)
+		act(changed);
 	}
     }
     else
@@ -296,7 +310,8 @@ void html_form_dynamic_table::del_line(const string & event_name)
 
     if(mit == del_event_to_content.end())
     {
-	act(changed);
+	if(! ignore_events)
+	    act(changed);
 	return;
 	    // event_name absent from the map!
 	    // this may be a changed_event from a generated object
@@ -346,6 +361,6 @@ void html_form_dynamic_table::purge_to_delete()
     }
 
     events_to_delete.clear();
-    if(action)
+    if(action && ! ignore_events)
 	act(changed);
 }
