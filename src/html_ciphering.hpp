@@ -122,6 +122,7 @@ private:
     html_form_fieldset crypto_fs_kdf_hash;
     html_form_radio crypto_kdf_hash;
     html_form_input iteration_count;
+    bool ignore_events;
 
     void set_kdf_hash(libdar::hash_algo hash);
 

@@ -53,7 +53,8 @@ html_ciphering::html_ciphering():
     crypto_size("Cipher Block size", 0, "30"),
     crypto_threads("Number of threads for ciphering", html_form_input::number, "2", "5"),
     crypto_fs_kdf_hash("Key Derivation Function"),
-    iteration_count("Iteration count", html_form_input::number, "1", "30")
+    iteration_count("Iteration count", html_form_input::number, "1", "30"),
+    ignore_events(false)
 
 {
     libdar::archive_options_create defaults;
@@ -218,17 +219,28 @@ void html_ciphering::load_json(const json & source)
 	if(version > format_version)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software", myclass_id));
 
-	crypto_type.set_selected_id(config.at(jlabel_type));
-	crypto_algo.set_selected_id(config.at(jlabel_algo));
-	crypto_pass1.set_value(config.at(jlabel_pass));
-	crypto_pass2.set_value(config.at(jlabel_pass));
-	crypto_size.set_value_as_infinint(libdar::deci(config.at(jlabel_size)).computer());
-	crypto_threads.set_value_as_int(config.at(jlabel_threads));
-	gnupg.load_json(config.at(jlabel_gnupg));
-	crypto_kdf_hash.set_selected_id(config.at(jlabel_kdf_hash));
-	iteration_count.set_value_as_int(config.at(jlabel_kdf_iter));
+	ignore_events = true;
 
-	on_event(html_form_input::changed);
+	try
+	{
+	    crypto_type.set_selected_id(config.at(jlabel_type));
+	    crypto_algo.set_selected_id(config.at(jlabel_algo));
+	    crypto_pass1.set_value(config.at(jlabel_pass));
+	    crypto_pass2.set_value(config.at(jlabel_pass));
+	    crypto_size.set_value_as_infinint(libdar::deci(config.at(jlabel_size)).computer());
+	    crypto_threads.set_value_as_int(config.at(jlabel_threads));
+	    gnupg.load_json(config.at(jlabel_gnupg));
+	    crypto_kdf_hash.set_selected_id(config.at(jlabel_kdf_hash));
+	    iteration_count.set_value_as_int(config.at(jlabel_kdf_iter));
+	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
+
+	on_event(html_form_select::changed);
     }
     catch(json::exception & e)
     {
@@ -272,6 +284,9 @@ void html_ciphering::clear_json()
 
 void html_ciphering::on_event(const string & event_name)
 {
+    if(ignore_events)
+	return;
+
     if(event_name == html_crypto_algo::changed
        || event_name == html_form_select::changed)
     {
