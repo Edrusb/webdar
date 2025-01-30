@@ -58,7 +58,8 @@ html_form_mask_expression::html_form_mask_expression(const string & subject):
     mask_expression("Mask Expression",
 		    html_form_input::text,
 		    "",   // (see clear())
-		    "80%")
+		    "80%"),
+    ignore_events(false)
 {
 
 	// component configuration
@@ -129,6 +130,9 @@ unique_ptr<libdar::mask> html_form_mask_expression::get_mask() const
 
 void html_form_mask_expression::on_event(const std::string & event_name)
 {
+    if(ignore_events)
+	return;
+
     if(event_name == html_form_select::changed
        || event_name == html_form_input::changed)
 	fs.change_label(tell_action());
@@ -157,10 +161,22 @@ void html_form_mask_expression::load_json(const json & source)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
 						       myclass_id));
 
-	mask_type.set_selected_id(config.at(jlabel_mask_type));
-	negate.set_value_as_bool(config.at(jlabel_negate));
-	casesensitivity.set_value_as_bool(config.at(jlabel_casesensit));
-	mask_expression.set_value(config.at(jlabel_expression));
+	ignore_events = true;
+	try
+	{
+	    mask_type.set_selected_id(config.at(jlabel_mask_type));
+	    negate.set_value_as_bool(config.at(jlabel_negate));
+	    casesensitivity.set_value_as_bool(config.at(jlabel_casesensit));
+	    mask_expression.set_value(config.at(jlabel_expression));
+	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
+
+	on_event(html_form_select::changed);
     }
     catch(json::exception & e)
     {

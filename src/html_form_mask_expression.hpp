@@ -133,6 +133,7 @@ private:
     html_form_input negate;
     html_form_input casesensitivity;
     html_form_input mask_expression;
+    bool ignore_events;
 
     void init();
     std::string tell_action() const;
