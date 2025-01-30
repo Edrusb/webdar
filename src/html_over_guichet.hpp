@@ -44,7 +44,7 @@ extern "C"
 
     /// class html_over_guichet is used to insert configuration from a bibliotheque in-place of a subconfiguration
 
-    /// this allows configuration in a bibliotheque to rely on some other configurations from the sam bibliotheque store.
+    /// this allows configuration in a bibliotheque to rely on some other configurations from the same bibliotheque store.
     /// It is used for file and mask filtering mainly.
 
 class html_over_guichet : public guichet,
