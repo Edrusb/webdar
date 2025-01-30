@@ -59,13 +59,6 @@ html_ciphering::html_ciphering():
 {
     libdar::archive_options_create defaults;
 
-	// we set encryption by default and use argon2 (libdar does not encrypt by default)
-	// libdar will provide other parameter in coherence
-	// like interation count.
-    defaults.set_crypto_algo(libdar::crypto_algo::aes256);
-    defaults.set_kdf_hash(libdar::hash_algo::argon2);
-
-
 	// components configuration
 
 	// the order in the following must match the html_ciphering::crypto_type_t enum
