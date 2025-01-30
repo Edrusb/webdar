@@ -41,6 +41,8 @@ extern "C"
 
 using namespace std;
 
+const string html_form_mask_file::changed = "hfmf_changed";
+
 html_form_mask_file::html_form_mask_file(const std::shared_ptr<const libdar::path> & fs_root):
     filename("File name",
 	     "/",   // see clear() for defaults
@@ -155,6 +157,8 @@ void html_form_mask_file::on_event(const std::string & event_name)
     }
     else
 	throw WEBDAR_BUG;
+
+    act(changed);
 }
 
 string html_form_mask_file::inherited_get_body_part(const chemin & path,
@@ -187,6 +191,7 @@ void html_form_mask_file::init()
     filename.record_actor_on_event(this, html_form_input_file::changed_event);
     exclude_checkbox.record_actor_on_event(this, html_form_input::changed);
     casesensit.record_actor_on_event(this, html_form_input::changed);
+    register_name(changed);
 
 	// css
     fs.add_label_css_class(webdar_css_style::wcs_bold_text);

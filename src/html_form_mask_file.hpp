@@ -41,6 +41,7 @@ extern "C"
 #include "html_form_input_file.hpp"
 #include "actor.hpp"
 #include "jsoner.hpp"
+#include "events.hpp"
 
     /// class html_form_mask_file provide interface to include or exclude a list of entry taken from a text file
 
@@ -74,9 +75,12 @@ extern "C"
 class html_form_mask_file : public body_builder,
 			    public html_mask,
 			    public actor,
-			    public jsoner
+			    public jsoner,
+			    public events
 {
 public:
+    static const std::string changed;
+
     html_form_mask_file(const std::shared_ptr<const libdar::path> & fs_root);
     html_form_mask_file(const html_form_mask_file & ref);
     html_form_mask_file(html_form_mask_file && ref) noexcept = delete;
