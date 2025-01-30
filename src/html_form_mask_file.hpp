@@ -122,6 +122,7 @@ private:
     html_form_input casesensit;
     html_form_fieldset fs;
     std::shared_ptr<const libdar::path> prefix;
+    bool ignore_events;
 
     void init();
     std::string tell_action() const;

@@ -57,7 +57,8 @@ html_form_mask_file::html_form_mask_file(const std::shared_ptr<const libdar::pat
 	       "1", // see clear() for defaults
 	       "1"),
     fs("File listing"),
-    prefix(fs_root)
+    prefix(fs_root),
+    ignore_events(false)
 {
     init();
     clear();
@@ -75,9 +76,20 @@ html_form_mask_file::html_form_mask_file(const html_form_mask_file & ref):
 
 void html_form_mask_file::clear()
 {
-    filename.set_value("/");
-    exclude_checkbox.set_value_as_bool(false);
-    casesensit.set_value_as_bool(true);
+    ignore_events = true;
+    try
+    {
+	filename.set_value("/");
+	exclude_checkbox.set_value_as_bool(false);
+	casesensit.set_value_as_bool(true);
+    }
+    catch(...)
+    {
+	ignore_events = false;
+	throw;
+    }
+    ignore_events = false;
+    on_event(html_form_input::changed);
 }
 
 unique_ptr<libdar::mask> html_form_mask_file::get_mask() const
@@ -125,9 +137,20 @@ void html_form_mask_file::load_json(const json & source)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
 						       myclass_id));
 
-	filename.set_value(config.at(jlabel_filename));
-	exclude_checkbox.set_value_as_bool(config.at(jlabel_exclude));
-	casesensit.set_value_as_bool(config.at(jlabel_casesensit));
+	ignore_events = true;
+	try
+	{
+	    filename.set_value(config.at(jlabel_filename));
+	    exclude_checkbox.set_value_as_bool(config.at(jlabel_exclude));
+	    casesensit.set_value_as_bool(config.at(jlabel_casesensit));
+	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
+	on_event(html_form_input::changed);
     }
     catch(json::exception & e)
     {
@@ -150,6 +173,9 @@ json html_form_mask_file::save_json() const
 
 void html_form_mask_file::on_event(const std::string & event_name)
 {
+    if(ignore_events)
+	return;
+
     if(event_name == html_form_input_file::changed_event
        || event_name == html_form_input::changed)
     {
