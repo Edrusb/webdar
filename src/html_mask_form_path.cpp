@@ -123,18 +123,26 @@ unique_ptr<body_builder> html_mask_form_path::provide_object_of_type(unsigned in
     {
     case 0: // path expression
 	as_actor.reset(new (nothrow) html_form_mask_subdir(allow_abs_paths, fs_root));
+
+	    // to be able to inform this object upon fs_root change:
 	if(as_actor)
 	    const_cast<html_mask_form_path*>(this)->record_actor_on_event(as_actor.get(), html_form_mask_subdir::update);
+
+	    // for the dynamic_table we provide the object to be able to report
+	    // changes of the object we provide here:
+	changed_event = html_form_mask_subdir::changed;
 	ret = std::move(as_actor); // we check below globally for all cases that memory allocation succeeded
 	break;
     case 1: /// file listing
 	ret.reset(new (nothrow) html_form_mask_file(fs_root));
+	changed_event = html_form_mask_file::changed;
 	break;
     case 2: // "logical combination"
 	tmp.reset(new (nothrow) html_form_mask_bool(html_form_mask_bool::invert_logic(context)));
 	if(!tmp)
 	    throw exception_memory();
 	init_bool_obj(*tmp);
+	changed_event = html_form_mask_bool::changed;
 	ret = std::move(tmp);
 	break;
     case 3: // "recorded configuration"
@@ -147,12 +155,12 @@ unique_ptr<body_builder> html_mask_form_path::provide_object_of_type(unsigned in
 	    throw exception_memory();
 
 	ovgui->set_child(biblio, ret, categ, html_mask_form_path::changed);
-
 	if(ret)
 	    throw WEBDAR_BUG;
 	    // object pointed to by ret
 	    // should have been passed to the
 	    // object pointed to by ovgui
+	changed_event = html_over_guichet::changed;
 
 	ret = std::move(ovgui);
 	break;
@@ -236,7 +244,7 @@ bibliotheque::using_set html_mask_form_path::get_using_set() const
 
 void html_mask_form_path::on_event(const std::string & event_name)
 {
-    if(event_name == html_form::changed)
+    if(event_name == html_form_mask_bool::changed)
 	act(changed);
     else if(event_name == html_form_mask_subdir::update)
 	act(html_form_mask_subdir::update); // cascading from copy constructed parent
@@ -273,7 +281,7 @@ void html_mask_form_path::init()
 	// events
     register_name(changed);
     register_name(html_form_mask_subdir::update);
-    form.record_actor_on_event(this, html_form::changed);
+    root.record_actor_on_event(this, html_form_mask_bool::changed);
 }
 
 void html_mask_form_path::init_bool_obj(html_form_mask_bool & obj) const
