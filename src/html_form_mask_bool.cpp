@@ -39,10 +39,13 @@ extern "C"
 
 using namespace std;
 
+const string html_form_mask_bool::changed = "hfmb_changed";
+
 html_form_mask_bool::html_form_mask_bool(const string & initial_mode):
     fs(""),
     mask_type("Combining with", bool_changed_event),
-    table(true, true, "Add a new mask", "--- select a mask type ---")
+    table(true, true, "Add a new mask", "--- select a mask type ---"),
+    ignore_events(false)
 {
 
 	// components configuration
@@ -64,6 +67,7 @@ html_form_mask_bool::html_form_mask_bool(const string & initial_mode):
 	// events
     mask_type.record_actor_on_event(this, bool_changed_event);
     table.record_actor_on_event(this, html_form_dynamic_table::changed);
+    register_name(changed);
 
 	// visibility
 
@@ -139,6 +143,9 @@ unique_ptr<libdar::mask> html_form_mask_bool::get_mask() const
 
 void html_form_mask_bool::on_event(const string & event_name)
 {
+    if(ignore_events)
+	return;
+
     if(event_name == bool_changed_event)
 	update_table_content_logic(false);
     else if(event_name == html_form_dynamic_table::changed)
@@ -147,6 +154,7 @@ void html_form_mask_bool::on_event(const string & event_name)
 	throw WEBDAR_BUG;
 
     fs.change_label(tell_action());
+    act(changed);
 }
 
 string html_form_mask_bool::invert_logic(const std::string & logic)
@@ -177,44 +185,58 @@ void html_form_mask_bool::load_json(const json & source)
 	if(version > format_version)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software", myclass_id));
 
-	    // setting back the bool mode and mask_type selected value
-
-	current_bool_mode = config.at(jlabel_logic);
-	mask_type.set_selected_id(current_bool_mode);
-
-	    // filling the table for each component found
-
-	html_form_dynamic_table::iterator dynptr;
-	jsoner* intable = nullptr;
-	json components = config.at(jlabel_components);
-
-	table.clear();
-
-	if(! components.is_array() && ! components.is_null())
-	    throw exception_range(libdar::tools_printf("Expecting table of components for label %s in %s json configuration",
-						       jlabel_components,
-						       class_id.c_str()));
-
-	for(json::iterator it = components.begin();
-	    it != components.end();
-	    ++it)
+	ignore_events = true;
+	try
 	{
-		// the following leads the object provider to create
-		// a new line with the correct object type
-	    table.add_line(it->at(jlabel_compo_type));
+		// setting back the bool mode and mask_type selected value
 
-		// now we get acces to the just create object of the expected type
-	    dynptr = table.last();
-	    if(dynptr == table.end())
-		throw WEBDAR_BUG;
+	    current_bool_mode = config.at(jlabel_logic);
+	    mask_type.set_selected_id(current_bool_mode);
 
-	    intable = dynamic_cast<jsoner*>(dynptr.get_object().get());
-	    if(intable == nullptr)
-		throw WEBDAR_BUG;
+		// filling the table for each component found
 
-		// restoring its configuration based on the json info found for it
-	    intable->load_json(it->at(jlabel_compo_conf));
+	    html_form_dynamic_table::iterator dynptr;
+	    jsoner* intable = nullptr;
+	    json components = config.at(jlabel_components);
+
+	    table.clear();
+
+	    if(! components.is_array() && ! components.is_null())
+		throw exception_range(libdar::tools_printf("Expecting table of components for label %s in %s json configuration",
+							   jlabel_components,
+							   class_id.c_str()));
+
+	    for(json::iterator it = components.begin();
+		it != components.end();
+		++it)
+	    {
+		    // the following leads the object provider to create
+		    // a new line with the correct object type
+		table.add_line(it->at(jlabel_compo_type));
+
+		    // now we get acces to the just create object of the expected type
+		dynptr = table.last();
+		if(dynptr == table.end())
+		    throw WEBDAR_BUG;
+
+		intable = dynamic_cast<jsoner*>(dynptr.get_object().get());
+		if(intable == nullptr)
+		    throw WEBDAR_BUG;
+
+		    // restoring its configuration based on the json info found for it
+		intable->load_json(it->at(jlabel_compo_conf));
+	    }
 	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
+
+	    // we can now trigger the change event once for all times that
+	    // have been ignore previously during the table and mask_type setup
+	on_event(html_form_dynamic_table::changed);
     }
     catch(json::exception & e)
     {

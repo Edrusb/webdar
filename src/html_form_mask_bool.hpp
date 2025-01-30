@@ -51,13 +51,14 @@ extern "C"
 #include "html_form.hpp"
 #include "html_text.hpp"
 #include "html_form_dynamic_table.hpp"
+#include "events.hpp"
 
 
     /// class html_form_mask_bool provide mean to combines with OR and AND different html_masks
 
     /// this component is used by both html_mask_form_filename and html_mask_form_path classes.
-    /// these classes are object providers for the html_form_dynamic_table mask_form_mask_bool
-    /// class owns and provide different types depending on the user selection.
+    /// these classes are object providers for the html_form_dynamic_table owned by mask_form_mask_bool
+    /// class. They provide different types depending on the user selection.
     /// see their respective implementation of method provide_object_of_type().
     ///
     /// this html components is consitued of:
@@ -82,9 +83,12 @@ class html_form_mask_bool : public body_builder,
 			    public html_mask,
 			    public actor,
 			    public jsoner,
-			    public bibliotheque_subconfig
+			    public bibliotheque_subconfig,
+			    public events
 {
 public:
+
+    static const std::string changed;
 
 	/// constructor
 
@@ -165,6 +169,7 @@ private:
     html_form_select mask_type;
     html_form_dynamic_table table;
     std::string current_bool_mode; ///< currently displayed logic in table
+    bool ignore_events;            ///< to be able to temporarily ignore changed events from childs
 
     std::string bool_op_to_name(const std::string & op);
     void update_table_content_logic(bool unconditionally); // update labels in the first column in regard to the current AND/OR selected logic
