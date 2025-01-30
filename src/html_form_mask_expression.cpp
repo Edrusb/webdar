@@ -41,6 +41,8 @@ extern "C"
 
 using namespace std;
 
+const string html_form_mask_expression::changed = "hfme_changed";
+
 html_form_mask_expression::html_form_mask_expression(const string & subject):
     sujet(subject),
     fs(""),
@@ -132,6 +134,8 @@ void html_form_mask_expression::on_event(const std::string & event_name)
 	fs.change_label(tell_action());
     else
 	throw WEBDAR_BUG;
+
+    act(changed);
 }
 
 void html_form_mask_expression::load_json(const json & source)
@@ -215,6 +219,7 @@ void html_form_mask_expression::init()
     negate.record_actor_on_event(this, html_form_input::changed);
     casesensitivity.record_actor_on_event(this, html_form_input::changed);
     mask_expression.record_actor_on_event(this, html_form_input::changed);
+    register_name(changed);
 
 	// visibity
 

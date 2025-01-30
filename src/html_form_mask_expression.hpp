@@ -43,6 +43,7 @@ extern "C"
 #include "html_form_select.hpp"
 #include "actor.hpp"
 #include "jsoner.hpp"
+#include "events.hpp"
 
 
     /// class html_form_mask_expression provide mean to setup libdar::mask component for filename filtering
@@ -81,9 +82,11 @@ extern "C"
 class html_form_mask_expression : public body_builder,
 				  public html_mask,
 				  public actor,
-				  public jsoner
+				  public jsoner,
+				  public events
 {
 public:
+    static const std::string changed;
 
 	/// constructor
 
