@@ -83,6 +83,7 @@ unique_ptr<body_builder> html_form_gnupg_list::provide_object_of_type(unsigned i
 				  html_form_input::text,
 				  "",
 				  "80%"));
+	changed_event = html_form_input::changed;
 	break;
     case 1:
 	ret.reset(new (nothrow)
@@ -90,6 +91,7 @@ unique_ptr<body_builder> html_form_gnupg_list::provide_object_of_type(unsigned i
 				  html_form_input::text,
 				  "",
 				  "80%"));
+	changed_event = html_form_input::changed;
 	break;
     default:
 	throw WEBDAR_BUG;
