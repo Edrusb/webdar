@@ -39,14 +39,25 @@ extern "C"
 
 using namespace std;
 
+const string html_over_guichet::changed = "hog_changed";
+
 html_over_guichet::html_over_guichet():
     wicket(true)
 {
+	// component config
+
+	// adoption tree (is dynamically made through set_child() method
+
+	// events
+    register_name(changed);
+
+	// css
 }
 
 void html_over_guichet::set_child(const std::shared_ptr<bibliotheque> & ptr,
 				  unique_ptr<body_builder> & to_give,
-				  bibliotheque::category cat)
+				  bibliotheque::category cat,
+				  const string & changed_event)
 {
     if(!ptr)
 	throw WEBDAR_BUG;
@@ -68,7 +79,14 @@ void html_over_guichet::set_child(const std::shared_ptr<bibliotheque> & ptr,
     adopt(&wicket);
 
 	// events
-
+    if(!changed_event.empty())
+    {
+	events* ptr = dynamic_cast<events*>(inner.get());
+	if(ptr == nullptr)
+	    throw WEBDAR_BUG; // if an event is provided the to_give object must inherit from events class !
+	child_event = changed_event; // for sanity check in on_event();
+	ptr->record_actor_on_event(this, changed_event);
+    }
 
 	// css
 
@@ -104,6 +122,15 @@ bibliotheque::using_set html_over_guichet::get_using_set() const
 {
     return wicket.get_using_set();
 }
+
+void html_over_guichet::on_event(const std::string & event_name)
+{
+    if(event_name == child_event)
+	act(changed);
+    else
+	throw WEBDAR_BUG;
+}
+
 
 string html_over_guichet::inherited_get_body_part(const chemin & path,
 						  const request & req)

@@ -39,31 +39,48 @@ extern "C"
 #include "jsoner.hpp"
 #include "bibliotheque_subconfig.hpp"
 #include "guichet.hpp"
-#include "html_form_dynamic_table.hpp"
-#include "html_mask_form_filename.hpp"
+#include "events.hpp"
+#include "actor.hpp"
 
     /// class html_over_guichet is used to insert configuration from a bibliotheque in-place of a subconfiguration
 
     /// this allows configuration in a bibliotheque to rely on some other configurations from the same bibliotheque store.
     /// It is used for file and mask filtering mainly.
 
-class html_over_guichet : public guichet,
-			  public html_mask
+class html_over_guichet : public body_builder,
+			  public html_mask,
+			  public jsoner,
+			  public bibliotheque_subconfig,
+			  public actor,
+			  public events
 {
 public:
+
+    static const std::string changed;
+
 	/// constructor
     html_over_guichet();
+
+    html_over_guichet(const html_over_guichet & ref) = delete;
+    html_over_guichet(html_over_guichet && ref) noexcept = delete;
+    html_over_guichet & operator = (const html_over_guichet & ref) = delete;
+    html_over_guichet & operator = (html_over_guichet && ref) noexcept = delete;
+    ~html_over_guichet() = default;
 
     	/// mandatory call to provide the object to adopt and use to load/save json and get mask configurations
 
 	/// \param[in] ptr pointer to a bibliotheque where from to fetch configurations
 	/// \param[in] to_give object of the type corresponding to the category be given to this html_over_guichet
 	/// \param[in] cat category in which to look for named in the bibliotheque
+	/// \param[in] changed_event if not an empty string lead the over_guichet object to record itself on the to_give
+	/// pointed-to object for the provided changed_event, upon which it will trigger its own changed event up change
+	/// of the to_give object
 	/// \note to_give must also be a jsoner and a html_mask, it pass under the managment responsibility of the
 	/// html_over_guichet object.
     void set_child(const std::shared_ptr<bibliotheque> & ptr,
 		   std::unique_ptr<body_builder> & to_give,
-		   bibliotheque::category cat);
+		   bibliotheque::category cat,
+		   const std::string & changed_event);
 
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override;
@@ -80,6 +97,9 @@ public:
 	/// inherited from bibliotheque_subconfig
     virtual bibliotheque::using_set get_using_set() const override;
 
+	/// inherited from actor parent class
+    virtual void on_event(const std::string & event_name) override;
+
 protected:
 
 	/// inherited from body_builder
@@ -90,6 +110,7 @@ protected:
 private:
     guichet wicket;
     std::shared_ptr<body_builder> inner;
+    std::string child_event;   ///< used for sanity check in on_event()
 
     void check_inner() const { if(!inner) throw WEBDAR_BUG; };
 };

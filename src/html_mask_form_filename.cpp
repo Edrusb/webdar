@@ -96,7 +96,7 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
 	if(!ovgui)
 	    throw exception_memory();
 
-	ovgui->set_child(biblio, ret, categ);
+	ovgui->set_child(biblio, ret, categ, html_mask_form_filename::changed);
 
 	if(ret)
 	    throw WEBDAR_BUG;
