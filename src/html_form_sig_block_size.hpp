@@ -72,6 +72,9 @@ public:
 	/// read the currently file size value set below which to never try perfoming binary delta
     libdar::infinint get_delta_sig_min_size() const { return delta_sig_min_size.get_value_as_infinint(); }
 
+	/// set the value programmatically
+    void set_value(const libdar::delta_sig_block_size & val);
+
 	/// return the corresponding value for libdar
     libdar::delta_sig_block_size get_value() const;
 

@@ -176,6 +176,7 @@ html_options_create::html_options_create():
     pause.set_value(libdar::deci(defaults.get_pause()).human());
     execute.set_value(defaults.get_execute());
     sig_block_size->set_delta_sig_min_size(defaults.get_delta_sig_min_size());
+    sig_block_size->set_value(defaults.get_sig_block_len());
     what_to_check.set_value(defaults.get_comparison_fields());
     hourshift.set_value(libdar::deci(defaults.get_hourshift()).human());
     empty.set_value_as_bool(defaults.get_empty());

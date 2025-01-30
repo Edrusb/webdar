@@ -91,6 +91,35 @@ html_form_sig_block_size::html_form_sig_block_size():
     summary_f.add_css_class(webdar_css_style::wcs_bold_text);
 }
 
+void html_form_sig_block_size::set_value(const libdar::delta_sig_block_size & val)
+{
+    switch(val.fs_function)
+    {
+    case libdar::delta_sig_block_size::fixed:
+	function.set_selected_num(0);
+	break;
+    case libdar::delta_sig_block_size::linear:
+	function.set_selected_num(1);
+	break;
+    case libdar::delta_sig_block_size::log2:
+	function.set_selected_num(2);
+	break;
+    case libdar::delta_sig_block_size::root2:
+	function.set_selected_num(3);
+	break;
+    case libdar::delta_sig_block_size::root3:
+	function.set_selected_num(4);
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+
+    multiply.set_value_as_int(webdar_tools_convert_from_infinint<int>(val.multiplier, string("Error while setting min size")));
+    divisor.set_value_as_int(webdar_tools_convert_from_infinint<int>(val.divisor, string("Error while setting max size")));
+    min_size.set_value_as_infinint(libdar::infinint(val.min_block_len));
+    max_size.set_value_as_infinint(libdar::infinint(val.max_block_len));
+}
+
 libdar::delta_sig_block_size html_form_sig_block_size::get_value() const
 {
     libdar::delta_sig_block_size ret;
