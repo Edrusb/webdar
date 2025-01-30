@@ -214,6 +214,7 @@ string html_form_input::inherited_get_body_part(const chemin & path,
        && !value_set)
     {
 	string old = x_init;
+	bool trigger_change = false;
 
 	map<string, string> fields = req.get_body_form();
 	map<string, string>::iterator it = fields.find(x_id);
@@ -228,7 +229,15 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 	}
 
 
-	if(x_init != old)
+	if(x_type == string_for_type(check))
+	    trigger_change = (x_init == "" ^ old == "");
+	    // some browser may return a different non empty string to mean
+	    // a box is checked... comparing x_init and old value may lead
+	    // to thing something changed while it is wrong.
+	else
+	    trigger_change = x_init != old;
+
+	if(trigger_change)
 	{
 	    my_act();
 	    my_body_part_has_changed();
