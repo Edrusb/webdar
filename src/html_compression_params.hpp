@@ -113,6 +113,7 @@ private:
     html_form_input never_resave_uncompressed;
     html_form_input compr_threads;
     html_form_input keep_compressed;
+    bool ignore_events;
 
     bool x_show_resave;
     bool x_show_min_size;

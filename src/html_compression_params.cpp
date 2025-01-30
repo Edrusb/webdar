@@ -55,6 +55,7 @@ html_compression_params::html_compression_params(bool show_resave,
     never_resave_uncompressed("Never resave uncompressed if compressed file took more place than uncompressed", html_form_input::check, "", "1"),
     keep_compressed("Keep file compressed", html_form_input::check, "", "1"),
     compr_threads("Number of threads for parallel compression", html_form_input::number, "2", "5"),
+    ignore_events(false),
     x_show_resave(show_resave),
     x_show_min_size(show_min_size)
 {
@@ -124,19 +125,30 @@ void html_compression_params::load_json(const json & source)
 
 	    // setting back the bool mode and mask_type selected value
 
-	compression.set_selected_id(config.at(jlabel_algo));
-	compression_level.set_value_as_int(config.at(jlabel_level));
-	min_compr_size.set_value_as_infinint(libdar::deci(config.at(jlabel_min_compr_sz)).computer());
-	compression_block.set_value_as_infinint(libdar::deci(config.at(jlabel_compr_block)).computer());
-	never_resave_uncompressed.set_value_as_bool(config.at(jlabel_never_resave_uncompr));
-	compr_threads.set_value_as_int(config.at(jlabel_compr_threads));
-	keep_compressed.set_value_as_bool(config.at(jlabel_keep_compr));
-
-	if(!keep_compressed.get_visible() && keep_compressed.get_value_as_bool())
+	ignore_events = true;
+	try
 	{
-	    clear_json();
-	    throw exception_range("Error loading compression configuration, keep compression parameter is not applicable in that context");
+	    compression.set_selected_id(config.at(jlabel_algo));
+	    compression_level.set_value_as_int(config.at(jlabel_level));
+	    min_compr_size.set_value_as_infinint(libdar::deci(config.at(jlabel_min_compr_sz)).computer());
+	    compression_block.set_value_as_infinint(libdar::deci(config.at(jlabel_compr_block)).computer());
+	    never_resave_uncompressed.set_value_as_bool(config.at(jlabel_never_resave_uncompr));
+	    compr_threads.set_value_as_int(config.at(jlabel_compr_threads));
+	    keep_compressed.set_value_as_bool(config.at(jlabel_keep_compr));
+
+	    if(!keep_compressed.get_visible() && keep_compressed.get_value_as_bool())
+	    {
+		clear_json();
+		throw exception_range("Error loading compression configuration, keep compression parameter is not applicable in that context");
+	    }
 	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
+	on_event(html_form_input::changed);
     }
     catch(json::exception & e)
     {
@@ -191,6 +203,9 @@ void html_compression_params::clear_json()
 
 void html_compression_params::on_event(const string & event_name)
 {
+    if(ignore_events)
+	return;
+
     if(event_name == html_compression::changed
        || event_name == html_form_input::changed
        || event_name == html_form_input_unit::changed)
