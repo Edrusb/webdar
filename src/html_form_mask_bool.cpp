@@ -191,7 +191,7 @@ void html_form_mask_bool::load_json(const json & source)
 		// setting back the bool mode and mask_type selected value
 
 	    current_bool_mode = config.at(jlabel_logic);
-	    mask_type.set_selected_id(current_bool_mode);
+	    mask_type.set_selected_id_with_warning(current_bool_mode, jlabel_logic);
 
 		// filling the table (this will call back the object provider according the json content)
 

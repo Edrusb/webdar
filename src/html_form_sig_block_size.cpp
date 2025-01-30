@@ -175,7 +175,7 @@ void html_form_sig_block_size::load_json(const json & source)
 	try
 	{
 	    delta_sig_min_size.set_value_as_infinint(libdar::deci(config.at(jlabel_min_file_size)).computer());
-	    function.set_selected_id(config.at(jlabel_function));
+	    function.set_selected_id_with_warning(config.at(jlabel_function), jlabel_function);
 	    multiply.set_value_as_int(config.at(jlabel_multiply));
 	    divisor.set_value_as_int(config.at(jlabel_divisor));
 	    min_size.set_value_as_infinint(libdar::deci(config.at(jlabel_min_size)).computer());

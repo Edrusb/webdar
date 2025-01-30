@@ -123,7 +123,8 @@ void html_form_overwrite_action::load_json(const json & source)
 						       myclass_id));
 
 	clear_json(); // we must clear also the currently not selected components
-	action_type.set_selected_id(config.at(jlabel_type));
+
+	action_type.set_selected_id_with_warning(config.at(jlabel_type), jlabel_type);
 
 	switch(action_type.get_selected_num())
 	{

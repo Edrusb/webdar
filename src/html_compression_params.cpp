@@ -128,7 +128,7 @@ void html_compression_params::load_json(const json & source)
 	ignore_events = true;
 	try
 	{
-	    compression.set_selected_id(config.at(jlabel_algo));
+	    compression.set_selected_id_with_warning(config.at(jlabel_algo), jlabel_algo);
 	    compression_level.set_value_as_int(config.at(jlabel_level));
 	    min_compr_size.set_value_as_infinint(libdar::deci(config.at(jlabel_min_compr_sz)).computer());
 	    compression_block.set_value_as_infinint(libdar::deci(config.at(jlabel_compr_block)).computer());

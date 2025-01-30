@@ -73,7 +73,11 @@ public:
 	/// \note set_selected() and set_selected_id() do the same
 	/// thing but using different way to design the radio button
 	/// to select
+	/// \note if provided id is not valid a bug is reported
     void set_selected_id(const std::string & id);
+
+	/// same as set_selected_id but issue a friendly warning build with jlabel for user understanding
+    void set_selected_id_with_warning(const std::string & id, const std::string & jlabel);
 
 	/// unselect all radio buttons
     void unset_selected();

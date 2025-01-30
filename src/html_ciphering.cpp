@@ -216,14 +216,14 @@ void html_ciphering::load_json(const json & source)
 
 	try
 	{
-	    crypto_type.set_selected_id(config.at(jlabel_type));
-	    crypto_algo.set_selected_id(config.at(jlabel_algo));
+	    crypto_type.set_selected_id_with_warning(config.at(jlabel_type), jlabel_type);
+	    crypto_algo.set_selected_id_with_warning(config.at(jlabel_algo), jlabel_algo);
 	    crypto_pass1.set_value(config.at(jlabel_pass));
 	    crypto_pass2.set_value(config.at(jlabel_pass));
 	    crypto_size.set_value_as_infinint(libdar::deci(config.at(jlabel_size)).computer());
 	    crypto_threads.set_value_as_int(config.at(jlabel_threads));
 	    gnupg.load_json(config.at(jlabel_gnupg));
-	    crypto_kdf_hash.set_selected_id(config.at(jlabel_kdf_hash));
+	    crypto_kdf_hash.set_selected_id_with_warning(config.at(jlabel_kdf_hash), jlabel_kdf_hash);
 	    iteration_count.set_value_as_int(config.at(jlabel_kdf_iter));
 	}
 	catch(...)

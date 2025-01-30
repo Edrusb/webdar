@@ -212,7 +212,7 @@ void guichet::load_json(const json & source)
 							   bibliotheque::category_to_string(categ)));
 	    try
 	    {
-		select.set_selected_id(conf_name);
+		select.set_selected_id_with_warning(conf_name, jlabel_name);
 	    }
 	    catch(exception_base & e)
 	    {

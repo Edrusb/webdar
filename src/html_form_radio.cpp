@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 
@@ -86,6 +86,18 @@ void html_form_radio::set_selected_num(unsigned int x)
 
 void html_form_radio::set_selected_id(const string & id)
 {
+    try
+    {
+	set_selected_id_with_warning(id, "");
+    }
+    catch(exception_range & e)
+    {
+	throw WEBDAR_BUG;
+    }
+}
+
+void html_form_radio::set_selected_id_with_warning(const string & id, const string & jlabel)
+{
     unsigned int val = 0;
     while(val < choices.size() && choices[val].id != id)
 	++val;
@@ -93,7 +105,7 @@ void html_form_radio::set_selected_id(const string & id)
     if(val < choices.size())
 	set_selected_num(val);
     else
-	throw WEBDAR_BUG;
+	throw exception_range(libdar::tools_printf("Unexpected requested id value %s read from key %s", id.c_str(), jlabel.c_str()));
 }
 
 void html_form_radio::unset_selected()

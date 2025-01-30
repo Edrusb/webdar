@@ -139,7 +139,7 @@ void html_form_overwrite_combining_criterium::load_json(const json & source)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
 						       myclass_id));
 
-	crit_type.set_selected_id(config.at(jlabel_logic));
+	crit_type.set_selected_id_with_warning(config.at(jlabel_logic), jlabel_logic);
 	table.load_json(config.at(jlabel_contents));
     }
     catch(json::exception & e)

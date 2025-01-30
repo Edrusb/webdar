@@ -192,7 +192,7 @@ void html_form_overwrite_base_criterium::load_json(const json & source)
 
 	negate.set_value_as_bool(config.at(jlabel_negate));
 	invert.set_value_as_bool(config.at(jlabel_invert));
-	base.set_selected_id(config.at(jlabel_base));
+	base.set_selected_id_with_warning(config.at(jlabel_base), jlabel_base);
 	date.set_value(libdar::deci(config.at(jlabel_date)).computer());
 	hourshift.set_value_as_int(config.at(jlabel_hourshift));
     }

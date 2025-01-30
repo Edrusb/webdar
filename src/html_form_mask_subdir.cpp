@@ -174,7 +174,7 @@ void html_form_mask_subdir::load_json(const json & source)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
 				  myclass_id));
 
-	mask_type.set_selected_id(config.at(jlabel_type));
+	mask_type.set_selected_id_with_warning(config.at(jlabel_type), jlabel_type);
 	casesensitivity.set_value_as_bool(config.at(jlabel_casesensit));
 	regex.set_value_as_bool(config.at(jlabel_regex));
 	mask_subdir.set_value(config.at(jlabel_mask));

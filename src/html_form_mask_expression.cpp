@@ -164,7 +164,7 @@ void html_form_mask_expression::load_json(const json & source)
 	ignore_events = true;
 	try
 	{
-	    mask_type.set_selected_id(config.at(jlabel_mask_type));
+	    mask_type.set_selected_id_with_warning(config.at(jlabel_mask_type), jlabel_mask_type);
 	    negate.set_value_as_bool(config.at(jlabel_negate));
 	    casesensitivity.set_value_as_bool(config.at(jlabel_casesensit));
 	    mask_expression.set_value(config.at(jlabel_expression));
