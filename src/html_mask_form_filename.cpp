@@ -78,11 +78,13 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
     {
     case 0: // title provided in constructor
 	ret.reset(new (nothrow) html_form_mask_expression(sujet));
+	changed_event = html_form_mask_expression::changed;
 	break;
     case 1: // "logical combination"
 	tmp.reset(new (nothrow) html_form_mask_bool(html_form_mask_bool::invert_logic(context)));
 	if(!tmp)
 	    throw exception_memory();
+	changed_event = html_form_mask_bool::changed;
 
 	init_bool_obj(*tmp);
 	ret = std::move(tmp);
@@ -97,12 +99,12 @@ unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigne
 	    throw exception_memory();
 
 	ovgui->set_child(biblio, ret, categ, html_mask_form_filename::changed);
-
 	if(ret)
 	    throw WEBDAR_BUG;
 	    // object pointed to by ret
 	    // should have been passed to the
 	    // object pointed to by ovgui
+	changed_event = html_over_guichet::changed;
 
 	ret = std::move(ovgui);
 	break;
@@ -180,7 +182,7 @@ bibliotheque::using_set html_mask_form_filename::get_using_set() const
 
 void html_mask_form_filename::on_event(const std::string & event_name)
 {
-    if(event_name == html_form::changed)
+    if(event_name == html_form_mask_bool::changed)
 	act(changed);
     else
 	throw WEBDAR_BUG;
@@ -221,7 +223,7 @@ void html_mask_form_filename::init()
 
 	// events
     register_name(changed);
-    form.record_actor_on_event(this, html_form::changed);
+    root.record_actor_on_event(this, html_form_mask_bool::changed);
 
 	// must be done after event registration above
     init_bool_obj(root);
