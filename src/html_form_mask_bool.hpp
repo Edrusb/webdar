@@ -180,8 +180,6 @@ private:
 
     static constexpr const char* jlabel_logic = "logic";
     static constexpr const char* jlabel_components = "components";
-    static constexpr const char* jlabel_compo_type = "type";
-    static constexpr const char* jlabel_compo_conf = "config";
 };
 
 #endif

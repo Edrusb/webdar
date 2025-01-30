@@ -193,39 +193,10 @@ void html_form_mask_bool::load_json(const json & source)
 	    current_bool_mode = config.at(jlabel_logic);
 	    mask_type.set_selected_id(current_bool_mode);
 
-		// filling the table for each component found
+		// filling the table (this will call back the object provider according the json content)
 
-	    html_form_dynamic_table::iterator dynptr;
-	    jsoner* intable = nullptr;
 	    json components = config.at(jlabel_components);
-
-	    table.clear();
-
-	    if(! components.is_array() && ! components.is_null())
-		throw exception_range(libdar::tools_printf("Expecting table of components for label %s in %s json configuration",
-							   jlabel_components,
-							   class_id.c_str()));
-
-	    for(json::iterator it = components.begin();
-		it != components.end();
-		++it)
-	    {
-		    // the following leads the object provider to create
-		    // a new line with the correct object type
-		table.add_line(it->at(jlabel_compo_type));
-
-		    // now we get acces to the just create object of the expected type
-		dynptr = table.last();
-		if(dynptr == table.end())
-		    throw WEBDAR_BUG;
-
-		intable = dynamic_cast<jsoner*>(dynptr.get_object().get());
-		if(intable == nullptr)
-		    throw WEBDAR_BUG;
-
-		    // restoring its configuration based on the json info found for it
-		intable->load_json(it->at(jlabel_compo_conf));
-	    }
+	    table.load_json(components);
 	}
 	catch(...)
 	{
@@ -251,28 +222,7 @@ json html_form_mask_bool::save_json() const
     jsoner* itjson = nullptr;
 
     ret[jlabel_logic] = current_bool_mode;
-    ret[jlabel_components] = {};
-
-    for(html_form_dynamic_table::iterator it = table.begin();
-	it != table.end();
-	++it)
-    {
-	tmp.clear();
-	    // tmp will contain
-	    // - type of compoent : value
-	    // - config : configuration
-
-	tmp[jlabel_compo_type] = it.get_object_type();
-
-	itjson = dynamic_cast<jsoner*>(it.get_object().get());
-	if(itjson == nullptr)
-	    throw WEBDAR_BUG;
-	tmp[jlabel_compo_conf] = itjson->save_json();
-
-	    // jlabel_components is a list of components
-	    // each with two fields : type and config
-	ret[jlabel_components].push_back(tmp);
-    }
+    ret[jlabel_components] = table.save_json();
 
     return wrap_config_with_json_header(format_version,
 					myclass_id,
