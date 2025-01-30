@@ -93,7 +93,8 @@ public:
 
 	/// \param[in] subcomponent has to be set to true when it is used as indirect (or direct) subcomponent
 	/// of another mask object (for example another guichet object) and used to refer existing configurations
-	/// from a bibliotheque. This avoids the form to be used, the edit button to show, and other cosmetic things
+	/// from a bibliotheque. This avoids the form to be used, the edit button to show, and other cosmetic things.
+	/// By oposition, it should be left to false, when used directly in non-configuration components.
     guichet(bool subcomponent = false);
 
     guichet(const guichet & ref) = default;
