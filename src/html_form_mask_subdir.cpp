@@ -40,6 +40,7 @@ extern "C"
 
 using namespace std;
 
+const string html_form_mask_subdir::changed = "hfms_changed";
 const string html_form_mask_subdir::update = "hfms_update";
 
 html_form_mask_subdir::html_form_mask_subdir(bool absolute_path_accepted,
@@ -219,6 +220,8 @@ void html_form_mask_subdir::on_event(const std::string & event_name)
     }
     else
 	throw WEBDAR_BUG;
+
+    act(changed);
 }
 
 string html_form_mask_subdir::inherited_get_body_part(const chemin & path,
@@ -288,6 +291,7 @@ void html_form_mask_subdir::init()
     casesensitivity.record_actor_on_event(this, html_form_input::changed);
     regex.record_actor_on_event(this, html_form_input::changed);
     mask_subdir.record_actor_on_event(this, html_form_input::changed);
+    register_name(changed);
 
 	// visibity
     regex.set_visible(mask_type.get_selected_num() == 1);

@@ -81,6 +81,7 @@ class html_form_mask_subdir : public body_builder,
 			      public jsoner
 {
 public:
+    static const std::string changed;
 
 	/// event to be used to trigger this object to reconsider absolute_path and root_prefix
 
