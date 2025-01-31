@@ -231,6 +231,16 @@ void html_options_test::clear_json()
     on_event(html_form_input::changed);
 }
 
+bibliotheque::using_set html_options_test::get_using_set() const
+{
+    bibliotheque::using_set ret;
+
+    subconfig_add_to(ret, guichet_filename_mask.get_using_set());
+    subconfig_add_to(ret, guichet_path_mask.get_using_set());
+
+    return ret;
+}
+
 void html_options_test::on_event(const string & event_name)
 {
     if(ignore_events)

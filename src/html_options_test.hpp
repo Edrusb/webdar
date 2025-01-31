@@ -45,12 +45,14 @@ extern "C"
 #include "html_mask_form_path.hpp"
 #include "guichet.hpp"
 #include "jsoner.hpp"
+#include "bibliotheque_subconfig.hpp"
 
     /// html component for the user to provide parameters of libdar archive testing operation
 
 class html_options_test : public body_builder,
 			  public actor,
-			  public jsoner
+			  public jsoner,
+			  public bibliotheque_subconfig
 {
 public:
     html_options_test();
@@ -75,6 +77,8 @@ public:
 	/// inherited from jsoner
     virtual void clear_json() override;
 
+	/// inherited from biblioteque_subconfig
+    virtual bibliotheque::using_set get_using_set() const override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
