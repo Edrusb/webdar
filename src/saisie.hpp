@@ -237,7 +237,9 @@ private:
     html_double_button go_compare;
 	//
     html_derouleur test_params;
-    html_options_test test;
+
+    guichet guichet_test;
+    std::shared_ptr<html_options_test> test;
     html_double_button go_test;
 	//
     html_options_list list_or_summ;

@@ -111,14 +111,23 @@ saisie::saisie():
     if(!biblio)
 	throw exception_memory();
 
+    test.reset(new (nothrow) html_options_test());
+    if(! test)
+	throw exception_memory();
+
     create.set_biblio(biblio);
     archread.set_biblio(biblio);
     merge.set_biblio(biblio);
     isolate.set_biblio(biblio);
-    test.set_biblio(biblio);
+    test->set_biblio(biblio);
     compare.set_biblio(biblio);
     repair.set_biblio(biblio);
     extract.set_biblio(biblio);
+
+    guichet_test.set_child(biblio,
+			   bibliotheque::conftest,
+			   test,
+			   false);
 
     h_biblio.reset(new (nothrow) html_bibliotheque(biblio, default_biblio_path));
     if(! h_biblio)
@@ -211,7 +220,7 @@ saisie::saisie():
     test_params.add_section(sect_test_params, "Testing parameters");
     test_params.set_active_section(sect_test_params);
 
-    test_params.adopt_in_section(sect_test_params, &test);
+    test_params.adopt_in_section(sect_test_params, &guichet_test);
     select.adopt_in_section(menu_test, &test_params);
     select.adopt_in_section(menu_test, &go_test);
 
@@ -593,7 +602,7 @@ const libdar::archive_options_test saisie::get_testing_options() const
     if(status != st_test)
 	throw WEBDAR_BUG;
 
-    return test.get_options();
+    return test->get_options();
 }
 
 libdar::archive_options_create saisie::get_creating_options(shared_ptr<html_web_user_interaction> dialog) const
