@@ -46,16 +46,21 @@ const char* html_tabs::tab_off = "html_tabs_off";
 const char* html_tabs::tab_off_url = "html_tabs_off_url";
 const char* html_tabs::menu_bar = "html_tabs_bar";
 const char* html_tabs::tab_sep = "html_tabs_sep";
+const char* html_tabs::css_content_wrapper = "html_tabs_wrapper";
 
-html_tabs::html_tabs(): html_table(1),
-			current_mode(1) // to allow change to take place upon mode change
+html_tabs::html_tabs(): current_mode(1) // to allow change to take place upon mode change
 {
-    css_border_collapsed(true);
-    set_css_class_first_row(tab_sep);
 
+	// adoption tree
     adopt(&tab_bar);
-    adopt(&content);
+    adopt(&line);
+    content_wrapper.adopt(&content);
+    adopt(&content_wrapper);
+
+	// css
     tab_bar.add_css_class(menu_bar);
+    line.add_css_class(css_content_wrapper);
+    content_wrapper.add_css_class(css_content_wrapper);
 }
 
 html_tabs::~html_tabs()
@@ -135,32 +140,10 @@ void html_tabs::adopt_in_section(signed int num, body_builder* obj)
     content.adopt_in_section(num, obj);
 }
 
-void html_tabs::has_adopted(body_builder *obj)
-{
-    if(obj == &tab_bar || obj == &content)
-	html_table::has_adopted(obj); // to update html_div and above html_level datastructures
-    else
-	throw WEBDAR_BUG;
-	// adopt() should only be used for our own private
-	// field, sub_adopt() should be used for other objects
-	// to fill the created tabs
-
-}
-
 string html_tabs::inherited_get_body_part(const chemin & path,
 					   const request & req)
 {
-
-	// this will trigger events and change of display
-	// but since some component may already have returned
-	// their body part, their change will not reflect is
-	// the return provided by this first call
-    (void)get_body_part_from_all_children(path, req);
-
-	// so we call it a second time
-    request tmp = req;
-    tmp.post_to_get();
-    return html_table::inherited_get_body_part(path, tmp);
+    return get_body_part_from_all_children(path, req);
 }
 
 
@@ -212,6 +195,7 @@ void html_tabs::new_css_library_available()
 	tmp.css_margin_bottom("0", true);
 	tmp.css_text_h_align(css::al_center, true);
 	tmp.css_corner_radius("20%", "20%", "0", "0");
+	tmp.css_height("3em", false);
 	csslib->add(tab_on, tmp);
 
 	    // the unselected tabs (not their text)
@@ -258,6 +242,11 @@ void html_tabs::new_css_library_available()
 	tmp.css_color(COLOR_MENU_FRONT_ACTIVE_ON, true);
 	forlink.set_selector(css_class::active, tmp);
 	csslib->add(forlink);
+
+	tmp.clear();
+	tmp.css_width("100%", false);
+	tmp.css_box_sizing(css::bx_border);
+	csslib->add(css_content_wrapper, tmp);
     }
 }
 
