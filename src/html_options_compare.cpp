@@ -29,16 +29,19 @@ extern "C"
 }
 
     // C++ system header files
-#include "webdar_css_style.hpp"
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_tools.hpp"
 #include "html_form_mask_expression.hpp"
+#include "webdar_css_style.hpp"
 
     //
 #include "html_options_compare.hpp"
 
 using namespace std;
+
+const string html_options_compare::changed = "hocompare_changed";
 
 html_options_compare::html_options_compare():
     form("Update"),
@@ -82,7 +85,8 @@ html_options_compare::html_options_compare():
     display_skipped("Display skipped files",
 		    html_form_input::check,
 		    "1",
-		    "1")
+		    "1"),
+    ignore_events(false)
 {
 
     filename_mask.reset(new (nothrow) html_mask_form_filename("file name"));
@@ -167,7 +171,7 @@ html_options_compare::html_options_compare():
 	// events
 
     display_treated.record_actor_on_event(this, html_form_input::changed);
-
+    register_name(changed);
 	// css
 
     webdar_css_style::grey_button(deroule, true);
@@ -222,6 +226,123 @@ libdar::archive_options_diff html_options_compare::get_options() const
     return ret;
 }
 
+void html_options_compare::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
+
+	ignore_events = true;
+
+	try
+	{
+	    alter_atime.set_selected_id(config.at(jlabel_alter_atime));
+	    furtive_read_mode.set_value_as_bool(config.at(jlabel_furtive_read));
+	    zeroing_neg_date.set_value_as_bool(config.at(jlabel_zeroing_neg_dates));
+	    hourshift.set_value_as_int(config.at(jlabel_hourshift));
+	    in_place.set_value_as_bool(config.at(jlabel_in_place));
+	    what_to_check.set_selected_id_with_warning(config.at(jlabel_what_to_check), jlabel_what_to_check);
+	    compare_symlink_date.set_value_as_bool(config.at(jlabel_symlink_date));
+	    info_details.set_value_as_bool(config.at(jlabel_info_details));
+	    display_treated.set_value_as_bool(config.at(jlabel_disp_treated));
+	    display_treated_only_dir.set_value_as_bool(config.at(jlabel_disp_only_dir));
+	    display_skipped.set_value_as_bool(config.at(jlabel_disp_skipped));
+	    guichet_filename_mask.load_json(config.at(jlabel_file_mask));
+	    guichet_path_mask.load_json(config.at(jlabel_path_mask));
+	    guichet_ea_mask.load_json(config.at(jlabel_fsa_scope));
+	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
+
+	trigger_change();
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_options_compare::save_json() const
+{
+    json config;
+
+    config[jlabel_alter_atime] = alter_atime.get_selected_id();
+    config[jlabel_furtive_read] = furtive_read_mode.get_value_as_bool();
+    config[jlabel_zeroing_neg_dates] = zeroing_neg_date.get_value_as_bool();
+    config[jlabel_hourshift] = hourshift.get_value_as_int();
+    config[jlabel_in_place] = in_place.get_value_as_bool();
+    config[jlabel_what_to_check] = what_to_check.get_selected_id();
+    config[jlabel_symlink_date] = compare_symlink_date.get_value_as_bool();
+    config[jlabel_info_details] = info_details.get_value_as_bool();
+    config[jlabel_disp_treated] = display_treated.get_value_as_bool();
+    config[jlabel_disp_only_dir] = display_treated_only_dir.get_value_as_bool();
+    config[jlabel_disp_skipped] = display_skipped.get_value_as_bool();
+    config[jlabel_file_mask] = guichet_filename_mask.save_json();
+    config[jlabel_path_mask] = guichet_path_mask.save_json();
+    config[jlabel_fsa_scope] = guichet_ea_mask.save_json();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					config);
+}
+
+void html_options_compare::clear_json()
+{
+    try
+    {
+	alter_atime.set_selected_num(0);
+	furtive_read_mode.set_value_as_bool(true);
+	zeroing_neg_date.set_value_as_bool(true);
+	hourshift.set_value_as_int(0);
+	in_place.set_value_as_bool(false);
+	what_to_check.set_selected_num(0);
+	compare_symlink_date.set_value_as_bool(true);
+	info_details.set_value_as_bool(true);
+	display_treated.set_value_as_bool(true);
+	display_treated_only_dir.set_value_as_bool(false);
+	display_skipped.set_value_as_bool(true);
+	guichet_filename_mask.clear_json();
+	guichet_path_mask.clear_json();
+	guichet_ea_mask.clear_json();
+    }
+    catch(...)
+    {
+	ignore_events = false;
+	throw;
+    }
+    ignore_events = false;
+
+    trigger_change();
+}
+
+bibliotheque::using_set html_options_compare::get_using_set() const
+{
+    bibliotheque::using_set ret;
+
+    subconfig_add_to(ret, guichet_filename_mask.get_using_set());
+    subconfig_add_to(ret, guichet_path_mask.get_using_set());
+    subconfig_add_to(ret, guichet_ea_mask.get_using_set());
+
+    return ret;
+}
+
 void html_options_compare::on_event(const std::string & event_name)
 {
     if(event_name == html_form_input::changed)
@@ -230,9 +351,9 @@ void html_options_compare::on_event(const std::string & event_name)
     }
     else
 	throw WEBDAR_BUG;
+
+    trigger_change();
 }
-
-
 
 string html_options_compare::inherited_get_body_part(const chemin & path,
 						     const request & req)
@@ -247,4 +368,10 @@ void html_options_compare::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
+}
+
+void html_options_compare::trigger_change()
+{
+    if(!ignore_events)
+	act(changed);
 }

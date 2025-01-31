@@ -46,12 +46,20 @@ extern "C"
 #include "html_mask_form_path.hpp"
 #include "html_fsa_scope.hpp"
 #include "guichet.hpp"
+#include "jsoner.hpp"
+#include "events.hpp"
 
     /// html component providing a way for the user to set the parameter of libdar comparison operation
 
-class html_options_compare : public body_builder, public actor
+class html_options_compare : public body_builder,
+			     public actor,
+			     public jsoner,
+			     public events,
+			     public bibliotheque_subconfig
 {
 public:
+    static const std::string changed;
+
     html_options_compare();
     html_options_compare(const html_options_compare & ref) = delete;
     html_options_compare(html_options_compare && ref) noexcept = delete;
@@ -65,7 +73,20 @@ public:
 	/// needed for path based filtering to filter accordingly to the current root_fs
     void set_fs_root(const std::string & prefix) { path_mask->set_fs_root(prefix); };
 
+	/// gathering informations for libdar
     libdar::archive_options_diff get_options() const;
+
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
+
+	/// inherited from bibliotheque_subconfig
+    virtual bibliotheque::using_set get_using_set() const override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -117,6 +138,27 @@ private:
 
     html_fsa_scope fsa_scope;
 
+    bool ignore_events;
+    void trigger_change();
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_options_compare";
+
+    static constexpr const char* jlabel_alter_atime = "alter-atime";
+    static constexpr const char* jlabel_furtive_read = "furtive-read";
+    static constexpr const char* jlabel_zeroing_neg_dates = "zeroing-negative-dates";
+    static constexpr const char* jlabel_hourshift = "hourshift";
+    static constexpr const char* jlabel_in_place = "use-in-place-root";
+    static constexpr const char* jlabel_what_to_check = "what-to-check-for";
+    static constexpr const char* jlabel_symlink_date = "compare-symlink-mtime";
+    static constexpr const char* jlabel_info_details = "info-details";
+    static constexpr const char* jlabel_disp_treated = "display-treated";
+    static constexpr const char* jlabel_disp_only_dir = "display-only-dirs";
+    static constexpr const char* jlabel_disp_skipped = "display-skipped";
+    static constexpr const char* jlabel_file_mask = "file-mask";
+    static constexpr const char* jlabel_path_mask = "path-mask";
+    static constexpr const char* jlabel_ea_mask = "ea-mask";
+    static constexpr const char* jlabel_fsa_scope = "fsa-scope";
 };
 
 
