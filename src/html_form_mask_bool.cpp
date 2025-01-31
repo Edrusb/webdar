@@ -143,9 +143,6 @@ unique_ptr<libdar::mask> html_form_mask_bool::get_mask() const
 
 void html_form_mask_bool::on_event(const string & event_name)
 {
-    if(ignore_events)
-	return;
-
     if(event_name == bool_changed_event)
 	update_table_content_logic(false);
     else if(event_name == html_form_dynamic_table::changed)
@@ -154,7 +151,7 @@ void html_form_mask_bool::on_event(const string & event_name)
 	throw WEBDAR_BUG;
 
     fs.change_label(tell_action());
-    act(changed);
+    trigger_change();
 }
 
 string html_form_mask_bool::invert_logic(const std::string & logic)
@@ -207,7 +204,7 @@ void html_form_mask_bool::load_json(const json & source)
 
 	    // we can now trigger the change event once for all times that
 	    // have been ignore previously during the table and mask_type setup
-	on_event(html_form_dynamic_table::changed);
+	trigger_change();
     }
     catch(json::exception & e)
     {
@@ -332,5 +329,11 @@ string html_form_mask_bool::tell_action() const
 	ret += "invovled if...";
 
     return ret;
+}
+
+void html_form_mask_bool::trigger_change()
+{
+    if(! ignore_events)
+	act(changed);
 }
 

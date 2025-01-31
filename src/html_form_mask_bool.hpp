@@ -174,6 +174,7 @@ private:
     std::string bool_op_to_name(const std::string & op);
     void update_table_content_logic(bool unconditionally); // update labels in the first column in regard to the current AND/OR selected logic
     std::string tell_action() const;
+    void trigger_change();
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* myclass_id = "html_form_mask_bool";
