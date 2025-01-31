@@ -76,7 +76,8 @@ namespace webdar_css_style
                 css box_off, box_on, box_void, box_grey;
 
 		tmp_set.clear();
-		tmp_set.css_width("99%", true);
+		tmp_set.css_box_sizing(css::bx_border);
+		tmp_set.css_width("100%", true);
 		full_width.set_value(tmp_set);
 
 		tmp_set.clear();
