@@ -57,6 +57,11 @@ guichet::guichet(bool subcomponent):
     adopted_jsoner = nullptr;
     adopted_subconfig = nullptr;
     adopted_frame = nullptr;
+
+    saveas_text.clear();
+    saveas_text.add_text(0, "The current configuration exposed above can be saved (or not) for reuse later, and will be editable from the \"Configuration\" menu on the left");
+    saveas_text.add_nl();
+    saveas_text.add_nl();
 }
 
 guichet::~guichet()
@@ -137,6 +142,7 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
 	throw WEBDAR_BUG;
     adopted_frame->add_css_class(css_left_margin);
 
+    saveas_fs.adopt(&saveas_text);
     saveas_fs.adopt(&saveas_name);
     saveas_form.adopt(&saveas_fs);
     adopt(&saveas_form);

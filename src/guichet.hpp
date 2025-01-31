@@ -44,7 +44,7 @@ extern "C"
 #include "html_form_select.hpp"
 #include "html_double_button.hpp"
 #include "html_form_input.hpp"
-
+#include "html_text.hpp"
 
     /// class guichet let one fetch config from a bibliotheque, save as or setup manually for a given component type
 
@@ -171,6 +171,7 @@ private:
     html_double_button edit;
     html_double_button clear;
     html_form saveas_form;
+    html_text saveas_text;
     html_form_fieldset saveas_fs;
     html_form_input saveas_name;
 
