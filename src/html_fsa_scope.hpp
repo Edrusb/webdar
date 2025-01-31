@@ -39,10 +39,12 @@ extern "C"
 #include "html_form.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_form_input.hpp"
+#include "jsoner.hpp"
 
     /// html component used for the user to define a has algorithm
 
-class html_fsa_scope : public body_builder
+class html_fsa_scope : public body_builder,
+		       public jsoner
 {
 public:
     html_fsa_scope();
@@ -55,6 +57,16 @@ public:
 	/// obtain the fsa_scope resulting from the web interface
     libdar::fsa_scope get_scope() const;
 
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
+
+
 protected:
 
 	/// inherited from body_builder
@@ -66,6 +78,13 @@ private:
     html_form_fieldset fs;
     html_form_input hfs_family;
     html_form_input ext_family;
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_fsa_scope";
+
+    static constexpr const char* jlabel_hfs = "hfs";
+    static constexpr const char* jlabel_ext = "ext";
+
 };
 
 #endif

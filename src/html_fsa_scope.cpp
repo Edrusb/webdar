@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 
@@ -75,6 +75,52 @@ libdar::fsa_scope html_fsa_scope::get_scope() const
 	ret.insert(libdar::fsaf_linux_extX);
 
     return ret;
+}
+
+void html_fsa_scope::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
+
+	hfs_family.set_value_as_bool(config.at(jlabel_hfs));
+	ext_family.set_value_as_bool(config.at(jlabel_ext));
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_fsa_scope::save_json() const
+{
+    json config;
+
+    config[jlabel_hfs] = hfs_family.get_value_as_bool();
+    config[jlabel_ext] = ext_family.get_value_as_bool();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					config);
+}
+
+void html_fsa_scope::clear_json()
+{
+    hfs_family.set_value_as_bool(true);
+    ext_family.set_value_as_bool(true);
 }
 
 string html_fsa_scope::inherited_get_body_part(const chemin & path,
