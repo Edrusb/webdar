@@ -40,6 +40,8 @@ extern "C"
 
 using namespace std;
 
+const string html_fsa_scope::changed = "hfscope_changed";
+
 html_fsa_scope::html_fsa_scope():
     form("Update"),
     fs("File system Specific Attributes to consider"),
@@ -58,6 +60,9 @@ html_fsa_scope::html_fsa_scope():
 
 	// events
 
+    hfs_family.record_actor_on_event(this, html_form_input::changed);
+    ext_family.record_actor_on_event(this, html_form_input::changed);
+    register_name(changed);
 
 	// css
 
@@ -122,6 +127,15 @@ void html_fsa_scope::clear_json()
     hfs_family.set_value_as_bool(true);
     ext_family.set_value_as_bool(true);
 }
+
+void html_fsa_scope::on_event(const std::string & event_name)
+{
+    if(event_name == html_form_input::changed)
+	act(changed);
+    else
+	throw WEBDAR_BUG;
+}
+
 
 string html_fsa_scope::inherited_get_body_part(const chemin & path,
 					       const request & req)

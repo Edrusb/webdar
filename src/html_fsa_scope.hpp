@@ -40,13 +40,19 @@ extern "C"
 #include "html_form_fieldset.hpp"
 #include "html_form_input.hpp"
 #include "jsoner.hpp"
+#include "actor.hpp"
+#include "events.hpp"
 
     /// html component used for the user to define a has algorithm
 
 class html_fsa_scope : public body_builder,
-		       public jsoner
+		       public jsoner,
+		       public actor,
+		       public events
 {
 public:
+    static const std::string changed;
+
     html_fsa_scope();
     html_fsa_scope(const html_fsa_scope & ref) = delete;
     html_fsa_scope(html_fsa_scope && ref) noexcept = delete;
@@ -66,6 +72,8 @@ public:
 	/// inherited from jsoner
     virtual void clear_json() override;
 
+	/// inherited from actor
+    virtual void on_event(const std::string & event_name) override;
 
 protected:
 
