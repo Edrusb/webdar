@@ -39,6 +39,8 @@ extern "C"
 
 using namespace std;
 
+const string html_options_test::changed = "hot_test";
+
 html_options_test::html_options_test():
     form("Update options"),
     fs(""),
@@ -106,7 +108,13 @@ html_options_test::html_options_test():
     adopt(&deroule);
 
 	// events
+    empty.record_actor_on_event(this, html_form_input::changed);
+    info_details.record_actor_on_event(this, html_form_input::changed);
     display_treated.record_actor_on_event(this, html_form_input::changed);
+    display_treated_only_dir.record_actor_on_event(this, html_form_input::changed);
+    display_skipped.record_actor_on_event(this, html_form_input::changed);
+    filename_mask->record_actor_on_event(this, html_mask_form_filename::changed);
+    path_mask->record_actor_on_event(this, html_mask_form_path::changed);
 
 	// css
 
@@ -187,7 +195,8 @@ void html_options_test::load_json(const json & source)
 	    throw;
 	}
 	ignore_events = false;
-	on_event(html_form_input::changed);
+
+	trigger_change();
     }
     catch(json::exception & e)
     {
@@ -228,7 +237,7 @@ void html_options_test::clear_json()
     }
     ignore_events = false;
 
-    on_event(html_form_input::changed);
+    trigger_change();
 }
 
 bibliotheque::using_set html_options_test::get_using_set() const
@@ -243,16 +252,20 @@ bibliotheque::using_set html_options_test::get_using_set() const
 
 void html_options_test::on_event(const string & event_name)
 {
-    if(ignore_events)
-	return;
-
     if(event_name == html_form_input::changed)
     {
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
     }
+    else if(event_name == html_mask_form_filename::changed
+	    || event_name == html_mask_form_path::changed)
+    {
+    }
     else
 	throw WEBDAR_BUG;
+
+    trigger_change();
 }
+
 
 string html_options_test::inherited_get_body_part(const chemin & path,
 						  const request & req)
@@ -277,3 +290,10 @@ void html_options_test::reset_non_pointer_fields()
     display_treated_only_dir.set_value_as_bool(false);
     display_skipped.set_value_as_bool(true);
 }
+
+void html_options_test::trigger_change()
+{
+    if(! ignore_events)
+	act(changed);
+}
+

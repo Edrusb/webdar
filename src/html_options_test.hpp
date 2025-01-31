@@ -46,15 +46,19 @@ extern "C"
 #include "guichet.hpp"
 #include "jsoner.hpp"
 #include "bibliotheque_subconfig.hpp"
+#include "events.hpp"
 
     /// html component for the user to provide parameters of libdar archive testing operation
 
 class html_options_test : public body_builder,
 			  public actor,
 			  public jsoner,
-			  public bibliotheque_subconfig
+			  public bibliotheque_subconfig,
+			  public events
 {
 public:
+    static const std::string changed;
+
     html_options_test();
     html_options_test(const html_options_test & ref) = delete;
     html_options_test(html_options_test && ref) noexcept = delete;
@@ -115,6 +119,7 @@ private:
     bool ignore_events;
 
     void reset_non_pointer_fields();
+    void trigger_change();
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* myclass_id = "html_options_test";
