@@ -128,8 +128,9 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
     }
     else
     {
-	adopt(adopted.get());
-	adopted_frame = adopted.get();
+	around_adopted_fs.adopt(adopted.get());
+	adopt(&around_adopted_fs);
+	adopted_frame = &around_adopted_fs;
     }
 
     if(adopted_frame == nullptr)
