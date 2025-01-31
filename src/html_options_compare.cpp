@@ -169,8 +169,21 @@ html_options_compare::html_options_compare():
     adopt(&deroule);
 
 	// events
-
+    alter_atime.record_actor_on_event(this, html_form_radio::changed);
+    furtive_read_mode.record_actor_on_event(this, html_form_input::changed);
+    zeroing_neg_date.record_actor_on_event(this, html_form_input::changed);
+    hourshift.record_actor_on_event(this, html_form_input::changed);
+    in_place.record_actor_on_event(this, html_form_input::changed);
+    what_to_check.record_actor_on_event(this, html_form_select::changed);
+    compare_symlink_date.record_actor_on_event(this, html_form_input::changed);
+    info_details.record_actor_on_event(this, html_form_input::changed);
     display_treated.record_actor_on_event(this, html_form_input::changed);
+    display_treated_only_dir.record_actor_on_event(this, html_form_input::changed);
+    display_skipped.record_actor_on_event(this, html_form_input::changed);
+    filename_mask->record_actor_on_event(this, html_mask_form_filename::changed);
+    path_mask->record_actor_on_event(this, html_mask_form_path::changed);
+    ea_mask->record_actor_on_event(this, html_mask_form_filename::changed);
+    fsa_scope.record_actor_on_event(this, html_fsa_scope::changed);
     register_name(changed);
 	// css
 
