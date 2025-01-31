@@ -69,6 +69,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     unique_ptr<html_ciphering> tmp_ciphering;
     unique_ptr<html_form_sig_block_size> tmp_delta_sig;
     unique_ptr<html_form_overwrite_action> tmp_over_policy;
+    unique_ptr<html_options_test> tmp_options_test;
 
     if(!ptr)
 	throw WEBDAR_BUG;
@@ -240,6 +241,22 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     if(!ab_over_policy)
 	throw exception_memory();
 
+	// options test
+
+    tmp_options_test.reset(new (nothrow) html_options_test());
+    if(! tmp_options_test)
+	throw exception_memory();
+    else
+	tmp_options_test->set_biblio(ptr);
+
+    ab_options_test.reset(new (nothrow) arriere_boutique<html_options_test>(ptr,
+									    bibliotheque::conftest,
+									    tmp_options_test,
+									    html_options_test::changed,
+									    false));
+    if(! ab_options_test)
+	throw exception_memory();
+
 
     	// global component setups
 
@@ -252,6 +269,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     tabs.add_tab("Ciphering", tab_ciphering);
     tabs.add_tab("Delta signatures", tab_delta_sig);
     tabs.add_tab("Overwriting Policy", tab_over_policy);
+    tabs.add_tab("Testing Options", tab_options_test);
 
 	//  global adoption tree
 
@@ -274,6 +292,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     tabs.adopt_in_section(tab_ciphering, ab_ciphering.get());
     tabs.adopt_in_section(tab_delta_sig, ab_delta_sig.get());
     tabs.adopt_in_section(tab_over_policy, ab_over_policy.get());
+    tabs.adopt_in_section(tab_options_test, ab_options_test.get());
 
     adopt(&tabs);
 

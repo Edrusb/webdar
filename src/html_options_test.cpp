@@ -115,6 +115,7 @@ html_options_test::html_options_test():
     display_skipped.record_actor_on_event(this, html_form_input::changed);
     filename_mask->record_actor_on_event(this, html_mask_form_filename::changed);
     path_mask->record_actor_on_event(this, html_mask_form_path::changed);
+    register_name(changed);
 
 	// css
 
@@ -123,7 +124,6 @@ html_options_test::html_options_test():
 
 	// components visibility status
     on_event(html_form_input::changed);
-
 }
 
 void html_options_test::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
