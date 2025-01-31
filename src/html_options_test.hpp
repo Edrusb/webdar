@@ -44,10 +44,13 @@ extern "C"
 #include "html_mask_form_filename.hpp"
 #include "html_mask_form_path.hpp"
 #include "guichet.hpp"
+#include "jsoner.hpp"
 
     /// html component for the user to provide parameters of libdar archive testing operation
 
-class html_options_test : public body_builder, public actor
+class html_options_test : public body_builder,
+			  public actor,
+			  public jsoner
 {
 public:
     html_options_test();
@@ -60,8 +63,18 @@ public:
 	/// mandatory call to invoke ASAP after constructor
     void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
 
-
+	/// extract component info as an option set for libdar
     libdar::archive_options_test get_options() const;
+
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
+
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -94,6 +107,22 @@ private:
 
     guichet guichet_path_mask;
     std::shared_ptr<html_mask_form_path> path_mask;
+
+    bool ignore_events;
+
+    void reset_non_pointer_fields();
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_options_test";
+
+    static constexpr const char* jlabel_dry_run = "dry-run";
+    static constexpr const char* jlabel_info_details = "info-details";
+    static constexpr const char* jlabel_disp_treated = "display-treated";
+    static constexpr const char* jlabel_disp_only_dir = "display-only-dirs";
+    static constexpr const char* jlabel_disp_skipped = "display-skipped";
+    static constexpr const char* jlabel_file_mask = "file-mask";
+    static constexpr const char* jlabel_path_mask = "path-mask";
+
 };
 
 #endif

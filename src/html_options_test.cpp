@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_css_style.hpp"
@@ -63,10 +63,9 @@ html_options_test::html_options_test():
     display_skipped("Display skipped files",
 		    html_form_input::check,
 		    "1",
-		    "1")
+		    "1"),
+    ignore_events(false)
 {
-    libdar::archive_options_test defaults;
-
     filename_mask.reset(new (nothrow) html_mask_form_filename("file name"));
     if(!filename_mask)
 	throw exception_memory();
@@ -76,7 +75,7 @@ html_options_test::html_options_test():
 	throw exception_memory();
 
 	// default values
-    empty.set_value_as_bool(defaults.get_empty());
+    reset_non_pointer_fields();
 
 	// building HTML structure
 
@@ -151,8 +150,92 @@ libdar::archive_options_test html_options_test::get_options() const
     return ret;
 }
 
+void html_options_test::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
+
+	ignore_events = true;
+
+	try
+	{
+	    empty.set_value_as_bool(config.at(jlabel_dry_run));
+	    info_details.set_value_as_bool(config.at(jlabel_info_details));
+	    display_treated.set_value_as_bool(config.at(jlabel_disp_treated));
+	    display_treated_only_dir.set_value_as_bool(config.at(jlabel_disp_only_dir));
+	    display_skipped.set_value_as_bool(config.at(jlabel_disp_skipped));
+	    guichet_filename_mask.load_json(config.at(jlabel_file_mask));
+	    guichet_path_mask.load_json(config.at(jlabel_path_mask));
+	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
+	on_event(html_form_input::changed);
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_options_test::save_json() const
+{
+    json config;
+
+    config[jlabel_dry_run] = empty.get_value_as_bool();
+    config[jlabel_info_details] = info_details.get_value_as_bool();
+    config[jlabel_disp_treated] = display_treated.get_value_as_bool();
+    config[jlabel_disp_only_dir] = display_treated_only_dir.get_value_as_bool();
+    config[jlabel_disp_skipped] = display_skipped.get_value_as_bool();
+    config[jlabel_file_mask] = guichet_filename_mask.save_json();
+    config[jlabel_path_mask] = guichet_path_mask.save_json();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					config);
+}
+
+void html_options_test::clear_json()
+{
+    ignore_events = true;
+    try
+    {
+	reset_non_pointer_fields();
+	guichet_filename_mask.clear_json();
+	guichet_path_mask.clear_json();
+    }
+    catch(...)
+    {
+	ignore_events = false;
+	throw;
+    }
+    ignore_events = false;
+
+    on_event(html_form_input::changed);
+}
+
 void html_options_test::on_event(const string & event_name)
 {
+    if(ignore_events)
+	return;
+
     if(event_name == html_form_input::changed)
     {
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
@@ -174,4 +257,13 @@ void html_options_test::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
+}
+
+void html_options_test::reset_non_pointer_fields()
+{
+    empty.set_value_as_bool(false);
+    info_details.set_value_as_bool(true);
+    display_treated.set_value_as_bool(true);
+    display_treated_only_dir.set_value_as_bool(false);
+    display_skipped.set_value_as_bool(true);
 }
