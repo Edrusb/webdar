@@ -228,14 +228,14 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
 
     adopt(&warning_message);
 
+    around_fs.adopt(wrapped_body_builder);
     if(add_form_around)
     {
-	around_fs.adopt(wrapped_body_builder);
 	around_form.adopt(&around_fs);
 	adopt(&around_form);
     }
     else
-	adopt(wrapped_body_builder);
+	adopt(&around_fs);
 
     config_fs.adopt(&config_name);
     config_fs.adopt(&need_saving);
