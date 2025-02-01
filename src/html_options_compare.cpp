@@ -362,6 +362,13 @@ void html_options_compare::on_event(const std::string & event_name)
     {
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
     }
+    else if(event_name == html_form_radio::changed
+	    || event_name == html_form_select::changed
+	    || event_name == html_mask_form_filename::changed
+	    || event_name == html_mask_form_path::changed
+	    || event_name == html_fsa_scope::changed)
+    {
+    }
     else
 	throw WEBDAR_BUG;
 
