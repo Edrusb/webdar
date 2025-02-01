@@ -41,6 +41,7 @@ extern "C"
 #include "html_form_input_file.hpp"
 #include "html_form.hpp"
 #include "html_options_compare.hpp"
+#include "guichet.hpp"
 
 
     /// html component used to let the user provide parameters for an isolation operation
@@ -56,12 +57,15 @@ public:
     ~html_archive_compare() = default;
 
 	/// mandatory call to invoke ASAP after constructor
-    void set_biblio(const std::shared_ptr<bibliotheque> & ptr) { opt_diff.set_biblio(ptr); };
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
 
 
+	/// the current fs_root parameter
     const std::string & get_fs_root() const { return diff_fs_root.get_value(); };
 
-    libdar::archive_options_diff get_options() const { return opt_diff.get_options(); };
+
+	/// gathering options parameter for libdar
+    libdar::archive_options_diff get_options() const;
 
 
 	/// inherited from actor
@@ -81,7 +85,9 @@ private:
     html_form_fieldset diff_fs_root_fs;
     html_form_input_file diff_fs_root;
     html_form diff_fs_root_form;
-    html_options_compare opt_diff;
+
+    guichet guichet_opt_diff;
+    std::shared_ptr<html_options_compare> opt_diff;
 
     static const std::string diff_root_changed;
 

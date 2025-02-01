@@ -47,6 +47,9 @@ html_archive_compare::html_archive_compare():
     diff_fs_root("Directory to compare the backup against", "/", "80%", "Select the directory to compare with..."),
     diff_fs_root_form("Update")
 {
+    opt_diff.reset(new (nothrow) html_options_compare());
+    if(! opt_diff)
+	throw exception_memory();
 
 	// components configuration
 
@@ -59,7 +62,7 @@ html_archive_compare::html_archive_compare():
     diff_fs_root.set_can_create_dir(false);
     diff_fs_root.set_change_event_name(diff_root_changed);
 
-    opt_diff.set_fs_root(diff_fs_root.get_value());
+    opt_diff->set_fs_root(diff_fs_root.get_value());
 
 
 	// adoption tree
@@ -67,7 +70,7 @@ html_archive_compare::html_archive_compare():
     diff_fs_root_fs.adopt(&diff_fs_root);
     diff_fs_root_form.adopt(&diff_fs_root_fs);
     diff_params.adopt_in_section(sect_diff_params, &diff_fs_root_form);
-    diff_params.adopt_in_section(sect_diff_params, &opt_diff);
+    diff_params.adopt_in_section(sect_diff_params, &guichet_opt_diff);
     adopt(&diff_params);
 
 	// events
@@ -80,11 +83,31 @@ html_archive_compare::html_archive_compare():
 
 }
 
+void html_archive_compare::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
+{
+    if(!opt_diff)
+	throw WEBDAR_BUG;
+    opt_diff->set_biblio(ptr);
+
+    guichet_opt_diff.set_child(ptr,
+			       bibliotheque::confdiff,
+			       opt_diff,
+			       false);
+}
+
+libdar::archive_options_diff html_archive_compare::get_options() const
+{
+    if(! opt_diff)
+	throw WEBDAR_BUG;
+
+    return opt_diff->get_options();
+}
+
 void html_archive_compare::on_event(const string & event_name)
 {
     if(event_name == diff_root_changed)
     {
-	opt_diff.set_fs_root(diff_fs_root.get_value());
+	opt_diff->set_fs_root(diff_fs_root.get_value());
     }
     else
 	throw WEBDAR_BUG;
