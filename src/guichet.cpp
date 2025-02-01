@@ -59,7 +59,7 @@ guichet::guichet(bool subcomponent):
     adopted_frame = nullptr;
 
     saveas_text.clear();
-    saveas_text.add_text(0, "The current configuration exposed above can be saved (or not) for reuse later, and will be editable from the \"Configuration\" menu on the left");
+    saveas_text.add_text(0, "The configuration exposed above can be saved (or not) for reuse later, and will be editable from the \"Configuration\" menu on the left");
     saveas_text.add_nl();
     saveas_text.add_nl();
 }
