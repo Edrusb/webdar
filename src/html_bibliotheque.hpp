@@ -54,6 +54,7 @@ extern "C"
 #include "html_form_sig_block_size.hpp"
 #include "html_form_overwrite_action.hpp"
 #include "html_options_test.hpp"
+#include "html_options_compare.hpp"
 
     /// class html_bibliotheque provide graphical mean to manipulate a bibliotheque object
 
@@ -133,6 +134,7 @@ private:
     std::unique_ptr<arriere_boutique<html_form_sig_block_size> > ab_delta_sig;
     std::unique_ptr<arriere_boutique<html_form_overwrite_action> > ab_over_policy;
     std::unique_ptr<arriere_boutique<html_options_test> > ab_options_test;
+    std::unique_ptr<arriere_boutique<html_options_compare> > ab_options_compare;
 
     html_tabs tabs;
     html_text intro;
@@ -175,6 +177,7 @@ private:
     static constexpr const char* tab_delta_sig = "delta-sig";
     static constexpr const char* tab_over_policy = "over-policy";
     static constexpr const char* tab_options_test = "options-test";
+    static constexpr const char* tab_options_compare = "options-compare";
 
     static constexpr const char* event_save = "save";
     static constexpr const char* event_load = "load";
