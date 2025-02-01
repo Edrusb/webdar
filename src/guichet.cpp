@@ -221,13 +221,18 @@ void guichet::load_json(const json & source)
 	    {
 		select.set_selected_id_with_warning(conf_name, jlabel_name);
 	    }
+	    catch(exception_bug & e)
+	    {
+		throw;
+	    }
 	    catch(exception_base & e)
 	    {
 		    // any exception, include exception_bug means the config name does not exist
 
-		throw exception_range(libdar::tools_printf("Unavailable configuration name %s in category %s, the json configuration is not coherent",
-							  conf_name.c_str(),
-							  conf_cat.c_str()));
+		throw exception_range(libdar::tools_printf("Exception met while setting configuration \"%s\" in category \"%s\": %s",
+							   conf_name.c_str(),
+							   conf_cat.c_str(),
+							   e.get_message().c_str()));
 	    }
 
 	    update_selected(); // this will load the configuration from the bibliotheque
