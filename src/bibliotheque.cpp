@@ -98,6 +98,9 @@ std::string bibliotheque::changed(category cat)
     case over_policy:
 	ret += "over-policy";
 	break;
+    case confread:
+	ret += "read";
+	break;
     case EOE:
 	throw WEBDAR_BUG;
     default:
@@ -623,6 +626,8 @@ string bibliotheque::category_to_string(category cat)
 	return "delta-sig";
     case over_policy:
 	return "over-policy";
+    case confread:
+	return "confread";
     case EOE:
 	throw WEBDAR_BUG;
     default:
@@ -666,6 +671,8 @@ bibliotheque::category bibliotheque::string_to_category(const string & s)
 	return delta_sig;
     else if(s == "over-policy")
 	return over_policy;
+    else if(s == "confread")
+	return confread;
     else
 	throw exception_range(libdar::tools_printf("Unknown category: %s", s.c_str()));
 }

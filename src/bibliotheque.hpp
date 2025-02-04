@@ -78,7 +78,8 @@ public:
 	ciphering = 14,
 	delta_sig = 15,
 	over_policy = 16,
-	EOE = 17 ///< not a valid value, used for interating in the enum
+	confread = 17,
+	EOE = 18 ///< not a valid value, used for interating in the enum
     };
 
 	/// change event per category
