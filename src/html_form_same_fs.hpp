@@ -35,6 +35,7 @@ extern "C"
 
     // webdar headers
 #include "html_form_dynamic_table.hpp"
+#include "jsoner.hpp"
 
     /// class html_form_same_fs provide interface for the user to filter base on mounted file system
 
@@ -65,11 +66,15 @@ extern "C"
 
 	\endverbatim **/
 
-    /// \note this component should adopted by an html_form directly
+    /// \note this component should be adopted by an html_form directly
     /// or not (through an html_form_fieldset for example)
     ///
 
-class html_form_same_fs : public body_builder, public html_form_dynamic_table_object_provider
+class html_form_same_fs : public body_builder,
+			  public html_form_dynamic_table_object_provider,
+			  public jsoner,
+			  public actor,
+			  public events
 {
 public:
     html_form_same_fs();
@@ -90,6 +95,15 @@ public:
 								 const std::string & context,
 								 std::string & changed_event) const override;
 
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
+
 
 protected:
 	/// inherited methods from body_builder
@@ -100,6 +114,12 @@ private:
     html_form_dynamic_table table;
 
     std::vector<std::string> gather_content_of_type(unsigned int type) const;
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_same_fs";
+
+    static constexpr const char* jlabel_contents = "contents";
+
 };
 
 #endif
