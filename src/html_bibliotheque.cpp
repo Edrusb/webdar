@@ -71,6 +71,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     unique_ptr<html_form_overwrite_action> tmp_over_policy;
     unique_ptr<html_options_test> tmp_options_test;
     unique_ptr<html_options_compare> tmp_options_compare;
+    unique_ptr<html_options_read> tmp_options_read;
 
     if(!ptr)
 	throw WEBDAR_BUG;
@@ -274,6 +275,22 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     if(! ab_options_compare)
 	throw exception_memory();
 
+	// options read
+
+    tmp_options_read.reset(new (nothrow) html_options_read());
+    if(! tmp_options_read)
+	throw exception_memory();
+    else
+	tmp_options_read->set_biblio(ptr);
+
+    ab_options_read.reset(new (nothrow) arriere_boutique<html_options_read>(ptr,
+									    bibliotheque::confread,
+									    tmp_options_read,
+									    html_options_read::changed,
+									    false));
+    if(! ab_options_read)
+	throw exception_memory();
+
     	// global component setups
 
     tabs.add_tab("Main", tab_main);
@@ -287,6 +304,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     tabs.add_tab("Overwriting Policy", tab_over_policy);
     tabs.add_tab("Testing Options", tab_options_test);
     tabs.add_tab("Comparison Options", tab_options_compare);
+    tabs.add_tab("Reading Options", tab_options_read);
 
 	//  global adoption tree
 
@@ -311,6 +329,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     tabs.adopt_in_section(tab_over_policy, ab_over_policy.get());
     tabs.adopt_in_section(tab_options_test, ab_options_test.get());
     tabs.adopt_in_section(tab_options_compare, ab_options_compare.get());
+    tabs.adopt_in_section(tab_options_read, ab_options_read.get());
 
     adopt(&tabs);
 
