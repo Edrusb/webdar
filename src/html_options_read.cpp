@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_tools.hpp"
@@ -89,25 +89,7 @@ html_options_read::html_options_read():
 
 	// set default values from libdar
 
-    libdar::archive_options_read defaults;
-
-    src_crypto_algo.set_value(defaults.get_crypto_algo());
-    src_crypto_pass.set_value("");
-    src_crypto_size.set_min_only(defaults.get_crypto_size());
-    src_crypto_size.set_value_as_int(defaults.get_crypto_size());
-    src_execute.set_value(defaults.get_execute());
-    src_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_slice_min_digits()));
-    lax.set_value_as_bool(defaults.get_lax());
-    sequential_read.set_value_as_bool(defaults.get_sequential_read());
-    force_first_slice.set_value_as_bool(defaults.get_force_first_slice());
-    ref_use_external_catalogue.set_value_as_bool(defaults.is_external_catalogue_set());
-    if(ref_use_external_catalogue.get_value_as_bool())
-	ref_path.set_value(defaults.get_ref_path().display());
-    ref_crypto_algo.set_value(defaults.get_ref_crypto_algo());
-    ref_crypto_pass.set_value("");
-    ref_crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_ref_crypto_size()));
-    ref_execute.set_value(defaults.get_ref_execute());
-    ref_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_ref_slice_min_digits()));
+    set_defaults();
 
 	// build the adoption tree
     deroule.add_section(sect_entrep, "Backup Location");
@@ -252,6 +234,91 @@ void html_options_read::set_src_min_digits(const string & val)
     src_slice_min_digits.set_value(val);
 }
 
+void html_options_read::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
+
+	guichet_entrep.load_json(config.at(jlabel_entrep));
+	src_crypto_algo.set_selected_id(config.at(jlabel_crypto_algo));
+	src_crypto_pass.set_value(config.at(jlabel_crypto_pass));
+	src_crypto_size.set_value_as_int(config.at(jlabel_crypto_size));
+	src_ignore_sig_failure.set_value_as_bool(config.at(jlabel_ignore_sig_failure));
+	src_execute.set_value(config.at(jlabel_execute));
+	src_slice_min_digits.set_value_as_bool(config.at(jlabel_slice_min_digits));
+	info_details.set_value_as_bool(config.at(jlabel_info_details));
+	lax.set_value_as_bool(config.at(jlabel_lax));
+	sequential_read.set_value_as_bool(config.at(jlabel_seq_read));
+	force_first_slice.set_value_as_bool(config.at(jlabel_force_first_slice));
+	multi_thread_crypto.set_value_as_int(config.at(jlabel_thread_crypto));
+	multi_thread_compress.set_value_as_bool(config.at(jlabel_thread_compress));
+
+	guichet_ref_entrep.load_json(config.at(jlabel_ref_entrep));
+	ref_use_external_catalogue.set_value_as_bool(config.at(jlabel_ref_used));
+	ref_path.set_value(config.at(jlabel_ref_path));
+	ref_crypto_algo.set_selected_id(config.at(jlabel_ref_crypto_algo));
+	ref_crypto_pass.set_value(config.at(jlabel_ref_crypto_pass));
+	ref_crypto_size.set_value_as_int(config.at(jlabel_ref_crypto_size));
+	ref_execute.set_value(config.at(jlabel_ref_execute));
+	ref_slice_min_digits.set_value(config.at(jlabel_ref_slice_min_digits));
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_options_read::save_json() const
+{
+    json config;
+
+    config[jlabel_entrep] = guichet_entrep.save_json();
+    config[jlabel_crypto_algo] = src_crypto_algo.get_selected_id();
+    config[jlabel_crypto_pass] = src_crypto_pass.get_value();
+    config[jlabel_crypto_size] = src_crypto_size.get_value_as_int();
+    config[jlabel_ignore_sig_failure] = src_ignore_sig_failure.get_value_as_bool();
+    config[jlabel_execute] = src_execute.get_value();
+    config[jlabel_slice_min_digits] = src_slice_min_digits.get_value_as_bool();
+    config[jlabel_info_details] = info_details.get_value_as_bool();
+    config[jlabel_lax] = lax.get_value_as_bool();
+    config[jlabel_seq_read] = sequential_read.get_value_as_bool();
+    config[jlabel_force_first_slice] = force_first_slice.get_value_as_bool();
+    config[jlabel_thread_crypto] = multi_thread_crypto.get_value_as_int();
+    config[jlabel_thread_compress] = multi_thread_compress.get_value_as_bool();
+
+    config[jlabel_ref_entrep] = guichet_ref_entrep.save_json();
+    config[jlabel_ref_used] = ref_use_external_catalogue.get_value_as_bool();
+    config[jlabel_ref_path] = ref_path.get_value();
+    config[jlabel_ref_crypto_algo] = ref_crypto_algo.get_selected_id();
+    config[jlabel_ref_crypto_pass] = ref_crypto_pass.get_value();
+    config[jlabel_ref_crypto_size] = ref_crypto_size.get_value_as_int();
+    config[jlabel_ref_execute] = ref_execute.get_value();
+    config[jlabel_ref_slice_min_digits] = ref_slice_min_digits.get_value();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					config);
+}
+
+void html_options_read::clear_json()
+{
+    set_defaults();
+}
+
 void html_options_read::on_event(const string & event_name)
 {
     if(event_name == entrepot_has_changed)
@@ -354,4 +421,27 @@ void html_options_read::update_ref_entrepot()
     ref_webui.set_visible(true);
     need_ref_entrepot_update = false;
     ref_webui.run_and_control_thread(this);
+}
+
+void html_options_read::set_defaults()
+{
+    libdar::archive_options_read defaults;
+
+    src_crypto_algo.set_value(defaults.get_crypto_algo());
+    src_crypto_pass.set_value("");
+    src_crypto_size.set_min_only(defaults.get_crypto_size());
+    src_crypto_size.set_value_as_int(defaults.get_crypto_size());
+    src_execute.set_value(defaults.get_execute());
+    src_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_slice_min_digits()));
+    lax.set_value_as_bool(defaults.get_lax());
+    sequential_read.set_value_as_bool(defaults.get_sequential_read());
+    force_first_slice.set_value_as_bool(defaults.get_force_first_slice());
+    ref_use_external_catalogue.set_value_as_bool(defaults.is_external_catalogue_set());
+    if(ref_use_external_catalogue.get_value_as_bool())
+	ref_path.set_value(defaults.get_ref_path().display());
+    ref_crypto_algo.set_value(defaults.get_ref_crypto_algo());
+    ref_crypto_pass.set_value("");
+    ref_crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_ref_crypto_size()));
+    ref_execute.set_value(defaults.get_ref_execute());
+    ref_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_ref_slice_min_digits()));
 }

@@ -52,6 +52,7 @@ extern "C"
 #include "html_libdar_running_popup.hpp"
 #include "bibliotheque.hpp"
 #include "guichet.hpp"
+#include "jsoner.hpp"
 
     /// class html_options_read implementes the html components to setup optional parameters while reading an archive
 
@@ -75,7 +76,11 @@ extern "C"
     /// is the one provided as argument of those methods, not the one given to set_webui() which is only used
     /// when representing the html components during the configuration phase of webdar.
 
-class html_options_read : public body_builder, public actor, public events, public libthreadar::thread_signal
+class html_options_read : public body_builder,
+			  public actor,
+			  public events,
+			  public libthreadar::thread_signal,
+			  public jsoner
 {
 public:
     static const std::string entrepot_has_changed;
@@ -99,6 +104,15 @@ public:
 
 	/// set min-digits field for the archive to read (not the archive of reference if any)
     void set_src_min_digits(const std::string & val);
+
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -167,7 +181,6 @@ private:
 	// used to create ref_entrep during html interaction
     html_libdar_running_popup ref_webui;
 
-
 	/// delay entrepot update when waiting inherited_get_body_part() to be executed
 
 	/// \note not doing so may lead to run() this object which involves an html_web_user_interaction
@@ -175,7 +188,33 @@ private:
     bool need_ref_entrepot_update;
 
     void update_ref_entrepot();
+    void set_defaults();
+    void trigger_changed();
 
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_options_read";
+
+    static constexpr const char* jlabel_entrep = "entrepot";
+    static constexpr const char* jlabel_crypto_algo = "cryto-algo";
+    static constexpr const char* jlabel_crypto_pass = "crypto-pass";
+    static constexpr const char* jlabel_crypto_size = "crytpo-size";
+    static constexpr const char* jlabel_ignore_sig_failure = "ignore-sig-failure";
+    static constexpr const char* jlabel_execute = "execute";
+    static constexpr const char* jlabel_slice_min_digits = "min-digits";
+    static constexpr const char* jlabel_info_details = "info-details";
+    static constexpr const char* jlabel_lax = "lax-mode";
+    static constexpr const char* jlabel_seq_read = "sequential-read";
+    static constexpr const char* jlabel_force_first_slice = "first-slice-reading";
+    static constexpr const char* jlabel_thread_crypto = "cipher-threads";
+    static constexpr const char* jlabel_thread_compress = "compr-threads";
+    static constexpr const char* jlabel_ref_entrep = "ref-entrepot";
+    static constexpr const char* jlabel_ref_used = "ref-used";
+    static constexpr const char* jlabel_ref_path = "ref-path";
+    static constexpr const char* jlabel_ref_crypto_algo = "ref-crypto-algo";
+    static constexpr const char* jlabel_ref_crypto_pass = "ref-crypt-pass";
+    static constexpr const char* jlabel_ref_crypto_size = "ref-crypto-size";
+    static constexpr const char* jlabel_ref_execute = "ref-execute";
+    static constexpr const char* jlabel_ref_slice_min_digits = "ref-min-digits";
 
 };
 
