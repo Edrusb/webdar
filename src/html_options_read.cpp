@@ -51,7 +51,7 @@ html_options_read::html_options_read():
     fs_ref(""),
     src_crypto_algo("Cipher (for recent archives/backups, this is auto-detected, do not select any cipher)"),
     src_crypto_pass("Passphrase (will be asked later if not provided here)", html_form_input::password, "", "80%"),
-    src_crypto_size("Cipher block size", html_form_input::number, "0", "80%"),
+    src_crypto_size("Cipher block size", 0, "80%"),
     src_ignore_sig_failure("Ignore signature failure", html_form_input::check, "", "1"),
     src_execute("Command to execute locally before reading each slice", html_form_input::text, "", "80%"),
     src_slice_min_digits("Slice minimum digit", html_form_input::number, "0", "80%"),
@@ -66,7 +66,7 @@ html_options_read::html_options_read():
     ref_path("External catalog path", "/", "80%", "Select the external catalog..."),
     ref_crypto_algo("Cipher (for recent archives/backups, this is auto-detected, do not select any cipher)"),
     ref_crypto_pass("Passphrase", html_form_input::password, "", "80%"),
-    ref_crypto_size("Cipher block size", html_form_input::number, "0", "80%"),
+    ref_crypto_size("Cipher block size", 0, "80%"),
     ref_execute("Command to execute locally before reading each slice", html_form_input::text, "", "80%"),
     ref_slice_min_digits("Slice minimum digit", html_form_input::number, "0", "80%"),
     need_ref_entrepot_update(false),
@@ -85,7 +85,6 @@ html_options_read::html_options_read():
     multi_thread_crypto.set_min_only(1);
     multi_thread_compress.set_min_only(1);
 
-    ref_crypto_size.set_min_only(0);
     src_slice_min_digits.set_min_only(0);
     ref_slice_min_digits.set_min_only(0);
 
@@ -150,7 +149,7 @@ html_options_read::html_options_read():
 
 	// to track component changes from subcomponents changes
     src_crypto_pass.record_actor_on_event(this, html_form_input::changed);
-    src_crypto_size.record_actor_on_event(this, html_form_input::changed);
+    src_crypto_size.record_actor_on_event(this, html_form_input_unit::changed);
     src_ignore_sig_failure.record_actor_on_event(this, html_form_input::changed);
     src_execute.record_actor_on_event(this, html_form_input::changed);
     src_slice_min_digits.record_actor_on_event(this, html_form_input::changed);
@@ -161,7 +160,7 @@ html_options_read::html_options_read():
     multi_thread_crypto.record_actor_on_event(this, html_form_input::changed);
     multi_thread_compress.record_actor_on_event(this, html_form_input::changed);
     ref_crypto_pass.record_actor_on_event(this, html_form_input::changed);
-    ref_crypto_size.record_actor_on_event(this, html_form_input::changed);
+    ref_crypto_size.record_actor_on_event(this, html_form_input_unit::changed);
     ref_execute.record_actor_on_event(this, html_form_input::changed);
     ref_slice_min_digits.record_actor_on_event(this, html_form_input::changed);
 
@@ -200,7 +199,7 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
     opts.set_crypto_algo(src_crypto_algo.get_value());
     if(!src_crypto_pass.get_value().empty())
 	opts.set_crypto_pass(libdar::secu_string(src_crypto_pass.get_value().c_str(), src_crypto_pass.get_value().size()));
-    opts.set_crypto_size(webdar_tools_convert_to_int(src_crypto_size.get_value()));
+    opts.set_crypto_size(webdar_tools_convert_from_infinint<libdar::U_32>(src_crypto_size.get_value_as_infinint(), "Error converting value of crypto block size"));
     opts.set_ignore_signature_check_failure(src_ignore_sig_failure.get_value_as_bool());
     opts.set_execute(src_execute.get_value());
     opts.set_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(src_slice_min_digits.get_value())));
@@ -227,7 +226,7 @@ libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_
 	opts.set_ref_crypto_algo(ref_crypto_algo.get_value());
 	if(!ref_crypto_pass.get_value().empty())
 	    opts.set_ref_crypto_pass(libdar::secu_string(ref_crypto_pass.get_value().c_str(), ref_crypto_pass.get_value().size()));
-	opts.set_ref_crypto_size(webdar_tools_convert_to_int(ref_crypto_size.get_value()));
+	opts.set_ref_crypto_size(webdar_tools_convert_from_infinint<libdar::U_32>(ref_crypto_size.get_value_as_infinint(), "Error converting value of crypto block size for the reference catalog"));
 	opts.set_ref_execute(ref_execute.get_value());
 	opts.set_ref_slice_min_digits(libdar::infinint(webdar_tools_convert_to_int(ref_slice_min_digits.get_value())));
 	opts.set_ref_entrepot(ref_entrep->get_entrepot(webui));
@@ -281,7 +280,7 @@ void html_options_read::load_json(const json & source)
 	    guichet_entrep.load_json(config.at(jlabel_entrep));
 	    src_crypto_algo.set_selected_id(config.at(jlabel_crypto_algo));
 	    src_crypto_pass.set_value(config.at(jlabel_crypto_pass));
-	    src_crypto_size.set_value_as_int(config.at(jlabel_crypto_size));
+	    src_crypto_size.set_value_as_infinint(libdar::deci(config.at(jlabel_crypto_size)).computer());
 	    src_ignore_sig_failure.set_value_as_bool(config.at(jlabel_ignore_sig_failure));
 	    src_execute.set_value(config.at(jlabel_execute));
 	    src_slice_min_digits.set_value_as_bool(config.at(jlabel_slice_min_digits));
@@ -297,7 +296,7 @@ void html_options_read::load_json(const json & source)
 	    ref_path.set_value(config.at(jlabel_ref_path));
 	    ref_crypto_algo.set_selected_id(config.at(jlabel_ref_crypto_algo));
 	    ref_crypto_pass.set_value(config.at(jlabel_ref_crypto_pass));
-	    ref_crypto_size.set_value_as_int(config.at(jlabel_ref_crypto_size));
+	    ref_crypto_size.set_value_as_infinint(libdar::deci(config.at(jlabel_ref_crypto_size)).computer());
 	    ref_execute.set_value(config.at(jlabel_ref_execute));
 	    ref_slice_min_digits.set_value(config.at(jlabel_ref_slice_min_digits));
 	}
@@ -322,7 +321,7 @@ json html_options_read::save_json() const
     config[jlabel_entrep] = guichet_entrep.save_json();
     config[jlabel_crypto_algo] = src_crypto_algo.get_selected_id();
     config[jlabel_crypto_pass] = src_crypto_pass.get_value();
-    config[jlabel_crypto_size] = src_crypto_size.get_value_as_int();
+    config[jlabel_crypto_size] = libdar::deci(src_crypto_size.get_value_as_infinint()).human();
     config[jlabel_ignore_sig_failure] = src_ignore_sig_failure.get_value_as_bool();
     config[jlabel_execute] = src_execute.get_value();
     config[jlabel_slice_min_digits] = src_slice_min_digits.get_value_as_bool();
@@ -338,7 +337,7 @@ json html_options_read::save_json() const
     config[jlabel_ref_path] = ref_path.get_value();
     config[jlabel_ref_crypto_algo] = ref_crypto_algo.get_selected_id();
     config[jlabel_ref_crypto_pass] = ref_crypto_pass.get_value();
-    config[jlabel_ref_crypto_size] = ref_crypto_size.get_value_as_int();
+    config[jlabel_ref_crypto_size] = libdar::deci(ref_crypto_size.get_value_as_infinint()).human();
     config[jlabel_ref_execute] = ref_execute.get_value();
     config[jlabel_ref_slice_min_digits] = ref_slice_min_digits.get_value();
 
@@ -388,6 +387,7 @@ void html_options_read::on_event(const string & event_name)
 	join();
     else if(event_name == html_crypto_algo::changed
 	    || event_name == html_form_input::changed
+	    || event_name == html_form_input_unit::changed
 	    || event_name == html_form_input_file::changed_entrepot)
     {
 	if(ref_use_external_catalogue.get_value_as_bool())
@@ -487,8 +487,7 @@ void html_options_read::set_defaults()
 
     src_crypto_algo.set_value(defaults.get_crypto_algo());
     src_crypto_pass.set_value("");
-    src_crypto_size.set_min_only(defaults.get_crypto_size());
-    src_crypto_size.set_value_as_int(defaults.get_crypto_size());
+    src_crypto_size.set_value_as_infinint(defaults.get_crypto_size());
     src_execute.set_value(defaults.get_execute());
     src_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_slice_min_digits()));
     lax.set_value_as_bool(defaults.get_lax());
@@ -499,7 +498,7 @@ void html_options_read::set_defaults()
 	ref_path.set_value(defaults.get_ref_path().display());
     ref_crypto_algo.set_value(defaults.get_ref_crypto_algo());
     ref_crypto_pass.set_value("");
-    ref_crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_ref_crypto_size()));
+    ref_crypto_size.set_value_as_infinint(defaults.get_ref_crypto_size());
     ref_execute.set_value(defaults.get_ref_execute());
     ref_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_ref_slice_min_digits()));
 }

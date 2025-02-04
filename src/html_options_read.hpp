@@ -44,6 +44,7 @@ extern "C"
 #include "html_form_select.hpp"
 #include "html_form_input.hpp"
 #include "html_form_input_file.hpp"
+#include "html_form_input_unit.hpp"
 #include "html_crypto_algo.hpp"
 #include "events.hpp"
 #include "html_derouleur.hpp"
@@ -159,7 +160,7 @@ private:
 	// archive_options_read fields
     html_crypto_algo src_crypto_algo;
     html_form_input src_crypto_pass;
-    html_form_input src_crypto_size;
+    html_form_input_unit src_crypto_size;
     html_form_input src_ignore_sig_failure;
     html_form_input src_execute;
     html_form_input src_slice_min_digits;
@@ -179,7 +180,7 @@ private:
     html_form_input_file ref_path;
     html_crypto_algo ref_crypto_algo;
     html_form_input ref_crypto_pass;
-    html_form_input ref_crypto_size;
+    html_form_input_unit ref_crypto_size;
     html_form_input ref_execute;
     html_form_input ref_slice_min_digits;
 
