@@ -319,6 +319,16 @@ void html_options_read::clear_json()
     set_defaults();
 }
 
+bibliotheque::using_set html_options_read::get_using_set() const
+{
+    bibliotheque::using_set ret;
+
+    subconfig_add_to(ret, guichet_entrep.get_using_set());
+    subconfig_add_to(ret, guichet_ref_entrep.get_using_set());
+
+    return ret;
+}
+
 void html_options_read::on_event(const string & event_name)
 {
     if(event_name == entrepot_has_changed)

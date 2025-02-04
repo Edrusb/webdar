@@ -53,6 +53,7 @@ extern "C"
 #include "bibliotheque.hpp"
 #include "guichet.hpp"
 #include "jsoner.hpp"
+#include "bibliotheque_subconfig.hpp"
 
     /// class html_options_read implementes the html components to setup optional parameters while reading an archive
 
@@ -80,7 +81,8 @@ class html_options_read : public body_builder,
 			  public actor,
 			  public events,
 			  public libthreadar::thread_signal,
-			  public jsoner
+			  public jsoner,
+			  public bibliotheque_subconfig
 {
 public:
     static const std::string entrepot_has_changed;
@@ -113,6 +115,9 @@ public:
 
 	/// inherited from jsoner
     virtual void clear_json() override;
+
+	/// inherited from bibliotheque_subconfig
+    virtual bibliotheque::using_set get_using_set() const override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
