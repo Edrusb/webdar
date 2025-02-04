@@ -39,16 +39,30 @@ extern "C"
 
 using namespace std;
 
+const string html_form_same_fs::changed = "hfsfs-changed";
+
 html_form_same_fs::html_form_same_fs():
     table(false,
 	  true,
 	  "File system mount point to add",
 	  "--- select a type of filter ---")
 {
+	// components setup
+
     table.set_obj_type_provider(this);
     table.add_obj_type("included mount point"); // index 0 in provide_object_of_type()
     table.add_obj_type("excluded mount point"); // index 1 in provide_object_of_type()
+
+	// adption tree
+
     adopt(&table);
+
+	// events
+
+    table.record_actor_on_event(this, html_form_dynamic_table::changed);
+    register_name(changed);
+
+	// css
 }
 
 vector<string> html_form_same_fs::get_included_fs_path() const
@@ -133,6 +147,14 @@ json html_form_same_fs::save_json() const
     return wrap_config_with_json_header(format_version,
 					myclass_id,
 					ret);
+}
+
+void html_form_same_fs::on_event(const std::string & event_name)
+{
+    if(event_name == html_form_dynamic_table::changed)
+	act(changed);
+    else
+	throw WEBDAR_BUG;
 }
 
 void html_form_same_fs::clear_json()
