@@ -47,6 +47,7 @@ extern "C"
 #include "guichet.hpp"
 #include "jsoner.hpp"
 #include "bibliotheque_subconfig.hpp"
+#include "events.hpp"
 
     /// class html_archive_read let user define the archive path, basename and option to read
 
@@ -56,9 +57,12 @@ class html_archive_read: public body_builder,
 			 public actor,
 			 public libthreadar::thread_signal,
 			 public jsoner,
-			 public bibliotheque_subconfig
+			 public bibliotheque_subconfig,
+			 public events
 {
 public:
+    static const std::string changed;
+
     html_archive_read(const std::string & archive_description);
     html_archive_read(const html_archive_read & ref) = delete;
     html_archive_read(html_archive_read && ref) noexcept = delete;
@@ -116,8 +120,11 @@ private:
 	/// \note not doing so may lead to run() this object which involves an html_web_user_interaction
 	/// while the object is not visible and this this interaction component not operational
     bool need_entrepot_update;
+    enum { event_propagated, event_ignored, event_pending } ignore_events_st;
 
     void update_entrepot();
+    void trigger_changed();
+    void ignore_events(bool mode);
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* myclass_id = "html_archive_read";

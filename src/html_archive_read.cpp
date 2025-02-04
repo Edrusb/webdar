@@ -40,6 +40,8 @@ extern "C"
 
 using namespace std;
 
+const string html_archive_read::changed = "haread-changed";
+
 html_archive_read::html_archive_read(const string & archive_description):
     form("Update"),
     fs(archive_description),
@@ -47,7 +49,8 @@ html_archive_read::html_archive_read(const string & archive_description):
 	      "/",
 	      "80%",
 	      "Select the backup to read..."),
-    need_entrepot_update(false)
+    need_entrepot_update(false),
+    ignore_events_st(event_propagated)
 {
     opt_read.reset(new (nothrow) html_options_read());
     if(! opt_read)
@@ -63,8 +66,10 @@ html_archive_read::html_archive_read(const string & archive_description):
 
 	// events and actor
     opt_read->record_actor_on_event(this, html_options_read::entrepot_has_changed);
+    opt_read->record_actor_on_event(this, html_options_read::changed);
     arch_path.record_actor_on_event(this, html_form_input_file::changed_event);
     libdarexec.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
+    register_name(changed);
 
 	// initial values
     arch_path.set_select_mode(html_form_input_file::select_slice);
@@ -99,8 +104,18 @@ void html_archive_read::load_json(const json & source)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
 						       myclass_id));
 
-	arch_path.set_value(config.at(jlabel_path));
-	guichet_opt_read.load_json(config.at(jlabel_opt_read));
+	ignore_events(true);
+	try
+	{
+	    arch_path.set_value(config.at(jlabel_path));
+	    guichet_opt_read.load_json(config.at(jlabel_opt_read));
+	}
+	catch(...)
+	{
+	    ignore_events(false);
+	    throw;
+	}
+	ignore_events(false);
     }
     catch(json::exception & e)
     {
@@ -122,8 +137,18 @@ json html_archive_read::save_json() const
 
 void html_archive_read::clear_json()
 {
-    arch_path.set_value("");
-    guichet_opt_read.clear_json();
+    ignore_events(true);
+    try
+    {
+	arch_path.set_value("");
+	guichet_opt_read.clear_json();
+    }
+    catch(...)
+    {
+	ignore_events(false);
+	throw;
+    }
+    ignore_events(false);
 }
 
 void html_archive_read::on_event(const string & event_name)
@@ -147,12 +172,17 @@ void html_archive_read::on_event(const string & event_name)
     {
 	if(! arch_path.get_min_digits().empty())
 	    opt_read->set_src_min_digits(arch_path.get_min_digits());
+	trigger_changed();
     }
     else if(event_name == html_libdar_running_popup::libdar_has_finished)
     {
 	libdarexec.set_visible(false); // now hiding the popup
 	my_body_part_has_changed();
 	join();
+    }
+    else if(event_name == html_options_read::changed)
+    {
+	trigger_changed();
     }
     else
 	throw WEBDAR_BUG;
@@ -221,4 +251,44 @@ void html_archive_read::update_entrepot()
     libdarexec.set_visible(true);
     need_entrepot_update = false;
     libdarexec.run_and_control_thread(this);
+}
+
+void html_archive_read::trigger_changed()
+{
+    switch(ignore_events_st)
+    {
+    case event_propagated:
+	act(changed);
+	break;
+    case event_ignored:
+	ignore_events_st = event_pending;
+	break;
+    case event_pending:
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+}
+
+void html_archive_read::ignore_events(bool mode)
+{
+    switch(ignore_events_st)
+    {
+    case event_propagated:
+	if(mode)
+	    ignore_events_st = event_ignored;
+	break;
+    case event_ignored:
+	if(! mode)
+	    ignore_events_st = event_propagated;
+	break;
+    case event_pending:
+	if(mode)
+	    throw WEBDAR_BUG;
+	ignore_events_st = event_propagated;
+	trigger_changed();
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
 }
