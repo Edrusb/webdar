@@ -46,6 +46,7 @@ extern "C"
 #include "actor.hpp"
 #include "guichet.hpp"
 #include "jsoner.hpp"
+#include "bibliotheque_subconfig.hpp"
 
     /// class html_archive_read let user define the archive path, basename and option to read
 
@@ -54,7 +55,8 @@ extern "C"
 class html_archive_read: public body_builder,
 			 public actor,
 			 public libthreadar::thread_signal,
-			 public jsoner
+			 public jsoner,
+			 public bibliotheque_subconfig
 {
 public:
     html_archive_read(const std::string & archive_description);
@@ -85,6 +87,8 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
+	/// inherited from bibliotheque_subconfig
+    virtual bibliotheque::using_set get_using_set() const override { return guichet_opt_read.get_using_set(); };
 
 protected:
 	/// inherited from body_builder
