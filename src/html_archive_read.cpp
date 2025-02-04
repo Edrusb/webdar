@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "chemin.hpp"
@@ -80,6 +80,51 @@ void html_archive_read::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 			       false);
 };
 
+void html_archive_read::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
+
+	arch_path.set_value(config.at(jlabel_path));
+	guichet_opt_read.load_json(config.at(jlabel_opt_read));
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_archive_read::save_json() const
+{
+    json config;
+
+    config[jlabel_path] = arch_path.get_value();
+    config[jlabel_opt_read] = guichet_opt_read.save_json();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					config);
+}
+
+void html_archive_read::clear_json()
+{
+    arch_path.set_value("");
+    guichet_opt_read.clear_json();
+}
 
 void html_archive_read::on_event(const string & event_name)
 {

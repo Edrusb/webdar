@@ -45,12 +45,16 @@ extern "C"
 #include "html_libdar_running_popup.hpp"
 #include "actor.hpp"
 #include "guichet.hpp"
+#include "jsoner.hpp"
 
     /// class html_archive_read let user define the archive path, basename and option to read
 
     /// it is mainly used in class saisie
 
-class html_archive_read: public body_builder, public actor, public libthreadar::thread_signal
+class html_archive_read: public body_builder,
+			 public actor,
+			 public libthreadar::thread_signal,
+			 public jsoner
 {
 public:
     html_archive_read(const std::string & archive_description);
@@ -69,6 +73,16 @@ public:
     std::string get_archive_basename() const;
     libdar::archive_options_read get_read_options(std::shared_ptr<html_web_user_interaction> dialog) const { return opt_read->get_options(dialog); };
 
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
+
+	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
 
@@ -100,6 +114,12 @@ private:
     bool need_entrepot_update;
 
     void update_entrepot();
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_archive_read";
+
+    static constexpr const char* jlabel_path = "archive-path";
+    static constexpr const char* jlabel_opt_read = "read-options";
 
 };
 
