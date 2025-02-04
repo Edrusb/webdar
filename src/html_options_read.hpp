@@ -85,7 +85,8 @@ class html_options_read : public body_builder,
 			  public bibliotheque_subconfig
 {
 public:
-    static const std::string entrepot_has_changed;
+    static const std::string entrepot_has_changed; ///< entrepot parameter changed
+    static const std::string changed;  ///< any parameter changed (including entrepot change)
 
     html_options_read();
     html_options_read(const html_options_read & ref) = delete;
@@ -169,7 +170,6 @@ private:
     html_form_input multi_thread_crypto;
     html_form_input multi_thread_compress;
 
-
 	// external catalogue entrepot
     guichet guichet_ref_entrep;
     std::shared_ptr<html_entrepot> ref_entrep;
@@ -185,6 +185,9 @@ private:
 
 	// used to create ref_entrep during html interaction
     html_libdar_running_popup ref_webui;
+
+	/// to gather many subcomponent changes into a single change event from us
+    bool ignore_events;
 
 	/// delay entrepot update when waiting inherited_get_body_part() to be executed
 

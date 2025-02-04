@@ -43,6 +43,7 @@ using namespace std;
 
 const string html_options_read::entrepot_has_changed = "entrep_has_changed";
 const string html_options_read::ref_entrepot_has_changed = "ref_entrep_has_changed";
+const string html_options_read::changed = "horead_changed";
 
 html_options_read::html_options_read():
     form_src("Update Options"),
@@ -68,7 +69,8 @@ html_options_read::html_options_read():
     ref_crypto_size("Cipher block size", html_form_input::number, "0", "80%"),
     ref_execute("Command to execute locally before reading each slice", html_form_input::text, "", "80%"),
     ref_slice_min_digits("Slice minimum digit", html_form_input::number, "0", "80%"),
-    need_ref_entrepot_update(false)
+    need_ref_entrepot_update(false),
+    ignore_events(false)
 {
     entrep.reset(new (nothrow) html_entrepot());
     if(!entrep)
@@ -138,6 +140,7 @@ html_options_read::html_options_read():
 	// these are the same event name as the ones we used for ourself
     entrep->record_actor_on_event(this, entrepot_has_changed);
     ref_entrep->record_actor_on_event(this, ref_entrepot_has_changed);
+
     ref_path.record_actor_on_event(this, html_form_input_file::changed_entrepot);
     ref_path.record_actor_on_event(this, html_form_input_file::changed_event);
     ref_webui.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
@@ -145,8 +148,26 @@ html_options_read::html_options_read():
     ref_use_external_catalogue.record_actor_on_event(this, html_form_input::changed);
     ref_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
 
+	// to track component changes from subcomponents changes
+    src_crypto_pass.record_actor_on_event(this, html_form_input::changed);
+    src_crypto_size.record_actor_on_event(this, html_form_input::changed);
+    src_ignore_sig_failure.record_actor_on_event(this, html_form_input::changed);
+    src_execute.record_actor_on_event(this, html_form_input::changed);
+    src_slice_min_digits.record_actor_on_event(this, html_form_input::changed);
+    info_details.record_actor_on_event(this, html_form_input::changed);
+    lax.record_actor_on_event(this, html_form_input::changed);
+    sequential_read.record_actor_on_event(this, html_form_input::changed);
+    force_first_slice.record_actor_on_event(this, html_form_input::changed);
+    multi_thread_crypto.record_actor_on_event(this, html_form_input::changed);
+    multi_thread_compress.record_actor_on_event(this, html_form_input::changed);
+    ref_crypto_pass.record_actor_on_event(this, html_form_input::changed);
+    ref_crypto_size.record_actor_on_event(this, html_form_input::changed);
+    ref_execute.record_actor_on_event(this, html_form_input::changed);
+    ref_slice_min_digits.record_actor_on_event(this, html_form_input::changed);
+
 	// setting up our own events
     register_name(entrepot_has_changed);
+    register_name(changed);
 
 	// manually launching on event to have coherent visibility between fields
     on_event(html_crypto_algo::changed);
@@ -253,28 +274,40 @@ void html_options_read::load_json(const json & source)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
 						       myclass_id));
 
-	guichet_entrep.load_json(config.at(jlabel_entrep));
-	src_crypto_algo.set_selected_id(config.at(jlabel_crypto_algo));
-	src_crypto_pass.set_value(config.at(jlabel_crypto_pass));
-	src_crypto_size.set_value_as_int(config.at(jlabel_crypto_size));
-	src_ignore_sig_failure.set_value_as_bool(config.at(jlabel_ignore_sig_failure));
-	src_execute.set_value(config.at(jlabel_execute));
-	src_slice_min_digits.set_value_as_bool(config.at(jlabel_slice_min_digits));
-	info_details.set_value_as_bool(config.at(jlabel_info_details));
-	lax.set_value_as_bool(config.at(jlabel_lax));
-	sequential_read.set_value_as_bool(config.at(jlabel_seq_read));
-	force_first_slice.set_value_as_bool(config.at(jlabel_force_first_slice));
-	multi_thread_crypto.set_value_as_int(config.at(jlabel_thread_crypto));
-	multi_thread_compress.set_value_as_bool(config.at(jlabel_thread_compress));
+	ignore_events = true;
 
-	guichet_ref_entrep.load_json(config.at(jlabel_ref_entrep));
-	ref_use_external_catalogue.set_value_as_bool(config.at(jlabel_ref_used));
-	ref_path.set_value(config.at(jlabel_ref_path));
-	ref_crypto_algo.set_selected_id(config.at(jlabel_ref_crypto_algo));
-	ref_crypto_pass.set_value(config.at(jlabel_ref_crypto_pass));
-	ref_crypto_size.set_value_as_int(config.at(jlabel_ref_crypto_size));
-	ref_execute.set_value(config.at(jlabel_ref_execute));
-	ref_slice_min_digits.set_value(config.at(jlabel_ref_slice_min_digits));
+	try
+	{
+	    guichet_entrep.load_json(config.at(jlabel_entrep));
+	    src_crypto_algo.set_selected_id(config.at(jlabel_crypto_algo));
+	    src_crypto_pass.set_value(config.at(jlabel_crypto_pass));
+	    src_crypto_size.set_value_as_int(config.at(jlabel_crypto_size));
+	    src_ignore_sig_failure.set_value_as_bool(config.at(jlabel_ignore_sig_failure));
+	    src_execute.set_value(config.at(jlabel_execute));
+	    src_slice_min_digits.set_value_as_bool(config.at(jlabel_slice_min_digits));
+	    info_details.set_value_as_bool(config.at(jlabel_info_details));
+	    lax.set_value_as_bool(config.at(jlabel_lax));
+	    sequential_read.set_value_as_bool(config.at(jlabel_seq_read));
+	    force_first_slice.set_value_as_bool(config.at(jlabel_force_first_slice));
+	    multi_thread_crypto.set_value_as_int(config.at(jlabel_thread_crypto));
+	    multi_thread_compress.set_value_as_bool(config.at(jlabel_thread_compress));
+
+	    guichet_ref_entrep.load_json(config.at(jlabel_ref_entrep));
+	    ref_use_external_catalogue.set_value_as_bool(config.at(jlabel_ref_used));
+	    ref_path.set_value(config.at(jlabel_ref_path));
+	    ref_crypto_algo.set_selected_id(config.at(jlabel_ref_crypto_algo));
+	    ref_crypto_pass.set_value(config.at(jlabel_ref_crypto_pass));
+	    ref_crypto_size.set_value_as_int(config.at(jlabel_ref_crypto_size));
+	    ref_execute.set_value(config.at(jlabel_ref_execute));
+	    ref_slice_min_digits.set_value(config.at(jlabel_ref_slice_min_digits));
+	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
+	trigger_changed();
     }
     catch(json::exception & e)
     {
@@ -316,7 +349,18 @@ json html_options_read::save_json() const
 
 void html_options_read::clear_json()
 {
-    set_defaults();
+    ignore_events = true;
+    try
+    {
+	set_defaults();
+    }
+    catch(...)
+    {
+	ignore_events = false;
+	throw;
+    }
+    ignore_events = false;
+    trigger_changed();
 }
 
 bibliotheque::using_set html_options_read::get_using_set() const
@@ -332,7 +376,10 @@ bibliotheque::using_set html_options_read::get_using_set() const
 void html_options_read::on_event(const string & event_name)
 {
     if(event_name == entrepot_has_changed)
+    {
 	act(entrepot_has_changed);
+	trigger_changed();
+    }
     else if(event_name == ref_entrepot_has_changed)
     {
 	need_ref_entrepot_update = true;
@@ -370,6 +417,7 @@ void html_options_read::on_event(const string & event_name)
 	    // no need to call my_body_part_has_changed()
 	    // because changed done in on_event concern
 	    // body_builder objects we have adopted
+	trigger_changed();
     }
     else if(event_name == html_form_input_file::changed_event)
     {
@@ -454,4 +502,10 @@ void html_options_read::set_defaults()
     ref_crypto_size.set_value(webdar_tools_convert_to_string(defaults.get_ref_crypto_size()));
     ref_execute.set_value(defaults.get_ref_execute());
     ref_slice_min_digits.set_value(webdar_tools_convert_to_string(defaults.get_ref_slice_min_digits()));
+}
+
+void html_options_read::trigger_changed()
+{
+    if(! ignore_events)
+	act(changed);
 }
