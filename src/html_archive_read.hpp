@@ -44,6 +44,7 @@ extern "C"
 #include "html_options_read.hpp"
 #include "html_libdar_running_popup.hpp"
 #include "actor.hpp"
+#include "guichet.hpp"
 
     /// class html_archive_read let user define the archive path, basename and option to read
 
@@ -60,13 +61,13 @@ public:
     ~html_archive_read() { cancel(); join(); };
 
 	/// mandatory call to invoke ASAP after constructor
-    void set_biblio(const std::shared_ptr<bibliotheque> & ptr) { opt_read.set_biblio(ptr); };
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
 
 	// available fields for libdar
 
     std::string get_archive_path() const;
     std::string get_archive_basename() const;
-    libdar::archive_options_read get_read_options(std::shared_ptr<html_web_user_interaction> dialog) const { return opt_read.get_options(dialog); };
+    libdar::archive_options_read get_read_options(std::shared_ptr<html_web_user_interaction> dialog) const { return opt_read->get_options(dialog); };
 
     virtual void on_event(const std::string & event_name) override;
 
@@ -86,7 +87,10 @@ private:
     html_form form;
     html_form_fieldset fs;
     html_form_input_file arch_path;
-    html_options_read opt_read;
+
+    guichet guichet_opt_read;
+    std::shared_ptr<html_options_read> opt_read;
+
     html_libdar_running_popup libdarexec;
 
 	/// delay entrepot update when waiting inherited_get_body_part() to be executed

@@ -49,17 +49,20 @@ html_archive_read::html_archive_read(const string & archive_description):
 	      "Select the backup to read..."),
     need_entrepot_update(false)
 {
+    opt_read.reset(new (nothrow) html_options_read());
+    if(! opt_read)
+	throw exception_memory();
 
 	// web components layout
 
     fs.adopt(&arch_path);
     form.adopt(&fs);
     adopt(&form);
-    adopt(&opt_read);
+    adopt(&guichet_opt_read);
     adopt(&libdarexec);
 
 	// events and actor
-    opt_read.record_actor_on_event(this, html_options_read::entrepot_has_changed);
+    opt_read->record_actor_on_event(this, html_options_read::entrepot_has_changed);
     arch_path.record_actor_on_event(this, html_form_input_file::changed_event);
     libdarexec.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
 
@@ -67,6 +70,16 @@ html_archive_read::html_archive_read(const string & archive_description):
     arch_path.set_select_mode(html_form_input_file::select_slice);
     libdarexec.set_visible(false);
 }
+
+void html_archive_read::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
+{
+    opt_read->set_biblio(ptr);
+    guichet_opt_read.set_child(ptr,
+			       bibliotheque::confread,
+			       opt_read,
+			       false);
+};
+
 
 void html_archive_read::on_event(const string & event_name)
 {
@@ -88,7 +101,7 @@ void html_archive_read::on_event(const string & event_name)
     else if(event_name == html_form_input_file::changed_event)
     {
 	if(! arch_path.get_min_digits().empty())
-	    opt_read.set_src_min_digits(arch_path.get_min_digits());
+	    opt_read->set_src_min_digits(arch_path.get_min_digits());
     }
     else if(event_name == html_libdar_running_popup::libdar_has_finished)
     {
@@ -137,7 +150,7 @@ string html_archive_read::get_archive_basename() const
 
 void html_archive_read::inherited_run()
 {
-    arch_path.set_entrepot(opt_read.get_entrepot(libdarexec.get_html_user_interaction()));
+    arch_path.set_entrepot(opt_read->get_entrepot(libdarexec.get_html_user_interaction()));
 }
 
 void html_archive_read::signaled_inherited_cancel()
