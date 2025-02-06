@@ -63,13 +63,15 @@ extern "C"
 #include "html_fsa_scope.hpp"
 #include "guichet.hpp"
 #include "jsoner.hpp"
+#include "bibliotheque_subconfig.hpp"
 
     /// html component used for the user to provide the parameters to create a new archive
 
 class html_options_create : public body_builder,
 			    public actor,
 			    public events,
-			    public jsoner
+			    public jsoner,
+			    public bibliotheque_subconfig
 {
 public:
     static const std::string entrepot_changed; ///< only change related to entrepot
@@ -93,6 +95,9 @@ public:
 
 	/// inherited from jsoner
     virtual void clear_json() override;
+
+	/// inherited from bibliotheque_subconfig
+    virtual bibliotheque::using_set get_using_set() const override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;

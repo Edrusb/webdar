@@ -582,6 +582,25 @@ void html_options_create::clear_json()
     trigger_changed(); // once for all ignored events from init()
 }
 
+bibliotheque::using_set html_options_create::get_using_set() const
+{
+    bibliotheque::using_set ret;
+
+    subconfig_add_to(ret, guichet_entrep.get_using_set());
+    subconfig_add_to(ret, guichet_filename_mask.get_using_set());
+    subconfig_add_to(ret, guichet_path_mask.get_using_set());
+    subconfig_add_to(ret, guichet_ea_mask.get_using_set());
+    subconfig_add_to(ret, reference.get_using_set());
+    subconfig_add_to(ret, guichet_sig_block_size.get_using_set());
+    subconfig_add_to(ret, guichet_delta_mask.get_using_set());
+    subconfig_add_to(ret, guichet_compr_params.get_using_set());
+    subconfig_add_to(ret, guichet_compr_mask.get_using_set());
+    subconfig_add_to(ret, guichet_slicing.get_using_set());
+    subconfig_add_to(ret, guichet_ciphering.get_using_set());
+
+    return ret;
+}
+
 libdar::archive_options_create html_options_create::get_options(shared_ptr<html_web_user_interaction> & webui) const
 {
     libdar::archive_options_create ret;
