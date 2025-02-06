@@ -62,10 +62,14 @@ extern "C"
 #include "html_ciphering.hpp"
 #include "html_fsa_scope.hpp"
 #include "guichet.hpp"
+#include "jsoner.hpp"
 
     /// html component used for the user to provide the parameters to create a new archive
 
-class html_options_create : public body_builder, public actor, public events
+class html_options_create : public body_builder,
+			    public actor,
+			    public events,
+			    public jsoner
 {
 public:
     static const std::string entrepot_changed;
@@ -80,6 +84,14 @@ public:
 	/// mandatory call to invoke ASAP after constructor
     void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
 
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -215,6 +227,61 @@ private:
 
     guichet guichet_ciphering;
     std::shared_ptr<html_ciphering> ciphering;
+
+    void init();
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_options_create";
+
+    static constexpr const char* jlabel_entrep = "entrepot";
+    static constexpr const char* jlabel_file_mask = "file-mask";
+    static constexpr const char* jlabel_path_mask = "path-mask";
+    static constexpr const char* jlabel_ea_mask = "ea-mask";
+    static constexpr const char* jlabel_archtype = "archive-type";
+    static constexpr const char* jlabel_fixed_date = "fixed-date";
+    static constexpr const char* jlabel_reference = "reference";
+    static constexpr const char* jlabel_delta_sig = "delta-sig";
+    static constexpr const char* jlabel_sig_block_size = "delta-sig-block-size";
+    static constexpr const char* jlabel_delta_mask = "delta-mask";
+    static constexpr const char* jlabel_alter_atime = "alter-atime";
+    static constexpr const char* jlabel_furtive_read = "furtive-read";
+    static constexpr const char* jlabel_zeroing = "zeroing-neg-dates";
+    static constexpr const char* jlabel_mod_data = "modified-data-detection";
+    static constexpr const char* jlabel_follow_sym = "follow-symlinks";
+    static constexpr const char* jlabel_allow_over = "allow-overwrite";
+    static constexpr const char* jlabel_warn_over = "warn-overwrite";
+    static constexpr const char* jlabel_pause = "pause";
+    static constexpr const char* jlabel_retry_times = "retry-times";
+    static constexpr const char* jlabel_retry_overhead = "retry-overhead";
+    static constexpr const char* jlabel_sequential_marks = "tape-marks";
+    static constexpr const char* jlabel_sparse_min_size = "sparse-file-min-size";
+    static constexpr const char* jlabel_user_comment = "user-comment";
+    static constexpr const char* jlabel_hash_algo = "hash-algo";
+    static constexpr const char* jlabel_execute = "execute";
+    static constexpr const char* jlabel_what_to_check = "what-to-check";
+    static constexpr const char* jlabel_hourshift = "hourshift";
+    static constexpr const char* jlabel_empty = "dry-run";
+    static constexpr const char* jlabel_info_details = "info-details";
+    static constexpr const char* jlabel_display_treated = "display-treated";
+    static constexpr const char* jlabel_display_only_dir = "display-on-dirs";
+    static constexpr const char* jlabel_display_skipped = "display-skipped";
+    static constexpr const char* jlabel_display_dir_summ = "display-dir-summary";
+    static constexpr const char* jlabel_secu_check = "security-check";
+    static constexpr const char* jlabel_dont_ignore_unknown = "dont-ignore-unknown-inode-types";
+    static constexpr const char* jlabel_empty_dir = "empty-dirs";
+    static constexpr const char* jlabel_cache_dir_tag = "cache-dir-tagging";
+    static constexpr const char* jlabel_nodump = "nodump";
+    static constexpr const char* jlabel_exclude_by_ea = "exclude-by-ea";
+    static constexpr const char* jlabel_default_ea = "exclude-by-ea-default-name";
+    static constexpr const char* jlabel_exclude_by_ea_name = "exclude-by-ea-named";
+    static constexpr const char* jlabel_same_fs = "same-fs";
+    static constexpr const char* jlabel_compr_params = "compress-params";
+    static constexpr const char* jlabel_compr_mask = "compress-mask";
+    static constexpr const char* jlabel_fsa_scope = "fsa-scope";
+    static constexpr const char* jlabel_slicing = "slicing";
+    static constexpr const char* jlabel_ciphering = "ciphering";
+
+
 };
 
 #endif

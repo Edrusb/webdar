@@ -95,7 +95,6 @@ html_options_create::html_options_create():
     fs_mod_data_detect("How data (not metadata) changes are detected"),
     same_fs_fs("Select the file systems based on their mount point")
 {
-    libdar::archive_options_create defaults;
 
 	// set field parameters
 
@@ -155,47 +154,17 @@ html_options_create::html_options_create():
     alter_atime.add_choice("ctime", "Inode last change time (ctime)");
     mod_data_detect.add_choice("any_inode_change", "Any inode change (behavior before libdar 2.6.0)");
     mod_data_detect.add_choice("mtime_size", "only mtime and file size change (default)");
-    mod_data_detect.set_selected_id("mtime_size");
     pause.set_min_only(0);
-    hourshift.set_range(0, 23);
-    if(defaults.get_reference() != nullptr)
-	throw WEBDAR_BUG; // not expected default value!!!
-    else
-	if(defaults.get_snapshot())
-	    archtype.set_selected_num(2);
-	else
-	    if(defaults.get_fixed_date() != 0)
-		archtype.set_selected_num(3);
-	    else
-		archtype.set_selected_num(0);
     retry_on_change_times.set_min_only(0);
+    hourshift.set_range(0, 23);
+
+    libdar::archive_options_create defaults;
+    ciphering->set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
+
 
 	// set default values
-    allow_over.set_value_as_bool(defaults.get_allow_over());
-    warn_over.set_value_as_bool(defaults.get_warn_over());
-    pause.set_value(libdar::deci(defaults.get_pause()).human());
-    execute.set_value(defaults.get_execute());
-    sig_block_size->set_delta_sig_min_size(defaults.get_delta_sig_min_size());
-    sig_block_size->set_value(defaults.get_sig_block_len());
-    what_to_check.set_value(defaults.get_comparison_fields());
-    hourshift.set_value(libdar::deci(defaults.get_hourshift()).human());
-    empty.set_value_as_bool(defaults.get_empty());
-    if(defaults.get_alter_atime())
-	alter_atime.set_selected_num(0);
-    else
-	alter_atime.set_selected_num(1);
-    furtive_read_mode.set_value_as_bool(defaults.get_furtive_read_mode());
-    zeroing_neg_date.set_value_as_bool(defaults.get_auto_zeroing_neg_dates());
-    fixed_date.set_value(defaults.get_fixed_date());
-    retry_on_change_times.set_value(libdar::deci(defaults.get_repeat_count()).human());
-    retry_on_change_overhead.set_value_as_infinint(libdar::infinint(0));
-    sequential_marks.set_value_as_bool(defaults.get_sequential_marks());
-    sparse_file_min_size.set_value_as_infinint(defaults.get_sparse_file_min_size());
-    security_check.set_value_as_bool(defaults.get_security_check());
-    user_comment.set_value(defaults.get_user_comment());
-    hash_algo.set_value(defaults.get_hash_algo());
-    dont_ignore_unknown_inode_type.set_value_as_bool(! defaults.get_ignore_unknown_inode_type());
-    ciphering->set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
+	// this is done from set_biblio()
+	// because guichet object are not set until there
 
 	// build tree dependancy
 
@@ -410,6 +379,142 @@ void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				     sig_block_size,
 				     true);
     reference.set_biblio(ptr);
+
+    init();
+}
+
+void html_options_create::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software", myclass_id));
+
+	guichet_entrep.load_json(config.at(jlabel_entrep));
+	guichet_filename_mask.load_json(config.at(jlabel_file_mask));
+	guichet_path_mask.load_json(config.at(jlabel_path_mask));
+	guichet_ea_mask.load_json(config.at(jlabel_ea_mask));
+	archtype.set_selected_id_with_warning(config.at(jlabel_archtype), jlabel_archtype);
+	fixed_date.set_value(libdar::deci(config.at(jlabel_fixed_date)).computer());
+	reference.load_json(config.at(jlabel_reference));
+	delta_sig.set_value_as_bool(config.at(jlabel_delta_sig));
+	guichet_sig_block_size.load_json(config.at(jlabel_sig_block_size));
+	guichet_delta_mask.load_json(config.at(jlabel_delta_mask));
+	alter_atime.set_selected_id_with_warning(config.at(jlabel_alter_atime), jlabel_alter_atime);
+	furtive_read_mode.set_value_as_bool(config.at(jlabel_furtive_read));
+	zeroing_neg_date.set_value_as_bool(config.at(jlabel_zeroing));
+	mod_data_detect.set_selected_id_with_warning(config.at(jlabel_mod_data),jlabel_mod_data);
+	follow_symlinks.load_json(config.at(jlabel_follow_sym));
+	allow_over.set_value_as_bool(config.at(jlabel_allow_over));
+	warn_over.set_value_as_bool(config.at(jlabel_warn_over));
+	pause.set_value_as_int(config.at(jlabel_pause));
+	retry_on_change_times.set_value_as_int(config.at(jlabel_retry_times));
+	retry_on_change_overhead.set_value_as_infinint(libdar::deci(config.at(jlabel_retry_overhead)).computer());
+	sequential_marks.set_value_as_bool(config.at(jlabel_sequential_marks));
+	sparse_file_min_size.set_value_as_infinint(libdar::deci(config.at(jlabel_sparse_min_size)).computer());
+	user_comment.set_value(config.at(jlabel_user_comment));
+	hash_algo.set_selected_id_with_warning(config.at(jlabel_hash_algo), jlabel_hash_algo);
+	execute.set_value(config.at(jlabel_execute));
+	what_to_check.set_selected_id_with_warning(config.at(jlabel_what_to_check), jlabel_what_to_check);
+	hourshift.set_value_as_int(config.at(jlabel_hourshift));
+	empty.set_value_as_bool(config.at(jlabel_empty));
+	info_details.set_value_as_bool(config.at(jlabel_info_details));
+	display_treated.set_value_as_bool(config.at(jlabel_display_treated));
+	display_treated_only_dir.set_value_as_bool(config.at(jlabel_display_only_dir));
+	display_skipped.set_value_as_bool(config.at(jlabel_display_skipped));
+	display_dir_summary.set_value_as_bool(config.at(jlabel_display_dir_summ));
+	security_check.set_value_as_bool(config.at(jlabel_secu_check));
+	dont_ignore_unknown_inode_type.set_value_as_bool(config.at(jlabel_dont_ignore_unknown));
+	empty_dir.set_value_as_bool(config.at(jlabel_empty_dir));
+	cache_directory_tagging.set_value_as_bool(config.at(jlabel_cache_dir_tag));
+	nodump.set_value_as_bool(config.at(jlabel_nodump));
+	exclude_by_ea.set_value_as_bool(config.at(jlabel_exclude_by_ea));
+	default_ea.set_value_as_bool(config.at(jlabel_default_ea));
+	exclude_by_ea_name.set_value(config.at(jlabel_exclude_by_ea_name));
+	same_fs.load_json(config.at(jlabel_same_fs));
+	guichet_compr_params.load_json(config.at(jlabel_compr_params));
+	guichet_compr_mask.load_json(config.at(jlabel_compr_mask));
+	fsa_scope.load_json(config.at(jlabel_fsa_scope));
+	guichet_slicing.load_json(config.at(jlabel_slicing));
+	guichet_ciphering.load_json(config.at(jlabel_ciphering));
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_options_create::save_json() const
+{
+    json ret;
+
+    ret[jlabel_entrep] = guichet_entrep.save_json();
+    ret[jlabel_file_mask] = guichet_filename_mask.save_json();
+    ret[jlabel_path_mask] = guichet_path_mask.save_json();
+    ret[jlabel_ea_mask] = guichet_ea_mask.save_json();
+    ret[jlabel_archtype] = archtype.get_selected_id();
+    ret[jlabel_fixed_date] = libdar::deci(fixed_date.get_value()).human();
+    ret[jlabel_reference] = reference.save_json();
+    ret[jlabel_delta_sig] = delta_sig.get_value_as_bool();
+    ret[jlabel_sig_block_size] = guichet_sig_block_size.save_json();
+    ret[jlabel_delta_mask] = guichet_delta_mask.save_json();
+    ret[jlabel_alter_atime] = alter_atime.get_selected_id();
+    ret[jlabel_furtive_read] = furtive_read_mode.get_value_as_bool();
+    ret[jlabel_zeroing] = zeroing_neg_date.get_value_as_bool();
+    ret[jlabel_mod_data] = mod_data_detect.get_selected_id();
+    ret[jlabel_follow_sym] = follow_symlinks.save_json();
+    ret[jlabel_allow_over] = allow_over.get_value_as_bool();
+    ret[jlabel_warn_over] = warn_over.get_value_as_bool();
+    ret[jlabel_pause] = pause.get_value_as_int();
+    ret[jlabel_retry_times] = retry_on_change_times.get_value_as_int();
+    ret[jlabel_retry_overhead] = libdar::deci(retry_on_change_overhead.get_value_as_infinint()).human();
+    ret[jlabel_sequential_marks] = sequential_marks.get_value_as_bool();
+    ret[jlabel_sparse_min_size] = libdar::deci(sparse_file_min_size.get_value_as_infinint()).human();
+    ret[jlabel_user_comment] = user_comment.get_value();
+    ret[jlabel_hash_algo] = hash_algo.get_selected_id();
+    ret[jlabel_execute] = execute.get_value();
+    ret[jlabel_what_to_check] = what_to_check.get_selected_id();
+    ret[jlabel_hourshift] = hourshift.get_value_as_int();
+    ret[jlabel_empty] = empty.get_value_as_bool();
+    ret[jlabel_info_details] = info_details.get_value_as_bool();
+    ret[jlabel_display_treated] = display_treated.get_value_as_bool();
+    ret[jlabel_display_only_dir] = display_treated_only_dir.get_value_as_bool();
+    ret[jlabel_display_skipped] = display_skipped.get_value_as_bool();
+    ret[jlabel_display_dir_summ] = display_dir_summary.get_value_as_bool();
+    ret[jlabel_secu_check] = security_check.get_value_as_bool();
+    ret[jlabel_dont_ignore_unknown] = dont_ignore_unknown_inode_type.get_value_as_bool();
+    ret[jlabel_empty_dir] = empty_dir.get_value_as_bool();
+    ret[jlabel_cache_dir_tag] = cache_directory_tagging.get_value_as_bool();
+    ret[jlabel_nodump] = nodump.get_value_as_bool();
+    ret[jlabel_exclude_by_ea] = exclude_by_ea.get_value_as_bool();
+    ret[jlabel_default_ea] = default_ea.get_value_as_bool();
+    ret[jlabel_exclude_by_ea_name] = exclude_by_ea_name.get_value();
+    ret[jlabel_same_fs] = same_fs.save_json();
+    ret[jlabel_compr_params] = guichet_compr_params.save_json();
+    ret[jlabel_compr_mask] = guichet_compr_mask.save_json();
+    ret[jlabel_fsa_scope] = fsa_scope.save_json();
+    ret[jlabel_slicing] = guichet_slicing.save_json();
+    ret[jlabel_ciphering] = guichet_ciphering.save_json();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					ret);
+}
+
+void html_options_create::clear_json()
+{
+    init();
 }
 
 libdar::archive_options_create html_options_create::get_options(shared_ptr<html_web_user_interaction> & webui) const
@@ -663,4 +768,68 @@ void html_options_create::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
+}
+
+void html_options_create::init()
+{
+    libdar::archive_options_create defaults;
+
+    guichet_entrep.clear_json();
+    guichet_filename_mask.clear_json();
+    guichet_path_mask.clear_json();
+    if(defaults.get_reference() != nullptr)
+	throw WEBDAR_BUG; // not expected default value!!!
+    else
+	if(defaults.get_snapshot())
+	    archtype.set_selected_num(2);
+	else
+	    if(defaults.get_fixed_date() != 0)
+		archtype.set_selected_num(3);
+	    else
+		archtype.set_selected_num(0);
+    fixed_date.set_value(defaults.get_fixed_date());
+    reference.clear_json();
+    delta_sig.set_value_as_bool(defaults.get_delta_signature());
+    sig_block_size->set_delta_sig_min_size(defaults.get_delta_sig_min_size());
+    sig_block_size->set_value(defaults.get_sig_block_len());
+    guichet_delta_mask.clear_json();
+    if(defaults.get_alter_atime())
+	alter_atime.set_selected_num(0);
+    else
+	alter_atime.set_selected_num(1);
+    furtive_read_mode.set_value_as_bool(defaults.get_furtive_read_mode());
+    zeroing_neg_date.set_value_as_bool(defaults.get_auto_zeroing_neg_dates());
+    mod_data_detect.set_selected_id("mtime_size");
+    follow_symlinks.clear_json();
+    allow_over.set_value_as_bool(defaults.get_allow_over());
+    warn_over.set_value_as_bool(defaults.get_warn_over());
+    pause.set_value(libdar::deci(defaults.get_pause()).human());
+    retry_on_change_times.set_value(libdar::deci(defaults.get_repeat_count()).human());
+    retry_on_change_overhead.set_value_as_infinint(defaults.get_repeat_byte());
+    sequential_marks.set_value_as_bool(defaults.get_sequential_marks());
+    sparse_file_min_size.set_value_as_infinint(defaults.get_sparse_file_min_size());
+    user_comment.set_value(defaults.get_user_comment());
+    hash_algo.set_value(defaults.get_hash_algo());
+    execute.set_value(defaults.get_execute());
+    what_to_check.set_value(defaults.get_comparison_fields());
+    hourshift.set_value(libdar::deci(defaults.get_hourshift()).human());
+    empty.set_value_as_bool(defaults.get_empty());
+    info_details.set_value_as_bool(defaults.get_info_details());
+    display_treated.set_value_as_bool(defaults.get_display_treated());
+    display_treated_only_dir.set_value_as_bool(defaults.get_display_treated_only_dir());
+    display_skipped.set_value_as_bool(defaults.get_display_skipped());
+    display_dir_summary.set_value_as_bool(defaults.get_display_finished());
+    security_check.set_value_as_bool(defaults.get_security_check());
+    dont_ignore_unknown_inode_type.set_value_as_bool(! defaults.get_ignore_unknown_inode_type());
+    empty_dir.set_value_as_bool(defaults.get_empty_dir());
+    cache_directory_tagging.set_value_as_bool(defaults.get_cache_directory_tagging());
+    nodump.set_value_as_bool(defaults.get_nodump());
+    exclude_by_ea.set_value_as_bool(!defaults.get_exclude_by_ea().empty());
+    default_ea.set_value_as_bool(true);
+    same_fs.clear_json();
+    guichet_compr_params.clear_json();
+    guichet_compr_mask.clear_json();
+    fsa_scope.clear_json();
+    guichet_slicing.clear_json();
+    guichet_ciphering.clear_json();
 }
