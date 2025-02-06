@@ -36,6 +36,7 @@ extern "C"
 
     // webdar headers
 #include "html_form_dynamic_table.hpp"
+#include "jsoner.hpp"
 
     /// class html_form_ignore_as_symlink provide interface for the user to give a list of gnupg signatories and gnupg recipients
 
@@ -72,7 +73,9 @@ extern "C"
 
 
 
-class html_form_ignore_as_symlink : public body_builder, public html_form_dynamic_table_object_provider
+class html_form_ignore_as_symlink : public body_builder,
+				    public html_form_dynamic_table_object_provider,
+				    public jsoner
 {
 public:
     html_form_ignore_as_symlink();
@@ -96,6 +99,15 @@ public:
 								 const std::string & context,
 								 std::string & changed_event) const override;
 
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
+
 
 protected:
 	/// inherited methods from body_builder
@@ -106,6 +118,12 @@ private:
     html_form_dynamic_table table;
 
     std::vector<std::string> gather_content_of_type(unsigned int type) const;
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_form_ignore_as_symlink";
+
+    static constexpr const char* jlabel_contents = "contents";
+
 };
 
 #endif
