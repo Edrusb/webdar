@@ -56,6 +56,7 @@ extern "C"
 #include "html_options_test.hpp"
 #include "html_options_compare.hpp"
 #include "html_options_read.hpp"
+#include "html_options_create.hpp"
 
     /// class html_bibliotheque provide graphical mean to manipulate a bibliotheque object
 
@@ -137,6 +138,7 @@ private:
     std::unique_ptr<arriere_boutique<html_options_test> > ab_options_test;
     std::unique_ptr<arriere_boutique<html_options_compare> > ab_options_compare;
     std::unique_ptr<arriere_boutique<html_options_read> > ab_options_read;
+    std::unique_ptr<arriere_boutique<html_options_create> > ab_options_create;
 
     html_tabs tabs;
     html_text intro;
@@ -181,6 +183,7 @@ private:
     static constexpr const char* tab_options_test = "options-test";
     static constexpr const char* tab_options_compare = "options-compare";
     static constexpr const char* tab_options_read = "options-read";
+    static constexpr const char* tab_options_create = "options-create";
 
     static constexpr const char* event_save = "save";
     static constexpr const char* event_load = "load";
