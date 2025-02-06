@@ -39,6 +39,8 @@ extern "C"
 
 using namespace std;
 
+const string html_form_ignore_as_symlink::changed = "hfias_changed";
+
 html_form_ignore_as_symlink::html_form_ignore_as_symlink():
     table(false,
 	  true,
@@ -48,7 +50,16 @@ html_form_ignore_as_symlink::html_form_ignore_as_symlink():
     table.set_obj_type_provider(this);
     table.add_obj_type("add new symlink to follow"); // index 0 in provide_object_of_type()
 
+	// adoption tree
+
     adopt(&table);
+
+	// events
+
+    table.record_actor_on_event(this, html_form_dynamic_table::changed);
+    register_name(changed);
+
+	// css
 }
 
 set<string> html_form_ignore_as_symlink::get_symlink_list() const
@@ -148,6 +159,14 @@ json html_form_ignore_as_symlink::save_json() const
 void html_form_ignore_as_symlink::clear_json()
 {
     table.clear_json();
+}
+
+void html_form_ignore_as_symlink::on_event(const string & event_name)
+{
+    if(event_name == html_form_dynamic_table::changed)
+	act(changed);
+    else
+	throw WEBDAR_BUG;
 }
 
 string html_form_ignore_as_symlink::inherited_get_body_part(const chemin & path,
