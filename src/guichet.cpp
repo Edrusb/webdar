@@ -32,6 +32,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
+#include "tokens.hpp"
 
     //
 #include "guichet.hpp"
@@ -110,31 +111,31 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
 
 	// adption tree
 
-    adopt(&edit);
+    box.adopt(&edit);
     select_fs.adopt(&select);
 
 	// adding a form around fieldset to select config when not a subconfig
     if(is_sub)
-	adopt(&select_fs);
+	box.adopt(&select_fs);
     else
     {
 	select_form.adopt(&select_fs);
-	adopt(&select_form);
+	box.adopt(&select_form);
     }
 
-    adopt(&clear);
+    box.adopt(&clear);
 
     if(add_form_around)
     {
 	around_adopted_fs.adopt(adopted.get());
 	around_adopted.adopt(&around_adopted_fs);
-	adopt(&around_adopted);
+	box.adopt(&around_adopted);
 	adopted_frame = &around_adopted;
     }
     else
     {
 	around_adopted_fs.adopt(adopted.get());
-	adopt(&around_adopted_fs);
+	box.adopt(&around_adopted_fs);
 	adopted_frame = &around_adopted_fs;
     }
 
@@ -145,7 +146,8 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
     saveas_fs.adopt(&saveas_text);
     saveas_fs.adopt(&saveas_name);
     saveas_form.adopt(&saveas_fs);
-    adopt(&saveas_form);
+    box.adopt(&saveas_form);
+    adopt(&box);
 
 	// visibility & config
 	// this is done before events cabling to avoid
@@ -171,6 +173,7 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
     select_fs.add_label_css_class(css_bold);
     select_form.add_css_class(css_below_margin);
     saveas_fs.add_css_class(css_above_margin);
+    box.add_css_class(css_border_left);
 }
 
 void guichet::load_json(const json & source)
@@ -330,6 +333,10 @@ void guichet::on_event(const std::string & event_name)
 		adopted_jsoner->clear_json();
 		// clear_adopted is true when the user has selected "manual mode"
 		// but is false when the user clicked the "edit" button
+
+	    box.clear_css_classes();
+	    box.add_css_class(css_border_left);
+
 	}
 	else
 	    set_adopted();
@@ -473,6 +480,20 @@ void guichet::new_css_library_available()
 	csslib->add(css_above_margin, tmp);
     }
 
+    if(!csslib->class_exists(css_border_left))
+    {
+	css tmp;
+
+	tmp.css_border_width(css::bd_left, css::bd_medium);
+	tmp.css_border_style(css::bd_left, css::bd_solid);
+	tmp.css_margin_left("1em");
+	tmp.css_padding_left("0.2em");
+	tmp.css_margin_top("1em");
+	tmp.css_border_color(css::bd_left, COLOR_MENU_BORDER_GREY);
+
+	csslib->add(css_border_left, tmp);
+    }
+
 
     webdar_css_style::update_library(*csslib);
 }
@@ -561,6 +582,7 @@ void guichet::set_adopted()
 	    throw;
 	}
 
+	box.clear_css_classes();
     }
 	// else adopted is unchanged
 }

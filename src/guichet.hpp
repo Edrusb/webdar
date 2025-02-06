@@ -163,6 +163,7 @@ private:
     bool is_sub;     ///< true when guichet is used inside a config, false when it is the top level of a config recordable into a bibliotheque
     std::string currently_locked; ///< name of the config we locked in the bibliotheque for the categ category (empty string = no lock)
 
+    html_div box;
     html_form select_form;
     html_form_fieldset select_fs;
     html_form_select select;
@@ -200,6 +201,7 @@ private:
     static constexpr const char* css_left_margin = "guichet_left_margin";
     static constexpr const char* css_below_margin = "guichet_below_margin";
     static constexpr const char* css_above_margin = "guichet_above_margin";
+    static constexpr const char* css_border_left = "guichet_border_left";
 
     static constexpr const char* fs_title_subcomp = "Matches configuration named";
 
