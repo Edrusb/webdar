@@ -45,6 +45,7 @@ extern "C"
 using namespace std;
 
 const string html_options_create::entrepot_changed = "html_options_create_entrep_changed";
+const string html_options_create::changed = "html_options_create_changed";
 
 html_options_create::html_options_create():
     form_archtype("Update"),
@@ -93,7 +94,8 @@ html_options_create::html_options_create():
     furtive_read_mode("Furtive read mode (if available)", html_form_input::check, "", "1"),
     zeroing_neg_date("Automatically zeroing negative dates while reading", html_form_input::check, "", "1"),
     fs_mod_data_detect("How data (not metadata) changes are detected"),
-    same_fs_fs("Select the file systems based on their mount point")
+    same_fs_fs("Select the file systems based on their mount point"),
+    ignore_events(false)
 {
 
 	// set field parameters
@@ -312,6 +314,7 @@ html_options_create::html_options_create():
 
 	// events and visibility
     register_name(entrepot_changed);
+    register_name(changed);
 
     archtype.record_actor_on_event(this, html_form_radio::changed);
     delta_sig.record_actor_on_event(this, html_form_input::changed);
@@ -319,7 +322,47 @@ html_options_create::html_options_create():
     exclude_by_ea.record_actor_on_event(this, html_form_input::changed);
     default_ea.record_actor_on_event(this, html_form_input::changed);
     compr_params->record_actor_on_event(this, html_compression_params::changed);
+
     entrep->record_actor_on_event(this, html_entrepot::changed);
+    filename_mask->record_actor_on_event(this, html_mask_form_filename::changed);
+    path_mask->record_actor_on_event(this, html_mask_form_path::changed);
+    ea_mask->record_actor_on_event(this, html_mask_form_filename::changed);
+    fixed_date.record_actor_on_event(this, html_datetime::changed);
+    reference.record_actor_on_event(this, html_archive_read::changed);
+    sig_block_size->record_actor_on_event(this, html_form_sig_block_size::changed);
+    delta_mask->record_actor_on_event(this, html_mask_form_filename::changed);
+    alter_atime.record_actor_on_event(this, html_form_radio::changed);
+    furtive_read_mode.record_actor_on_event(this, html_form_input::changed);
+    zeroing_neg_date.record_actor_on_event(this, html_form_input::changed);
+    mod_data_detect.record_actor_on_event(this, html_form_radio::changed);
+    follow_symlinks.record_actor_on_event(this, html_form_ignore_as_symlink::changed);
+    allow_over.record_actor_on_event(this, html_form_input::changed);
+    warn_over.record_actor_on_event(this, html_form_input::changed);
+    pause.record_actor_on_event(this, html_form_input::changed);
+    retry_on_change_times.record_actor_on_event(this, html_form_input::changed);
+    retry_on_change_overhead.record_actor_on_event(this, html_form_input_unit::changed);
+    sequential_marks.record_actor_on_event(this, html_form_input::changed);
+    sparse_file_min_size.record_actor_on_event(this, html_form_input_unit::changed);
+    user_comment.record_actor_on_event(this, html_form_input::changed);
+    hash_algo.record_actor_on_event(this, html_hash_algo::changed);
+    execute.record_actor_on_event(this, html_form_input::changed);
+    what_to_check.record_actor_on_event(this, html_comparison_fields::changed);
+    hourshift.record_actor_on_event(this, html_form_input::changed);
+    empty.record_actor_on_event(this, html_form_input::changed);
+    info_details.record_actor_on_event(this, html_form_input::changed);
+    display_treated_only_dir.record_actor_on_event(this, html_form_input::changed);
+    display_dir_summary.record_actor_on_event(this, html_form_input::changed);
+    security_check.record_actor_on_event(this, html_form_input::changed);
+    dont_ignore_unknown_inode_type.record_actor_on_event(this, html_form_input::changed);
+    empty_dir.record_actor_on_event(this, html_form_input::changed);
+    cache_directory_tagging.record_actor_on_event(this, html_form_input::changed);
+    nodump.record_actor_on_event(this, html_form_input::changed);
+    exclude_by_ea_name.record_actor_on_event(this, html_form_input::changed);
+    same_fs.record_actor_on_event(this, html_form_same_fs::changed);
+    compr_mask->record_actor_on_event(this, html_mask_form_filename::changed);
+    fsa_scope.record_actor_on_event(this, html_fsa_scope::changed);
+    slicing->record_actor_on_event(this, html_slicing::changed);
+    ciphering->record_actor_on_event(this, html_ciphering::changed);
 
     on_event(html_form_radio::changed); // used to initialize the html components visibility
 
@@ -401,53 +444,64 @@ void html_options_create::load_json(const json & source)
 	if(version > format_version)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software", myclass_id));
 
-	guichet_entrep.load_json(config.at(jlabel_entrep));
-	guichet_filename_mask.load_json(config.at(jlabel_file_mask));
-	guichet_path_mask.load_json(config.at(jlabel_path_mask));
-	guichet_ea_mask.load_json(config.at(jlabel_ea_mask));
-	archtype.set_selected_id_with_warning(config.at(jlabel_archtype), jlabel_archtype);
-	fixed_date.set_value(libdar::deci(config.at(jlabel_fixed_date)).computer());
-	reference.load_json(config.at(jlabel_reference));
-	delta_sig.set_value_as_bool(config.at(jlabel_delta_sig));
-	guichet_sig_block_size.load_json(config.at(jlabel_sig_block_size));
-	guichet_delta_mask.load_json(config.at(jlabel_delta_mask));
-	alter_atime.set_selected_id_with_warning(config.at(jlabel_alter_atime), jlabel_alter_atime);
-	furtive_read_mode.set_value_as_bool(config.at(jlabel_furtive_read));
-	zeroing_neg_date.set_value_as_bool(config.at(jlabel_zeroing));
-	mod_data_detect.set_selected_id_with_warning(config.at(jlabel_mod_data),jlabel_mod_data);
-	follow_symlinks.load_json(config.at(jlabel_follow_sym));
-	allow_over.set_value_as_bool(config.at(jlabel_allow_over));
-	warn_over.set_value_as_bool(config.at(jlabel_warn_over));
-	pause.set_value_as_int(config.at(jlabel_pause));
-	retry_on_change_times.set_value_as_int(config.at(jlabel_retry_times));
-	retry_on_change_overhead.set_value_as_infinint(libdar::deci(config.at(jlabel_retry_overhead)).computer());
-	sequential_marks.set_value_as_bool(config.at(jlabel_sequential_marks));
-	sparse_file_min_size.set_value_as_infinint(libdar::deci(config.at(jlabel_sparse_min_size)).computer());
-	user_comment.set_value(config.at(jlabel_user_comment));
-	hash_algo.set_selected_id_with_warning(config.at(jlabel_hash_algo), jlabel_hash_algo);
-	execute.set_value(config.at(jlabel_execute));
-	what_to_check.set_selected_id_with_warning(config.at(jlabel_what_to_check), jlabel_what_to_check);
-	hourshift.set_value_as_int(config.at(jlabel_hourshift));
-	empty.set_value_as_bool(config.at(jlabel_empty));
-	info_details.set_value_as_bool(config.at(jlabel_info_details));
-	display_treated.set_value_as_bool(config.at(jlabel_display_treated));
-	display_treated_only_dir.set_value_as_bool(config.at(jlabel_display_only_dir));
-	display_skipped.set_value_as_bool(config.at(jlabel_display_skipped));
-	display_dir_summary.set_value_as_bool(config.at(jlabel_display_dir_summ));
-	security_check.set_value_as_bool(config.at(jlabel_secu_check));
-	dont_ignore_unknown_inode_type.set_value_as_bool(config.at(jlabel_dont_ignore_unknown));
-	empty_dir.set_value_as_bool(config.at(jlabel_empty_dir));
-	cache_directory_tagging.set_value_as_bool(config.at(jlabel_cache_dir_tag));
-	nodump.set_value_as_bool(config.at(jlabel_nodump));
-	exclude_by_ea.set_value_as_bool(config.at(jlabel_exclude_by_ea));
-	default_ea.set_value_as_bool(config.at(jlabel_default_ea));
-	exclude_by_ea_name.set_value(config.at(jlabel_exclude_by_ea_name));
-	same_fs.load_json(config.at(jlabel_same_fs));
-	guichet_compr_params.load_json(config.at(jlabel_compr_params));
-	guichet_compr_mask.load_json(config.at(jlabel_compr_mask));
-	fsa_scope.load_json(config.at(jlabel_fsa_scope));
-	guichet_slicing.load_json(config.at(jlabel_slicing));
-	guichet_ciphering.load_json(config.at(jlabel_ciphering));
+	ignore_events = true;
+	try
+	{
+	    guichet_entrep.load_json(config.at(jlabel_entrep));
+	    guichet_filename_mask.load_json(config.at(jlabel_file_mask));
+	    guichet_path_mask.load_json(config.at(jlabel_path_mask));
+	    guichet_ea_mask.load_json(config.at(jlabel_ea_mask));
+	    archtype.set_selected_id_with_warning(config.at(jlabel_archtype), jlabel_archtype);
+	    fixed_date.set_value(libdar::deci(config.at(jlabel_fixed_date)).computer());
+	    reference.load_json(config.at(jlabel_reference));
+	    delta_sig.set_value_as_bool(config.at(jlabel_delta_sig));
+	    guichet_sig_block_size.load_json(config.at(jlabel_sig_block_size));
+	    guichet_delta_mask.load_json(config.at(jlabel_delta_mask));
+	    alter_atime.set_selected_id_with_warning(config.at(jlabel_alter_atime), jlabel_alter_atime);
+	    furtive_read_mode.set_value_as_bool(config.at(jlabel_furtive_read));
+	    zeroing_neg_date.set_value_as_bool(config.at(jlabel_zeroing));
+	    mod_data_detect.set_selected_id_with_warning(config.at(jlabel_mod_data),jlabel_mod_data);
+	    follow_symlinks.load_json(config.at(jlabel_follow_sym));
+	    allow_over.set_value_as_bool(config.at(jlabel_allow_over));
+	    warn_over.set_value_as_bool(config.at(jlabel_warn_over));
+	    pause.set_value_as_int(config.at(jlabel_pause));
+	    retry_on_change_times.set_value_as_int(config.at(jlabel_retry_times));
+	    retry_on_change_overhead.set_value_as_infinint(libdar::deci(config.at(jlabel_retry_overhead)).computer());
+	    sequential_marks.set_value_as_bool(config.at(jlabel_sequential_marks));
+	    sparse_file_min_size.set_value_as_infinint(libdar::deci(config.at(jlabel_sparse_min_size)).computer());
+	    user_comment.set_value(config.at(jlabel_user_comment));
+	    hash_algo.set_selected_id_with_warning(config.at(jlabel_hash_algo), jlabel_hash_algo);
+	    execute.set_value(config.at(jlabel_execute));
+	    what_to_check.set_selected_id_with_warning(config.at(jlabel_what_to_check), jlabel_what_to_check);
+	    hourshift.set_value_as_int(config.at(jlabel_hourshift));
+	    empty.set_value_as_bool(config.at(jlabel_empty));
+	    info_details.set_value_as_bool(config.at(jlabel_info_details));
+	    display_treated.set_value_as_bool(config.at(jlabel_display_treated));
+	    display_treated_only_dir.set_value_as_bool(config.at(jlabel_display_only_dir));
+	    display_skipped.set_value_as_bool(config.at(jlabel_display_skipped));
+	    display_dir_summary.set_value_as_bool(config.at(jlabel_display_dir_summ));
+	    security_check.set_value_as_bool(config.at(jlabel_secu_check));
+	    dont_ignore_unknown_inode_type.set_value_as_bool(config.at(jlabel_dont_ignore_unknown));
+	    empty_dir.set_value_as_bool(config.at(jlabel_empty_dir));
+	    cache_directory_tagging.set_value_as_bool(config.at(jlabel_cache_dir_tag));
+	    nodump.set_value_as_bool(config.at(jlabel_nodump));
+	    exclude_by_ea.set_value_as_bool(config.at(jlabel_exclude_by_ea));
+	    default_ea.set_value_as_bool(config.at(jlabel_default_ea));
+	    exclude_by_ea_name.set_value(config.at(jlabel_exclude_by_ea_name));
+	    same_fs.load_json(config.at(jlabel_same_fs));
+	    guichet_compr_params.load_json(config.at(jlabel_compr_params));
+	    guichet_compr_mask.load_json(config.at(jlabel_compr_mask));
+	    fsa_scope.load_json(config.at(jlabel_fsa_scope));
+	    guichet_slicing.load_json(config.at(jlabel_slicing));
+	    guichet_ciphering.load_json(config.at(jlabel_ciphering));
+	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
+	trigger_changed(); // one change event in place of many from each subcomponent
     }
     catch(json::exception & e)
     {
@@ -514,7 +568,18 @@ json html_options_create::save_json() const
 
 void html_options_create::clear_json()
 {
-    init();
+    ignore_events = true;
+    try
+    {
+	init();
+    }
+    catch(...)
+    {
+	ignore_events = false;
+	throw;
+    }
+    ignore_events = false;
+    trigger_changed(); // once for all ignored events from init()
 }
 
 libdar::archive_options_create html_options_create::get_options(shared_ptr<html_web_user_interaction> & webui) const
@@ -752,10 +817,28 @@ void html_options_create::on_event(const string & event_name)
 	    // no need to call my_body_part_has_changed()
 	    // because changed done in on_event concern
 	    // body_builder objects we have adopted
+	trigger_changed();
     }
     else if(event_name == html_entrepot::changed)
     {
 	act(entrepot_changed);
+	trigger_changed();
+    }
+    else if(event_name == html_mask_form_filename::changed
+	    || event_name == html_mask_form_path::changed
+	    || event_name == html_datetime::changed
+	    || event_name == html_archive_read::changed
+	    || event_name == html_form_sig_block_size::changed
+	    || event_name == html_form_ignore_as_symlink::changed
+	    || event_name == html_form_input_unit::changed
+	    || event_name == html_hash_algo::changed
+	    || event_name == html_comparison_fields::changed
+	    || event_name == html_form_same_fs::changed
+	    || event_name == html_fsa_scope::changed
+	    || event_name == html_slicing::changed
+	    || event_name == html_ciphering::changed)
+    {
+	trigger_changed();
     }
     else
 	throw WEBDAR_BUG;
@@ -832,4 +915,10 @@ void html_options_create::init()
     fsa_scope.clear_json();
     guichet_slicing.clear_json();
     guichet_ciphering.clear_json();
+}
+
+void html_options_create::trigger_changed()
+{
+    if(!ignore_events)
+	act(changed);
 }

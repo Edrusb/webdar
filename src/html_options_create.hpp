@@ -72,7 +72,8 @@ class html_options_create : public body_builder,
 			    public jsoner
 {
 public:
-    static const std::string entrepot_changed;
+    static const std::string entrepot_changed; ///< only change related to entrepot
+    static const std::string changed; ///< any parameter change (including entrepot_changed)
 
     html_options_create();
     html_options_create(const html_options_create & ref) = delete;
@@ -228,7 +229,10 @@ private:
     guichet guichet_ciphering;
     std::shared_ptr<html_ciphering> ciphering;
 
+    bool ignore_events;
+
     void init();
+    void trigger_changed();
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* myclass_id = "html_form_options_create";
