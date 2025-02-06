@@ -50,6 +50,10 @@ html_archive_create::html_archive_create():
 {
     static const char* sect_archive = "archive";
 
+    options.reset(new (nothrow) html_options_create());
+    if(! options)
+	throw exception_memory();
+
     deroule.add_section(sect_archive, "Backup Creation");
     deroule.set_active_section(0);
 
@@ -62,7 +66,7 @@ html_archive_create::html_archive_create():
 	repoxfer.get_html_user_interaction()->auto_hide(true, false);
     else
 	throw WEBDAR_BUG;
-    options.set_fs_root(fs_root.get_value()); // will be kept updat to date by mean on events
+    options->set_fs_root(fs_root.get_value()); // will be kept updat to date by mean on events
 
 	// adoption tree
 
@@ -72,12 +76,12 @@ html_archive_create::html_archive_create():
     form.adopt(&fs);
     deroule.adopt_in_section(sect_archive, &form);
     adopt(&deroule);
-    adopt(&options);
+    adopt(&guichet_options);
     adopt(&repoxfer);
 
 	// events
     fs_root.record_actor_on_event(this, fs_root_change_event);
-    options.record_actor_on_event(this, html_options_create::entrepot_changed);
+    options->record_actor_on_event(this, html_options_create::entrepot_changed);
     repoxfer.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
 
 	// visibility
@@ -87,6 +91,17 @@ html_archive_create::html_archive_create():
 
     webdar_css_style::normal_button(deroule, true);
 }
+
+void html_archive_create::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
+{
+    options->set_biblio(ptr);
+
+    guichet_options.set_child(ptr,
+			      bibliotheque::confsave,
+			      options,
+			      false);
+}
+
 
 void html_archive_create::on_event(const string & event_name)
 {
@@ -100,7 +115,7 @@ void html_archive_create::on_event(const string & event_name)
     }
     else if(event_name == fs_root_change_event)
     {
-	options.set_fs_root(fs_root.get_value());
+	options->set_fs_root(fs_root.get_value());
     }
     else
 	throw WEBDAR_BUG;
@@ -129,7 +144,7 @@ void html_archive_create::inherited_run()
 
     if(!ptr)
 	throw WEBDAR_BUG;
-    sauv_path.set_entrepot(options.get_entrepot(ptr));
+    sauv_path.set_entrepot(options->get_entrepot(ptr));
 }
 
 void html_archive_create::signaled_inherited_cancel()
