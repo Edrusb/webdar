@@ -149,6 +149,11 @@ json html_form_same_fs::save_json() const
 					ret);
 }
 
+void html_form_same_fs::clear_json()
+{
+    table.clear_json();
+}
+
 void html_form_same_fs::on_event(const std::string & event_name)
 {
     if(event_name == html_form_dynamic_table::changed)
@@ -157,10 +162,6 @@ void html_form_same_fs::on_event(const std::string & event_name)
 	throw WEBDAR_BUG;
 }
 
-void html_form_same_fs::clear_json()
-{
-    table.clear_json();
-}
 
 string html_form_same_fs::inherited_get_body_part(const chemin & path,
 						    const request & req)
