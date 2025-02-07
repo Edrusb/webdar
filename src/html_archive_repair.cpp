@@ -57,7 +57,14 @@ html_archive_repair::html_archive_repair():
 	// components initialization
 
     static const char* sect_repair = "repair";
-    deroule.add_section(sect_repair, "Repairing parameters");
+    static const char* sect_options = "options";
+
+    opt_repair.reset(new (nothrow) html_options_repair());
+    if(! opt_repair)
+	throw exception_memory();
+
+    deroule.add_section(sect_repair, "Repairing Parameters");
+    deroule.add_section(sect_options, "Repairing Options");
     deroule.set_active_section(0);
 
     repair_dest.set_select_mode(html_form_input_file::select_dir);
@@ -74,13 +81,13 @@ html_archive_repair::html_archive_repair():
     repair_fs.adopt(&basename);
     repair_form.adopt(&repair_fs);
     deroule.adopt_in_section(sect_repair, &repair_form);
-    deroule.adopt_in_section(sect_repair, &opt_repair);
+    deroule.adopt_in_section(sect_options, &guichet_opt_repair);
     adopt(&deroule);
     adopt(&repoxfer);
 
 	// events
 
-    opt_repair.record_actor_on_event(this, html_options_repair::entrepot_changed);
+    opt_repair->record_actor_on_event(this, html_options_repair::entrepot_changed);
 
 
 	// visibility
@@ -90,6 +97,17 @@ html_archive_repair::html_archive_repair():
 
     webdar_css_style::normal_button(deroule, true);
 }
+
+void html_archive_repair::set_biblio(const shared_ptr<bibliotheque> & ptr)
+{
+    opt_repair->set_biblio(ptr);
+
+    guichet_opt_repair.set_child(ptr,
+				 bibliotheque::confrepair,
+				 opt_repair,
+				 false);
+}
+
 
 void html_archive_repair::on_event(const string & event_name)
 {
@@ -124,7 +142,7 @@ void html_archive_repair::inherited_run()
 
     if(!ptr)
 	throw WEBDAR_BUG;
-    repair_dest.set_entrepot(opt_repair.get_entrepot(ptr));
+    repair_dest.set_entrepot(opt_repair->get_entrepot(ptr));
 }
 
 void html_archive_repair::signaled_inherited_cancel()

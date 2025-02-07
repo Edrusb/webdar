@@ -43,6 +43,7 @@ extern "C"
 #include "html_derouleur.hpp"
 #include "html_options_repair.hpp"
 #include "html_libdar_running_popup.hpp"
+#include "guichet.hpp"
 
     /// html component used to collect repairing operation parameters from the user
 
@@ -58,10 +59,10 @@ public:
 
     const std::string & get_archive_path() const { return repair_dest.get_value(); };
     const std::string & get_archive_basename() const { return basename.get_value(); };
-    libdar::archive_options_repair get_options(std::shared_ptr<html_web_user_interaction> dialog) const { return opt_repair.get_options(dialog); };
+    libdar::archive_options_repair get_options(std::shared_ptr<html_web_user_interaction> dialog) const { return opt_repair->get_options(dialog); };
 
 	/// mandatory call to invoke ASAP after constructor
-    void set_biblio(const std::shared_ptr<bibliotheque> & ptr) { opt_repair.set_biblio(ptr); };
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -88,7 +89,10 @@ private:
     html_form_input basename;
     html_form_fieldset repair_fs;
     html_form repair_form;
-    html_options_repair opt_repair;
+
+    guichet guichet_opt_repair;
+    std::shared_ptr<html_options_repair> opt_repair;
+
     html_libdar_running_popup repoxfer;
 
 	/// delay entrepot update when waiting inherited_get_body_part() to be executed
