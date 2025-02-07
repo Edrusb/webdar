@@ -42,6 +42,7 @@ extern "C"
 #include "html_options_merge.hpp"
 #include "html_derouleur.hpp"
 #include "html_libdar_running_popup.hpp"
+#include "guichet.hpp"
 
     /// html component used to collect merging operation parameters from the user
 
@@ -57,10 +58,10 @@ public:
 
     const std::string & get_archive_path() const { return sauv_path.get_value(); };
     const std::string & get_archive_basename() const { return basename.get_value(); };
-    libdar::archive_options_merge get_options_merge(std::shared_ptr<html_web_user_interaction> dialog) const { return options.get_options(dialog); };
+    libdar::archive_options_merge get_options_merge(std::shared_ptr<html_web_user_interaction> dialog) const { return options->get_options(dialog); };
 
 	/// mandatory call to invoke ASAP after constructor
-    void set_biblio(const std::shared_ptr<bibliotheque> & ptr) { options.set_biblio(ptr); };
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -85,7 +86,10 @@ private:
     html_form_fieldset fs;
     html_form_input_file sauv_path;
     html_form_input basename;
-    html_options_merge options;
+
+    guichet guichet_options;
+    std::shared_ptr<html_options_merge> options;
+
     html_libdar_running_popup repoxfer;
 
 

@@ -48,8 +48,14 @@ html_archive_merge::html_archive_merge():
     need_entrepot_update(false)
 {
     static const char* sect_archive = "archive";
+    static const char* sect_options = "options";
 
-    deroule.add_section(sect_archive, "Backup Merging");
+    options.reset(new (nothrow) html_options_merge());
+    if(! options)
+	throw exception_memory();
+
+    deroule.add_section(sect_archive, "Merging Parameters");
+    deroule.add_section(sect_options, "Merging Options");
     deroule.set_active_section(0);
 
     sauv_path.set_select_mode(html_form_input_file::select_dir);
@@ -65,12 +71,12 @@ html_archive_merge::html_archive_merge():
     fs.adopt(&basename);
     form.adopt(&fs);
     deroule.adopt_in_section(sect_archive, &form);
-    deroule.adopt_in_section(sect_archive, &options);
+    deroule.adopt_in_section(sect_options, &guichet_options);
     adopt(&deroule);
     adopt(&repoxfer);
 
 	// events
-    options.record_actor_on_event(this, html_options_merge::entrepot_changed);
+    options->record_actor_on_event(this, html_options_merge::entrepot_changed);
     repoxfer.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
 
 	// visibility
@@ -79,6 +85,17 @@ html_archive_merge::html_archive_merge():
 	// CSS
     webdar_css_style::normal_button(deroule, true);
 }
+
+void html_archive_merge::set_biblio(const shared_ptr<bibliotheque> & ptr)
+{
+    options->set_biblio(ptr);
+
+    guichet_options.set_child(ptr,
+			      bibliotheque::confmerge,
+			      options,
+			      false);
+}
+
 
 void html_archive_merge::on_event(const string & event_name)
 {
@@ -117,7 +134,7 @@ void html_archive_merge::inherited_run()
 
     if(!ptr)
 	throw WEBDAR_BUG;
-    sauv_path.set_entrepot(options.get_entrepot(ptr));
+    sauv_path.set_entrepot(options->get_entrepot(ptr));
 }
 
 void html_archive_merge::signaled_inherited_cancel()
