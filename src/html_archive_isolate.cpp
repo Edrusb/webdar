@@ -48,6 +48,11 @@ html_archive_isolate::html_archive_isolate():
     need_entrepot_update(false)
 {
     static const char* sect_archive = "isolation options";
+
+    options.reset(new (nothrow) html_options_isolate());
+    if(! options)
+	throw exception_memory();
+
     deroule.add_section(sect_archive, "Backup Isolation");
     deroule.set_active_section(0);
 
@@ -65,11 +70,11 @@ html_archive_isolate::html_archive_isolate():
     form.adopt(&fs);
     deroule.adopt_in_section(sect_archive, &form);
     adopt(&deroule);
-    adopt(&options);
+    adopt(&guichet_options);
     adopt(&repoxfer);
 
 	// events
-    options.record_actor_on_event(this, html_options_isolate::entrepot_changed);
+    options->record_actor_on_event(this, html_options_isolate::entrepot_changed);
 
 	/// visibility
     repoxfer.set_visible(false);
@@ -78,6 +83,17 @@ html_archive_isolate::html_archive_isolate():
 
     webdar_css_style::normal_button(deroule, true);
 }
+
+void html_archive_isolate::set_biblio(const shared_ptr<bibliotheque> & ptr)
+{
+    options->set_biblio(ptr);
+
+    guichet_options.set_child(ptr,
+			      bibliotheque::confisolate,
+			      options,
+			      false);
+};
+
 
 void html_archive_isolate::on_event(const string & event_name)
 {
@@ -112,7 +128,7 @@ void html_archive_isolate::inherited_run()
 
     if(!ptr)
 	throw WEBDAR_BUG;
-    sauv_path.set_entrepot(options.get_entrepot(ptr));
+    sauv_path.set_entrepot(options->get_entrepot(ptr));
 }
 
 void html_archive_isolate::signaled_inherited_cancel()
