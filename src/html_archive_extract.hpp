@@ -39,7 +39,7 @@ extern "C"
 #include "html_derouleur.hpp"
 #include "html_form_input_file.hpp"
 #include "html_options_extract.hpp"
-
+#include "guichet.hpp"
 
     /// html component used to let the user provide parameters for an isolation operation
 
@@ -54,11 +54,11 @@ public:
     ~html_archive_extract() = default;
 
 	/// mandatory call to invoke ASAP after constructor
-    void set_biblio(const std::shared_ptr<bibliotheque> & ptr) { opt_extract.set_biblio(ptr); };
+    void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
 
     const std::string & get_fs_root() const { return extract_fs_root.get_value(); };
 
-    libdar::archive_options_extract get_options() const { return opt_extract.get_options(); };
+    libdar::archive_options_extract get_options() const { return opt_extract->get_options(); };
 
             /// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -78,7 +78,9 @@ private:
     html_form_fieldset extract_fs_root_fs;
     html_form_input_file extract_fs_root;
     html_form extract_fs_root_form;
-    html_options_extract opt_extract;
+
+    guichet guichet_opt_extract;
+    std::shared_ptr<html_options_extract> opt_extract;
 
     static const std::string extract_root_changed;
 

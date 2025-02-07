@@ -50,22 +50,29 @@ html_archive_extract::html_archive_extract():
 
 	// components configuration
 
-    static const char* sect_extract_params = "eparams";
-    extract_params.add_section(sect_extract_params, "Restoration parameters");
+    static const char* sect_extract_params = "params";
+    static const char* sect_extract_options = "options";
+
+    opt_extract.reset(new (nothrow) html_options_extract());
+    if(! opt_extract)
+	throw exception_memory();
+
+    extract_params.add_section(sect_extract_params, "Restoration Parameters");
+    extract_params.add_section(sect_extract_options, "Restoration Options");
     extract_params.set_active_section(sect_extract_params);
 
     extract_fs_root.set_select_mode(html_form_input_file::select_dir);
     extract_fs_root.set_can_create_dir(false);
     extract_fs_root.set_change_event_name(extract_root_changed);
 
-    opt_extract.set_fs_root(extract_fs_root.get_value());
+    opt_extract->set_fs_root(extract_fs_root.get_value());
 
 	// adoption tree
 
     extract_fs_root_fs.adopt(&extract_fs_root);
     extract_fs_root_form.adopt(&extract_fs_root_fs);
     extract_params.adopt_in_section(sect_extract_params, &extract_fs_root_form);
-    extract_params.adopt_in_section(sect_extract_params, &opt_extract);
+    extract_params.adopt_in_section(sect_extract_options, &guichet_opt_extract);
     adopt(&extract_params);
 
 	// events
@@ -78,11 +85,22 @@ html_archive_extract::html_archive_extract():
 
 }
 
+void html_archive_extract::set_biblio(const shared_ptr<bibliotheque> & ptr)
+{
+    opt_extract->set_biblio(ptr);
+
+    guichet_opt_extract.set_child(ptr,
+				  bibliotheque::confrest,
+				  opt_extract,
+				  false);
+}
+
+
 void html_archive_extract::on_event(const std::string & event_name)
 {
     if(event_name == extract_root_changed)
     {
-	opt_extract.set_fs_root(extract_fs_root.get_value());
+	opt_extract->set_fs_root(extract_fs_root.get_value());
     }
     else
 	throw WEBDAR_BUG;
