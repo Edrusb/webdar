@@ -40,6 +40,9 @@ extern "C"
 
 using namespace std;
 
+const string html_options_extract::changed = "html_options_extract_changed";
+
+
 html_options_extract::html_options_extract():
     form_archgen("Update"),
     fs(""),
@@ -98,7 +101,8 @@ html_options_extract::html_options_extract():
     ignore_deleted("Avoid removing files flagged as to be removed",
 		   html_form_input::check,
 		   "",
-		   "1")
+		   "1"),
+    ignore_events(false)
 {
 	// set html fields to default value used by libdar
 
@@ -182,7 +186,28 @@ html_options_extract::html_options_extract():
 
 	// events
     display_treated.record_actor_on_event(this, html_form_input::changed);
+    in_place.record_actor_on_event(this, html_form_input::changed);
+    warn_over.record_actor_on_event(this, html_form_input::changed);
+    flat.record_actor_on_event(this, html_form_input::changed);
+    what_to_check.record_actor_on_event(this, html_form_select::changed);
+    warn_remove_no_match.record_actor_on_event(this, html_form_input::changed);
+    empty.record_actor_on_event(this, html_form_input::changed);
+    empty_dir.record_actor_on_event(this, html_form_input::changed);
+    dirty_behavior.record_actor_on_event(this, html_form_select::changed);
+    ignore_sockets.record_actor_on_event(this, html_form_input::changed);
+    info_details.record_actor_on_event(this, html_form_input::changed);
+    display_treated.record_actor_on_event(this, html_form_input::changed);
+    display_treated_only_dir.record_actor_on_event(this, html_form_input::changed);
+    display_skipped.record_actor_on_event(this, html_form_input::changed);
+    overwriting_policy->record_actor_on_event(this, html_form_overwrite_action::changed);
+    only_deleted.record_actor_on_event(this, html_form_input::changed);
+    ignore_deleted.record_actor_on_event(this, html_form_input::changed);
+    filename_mask->record_actor_on_event(this, html_mask_form_filename::changed);
+    path_mask->record_actor_on_event(this, html_mask_form_path::changed);
+    ea_mask->record_actor_on_event(this, html_mask_form_filename::changed);
+    fsa_scope.record_actor_on_event(this, html_fsa_scope::changed);
 
+    register_name(changed);
 	// css
 
     webdar_css_style::grey_button(deroule, true);
@@ -283,8 +308,7 @@ void html_options_extract::load_json(const json & source)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
 						       myclass_id));
 
-//	ignore_events = true;
-
+	ignore_events = true;
 	try
 	{
 	    in_place.set_value_as_bool(config.at(jlabel_in_place));
@@ -310,11 +334,11 @@ void html_options_extract::load_json(const json & source)
 	}
 	catch(...)
 	{
-//	    ignore_events = false;
+	    ignore_events = false;
 	    throw;
 	}
-//	ignore_events = false;
-
+	ignore_events = false;
+	trigger_changed();
     }
     catch(json::exception & e)
     {
@@ -354,7 +378,18 @@ json html_options_extract::save_json() const
 
 void html_options_extract::clear_json()
 {
-    init();
+    ignore_events = true;
+    try
+    {
+	init();
+    }
+    catch(...)
+    {
+	ignore_events = false;
+	throw;
+    }
+    ignore_events = false;
+    trigger_changed();
 }
 
 bibliotheque::using_set html_options_extract::get_using_set() const
@@ -374,6 +409,15 @@ void html_options_extract::on_event(const string & event_name)
     if(event_name == html_form_input::changed)
     {
 	display_treated_only_dir.set_visible(display_treated.get_value_as_bool());
+	trigger_changed();
+    }
+    else if(event_name == html_form_select::changed
+	    || event_name == html_form_overwrite_action::changed
+	    || event_name == html_mask_form_filename::changed
+	    || event_name == html_mask_form_path::changed
+	    || event_name == html_fsa_scope::changed)
+    {
+	trigger_changed();
     }
     else
 	throw WEBDAR_BUG;
@@ -454,4 +498,10 @@ void html_options_extract::init()
     guichet_path_mask.clear_json();
     guichet_ea_mask.clear_json();
     fsa_scope.clear_json();
+}
+
+void html_options_extract::trigger_changed()
+{
+    if(! ignore_events)
+	act(changed);
 }

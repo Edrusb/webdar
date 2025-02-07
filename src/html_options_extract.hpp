@@ -49,15 +49,19 @@ extern "C"
 #include "guichet.hpp"
 #include "jsoner.hpp"
 #include "bibliotheque_subconfig.hpp"
+#include "events.hpp"
 
     /// html components used for the user to provide parameters of libdar archive restoration operation
 
 class html_options_extract : public body_builder,
 			     public actor,
 			     public jsoner,
-			     public bibliotheque_subconfig
+			     public bibliotheque_subconfig,
+			     public events
 {
 public:
+    static const std::string changed;
+
     html_options_extract();
     html_options_extract(const html_options_extract & ref) = delete;
     html_options_extract(html_options_extract && ref) noexcept = delete;
@@ -135,7 +139,9 @@ private:
 
     html_fsa_scope fsa_scope;
 
+    bool ignore_events;
     void init();
+    void trigger_changed();
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* myclass_id = "html_options_extract";
