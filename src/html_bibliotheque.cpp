@@ -76,6 +76,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     unique_ptr<html_options_isolate> tmp_options_isolate;
     unique_ptr<html_options_merge> tmp_options_merge;
     unique_ptr<html_options_repair> tmp_options_repair;
+    unique_ptr<html_options_extract> tmp_options_extract;
 
     if(!ptr)
 	throw WEBDAR_BUG;
@@ -359,6 +360,22 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     if(! ab_options_repair)
 	throw exception_memory();
 
+	// options extract
+
+    tmp_options_extract.reset(new (nothrow) html_options_extract());
+    if(! tmp_options_extract)
+	throw exception_memory();
+    else
+	tmp_options_extract->set_biblio(ptr);
+
+    ab_options_extract.reset(new (nothrow) arriere_boutique<html_options_extract>(ptr,
+										  bibliotheque::confrest,
+										  tmp_options_extract,
+										  html_options_extract::changed,
+										  false));
+    if(! ab_options_extract)
+	throw exception_memory();
+
 
     	// global component setups
 
@@ -378,6 +395,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     tabs.add_tab("Isolation Options", tab_options_isolate);
     tabs.add_tab("Merging Options", tab_options_merge);
     tabs.add_tab("Repairing Options", tab_options_repair);
+    tabs.add_tab("Restoration Options", tab_options_extract);
 
 	//  global adoption tree
 
@@ -407,6 +425,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     tabs.adopt_in_section(tab_options_isolate, ab_options_isolate.get());
     tabs.adopt_in_section(tab_options_merge, ab_options_merge.get());
     tabs.adopt_in_section(tab_options_repair, ab_options_repair.get());
+    tabs.adopt_in_section(tab_options_extract, ab_options_extract.get());
 
     adopt(&tabs);
 
