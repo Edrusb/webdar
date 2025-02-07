@@ -54,8 +54,10 @@ html_archive_compare::html_archive_compare():
 	// components configuration
 
     static const char* sect_diff_params = "dparams";
+    static const char* sect_diff_options = "doptions";
 
-    diff_params.add_section(sect_diff_params, "Comparison parameters");
+    diff_params.add_section(sect_diff_params, "Comparison Parameters");
+    diff_params.add_section(sect_diff_options, "Comparison Options");
     diff_params.set_active_section(sect_diff_params);
 
     diff_fs_root.set_select_mode(html_form_input_file::select_dir);
@@ -70,7 +72,7 @@ html_archive_compare::html_archive_compare():
     diff_fs_root_fs.adopt(&diff_fs_root);
     diff_fs_root_form.adopt(&diff_fs_root_fs);
     diff_params.adopt_in_section(sect_diff_params, &diff_fs_root_form);
-    diff_params.adopt_in_section(sect_diff_params, &guichet_opt_diff);
+    diff_params.adopt_in_section(sect_diff_options, &guichet_opt_diff);
     adopt(&diff_params);
 
 	// events
