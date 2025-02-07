@@ -315,6 +315,20 @@ void html_options_isolate::clear_json()
     trigger_changed();
 }
 
+bibliotheque::using_set html_options_isolate::get_using_set() const
+{
+    bibliotheque::using_set ret;
+
+    subconfig_add_to(ret, guichet_sig_block_size.get_using_set());
+    subconfig_add_to(ret, guichet_delta_mask.get_using_set());
+    subconfig_add_to(ret, guichet_entrep.get_using_set());
+    subconfig_add_to(ret, guichet_compr_params.get_using_set());
+    subconfig_add_to(ret, guichet_slicing.get_using_set());
+    subconfig_add_to(ret, guichet_ciphering.get_using_set());
+
+    return ret;
+}
+
 void html_options_isolate::on_event(const string & event_name)
 {
     if(event_name == html_form_input::changed)

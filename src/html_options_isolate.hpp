@@ -52,13 +52,15 @@ extern "C"
 #include "html_ciphering.hpp"
 #include "guichet.hpp"
 #include "jsoner.hpp"
+#include "bibliotheque_subconfig.hpp"
 
     /// html components for the user to provide parameters of a isolation operation
 
 class html_options_isolate : public body_builder,
 			     public actor,
 			     public events,
-			     public jsoner
+			     public jsoner,
+			     public bibliotheque_subconfig
 {
 public:
     static const std::string entrepot_changed; ///< event only triggered when entrepot related params changed
@@ -82,6 +84,10 @@ public:
 
 	/// inherited from jsoner
     virtual void clear_json() override;
+
+	/// inherited from bibliotheque_subconfig
+    virtual bibliotheque::using_set get_using_set() const override;
+
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
