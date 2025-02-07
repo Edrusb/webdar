@@ -43,6 +43,7 @@ extern "C"
 using namespace std;
 
 const string html_options_repair::entrepot_changed = "html_options_repair_entrep_changed";
+const string html_options_repair::changed = "html_options_repair_changed";
 
 const string html_options_repair::css_indent = "html_options_repair_css_indent";
 
@@ -102,7 +103,8 @@ html_options_repair::html_options_repair():
 		 "",
 		 "80%"),
     target_fs(""),
-    target_form("Update")
+    target_form("Update"),
+    ignore_events(false)
 {
     entrep.reset(new (nothrow) html_entrepot());
     if(!entrep)
@@ -174,9 +176,25 @@ html_options_repair::html_options_repair():
 	// events
 
     register_name(entrepot_changed);
+    register_name(changed);
 
-    display_treated.record_actor_on_event(this, html_form_input::changed);
     entrep->record_actor_on_event(this, html_entrepot::changed);
+    display_treated.record_actor_on_event(this, html_form_input::changed);
+
+    info_details.record_actor_on_event(this, html_form_input::changed);
+    display_only_dir.record_actor_on_event(this, html_form_input::changed);
+    display_skipped.record_actor_on_event(this, html_form_input::changed);
+    display_dirstats.record_actor_on_event(this, html_form_input::changed);
+    allow_over.record_actor_on_event(this, html_form_input::changed);
+    warn_over.record_actor_on_event(this, html_form_input::changed);
+    pause.record_actor_on_event(this, html_form_input::changed);
+    execute.record_actor_on_event(this, html_form_input::changed);
+    dry_run.record_actor_on_event(this, html_form_input::changed);
+    multi_thread_compress.record_actor_on_event(this, html_form_input::changed);
+    hash_algo.record_actor_on_event(this, html_hash_algo::changed);
+    user_comment.record_actor_on_event(this, html_form_input::changed);
+    slicing->record_actor_on_event(this, html_slicing::changed);
+    ciphering->record_actor_on_event(this, html_ciphering::changed);
 
     on_event(html_form_input::changed); // first initialization
 
@@ -223,8 +241,7 @@ void html_options_repair::load_json(const json & source)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
 						       myclass_id));
 
-//	ignore_events = true;
-
+	ignore_events = true;
 	try
 	{
 	    guichet_entrep.load_json(config.at(jlabel_entrep));
@@ -246,11 +263,11 @@ void html_options_repair::load_json(const json & source)
 	}
 	catch(...)
 	{
-//	    ignore_events = false;
+	    ignore_events = false;
 	    throw;
 	}
-//	ignore_events = false;
-
+	ignore_events = false;
+	trigger_changed();
     }
     catch(json::exception & e)
     {
@@ -286,7 +303,18 @@ json html_options_repair::save_json() const
 
 void html_options_repair::clear_json()
 {
-    init();
+    ignore_events = true;
+    try
+    {
+	init();
+    }
+    catch(...)
+    {
+	ignore_events = false;
+	throw;
+    }
+    ignore_events = false;
+    trigger_changed();
 }
 
 bibliotheque::using_set html_options_repair::get_using_set() const
@@ -305,10 +333,18 @@ void html_options_repair::on_event(const string & event_name)
     if(event_name == html_form_input::changed)
     {
 	display_only_dir.set_visible(display_treated.get_value_as_bool());
+	trigger_changed();
     }
     else if(event_name == html_entrepot::changed)
     {
 	act(entrepot_changed);
+	trigger_changed();
+    }
+    else if(event_name == html_hash_algo::changed
+	    || event_name == html_slicing::changed
+	    || event_name == html_ciphering::changed)
+    {
+	trigger_changed();
     }
     else
 	throw WEBDAR_BUG;
@@ -413,4 +449,10 @@ void html_options_repair::init()
     user_comment.set_value(defaults.get_user_comment());
     guichet_slicing.clear_json();
     guichet_ciphering.clear_json();
+}
+
+void html_options_repair::trigger_changed()
+{
+    if(! ignore_events)
+	act(changed);
 }

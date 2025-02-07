@@ -62,7 +62,8 @@ class html_options_repair : public body_builder,
 			    public bibliotheque_subconfig
 {
 public:
-    static const std::string entrepot_changed;
+    static const std::string entrepot_changed; ///< event triggered for entrepot only changes
+    static const std::string changed;          ///< event triggered for any change
 
     html_options_repair();
     html_options_repair(const html_options_repair & ref) = delete;
@@ -151,7 +152,9 @@ private:
     guichet guichet_ciphering;
     std::shared_ptr<html_ciphering> ciphering;
 
+    bool ignore_events;
     void init();
+    void trigger_changed();
 
     static const std::string css_indent;
 
