@@ -50,10 +50,14 @@ extern "C"
 #include "html_slicing.hpp"
 #include "html_ciphering.hpp"
 #include "guichet.hpp"
+#include "jsoner.hpp"
 
     /// html component used for the user to provide the parameters to repair an archive
 
-class html_options_repair : public body_builder, public actor, public events
+class html_options_repair : public body_builder,
+			    public actor,
+			    public events,
+			    public jsoner
 {
 public:
     static const std::string entrepot_changed;
@@ -67,6 +71,15 @@ public:
 
 	/// mandatory call to invoke ASAP after constructor
     void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
+
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -133,7 +146,30 @@ private:
     guichet guichet_ciphering;
     std::shared_ptr<html_ciphering> ciphering;
 
+    void init();
+
     static const std::string css_indent;
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_options_repair";
+
+    static constexpr const char* jlabel_entrep = "entrepot";
+    static constexpr const char* jlabel_info_details = "info-details";
+    static constexpr const char* jlabel_display_treated = "display-treated";
+    static constexpr const char* jlabel_display_only_dir = "display-only-dirs";
+    static constexpr const char* jlabel_display_skipped = "display-skipped";
+    static constexpr const char* jlabel_display_dirstats = "display-dirstats";
+    static constexpr const char* jlabel_allow_over = "allow-over";
+    static constexpr const char* jlabel_warn_over = "warn-over";
+    static constexpr const char* jlabel_pause = "pause";
+    static constexpr const char* jlabel_execute = "execute";
+    static constexpr const char* jlabel_dry_run = "dry-run";
+    static constexpr const char* jlabel_multi_thread_compress = "compress-threads";
+    static constexpr const char* jlabel_hash_algo = "hash-algo";
+    static constexpr const char* jlabel_user_comment = "user-comment";
+    static constexpr const char* jlabel_slicing = "slicing";
+    static constexpr const char* jlabel_ciphering = "ciphering";
+
 };
 
 #endif

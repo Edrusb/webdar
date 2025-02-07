@@ -29,6 +29,7 @@ extern "C"
 }
 
     // C++ system header files
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_tools.hpp"
@@ -103,8 +104,6 @@ html_options_repair::html_options_repair():
     target_fs(""),
     target_form("Update")
 {
-    libdar::archive_options_repair defaults;
-
     entrep.reset(new (nothrow) html_entrepot());
     if(!entrep)
 	throw exception_memory();
@@ -132,13 +131,13 @@ html_options_repair::html_options_repair():
     deroule.add_section(sect_slice, "Slicing options");
     deroule.add_section(sect_crypt, "Encryption options");
 
-    allow_over.set_value_as_bool(defaults.get_allow_over());
-    warn_over.set_value_as_bool(defaults.get_warn_over());
-    pause.set_value(libdar::deci(defaults.get_pause()).human());
+    libdar::archive_options_repair defaults;
     ciphering->set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
-
     pause.set_min_only(0);
     multi_thread_compress.set_min_only(1);
+
+	// default values
+	// this is set in set_biblio()
 
 	// repo adoption
     deroule.adopt_in_section(sect_entrep, &guichet_entrep);
@@ -201,7 +200,95 @@ void html_options_repair::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 				bibliotheque::ciphering,
 				ciphering,
 				false);
+
+    init();
 }
+
+void html_options_repair::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
+
+//	ignore_events = true;
+
+	try
+	{
+	    guichet_entrep.load_json(config.at(jlabel_entrep));
+	    info_details.set_value_as_bool(config.at(jlabel_info_details));
+	    display_treated.set_value_as_bool(config.at(jlabel_display_treated));
+	    display_only_dir.set_value_as_bool(config.at(jlabel_display_only_dir));
+	    display_skipped.set_value_as_bool(config.at(jlabel_display_skipped));
+	    display_dirstats.set_value_as_bool(config.at(jlabel_display_dirstats));
+	    allow_over.set_value_as_bool(config.at(jlabel_allow_over));
+	    warn_over.set_value_as_bool(config.at(jlabel_warn_over));
+	    pause.set_value_as_bool(config.at(jlabel_pause));
+	    execute.set_value(config.at(jlabel_execute));
+	    dry_run.set_value_as_bool(config.at(jlabel_dry_run));
+	    multi_thread_compress.set_value_as_int(config.at(jlabel_multi_thread_compress));
+	    hash_algo.set_selected_id(config.at(jlabel_hash_algo));
+	    user_comment.set_value(config.at(jlabel_user_comment));
+	    guichet_slicing.load_json(config.at(jlabel_slicing));
+	    guichet_ciphering.load_json(config.at(jlabel_ciphering));
+	}
+	catch(...)
+	{
+//	    ignore_events = false;
+	    throw;
+	}
+//	ignore_events = false;
+
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_options_repair::save_json() const
+{
+    json config;
+
+    config[jlabel_entrep] = guichet_entrep.save_json();
+    config[jlabel_info_details] = info_details.get_value_as_bool();
+    config[jlabel_display_treated] = display_treated.get_value_as_bool();
+    config[jlabel_display_only_dir] = display_only_dir.get_value_as_bool();
+    config[jlabel_display_skipped] = display_skipped.get_value_as_bool();
+    config[jlabel_display_dirstats] = display_dirstats.get_value_as_bool();
+    config[jlabel_allow_over] = allow_over.get_value_as_bool();
+    config[jlabel_warn_over] = warn_over.get_value_as_bool();
+    config[jlabel_pause] = pause.get_value_as_bool();
+    config[jlabel_execute] = execute.get_value();
+    config[jlabel_dry_run] = dry_run.get_value_as_bool();
+    config[jlabel_multi_thread_compress] = multi_thread_compress.get_value_as_int();
+    config[jlabel_hash_algo] = hash_algo.get_selected_id();
+    config[jlabel_user_comment] = user_comment.get_value();
+    config[jlabel_slicing] = guichet_slicing.save_json();
+    config[jlabel_ciphering] = guichet_ciphering.save_json();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					config);
+}
+
+void html_options_repair::clear_json()
+{
+    init();
+}
+
 
 void html_options_repair::on_event(const string & event_name)
 {
@@ -294,4 +381,26 @@ void html_options_repair::new_css_library_available()
 	tmp.css_margin_left("3em");
 	csslib->add(css_indent, tmp);
     }
+}
+
+void html_options_repair::init()
+{
+    libdar::archive_options_repair defaults;
+
+    guichet_entrep.clear_json();
+    info_details.set_value_as_bool(defaults.get_info_details());
+    display_treated.set_value_as_bool(defaults.get_display_treated());
+    display_only_dir.set_value_as_bool(defaults.get_display_treated_only_dir());
+    display_skipped.set_value_as_bool(defaults.get_display_skipped());
+    display_dirstats.set_value_as_bool(defaults.get_display_finished());
+    allow_over.set_value_as_bool(defaults.get_allow_over());
+    warn_over.set_value_as_bool(defaults.get_warn_over());
+    pause.set_value(libdar::deci(defaults.get_pause()).human());
+    execute.set_value(defaults.get_execute());
+    dry_run.set_value_as_bool(defaults.get_empty());
+    multi_thread_compress.set_value_as_int(defaults.get_multi_threaded_compress());
+    hash_algo.set_value(defaults.get_hash_algo());
+    user_comment.set_value(defaults.get_user_comment());
+    guichet_slicing.clear_json();
+    guichet_ciphering.clear_json();
 }
