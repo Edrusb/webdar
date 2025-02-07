@@ -58,6 +58,7 @@ extern "C"
 #include "html_options_read.hpp"
 #include "html_options_create.hpp"
 #include "html_options_isolate.hpp"
+#include "html_options_merge.hpp"
 
     /// class html_bibliotheque provide graphical mean to manipulate a bibliotheque object
 
@@ -141,6 +142,7 @@ private:
     std::unique_ptr<arriere_boutique<html_options_read> > ab_options_read;
     std::unique_ptr<arriere_boutique<html_options_create> > ab_options_create;
     std::unique_ptr<arriere_boutique<html_options_isolate> > ab_options_isolate;
+    std::unique_ptr<arriere_boutique<html_options_merge> > ab_options_merge;
 
     html_tabs tabs;
     html_text intro;
@@ -187,6 +189,7 @@ private:
     static constexpr const char* tab_options_read = "options-read";
     static constexpr const char* tab_options_create = "options-create";
     static constexpr const char* tab_options_isolate = "options-isolate";
+    static constexpr const char* tab_options_merge = "options-merge";
 
     static constexpr const char* event_save = "save";
     static constexpr const char* event_load = "load";
