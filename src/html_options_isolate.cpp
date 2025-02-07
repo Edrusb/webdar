@@ -105,7 +105,7 @@ html_options_isolate::html_options_isolate():
 
 	// setting default values from libdar
 
-    init();
+	/// init() is moved to set_child because it requires the bibliotheque due to the guichet objects involved
 
 	// building HTML structure
 
@@ -216,6 +216,8 @@ void html_options_isolate::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				     bibliotheque::delta_sig,
 				     sig_block_size,
 				     true);
+
+    init();
 }
 
 void html_options_isolate::load_json(const json & source)
