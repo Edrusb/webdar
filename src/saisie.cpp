@@ -211,7 +211,7 @@ saisie::saisie():
 
 	// testing sub-page
     static const char* sect_test_params = "tparams";
-    test_params.add_section(sect_test_params, "Testing parameters");
+    test_params.add_section(sect_test_params, "Testing Parameters");
     test_params.set_active_section(sect_test_params);
 
     test_params.adopt_in_section(sect_test_params, &guichet_test);

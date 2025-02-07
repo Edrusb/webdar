@@ -55,8 +55,8 @@ html_archive_create::html_archive_create():
     if(! options)
 	throw exception_memory();
 
-    deroule.add_section(sect_archive, "Backup Creation");
-    deroule.add_section(sect_options, "Options");
+    deroule.add_section(sect_archive, "Creation Parameters");
+    deroule.add_section(sect_options, "Creation Options");
     deroule.set_active_section(0);
 
     fs_root.set_select_mode(html_form_input_file::select_dir);
