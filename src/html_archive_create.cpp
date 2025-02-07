@@ -49,12 +49,14 @@ html_archive_create::html_archive_create():
     need_entrepot_update(false)
 {
     static const char* sect_archive = "archive";
+    static const char* sect_options = "options";
 
     options.reset(new (nothrow) html_options_create());
     if(! options)
 	throw exception_memory();
 
     deroule.add_section(sect_archive, "Backup Creation");
+    deroule.add_section(sect_options, "Options");
     deroule.set_active_section(0);
 
     fs_root.set_select_mode(html_form_input_file::select_dir);
@@ -75,8 +77,8 @@ html_archive_create::html_archive_create():
     fs.adopt(&basename);
     form.adopt(&fs);
     deroule.adopt_in_section(sect_archive, &form);
+    deroule.adopt_in_section(sect_options, &guichet_options);
     adopt(&deroule);
-    adopt(&guichet_options);
     adopt(&repoxfer);
 
 	// events
