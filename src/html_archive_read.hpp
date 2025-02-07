@@ -48,6 +48,7 @@ extern "C"
 #include "jsoner.hpp"
 #include "bibliotheque_subconfig.hpp"
 #include "events.hpp"
+#include "html_derouleur.hpp"
 
     /// class html_archive_read let user define the archive path, basename and option to read
 
@@ -99,6 +100,9 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 	/// inherited from class libthreadar::thread
     virtual void inherited_run() override;
 
@@ -106,6 +110,7 @@ protected:
     virtual void signaled_inherited_cancel() override;
 
 private:
+    html_derouleur deroule;
     html_form form;
     html_form_fieldset fs;
     html_form_input_file arch_path;

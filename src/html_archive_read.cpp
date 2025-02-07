@@ -33,7 +33,7 @@ extern "C"
 
     // webdar headers
 #include "chemin.hpp"
-
+#include "webdar_css_style.hpp"
 
     //
 #include "html_archive_read.hpp"
@@ -56,12 +56,22 @@ html_archive_read::html_archive_read(const string & archive_description):
     if(! opt_read)
 	throw exception_memory();
 
+	// components setup
+
+    static const char* sect_archive = "archive";
+    static const char* sect_options = "options";
+
+    deroule.add_section(sect_archive, "Read Parameters");
+    deroule.add_section(sect_options, "Read Options");
+    deroule.set_active_section(0);
+
 	// web components layout
 
     fs.adopt(&arch_path);
     form.adopt(&fs);
-    adopt(&form);
-    adopt(&guichet_opt_read);
+    deroule.adopt_in_section(sect_archive, &form);
+    deroule.adopt_in_section(sect_options, &guichet_opt_read);
+    adopt(&deroule);
     adopt(&libdarexec);
 
 	// events and actor
@@ -74,6 +84,10 @@ html_archive_read::html_archive_read(const string & archive_description):
 	// initial values
     arch_path.set_select_mode(html_form_input_file::select_slice);
     libdarexec.set_visible(false);
+
+	// css
+    webdar_css_style::normal_button(deroule, true);
+
 }
 
 void html_archive_read::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
@@ -196,6 +210,14 @@ string html_archive_read::inherited_get_body_part(const chemin & path,
     return get_body_part_from_all_children(path, req);
 }
 
+void html_archive_read::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
+}
 
 string html_archive_read::get_archive_path() const
 {

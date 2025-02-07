@@ -215,7 +215,6 @@ private:
     html_div right_pan;    ///< holds all that is beside main menu
 
 	/// show archive zone (middle top)
-    html_derouleur archive_show;   ///< global container that is either visible or not depending on "choice" value
     html_archive_read archread;    ///< the archive to operate on (reading)
 
 	// select zone

@@ -171,15 +171,9 @@ saisie::saisie():
     select.add_section(menu_close, "");
     adopt(&choice);
 
-	// Configuring archive_show
+	// Configuring archread
 
-    static const char* sect_archshow = "show";
-
-    archive_show.add_section(sect_archshow, "Backup to Read");
-    archive_show.set_active_section(0);
-
-    archive_show.adopt_in_section(sect_archshow, &archread);
-    right_pan.adopt(&archive_show);
+    right_pan.adopt(&archread);
 
 	// configuration of the sub-pages brought by "select"
 
@@ -297,7 +291,6 @@ saisie::saisie():
     register_name(event_download);
 
 	// css
-    webdar_css_style::normal_button(archive_show, true);
     webdar_css_style::normal_button(go_extract);
     webdar_css_style::normal_button(go_compare);
     webdar_css_style::normal_button(go_test);
@@ -407,9 +400,9 @@ void saisie::on_event(const string & event_name)
 	   || choice.get_current_tag() == menu_isolate
 	   || choice.get_current_tag() == menu_merge
 	   || choice.get_current_tag() == menu_repair)
-	    archive_show.set_visible(true);
+	    archread.set_visible(true);
 	else
-	    archive_show.set_visible(false);
+	    archread.set_visible(false);
 	select.set_active_section(choice.get_current_mode());
 
 	    // not necessary to call my_body_part_has_changed()
