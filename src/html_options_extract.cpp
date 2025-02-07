@@ -357,6 +357,18 @@ void html_options_extract::clear_json()
     init();
 }
 
+bibliotheque::using_set html_options_extract::get_using_set() const
+{
+    bibliotheque::using_set ret;
+
+    subconfig_add_to(ret, guichet_filename_mask.get_using_set());
+    subconfig_add_to(ret, guichet_path_mask.get_using_set());
+    subconfig_add_to(ret, guichet_ea_mask.get_using_set());
+    subconfig_add_to(ret, guichet_overwriting_policy.get_using_set());
+
+    return ret;
+}
+
 void html_options_extract::on_event(const string & event_name)
 {
     if(event_name == html_form_input::changed)

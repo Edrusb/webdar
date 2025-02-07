@@ -48,12 +48,14 @@ extern "C"
 #include "html_fsa_scope.hpp"
 #include "guichet.hpp"
 #include "jsoner.hpp"
+#include "bibliotheque_subconfig.hpp"
 
     /// html components used for the user to provide parameters of libdar archive restoration operation
 
 class html_options_extract : public body_builder,
 			     public actor,
-			     public jsoner
+			     public jsoner,
+			     public bibliotheque_subconfig
 {
 public:
     html_options_extract();
@@ -80,6 +82,9 @@ public:
 
 	/// inherited from jsoner
     virtual void clear_json() override;
+
+	/// inherited from bibliotheque_subconfig
+    virtual bibliotheque::using_set get_using_set() const override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
