@@ -418,6 +418,24 @@ void html_options_merge::clear_json()
     init();
 }
 
+bibliotheque::using_set html_options_merge::get_using_set() const
+{
+    bibliotheque::using_set ret;
+
+    subconfig_add_to(ret, guichet_entrep.get_using_set());
+    subconfig_add_to(ret, auxiliary.get_using_set());
+    subconfig_add_to(ret, guichet_sig_block_size.get_using_set());
+    subconfig_add_to(ret, guichet_delta_mask.get_using_set());
+    subconfig_add_to(ret, guichet_filename_mask.get_using_set());
+    subconfig_add_to(ret, guichet_path_mask.get_using_set());
+    subconfig_add_to(ret, guichet_ea_mask.get_using_set());
+    subconfig_add_to(ret, guichet_overwriting_policy.get_using_set());
+    subconfig_add_to(ret, guichet_compr_mask.get_using_set());
+    subconfig_add_to(ret, guichet_slicing.get_using_set());
+    subconfig_add_to(ret, guichet_ciphering.get_using_set());
+
+    return ret;
+}
 
 void html_options_merge::on_event(const string & event_name)
 {
