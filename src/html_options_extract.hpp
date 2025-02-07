@@ -47,10 +47,13 @@ extern "C"
 #include "html_form_overwrite_action.hpp"
 #include "html_fsa_scope.hpp"
 #include "guichet.hpp"
+#include "jsoner.hpp"
 
     /// html components used for the user to provide parameters of libdar archive restoration operation
 
-class html_options_extract : public body_builder, public actor
+class html_options_extract : public body_builder,
+			     public actor,
+			     public jsoner
 {
 public:
     html_options_extract();
@@ -66,7 +69,17 @@ public:
 	/// needed for path based filtering to filter accordingly to the current root_fs
     void set_fs_root(const std::string & prefix) { path_mask->set_fs_root(prefix); };
 
+	/// providing the parameters as libdar object
     libdar::archive_options_extract get_options() const;
+
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -116,6 +129,33 @@ private:
     std::shared_ptr<html_mask_form_filename> ea_mask;
 
     html_fsa_scope fsa_scope;
+
+    void init();
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_options_extract";
+
+    static constexpr const char* jlabel_in_place = "in-place";
+    static constexpr const char* jlabel_warn_over = "warn-over";
+    static constexpr const char* jlabel_flat = "flat";
+    static constexpr const char* jlabel_what_to_check = "what-to-check";
+    static constexpr const char* jlabel_warn_remove_no_match = "warn-remove-no-match";
+    static constexpr const char* jlabel_empty = "dry-run";
+    static constexpr const char* jlabel_empty_dir = "empty-dir";
+    static constexpr const char* jlabel_dirty_behavior = "dirty-behavior";
+    static constexpr const char* jlabel_ignore_sockets = "ignore-sockets";
+    static constexpr const char* jlabel_info_details = "info-details";
+    static constexpr const char* jlabel_display_treated = "display-treated";
+    static constexpr const char* jlabel_display_only_dir = "display-only-dir";
+    static constexpr const char* jlabel_display_skipped = "display-skipped";
+    static constexpr const char* jlabel_overwriting_policy = "overwriting-policy";
+    static constexpr const char* jlabel_only_deleted = "only-deleted";
+    static constexpr const char* jlabel_ignore_deleted = "ignore-deleted";
+    static constexpr const char* jlabel_filename_mask = "filename-mask";
+    static constexpr const char* jlabel_path_mask = "path-mask";
+    static constexpr const char* jlabel_ea_mask = "ea-mask";
+    static constexpr const char* jlabel_fsa_scope = "fsa-scope";
+
 };
 
 #endif

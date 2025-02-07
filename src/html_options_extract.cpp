@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_css_style.hpp"
@@ -102,8 +102,6 @@ html_options_extract::html_options_extract():
 {
 	// set html fields to default value used by libdar
 
-    libdar::archive_options_extract defaults;
-
     filename_mask.reset(new (nothrow) html_mask_form_filename("file name"));
     if(!filename_mask)
 	throw exception_memory();
@@ -120,35 +118,17 @@ html_options_extract::html_options_extract():
     if(! overwriting_policy)
 	throw exception_memory();
 
-    in_place.set_value_as_bool(defaults.get_in_place());
-    flat.set_value_as_bool(defaults.get_flat());
     what_to_check.add_choice("all", "All");
     what_to_check.add_choice("ignore_owner", "All but ownership");
     what_to_check.add_choice("mtime", "All but ownership and permission");
     what_to_check.add_choice("inode_type", "Nothing inode related, just data");
-    warn_remove_no_match.set_value_as_bool(defaults.get_warn_remove_no_match());
-    empty.set_value_as_bool(defaults.get_empty());
+
     dirty_behavior.add_choice("ignore", "Exclude dirty files");
     dirty_behavior.add_choice("warn", "Warn before restoring");
     dirty_behavior.add_choice("ok", "Restored as normal files");
-    switch(defaults.get_dirty_behavior())
-    {
-    case libdar::archive_options_extract::dirty_ignore:
-	dirty_behavior.set_selected_num(0);
-	break;
-    case libdar::archive_options_extract::dirty_warn:
-	dirty_behavior.set_selected_num(1);
-	break;
-    case libdar::archive_options_extract::dirty_ok:
-	dirty_behavior.set_selected_num(2);
-	break;
-    default:
-	throw WEBDAR_BUG;
-    }
 
-    only_deleted.set_value_as_bool(defaults.get_only_deleted());
-    ignore_deleted.set_value_as_bool(defaults.get_ignore_deleted());
-    ignore_sockets.set_value_as_bool(defaults.get_ignore_unix_sockets());
+	// default values
+	// these are set from set_biblio
 
 	// build the adoption tree
 
@@ -235,6 +215,7 @@ void html_options_extract::set_biblio(const shared_ptr<bibliotheque> & ptr)
 					 bibliotheque::over_policy,
 					 overwriting_policy,
 					 true);
+    init();
 }
 
 libdar::archive_options_extract html_options_extract::get_options() const
@@ -283,6 +264,99 @@ libdar::archive_options_extract html_options_extract::get_options() const
     return ret;
 }
 
+void html_options_extract::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
+
+//	ignore_events = true;
+
+	try
+	{
+	    in_place.set_value_as_bool(config.at(jlabel_in_place));
+	    warn_over.set_value_as_bool(config.at(jlabel_warn_over));
+	    flat.set_value_as_bool(config.at(jlabel_flat));
+	    what_to_check.set_selected_id(config.at(jlabel_what_to_check));
+	    warn_remove_no_match.set_value_as_bool(config.at(jlabel_warn_remove_no_match));
+	    empty.set_value_as_bool(config.at(jlabel_empty));
+	    empty_dir.set_value_as_bool(config.at(jlabel_empty_dir));
+	    dirty_behavior.set_selected_id(config.at(jlabel_dirty_behavior));
+	    ignore_sockets.set_value_as_bool(config.at(jlabel_ignore_sockets));
+	    info_details.set_value_as_bool(config.at(jlabel_info_details));
+	    display_treated.set_value_as_bool(config.at(jlabel_display_treated));
+	    display_treated_only_dir.set_value_as_bool(config.at(jlabel_display_only_dir));
+	    display_skipped.set_value_as_bool(config.at(jlabel_display_skipped));
+	    guichet_overwriting_policy.load_json(config.at(jlabel_overwriting_policy));
+	    only_deleted.set_value_as_bool(config.at(jlabel_only_deleted));
+	    ignore_deleted.set_value_as_bool(config.at(jlabel_ignore_deleted));
+	    guichet_filename_mask.load_json(config.at(jlabel_filename_mask));
+	    guichet_path_mask.load_json(config.at(jlabel_path_mask));
+	    guichet_ea_mask.load_json(config.at(jlabel_ea_mask));
+	    fsa_scope.load_json(config.at(jlabel_fsa_scope));
+	}
+	catch(...)
+	{
+//	    ignore_events = false;
+	    throw;
+	}
+//	ignore_events = false;
+
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_options_extract::save_json() const
+{
+    json config;
+
+    config[jlabel_in_place] = in_place.get_value_as_bool();
+    config[jlabel_warn_over] = warn_over.get_value_as_bool();
+    config[jlabel_flat] = flat.get_value_as_bool();
+    config[jlabel_what_to_check] = what_to_check.get_selected_id();
+    config[jlabel_warn_remove_no_match] = warn_remove_no_match.get_value_as_bool();
+    config[jlabel_empty] = empty.get_value_as_bool();
+    config[jlabel_empty_dir] = empty_dir.get_value_as_bool();
+    config[jlabel_dirty_behavior] = dirty_behavior.get_selected_id();
+    config[jlabel_ignore_sockets] = ignore_sockets.get_value_as_bool();
+    config[jlabel_info_details] = info_details.get_value_as_bool();
+    config[jlabel_display_treated] = display_treated.get_value_as_bool();
+    config[jlabel_display_only_dir] = display_treated_only_dir.get_value_as_bool();
+    config[jlabel_display_skipped] = display_skipped.get_value_as_bool();
+    config[jlabel_overwriting_policy] = guichet_overwriting_policy.save_json();
+    config[jlabel_only_deleted] = only_deleted.get_value_as_bool();
+    config[jlabel_ignore_deleted] = ignore_deleted.get_value_as_bool();
+    config[jlabel_filename_mask] = guichet_filename_mask.save_json();
+    config[jlabel_path_mask] = guichet_path_mask.save_json();
+    config[jlabel_ea_mask] = guichet_ea_mask.save_json();
+    config[jlabel_fsa_scope] = fsa_scope.save_json();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					config);
+}
+
+void html_options_extract::clear_json()
+{
+    init();
+}
+
 void html_options_extract::on_event(const string & event_name)
 {
     if(event_name == html_form_input::changed)
@@ -307,4 +381,65 @@ void html_options_extract::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
+}
+
+void html_options_extract::init()
+{
+    libdar::archive_options_extract defaults;
+
+    in_place.set_value_as_bool(defaults.get_in_place());
+    warn_over.set_value_as_bool(defaults.get_warn_over());
+    flat.set_value_as_bool(defaults.get_flat());
+
+    switch(defaults.get_what_to_check())
+    {
+    case libdar::comparison_fields::all:
+	what_to_check.set_selected_id("all");
+	break;
+    case libdar::comparison_fields::ignore_owner:
+	what_to_check.set_selected_id("ignore_owner");
+	break;
+    case libdar::comparison_fields::mtime:
+	what_to_check.set_selected_id("mtime");
+	break;
+    case libdar::comparison_fields::inode_type:
+	what_to_check.set_selected_id("inode_type");
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+
+    warn_remove_no_match.set_value_as_bool(defaults.get_warn_remove_no_match());
+    empty.set_value_as_bool(defaults.get_empty());
+    empty_dir.set_value_as_bool(defaults.get_empty_dir());
+
+    switch(defaults.get_dirty_behavior())
+    {
+    case libdar::archive_options_extract::dirty_ignore:
+	dirty_behavior.set_selected_num(0);
+	break;
+    case libdar::archive_options_extract::dirty_warn:
+	dirty_behavior.set_selected_num(1);
+	break;
+    case libdar::archive_options_extract::dirty_ok:
+	dirty_behavior.set_selected_num(2);
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+
+    ignore_sockets.set_value_as_bool(defaults.get_ignore_unix_sockets());
+    info_details.set_value_as_bool(defaults.get_info_details());
+    display_treated.set_value_as_bool(defaults.get_display_treated());
+    display_treated_only_dir.set_value_as_bool(defaults.get_display_treated_only_dir());
+    display_skipped.set_value_as_bool(defaults.get_display_skipped());
+
+    guichet_overwriting_policy.clear_json();
+    only_deleted.set_value_as_bool(defaults.get_only_deleted());
+    ignore_deleted.set_value_as_bool(defaults.get_ignore_deleted());
+
+    guichet_filename_mask.clear_json();
+    guichet_path_mask.clear_json();
+    guichet_ea_mask.clear_json();
+    fsa_scope.clear_json();
 }
