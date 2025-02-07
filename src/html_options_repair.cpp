@@ -289,6 +289,16 @@ void html_options_repair::clear_json()
     init();
 }
 
+bibliotheque::using_set html_options_repair::get_using_set() const
+{
+    bibliotheque::using_set ret;
+
+    subconfig_add_to(ret, guichet_entrep.get_using_set());
+    subconfig_add_to(ret, guichet_slicing.get_using_set());
+    subconfig_add_to(ret, guichet_ciphering.get_using_set());
+
+    return ret;
+}
 
 void html_options_repair::on_event(const string & event_name)
 {
