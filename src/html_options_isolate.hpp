@@ -51,10 +51,14 @@ extern "C"
 #include "html_slicing.hpp"
 #include "html_ciphering.hpp"
 #include "guichet.hpp"
+#include "jsoner.hpp"
 
     /// html components for the user to provide parameters of a isolation operation
 
-class html_options_isolate : public body_builder, public actor, public events
+class html_options_isolate : public body_builder,
+			     public actor,
+			     public events,
+			     public jsoner
 {
 public:
     static const std::string entrepot_changed;
@@ -69,6 +73,14 @@ public:
 	/// mandatory call to invoke ASAP after constructor
     void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
 
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -138,6 +150,29 @@ private:
 
     guichet guichet_ciphering;
     std::shared_ptr<html_ciphering> ciphering;
+
+    void init();  ///< set parameters to default values
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_options_isolate";
+
+    static constexpr const char* jlabel_delta_sig = "delta-sig";
+    static constexpr const char* jlabel_delta_xfer = "delta-sig-xfer";
+    static constexpr const char* jlabel_sig_block_size = "sig-block-size";
+    static constexpr const char* jlabel_delta_mask = "delta-mask";
+    static constexpr const char* jlabel_entrep = "entrepot";
+    static constexpr const char* jlabel_allow_over = "allow-over";
+    static constexpr const char* jlabel_warn_over = "warn-over";
+    static constexpr const char* jlabel_seq_masks = "seq-masks";
+    static constexpr const char* jlabel_user_comment = "user-comment";
+    static constexpr const char* jlabel_hash_algo = "hash-algo";
+    static constexpr const char* jlabel_execute = "execute";
+    static constexpr const char* jlabel_empty = "dry-run";
+    static constexpr const char* jlabel_info_details = "info-details";
+    static constexpr const char* jlabel_compr_params = "compr-params";
+    static constexpr const char* jlabel_slicing = "slicing";
+    static constexpr const char* jlabel_ciphering = "ciphering";
+
 };
 
 #endif
