@@ -70,7 +70,8 @@ class html_options_merge : public body_builder,
 			   public bibliotheque_subconfig
 {
 public:
-    static const std::string entrepot_changed;
+    static const std::string entrepot_changed; ///< event triggered only for entrepot related changes
+    static const std::string changed;   ///< event for any change in this component, including entrpot changes
 
     html_options_merge();
     html_options_merge(const html_options_merge & ref) = delete;
@@ -196,7 +197,9 @@ private:
     guichet guichet_ciphering;
     std::shared_ptr<html_ciphering> ciphering;
 
+    bool ignore_events;
     void init(); ///< set default values to parameters
+    void trigger_changed();
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* myclass_id = "html_options_merge";
