@@ -101,6 +101,9 @@ std::string bibliotheque::changed(category cat)
     case confread:
 	ret += "read";
 	break;
+    case confisolate:
+	ret += "isolate";
+	break;
     case EOE:
 	throw WEBDAR_BUG;
     default:
@@ -628,6 +631,8 @@ string bibliotheque::category_to_string(category cat)
 	return "over-policy";
     case confread:
 	return "confread";
+    case confisolate:
+	return "confisolate";
     case EOE:
 	throw WEBDAR_BUG;
     default:
@@ -673,6 +678,8 @@ bibliotheque::category bibliotheque::string_to_category(const string & s)
 	return over_policy;
     else if(s == "confread")
 	return confread;
+    else if(s == "confisolate")
+	return confisolate;
     else
 	throw exception_range(libdar::tools_printf("Unknown category: %s", s.c_str()));
 }

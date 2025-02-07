@@ -79,7 +79,8 @@ public:
 	delta_sig = 15,
 	over_policy = 16,
 	confread = 17,
-	EOE = 18 ///< not a valid value, used for interating in the enum
+	confisolate = 18,
+	EOE = 19 ///< not a valid value, used for interating in the enum
     };
 
 	/// change event per category
