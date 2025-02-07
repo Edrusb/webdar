@@ -58,10 +58,14 @@ extern "C"
 #include "html_form_select.hpp"
 #include "html_fsa_scope.hpp"
 #include "guichet.hpp"
+#include "jsoner.hpp"
 
     /// html component for the user to provided parameters of a libdar merging operation
 
-class html_options_merge : public body_builder, public actor, public events
+class html_options_merge : public body_builder,
+			   public actor,
+			   public events,
+			   public jsoner
 {
 public:
     static const std::string entrepot_changed;
@@ -75,6 +79,15 @@ public:
 
 	/// mandatory call to invoke ASAP after constructor
     void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
+
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override;
+
+	/// inherited from jsoner
+    virtual json save_json() const override;
+
+	/// inherited from jsoner
+    virtual void clear_json() override;
 
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
@@ -177,6 +190,43 @@ private:
 
     guichet guichet_ciphering;
     std::shared_ptr<html_ciphering> ciphering;
+
+    void init(); ///< set default values to parameters
+
+    static constexpr const unsigned int format_version = 1;
+    static constexpr const char* myclass_id = "html_options_merge";
+
+    static constexpr const char* jlabel_entrep = "entrepot";
+    static constexpr const char* jlabel_allow_over = "allow-over";
+    static constexpr const char* jlabel_warn_over = "warn-over";
+    static constexpr const char* jlabel_pause = "pause";
+    static constexpr const char* jlabel_seq_marks = "sequential-marks";
+    static constexpr const char* jlabel_sparse_min_size = "sparse-file-min-size";
+    static constexpr const char* jlabel_user_comment = "user-comments";
+    static constexpr const char* jlabel_hash_algo = "hash-algo";
+    static constexpr const char* jlabel_execute = "execute";
+    static constexpr const char* jlabel_empty = "dry-run";
+    static constexpr const char* jlabel_has_aux = "has-auxiliary";
+    static constexpr const char* jlabel_decremental = "decremental";
+    static constexpr const char* jlabel_auxiliary = "auxiliary";
+    static constexpr const char* jlabel_delta_sig = "delta-sig";
+    static constexpr const char* jlabel_sig_block_size = "delta-sig-block-size";
+    static constexpr const char* jlabel_delta_mask = "delta-mask";
+    static constexpr const char* jlabel_info_details = "info-details";
+    static constexpr const char* jlabel_display_treated = "disp-treated";
+    static constexpr const char* jlabel_display_only_dir = "disp-only-dirs";
+    static constexpr const char* jlabel_display_skipped = "disp-skipped";
+    static constexpr const char* jlabel_empty_dir = "empty-dirs";
+    static constexpr const char* jlabel_filename_mask = "filename-mask";
+    static constexpr const char* jlabel_path_mask = "path-mask";
+    static constexpr const char* jlabel_ea_mask = "ea-mask";
+    static constexpr const char* jlabel_fsa_scope = "fsa-scope";
+    static constexpr const char* jlabel_overwrite_policy = "overwriting-policy";
+    static constexpr const char* jlabel_compr_params = "compression-params";
+    static constexpr const char* jlabel_compr_mask = "compression-mask";
+    static constexpr const char* jlabel_slicing = "slicing";
+    static constexpr const char* jlabel_ciphering = "ciphering";
+
 
 };
 

@@ -123,25 +123,10 @@ html_options_merge::html_options_merge():
 	// components setups
     pause.set_min_only(0);
 
-    libdar::archive_options_merge defaults;
-
 	// setting default values from libdar
     delta_sig.add_choice("drop", "Drop all signatures");
     delta_sig.add_choice("transfer", "Transfer signatures as is");
     delta_sig.add_choice("compute", "Define signatures to transfer or compute");
-    delta_sig.set_selected_num(1); // transfer by default
-
-    allow_over.set_value_as_bool(defaults.get_allow_over());
-    warn_over.set_value_as_bool(defaults.get_warn_over());
-    pause.set_value(libdar::deci(defaults.get_pause()).human());
-    sequential_marks.set_value_as_bool(defaults.get_sequential_marks());
-    sparse_file_min_size.set_value_as_infinint(defaults.get_sparse_file_min_size());
-    user_comment.set_value(defaults.get_user_comment());
-    hash_algo.set_value(defaults.get_hash_algo());
-    execute.set_value(defaults.get_execute());
-    empty.set_value_as_bool(defaults.get_empty());
-    empty_dir.set_value_as_bool(defaults.get_empty_dir());
-    sig_block_size->set_delta_sig_min_size(defaults.get_delta_sig_min_size());
 
     delta_filter_params.add_paragraph();
     delta_filter_params.add_text(3, "Delta signature parameters");
@@ -150,7 +135,9 @@ html_options_merge::html_options_merge():
     compr_filter_title.add_paragraph();
     compr_filter_title.add_text(3, "Compression filename based filtering");
 
+    libdar::archive_options_merge defaults;
     ciphering->set_crypto_size_range(defaults.get_crypto_size(), libdar::infinint(4294967296)); // max is 2^32
+    sig_block_size->set_delta_sig_min_size(defaults.get_delta_sig_min_size());
 
 	// building HTML structure
 
@@ -315,7 +302,122 @@ void html_options_merge::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 					 bibliotheque::over_policy,
 					 overwriting_policy,
 					 true);
+
+    init();
 }
+
+void html_options_merge::load_json(const json & source)
+{
+    try
+    {
+	unsigned int version;
+	string class_id;
+	json config = unwrap_config_from_json_header(source,
+						     version,
+						     class_id);
+
+	if(class_id != myclass_id)
+	    throw exception_range(libdar::tools_printf("Unexpected class_id in json data, found %s while expecting %s",
+						       class_id.c_str(),
+						       myclass_id));
+
+	if(version > format_version)
+	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
+						       myclass_id));
+
+//	ignore_events = true;
+
+	try
+	{
+	    guichet_entrep.load_json(config.at(jlabel_entrep));
+	    allow_over.set_value_as_bool(config.at(jlabel_allow_over));
+	    warn_over.set_value_as_bool(config.at(jlabel_warn_over));
+	    pause.set_value_as_bool(config.at(jlabel_pause));
+	    sequential_marks.set_value_as_bool(config.at(jlabel_seq_marks));
+	    sparse_file_min_size.set_value_as_infinint(libdar::deci(config.at(jlabel_sparse_min_size)).computer());
+	    user_comment.set_value(config.at(jlabel_user_comment));
+	    hash_algo.set_selected_id(config.at(jlabel_hash_algo));
+	    execute.set_value(config.at(jlabel_execute));
+	    empty.set_value_as_bool(config.at(jlabel_empty));
+	    has_aux.set_value_as_bool(config.at(jlabel_has_aux));
+	    decremental.set_value_as_bool(config.at(jlabel_decremental));
+	    auxiliary.load_json(config.at(jlabel_auxiliary));
+	    delta_sig.set_selected_id(config.at(jlabel_delta_sig));
+	    guichet_sig_block_size.load_json(config.at(jlabel_sig_block_size));
+	    guichet_delta_mask.load_json(config.at(jlabel_delta_mask));
+	    info_details.set_value_as_bool(config.at(jlabel_info_details));
+	    display_treated.set_value_as_bool(config.at(jlabel_display_treated));
+	    display_treated_only_dir.set_value_as_bool(config.at(jlabel_display_only_dir));
+	    display_skipped.set_value_as_bool(config.at(jlabel_display_skipped));
+	    empty_dir.set_value_as_bool(config.at(jlabel_empty_dir));
+	    guichet_filename_mask.load_json(config.at(jlabel_filename_mask));
+	    guichet_path_mask.load_json(config.at(jlabel_path_mask));
+	    guichet_ea_mask.load_json(config.at(jlabel_ea_mask));
+	    fsa_scope.load_json(config.at(jlabel_fsa_scope));
+	    guichet_overwriting_policy.load_json(config.at(jlabel_overwrite_policy));
+	    guichet_compr_params.load_json(config.at(jlabel_compr_params));
+	    guichet_compr_mask.load_json(config.at(jlabel_compr_mask));
+	    guichet_slicing.load_json(config.at(jlabel_slicing));
+	    guichet_ciphering.load_json(config.at(jlabel_ciphering));
+	}
+	catch(...)
+	{
+//	    ignore_events = false;
+	    throw;
+	}
+//	ignore_events = false;
+    }
+    catch(json::exception & e)
+    {
+	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
+    }
+}
+
+json html_options_merge::save_json() const
+{
+    json config;
+
+    config[jlabel_entrep] = guichet_entrep.save_json();
+    config[jlabel_allow_over] = allow_over.get_value_as_bool();
+    config[jlabel_warn_over] = warn_over.get_value_as_bool();
+    config[jlabel_pause] = pause.get_value_as_bool();
+    config[jlabel_seq_marks] = sequential_marks.get_value_as_bool();
+    config[jlabel_sparse_min_size] = libdar::deci(sparse_file_min_size.get_value_as_infinint()).human();
+    config[jlabel_user_comment] = user_comment.get_value();
+    config[jlabel_hash_algo] = hash_algo.get_selected_id();
+    config[jlabel_execute] = execute.get_value();
+    config[jlabel_empty] = empty.get_value_as_bool();
+    config[jlabel_has_aux] = has_aux.get_value_as_bool();
+    config[jlabel_decremental] = decremental.get_value_as_bool();
+    config[jlabel_auxiliary] = auxiliary.save_json();
+    config[jlabel_delta_sig] = delta_sig.get_selected_id();
+    config[jlabel_sig_block_size] = guichet_sig_block_size.save_json();
+    config[jlabel_delta_mask] = guichet_delta_mask.save_json();
+    config[jlabel_info_details] = info_details.get_value_as_bool();
+    config[jlabel_display_treated] = display_treated.get_value_as_bool();
+    config[jlabel_display_only_dir] = display_treated_only_dir.get_value_as_bool();
+    config[jlabel_display_skipped] = display_skipped.get_value_as_bool();
+    config[jlabel_empty_dir] = empty_dir.get_value_as_bool();
+    config[jlabel_filename_mask] = guichet_filename_mask.save_json();
+    config[jlabel_path_mask] = guichet_path_mask.save_json();
+    config[jlabel_ea_mask] = guichet_ea_mask.save_json();
+    config[jlabel_fsa_scope] = fsa_scope.save_json();
+    config[jlabel_overwrite_policy] = guichet_overwriting_policy.save_json();
+    config[jlabel_compr_params] = guichet_compr_params.save_json();
+    config[jlabel_compr_mask] = guichet_compr_mask.save_json();
+    config[jlabel_slicing] = guichet_slicing.save_json();
+    config[jlabel_ciphering] = guichet_ciphering.save_json();
+
+    return wrap_config_with_json_header(format_version,
+					myclass_id,
+					config);
+}
+
+void html_options_merge::clear_json()
+{
+    init();
+}
+
 
 void html_options_merge::on_event(const string & event_name)
 {
@@ -495,4 +597,40 @@ void html_options_merge::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
+}
+
+void html_options_merge::init()
+{
+    libdar::archive_options_merge defaults;
+
+    guichet_entrep.clear_json();
+    allow_over.set_value_as_bool(defaults.get_allow_over());
+    warn_over.set_value_as_bool(defaults.get_warn_over());
+    pause.set_value(libdar::deci(defaults.get_pause()).human());
+    sequential_marks.set_value_as_bool(defaults.get_sequential_marks());
+    sparse_file_min_size.set_value_as_infinint(defaults.get_sparse_file_min_size());
+    user_comment.set_value(defaults.get_user_comment());
+    hash_algo.set_value(defaults.get_hash_algo());
+    execute.set_value(defaults.get_execute());
+    empty.set_value_as_bool(defaults.get_empty());
+    has_aux.set_value_as_bool(false);
+    decremental.set_value_as_bool(defaults.get_decremental_mode());
+    auxiliary.clear_json();
+    delta_sig.set_selected_num(1); // transfer by default
+    guichet_sig_block_size.clear_json();
+    guichet_delta_mask.clear_json();
+    info_details.set_value_as_bool(defaults.get_info_details());
+    display_treated.set_value_as_bool(defaults.get_display_treated());
+    display_treated_only_dir.set_value_as_bool(defaults.get_display_treated_only_dir());
+    display_skipped.set_value_as_bool(defaults.get_display_skipped());
+    empty_dir.set_value_as_bool(defaults.get_empty_dir());
+    guichet_filename_mask.clear_json();
+    guichet_path_mask.clear_json();
+    guichet_ea_mask.clear_json();
+    fsa_scope.clear_json();
+    guichet_overwriting_policy.clear_json();
+    guichet_compr_params.clear_json();
+    guichet_compr_mask.clear_json();
+    guichet_slicing.clear_json();
+    guichet_ciphering.clear_json();
 }
