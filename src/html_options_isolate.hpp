@@ -61,7 +61,8 @@ class html_options_isolate : public body_builder,
 			     public jsoner
 {
 public:
-    static const std::string entrepot_changed;
+    static const std::string entrepot_changed; ///< event only triggered when entrepot related params changed
+    static const std::string changed;  ///< triggered when the component changed, including entrepot params changed
 
     html_options_isolate();
     html_options_isolate(const html_options_isolate & ref) = delete;
@@ -151,7 +152,10 @@ private:
     guichet guichet_ciphering;
     std::shared_ptr<html_ciphering> ciphering;
 
+    bool ignore_events;
+
     void init();  ///< set parameters to default values
+    void trigger_changed();
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* myclass_id = "html_options_isolate";

@@ -43,6 +43,7 @@ extern "C"
 using namespace std;
 
 const string html_options_isolate::entrepot_changed = "html_options_isolate_entrep_changed";
+const string html_options_isolate::changed = "html_options_isolate_changed";
 
 html_options_isolate::html_options_isolate():
     form_delta_sig("Update"),
@@ -61,7 +62,8 @@ html_options_isolate::html_options_isolate():
     empty("Dry run execution", html_form_input::check, "", "1"),
     form_shown("Update"),
     fs_shown(""),
-    info_details("Detailed informations", html_form_input::check, "1", "1")
+    info_details("Detailed informations", html_form_input::check, "1", "1"),
+    ignore_events(false)
 {
     entrep.reset(new (nothrow) html_entrepot());
     if(!entrep)
@@ -159,10 +161,26 @@ html_options_isolate::html_options_isolate():
 
 	// events and visibility
     register_name(entrepot_changed);
+    register_name(changed);
 
     delta_sig.record_actor_on_event(this, html_form_input::changed);
     delta_transfer_mode.record_actor_on_event(this, html_form_input::changed);
     entrep->record_actor_on_event(this, html_entrepot::changed);
+
+    sig_block_size->record_actor_on_event(this, html_form_sig_block_size::changed);
+    delta_mask->record_actor_on_event(this, html_mask_form_filename::changed);
+    allow_over.record_actor_on_event(this, html_form_input::changed);
+    warn_over.record_actor_on_event(this, html_form_input::changed);
+    pause.record_actor_on_event(this, html_form_input::changed);
+    sequential_marks.record_actor_on_event(this, html_form_input::changed);
+    user_comment.record_actor_on_event(this, html_form_input::changed);
+    hash_algo.record_actor_on_event(this, html_hash_algo::changed);
+    execute.record_actor_on_event(this, html_form_input::changed);
+    empty.record_actor_on_event(this, html_form_input::changed);
+    info_details.record_actor_on_event(this, html_form_input::changed);
+    compr_params->record_actor_on_event(this, html_compression_params::changed);
+    slicing->record_actor_on_event(this, html_slicing::changed);
+    ciphering->record_actor_on_event(this, html_ciphering::changed);
 
     on_event(html_form_input::changed);
 
@@ -219,8 +237,7 @@ void html_options_isolate::load_json(const json & source)
 	    throw exception_range(libdar::tools_printf("Json format version too hight for %s, upgrade your webdar software",
 						       myclass_id));
 
-//	ignore_events = true;
-
+	ignore_events = true;
 	try
 	{
 	    delta_sig.set_value_as_bool(config.at(jlabel_delta_sig));
@@ -242,10 +259,11 @@ void html_options_isolate::load_json(const json & source)
 	}
 	catch(...)
 	{
-//	    ignore_events = false;
+	    ignore_events = false;
 	    throw;
 	}
-//	ignore_events = false;
+	ignore_events = false;
+	trigger_changed();
     }
     catch(json::exception & e)
     {
@@ -281,13 +299,23 @@ json html_options_isolate::save_json() const
 
 void html_options_isolate::clear_json()
 {
-    init();
+    ignore_events = true;
+    try
+    {
+	init();
+    }
+    catch(...)
+    {
+	ignore_events = false;
+	throw;
+    }
+    ignore_events = false;
+    trigger_changed();
 }
 
 void html_options_isolate::on_event(const string & event_name)
 {
-    if(event_name == html_form_input::changed
-       || event_name == html_form_select::changed)
+    if(event_name == html_form_input::changed)
     {
 	if(delta_sig.get_value_as_bool())
 	{
@@ -309,9 +337,22 @@ void html_options_isolate::on_event(const string & event_name)
 	    // no need to call my_body_part_has_changed()
 	    // because changed done in on_event concern
 	    // body_builder objects we have adopted
+	trigger_changed();
     }
     else if(event_name == html_entrepot::changed)
+    {
 	act(entrepot_changed);
+	trigger_changed();
+    }
+    else if(event_name == html_form_sig_block_size::changed
+	    || event_name == html_mask_form_filename::changed
+	    || event_name == html_hash_algo::changed
+	    || event_name == html_compression_params::changed
+	    || event_name == html_slicing::changed
+	    || event_name == html_ciphering::changed)
+    {
+	trigger_changed();
+    }
     else
 	throw WEBDAR_BUG;
 }
@@ -431,4 +472,10 @@ void html_options_isolate::init()
     guichet_compr_params.clear_json();
     guichet_slicing.clear_json();
     guichet_ciphering.clear_json();
+}
+
+void html_options_isolate::trigger_changed()
+{
+    if(! ignore_events)
+	act(changed);
 }
