@@ -71,7 +71,7 @@ public:
 	confdiff = 7,
 	conflist = 8,
 	confrest = 9,
-	confmerg = 10,
+	confmerge = 10,
 	confrepair = 11,
 	confcommon = 12,
 	slicing = 13,

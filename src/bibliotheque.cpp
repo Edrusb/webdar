@@ -77,7 +77,7 @@ std::string bibliotheque::changed(category cat)
     case confrest:
 	ret += "restore";
 	break;
-    case confmerg:
+    case confmerge:
 	ret += "merge";
 	break;
     case confrepair:
@@ -615,8 +615,8 @@ string bibliotheque::category_to_string(category cat)
 	return "conflist";
     case confrest:
 	return "confrest";
-    case confmerg:
-	return "confmerg";
+    case confmerge:
+	return "confmerge";
     case confrepair:
 	return "confrepair";
     case confcommon:
@@ -662,8 +662,8 @@ bibliotheque::category bibliotheque::string_to_category(const string & s)
 	return conflist;
     else if(s == "confrest")
 	return confrest;
-    else if(s == "confmerg")
-	return confmerg;
+    else if(s == "confmerge")
+	return confmerge;
     else if(s == "confrepair")
 	return confrepair;
     else if(s == "confcommon")
