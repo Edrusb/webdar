@@ -211,8 +211,8 @@ saisie::saisie():
 
 	// testing sub-page
     static const char* sect_test_params = "tparams";
-    test_params.add_section(sect_test_params, "Testing Parameters");
-    test_params.set_active_section(sect_test_params);
+    test_params.add_section(sect_test_params, "Testing Options");
+    test_params.set_active_section(html_aiguille::noactive);
 
     test_params.adopt_in_section(sect_test_params, &guichet_test);
     select.adopt_in_section(menu_test, &test_params);
