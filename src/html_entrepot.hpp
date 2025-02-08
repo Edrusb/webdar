@@ -126,6 +126,7 @@ private:
     html_form_input_file known_hosts_file; // sftp only
     html_form_input wait_time; // ftp and sftp
     html_form_input verbose;   // ftp and sftp
+    html_form_input landing_path; // will chdir there at initial connection
 
     std::string custom_event_name;
     bool ignore_events;
@@ -155,6 +156,8 @@ private:
     static constexpr const char* jlabel_knownhosts_file = "knownhosts_file";
     static constexpr const char* jlabel_waittime = "wait";
     static constexpr const char* jlabel_verbose = "verbose";
+    static constexpr const char* jlabel_landing_path = "landing-path";
+
     static constexpr const char* default_waittime = "30";
     static constexpr const char* default_verbose = "";
 };

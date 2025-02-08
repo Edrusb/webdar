@@ -62,6 +62,7 @@ html_entrepot::html_entrepot():
     known_hosts_file("Known-hosts file", "/", "80%", "Select the knowhosts file..."),
     wait_time("Network retry delay (s)", html_form_input::number, default_waittime, "5"),
     verbose("Verbose network connection", html_form_input::check, default_verbose, "1"),
+    landing_path("Landing path", html_form_input::text, "/", "30"),
     custom_event_name(changed),
     ignore_events(false),
     entrep_type_has_changed(false),
@@ -102,6 +103,7 @@ html_entrepot::html_entrepot():
     fs.adopt(&known_hosts_file);
     fs.adopt(&wait_time);
     fs.adopt(&verbose);
+    fs.adopt(&landing_path);
     form.adopt(&fs);
     adopt(&form);
 
@@ -110,6 +112,7 @@ html_entrepot::html_entrepot():
     auth_type.record_actor_on_event(this, html_form_select::changed);
     knownhosts_check.record_actor_on_event(this, html_form_input::changed);
     port.record_actor_on_event(this, html_form_input::changed);
+    landing_path.record_actor_on_event(this, html_form_input::changed);
 
 	// my own events
     register_name(custom_event_name); // equal to "changed" at cosntruction time, here
@@ -249,6 +252,7 @@ void html_entrepot::load_json(const json & source)
 	    known_hosts_file.set_value(config.at(jlabel_knownhosts_file));
 	    wait_time.set_value(config.at(jlabel_waittime));
 	    verbose.set_value_as_bool(config.at(jlabel_verbose));
+	    landing_path.set_value(config.at(jlabel_landing_path));
 	}
 	catch(...)
 	{
@@ -297,6 +301,7 @@ json html_entrepot::save_json() const
     config[jlabel_knownhosts_file] = known_hosts_file.get_value();
     config[jlabel_waittime] = wait_time.get_value();
     config[jlabel_verbose] = verbose.get_value_as_bool();
+    config[jlabel_landing_path] = landing_path.get_value();
 
     return wrap_config_with_json_header(format_version,
 					myclass_id,
@@ -309,6 +314,7 @@ void html_entrepot::clear_json()
     wait_time.set_value(default_waittime);
     verbose.set_value(default_verbose);
     repo_type.set_selected_num(0);
+    landing_path.set_value("/");
 
 	// same remark here as load_json() above
     entrep_need_update = true;
