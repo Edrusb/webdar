@@ -52,7 +52,7 @@ extern "C"
 class html_entrepot: public body_builder, public actor, public events, public libthreadar::thread_signal, public jsoner
 {
 public:
-	/// event triggered when any entrepot parameters has changed
+	/// event triggered when any entrepot parameters has changed *except landing_path* changes
 
 	// the use case is for the caller to know when to call get_entrepot()
     static const std::string changed;
