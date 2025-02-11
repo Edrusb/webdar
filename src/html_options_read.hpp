@@ -107,6 +107,9 @@ public:
     std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const
     { return entrep->get_entrepot(webui); };
 
+	/// obtain the entrepot landing path
+    const std::string & get_landing_path() const { return entrep->get_landing_path(); };
+
 	/// set min-digits field for the archive to read (not the archive of reference if any)
     void set_src_min_digits(const std::string & val);
 
