@@ -167,6 +167,7 @@ html_options_read::html_options_read():
     ref_slice_min_digits.record_actor_on_event(this, html_form_input::changed);
 
 	// setting up our own events
+    register_name(landing_path_changed);
     register_name(entrepot_has_changed);
     register_name(changed);
 
