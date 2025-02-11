@@ -43,7 +43,7 @@ extern "C"
 #include "html_options_create.hpp"
 
 using namespace std;
-
+const string html_options_create::landing_path_changed = "html_options_create_entrep_landing";
 const string html_options_create::entrepot_changed = "html_options_create_entrep_changed";
 const string html_options_create::changed = "html_options_create_changed";
 
@@ -324,6 +324,7 @@ html_options_create::html_options_create():
     compr_params->record_actor_on_event(this, html_compression_params::changed);
 
     entrep->record_actor_on_event(this, html_entrepot::changed);
+    entrep->record_actor_on_event(this, html_entrepot::landing_path_changed);
     filename_mask->record_actor_on_event(this, html_mask_form_filename::changed);
     path_mask->record_actor_on_event(this, html_mask_form_path::changed);
     ea_mask->record_actor_on_event(this, html_mask_form_filename::changed);
@@ -858,6 +859,10 @@ void html_options_create::on_event(const string & event_name)
 	    || event_name == html_ciphering::changed)
     {
 	trigger_changed();
+    }
+    else if(event_name == html_entrepot::landing_path_changed)
+    {
+	act(landing_path_changed);
     }
     else
 	throw WEBDAR_BUG;

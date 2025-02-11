@@ -74,8 +74,9 @@ class html_options_create : public body_builder,
 			    public bibliotheque_subconfig
 {
 public:
-    static const std::string entrepot_changed; ///< only change related to entrepot
-    static const std::string changed; ///< any parameter change (including entrepot_changed)
+    static const std::string landing_path_changed; ///< only change is related to entrepot's landing_path
+    static const std::string entrepot_changed; ///< only changes are related to entrepot (excluding landing_path)
+    static const std::string changed; ///< any parameter change (including entrepot_changed, but excluding landing_path)
 
     html_options_create();
     html_options_create(const html_options_create & ref) = delete;
@@ -109,8 +110,11 @@ public:
 	/// with the object built from this->get_reference().*
     libdar::archive_options_create get_options(std::shared_ptr<html_web_user_interaction> & webui) const;
 
-	/// optain the current entrepot object where is expected to be create the archive
+	/// obtain the current entrepot object where is expected to be create the archive
     std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const { return entrep->get_entrepot(webui); };
+
+	/// obtain the current landing path
+    const std::string & get_landing_path() const { return entrep->get_landing_path(); };
 
 	/// needed for path based filtering to filter accordingly to the current root_fs
     void set_fs_root(const std::string & prefix) { path_mask->set_fs_root(prefix); };
