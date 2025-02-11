@@ -66,6 +66,7 @@ html_entrepot::html_entrepot():
     use_landing_path("Replace current backup path by the landing path", html_form_input::check, "", "1"),
     landing_path("Landing path", html_form_input::text, "/", "30"),
     custom_event_name(changed),
+    custom_event_landing_path(landing_path_changed),
     ignore_events(false),
     entrep_type_has_changed(false),
     entrep_need_update(false)
@@ -122,7 +123,7 @@ html_entrepot::html_entrepot():
 
 	// my own events
     register_name(custom_event_name); // equal to "changed" at cosntruction time, here
-    register_name(landing_path_changed);
+    register_name(custom_event_landing_path); // equal to landing_path_changed at construction time
 
 	// css
 
@@ -213,7 +214,7 @@ void html_entrepot::on_event(const string & event_name)
     else if(event_name == landing_path_changed)
     {
 	if(use_landing_path.get_value_as_bool())
-	    act(landing_path_changed);
+	    act(custom_event_landing_path);
     }
     else
 	throw WEBDAR_BUG;
@@ -227,6 +228,11 @@ void html_entrepot::set_event_name(const string & name)
     custom_event_name = name;
 }
 
+void html_entrepot::set_event_landing_path(const string & name)
+{
+    rename_name(custom_event_landing_path, name);
+    custom_event_landing_path = name;
+}
 
 void html_entrepot::load_json(const json & source)
 {
@@ -295,7 +301,7 @@ void html_entrepot::load_json(const json & source)
 	// but doing that way, they will be only informed once and
 	// when all parameters are set to their correct value
     trigger_changed_event();
-    act(landing_path_changed);
+    act(custom_event_landing_path);
 
 }
 
@@ -349,7 +355,7 @@ void html_entrepot::clear_json()
     entrep_need_update = true;
 
     trigger_changed_event();
-    act(landing_path_changed);
+    act(custom_event_landing_path);
 }
 
 

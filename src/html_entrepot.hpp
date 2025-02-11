@@ -82,6 +82,9 @@ public:
 	/// change the change event name
     void set_event_name(const std::string & name);
 
+	/// change landing_path_changed event name
+    void set_event_landing_path(const std::string & name);
+
 	/// inherited from jsoner
     virtual void load_json(const json & source) override;
 
@@ -138,6 +141,7 @@ private:
     html_form_input landing_path; // will chdir there at initial connection
 
     std::string custom_event_name;
+    std::string custom_event_landing_path;
     bool ignore_events;
     mutable std::shared_ptr<libdar::user_interaction> dialog; ///< used by inherited_run
     mutable std::shared_ptr<libdar::entrepot> entrep;         ///< set by inherited_run
