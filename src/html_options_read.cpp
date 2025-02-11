@@ -41,8 +41,9 @@ extern "C"
 
 using namespace std;
 
-const string html_options_read::landing_path_changed = "horead_landing_path_changed";
+const string html_options_read::landing_path_changed = "landing_path_changed";
 const string html_options_read::entrepot_has_changed = "entrep_has_changed";
+const string html_options_read::ref_entrepot_landing_path_changed = "ref_landing_path_changed";
 const string html_options_read::ref_entrepot_has_changed = "ref_entrep_has_changed";
 const string html_options_read::changed = "horead_changed";
 
@@ -136,11 +137,14 @@ html_options_read::html_options_read():
 	// modyfing entrepot objects to be able to differentiate which one has changed:
     entrep->set_event_name(entrepot_has_changed);
     ref_entrep->set_event_name(ref_entrepot_has_changed);
+    ref_entrep->set_event_landing_path(ref_entrepot_landing_path_changed);
 
 	// these are the same event name as the ones we used for ourself
     entrep->record_actor_on_event(this, entrepot_has_changed);
-    ref_entrep->record_actor_on_event(this, ref_entrepot_has_changed);
     entrep->record_actor_on_event(this, html_entrepot::landing_path_changed);
+    ref_entrep->record_actor_on_event(this, ref_entrepot_has_changed);
+    ref_entrep->record_actor_on_event(this, ref_entrepot_landing_path_changed);
+
 
     ref_path.record_actor_on_event(this, html_form_input_file::changed_entrepot);
     ref_path.record_actor_on_event(this, html_form_input_file::changed_event);
@@ -429,6 +433,10 @@ void html_options_read::on_event(const string & event_name)
     }
     else if(event_name == html_entrepot::landing_path_changed)
 	act(landing_path_changed); // propagate the event
+    else if(event_name == ref_entrepot_landing_path_changed)
+    {
+	ref_path.set_value(ref_entrep->get_landing_path());
+    }
     else
 	throw WEBDAR_BUG; // unexpected event
 }

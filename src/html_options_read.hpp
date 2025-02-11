@@ -146,6 +146,7 @@ protected:
 
 private:
     static const std::string ref_entrepot_has_changed;
+    static const std::string ref_entrepot_landing_path_changed;
     static constexpr const char* sect_entrep = "entrep";
     static constexpr const char* sect_opt = "options";
     static constexpr const char* sect_ref_entrep = "ref_entrep";
