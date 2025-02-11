@@ -273,8 +273,8 @@ void html_entrepot::load_json(const json & source)
 
 	// the object may be changed by load_json() even when this
 	// component is not visible, thus the entrep_need_update will
-	// not be set as inherited_get_body_part() will not be invoked
-	// for that reason we force the entrep_need_update to true
+	// not be set as inherited_get_body_part() will not be invoked.
+	// For that reason we force the entrep_need_update to true
 	// in order for get_entrepot() to consider the changes and
 	// return when requested a re-generated libdar::entrepot
     entrep_need_update = true;
@@ -286,6 +286,8 @@ void html_entrepot::load_json(const json & source)
 	// but doing that way, they will be only informed once and
 	// when all parameters are set to their correct value
     trigger_changed_event();
+    act(landing_path_changed);
+
 }
 
 json html_entrepot::save_json() const
@@ -314,15 +316,29 @@ json html_entrepot::save_json() const
 
 void html_entrepot::clear_json()
 {
-    reset_ssh_files();
-    wait_time.set_value(default_waittime);
-    verbose.set_value(default_verbose);
-    repo_type.set_selected_num(0);
-    landing_path.set_value("/");
+    ignore_events = true;
+
+    try
+    {
+	reset_ssh_files();
+	wait_time.set_value(default_waittime);
+	verbose.set_value(default_verbose);
+	repo_type.set_selected_num(0);
+	landing_path.set_value("/");
+    }
+    catch(...)
+    {
+	ignore_events = false;
+	throw;
+    }
+    ignore_events = false;
+    update_visible();
 
 	// same remark here as load_json() above
     entrep_need_update = true;
+
     trigger_changed_event();
+    act(landing_path_changed);
 }
 
 
