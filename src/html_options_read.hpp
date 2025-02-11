@@ -86,6 +86,7 @@ class html_options_read : public body_builder,
 			  public bibliotheque_subconfig
 {
 public:
+    static const std::string landing_path_changed; ///< landing path has changed
     static const std::string entrepot_has_changed; ///< entrepot parameter changed
     static const std::string changed;  ///< any parameter changed (including entrepot change)
 
