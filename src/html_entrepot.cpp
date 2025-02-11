@@ -118,6 +118,7 @@ html_entrepot::html_entrepot():
 
 	// my own events
     register_name(custom_event_name); // equal to "changed" at cosntruction time, here
+    register_name(landing_path_changed);
 
 	// css
 

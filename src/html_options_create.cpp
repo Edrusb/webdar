@@ -313,6 +313,7 @@ html_options_create::html_options_create():
     deroule.adopt_in_section(sect_cipher, &guichet_ciphering);
 
 	// events and visibility
+    register_name(landing_path_changed);
     register_name(entrepot_changed);
     register_name(changed);
 
