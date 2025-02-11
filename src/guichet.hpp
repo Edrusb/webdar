@@ -48,7 +48,8 @@ extern "C"
 
     /// class guichet let one fetch config from a bibliotheque, save as or setup manually for a given component type
 
-    /// the given component is adopted by the guichet and is shown only in manual mode, else it is hidden.
+    /// the given component is adopted by the guichet and is shown only in manual mode, else it is hidden, but
+    /// it always updated by the config from the bibliotheque and used to fetch libdar formated options set.
     /// The guichet object adds a drop-down list of available configurations for that objects (found in the
     /// provided bibliotheque), beside several buttons:
     /// - edit : which lead the component to show and the dropbox to be set to manual mode
