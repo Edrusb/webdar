@@ -84,6 +84,7 @@ html_archive_create::html_archive_create():
 	// events
     fs_root.record_actor_on_event(this, fs_root_change_event);
     options->record_actor_on_event(this, html_options_create::entrepot_changed);
+    options->record_actor_on_event(this, html_options_create::landing_path_changed);
     repoxfer.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
 
 	// visibility
@@ -118,6 +119,10 @@ void html_archive_create::on_event(const string & event_name)
     else if(event_name == fs_root_change_event)
     {
 	options->set_fs_root(fs_root.get_value());
+    }
+    else if(event_name == html_options_create::landing_path_changed)
+    {
+	update_landing_path();
     }
     else
 	throw WEBDAR_BUG;
@@ -166,4 +171,11 @@ void html_archive_create::update_entrepot()
     repoxfer.set_visible(true);
     need_entrepot_update = false;
     repoxfer.run_and_control_thread(this);
+}
+
+void html_archive_create::update_landing_path()
+{
+    if(! options)
+	throw WEBDAR_BUG;
+    sauv_path.set_value(options->get_landing_path());
 }

@@ -102,6 +102,7 @@ private:
     bool need_entrepot_update;
 
     void update_entrepot();
+    void update_landing_path();
 
 };
 
