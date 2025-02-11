@@ -52,8 +52,13 @@ extern "C"
 class html_entrepot: public body_builder, public actor, public events, public libthreadar::thread_signal, public jsoner
 {
 public:
-    static const std::string changed; ///< triggered when the entrepot parameters has changed
+	/// event triggered when any entrepot parameters has changed
+
 	// the use case is for the caller to know when to call get_entrepot()
+    static const std::string changed;
+
+	/// event triggered only when the landing path changed (and nothing else changed)
+    static const std::string landing_path_changed;
 
     html_entrepot();
     html_entrepot(const html_entrepot & ref) = delete;
@@ -67,6 +72,9 @@ public:
 	/// from the provided html_web_user_interaction object, which must run from another
 	/// thread than the one calling this method for the user to be able to interrupt the operation
     std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> & webui) const;
+
+	/// fetch current landing path for the entrepot
+    const std::string & get_landing_path() const { return landing_path.get_value(); };
 
 	/// inherited from actor parent class
     virtual void on_event(const std::string & event_name) override;
@@ -136,7 +144,7 @@ private:
     mutable bool entrep_need_update;
 
     void update_visible();
-    void trigger_event();
+    void trigger_changed_event();
     void clear_form();
     void reset_ssh_files();
 

@@ -44,6 +44,7 @@ extern "C"
 using namespace std;
 
 const string html_entrepot::changed = "html_entrep_changed";
+const string html_entrepot::landing_path_changed = "html_entrep_landing_changed";
 const string html_entrepot::repo_type_changed = html_form_select::changed + "type"; // be sure this is different from the default event name
 
 html_entrepot::html_entrepot():
@@ -112,7 +113,8 @@ html_entrepot::html_entrepot():
     auth_type.record_actor_on_event(this, html_form_select::changed);
     knownhosts_check.record_actor_on_event(this, html_form_input::changed);
     port.record_actor_on_event(this, html_form_input::changed);
-    landing_path.record_actor_on_event(this, html_form_input::changed);
+    landing_path.set_change_event_name(landing_path_changed);
+    landing_path.record_actor_on_event(this, landing_path_changed);
 
 	// my own events
     register_name(custom_event_name); // equal to "changed" at cosntruction time, here
@@ -203,6 +205,8 @@ void html_entrepot::on_event(const string & event_name)
     else if(event_name == html_form_select::changed
 	    || event_name == html_form_input::changed)
 	entrep_type_has_changed = true;
+    else if(event_name == landing_path_changed)
+	act(landing_path_changed);
     else
 	throw WEBDAR_BUG;
 
@@ -281,7 +285,7 @@ void html_entrepot::load_json(const json & source)
 	// that depend on it be informed the component has change,
 	// but doing that way, they will be only informed once and
 	// when all parameters are set to their correct value
-    trigger_event();
+    trigger_changed_event();
 }
 
 json html_entrepot::save_json() const
@@ -318,7 +322,7 @@ void html_entrepot::clear_json()
 
 	// same remark here as load_json() above
     entrep_need_update = true;
-    trigger_event();
+    trigger_changed_event();
 }
 
 
@@ -350,7 +354,7 @@ string html_entrepot::inherited_get_body_part(const chemin & path,
 	    // to theses but has not yet got the opportunity to provide
 	    // parameters. Local file system is different because it has no
 	    // parameters to be set.
-	trigger_event();
+	trigger_changed_event();
 
     return ret;
 }
@@ -514,7 +518,7 @@ void html_entrepot::update_visible()
     }
 }
 
-void html_entrepot::trigger_event()
+void html_entrepot::trigger_changed_event()
 {
     if(custom_event_name.empty())
 	act(changed);
