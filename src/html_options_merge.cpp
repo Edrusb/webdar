@@ -42,6 +42,7 @@ extern "C"
 
 using namespace std;
 
+const string html_options_merge::landing_path_changed = "html_options_merge_landing_changed";
 const string html_options_merge::entrepot_changed = "html_options_merge_entrep_changed";
 const string html_options_merge::changed = "html_options_merge_changed";
 
@@ -232,6 +233,7 @@ html_options_merge::html_options_merge():
     adopt(&deroule);
 
 	// events and visibility
+    register_name(landing_path_changed);
     register_name(entrepot_changed);
     register_name(changed);
 
@@ -240,6 +242,7 @@ html_options_merge::html_options_merge():
     compr_params->record_actor_on_event(this, html_compression_params::changed);
     has_aux.record_actor_on_event(this, html_form_input::changed);
     entrep->record_actor_on_event(this, html_entrepot::changed);
+    entrep->record_actor_on_event(this, html_entrepot::landing_path_changed);
 
     allow_over.record_actor_on_event(this, html_form_input::changed);
     warn_over.record_actor_on_event(this, html_form_input::changed);
@@ -524,6 +527,10 @@ void html_options_merge::on_event(const string & event_name)
 	    || event_name == html_ciphering::changed)
     {
 	trigger_changed();
+    }
+    else if(event_name == html_entrepot::landing_path_changed)
+    {
+	act(landing_path_changed);
     }
     else
 	throw WEBDAR_BUG;
