@@ -45,7 +45,7 @@ extern "C"
 #include "html_entrepot.hpp"
 #include "html_form_gnupg_list.hpp"
 #include "html_form_select.hpp"
-#include "html_mask_form_filename.hpp"
+#include "html_mask_form_path.hpp"
 #include "html_form_sig_block_size.hpp"
 #include "html_compression_params.hpp"
 #include "html_slicing.hpp"
@@ -132,7 +132,7 @@ private:
     html_text delta_filter_title;
 
     guichet guichet_delta_mask;
-    std::shared_ptr<html_mask_form_filename> delta_mask;
+    std::shared_ptr<html_mask_form_path> delta_mask;
 
     guichet guichet_entrep;
     std::shared_ptr<html_entrepot> entrep;

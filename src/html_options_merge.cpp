@@ -83,7 +83,7 @@ html_options_merge::html_options_merge():
     if(!entrep)
 	throw exception_memory();
 
-    delta_mask.reset(new (nothrow) html_mask_form_filename("file name"));
+    delta_mask.reset(new (nothrow) html_mask_form_path(false));
     if(!delta_mask)
 	throw exception_memory();
 
@@ -256,7 +256,7 @@ html_options_merge::html_options_merge():
     decremental.record_actor_on_event(this, html_form_input::changed);
     auxiliary.record_actor_on_event(this, html_archive_read::changed);
     sig_block_size->record_actor_on_event(this, html_form_sig_block_size::changed);
-    delta_mask->record_actor_on_event(this, html_mask_form_filename::changed);
+    delta_mask->record_actor_on_event(this, html_mask_form_path::changed);
     info_details.record_actor_on_event(this, html_form_input::changed);
     display_treated_only_dir.record_actor_on_event(this, html_form_input::changed);
     display_skipped.record_actor_on_event(this, html_form_input::changed);
@@ -297,9 +297,9 @@ void html_options_merge::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 			      ea_mask,
 			      false);
 
-    delta_mask->set_child(ptr, bibliotheque::filefilter);
+    delta_mask->set_child(ptr, bibliotheque::pathfilter);
     guichet_delta_mask.set_child(ptr,
-				 bibliotheque::filefilter,
+				 bibliotheque::pathfilter,
 				 delta_mask,
 				 false);
 

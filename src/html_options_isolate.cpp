@@ -70,7 +70,7 @@ html_options_isolate::html_options_isolate():
     if(!entrep)
 	throw exception_memory();
 
-    delta_mask.reset(new (nothrow) html_mask_form_filename("file name"));
+    delta_mask.reset(new (nothrow) html_mask_form_path(false));
     if(!delta_mask)
 	throw exception_memory();
 
@@ -171,7 +171,7 @@ html_options_isolate::html_options_isolate():
     entrep->record_actor_on_event(this, html_entrepot::landing_path_changed);
 
     sig_block_size->record_actor_on_event(this, html_form_sig_block_size::changed);
-    delta_mask->record_actor_on_event(this, html_mask_form_filename::changed);
+    delta_mask->record_actor_on_event(this, html_mask_form_path::changed);
     allow_over.record_actor_on_event(this, html_form_input::changed);
     warn_over.record_actor_on_event(this, html_form_input::changed);
     pause.record_actor_on_event(this, html_form_input::changed);
@@ -198,9 +198,9 @@ void html_options_isolate::set_biblio(const shared_ptr<bibliotheque> & ptr)
 			     entrep,
 			     false);
 
-    delta_mask->set_child(ptr, bibliotheque::filefilter);
+    delta_mask->set_child(ptr, bibliotheque::pathfilter);
     guichet_delta_mask.set_child(ptr,
-				 bibliotheque::filefilter,
+				 bibliotheque::pathfilter,
 				 delta_mask,
 				 false);
     guichet_compr_params.set_child(ptr,
@@ -364,7 +364,7 @@ void html_options_isolate::on_event(const string & event_name)
 	trigger_changed();
     }
     else if(event_name == html_form_sig_block_size::changed
-	    || event_name == html_mask_form_filename::changed
+	    || event_name == html_mask_form_path::changed
 	    || event_name == html_hash_algo::changed
 	    || event_name == html_compression_params::changed
 	    || event_name == html_slicing::changed

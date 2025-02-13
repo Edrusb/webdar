@@ -160,7 +160,7 @@ private:
     html_text delta_filter_title;
 
     guichet guichet_delta_mask;
-    std::shared_ptr<html_mask_form_filename> delta_mask;
+    std::shared_ptr<html_mask_form_path> delta_mask;
 
     html_form form_shown;
     html_form_fieldset fs_shown;

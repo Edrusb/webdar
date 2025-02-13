@@ -112,7 +112,7 @@ html_options_create::html_options_create():
     if(!ea_mask)
 	throw exception_memory();
 
-    delta_mask.reset(new (nothrow) html_mask_form_filename("file name"));
+    delta_mask.reset(new (nothrow) html_mask_form_path(true));
     if(!delta_mask)
 	throw exception_memory();
 
@@ -332,7 +332,7 @@ html_options_create::html_options_create():
     fixed_date.record_actor_on_event(this, html_datetime::changed);
     reference.record_actor_on_event(this, html_archive_read::changed);
     sig_block_size->record_actor_on_event(this, html_form_sig_block_size::changed);
-    delta_mask->record_actor_on_event(this, html_mask_form_filename::changed);
+    delta_mask->record_actor_on_event(this, html_mask_form_path::changed);
     alter_atime.record_actor_on_event(this, html_form_radio::changed);
     furtive_read_mode.record_actor_on_event(this, html_form_input::changed);
     zeroing_neg_date.record_actor_on_event(this, html_form_input::changed);
@@ -393,9 +393,9 @@ void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
 			      ea_mask,
 			      false);
 
-    delta_mask->set_child(ptr, bibliotheque::filefilter);
+    delta_mask->set_child(ptr, bibliotheque::pathfilter);
     guichet_delta_mask.set_child(ptr,
-				 bibliotheque::filefilter,
+				 bibliotheque::pathfilter,
 				 delta_mask,
 				 false);
     guichet_compr_params.set_child(ptr,
