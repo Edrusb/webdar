@@ -77,6 +77,7 @@ html_archive_merge::html_archive_merge():
 
 	// events
     options->record_actor_on_event(this, html_options_merge::entrepot_changed);
+    options->record_actor_on_event(this, html_options_merge::landing_path_changed);
     repoxfer.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
 
 	// visibility
@@ -106,6 +107,10 @@ void html_archive_merge::on_event(const string & event_name)
     else if(event_name == html_libdar_running_popup::libdar_has_finished)
     {
 	repoxfer.set_visible(false);
+    }
+    else if(event_name == html_options_merge::landing_path_changed)
+    {
+	sauv_path.set_value(options->get_landing_path());
     }
     else
 	throw WEBDAR_BUG;
