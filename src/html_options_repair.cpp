@@ -42,6 +42,7 @@ extern "C"
 
 using namespace std;
 
+const string html_options_repair::landing_path_changed = "html_options_repair_landing_changed";
 const string html_options_repair::entrepot_changed = "html_options_repair_entrep_changed";
 const string html_options_repair::changed = "html_options_repair_changed";
 
@@ -175,10 +176,12 @@ html_options_repair::html_options_repair():
 
 	// events
 
+    register_name(landing_path_changed);
     register_name(entrepot_changed);
     register_name(changed);
 
     entrep->record_actor_on_event(this, html_entrepot::changed);
+    entrep->record_actor_on_event(this, html_entrepot::landing_path_changed);
     display_treated.record_actor_on_event(this, html_form_input::changed);
 
     info_details.record_actor_on_event(this, html_form_input::changed);
@@ -345,6 +348,10 @@ void html_options_repair::on_event(const string & event_name)
 	    || event_name == html_ciphering::changed)
     {
 	trigger_changed();
+    }
+    else if(event_name == html_entrepot::landing_path_changed)
+    {
+	act(landing_path_changed);
     }
     else
 	throw WEBDAR_BUG;

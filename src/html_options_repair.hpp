@@ -62,8 +62,9 @@ class html_options_repair : public body_builder,
 			    public bibliotheque_subconfig
 {
 public:
-    static const std::string entrepot_changed; ///< event triggered for entrepot only changes
-    static const std::string changed;          ///< event triggered for any change
+    static const std::string landing_path_changed; ///< landing path has changed
+    static const std::string entrepot_changed;     ///< event triggered for entrepot only changes except landing_path
+    static const std::string changed;              ///< event triggered for any change except landing_path
 
     html_options_repair();
     html_options_repair(const html_options_repair & ref) = delete;
@@ -95,6 +96,9 @@ public:
 
 	/// optain the current entrepot object where is expected to be repaired the archive
     std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> webui) const { return entrep->get_entrepot(webui); };
+
+	/// obtain the entrepot landing path
+    const std::string & get_landing_path() const { return entrep->get_landing_path(); };
 
 protected:
 
