@@ -78,6 +78,7 @@ html_archive_isolate::html_archive_isolate():
 	// events
 
     options->record_actor_on_event(this, html_options_isolate::entrepot_changed);
+    options->record_actor_on_event(this, html_options_isolate::landing_path_changed);
 
 	/// visibility
 
@@ -104,6 +105,10 @@ void html_archive_isolate::on_event(const string & event_name)
     if(event_name == html_options_isolate::entrepot_changed)
     {
 	need_entrepot_update = true;
+    }
+    else if(event_name == html_options_isolate::landing_path_changed)
+    {
+	sauv_path.set_value(options->get_landing_path());
     }
     else
 	throw WEBDAR_BUG;
