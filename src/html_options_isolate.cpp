@@ -42,6 +42,7 @@ extern "C"
 
 using namespace std;
 
+const string html_options_isolate::landing_path_changed = "html_options_isolate_landing_changed";
 const string html_options_isolate::entrepot_changed = "html_options_isolate_entrep_changed";
 const string html_options_isolate::changed = "html_options_isolate_changed";
 
@@ -160,12 +161,14 @@ html_options_isolate::html_options_isolate():
     adopt(&deroule);
 
 	// events and visibility
+    register_name(landing_path_changed);
     register_name(entrepot_changed);
     register_name(changed);
 
     delta_sig.record_actor_on_event(this, html_form_input::changed);
     delta_transfer_mode.record_actor_on_event(this, html_form_input::changed);
     entrep->record_actor_on_event(this, html_entrepot::changed);
+    entrep->record_actor_on_event(this, html_entrepot::landing_path_changed);
 
     sig_block_size->record_actor_on_event(this, html_form_sig_block_size::changed);
     delta_mask->record_actor_on_event(this, html_mask_form_filename::changed);
@@ -368,6 +371,10 @@ void html_options_isolate::on_event(const string & event_name)
 	    || event_name == html_ciphering::changed)
     {
 	trigger_changed();
+    }
+    else if(event_name == html_entrepot::landing_path_changed)
+    {
+	act(landing_path_changed);
     }
     else
 	throw WEBDAR_BUG;
