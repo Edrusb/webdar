@@ -88,7 +88,7 @@ html_archive_repair::html_archive_repair():
 	// events
 
     opt_repair->record_actor_on_event(this, html_options_repair::entrepot_changed);
-
+    opt_repair->record_actor_on_event(this, html_options_repair::landing_path_changed);
 
 	// visibility
     repoxfer.set_visible(false);
@@ -114,6 +114,10 @@ void html_archive_repair::on_event(const string & event_name)
     if(event_name == html_options_repair::entrepot_changed)
     {
 	need_entrepot_update = true;
+    }
+    else if(event_name == html_options_repair::landing_path_changed)
+    {
+	repair_dest.set_value(opt_repair->get_landing_path());
     }
     else
 	throw WEBDAR_BUG;
