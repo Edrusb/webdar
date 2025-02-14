@@ -173,6 +173,7 @@ void html_archive_read::on_event(const string & event_name)
 	if(!is_running())
 	{
 	    need_entrepot_update = true;
+	    my_body_part_has_changed(); // force rerun of inherited_body_builder to update entrepot
 	}
 	else
 	{
