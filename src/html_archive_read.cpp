@@ -274,7 +274,6 @@ void html_archive_read::update_entrepot()
 
     if(is_running())
 	throw WEBDAR_BUG;
-    join(); // in case a previous execution triggered an exception
     libdarexec.set_visible(true);
     need_entrepot_update = false;
     libdarexec.run_and_control_thread(this);

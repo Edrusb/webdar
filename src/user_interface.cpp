@@ -445,7 +445,6 @@ void user_interface::go_restore()
     current_thread = & arch_rest;
     if(current_thread->is_running())
 	throw WEBDAR_BUG;
-    current_thread->join(); // in case a previous execution triggered an exception
     in_action.run_and_control_thread(current_thread);
 }
 
@@ -465,7 +464,6 @@ void user_interface::go_diff()
     current_thread = & arch_diff;
     if(current_thread->is_running())
 	throw WEBDAR_BUG;
-    current_thread->join(); // in case a previous execution triggered an exception
     in_action.run_and_control_thread(current_thread);
 }
 
@@ -486,7 +484,6 @@ void user_interface::go_test()
     current_thread = & arch_test;
     if(current_thread->is_running())
 	throw WEBDAR_BUG;
-    current_thread->join(); // in case a previous execution triggered an exception
     in_action.run_and_control_thread(current_thread);
 }
 
@@ -506,7 +503,6 @@ void user_interface::go_create()
     current_thread = & arch_create;
     if(current_thread->is_running())
 	throw WEBDAR_BUG;
-    current_thread->join(); // in case a previous execution triggered an exception
     in_action.run_and_control_thread(current_thread);
 }
 
@@ -546,7 +542,6 @@ void user_interface::go_merge()
     current_thread = & arch_merge;
     if(current_thread->is_running())
 	throw WEBDAR_BUG;
-    current_thread->join(); // in case a previous execution triggered an exception
     in_action.run_and_control_thread(current_thread);
 }
 
@@ -566,7 +561,6 @@ void user_interface::go_init_list()
     current_thread = & arch_init_list;
     if(current_thread->is_running())
 	throw WEBDAR_BUG;
-    current_thread->join(); // in case a previous execution triggered an exception
     in_action.run_and_control_thread(current_thread);
 }
 
@@ -586,6 +580,5 @@ void user_interface::go_repair()
     current_thread = & arch_repair;
     if(current_thread->is_running())
 	throw WEBDAR_BUG;
-    current_thread->join(); // in case a previous execution triggered an exception
     in_action.run_and_control_thread(current_thread);
 }

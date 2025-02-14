@@ -732,7 +732,6 @@ void html_select_file::run_thread(thread_to_run val)
 	loading_mode(true);
 	if(is_running())
 	    throw WEBDAR_BUG;
-	join(); // in case a previous execution triggered an exception
 	webui.run_and_control_thread(this);
 	break;
     case run_init_fill:
@@ -745,7 +744,6 @@ void html_select_file::run_thread(thread_to_run val)
 	    loading_mode(true);
 	    if(is_running())
 		throw WEBDAR_BUG;
-	    join(); // in case a previous execution triggered an exception
 	    webui.run_and_control_thread(this);
 	}
 	    // else we are already displaying the requested directory content

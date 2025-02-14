@@ -167,7 +167,6 @@ void html_archive_create::update_entrepot()
 {
     if(is_running())
 	throw WEBDAR_BUG;
-    join(); // in case a previous execution triggered an exception
     repoxfer.set_visible(true);
     need_entrepot_update = false;
     repoxfer.run_and_control_thread(this);

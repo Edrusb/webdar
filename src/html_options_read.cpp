@@ -488,7 +488,6 @@ void html_options_read::update_ref_entrepot()
 
     if(is_running())
 	throw WEBDAR_BUG;
-    join(); // in case a previous execution triggered an exception
     ref_webui.set_visible(true);
     need_ref_entrepot_update = false;
     ref_webui.run_and_control_thread(this);
