@@ -480,9 +480,10 @@ void html_options_read::signaled_inherited_cancel()
 
 void html_options_read::update_ref_entrepot()
 {
-    shared_ptr<html_web_user_interaction> localui(ref_webui.get_html_user_interaction());
+    shared_ptr<html_web_user_interaction> localui = ref_webui.get_html_user_interaction();
     if(!localui)
 	throw WEBDAR_BUG;
+
     localui->clear();
     localui->auto_hide(true, true);
 
