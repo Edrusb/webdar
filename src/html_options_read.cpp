@@ -148,7 +148,6 @@ html_options_read::html_options_read():
 
     ref_path.record_actor_on_event(this, html_form_input_file::changed_entrepot);
     ref_path.record_actor_on_event(this, html_form_input_file::changed_event);
-    ref_webui.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
     src_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
     ref_use_external_catalogue.record_actor_on_event(this, html_form_input::changed);
     ref_crypto_algo.record_actor_on_event(this, html_crypto_algo::changed);
@@ -390,8 +389,6 @@ void html_options_read::on_event(const string & event_name)
     {
 	need_ref_entrepot_update = true;
     }
-    else if(event_name == html_libdar_running_popup::libdar_has_finished)
-	join();
     else if(event_name == html_crypto_algo::changed
 	    || event_name == html_form_input::changed
 	    || event_name == html_form_input_unit::changed

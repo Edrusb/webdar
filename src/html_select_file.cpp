@@ -841,7 +841,6 @@ void html_select_file::my_join(bool last)
 	{
 	    if(last)
 		set_visible(false);
-	    join();
 	    ok = true;
 	    throw ok;
 	}

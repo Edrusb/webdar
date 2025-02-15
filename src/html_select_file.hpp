@@ -243,7 +243,7 @@ private:
     html_text title;                  ///< shows the message request for the user (provided at constructor time)
     html_text entrepot_url;           ///< url of the entrepot
     html_text warning;                ///< shows warnings when needed (permission pb, etc.)
-    html_web_user_interaction webui;  ///< used to control and interact with libdarthread used to act on the entrepot
+    html_web_user_interaction webui;  ///< used to control and interact with libdar thread used to act on the entrepot
     html_div title_box;               ///< contains title and warning and stay visible as a sticky box
     html_form_fieldset fieldset;      ///< shows the current directory path
 

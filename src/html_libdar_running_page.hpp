@@ -69,6 +69,9 @@ public:
 	/// propagate request to web_ui
     void run_and_control_thread(libthreadar::thread* arg) { web_ui->run_and_control_thread(arg); };
 
+	/// propagate request to web_ui
+    void join_controlled_thread(libthreadar::thread* arg) { web_ui->join_controlled_thread(arg); };
+
 	/// whether a libdar thread is running under "this" management
     bool is_libdar_running() const { return web_ui->is_libdar_running(); };
 

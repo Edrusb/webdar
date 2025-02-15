@@ -151,11 +151,11 @@ shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(shared_ptr<html_web_use
 	    throw WEBDAR_BUG;
 
 	webui->run_and_control_thread(const_cast<html_entrepot*>(this)); // this launches a new thread running inherited_run() and the caller returns
-	join();
+	webui->join_controlled_thread(const_cast<html_entrepot*>(this));
 	// we join() ourself, yes, we wait here for the thread launched above to complete or be interrupted
 	// multi-threading is needed here to pass a thread-id for libdar and html_web_user_interaction to be
 	// able to interrupt it gracefully. We cannot interrupt the calling/current thread which may be the
-	// program main thread. However webui should have it get_body_part() running from another thread to
+	// program main thread. However webui should have its get_body_part() running from another thread to
 	// display and update the libdar::user_interaction it contains.
     }
     entrep_need_update = false;
