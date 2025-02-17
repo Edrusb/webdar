@@ -34,6 +34,7 @@ extern "C"
     // webdar headers
 #include "chemin.hpp"
 #include "webdar_css_style.hpp"
+#include "environment.hpp"
 
     //
 #include "html_archive_read.hpp"

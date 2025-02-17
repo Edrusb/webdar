@@ -33,7 +33,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
-
+#include "environment.hpp"
 
     //
 #include "html_archive_create.hpp"
@@ -43,8 +43,14 @@ using namespace std;
 html_archive_create::html_archive_create():
     form("Update"),
     fs(""),
-    fs_root("Directory to take as root for the backup", "/", "80%", "Select root directory to backup..."),
-    sauv_path("Where to create the backup", "/", "80%", "Select path where to create the backup..."),
+    fs_root("Directory to take as root for the backup",
+	    global_envir.get_value_with_default("HOME", "/"),
+	    "80%",
+	    "Select root directory to backup..."),
+    sauv_path("Where to create the backup",
+	      "/",
+	      "80%",
+	      "Select path where to create the backup..."),
     basename("Backup basename", html_form_input::text, "", "80%"),
     need_entrepot_update(false)
 {
