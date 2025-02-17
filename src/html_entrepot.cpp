@@ -301,8 +301,7 @@ void html_entrepot::load_json(const json & source)
 	// but doing that way, they will be only informed once and
 	// when all parameters are set to their correct value
     trigger_changed_event();
-    act(custom_event_landing_path);
-
+    on_event(landing_path_changed); // if checkbox is set, this will drive landing_path to be fetched by registered actors
 }
 
 json html_entrepot::save_json() const
