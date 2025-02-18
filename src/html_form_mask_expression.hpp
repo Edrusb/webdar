@@ -86,7 +86,14 @@ class html_form_mask_expression : public body_builder,
 				  public events
 {
 public:
+
+	// events
+
     static const std::string changed;
+
+	// mask types
+    static constexpr const char* type_glob = "glob";
+    static constexpr const char* type_regex = "regex";
 
 	/// constructor
 
@@ -117,6 +124,18 @@ public:
 
 	/// inherited from jsoner
     virtual void clear_json() override { clear(); };
+
+	/// manual setup for the type of mask (see type_glob and type_regex static fields above, maybe more in the future)
+    void manually_set_mask_type(const std::string & mtype);
+
+	/// manual setup for the mask negation (true = mask negation set)
+    void manually_set_negate(bool mode);
+
+	/// manual setup for the case sensitivity (true = case sensitive mask)
+    void manually_set_casesensitivity(bool mode);
+
+	/// manual setup for the mask expression
+    void manually_set_expression(const std::string & expr);
 
 protected:
 	/// inherited methods from body_builder

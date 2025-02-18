@@ -64,8 +64,8 @@ html_form_mask_expression::html_form_mask_expression(const string & subject):
 
 	// component configuration
 
-    mask_type.add_choice("0", "Glob Expression");
-    mask_type.add_choice("1", "Regular Expression");
+    mask_type.add_choice(type_glob, "Glob Expression");
+    mask_type.add_choice(type_regex, "Regular Expression");
 
     init();
 }
@@ -199,6 +199,26 @@ json html_form_mask_expression::save_json() const
     return wrap_config_with_json_header(format_version,
 					myclass_id,
 					ret);
+}
+
+void html_form_mask_expression:: manually_set_mask_type(const string & mtype)
+{
+    mask_type.set_selected_id(mtype);
+}
+
+void html_form_mask_expression:: manually_set_negate(bool mode)
+{
+    negate.set_value_as_bool(mode);
+}
+
+void html_form_mask_expression:: manually_set_casesensitivity(bool mode)
+{
+    casesensitivity.set_value_as_bool(mode);
+}
+
+void html_form_mask_expression:: manually_set_expression(const string & expr)
+{
+    mask_expression.set_value(expr);
 }
 
 string html_form_mask_expression::inherited_get_body_part(const chemin & path,
