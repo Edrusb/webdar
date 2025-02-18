@@ -99,6 +99,20 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
+	/// manually set the bool mode of the root bool object
+
+	/// \param[in] mode should be either in html_form_mask_bool::and_op or html_form_mask_bool::and_or or other bool mode of that
+	/// class if more exist in the future.
+    void manually_set_bool_mode(const std::string & mode) { root.manually_set_bool_mode(mode); };
+
+	/// manually add an object and return its address
+
+	/// \param[in] type_name is to one of the available labels (see get_labels()).
+    std::shared_ptr<body_builder> manually_add_object(const std::string & type_name);
+
+	/// obtain the available labels defining the different available types of this mask
+    std::deque<std::string> get_labels() const { return labels; };
+
 protected:
 
 	/// inherited from body_builder

@@ -188,6 +188,20 @@ void html_mask_form_filename::on_event(const std::string & event_name)
 	throw WEBDAR_BUG;
 }
 
+shared_ptr<body_builder> html_mask_form_filename::manually_add_object(const string & type_name)
+{
+    unsigned int i = 0;
+
+    while(i < labels.size() && labels[i] != type_name)
+	++i;
+
+    if(i < labels.size())
+	return root.manually_add_object(i);
+    else
+	throw WEBDAR_BUG; // unknown label given as type_name
+}
+
+
 string html_mask_form_filename::inherited_get_body_part(const chemin & path,
 							const request & req)
 {
