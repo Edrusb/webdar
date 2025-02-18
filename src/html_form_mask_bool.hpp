@@ -88,7 +88,15 @@ class html_form_mask_bool : public body_builder,
 {
 public:
 
+	// events
+
     static const std::string changed;
+
+	// bool modes
+
+    static constexpr const char* and_op = "and_op";
+    static constexpr const char* or_op = "or_op";
+
 
 	/// constructor
 
@@ -112,6 +120,13 @@ public:
 	/// \note this is a passthrough access to the html_form_dynamic_table method of the same name
     void set_obj_type_provider(const html_form_dynamic_table_object_provider* provider) { table.set_obj_type_provider(provider); };
 
+	/// programmatically add a new object and return a pointer to it
+
+	/// \param[in] num_type is the object type number that the object provider has to create
+	/// \return the address of the newnmy created object
+    std::shared_ptr<body_builder> manually_add_object(unsigned int num_type);
+
+
 	/// component type that will proposed to the web user
 
 	/// works with set_obj_type_provider() above
@@ -127,8 +142,12 @@ public:
 	/// get the current boolean combining mode
     const std::string & get_bool_mode() const { return current_bool_mode; };
 
-    static constexpr const char* and_op = "and_op";
-    static constexpr const char* or_op = "or_op";
+	/// manually change the bool mode
+
+	/// \param[in] mode expectes and_op or or_op constexpr declared at the top of this class definition
+	/// \note the mode is usually changed by the web user, this method is to be used to programmatically
+	/// setup a html_form_mask_bool object
+    void manually_set_bool_mode(const std::string & mode);
 
 	/// return the and_op or or_op inverted logic of the provided argument
 
@@ -172,7 +191,11 @@ private:
     bool ignore_events;            ///< to be able to temporarily ignore changed events from childs
 
     std::string bool_op_to_name(const std::string & op);
-    void update_table_content_logic(bool unconditionally); // update labels in the first column in regard to the current AND/OR selected logic
+
+	/// update labels in the first column in regard to the current AND/OR selected logic
+
+	/// \param[in] unconditionally if set to false, only update if mode changes, else updates all labels (in particular newly added ones)
+    void update_table_content_logic(bool unconditionally);
     std::string tell_action() const;
     void trigger_change();
 

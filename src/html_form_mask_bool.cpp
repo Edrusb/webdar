@@ -154,6 +154,30 @@ void html_form_mask_bool::on_event(const string & event_name)
     trigger_change();
 }
 
+
+shared_ptr<body_builder> html_form_mask_bool::manually_add_object(unsigned int num_type)
+{
+    shared_ptr<body_builder> ret;
+
+    table.add_line(num_type);
+
+    if(!table.empty())
+    {
+	html_form_dynamic_table::iterator last = table.last();
+	ret = last.get_object();
+	if(! ret)
+	    throw WEBDAR_BUG;
+    }
+
+    return ret;
+}
+
+void html_form_mask_bool::manually_set_bool_mode(const std::string & mode)
+{
+    mask_type.set_selected_id(mode);
+    update_table_content_logic(false);
+}
+
 string html_form_mask_bool::invert_logic(const std::string & logic)
 {
     if(logic == and_op)
