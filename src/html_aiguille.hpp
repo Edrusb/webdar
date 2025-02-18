@@ -81,7 +81,6 @@ public:
 	/// the same title of another section, can also be tranlated for
 	/// localization, code should not assume anything based in the value
 	/// of this field.
-	/// \return the index of the just created section
     void add_section(const std::string & name, const std::string & title);
 
 	/// adopt another objet in the section which name is provided

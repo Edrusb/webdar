@@ -86,11 +86,12 @@ extern "C"
 template <class T> class arriere_boutique: public body_builder, public actor
 {
 public:
-    arriere_boutique(const std::shared_ptr<bibliotheque> & ptr,
-		     bibliotheque::category cat,
-		     std::unique_ptr<T> & obj,
+    arriere_boutique(const std::shared_ptr<bibliotheque> & ptr, ///< bibliotheque object to read/save json config to
+		     bibliotheque::category cat,      ///< category to use in the ptr pointed to bibliotheque
+		     std::unique_ptr<T> & obj,        ///< the child object to load and save from json data
 		     const std::string ch_event_name, ///< event name on obj triggered upon object changes
-		     bool add_form_around);
+		     bool add_form_around             ///< whether to add a html_form around obj
+	);
     arriere_boutique(const arriere_boutique & ref) = delete;
     arriere_boutique(arriere_boutique && ref) noexcept = delete;
     arriere_boutique & operator = (const arriere_boutique & ref) = delete;

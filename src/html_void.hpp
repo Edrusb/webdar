@@ -24,11 +24,11 @@
 #ifndef HTML_VOID_HPP
 #define HTML_VOID_HPP
 
-    /// \file defines two classes html_void and html_void_parent_notifier
+    /// \file html_void.hpp defines two classes html_void and html_void_parent_notifier
 
     /// - html_void is a transparent type of object (it do not generate any HTTP body
     ///   outside what its adopted children produce). It is used to provide a global
-    ///   visibility switch to objects they have adopted
+    ///   visibility switch to objects it has adopted
     /// - html_void_parent_notifier is an interface. An object adopting an html_void component
     ///   can implement (but is not obliged to) this interface to be notified of status changes of the
     ///   html_void object, by implementing (overriding) the specified methods of that class.
@@ -63,18 +63,18 @@ public:
 
         /// propagates body_builder::my_visibility_has_changed()
 
-        /// \param[in] void is the html_void child object that triggered this call
+        /// \param[in] voidobj is the html_void child object that triggered this call
     virtual void void_child_visibility_has_changed(body_builder* voidobj) {};
 
         /// propagates body_builder::has_adopted()
 
-        /// \param[in] void is the html_void child object that triggered this call
+        /// \param[in] voidobj is the html_void child object that triggered this call
         /// \param[in] obj is the html_void's child that has been adopted
     virtual void void_child_has_adopted(body_builder* voidobj, body_builder* obj) {};
 
         /// propagates body_builder::will_foresake()
 
-        /// \param[in] void is the html_void child object that triggered this call
+        /// \param[in] voidobj is the html_void child object that triggered this call
         /// \param[in] obj is the html_void's child that is about to be foresaken
     virtual void void_child_will_foresake(body_builder* voidobj, body_builder* obj) {};
 

@@ -64,7 +64,7 @@ public:
 	/// \param[in] num is the type number of the object to create
 	/// \param[in] context is a arbitrary information provided by the table as defined
 	/// by the set_obj_type_context() method of this table.
-	/// \param[out] if not provided as an empty the dynamic_table will register for an event
+	/// \param[out] changed_event if not provided as an empty the dynamic_table will register for an event
 	/// of that name on the provided object (which must thus inherit from events class), upon
 	/// such event, the table will trigger its own html_form_dynamic_table::changed event
 	/// propagating the change of any of its component (for those supporting the events interface and which
