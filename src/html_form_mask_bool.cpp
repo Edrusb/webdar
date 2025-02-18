@@ -168,6 +168,7 @@ shared_ptr<body_builder> html_form_mask_bool::manually_add_object(unsigned int n
 	if(! ret)
 	    throw WEBDAR_BUG;
     }
+    fs.change_label(tell_action());
 
     return ret;
 }
@@ -228,6 +229,7 @@ void html_form_mask_bool::load_json(const json & source)
 
 	    // we can now trigger the change event once for all times that
 	    // have been ignore previously during the table and mask_type setup
+	fs.change_label(tell_action());
 	trigger_change();
     }
     catch(json::exception & e)
@@ -253,6 +255,7 @@ json html_form_mask_bool::save_json() const
 void html_form_mask_bool::clear_json()
 {
     table.clear();
+    fs.change_label(tell_action());
 }
 
 bibliotheque::using_set html_form_mask_bool::get_using_set() const
