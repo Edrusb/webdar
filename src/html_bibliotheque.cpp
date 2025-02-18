@@ -59,6 +59,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     download("Download", event_download),
     clear_fs(""),
     clear_conf("Clear all configurations", event_clear),
+    generate_defaults("Generate default configurations", event_defaults),
     expect_upload(false)
 {
     unique_ptr<html_entrepot> tmp_e;
@@ -126,6 +127,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     down_fs.adopt(&download);
 
     clear_fs.adopt(&clear_conf);
+    clear_fs.adopt(&generate_defaults);
     clear_fs.adopt(&ok_cleared);
 
 	// entrepot tab
@@ -439,6 +441,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     download.record_actor_on_event(this, event_download);
     upload_form.record_actor_on_event(this, html_form::changed);
     clear_conf.record_actor_on_event(this, event_clear);
+    generate_defaults.record_actor_on_event(this, event_defaults);
 
 	// visibility
     clear_ok_messages();
@@ -449,11 +452,13 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     webdar_css_style::normal_button(save);
     webdar_css_style::normal_button(download);
     webdar_css_style::normal_button(clear_conf);
+    webdar_css_style::normal_button(generate_defaults);
 
     load.add_css_class(css_float);
     save.add_css_class(css_float);
     download.add_css_class(css_float);
     clear_conf.add_css_class(css_float);
+    generate_defaults.add_css_class(css_float);
 
     upload_form.add_button_css_class(webdar_css_style::wcs_btn_off);
     upload_form.add_button_css_class(webdar_css_style::wcs_url_normal);
@@ -556,6 +561,8 @@ void html_bibliotheque::on_event(const std::string & event_name)
 	}
 	ok_cleared.set_visible(true);
     }
+    else if(event_name == event_defaults)
+	set_default_configs();
     else
 	throw WEBDAR_BUG;
 }
@@ -684,4 +691,56 @@ void html_bibliotheque::clear_ok_messages()
     ok_uploaded.set_visible(false);
     ok_cleared.set_visible(false);
     nok_message.set_visible(false);
+}
+
+void html_bibliotheque::set_default_configs()
+{
+    static const char* subject = "no-compress";
+    html_mask_form_filename no_compress(subject);
+    bibliotheque::using_set depends; // empty set by default, as we don not have any dependency
+    deque<string> labels = no_compress.get_labels();
+    shared_ptr<body_builder> shptr;
+    html_form_mask_expression* ptr;
+
+    if(!biblio)
+	throw WEBDAR_BUG;
+    if(biblio->has_config(bibliotheque::filefilter, subject))
+	throw exception_range(libdar::tools_printf("Default configuration %s / %s cannot be created as there is already one under that name",
+						   bibliotheque::category_to_string(bibliotheque::filefilter).c_str(),
+						   subject));
+
+    if(labels.empty())
+	throw WEBDAR_BUG;
+    if(labels[0].find(subject) == string::npos)
+	throw WEBDAR_BUG;
+
+    no_compress.manually_set_bool_mode(html_form_mask_bool::and_op);
+
+    deque<string> no_compress_glob_expressions;
+
+	// filling no_compress_glob_expressions from this
+	/// included file, generated from ../data/darrc file
+#include "no_compress_glob_expression_list.cpp"
+
+    for(deque<string>::const_iterator it = no_compress_glob_expressions.begin();
+	it != no_compress_glob_expressions.end();
+	++it)
+    {
+	shptr = no_compress.manually_add_object(labels[0]);
+	if(!shptr)
+	    throw WEBDAR_BUG;
+	ptr = dynamic_cast<html_form_mask_expression*>(shptr.get());
+	if(ptr == nullptr)
+	    throw WEBDAR_BUG;
+
+	ptr->manually_set_mask_type(html_form_mask_expression::type_glob);
+	ptr->manually_set_negate(true);
+	ptr->manually_set_casesensitivity(false);
+	ptr->manually_set_expression(*it);
+    }
+
+    biblio->add_config(bibliotheque::filefilter,
+		       subject,
+		       no_compress.save_json(),
+		       depends);
 }

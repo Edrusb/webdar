@@ -164,6 +164,7 @@ private:
     html_double_button download;
     html_form_fieldset clear_fs;
     html_double_button clear_conf;
+    html_double_button generate_defaults;
     html_text ok_loaded;
     html_text ok_saved;
     html_text ok_uploaded;
@@ -178,6 +179,7 @@ private:
 
     void set_saved_status();
     void clear_ok_messages();
+    void set_default_configs();
 
     static constexpr const char* tab_main = "main";
     static constexpr const char* tab_repo = "repo";
@@ -200,6 +202,7 @@ private:
     static constexpr const char* event_save = "save";
     static constexpr const char* event_load = "load";
     static constexpr const char* event_clear = "clear";
+    static constexpr const char* event_defaults = "defaults";
 
     static constexpr const char* css_float = "hmtl_biblio_float";
     static constexpr const char* css_red_text = "red";
