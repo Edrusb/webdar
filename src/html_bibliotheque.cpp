@@ -564,7 +564,10 @@ void html_bibliotheque::on_event(const std::string & event_name)
 	ok_cleared.set_visible(true);
     }
     else if(event_name == event_defaults)
+    {
+	clear_ok_messages();
 	set_default_configs();
+    }
     else
 	throw WEBDAR_BUG;
 }
