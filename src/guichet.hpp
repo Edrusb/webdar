@@ -144,6 +144,11 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
+	/// load a config of given name (in the category defined by set_child)*
+
+	/// \note exception thrown if the requested configuration does not exist
+    void load_from_bibliotheque(const std::string & name) { select.set_selected_id(name); };
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
