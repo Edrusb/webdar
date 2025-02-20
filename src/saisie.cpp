@@ -111,6 +111,10 @@ saisie::saisie():
     if(!biblio)
 	throw exception_memory();
 
+    h_biblio.reset(new (nothrow) html_bibliotheque(biblio, default_biblio_path));
+    if(! h_biblio)
+	throw exception_memory();
+
     test.reset(new (nothrow) html_options_test());
     if(! test)
 	throw exception_memory();
@@ -128,10 +132,6 @@ saisie::saisie():
 			   bibliotheque::conftest,
 			   test,
 			   false);
-
-    h_biblio.reset(new (nothrow) html_bibliotheque(biblio, default_biblio_path));
-    if(! h_biblio)
-	throw exception_memory();
 
 	// disconnect
     adopt(&disco);
