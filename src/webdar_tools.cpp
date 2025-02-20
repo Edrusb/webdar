@@ -399,7 +399,7 @@ bool webdar_tools_exists_and_is_file(const std::string & path, bool follow_symli
     else
 	ret = lstat(path.c_str(), & info);
 
-    return ret == 0 && (info.st_mode && S_IFREG) != 0;
+    return ret == 0 && (info.st_mode & S_IFREG) != 0;
 }
 
 bool webdar_tools_exists_and_is_dir(const std::string & path, bool follow_symlink)
@@ -412,5 +412,5 @@ bool webdar_tools_exists_and_is_dir(const std::string & path, bool follow_symlin
     else
 	ret = lstat(path.c_str(), & info);
 
-    return ret == 0 && (info.st_mode && S_IFDIR) != 0;
+    return ret == 0 && (info.st_mode & S_IFDIR) != 0;
 }
