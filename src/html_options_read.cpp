@@ -438,6 +438,16 @@ void html_options_read::on_event(const string & event_name)
 	throw WEBDAR_BUG; // unexpected event
 }
 
+void html_options_read::set_to_webdar_defaults()
+{
+    set_defaults(); // libdar defaults
+
+    guichet_entrep.load_from_bibliotheque(bibliotheque::default_config_name);
+    info_details.set_value_as_bool(true);
+    multi_thread_crypto.set_value_as_int(2);
+    guichet_ref_entrep.load_from_bibliotheque(bibliotheque::default_config_name);
+}
+
 string html_options_read::inherited_get_body_part(const chemin & path,
 						  const request & req)
 {
