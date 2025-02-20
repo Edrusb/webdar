@@ -479,8 +479,10 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
     try
     {
-	if(webdar_tools_exists_and_is_dir(bib_path, true))
+	if(webdar_tools_exists_and_is_file(bib_path, true))
 	    on_event(event_load);
+	else
+	    set_default_configs();
     }
     catch(exception_bug & e)
     {

@@ -99,6 +99,9 @@ void html_archive_read::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 			       bibliotheque::confread,
 			       opt_read,
 			       false);
+
+    if(ptr->has_config(bibliotheque::confread, bibliotheque::default_config_name))
+	guichet_opt_read.load_from_bibliotheque(bibliotheque::default_config_name);
 };
 
 void html_archive_read::load_json(const json & source)
