@@ -94,6 +94,10 @@ public:
 	/// inherited from jsoner
     virtual void clear_json() override;
 
+	/// set the object to webdar defaults
+    void set_to_webdar_defaults();
+
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
@@ -110,7 +114,6 @@ protected:
 
 	/// inherited from body_builder
     virtual void new_css_library_available() override;
-
 
 private:
     static constexpr const char* type_local = "local";

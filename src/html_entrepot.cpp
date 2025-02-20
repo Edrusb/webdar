@@ -357,6 +357,12 @@ void html_entrepot::clear_json()
     act(custom_event_landing_path);
 }
 
+void html_entrepot::set_to_webdar_defaults()
+{
+    repo_type.set_selected_id(type_local);
+    use_landing_path.set_value_as_bool(true);
+    landing_path.set_value("/tmp");
+}
 
 string html_entrepot::inherited_get_body_part(const chemin & path,
 					      const request & req)
