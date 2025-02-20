@@ -98,6 +98,9 @@ void html_archive_compare::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 			       bibliotheque::confdiff,
 			       opt_diff,
 			       false);
+
+    if(ptr->has_config(bibliotheque::confdiff, bibliotheque::default_config_name))
+	guichet_opt_diff.load_from_bibliotheque(bibliotheque::default_config_name);
 }
 
 libdar::archive_options_diff html_archive_compare::get_options() const

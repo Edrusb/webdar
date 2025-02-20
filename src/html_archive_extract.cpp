@@ -96,6 +96,9 @@ void html_archive_extract::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				  bibliotheque::confrest,
 				  opt_extract,
 				  false);
+
+    if(ptr->has_config(bibliotheque::confrest, bibliotheque::default_config_name))
+	guichet_opt_extract.load_from_bibliotheque(bibliotheque::default_config_name);
 }
 
 

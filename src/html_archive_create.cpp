@@ -109,6 +109,9 @@ void html_archive_create::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 			      bibliotheque::confsave,
 			      options,
 			      false);
+
+    if(ptr->has_config(bibliotheque::confsave, bibliotheque::default_config_name))
+	guichet_options.load_from_bibliotheque(bibliotheque::default_config_name);
 }
 
 

@@ -123,15 +123,20 @@ saisie::saisie():
     archread.set_biblio(biblio);
     merge.set_biblio(biblio);
     isolate.set_biblio(biblio);
-    test->set_biblio(biblio);
     compare.set_biblio(biblio);
     repair.set_biblio(biblio);
     extract.set_biblio(biblio);
+
+	// test is treated differently because there is no (need of) html_archive_test class
+    test->set_biblio(biblio);
 
     guichet_test.set_child(biblio,
 			   bibliotheque::conftest,
 			   test,
 			   false);
+
+    if(biblio->has_config(bibliotheque::conftest, bibliotheque::default_config_name))
+	guichet_test.load_from_bibliotheque(bibliotheque::default_config_name);
 
 	// disconnect
     adopt(&disco);

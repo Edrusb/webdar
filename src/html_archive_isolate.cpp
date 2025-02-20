@@ -97,6 +97,9 @@ void html_archive_isolate::set_biblio(const shared_ptr<bibliotheque> & ptr)
 			      bibliotheque::confisolate,
 			      options,
 			      false);
+
+    if(ptr->has_config(bibliotheque::confisolate, bibliotheque::default_config_name))
+	guichet_options.load_from_bibliotheque(bibliotheque::default_config_name);
 };
 
 

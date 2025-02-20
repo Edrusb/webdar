@@ -106,6 +106,9 @@ void html_archive_repair::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				 bibliotheque::confrepair,
 				 opt_repair,
 				 false);
+
+    if(ptr->has_config(bibliotheque::confrepair, bibliotheque::default_config_name))
+	guichet_opt_repair.load_from_bibliotheque(bibliotheque::default_config_name);
 }
 
 

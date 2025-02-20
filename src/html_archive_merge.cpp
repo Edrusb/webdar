@@ -95,6 +95,9 @@ void html_archive_merge::set_biblio(const shared_ptr<bibliotheque> & ptr)
 			      bibliotheque::confmerge,
 			      options,
 			      false);
+
+    if(ptr->has_config(bibliotheque::confmerge, bibliotheque::default_config_name))
+	guichet_options.load_from_bibliotheque(bibliotheque::default_config_name);
 }
 
 
