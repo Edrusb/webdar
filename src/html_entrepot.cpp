@@ -257,7 +257,7 @@ void html_entrepot::load_json(const json & source)
 
 	try
 	{
-	    repo_type.set_selected_num(config.at(jlabel_type));
+	    repo_type.set_selected_id(config.at(jlabel_type));
 	    host.set_value(config.at(jlabel_host));
 	    port.set_value(config.at(jlabel_port));
 	    login.set_value(config.at(jlabel_login));
@@ -308,7 +308,7 @@ json html_entrepot::save_json() const
 {
     json config;
 
-    config[jlabel_type] = repo_type.get_selected_num();
+    config[jlabel_type] = repo_type.get_selected_id();
     config[jlabel_host] = host.get_value();
     config[jlabel_port] = port.get_value();
     config[jlabel_login] = login.get_value();
