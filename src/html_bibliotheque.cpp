@@ -695,6 +695,37 @@ void html_bibliotheque::clear_ok_messages()
 
 void html_bibliotheque::set_default_configs()
 {
+    html_options_read read_default;
+    html_entrepot entrep;
+
+    if(!biblio)
+	throw WEBDAR_BUG;
+
+	// set biblio() methods must be invoked now for the object to be informed upon new configuration addition to the bibliotheque
+    read_default.set_biblio(biblio);
+
+	// adding no-compress filemask configuration
+    set_default_configs_no_compress();
+
+	// adding default entrepot
+    entrep.set_to_webdar_defaults();
+    biblio->add_config(bibliotheque::repo,
+		       bibliotheque::default_config_name,
+		       entrep.save_json(),
+		       bibliotheque::using_set()); // html_entrept not inheriting from bibliotheque_subconfig class
+
+	// adding default read options
+    read_default.set_to_webdar_defaults();
+    biblio->add_config(bibliotheque::confread,
+		       bibliotheque::default_config_name,
+		       read_default.save_json(),
+		       read_default.get_using_set());
+
+
+}
+
+void html_bibliotheque::set_default_configs_no_compress()
+{
     static const char* subject = "no-compress";
     html_mask_form_filename no_compress(subject);
     bibliotheque::using_set depends; // empty set by default, as we don not have any dependency

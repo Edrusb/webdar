@@ -83,6 +83,10 @@ public:
 	EOE = 19 ///< not a valid value, used for interating in the enum
     };
 
+	/// name of default configuration for options
+    static constexpr const char* default_config_name = "default";
+
+
 	/// change event per category
     static std::string changed(category cat);
 
