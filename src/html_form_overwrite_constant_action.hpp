@@ -50,7 +50,30 @@ class html_form_overwrite_constant_action: public html_overwrite_action,
 					   public actor
 {
 public:
+	// events
     static const std::string changed;
+
+	// values for data
+
+    static constexpr const char* data_preserve = "Preserve";
+    static constexpr const char* data_overwrite = "Overwrite";
+    static constexpr const char* data_preserve_saved = "Preserve and mark already saved";
+    static constexpr const char* data_overwrite_saved = "Overwrite and mark already saved";
+    static constexpr const char* data_remove = "Remove";
+    static constexpr const char* data_undefined = "Keep undefined if not already defined";
+    static constexpr const char* data_ask = "Ask user what to do for each file in conflict";
+
+	// values for EA
+
+    static constexpr const char* ea_preserve = "Preserve";
+    static constexpr const char* ea_overwrite = "Overwrite";
+    static constexpr const char* ea_clear = "Clear all EA and FSA";
+    static constexpr const char* ea_preserve_saved = "Preserve and mark already saved";
+    static constexpr const char* ea_overwrite_saved =  "Overwrite and mark already saved";
+    static constexpr const char* ea_merge_preserve = "Merge EA and preserve";
+    static constexpr const char* ea_merge_overwrite = "Merge EA and overwrite";
+    static constexpr const char* ea_undefined = "Keep undefined if not already defined";
+    static constexpr const char* ea_ask = "Ask user what to do for each file in conflict";
 
     html_form_overwrite_constant_action();
     html_form_overwrite_constant_action(const html_form_overwrite_constant_action & ref) = default;
@@ -58,6 +81,17 @@ public:
     html_form_overwrite_constant_action & operator = (const html_form_overwrite_constant_action & ref) = default;
     html_form_overwrite_constant_action & operator = (html_form_overwrite_constant_action && ref) noexcept = default;
     ~html_form_overwrite_constant_action() = default;
+
+
+	/// programmatically setup the action for data
+
+	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
+    void set_data_action(const std::string & val) { data_action.set_selected_id(val); };
+
+	/// programmatically setup the action for EA
+
+	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
+    void set_ea_action(const std::string & val) { ea_action.set_selected_id(val); };
 
 	/// obtain the crit_constant_action object for libdar option
     virtual std::unique_ptr<libdar::crit_action> get_overwriting_action() const override;

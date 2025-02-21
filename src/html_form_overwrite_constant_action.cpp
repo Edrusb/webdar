@@ -50,23 +50,23 @@ html_form_overwrite_constant_action::html_form_overwrite_constant_action():
 
 	// components setup
 
-    data_action.add_choice("0", "Preserve");
-    data_action.add_choice("1", "Overwrite");
-    data_action.add_choice("2", "Preserve and mark already saved");
-    data_action.add_choice("3", "Overwrite and mark already saved");
-    data_action.add_choice("4", "Remove");
-    data_action.add_choice("5", "Keep undefined if not already defined");
-    data_action.add_choice("6", "Ask user what to do for each file in conflict");
+    data_action.add_choice(data_preserve, data_preserve);
+    data_action.add_choice(data_overwrite, data_overwrite);
+    data_action.add_choice(data_preserve_saved, data_preserve_saved);
+    data_action.add_choice(data_overwrite_saved, data_overwrite_saved);
+    data_action.add_choice(data_remove, data_remove);
+    data_action.add_choice(data_undefined, data_undefined);
+    data_action.add_choice(data_ask, data_ask);
 
-    ea_action.add_choice("0", "Preserve");
-    ea_action.add_choice("1", "Overwrite");
-    ea_action.add_choice("2", "Clear all EA and FSA");
-    ea_action.add_choice("3", "Preserve and mark already saved");
-    ea_action.add_choice("4", "Overwrite and mark already saved");
-    ea_action.add_choice("5", "Merge EA and preserve");
-    ea_action.add_choice("6", "Merge EA and overwrite");
-    ea_action.add_choice("7", "Keep undefined if not already defined");
-    ea_action.add_choice("8", "Ask user what to do for each file in conflict");
+    ea_action.add_choice(ea_preserve, ea_preserve);
+    ea_action.add_choice(ea_overwrite, ea_overwrite);
+    ea_action.add_choice(ea_clear, ea_clear);
+    ea_action.add_choice(ea_preserve_saved, ea_preserve_saved);
+    ea_action.add_choice(ea_overwrite_saved, ea_overwrite_saved);
+    ea_action.add_choice(ea_merge_preserve, ea_merge_preserve);
+    ea_action.add_choice(ea_merge_overwrite, ea_merge_overwrite);
+    ea_action.add_choice(ea_undefined, ea_undefined);
+    ea_action.add_choice(ea_ask, ea_ask);
 
 	// adoption tree
 
@@ -81,7 +81,6 @@ html_form_overwrite_constant_action::html_form_overwrite_constant_action():
 	// css
 
 }
-
 
 unique_ptr<libdar::crit_action> html_form_overwrite_constant_action::get_overwriting_action() const
 {
