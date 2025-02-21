@@ -44,6 +44,9 @@ extern "C"
 #include "jsoner.hpp"
 #include "events.hpp"
 
+    // cannot include header file as this one includes us, making a dependency loop
+class html_form_overwrite_conditional_action;
+
     /// html component to be adopted by an html_form class
 
     /// \note this class implements the html_overwrite_action and proposes to
@@ -52,13 +55,23 @@ extern "C"
     /// which are more specific implementations of html_overwrite_action ancestor
     /// class that should also be adopted by an html_form (directly or not).
 
+
 class html_form_overwrite_action: public html_overwrite_action,
 				  public actor,
 				  public jsoner,
 				  public events
 {
 public:
+
+	// events
+
     static const std::string changed;
+
+	// actions type
+
+    static constexpr const char* action_type_const = "constant";
+    static constexpr const char* action_type_condition = "condition";
+    static constexpr const char* action_type_chain = "chain";
 
     html_form_overwrite_action(const std::string & label);
     html_form_overwrite_action(const html_form_overwrite_action & ref) = delete;
@@ -66,6 +79,20 @@ public:
     html_form_overwrite_action & operator = (const html_form_overwrite_action & ref) = delete;
     html_form_overwrite_action & operator = (html_form_overwrite_action && ref) noexcept = delete;
     ~html_form_overwrite_action() = default;
+
+	/// programmatically define the action type
+
+	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
+    void set_action_type(const std::string & acttype) { action_type.set_selected_id(acttype); };
+
+	/// get access to object storing constant action
+    html_form_overwrite_constant_action & get_action_when_type_const() { return constant_action; };
+
+	/// get access to object storing chain action
+    html_form_overwrite_chain_action & get_action_when_type_chain() { return chain_action; };
+
+	/// get access to object storing conditional action
+    html_form_overwrite_conditional_action & get_action_when_type_condition();
 
 	/// obtain the crit_action object for libdar option
     virtual std::unique_ptr<libdar::crit_action> get_overwriting_action() const override;
@@ -93,10 +120,6 @@ protected:
 
 private:
     static constexpr const char* act_changed = "action changed";
-
-    static constexpr const char* action_type_const = "constant";
-    static constexpr const char* action_type_condition = "condition";
-    static constexpr const char* action_type_chain = "chain";
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* myclass_id = "html_form_overwrite_action";

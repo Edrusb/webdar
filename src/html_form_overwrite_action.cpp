@@ -75,6 +75,22 @@ html_form_overwrite_action::html_form_overwrite_action(const string & label):
 	// css
 }
 
+html_form_overwrite_conditional_action & html_form_overwrite_action::get_action_when_type_condition()
+{
+    html_form_overwrite_conditional_action *ptr = nullptr;
+
+    if(need_conditional_action)
+	make_conditional_action();
+
+    if(!conditional_action)
+	throw WEBDAR_BUG;
+    ptr = dynamic_cast<html_form_overwrite_conditional_action*>(conditional_action.get());
+    if(ptr == nullptr)
+	throw WEBDAR_BUG;
+
+    return *ptr;
+}
+
 unique_ptr<libdar::crit_action> html_form_overwrite_action::get_overwriting_action() const
 {
     unique_ptr<libdar::crit_action> ret;
@@ -237,11 +253,7 @@ string html_form_overwrite_action::inherited_get_body_part(const chemin & path,
     ret = html_div::inherited_get_body_part(path, req);
 
     if(need_conditional_action)
-    {
 	make_conditional_action();
-	need_conditional_action = false;
-	my_body_part_has_changed();
-    }
 
     return ret;
 }
@@ -262,6 +274,8 @@ void html_form_overwrite_action::make_conditional_action()
 	if(!ptr)
 	    throw WEBDAR_BUG;
 	ptr->record_actor_on_event(this, html_form_overwrite_conditional_action::changed);
+	need_conditional_action = false;
+	my_body_part_has_changed();
     }
 }
 
