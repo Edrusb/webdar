@@ -50,7 +50,6 @@ class html_form_overwrite_base_criterium: public html_overwrite_criterium,
                                           public actor,
                                           public jsoner,
 					  public events
-
 {
 public:
 

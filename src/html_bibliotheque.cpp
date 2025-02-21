@@ -34,6 +34,12 @@ extern "C"
     // webdar headers
 #include "environment.hpp"
 #include "tokens.hpp"
+#include "html_form_overwrite_action.hpp"
+#include "html_form_overwrite_chain_action.hpp"
+#include "html_form_overwrite_conditional_action.hpp"
+#include "html_form_overwrite_combining_criterium.hpp"
+#include "html_form_overwrite_base_criterium.hpp"
+#include "html_form_overwrite_constant_action.hpp"
 
     //
 #include "html_bibliotheque.hpp"
@@ -731,7 +737,7 @@ void html_bibliotheque::set_default_configs()
     set_default_configs_no_compress();
 
 	// adding diff to full overwriting policy
-	//    <...>;
+    set_full_from_diff();
 
 	// adding default entrepot
     if(!biblio->has_config(bibliotheque::repo, bibliotheque::default_config_name))
@@ -862,7 +868,6 @@ void html_bibliotheque::set_default_configs()
 			   extract_default.save_json(),
 			   extract_default.get_using_set());
     }
-
 }
 
 void html_bibliotheque::set_default_configs_no_compress()
@@ -914,3 +919,97 @@ void html_bibliotheque::set_default_configs_no_compress()
 		       no_compress.save_json(),
 		       depends);
 }
+
+void html_bibliotheque::set_full_from_diff()
+{
+    if(!biblio)
+	throw WEBDAR_BUG;
+    if(biblio->has_config(bibliotheque::over_policy, bibliotheque::default_full_from_diff))
+	return; // already created or creatged and modified...
+
+    html_form_overwrite_action full_from_diff("");
+
+    full_from_diff.set_action_type(html_form_overwrite_action::action_type_chain);
+
+    html_form_overwrite_chain_action & chain = full_from_diff.get_action_when_type_chain();
+
+	////////
+	// setting the first entry of the chain (for Data)
+	//
+
+    chain.add_new_entry();
+    html_form_overwrite_action & entry1 = chain.get_last_added();
+
+    entry1.set_action_type(html_form_overwrite_action::action_type_condition);
+    html_form_overwrite_conditional_action & cond1 = entry1.get_action_when_type_condition();
+
+    html_form_overwrite_combining_criterium & crit = cond1.get_access_to_condition();
+    html_form_overwrite_action & if_true = cond1.get_access_to_action_true();
+    html_form_overwrite_action & if_false = cond1.get_access_to_action_false();
+
+    html_form_overwrite_base_criterium & base_crit = crit.add_base_criterium();
+    base_crit.set_mode(html_form_overwrite_base_criterium::crit_in_place_is_inode);
+    base_crit.set_invert(true);
+    base_crit.set_negate(true);
+
+    if_true.set_action_type(html_form_overwrite_action::action_type_const);
+    html_form_overwrite_constant_action & if_true_act = if_true.get_action_when_type_const();
+    if_true_act.set_data_action(html_form_overwrite_constant_action::data_remove);
+    if_true_act.set_ea_action(html_form_overwrite_constant_action::ea_clear);
+
+    if_false.set_action_type(html_form_overwrite_action::action_type_condition);
+    html_form_overwrite_conditional_action & if_false_act = if_false.get_action_when_type_condition();
+
+    html_form_overwrite_combining_criterium & sub_crit = if_false_act.get_access_to_condition();
+    html_form_overwrite_action & sub_if_true = if_false_act.get_access_to_action_true();
+    html_form_overwrite_action & sub_if_false = if_false_act.get_access_to_action_false();
+
+    html_form_overwrite_base_criterium & sub_base_crit = sub_crit.add_base_criterium();
+    sub_base_crit.set_mode(html_form_overwrite_base_criterium::crit_in_place_data_saved);
+    sub_base_crit.set_invert(true);
+    sub_base_crit.set_negate(false);
+
+    sub_if_true.set_action_type(html_form_overwrite_action::action_type_const);
+    html_form_overwrite_constant_action & sub_if_true_act = sub_if_true.get_action_when_type_const();
+    sub_if_true_act.set_data_action(html_form_overwrite_constant_action::data_overwrite);
+    sub_if_true_act.set_ea_action(html_form_overwrite_constant_action::ea_undefined);
+
+    sub_if_false.set_action_type(html_form_overwrite_action::action_type_const);
+    html_form_overwrite_constant_action & sub_if_false_act = sub_if_false.get_action_when_type_const();
+    sub_if_false_act.set_data_action(html_form_overwrite_constant_action::data_preserve);
+    sub_if_false_act.set_ea_action(html_form_overwrite_constant_action::ea_undefined);
+
+
+	////////
+        // setting the second entry of the chain (for EA)
+    chain.add_new_entry();
+    html_form_overwrite_action & entry2 = chain.get_last_added();
+
+    entry2.set_action_type(html_form_overwrite_action::action_type_condition);
+    html_form_overwrite_conditional_action & cond2 = entry2.get_action_when_type_condition();
+
+    html_form_overwrite_combining_criterium & crit2 = cond2.get_access_to_condition();
+    html_form_overwrite_action & if_true2 = cond2.get_access_to_action_true();
+    html_form_overwrite_action & if_false2 = cond2.get_access_to_action_false();
+
+    html_form_overwrite_base_criterium & base_crit2 = crit2.add_base_criterium();
+    base_crit2.set_mode(html_form_overwrite_base_criterium::crit_in_place_EA_saved);
+    base_crit2.set_invert(true);
+    base_crit2.set_negate(false);
+
+    if_true2.set_action_type(html_form_overwrite_action::action_type_const);
+    html_form_overwrite_constant_action & if_true2_act = if_true2.get_action_when_type_const();
+    if_true2_act.set_data_action(html_form_overwrite_constant_action::data_undefined);
+    if_true2_act.set_ea_action(html_form_overwrite_constant_action::ea_overwrite);
+
+    if_false2.set_action_type(html_form_overwrite_action::action_type_const);
+    html_form_overwrite_constant_action & if_false2_act = if_false2.get_action_when_type_const();
+    if_false2_act.set_data_action(html_form_overwrite_constant_action::data_undefined);
+    if_false2_act.set_ea_action(html_form_overwrite_constant_action::ea_preserve);
+
+    biblio->add_config(bibliotheque::over_policy,
+		       bibliotheque::default_full_from_diff,
+		       full_from_diff.save_json(),
+		       bibliotheque::using_set());
+}
+

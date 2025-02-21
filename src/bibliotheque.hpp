@@ -86,6 +86,7 @@ public:
 	/// name of default configuration for options
     static constexpr const char* default_config_name = "default";
     static constexpr const char* default_no_compression = "no-compress";
+    static constexpr const char* default_full_from_diff = "full from diff";
 
 
 	/// change event per category

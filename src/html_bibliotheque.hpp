@@ -181,6 +181,7 @@ private:
     void clear_ok_messages();
     void set_default_configs();
     void set_default_configs_no_compress(); // called by set_default_configs(), separated method for better readability
+    void set_full_from_diff(); // called by set_default_configs(), separated method for better readability
 
     static constexpr const char* tab_main = "main";
     static constexpr const char* tab_repo = "repo";
