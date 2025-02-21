@@ -61,6 +61,21 @@ public:
     html_form_overwrite_conditional_action & operator = (html_form_overwrite_conditional_action && ref) noexcept = default;
     ~html_form_overwrite_conditional_action() = default;
 
+	/// provide access to the condition object
+
+	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
+    html_form_overwrite_combining_criterium & get_access_to_condition() { return condition; };
+
+	/// provide access to the action used when condition is false
+
+	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
+    html_form_overwrite_action & get_access_to_action_true() { return when_true; };
+
+	/// provide access to the action used when condition is false
+
+	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
+    html_form_overwrite_action & get_access_to_action_false() { return when_false; };
+
 	/// obtain the crit_conditional_action object for libdar option
     virtual std::unique_ptr<libdar::crit_action> get_overwriting_action() const override;
 
