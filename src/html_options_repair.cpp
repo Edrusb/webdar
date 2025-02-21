@@ -411,6 +411,22 @@ libdar::archive_options_repair html_options_repair::get_options(shared_ptr<html_
     return ret;
 }
 
+void html_options_repair::set_to_webdar_defaults()
+{
+    clear_json();
+
+    guichet_entrep.load_from_bibliotheque(bibliotheque::default_config_name);
+    info_details.set_value_as_bool(true);
+    display_treated.set_value_as_bool(true);
+    display_only_dir.set_value_as_bool(false);
+    display_skipped.set_value_as_bool(true);
+    display_dirstats.set_value_as_bool(true);
+    allow_over.set_value_as_bool(true);
+    warn_over.set_value_as_bool(true);
+    hash_algo.set_value(libdar::hash_algo::whirlpool);
+    guichet_slicing.load_from_bibliotheque(bibliotheque::default_config_name);
+    guichet_ciphering.load_from_bibliotheque(bibliotheque::default_config_name);
+}
 
 string html_options_repair::inherited_get_body_part(const chemin & path,
 						    const request & req)

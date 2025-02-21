@@ -97,6 +97,9 @@ public:
 	/// actor indirect inheritance
     virtual void on_event(const std::string & event_name) override;
 
+	/// set the object to webdar defaults
+    void set_to_webdar_defaults();
+
 protected:
 
 	/// inherited from body_builder

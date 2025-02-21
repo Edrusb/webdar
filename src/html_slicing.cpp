@@ -276,6 +276,10 @@ void html_slicing::on_event(const std::string & event_name)
 	throw WEBDAR_BUG;
 }
 
+void html_slicing::set_to_webdar_defaults()
+{
+    clear_json();
+}
 
 string html_slicing::inherited_get_body_part(const chemin & path,
 					     const request & req)

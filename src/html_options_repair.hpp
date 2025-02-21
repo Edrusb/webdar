@@ -100,6 +100,9 @@ public:
 	/// obtain the entrepot landing path
     const std::string & get_landing_path() const { return entrep->get_landing_path(); };
 
+	/// set the object to webdar defaults
+    void set_to_webdar_defaults();
+
 protected:
 
 	/// inherited from body_builder

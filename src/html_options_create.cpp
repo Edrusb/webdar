@@ -758,6 +758,37 @@ libdar::archive_options_create html_options_create::get_options(shared_ptr<html_
     return ret;
 }
 
+void html_options_create::set_to_webdar_defaults()
+{
+    clear_json();
+
+    guichet_entrep.load_from_bibliotheque(bibliotheque::default_config_name);
+    guichet_filename_mask.clear_json();
+    guichet_path_mask.clear_json();
+    guichet_ea_mask.clear_json();
+    archtype.set_selected_num(0); // should be full backup
+    delta_sig.set_value_as_bool(false);
+    alter_atime.set_selected_num(0);
+    furtive_read_mode.set_value_as_bool(true);
+    zeroing_neg_date.set_value_as_bool(true);
+    retry_on_change_times.set_value_as_int(5);
+    hash_algo.set_value(libdar::hash_algo::whirlpool);
+    info_details.set_value_as_bool(true);
+    display_treated.set_value_as_bool(true);
+    display_treated_only_dir.set_value_as_bool(false);
+    display_skipped.set_value_as_bool(true);
+    display_dir_summary.set_value_as_bool(true);
+    dont_ignore_unknown_inode_type.set_value_as_bool(true);
+    empty_dir.set_value_as_bool(true);
+    cache_directory_tagging.set_value_as_bool(true);
+    nodump.set_value_as_bool(true);
+    exclude_by_ea.set_value_as_bool(true);
+    default_ea.set_value_as_bool(true);
+    guichet_compr_params.load_from_bibliotheque(bibliotheque::default_config_name);
+    guichet_compr_mask.load_from_bibliotheque(bibliotheque::default_no_compression);
+    guichet_slicing.load_from_bibliotheque(bibliotheque::default_config_name);
+    guichet_ciphering.load_from_bibliotheque(bibliotheque::default_config_name);
+}
 
 string html_options_create::inherited_get_body_part(const chemin & path,
 						    const request & req)

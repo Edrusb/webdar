@@ -366,6 +366,15 @@ void html_ciphering::on_event(const string & event_name)
 	throw WEBDAR_BUG;
 }
 
+void html_ciphering::set_to_webdar_defaults()
+{
+    clear_json();
+
+    crypto_algo.set_value(libdar::crypto_algo::aes256);
+    crypto_type.set_selected_num(0); // should be symmetrical encryption
+    iteration_count.set_value_as_int(20000); // default algo is argon2
+}
+
 string html_ciphering::inherited_get_body_part(const chemin & path,
 					       const request & req)
 {

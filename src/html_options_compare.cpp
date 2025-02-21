@@ -368,11 +368,26 @@ void html_options_compare::on_event(const std::string & event_name)
 	    || event_name == html_mask_form_path::changed
 	    || event_name == html_fsa_scope::changed)
     {
+	    // nothing to do, because of trigger_change() below
     }
     else
 	throw WEBDAR_BUG;
 
     trigger_change();
+}
+
+void html_options_compare::set_to_webdar_defaults()
+{
+    clear_json();
+
+    alter_atime.set_selected_num(0);
+    furtive_read_mode.set_value_as_bool(true);
+    zeroing_neg_date.set_value_as_bool(true);
+    in_place.set_value_as_bool(true);
+    info_details.set_value_as_bool(true);
+    display_treated.set_value_as_bool(true);
+    display_treated_only_dir.set_value_as_bool(false);
+    display_skipped.set_value_as_bool(true);
 }
 
 string html_options_compare::inherited_get_body_part(const chemin & path,

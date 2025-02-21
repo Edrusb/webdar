@@ -221,6 +221,14 @@ void html_form_overwrite_action::on_event(const std::string & event_name)
 	throw WEBDAR_BUG;
 }
 
+
+void html_form_overwrite_action::set_to_webdar_defaults()
+{
+    clear_json();
+
+    action_type.set_selected_num(0); // constant action
+}
+
 string html_form_overwrite_action::inherited_get_body_part(const chemin & path,
 							   const request & req)
 {

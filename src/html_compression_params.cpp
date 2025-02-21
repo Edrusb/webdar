@@ -286,6 +286,17 @@ void html_compression_params::on_event(const string & event_name)
 	throw WEBDAR_BUG;
 }
 
+void html_compression_params::set_to_webdar_defaults()
+{
+    clear_json();
+
+    keep_compressed.set_value_as_bool(false);
+    compression.set_value(libdar::compression::zstd);
+    compression_level.set_value_as_int(9);
+    min_compr_size.set_value_as_infinint(1024);
+    never_resave_uncompressed.set_value_as_bool(false);
+}
+
 string html_compression_params::inherited_get_body_part(const chemin & path,
 							const request & req)
 {

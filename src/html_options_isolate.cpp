@@ -459,6 +459,24 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     return ret;
 }
 
+void html_options_isolate::set_to_webdar_defaults()
+{
+    clear_json();
+
+    delta_sig.set_value_as_bool(true);
+    delta_transfer_mode.set_value_as_bool(false);
+    guichet_entrep.load_from_bibliotheque(bibliotheque::default_config_name);
+    allow_over.set_value_as_bool(true);
+    warn_over.set_value_as_bool(true);
+    sequential_marks.set_value_as_bool(true);
+    hash_algo.set_value(libdar::hash_algo::whirlpool);
+    info_details.set_value_as_bool(true);
+    guichet_slicing.load_from_bibliotheque(bibliotheque::default_config_name);
+    guichet_compr_params.load_from_bibliotheque(bibliotheque::default_config_name);
+    guichet_ciphering.load_from_bibliotheque(bibliotheque::default_config_name);
+
+}
+
 string html_options_isolate::inherited_get_body_part(const chemin & path,
 						     const request & req)
 {

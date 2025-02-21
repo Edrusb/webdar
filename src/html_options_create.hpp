@@ -119,6 +119,9 @@ public:
 	/// needed for path based filtering to filter accordingly to the current root_fs
     void set_fs_root(const std::string & prefix) { path_mask->set_fs_root(prefix); };
 
+	/// set the object to webdar defaults
+    void set_to_webdar_defaults();
+
 protected:
 
 	/// inherited from body_builder

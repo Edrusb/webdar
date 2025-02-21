@@ -661,6 +661,27 @@ libdar::archive_options_merge html_options_merge::get_options(shared_ptr<html_we
     return ret;
 }
 
+void html_options_merge::set_to_webdar_defaults()
+{
+    clear_json();
+
+    guichet_entrep.load_from_bibliotheque(bibliotheque::default_config_name);
+    allow_over.set_value_as_bool(true);
+    warn_over.set_value_as_bool(true);
+    sequential_marks.set_value_as_bool(true);
+    hash_algo.set_value(libdar::hash_algo::whirlpool);
+    delta_sig.set_selected_id("transfer");
+    info_details.set_value_as_bool(true);
+    display_treated.set_value_as_bool(true);
+    display_treated_only_dir.set_value_as_bool(false);
+    display_skipped.set_value_as_bool(true);
+    empty_dir.set_value_as_bool(true);
+    guichet_overwriting_policy.load_from_bibliotheque(bibliotheque::default_config_name);
+    guichet_compr_params.clear_json();
+    compr_params->set_keep_compressed(true);
+    guichet_slicing.load_from_bibliotheque(bibliotheque::default_config_name);
+    guichet_ciphering.load_from_bibliotheque(bibliotheque::default_config_name);
+}
 
 string html_options_merge::inherited_get_body_part(const chemin & path,
 						   const request & req)

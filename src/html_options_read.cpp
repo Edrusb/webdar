@@ -445,6 +445,7 @@ void html_options_read::set_to_webdar_defaults()
     guichet_entrep.load_from_bibliotheque(bibliotheque::default_config_name);
     info_details.set_value_as_bool(true);
     multi_thread_crypto.set_value_as_int(2);
+    multi_thread_compress.set_value_as_int(4);
     guichet_ref_entrep.load_from_bibliotheque(bibliotheque::default_config_name);
 }
 

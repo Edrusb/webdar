@@ -700,17 +700,38 @@ void html_bibliotheque::clear_ok_messages()
 
 void html_bibliotheque::set_default_configs()
 {
-    html_options_read read_default;
     html_entrepot entrep;
+    html_compression_params compr_params(true, true, false);
+    html_slicing slicing;
+    html_ciphering ciphering;
+    html_form_overwrite_action overwrite("");
+    html_options_read read_default;
+    html_options_create create_default;
+    html_options_test test_default;
+    html_options_compare compare_default;
+    html_options_isolate isolate_default;
+    html_options_merge merge_default;
+    html_options_repair repair_default;
+    html_options_extract extract_default;
 
     if(!biblio)
 	throw WEBDAR_BUG;
 
 	// set biblio() methods must be invoked now for the object to be informed upon new configuration addition to the bibliotheque
     read_default.set_biblio(biblio);
+    create_default.set_biblio(biblio);
+    test_default.set_biblio(biblio);
+    compare_default.set_biblio(biblio);
+    isolate_default.set_biblio(biblio);
+    merge_default.set_biblio(biblio);
+    repair_default.set_biblio(biblio);
+    extract_default.set_biblio(biblio);
 
 	// adding no-compress filemask configuration
     set_default_configs_no_compress();
+
+	// adding diff to full overwriting policy
+	//    <...>;
 
 	// adding default entrepot
     entrep.set_to_webdar_defaults();
@@ -719,6 +740,35 @@ void html_bibliotheque::set_default_configs()
 		       entrep.save_json(),
 		       bibliotheque::using_set()); // html_entrept not inheriting from bibliotheque_subconfig class
 
+	// adding default compression params
+    compr_params.set_to_webdar_defaults();
+    biblio->add_config(bibliotheque::compress,
+		       bibliotheque::default_config_name,
+		       compr_params.save_json(),
+		       bibliotheque::using_set()); // html_compression_params not inheriting from bibliotheque_subconfig class
+
+	// adding default slicing
+    slicing.set_to_webdar_defaults();
+    biblio->add_config(bibliotheque::slicing,
+		       bibliotheque::default_config_name,
+		       slicing.save_json(),
+		       bibliotheque::using_set()); // html_slicing not inheriting from bibliotheque_subconfig class
+
+
+	// adding default ciphering
+    ciphering.set_to_webdar_defaults();
+    biblio->add_config(bibliotheque::ciphering,
+		       bibliotheque::default_config_name,
+		       ciphering.save_json(),
+		       bibliotheque::using_set()); // html_slicing not inheriting from bibliotheque_subconfig class
+
+	// adding default overwriting policy
+    overwrite.set_to_webdar_defaults();
+    biblio->add_config(bibliotheque::over_policy,
+		       bibliotheque::default_config_name,
+		       overwrite.save_json(),
+		       bibliotheque::using_set()); // html_form_overwrite_action not inheriting from bibliotheque_subconfig class
+
 	// adding default read options
     read_default.set_to_webdar_defaults();
     biblio->add_config(bibliotheque::confread,
@@ -726,12 +776,60 @@ void html_bibliotheque::set_default_configs()
 		       read_default.save_json(),
 		       read_default.get_using_set());
 
+	// adding default create options
+    create_default.set_to_webdar_defaults();
+    biblio->add_config(bibliotheque::confsave,
+		       bibliotheque::default_config_name,
+		       create_default.save_json(),
+		       create_default.get_using_set());
+
+	// adding default test options
+    test_default.set_to_webdar_defaults();
+    biblio->add_config(bibliotheque::conftest,
+		       bibliotheque::default_config_name,
+		       test_default.save_json(),
+		       test_default.get_using_set());
+
+	// adding default compare options
+    compare_default.set_to_webdar_defaults();
+    biblio->add_config(bibliotheque::confdiff,
+		       bibliotheque::default_config_name,
+		       compare_default.save_json(),
+		       compare_default.get_using_set());
+
+	// adding default isolate options
+    isolate_default.set_to_webdar_defaults();
+    biblio->add_config(bibliotheque::confisolate,
+		       bibliotheque::default_config_name,
+		       isolate_default.save_json(),
+		       isolate_default.get_using_set());
+
+	// adding default merge options
+    merge_default.set_to_webdar_defaults();
+    biblio->add_config(bibliotheque::confmerge,
+		       bibliotheque::default_config_name,
+		       merge_default.save_json(),
+		       merge_default.get_using_set());
+
+	// adding default repair options
+    repair_default.set_to_webdar_defaults();
+    biblio->add_config(bibliotheque::confrepair,
+		       bibliotheque::default_config_name,
+		       repair_default.save_json(),
+		       repair_default.get_using_set());
+
+	// adding default extract options
+    extract_default.set_to_webdar_defaults();
+    biblio->add_config(bibliotheque::confrest,
+		       bibliotheque::default_config_name,
+		       extract_default.save_json(),
+		       extract_default.get_using_set());
 
 }
 
 void html_bibliotheque::set_default_configs_no_compress()
 {
-    static const char* subject = "no-compress";
+    static const char* subject = bibliotheque::default_no_compression;
     html_mask_form_filename no_compress(subject);
     bibliotheque::using_set depends; // empty set by default, as we don not have any dependency
     deque<string> labels = no_compress.get_labels();

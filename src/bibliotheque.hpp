@@ -85,6 +85,7 @@ public:
 
 	/// name of default configuration for options
     static constexpr const char* default_config_name = "default";
+    static constexpr const char* default_no_compression = "no-compress";
 
 
 	/// change event per category

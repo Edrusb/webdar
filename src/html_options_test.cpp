@@ -266,6 +266,15 @@ void html_options_test::on_event(const string & event_name)
     trigger_change();
 }
 
+void html_options_test::set_to_webdar_defaults()
+{
+    clear_json();
+
+    info_details.set_value_as_bool(true);
+    display_treated.set_value_as_bool(true);
+    display_treated_only_dir.set_value_as_bool(false);
+    display_skipped.set_value_as_bool(true);
+}
 
 string html_options_test::inherited_get_body_part(const chemin & path,
 						  const request & req)
