@@ -81,6 +81,16 @@ html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium
     update_table_content_logic(true); // true = update unconditionally
 }
 
+shared_ptr<body_builder> html_form_overwrite_combining_criterium::get_last_added()
+{
+    html_form_dynamic_table::iterator tmp;
+
+    if(table.empty())
+	throw WEBDAR_BUG;
+    tmp = table.last();
+
+    return tmp.get_object();
+}
 
 unique_ptr<libdar::criterium> html_form_overwrite_combining_criterium::get_overwriting_criterium() const
 {

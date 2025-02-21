@@ -67,6 +67,25 @@ public:
     html_form_overwrite_combining_criterium & operator = (html_form_overwrite_combining_criterium && ref) noexcept = default;
     ~html_form_overwrite_combining_criterium() = default;
 
+	/// set and/or combining mode
+
+	/// \param[in] mode use and_op or or_op static fields defined below
+	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
+    void set_logic_mode(const std::string & mode) { crit_type.set_selected_id(mode); };
+
+	/// add a new base criterium to be logically combined with eventually existing ones
+
+	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
+    void add_base_criterium() { table.add_line(0); };
+
+	/// add a new subcombining criterium to be logically combined with eventually existing ones at this level
+
+	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
+    void add_combining_criterium() { table.add_line(1); };
+
+	/// get the access of the latest added entry (base or combining criterium)
+    std::shared_ptr<body_builder> get_last_added();
+
 	/// obtain the crit_combining_criterium object for libdar option
     virtual std::unique_ptr<libdar::criterium> get_overwriting_criterium() const override;
 
