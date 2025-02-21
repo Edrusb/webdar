@@ -46,6 +46,9 @@ extern "C"
 #include "events.hpp"
 #include "actor.hpp"
 
+    /// cannot include header file here
+class html_form_overwrite_action;
+
     /// html component to be adopted by an html_form that implements a chain of actions for overwriting policies
 
 class html_form_overwrite_chain_action: public html_overwrite_action,
@@ -73,7 +76,7 @@ public:
 	/// get the access of the latest added entry (base or combining criterium)
 
 	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
-    std::shared_ptr<body_builder> get_last_added();
+    html_form_overwrite_action & get_last_added();
 
 	/// obtain the crit_chain_action object for libdar option
     virtual std::unique_ptr<libdar::crit_action> get_overwriting_action() const override;

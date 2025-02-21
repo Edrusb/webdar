@@ -62,15 +62,25 @@ html_form_overwrite_chain_action::html_form_overwrite_chain_action(const std::st
 	// css
 }
 
-shared_ptr<body_builder> html_form_overwrite_chain_action::get_last_added()
+html_form_overwrite_action & html_form_overwrite_chain_action::get_last_added()
 {
     html_form_dynamic_table::iterator tmp;
+    html_form_overwrite_chain_cell* ptr = nullptr;
 
     if(table.empty())
 	throw WEBDAR_BUG;
     tmp = table.last();
 
-    return tmp.get_object();
+    if(!table.last().get_object())
+	throw WEBDAR_BUG;
+    if(table.last().get_object().get() == nullptr)
+	throw WEBDAR_BUG;
+
+    ptr = dynamic_cast<html_form_overwrite_chain_cell*>(table.last().get_object().get());
+    if(ptr == nullptr)
+	throw WEBDAR_BUG;
+
+    return ptr->get_cell_action();
 }
 
 unique_ptr<libdar::crit_action> html_form_overwrite_chain_action::get_overwriting_action() const
