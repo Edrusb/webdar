@@ -84,6 +84,8 @@ public:
     void add_combining_criterium() { table.add_line(1); };
 
 	/// get the access of the latest added entry (base or combining criterium)
+
+	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
     std::shared_ptr<body_builder> get_last_added();
 
 	/// obtain the crit_combining_criterium object for libdar option

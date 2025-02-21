@@ -62,6 +62,17 @@ html_form_overwrite_chain_action::html_form_overwrite_chain_action(const std::st
 	// css
 }
 
+shared_ptr<body_builder> html_form_overwrite_chain_action::get_last_added()
+{
+    html_form_dynamic_table::iterator tmp;
+
+    if(table.empty())
+	throw WEBDAR_BUG;
+    tmp = table.last();
+
+    return tmp.get_object();
+}
+
 unique_ptr<libdar::crit_action> html_form_overwrite_chain_action::get_overwriting_action() const
 {
     unique_ptr<libdar::crit_chain> ret;
