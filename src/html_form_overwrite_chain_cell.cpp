@@ -60,6 +60,18 @@ html_form_overwrite_chain_cell::html_form_overwrite_chain_cell(unique_ptr<html_f
 	// css
 }
 
+html_form_overwrite_action & html_form_overwrite_chain_cell::get_cell_action()
+{
+    html_form_overwrite_action* ptr = nullptr;
+
+    if(!incell)
+	throw WEBDAR_BUG;
+    ptr = incell.get();
+    if(ptr == nullptr)
+	throw WEBDAR_BUG;
+
+    return *ptr;
+}
 
 unique_ptr<libdar::crit_action> html_form_overwrite_chain_cell::get_overwriting_action() const
 {

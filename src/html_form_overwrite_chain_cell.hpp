@@ -61,6 +61,8 @@ public:
     html_form_overwrite_chain_cell & operator = (html_form_overwrite_chain_cell && ref) noexcept = default;
     ~html_form_overwrite_chain_cell() = default;
 
+    html_form_overwrite_action & get_cell_action();
+
 	/// obtain the crit_chain_cell object for libdar option
     virtual std::unique_ptr<libdar::crit_action> get_overwriting_action() const override;
 
