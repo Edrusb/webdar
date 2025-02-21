@@ -104,47 +104,47 @@ unique_ptr<libdar::criterium> html_form_overwrite_base_criterium::get_overwritin
 {
     unique_ptr<libdar::criterium> ret;
 
-    if(base.get_selected_id() == "crit_in_place_is_inode")
+    if(base.get_selected_id() == crit_in_place_is_inode)
 	ret.reset(new (nothrow) libdar::crit_in_place_is_inode());
-    else if(base.get_selected_id() == "crit_in_place_is_dir")
+    else if(base.get_selected_id() == crit_in_place_is_dir)
 	ret.reset(new (nothrow) libdar::crit_in_place_is_dir());
-    else if(base.get_selected_id() == "crit_in_place_is_file")
+    else if(base.get_selected_id() == crit_in_place_is_file)
 	ret.reset(new (nothrow) libdar::crit_in_place_is_file());
-    else if(base.get_selected_id() == "crit_in_place_is_hardlinked_inode")
+    else if(base.get_selected_id() == crit_in_place_is_hardlinked_inode)
 	ret.reset(new (nothrow) libdar::crit_in_place_is_hardlinked_inode());
-    else if(base.get_selected_id() == "crit_in_place_is_new_hardlinked_inode")
+    else if(base.get_selected_id() == crit_in_place_is_new_hardlinked_inode)
 	ret.reset(new (nothrow) libdar::crit_in_place_is_new_hardlinked_inode());
-    else if(base.get_selected_id() == "crit_in_place_data_more_recent")
+    else if(base.get_selected_id() == crit_in_place_data_more_recent)
 	ret.reset(new (nothrow) libdar::crit_in_place_data_more_recent(libdar::deci(hourshift.get_value()).computer()));
-    else if(base.get_selected_id() == "crit_in_place_data_more_recent_or_equal_to")
+    else if(base.get_selected_id() == crit_in_place_data_more_recent_or_equal_to)
 	ret.reset(new (nothrow) libdar::crit_in_place_data_more_recent_or_equal_to(date.get_value(),
 										   libdar::deci(hourshift.get_value()).computer()));
-    else if(base.get_selected_id() == "crit_in_place_data_bigger")
+    else if(base.get_selected_id() == crit_in_place_data_bigger)
 	ret.reset(new (nothrow) libdar::crit_in_place_data_bigger());
-    else if(base.get_selected_id() == "crit_in_place_data_saved")
+    else if(base.get_selected_id() == crit_in_place_data_saved)
 	ret.reset(new (nothrow) libdar::crit_in_place_data_saved());
-    else if(base.get_selected_id() == "crit_in_place_data_dirty")
+    else if(base.get_selected_id() == crit_in_place_data_dirty)
 	ret.reset(new (nothrow) libdar::crit_in_place_data_dirty());
-    else if(base.get_selected_id() == "crit_in_place_data_sparse")
+    else if(base.get_selected_id() == crit_in_place_data_sparse)
 	ret.reset(new (nothrow) libdar::crit_in_place_data_sparse());
-    else if(base.get_selected_id() == "crit_in_place_has_delta_sig")
+    else if(base.get_selected_id() == crit_in_place_has_delta_sig)
 	ret.reset(new (nothrow) libdar::crit_in_place_has_delta_sig());
-    else if(base.get_selected_id() == "crit_same_inode_data")
+    else if(base.get_selected_id() == crit_same_inode_data)
 	ret.reset(new (nothrow) libdar::crit_same_inode_data());
-    else if(base.get_selected_id() == "crit_in_place_EA_present")
+    else if(base.get_selected_id() == crit_in_place_EA_present)
 	ret.reset(new (nothrow) libdar::crit_in_place_EA_present());
-    else if(base.get_selected_id() == "crit_in_place_EA_more_recent")
+    else if(base.get_selected_id() == crit_in_place_EA_more_recent)
 	ret.reset(new (nothrow) libdar::crit_in_place_EA_more_recent(libdar::deci(hourshift.get_value()).computer()));
-    else if(base.get_selected_id() == "crit_in_place_EA_more_recent_or_equal_to")
+    else if(base.get_selected_id() == crit_in_place_EA_more_recent_or_equal_to)
 	ret.reset(new (nothrow) libdar::crit_in_place_EA_more_recent_or_equal_to(date.get_value(),
 										 libdar::deci(hourshift.get_value()).computer()));
-    else if(base.get_selected_id() == "crit_in_place_more_EA")
+    else if(base.get_selected_id() == crit_in_place_more_EA)
 	ret.reset(new (nothrow) libdar::crit_in_place_more_EA());
-    else if(base.get_selected_id() == "crit_in_place_EA_bigger")
+    else if(base.get_selected_id() == crit_in_place_EA_bigger)
 	ret.reset(new (nothrow) libdar::crit_in_place_EA_bigger());
-    else if(base.get_selected_id() == "crit_in_place_EA_saved")
+    else if(base.get_selected_id() == crit_in_place_EA_saved)
 	ret.reset(new (nothrow) libdar::crit_in_place_EA_saved());
-    else if(base.get_selected_id() == "crit_same_type")
+    else if(base.get_selected_id() == crit_same_type)
 	ret.reset(new (nothrow) libdar::crit_same_type());
     else
 	throw WEBDAR_BUG;
