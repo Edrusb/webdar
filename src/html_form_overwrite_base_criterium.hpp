@@ -53,7 +53,34 @@ class html_form_overwrite_base_criterium: public html_overwrite_criterium,
 
 {
 public:
+
+	// events
+
     static const std::string changed;
+
+	// base modes for see set_mode()
+
+    static constexpr const char* crit_in_place_is_inode = "in place entry is an inode";
+    static constexpr const char* crit_in_place_is_dir = "in place entry is a directory";
+    static constexpr const char* crit_in_place_is_file = "in place entry is a plain file";
+    static constexpr const char* crit_in_place_is_hardlinked_inode = "in place entry is a hard linked inode";
+    static constexpr const char* crit_in_place_is_new_hardlinked_inode = "in place entry is a hard linked inode we meet for the first time";
+    static constexpr const char* crit_in_place_data_more_recent = "in place inode has more recent data";
+    static constexpr const char* crit_in_place_data_more_recent_or_equal_to = "in place inode a data more recent than or equal to: ";
+    static constexpr const char* crit_in_place_data_bigger = "both are plain files and in place one is bigger file";
+    static constexpr const char* crit_in_place_data_saved = "in place has its data saved or is not an inode";
+    static constexpr const char* crit_in_place_data_dirty = "in place entry is a dirty file";
+    static constexpr const char* crit_in_place_data_sparse = "in place entry is a sparse file";
+    static constexpr const char* crit_in_place_has_delta_sig = "in place entry has a delta signature attached";
+    static constexpr const char* crit_same_inode_data = "both entry are of the same type and have the same metadata";
+    static constexpr const char* crit_in_place_EA_present = "in place entry has Extended Attributes";
+    static constexpr const char* crit_in_place_EA_more_recent = "in place entry has more recent Extended Attributes";
+    static constexpr const char* crit_in_place_EA_more_recent_or_equal_to = "in place entry has EA more recent than or equal to:";
+    static constexpr const char* crit_in_place_more_EA = "in place entry has more Extended Attributes";
+    static constexpr const char* crit_in_place_EA_bigger = "in place entry has bigger Extended Attributes";
+    static constexpr const char* crit_in_place_EA_saved = "in place entry has Extended Attributes saved";
+    static constexpr const char* crit_same_type = "both entries are of the same type";
+
 
     html_form_overwrite_base_criterium();
     html_form_overwrite_base_criterium(const html_form_overwrite_base_criterium & ref) = default;
@@ -61,6 +88,32 @@ public:
     html_form_overwrite_base_criterium & operator = (const html_form_overwrite_base_criterium & ref) = default;
     html_form_overwrite_base_criterium & operator = (html_form_overwrite_base_criterium && ref) noexcept = default;
     ~html_form_overwrite_base_criterium() = default;
+
+	/// set the base mode (use crit_* static char* above)
+
+	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
+    void set_mode(const std::string & mode) { base.set_selected_id(mode); };
+
+	/// set invert value
+
+	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
+    void set_invert(bool val) { invert.set_value_as_bool(val); };
+
+	/// set invert value
+
+	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
+    void set_negate(bool val) { negate.set_value_as_bool(val); };
+
+	/// set date
+
+	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
+    void set_date(const libdar::infinint & val) { date.set_value(val); };
+
+	/// set hourshift
+
+	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
+    void set_hourshift(unsigned int shift) { hourshift.set_value_as_int(shift); };
+
 
         /// obtain the crit_base_criterium object for libdar option
     virtual std::unique_ptr<libdar::criterium> get_overwriting_criterium() const override;

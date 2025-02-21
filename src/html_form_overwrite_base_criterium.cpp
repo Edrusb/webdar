@@ -54,26 +54,26 @@ html_form_overwrite_base_criterium::html_form_overwrite_base_criterium():
 {
 
 	// components setup
-    base.add_choice("crit_in_place_is_inode", "in place entry is an inode");
-    base.add_choice("crit_in_place_is_dir", "in place entry is a directory");
-    base.add_choice("crit_in_place_is_file", "in place entry is a plain file");
-    base.add_choice("crit_in_place_is_hardlinked_inode", "in place entry is a hard linked inode");
-    base.add_choice("crit_in_place_is_new_hardlinked_inode", "in place entry is a hard linked inode we meet for the first time");
-    base.add_choice("crit_in_place_data_more_recent", "in place inode has more recent data");
-    base.add_choice("crit_in_place_data_more_recent_or_equal_to", "in place inode a data more recent than or equal to: ");
-    base.add_choice("crit_in_place_data_bigger", "both are plain files and in place one is bigger file");
-    base.add_choice("crit_in_place_data_saved", "in place has its data saved or is not an inode");
-    base.add_choice("crit_in_place_data_dirty", "in place entry is a dirty file");
-    base.add_choice("crit_in_place_data_sparse", "in place entry is a sparse file");
-    base.add_choice("crit_in_place_has_delta_sig", "in place entry has a delta signature attached");
-    base.add_choice("crit_same_inode_data", "both entry are of the same type and have the same metadata");
-    base.add_choice("crit_in_place_EA_present", "in place entry has Extended Attributes");
-    base.add_choice("crit_in_place_EA_more_recent", "in place entry has more recent Extended Attributes");
-    base.add_choice("crit_in_place_EA_more_recent_or_equal_to", "in place entry has EA more recent than or equal to:");
-    base.add_choice("crit_in_place_more_EA", "in place entry has more Extended Attributes");
-    base.add_choice("crit_in_place_EA_bigger", "in place entry has bigger Extended Attributes");
-    base.add_choice("crit_in_place_EA_saved", "in place entry has Extended Attributes saved");
-    base.add_choice("crit_same_type", "both entries are of the same type");
+    base.add_choice(crit_in_place_is_inode, crit_in_place_is_inode);
+    base.add_choice(crit_in_place_is_dir, crit_in_place_is_dir);
+    base.add_choice(crit_in_place_is_file, crit_in_place_is_file);
+    base.add_choice(crit_in_place_is_hardlinked_inode, crit_in_place_is_hardlinked_inode);
+    base.add_choice(crit_in_place_is_new_hardlinked_inode, crit_in_place_is_new_hardlinked_inode);
+    base.add_choice(crit_in_place_data_more_recent, crit_in_place_data_more_recent);
+    base.add_choice(crit_in_place_data_more_recent_or_equal_to, crit_in_place_data_more_recent_or_equal_to);
+    base.add_choice(crit_in_place_data_bigger, crit_in_place_data_bigger);
+    base.add_choice(crit_in_place_data_saved, crit_in_place_data_saved);
+    base.add_choice(crit_in_place_data_dirty, crit_in_place_data_dirty);
+    base.add_choice(crit_in_place_data_sparse, crit_in_place_data_sparse);
+    base.add_choice(crit_in_place_has_delta_sig, crit_in_place_has_delta_sig);
+    base.add_choice(crit_same_inode_data, crit_same_inode_data);
+    base.add_choice(crit_in_place_EA_present, crit_in_place_EA_present);
+    base.add_choice(crit_in_place_EA_more_recent, crit_in_place_EA_more_recent);
+    base.add_choice(crit_in_place_EA_more_recent_or_equal_to, crit_in_place_EA_more_recent_or_equal_to);
+    base.add_choice(crit_in_place_more_EA, crit_in_place_more_EA);
+    base.add_choice(crit_in_place_EA_bigger, crit_in_place_EA_bigger);
+    base.add_choice(crit_in_place_EA_saved, crit_in_place_EA_saved);
+    base.add_choice(crit_same_type, crit_same_type);
 
     hourshift.set_range(0, 24);
 
