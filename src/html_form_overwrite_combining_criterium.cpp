@@ -81,16 +81,42 @@ html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium
     update_table_content_logic(true); // true = update unconditionally
 }
 
-shared_ptr<body_builder> html_form_overwrite_combining_criterium::get_last_added()
+html_form_overwrite_base_criterium & html_form_overwrite_combining_criterium::add_base_criterium()
 {
+    html_form_overwrite_base_criterium *ptr = nullptr;
     html_form_dynamic_table::iterator tmp;
+
+    table.add_line(0);
 
     if(table.empty())
 	throw WEBDAR_BUG;
     tmp = table.last();
 
-    return tmp.get_object();
+    ptr = dynamic_cast<html_form_overwrite_base_criterium*>(tmp.get_object().get());
+    if(ptr == nullptr)
+	throw WEBDAR_BUG;
+
+    return *ptr;
 }
+
+html_form_overwrite_combining_criterium & html_form_overwrite_combining_criterium::add_combining_criterium()
+{
+    html_form_overwrite_combining_criterium *ptr = nullptr;
+    html_form_dynamic_table::iterator tmp;
+
+    table.add_line(1);
+
+    if(table.empty())
+	throw WEBDAR_BUG;
+    tmp = table.last();
+
+    ptr = dynamic_cast<html_form_overwrite_combining_criterium*>(tmp.get_object().get());
+    if(ptr == nullptr)
+	throw WEBDAR_BUG;
+
+    return *ptr;
+}
+
 
 unique_ptr<libdar::criterium> html_form_overwrite_combining_criterium::get_overwriting_criterium() const
 {

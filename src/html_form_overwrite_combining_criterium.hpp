@@ -48,6 +48,7 @@ extern "C"
 #include "html_form_dynamic_table.hpp"
 #include "jsoner.hpp"
 #include "events.hpp"
+#include "html_form_overwrite_base_criterium.hpp"
 
     /// html component used for to logically combine (and / or) criteria to setup an overwriting policies
 
@@ -76,17 +77,12 @@ public:
 	/// add a new base criterium to be logically combined with eventually existing ones
 
 	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
-    void add_base_criterium() { table.add_line(0); };
+    html_form_overwrite_base_criterium & add_base_criterium();
 
 	/// add a new subcombining criterium to be logically combined with eventually existing ones at this level
 
 	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
-    void add_combining_criterium() { table.add_line(1); };
-
-	/// get the access of the latest added entry (base or combining criterium)
-
-	/// \note this call is to programmatically setup a component, normal way to setup is from Web user interaction
-    std::shared_ptr<body_builder> get_last_added();
+    html_form_overwrite_combining_criterium & add_combining_criterium();
 
 	/// obtain the crit_combining_criterium object for libdar option
     virtual std::unique_ptr<libdar::criterium> get_overwriting_criterium() const override;
