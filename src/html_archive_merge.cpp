@@ -79,6 +79,7 @@ html_archive_merge::html_archive_merge():
     options->record_actor_on_event(this, html_options_merge::entrepot_changed);
     options->record_actor_on_event(this, html_options_merge::landing_path_changed);
     repoxfer.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
+    basename.record_actor_on_event(this, html_form_input::changed);
 
 	// visibility
     repoxfer.set_visible(false);
@@ -86,6 +87,18 @@ html_archive_merge::html_archive_merge():
 	// CSS
     webdar_css_style::normal_button(deroule, true);
 }
+
+const string & html_archive_merge::get_archive_basename() const
+{
+    if(basename.get_value().empty())
+    {
+	if(!basename.has_css_class(webdar_css_style::wcs_red_border))
+	    const_cast<html_archive_merge*>(this)->basename.add_css_class(webdar_css_style::wcs_red_border);
+	throw exception_range("Archive basename cannot be an empty string");
+    }
+    return basename.get_value();
+}
+
 
 void html_archive_merge::set_biblio(const shared_ptr<bibliotheque> & ptr)
 {
@@ -114,6 +127,18 @@ void html_archive_merge::on_event(const string & event_name)
     else if(event_name == html_options_merge::landing_path_changed)
     {
 	sauv_path.set_value(options->get_landing_path());
+    }
+    else if(event_name == html_form_input::changed)
+    {
+	    // will change the css class if only one
+	    // of the if() argument is true (XOR operator)
+	if(basename.get_value().empty() ^ basename.has_css_class(webdar_css_style::wcs_red_border))
+	{
+	    if(basename.get_value().empty())
+		basename.add_css_class(webdar_css_style::wcs_red_border);
+	    else
+		basename.remove_css_class(webdar_css_style::wcs_red_border);
+	}
     }
     else
 	throw WEBDAR_BUG;
