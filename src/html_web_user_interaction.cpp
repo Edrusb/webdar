@@ -641,7 +641,7 @@ void html_web_user_interaction::clean_threads_termination(bool force)
 
     while(rit != managed_threads.rend())
     {
-	if(rit->first != nullptr)
+	if(rit->first == nullptr)
 	    throw WEBDAR_BUG;
 
 	if(force)
