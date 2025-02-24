@@ -60,7 +60,7 @@ public:
     void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
 
     const std::string & get_archive_path() const { return sauv_path.get_value(); };
-    const std::string & get_archive_basename() const { return basename.get_value(); };
+    const std::string & get_archive_basename() const;
     const std::string & get_fs_root() const { return fs_root.get_value(); };
     libdar::archive_options_create get_options_create(std::shared_ptr<html_web_user_interaction> dialog) const { return options->get_options(dialog); };
 

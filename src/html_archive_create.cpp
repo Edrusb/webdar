@@ -92,6 +92,7 @@ html_archive_create::html_archive_create():
     options->record_actor_on_event(this, html_options_create::entrepot_changed);
     options->record_actor_on_event(this, html_options_create::landing_path_changed);
     repoxfer.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
+    basename.record_actor_on_event(this, html_form_input::changed);
 
 	// visibility
     repoxfer.set_visible(false);
@@ -114,6 +115,16 @@ void html_archive_create::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
 	guichet_options.load_from_bibliotheque(bibliotheque::default_config_name);
 }
 
+const std::string & html_archive_create::get_archive_basename() const
+{
+    if(basename.get_value().empty())
+    {
+	if(!basename.has_css_class(webdar_css_style::wcs_red_border))
+	    const_cast<html_archive_create*>(this)->basename.add_css_class(webdar_css_style::wcs_red_border);
+	throw exception_range("Archive basename cannot be an empty string");
+    }
+    return basename.get_value();
+}
 
 void html_archive_create::on_event(const string & event_name)
 {
@@ -132,6 +143,18 @@ void html_archive_create::on_event(const string & event_name)
     else if(event_name == html_options_create::landing_path_changed)
     {
 	update_landing_path();
+    }
+    else if(event_name == html_form_input::changed)
+    {
+	    // will change the css class if only one
+	    // of the if() argument is true (XOR operator)
+	if(basename.get_value().empty() ^ basename.has_css_class(webdar_css_style::wcs_red_border))
+	{
+	    if(basename.get_value().empty())
+		basename.add_css_class(webdar_css_style::wcs_red_border);
+	    else
+		basename.remove_css_class(webdar_css_style::wcs_red_border);
+	}
     }
     else
 	throw WEBDAR_BUG;
