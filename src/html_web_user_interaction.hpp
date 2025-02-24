@@ -272,7 +272,7 @@ private:
 
     bool ignore_event;      ///< if true the on_event() method does not take any action
 
-    std::map<libthreadar::thread*, unsigned int> managed_threads;
+    std::map<libthreadar::thread*, unsigned int> managed_threads; // associate a thread to an order number (limited by max_threads)
     mutable libthreadar::condition all_threads_pending;
     bool used_instance[max_threads];
 
