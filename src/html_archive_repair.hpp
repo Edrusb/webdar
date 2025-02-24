@@ -58,7 +58,7 @@ public:
     ~html_archive_repair() = default;
 
     const std::string & get_archive_path() const { return repair_dest.get_value(); };
-    const std::string & get_archive_basename() const { return basename.get_value(); };
+    const std::string & get_archive_basename() const;
     libdar::archive_options_repair get_options(std::shared_ptr<html_web_user_interaction> dialog) const { return opt_repair->get_options(dialog); };
 
 	/// mandatory call to invoke ASAP after constructor

@@ -89,6 +89,7 @@ html_archive_repair::html_archive_repair():
 
     opt_repair->record_actor_on_event(this, html_options_repair::entrepot_changed);
     opt_repair->record_actor_on_event(this, html_options_repair::landing_path_changed);
+    basename.record_actor_on_event(this, html_form_input::changed);
 
 	// visibility
     repoxfer.set_visible(false);
@@ -96,6 +97,17 @@ html_archive_repair::html_archive_repair():
 	// css
 
     webdar_css_style::normal_button(deroule, true);
+}
+
+const string & html_archive_repair::get_archive_basename() const
+{
+    if(basename.get_value().empty())
+    {
+	if(!basename.has_css_class(webdar_css_style::wcs_red_border))
+	    const_cast<html_archive_repair*>(this)->basename.add_css_class(webdar_css_style::wcs_red_border);
+	throw exception_range("Archive basename cannot be an empty string");
+    }
+    return basename.get_value();
 }
 
 void html_archive_repair::set_biblio(const shared_ptr<bibliotheque> & ptr)
@@ -121,6 +133,18 @@ void html_archive_repair::on_event(const string & event_name)
     else if(event_name == html_options_repair::landing_path_changed)
     {
 	repair_dest.set_value(opt_repair->get_landing_path());
+    }
+    else if(event_name == html_form_input::changed)
+    {
+	    // will change the css class if only one
+	    // of the if() argument is true (XOR operator)
+	if(basename.get_value().empty() ^ basename.has_css_class(webdar_css_style::wcs_red_border))
+	{
+	    if(basename.get_value().empty())
+		basename.add_css_class(webdar_css_style::wcs_red_border);
+	    else
+		basename.remove_css_class(webdar_css_style::wcs_red_border);
+	}
     }
     else
 	throw WEBDAR_BUG;
