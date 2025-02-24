@@ -79,6 +79,7 @@ html_archive_isolate::html_archive_isolate():
 
     options->record_actor_on_event(this, html_options_isolate::entrepot_changed);
     options->record_actor_on_event(this, html_options_isolate::landing_path_changed);
+    basename.record_actor_on_event(this, html_form_input::changed);
 
 	/// visibility
 
@@ -102,6 +103,17 @@ void html_archive_isolate::set_biblio(const shared_ptr<bibliotheque> & ptr)
 	guichet_options.load_from_bibliotheque(bibliotheque::default_config_name);
 };
 
+const string & html_archive_isolate::get_archive_basename() const
+{
+    if(basename.get_value().empty())
+    {
+	if(!basename.has_css_class(webdar_css_style::wcs_red_border))
+	    const_cast<html_archive_isolate*>(this)->basename.add_css_class(webdar_css_style::wcs_red_border);
+	throw exception_range("Archive basename cannot be an empty string");
+    }
+    return basename.get_value();
+}
+
 
 void html_archive_isolate::on_event(const string & event_name)
 {
@@ -112,6 +124,18 @@ void html_archive_isolate::on_event(const string & event_name)
     else if(event_name == html_options_isolate::landing_path_changed)
     {
 	sauv_path.set_value(options->get_landing_path());
+    }
+    else if(event_name == html_form_input::changed)
+    {
+	    // will change the css class if only one
+	    // of the if() argument is true (XOR operator)
+	if(basename.get_value().empty() ^ basename.has_css_class(webdar_css_style::wcs_red_border))
+	{
+	    if(basename.get_value().empty())
+		basename.add_css_class(webdar_css_style::wcs_red_border);
+	    else
+		basename.remove_css_class(webdar_css_style::wcs_red_border);
+	}
     }
     else
 	throw WEBDAR_BUG;

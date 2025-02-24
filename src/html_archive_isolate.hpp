@@ -59,7 +59,7 @@ public:
 
 
     const std::string & get_archive_path() const { return sauv_path.get_value(); };
-    const std::string & get_archive_basename() const { return basename.get_value(); };
+    const std::string & get_archive_basename() const;
     libdar::archive_options_isolate get_options_isolate(std::shared_ptr<html_web_user_interaction> & webui) const { return options->get_options(webui); };
 
             /// inherited from actor
