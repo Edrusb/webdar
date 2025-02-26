@@ -36,7 +36,7 @@ extern "C"
 #include <libthreadar/libthreadar.hpp>
 
     // webdar headers
-#include "web_user_interaction.hpp"
+#include "html_web_user_interaction.hpp"
 #include "html_options_merge.hpp"
 #include "saisie.hpp"
 
