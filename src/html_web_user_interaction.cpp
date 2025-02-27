@@ -67,7 +67,8 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     ask_close("Gracefully stop libdar", ask_end_libdar),
     force_close("Immediately stop libdar", force_end_libdar),
     finish("Close", close_libdar_screen),
-    ignore_event(false)
+    ignore_event(false),
+    managed_thread(nullptr)
 {
     lib_data.reset(new (nothrow) web_user_interaction(x_warn_size));
     if(!lib_data)
@@ -564,6 +565,7 @@ void html_web_user_interaction::update_controlled_thread_status()
     try
     {
 	if(managed_thread != nullptr)
+	{
 	    if(! managed_thread->is_running())
 	    {
 		bool real_exception = true;
@@ -581,6 +583,8 @@ void html_web_user_interaction::update_controlled_thread_status()
 			throw;
 		}
 	    }
+	}
+	    // else nothing to update, this has already been updated in a previous call here
     }
     catch(exception_base & e)
     {
