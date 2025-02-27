@@ -620,7 +620,7 @@ void html_web_user_interaction::clean_threads_termination(bool force)
     was_interrupted = true;
 
     if(managed_thread == nullptr)
-	throw WEBDAR_BUG;
+	return; // nothing to clean
 
     if(force)
     {
