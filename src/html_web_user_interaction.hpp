@@ -92,8 +92,8 @@ extern "C"
     /// the thread object to run as argument.
     ///
     /// the caller (code) can still access the thread object as usually except for the join() method which should
-    /// not be called directly. While the thread is running, the web user can also interact with the thread,
-    /// using the button that show at the bottom of the component. Once the thread has finished, the component
+    /// not be called directly. While the thread is running, the (web) user can also interact with the thread,
+    /// using the button that shows at the bottom of the component. Once the thread has finished, the component
     /// can automatically hide from the UI (auto_hide(true)) or stay visible until the user press the "finish"
     /// html_button.
     /// the caller (code) can register to the libdar_has_finished event to be notified when the thread
@@ -102,10 +102,10 @@ extern "C"
     /// when the user (web UI side) has to fill some html fields. For that reasons two additional events
     ///- can_refresh
     ///- dont_refresh
-    /// are availabe and can be registered from the caller to avoid freshing the HTML page when it conflicts with
+    /// are available and can be registered from the caller to avoid freshing the HTML page when it conflicts with
     /// the expected HTML behavior.
     ///
-    /// Last, the caller (code) *can* to call the join_controlled_thread() passing as argument the thread object.
+    /// Last, the caller (code) *can* call the join_controlled_thread().
     /// This call is a substitute for the libthreadar::thread::join() which one must not be called directly. It will
     /// suspend the caller until the controlled thread has completed. Of course, this call can be run upon
     /// libdar_has_finished event reception, in which case join_controlled_thread() will return immediately. But
@@ -193,13 +193,13 @@ public:
 	/// the whole life of the object until it ends or is aborted and join_controlled_thread() has been called
     void run_and_control_thread(libthreadar::thread* arg);
 
-	/// let the calling thread suspended until the pointed to thread ends (which must have been passed to run_and_control_thread())
+	/// let the calling thread suspended until the controlled thread ends (the one passed to run_and_control_thread())
 
 	/// unlike the join() call of libthreadar::thread that should always be called after run(), this
-	/// method, here is only necessary if a parent thread need to wait for a thread controlled by "this"
-	/// this call does not propagate exception from the child thread, this is done from the get_body_part()
+	/// method here, is only necessary if a parent thread needs to wait for a thread controlled by "this".
+	/// This call does not propagate exception from the child thread, this is done from the get_body_part()
 	/// of the html_web_user_interaction object.
-    void join_controlled_thread(libthreadar::thread* arg);
+    void join_controlled_thread();
 
     	/// whether a libdar thread is running under "this" management
     bool is_libdar_running() const;
@@ -228,11 +228,6 @@ private:
     static const std::string ask_end_libdar;      ///< ask_close button has been pressed (graceful ending requested)
     static const std::string force_end_libdar;    ///< force_close button has been pressed (immediate ending requested)
     static const std::string close_libdar_screen; ///< finish button has been pressed
-
-	/// the libthreadar::condition has a fixed nomber of condition defined at construction time
-	/// so we limit the number of thread to that fixed defined number.
-    static constexpr const unsigned int max_threads = 10;
-
 
     enum mode_type
     {
@@ -272,9 +267,8 @@ private:
 
     bool ignore_event;      ///< if true the on_event() method does not take any action
 
-    std::map<libthreadar::thread*, unsigned int> managed_threads; // associate a thread to an order number (limited by max_threads)
+    libthreadar::thread* managed_thread; // the thread object we manage (or nullptr if none is managed)
     mutable libthreadar::condition all_threads_pending;
-    bool used_instance[max_threads];
 
     void adjust_visibility();
     void check_libdata() { if(!lib_data) throw WEBDAR_BUG; };
@@ -283,7 +277,6 @@ private:
     void update_controlled_thread_status(); ///< cleanup finished threads and trigger the finished mode if no more thread is running
     void clean_threads_termination(bool force); ///< ask for running threads to stop/abort/cancel forcibly or not
     void trigger_refresh();                 ///< trigger event refresh or not for html_page actor
-    unsigned int find_and_reserve_available_instance();
     void check_clean_status();              /// trigger exception if we have pending on controlled threads
 };
 

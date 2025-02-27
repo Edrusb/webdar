@@ -67,15 +67,11 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     ask_close("Gracefully stop libdar", ask_end_libdar),
     force_close("Immediately stop libdar", force_end_libdar),
     finish("Close", close_libdar_screen),
-    ignore_event(false),
-    all_threads_pending(max_threads)
+    ignore_event(false)
 {
     lib_data.reset(new (nothrow) web_user_interaction(x_warn_size));
     if(!lib_data)
 	throw exception_memory();
-
-    for(unsigned int i = 0; i < max_threads; ++i)
-	used_instance[i] = false;
 
 	// status fields
 
@@ -173,13 +169,10 @@ void html_web_user_interaction::run_and_control_thread(libthreadar::thread* arg)
 	   || mode == closed)
 	    set_mode(normal);
 
-	if(managed_threads.size() >= max_threads)
-	    throw WEBDAR_BUG; // already reached the maximum number of instances the all_threads_pending has
+	if(managed_thread != nullptr)
+	    throw WEBDAR_BUG; // already controlling a thread
+	managed_thread = arg;
 
-	if(managed_threads.find(arg) != managed_threads.end())
-	    throw WEBDAR_BUG; // already controlling this thread!
-
-	managed_threads[arg] = find_and_reserve_available_instance();
 	set_visible(true);
 	if(! get_visible_recursively())
 	    throw WEBDAR_BUG;
@@ -192,10 +185,10 @@ void html_web_user_interaction::run_and_control_thread(libthreadar::thread* arg)
 	case normal:
 	    break;
 	case end_asked:
-	    clean_threads_termination(false); // for the new thread to end
+	    throw WEBDAR_BUG;
 	    break;
 	case end_forced:
-	    clean_threads_termination(true); // for the new thread to end
+	    throw WEBDAR_BUG;
 	    break;
 	case finished:
 	    throw WEBDAR_BUG;
@@ -213,22 +206,17 @@ void html_web_user_interaction::run_and_control_thread(libthreadar::thread* arg)
     all_threads_pending.unlock();
 }
 
-void html_web_user_interaction::join_controlled_thread(libthreadar::thread* arg)
+void html_web_user_interaction::join_controlled_thread()
 {
     all_threads_pending.lock();
     try
     {
-	map<libthreadar::thread*, unsigned int>::iterator it;
-
 	switch(mode)
 	{
 	case normal:
 	case end_asked:
 	case end_forced:
-	    it = managed_threads.find(arg);
-	    if(it != managed_threads.end())
-		all_threads_pending.wait(it->second);
-		// else thread may have already finished
+	    all_threads_pending.wait();
 	    break;
 	case finished:
 	case closed:
@@ -252,16 +240,10 @@ bool html_web_user_interaction::is_libdar_running() const
     all_threads_pending.lock();
     try
     {
-	map<libthreadar::thread*, unsigned int>::const_reverse_iterator rit = managed_threads.rbegin();
-
-	while(rit != managed_threads.rend() && !ret)
-	{
-	    if(rit->first == nullptr)
-		throw WEBDAR_BUG;
-	    if(rit->first->is_running())
-		ret = true;
-	    ++rit;
-	}
+	if(managed_thread != nullptr)
+	    ret = managed_thread->is_running();
+	else
+	    ret = false;
     }
     catch(...)
     {
@@ -581,27 +563,24 @@ void html_web_user_interaction::update_controlled_thread_status()
 
     try
     {
-	map<libthreadar::thread*, unsigned int>::iterator tmp, it = managed_threads.begin();
-
-	while(it != managed_threads.end())
-	{
-	    if(it->first == nullptr)
-		throw WEBDAR_BUG;
-	    if(! it->first->is_running())
+	if(managed_thread != nullptr)
+	    if(! managed_thread->is_running())
 	    {
-		it->first->join(); // may throw exception!
-
-		all_threads_pending.broadcast(it->second); // awaking all thread waiting this thread to end
-		used_instance[it->second] = false;
-		tmp = it;
-		++it;
-		managed_threads.erase(tmp);
-		    // according to std other iterator stay valid, this "it" stays valid to continue the process
-		    // this is a sorted container also, this we should not miss inspecting any thread
+		bool real_exception = true;
+		try
+		{
+		    managed_thread->join(); // may throw exception!
+		    real_exception = false;
+		    throw(real_exception);
+		}
+		catch(...)
+		{
+		    all_threads_pending.broadcast(); // awaking all thread waiting this thread to end
+		    managed_thread = nullptr;
+		    if(real_exception)
+			throw;
+		}
 	    }
-	    else
-		++it;
-	}
     }
     catch(exception_base & e)
     {
@@ -625,7 +604,7 @@ void html_web_user_interaction::update_controlled_thread_status()
 	throw;
     }
 
-    if(managed_threads.empty())
+    if(managed_thread == nullptr)
     {
 	set_mode(finished);
 	check_clean_status();
@@ -634,37 +613,30 @@ void html_web_user_interaction::update_controlled_thread_status()
 
 void html_web_user_interaction::clean_threads_termination(bool force)
 {
-    map<libthreadar::thread*, unsigned int>::reverse_iterator rit;
-
     was_interrupted = true;
-    rit = managed_threads.rbegin();
 
-    while(rit != managed_threads.rend())
+    if(managed_thread == nullptr)
+	throw WEBDAR_BUG;
+
+    if(force)
     {
-	if(rit->first == nullptr)
-	    throw WEBDAR_BUG;
-
-	if(force)
+	if(managed_thread->is_running())
 	{
-	    if(rit->first->is_running())
-	    {
-		rit->first->cancel();
-		rit->first->join();
-		    // may throw exception and interrupt
-		    // the thread cleaning process
-	    }
+	    managed_thread->cancel();
+	    managed_thread->join();
+		// may throw exception and interrupt
+		// the thread cleaning process
 	}
-	else
-	{
-	    pthread_t libdar_tid;
+    }
+    else
+    {
+	pthread_t libdar_tid;
 
-	    if(rit->first->is_running(libdar_tid))
-	    {
-		libdar::thread_cancellation th;
-		th.cancel(libdar_tid, false, 0);
-	    }
+	if(managed_thread->is_running(libdar_tid))
+	{
+	    libdar::thread_cancellation th;
+	    th.cancel(libdar_tid, false, 0);
 	}
-	++rit;
     }
 }
 
@@ -676,32 +648,11 @@ void html_web_user_interaction::trigger_refresh()
 	act(can_refresh);
 }
 
-unsigned int html_web_user_interaction::find_and_reserve_available_instance()
-{
-    unsigned int ret = 0;
-
-    while(ret < max_threads && used_instance[ret])
-	++ret;
-
-    if(ret >= max_threads)
-	throw WEBDAR_BUG; // no more instance available
-
-    used_instance[ret] = true; // we reserve the instance number we return
-
-    return ret;
-}
-
 void html_web_user_interaction::check_clean_status()
 {
-    if(! managed_threads.empty())
+    if(managed_thread != nullptr)
 	throw WEBDAR_BUG;
 
-    for(unsigned int i = 0; i < max_threads; ++i)
-    {
-	if(used_instance[i])
-	    throw WEBDAR_BUG;
-
-	if(all_threads_pending.get_waiting_thread_count(i) != 0)
-	    throw WEBDAR_BUG;
-    }
+    if(all_threads_pending.get_waiting_thread_count() != 0)
+	throw WEBDAR_BUG;
 }
