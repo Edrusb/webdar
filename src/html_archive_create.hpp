@@ -54,7 +54,7 @@ public:
     html_archive_create(html_archive_create && ref) noexcept = delete;
     html_archive_create & operator = (const html_archive_create & ref) = delete;
     html_archive_create & operator = (html_archive_create && ref) noexcept = delete;
-    ~html_archive_create() = default;
+    ~html_archive_create() { cancel(); join(); };
 
 	/// mandatory call to invoke ASAP after constructor
     void set_biblio(const std::shared_ptr<bibliotheque> & ptr);

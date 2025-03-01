@@ -55,7 +55,7 @@ public:
     html_archive_repair(html_archive_repair && ref) noexcept = delete;
     html_archive_repair & operator = (const html_archive_repair & ref) = delete;
     html_archive_repair & operator = (html_archive_repair && ref) noexcept = delete;
-    ~html_archive_repair() = default;
+    ~html_archive_repair() { cancel(); join(); };
 
     const std::string & get_archive_path() const { return repair_dest.get_value(); };
     const std::string & get_archive_basename() const;

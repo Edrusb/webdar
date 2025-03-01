@@ -54,7 +54,7 @@ public:
     html_archive_merge(html_archive_merge && ref) noexcept = delete;
     html_archive_merge & operator = (const html_archive_merge & ref) = delete;
     html_archive_merge & operator = (html_archive_merge && ref) noexcept = delete;
-    ~html_archive_merge() = default;
+    ~html_archive_merge() { cancel(); join(); };
 
     const std::string & get_archive_path() const { return sauv_path.get_value(); };
     const std::string & get_archive_basename() const;

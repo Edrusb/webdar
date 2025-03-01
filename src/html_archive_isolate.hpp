@@ -52,7 +52,7 @@ public:
     html_archive_isolate(html_archive_isolate && ref) noexcept = delete;
     html_archive_isolate & operator = (const html_archive_isolate & ref) = delete;
     html_archive_isolate & operator = (html_archive_isolate && ref) noexcept = delete;
-    ~html_archive_isolate() = default;
+    ~html_archive_isolate() { cancel(); join(); };
 
 	/// mandatory call to invoke ASAP after constructor
     void set_biblio(const std::shared_ptr<bibliotheque> & ptr);
