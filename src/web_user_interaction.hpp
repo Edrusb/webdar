@@ -103,9 +103,7 @@ protected:
     virtual libdar::secu_string inherited_get_secu_string(const std::string & message, bool echo) override;
 
 private:
-    mutable libthreadar::mutex control; ///< control access to any value this object has
-    libthreadar::semaphore libdar_sem;  ///< libdar thread wait on it for an answer
-    bool answered;                      ///< true if the pending pause(), get_string() or get_secu_string() has been answered, so the question has not to be shown twice
+    mutable libthreadar::condition control; ///< control access to any value this object has
 
 	// pause() fields
     bool pause_pending;    ///< true if a pause() is pending for a response

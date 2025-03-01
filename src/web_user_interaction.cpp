@@ -42,7 +42,6 @@ extern "C"
 using namespace std;
 
 web_user_interaction::web_user_interaction(unsigned int x_warn_size):
-    libdar_sem(1),
     warn_size(x_warn_size)
 {
     if(warn_size == 0)
@@ -52,7 +51,17 @@ web_user_interaction::web_user_interaction(unsigned int x_warn_size):
 
 web_user_interaction::~web_user_interaction()
 {
-    libdar_sem.unlock();
+    control.lock();
+    try
+    {
+	control.broadcast();
+    }
+    catch(...)
+    {
+	control.unlock();
+	    // no throw (destructor context)
+    }
+    control.unlock();
 }
 
 void web_user_interaction::set_warning_list_size(unsigned int size)
@@ -81,13 +90,11 @@ void web_user_interaction::clear()
     control.lock();
     try
     {
-	libdar_sem.reset();
-	libdar_sem.lock(); // to have libdar thread waiting on it
-	answered = false;
 	pause_pending = false;
 	get_string_pending = false;
 	get_secu_string_pending = false;
 	warnings.clear();
+	control.broadcast(); // will only be effective when unlocking control!
     }
     catch(...)
     {
@@ -129,7 +136,7 @@ bool web_user_interaction::pending_pause(string & msg) const
     control.lock();
     try
     {
-	ret = pause_pending && !answered;
+	ret = pause_pending;
 	if(ret)
 	    msg = pause_msg;
     }
@@ -154,7 +161,7 @@ bool web_user_interaction::pending_get_string(string & msg, bool & echo) const
     control.lock();
     try
     {
-	ret = get_string_pending && !answered;
+	ret = get_string_pending;
 	if(ret)
 	{
 	    msg = get_string_msg;
@@ -182,7 +189,7 @@ bool web_user_interaction::pending_get_secu_string(string & msg, bool & echo) co
     control.lock();
     try
     {
-	ret = get_secu_string_pending && !answered;
+	ret = get_secu_string_pending;
 	if(ret)
 	{
 	    msg = get_secu_string_msg;
@@ -211,8 +218,7 @@ void web_user_interaction::set_pause_answer(bool val)
 	if(!pause_pending)
 	    throw WEBDAR_BUG;
 	pause_ans = val;
-	answered = true;
-	libdar_sem.unlock(); // freeing the libdar thread
+	control.signal();
     }
     catch(...)
     {
@@ -235,8 +241,7 @@ void web_user_interaction::set_get_string_answer(const string & val)
 	if(!get_string_pending)
 	    throw WEBDAR_BUG;
 	get_string_ans = val;
-	answered = true;
-	libdar_sem.unlock(); // feeing the libdar thread
+	control.signal();
     }
     catch(...)
     {
@@ -259,8 +264,7 @@ void web_user_interaction::set_get_secu_string_answer(const libdar::secu_string 
 	if(!get_secu_string_pending)
 	    throw WEBDAR_BUG;
 	get_secu_string_ans = val;
-	answered = true;
-	libdar_sem.unlock(); // feeing the libdar thread
+	control.signal();
     }
     catch(...)
     {
@@ -284,7 +288,7 @@ bool web_user_interaction::has_libdar_pending() const
 
     return (pause_pending
 	    || get_string_pending
-	    || get_secu_string_pending) && !answered;
+	    || get_secu_string_pending);
 }
 
 void web_user_interaction::inherited_message(const string & message)
@@ -319,28 +323,13 @@ bool web_user_interaction::inherited_pause(const string & message)
     {
 	if(pause_pending || get_string_pending || get_secu_string_pending)
 	    throw WEBDAR_BUG; // already waiting for an answer!
-	answered = false;
 	pause_msg = message;
 	pause_pending = true;
-    }
-    catch(...)
-    {
-	control.unlock();
-	throw;
-    }
-    control.unlock();
-	//
-	// critical section ended
 
-	// waiting on this semaphor for the answer to be filled by the html thread
-    libdar_sem.lock();
-	// the answer has been filled so we use it to return the info to libdar
+	    // thread releases the control condition and waits for a signal() or broadcast() to be called
+	control.wait();
+	    // acquired control.lock() while exiting from control.wait()
 
-	// critical section begins
-	//
-    control.lock();
-    try
-    {
 	if(!pause_pending)
 	    throw WEBDAR_BUG; // answer already read!?!
 	pause_pending = false;
@@ -370,29 +359,14 @@ string web_user_interaction::inherited_get_string(const string & message, bool e
     {
 	if(pause_pending || get_string_pending || get_secu_string_pending)
 	    throw WEBDAR_BUG; // already waiting for an answer!
-	answered = false;
 	get_string_msg = message;
 	get_string_echo = echo;
 	get_string_pending = true;
-    }
-    catch(...)
-    {
-	control.unlock();
-	throw;
-    }
-    control.unlock();
-	//
-	// critical section ended
 
-	// waiting on this semaphor for the answer to be filled by the html thread
-    libdar_sem.lock();
-	// the answer has been filled so we use it to return the info to libdar
+	    // thread releases the control condition and waits for a signal() or broadcast() to be called
+	control.wait();
+	    // acquired control.lock() while exiting from control.wait()
 
-	// critical section begins
-	//
-    control.lock();
-    try
-    {
 	if(!get_string_pending)
 	    throw WEBDAR_BUG; // answer already read!
 	get_string_pending = false;
@@ -423,29 +397,14 @@ libdar::secu_string web_user_interaction::inherited_get_secu_string(const string
     {
 	if(pause_pending || get_string_pending || get_secu_string_pending)
 	    throw WEBDAR_BUG; // already waiting for an answer!
-	answered = false;
 	get_secu_string_msg = message;
 	get_secu_string_echo = echo;
 	get_secu_string_pending = true;
-    }
-    catch(...)
-    {
-	control.unlock();
-	throw;
-    }
-    control.unlock();
-	//
-	// critical section ended
 
-	// waiting on this semaphor for the answer to be filled by the html thread
-    libdar_sem.lock();
-	// the answer has been filled so we use it to return the info to libdar
+	    // thread releases the control condition and waits for a signal() or broadcast() to be called
+	control.wait();
+	    // acquired control.lock() while exiting from control.wait()
 
-	// critical section begins
-	//
-    control.lock();
-    try
-    {
 	if(!get_secu_string_pending)
 	    throw WEBDAR_BUG; // answer already read!
 	get_secu_string_pending = false;
