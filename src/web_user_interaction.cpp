@@ -58,7 +58,6 @@ web_user_interaction::~web_user_interaction()
     }
     catch(...)
     {
-	control.unlock();
 	    // no throw (destructor context)
     }
     control.unlock();
