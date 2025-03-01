@@ -578,6 +578,7 @@ void html_web_user_interaction::update_controlled_thread_status()
 		catch(...)
 		{
 		    all_threads_pending.broadcast(); // awaking all thread waiting this thread to end
+
 		    managed_thread = nullptr;
 		    if(real_exception)
 			throw;
@@ -627,6 +628,13 @@ void html_web_user_interaction::clean_threads_termination(bool force)
 	if(managed_thread->is_running())
 	{
 	    managed_thread->cancel();
+		// the managed thread has in its
+		// libthreadar::thread::inherited_cancel()
+		// or libthreadar::thread_signal::signaled_inherited_cancel() method
+		// the necessary call to stop libdar: libdar::thread_cancellation,
+		// as the libdar threads do not rely on the
+		// libthreadar::thread::cancellation_checkoint() way,
+		// this is not a problem.
 	    managed_thread->join();
 		// may throw exception and interrupt
 		// the thread cleaning process
