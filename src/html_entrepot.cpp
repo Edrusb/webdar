@@ -134,6 +134,11 @@ html_entrepot::html_entrepot():
 
 shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(shared_ptr<html_web_user_interaction> & webui) const
 {
+    html_entrepot* me = const_cast<html_entrepot*>(this);
+
+    if(me == nullptr)
+	throw WEBDAR_BUG;
+
     if(!webui)
 	throw WEBDAR_BUG;
 
@@ -152,12 +157,12 @@ shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(shared_ptr<html_web_use
 
 	if(! webui->is_libdar_running())
 	{
-	    webui->run_and_control_thread(const_cast<html_entrepot*>(this)); // this launches a new thread running inherited_run() and the call returns
+	    webui->run_and_control_thread(me); // this launches a new thread running inherited_run() and the call returns
 	    webui->join_controlled_thread();
 		// we join() ourself, yes, we wait here for the thread launched above to complete or be interrupted
 	}
 	else
-	    const_cast<html_entrepot*>(this)->inherited_run(); // run in the current thread
+	    me->inherited_run(); // run in the current thread
     }
     entrep_need_update = false;
 
