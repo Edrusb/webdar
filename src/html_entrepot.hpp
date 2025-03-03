@@ -144,7 +144,7 @@ private:
     html_form_input wait_time; // ftp and sftp
     html_form_input verbose;   // ftp and sftp
     html_form_input use_landing_path; // checkbox to show or not the landing_path (if not, no landing_path_changed event is triggered)
-    html_form_input landing_path; // will chdir there at initial connection
+    html_form_input_file landing_path; // will chdir there at initial connection
 
     std::string custom_event_name;
     std::string custom_event_landing_path;

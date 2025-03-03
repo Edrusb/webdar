@@ -64,7 +64,7 @@ html_entrepot::html_entrepot():
     wait_time("Network retry delay (s)", html_form_input::number, default_waittime, "5"),
     verbose("Verbose network connection", html_form_input::check, default_verbose, "1"),
     use_landing_path("Replace current backup path by the landing path", html_form_input::check, "", "1"),
-    landing_path("Landing path", html_form_input::text, "/", "30"),
+    landing_path("Landing path", "/", "30", "Select default path to store and look for backups..."),
     custom_event_name(changed),
     custom_event_landing_path(landing_path_changed),
     ignore_events(false),
