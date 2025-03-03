@@ -175,14 +175,8 @@ public:
 	/// provided thread, as well as the output of the get_user_interaction() returned component (which
 	/// is a libdar::user_interaction object).
 	///
-	/// \note the run_and_control_thread() method can be invoked while a thread is already managed
-	/// by this object. The object monitors the liveness status of all managed thread and join() it
-	/// but only triggers the event close_libdar_screen once all thread have ended and user has clicked
-	/// on the "close" button (or all thread have ended and auto_hide() was set). The need to call the
-	/// join_controlled_thread() still persist. With several thread controlled, if the web user,
-	/// asks to abort the libdar process, first only the last provided thread is requested to stop. If
-	/// a force ending is requested (still upon web user action) all threads are stopped in reverse
-	/// order they have been given for management.
+	/// \note the run_and_control_thread() method cannot be invoked while a thread is already managed
+	/// by this object.
 	///
 	/// \note, this is the duty of the caller to give to the thread as libdar::user_interaction
 	/// the web_user_interaction object returned by the get_user_interaction() method, for libdar
@@ -190,7 +184,7 @@ public:
 	/// html_web_user_interaction.
 	///
 	/// \note, the provided thread object is not memory-managed/allocated by this object, it must exist during
-	/// the whole life of the object until it ends or is aborted and join_controlled_thread() has been called
+	/// the whole life of the object until it ends or is aborted
     void run_and_control_thread(libthreadar::thread* arg);
 
 	/// let the calling thread suspended until the controlled thread ends (the one passed to run_and_control_thread())
@@ -199,6 +193,9 @@ public:
 	/// method here, is only necessary if a parent thread needs to wait for a thread controlled by "this".
 	/// This call does not propagate exception from the child thread, this is done from the get_body_part()
 	/// of the html_web_user_interaction object.
+	/// \note, join_controlled_thread() must not be called by the same thread that updates "this" component, by
+	/// mean of [inherited_]get_body_part(), because this call could be suspended and the monitored thread
+	/// status could not be updated, leading the join_controlled_thread() to never exit from suspension.
     void join_controlled_thread();
 
     	/// whether a libdar thread is running under "this" management
