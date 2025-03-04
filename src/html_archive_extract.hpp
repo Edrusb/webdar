@@ -40,6 +40,7 @@ extern "C"
 #include "html_form_input_file.hpp"
 #include "html_options_extract.hpp"
 #include "guichet.hpp"
+#include "html_text.hpp"
 
     /// html component used to let the user provide parameters for an isolation operation
 
@@ -78,11 +79,14 @@ private:
     html_form_fieldset extract_fs_root_fs;
     html_form_input_file extract_fs_root;
     html_form extract_fs_root_form;
+    html_text in_place_msg;
 
     guichet guichet_opt_extract;
     std::shared_ptr<html_options_extract> opt_extract;
 
     static const std::string extract_root_changed;
+
+    static constexpr const char* css_grey_text = "hae_grey";
 
 };
 

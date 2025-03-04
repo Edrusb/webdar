@@ -34,6 +34,7 @@ extern "C"
     // webdar headers
 #include "webdar_css_style.hpp"
 #include "environment.hpp"
+#include "tokens.hpp"
 
     //
 #include "html_archive_extract.hpp"
@@ -70,9 +71,15 @@ html_archive_extract::html_archive_extract():
 
     opt_extract->set_fs_root(extract_fs_root.get_value());
 
+    in_place_msg.add_text(4, "Warning, \"in-place\" restoration is set!");
+    in_place_msg.add_text(0, "The field above will be used if the in-place information is not present in the archive");
+    in_place_msg.add_nl();
+    in_place_msg.add_text(0, "You can disable \"in-place\" restoration below in the section [Restoration Options | How to proceed]");
+
 	// adoption tree
 
     extract_fs_root_fs.adopt(&extract_fs_root);
+    extract_fs_root_fs.adopt(&in_place_msg);
     extract_fs_root_form.adopt(&extract_fs_root_fs);
     extract_params.adopt_in_section(sect_extract_params, &extract_fs_root_form);
     extract_params.adopt_in_section(sect_extract_options, &guichet_opt_extract);
@@ -81,11 +88,16 @@ html_archive_extract::html_archive_extract():
 	// events
 
     extract_fs_root.record_actor_on_event(this, extract_root_changed);
+    opt_extract->record_actor_on_event(this, html_options_extract::changed);
+
+
+	// visible
+    in_place_msg.set_visible(false);
 
 	//  css
 
     webdar_css_style::normal_button(extract_params, true);
-
+    in_place_msg.add_css_class(css_grey_text);
 }
 
 void html_archive_extract::set_biblio(const shared_ptr<bibliotheque> & ptr)
@@ -108,6 +120,10 @@ void html_archive_extract::on_event(const std::string & event_name)
     {
 	opt_extract->set_fs_root(extract_fs_root.get_value());
     }
+    else if(event_name == html_options_extract::changed)
+    {
+	in_place_msg.set_visible(opt_extract->get_in_place_mode());
+    }
     else
 	throw WEBDAR_BUG;
 }
@@ -125,4 +141,13 @@ void html_archive_extract::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
+
+    if(! csslib->class_exists(css_grey_text))
+    {
+	css tmp;
+
+	tmp.css_color(COLOR_MENU_BORDER_GREY);
+	tmp.css_text_shadow("0.05em", "0.05em", "0.2em", "#888888");
+	csslib->add(css_grey_text, tmp);
+    }
 }

@@ -427,7 +427,7 @@ void html_options_extract::set_to_webdar_defaults()
 {
     clear_json();
 
-    in_place.set_value_as_bool(true);
+    in_place.set_value_as_bool(false);
     warn_over.set_value_as_bool(true);
     empty_dir.set_value_as_bool(true);
     dirty_behavior.set_selected_id("warn");
