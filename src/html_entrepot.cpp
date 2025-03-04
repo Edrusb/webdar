@@ -144,27 +144,39 @@ shared_ptr<libdar::entrepot> & html_entrepot::get_entrepot(shared_ptr<html_web_u
 
     webui->clear();
 
-    dialog = webui->get_user_interaction();
-    if(!dialog)
-	throw WEBDAR_BUG;
+    entrep_ctrl.lock();
 
-    if(! entrep || entrep_need_update)
+    try
     {
-	if(! webui->is_libdar_running())
-	    webui->auto_hide(true, true);
-	if(is_running())
-	    throw WEBDAR_BUG; // this object should not have its own thread running
+	dialog = webui->get_user_interaction();
+	if(!dialog)
+	    throw WEBDAR_BUG;
 
-	if(! webui->is_libdar_running())
+	if(! entrep || entrep_need_update)
 	{
-	    webui->run_and_control_thread(me); // this launches a new thread running inherited_run() and the call returns
-	    webui->join_controlled_thread();
-		// we join() ourself, yes, we wait here for the thread launched above to complete or be interrupted
+	    if(! webui->is_libdar_running())
+		webui->auto_hide(true, true);
+	    if(is_running())
+		throw WEBDAR_BUG; // this object should not have its own thread running
+
+	    if(! webui->is_libdar_running())
+	    {
+		webui->run_and_control_thread(me); // this launches a new thread running inherited_run() and the call returns
+		webui->join_controlled_thread();
+		    // we join() ourself, yes, we wait here for the thread launched above to complete or be interrupted
+	    }
+	    else
+		me->inherited_run(); // run in the current thread
 	}
-	else
-	    me->inherited_run(); // run in the current thread
+	entrep_need_update = false;
     }
-    entrep_need_update = false;
+    catch(...)
+    {
+	entrep_ctrl.unlock();
+	throw;
+    }
+    entrep_ctrl.unlock();
+
 
     if(!entrep)
 	throw WEBDAR_BUG;

@@ -152,6 +152,7 @@ private:
     bool ignore_events;
     mutable std::shared_ptr<libdar::user_interaction> dialog; ///< used by inherited_run
     mutable std::shared_ptr<libdar::entrepot> entrep;         ///< set by inherited_run
+    mutable libthreadar::mutex entrep_ctrl;                   ///< control the write access to entrep
     mutable bool entrep_type_has_changed;                     ///< variable local to inherited_get_body_part() and methods called from there
     mutable bool entrep_need_update;
 
