@@ -78,6 +78,8 @@ html_entrepot_landing::html_entrepot_landing():
     use_landing_path.set_change_event_name(landing_path_changed);
     use_landing_path.record_actor_on_event(this, landing_path_changed);
     repoxfer.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
+    register_name(custom_event_name); // equal to "changed" at cosntruction time, here
+    register_name(custom_event_landing_path); // equal to landing_path_changed at construction time
 
     	// visibility
     repoxfer.set_visible(false);
