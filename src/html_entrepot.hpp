@@ -120,16 +120,12 @@ protected:
 	/// inherited from libthreadar::thread
     virtual void signaled_inherited_cancel() override;
 
-	/// inherited from body_builder
-    virtual void new_css_library_available() override;
-
 private:
     static constexpr const char* type_local = "local";
     static constexpr const char* type_ftp   = "ftp";
     static constexpr const char* type_sftp  = "sftp";
     static constexpr const char* auth_pass = "password";
     static constexpr const char* auth_key  = "keyfile";
-    static constexpr const char* css_warning = "html_entrepot_warn";
 
     static const std::string repo_type_changed;
 

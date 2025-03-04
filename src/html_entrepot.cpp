@@ -479,25 +479,6 @@ void html_entrepot::signaled_inherited_cancel()
 	th.cancel(libdar_tid, true, 0);
 }
 
-void html_entrepot::new_css_library_available()
-{
-    unique_ptr<css_library> & csslib = lookup_css_library();
-    css tmp;
-
-    if(!csslib)
-	throw WEBDAR_BUG;
-
-    if(! csslib->class_exists(css_warning))
-    {
-	tmp.clear();
-	tmp.css_font_weight_bold();
-	tmp.css_color(RED);
-	tmp.css_float(css::fl_left);
-
-	csslib->add(css_warning, tmp);
-    }
-}
-
 void html_entrepot::update_visible()
 {
     switch(repo_type.get_selected_num())
