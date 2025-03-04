@@ -57,13 +57,10 @@ class html_entrepot: public body_builder,
 		     public jsoner
 {
 public:
-	/// event triggered when any entrepot parameters has changed *except landing_path* changes
+	/// event triggered when any entrepot parameters has changed
 
 	// the use case is for the caller to know when to call get_entrepot()
     static const std::string changed;
-
-	/// event triggered only when the landing path changed (and nothing else changed)
-    static const std::string landing_path_changed;
 
     html_entrepot();
     html_entrepot(const html_entrepot & ref) = delete;
@@ -81,17 +78,11 @@ public:
 	/// already managed the webui for it get refreshed can react to user actions.
     std::shared_ptr<libdar::entrepot> & get_entrepot(std::shared_ptr<html_web_user_interaction> & webui) const;
 
-	/// fetch current landing path for the entrepot
-    const std::string & get_landing_path() const { return landing_path.get_value(); };
-
 	/// inherited from actor parent class
     virtual void on_event(const std::string & event_name) override;
 
 	/// change the change event name
     void set_event_name(const std::string & name);
-
-	/// change landing_path_changed event name
-    void set_event_landing_path(const std::string & name);
 
 	/// inherited from jsoner
     virtual void load_json(const json & source) override;
@@ -144,11 +135,8 @@ private:
     html_form_input_file known_hosts_file; // sftp only
     html_form_input wait_time; // ftp and sftp
     html_form_input verbose;   // ftp and sftp
-    html_form_input use_landing_path; // checkbox to show or not the landing_path (if not, no landing_path_changed event is triggered)
-    html_form_input_file landing_path; // will chdir there at initial connection
 
     std::string custom_event_name;
-    std::string custom_event_landing_path;
     bool ignore_events;
     mutable std::shared_ptr<libdar::user_interaction> dialog; ///< used by inherited_run
     mutable std::shared_ptr<libdar::entrepot> entrep;         ///< set by inherited_run
@@ -177,8 +165,6 @@ private:
     static constexpr const char* jlabel_knownhosts_file = "knownhosts_file";
     static constexpr const char* jlabel_waittime = "wait";
     static constexpr const char* jlabel_verbose = "verbose";
-    static constexpr const char* jlabel_use_landing_path = "use-landing-path";
-    static constexpr const char* jlabel_landing_path = "landing-path";
 
     static constexpr const char* default_waittime = "30";
     static constexpr const char* default_verbose = "";
