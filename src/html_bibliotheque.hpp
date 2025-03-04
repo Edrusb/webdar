@@ -45,7 +45,7 @@ extern "C"
 #include "html_form.hpp"
 #include "bibliotheque.hpp"
 #include "arriere_boutique.hpp"
-#include "html_entrepot.hpp"
+#include "html_entrepot_landing.hpp"
 #include "html_mask_form_filename.hpp"
 #include "html_mask_form_path.hpp"
 #include "html_compression_params.hpp"
@@ -131,7 +131,7 @@ protected:
 private:
     std::shared_ptr<bibliotheque> biblio;
 
-    std::unique_ptr<arriere_boutique<html_entrepot> > ab_entrepot;
+    std::unique_ptr<arriere_boutique<html_entrepot_landing> > ab_entrepot;
     std::unique_ptr<arriere_boutique<html_mask_form_filename> > ab_filemask;
     std::unique_ptr<arriere_boutique<html_mask_form_path> > ab_pathmask;
     std::unique_ptr<arriere_boutique<html_compression_params> > ab_compr;

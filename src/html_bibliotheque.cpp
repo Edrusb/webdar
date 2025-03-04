@@ -68,7 +68,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     generate_defaults("Regenerate missing default configs", event_defaults),
     expect_upload(false)
 {
-    unique_ptr<html_entrepot> tmp_e;
+    unique_ptr<html_entrepot_landing> tmp_e;
     unique_ptr<html_mask_form_filename> tmp_fm;
     unique_ptr<html_mask_form_path> tmp_fp;
     unique_ptr<html_compression_params> tmp_compr;
@@ -138,15 +138,15 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
 	// entrepot tab
 
-    tmp_e.reset(new (nothrow) html_entrepot());
+    tmp_e.reset(new (nothrow) html_entrepot_landing());
     if(! tmp_e)
 	throw exception_memory();
 
-    ab_entrepot.reset(new (nothrow) arriere_boutique<html_entrepot>(ptr,
-								    bibliotheque::repo,
-								    tmp_e,
-								    html_entrepot::changed,
-								    false));
+    ab_entrepot.reset(new (nothrow) arriere_boutique<html_entrepot_landing>(ptr,
+									    bibliotheque::repo,
+									    tmp_e,
+									    html_entrepot_landing::changed,
+									    false));
     if(! ab_entrepot)
 	throw exception_memory();
 
@@ -706,7 +706,7 @@ void html_bibliotheque::clear_ok_messages()
 
 void html_bibliotheque::set_default_configs()
 {
-    html_entrepot entrep;
+    html_entrepot_landing entrep;
     html_compression_params compr_params(true, true, false);
     html_slicing slicing;
     html_ciphering ciphering;
