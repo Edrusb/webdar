@@ -45,7 +45,7 @@ using namespace std;
 
 const string html_entrepot::changed = "html_entrep_changed";
 const string html_entrepot::landing_path_changed = "html_entrep_landing_changed";
-const string html_entrepot::repo_type_changed = html_form_select::changed + "type"; // be sure this is different from the default event name
+const string html_entrepot::repo_type_changed = html_form_select::changed + "type"; // to be sure this is different from the default event name
 
 html_entrepot::html_entrepot():
     form("Apply changes"),
