@@ -42,7 +42,7 @@ extern "C"
 #include "html_hash_algo.hpp"
 #include "html_crypto_algo.hpp"
 #include "html_derouleur.hpp"
-#include "html_entrepot.hpp"
+#include "html_entrepot_landing.hpp"
 #include "html_form_gnupg_list.hpp"
 #include "html_form_select.hpp"
 #include "html_mask_form_path.hpp"
@@ -138,7 +138,7 @@ private:
     std::shared_ptr<html_mask_form_path> delta_mask;
 
     guichet guichet_entrep;
-    std::shared_ptr<html_entrepot> entrep;
+    std::shared_ptr<html_entrepot_landing> entrep;
 
     html_form form_archgen;
     html_form_fieldset fs_archgen;

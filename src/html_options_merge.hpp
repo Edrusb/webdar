@@ -46,7 +46,7 @@ extern "C"
 #include "html_crypto_algo.hpp"
 #include "html_archive_read.hpp"
 #include "html_derouleur.hpp"
-#include "html_entrepot.hpp"
+#include "html_entrepot_landing.hpp"
 #include "html_mask_form_filename.hpp"
 #include "html_mask_form_path.hpp"
 #include "html_form_overwrite_action.hpp"
@@ -130,7 +130,7 @@ private:
     html_form form_archgen;
 
     guichet guichet_entrep;
-    std::shared_ptr<html_entrepot> entrep;
+    std::shared_ptr<html_entrepot_landing> entrep;
 
     html_form_fieldset fs_archgen;
     html_form_input allow_over;

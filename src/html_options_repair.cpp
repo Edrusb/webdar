@@ -107,7 +107,7 @@ html_options_repair::html_options_repair():
     target_form("Update"),
     ignore_events(false)
 {
-    entrep.reset(new (nothrow) html_entrepot());
+    entrep.reset(new (nothrow) html_entrepot_landing());
     if(!entrep)
 	throw exception_memory();
 
@@ -180,8 +180,8 @@ html_options_repair::html_options_repair():
     register_name(entrepot_changed);
     register_name(changed);
 
-    entrep->record_actor_on_event(this, html_entrepot::changed);
-    entrep->record_actor_on_event(this, html_entrepot::landing_path_changed);
+    entrep->record_actor_on_event(this, html_entrepot_landing::changed);
+    entrep->record_actor_on_event(this, html_entrepot_landing::landing_path_changed);
     display_treated.record_actor_on_event(this, html_form_input::changed);
 
     info_details.record_actor_on_event(this, html_form_input::changed);
@@ -338,7 +338,7 @@ void html_options_repair::on_event(const string & event_name)
 	display_only_dir.set_visible(display_treated.get_value_as_bool());
 	trigger_changed();
     }
-    else if(event_name == html_entrepot::changed)
+    else if(event_name == html_entrepot_landing::changed)
     {
 	act(entrepot_changed);
 	trigger_changed();
@@ -349,7 +349,7 @@ void html_options_repair::on_event(const string & event_name)
     {
 	trigger_changed();
     }
-    else if(event_name == html_entrepot::landing_path_changed)
+    else if(event_name == html_entrepot_landing::landing_path_changed)
     {
 	act(landing_path_changed);
     }

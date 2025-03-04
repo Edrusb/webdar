@@ -100,7 +100,7 @@ html_options_create::html_options_create():
 
 	// set field parameters
 
-    entrep.reset(new (nothrow) html_entrepot());
+    entrep.reset(new (nothrow) html_entrepot_landing());
     if(!entrep)
 	throw exception_memory();
 
@@ -324,8 +324,8 @@ html_options_create::html_options_create():
     default_ea.record_actor_on_event(this, html_form_input::changed);
     compr_params->record_actor_on_event(this, html_compression_params::changed);
 
-    entrep->record_actor_on_event(this, html_entrepot::changed);
-    entrep->record_actor_on_event(this, html_entrepot::landing_path_changed);
+    entrep->record_actor_on_event(this, html_entrepot_landing::changed);
+    entrep->record_actor_on_event(this, html_entrepot_landing::landing_path_changed);
     filename_mask->record_actor_on_event(this, html_mask_form_filename::changed);
     path_mask->record_actor_on_event(this, html_mask_form_path::changed);
     ea_mask->record_actor_on_event(this, html_mask_form_filename::changed);
@@ -871,7 +871,7 @@ void html_options_create::on_event(const string & event_name)
 	    // body_builder objects we have adopted
 	trigger_changed();
     }
-    else if(event_name == html_entrepot::changed)
+    else if(event_name == html_entrepot_landing::changed)
     {
 	act(entrepot_changed);
 	trigger_changed();
@@ -892,7 +892,7 @@ void html_options_create::on_event(const string & event_name)
     {
 	trigger_changed();
     }
-    else if(event_name == html_entrepot::landing_path_changed)
+    else if(event_name == html_entrepot_landing::landing_path_changed)
     {
 	act(landing_path_changed);
     }

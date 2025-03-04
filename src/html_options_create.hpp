@@ -48,7 +48,7 @@ extern "C"
 #include "html_hash_algo.hpp"
 #include "html_derouleur.hpp"
 #include "html_text.hpp"
-#include "html_entrepot.hpp"
+#include "html_entrepot_landing.hpp"
 #include "html_web_user_interaction.hpp"
 #include "html_mask_form_filename.hpp"
 #include "html_mask_form_path.hpp"
@@ -136,7 +136,7 @@ private:
     html_derouleur deroule;
 
     guichet guichet_entrep;
-    std::shared_ptr<html_entrepot> entrep;
+    std::shared_ptr<html_entrepot_landing> entrep;
 
     html_form form_archtype;
 

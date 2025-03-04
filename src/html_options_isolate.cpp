@@ -66,7 +66,7 @@ html_options_isolate::html_options_isolate():
     info_details("Detailed informations", html_form_input::check, "1", "1"),
     ignore_events(false)
 {
-    entrep.reset(new (nothrow) html_entrepot());
+    entrep.reset(new (nothrow) html_entrepot_landing());
     if(!entrep)
 	throw exception_memory();
 
@@ -167,8 +167,8 @@ html_options_isolate::html_options_isolate():
 
     delta_sig.record_actor_on_event(this, html_form_input::changed);
     delta_transfer_mode.record_actor_on_event(this, html_form_input::changed);
-    entrep->record_actor_on_event(this, html_entrepot::changed);
-    entrep->record_actor_on_event(this, html_entrepot::landing_path_changed);
+    entrep->record_actor_on_event(this, html_entrepot_landing::changed);
+    entrep->record_actor_on_event(this, html_entrepot_landing::landing_path_changed);
 
     sig_block_size->record_actor_on_event(this, html_form_sig_block_size::changed);
     delta_mask->record_actor_on_event(this, html_mask_form_path::changed);
@@ -358,7 +358,7 @@ void html_options_isolate::on_event(const string & event_name)
 	    // body_builder objects we have adopted
 	trigger_changed();
     }
-    else if(event_name == html_entrepot::changed)
+    else if(event_name == html_entrepot_landing::changed)
     {
 	act(entrepot_changed);
 	trigger_changed();
@@ -372,7 +372,7 @@ void html_options_isolate::on_event(const string & event_name)
     {
 	trigger_changed();
     }
-    else if(event_name == html_entrepot::landing_path_changed)
+    else if(event_name == html_entrepot_landing::landing_path_changed)
     {
 	act(landing_path_changed);
     }

@@ -44,7 +44,7 @@ extern "C"
 #include "html_form.hpp"
 #include "html_hash_algo.hpp"
 #include "html_derouleur.hpp"
-#include "html_entrepot.hpp"
+#include "html_entrepot_landing.hpp"
 #include "html_web_user_interaction.hpp"
 #include "html_form_input_unit.hpp"
 #include "html_slicing.hpp"
@@ -118,7 +118,7 @@ private:
 	// entrepot
 
     guichet guichet_entrep;
-    std::shared_ptr<html_entrepot> entrep;
+    std::shared_ptr<html_entrepot_landing> entrep;
 
 
 	// display settings

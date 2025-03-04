@@ -49,7 +49,7 @@ extern "C"
 #include "events.hpp"
 #include "html_derouleur.hpp"
 #include "html_text.hpp"
-#include "html_entrepot.hpp"
+#include "html_entrepot_landing.hpp"
 #include "html_libdar_running_popup.hpp"
 #include "bibliotheque.hpp"
 #include "guichet.hpp"
@@ -163,7 +163,7 @@ private:
 
 	// archive entrepot fields
     guichet guichet_entrep;
-    std::shared_ptr<html_entrepot> entrep;
+    std::shared_ptr<html_entrepot_landing> entrep;
 
 	// archive_options_read fields
     html_crypto_algo src_crypto_algo;
@@ -181,7 +181,7 @@ private:
 
 	// external catalogue entrepot
     guichet guichet_ref_entrep;
-    std::shared_ptr<html_entrepot> ref_entrep;
+    std::shared_ptr<html_entrepot_landing> ref_entrep;
 
     html_form_input ref_use_external_catalogue;
     html_form form_ref;
