@@ -78,15 +78,14 @@ html_entrepot_landing::html_entrepot_landing():
     use_landing_path.set_change_event_name(landing_path_changed);
     use_landing_path.record_actor_on_event(this, landing_path_changed);
     repoxfer.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
-    register_name(custom_event_name); // equal to "changed" at cosntruction time, here
-    register_name(custom_event_landing_path); // equal to landing_path_changed at construction time
+    register_name(custom_event_name);         // is equal to "changed" at cosntruction time (here)
+    register_name(custom_event_landing_path); // is equal to landing_path_changed at construction time
+
 
     	// visibility
     repoxfer.set_visible(false);
 
 	// css
-    register_name(custom_event_name);         // is equal to "changed" at cosntruction time (here)
-    register_name(custom_event_landing_path); // is equal to landing_path_changed at construction time
 }
 
 shared_ptr<libdar::entrepot> & html_entrepot_landing::get_entrepot(shared_ptr<html_web_user_interaction> & webui) const
@@ -118,7 +117,7 @@ void html_entrepot_landing::on_event(const string & event_name)
 	    trigger_changed_event();
 	delayed_landing_update = false;
     }
-    else if(event_name == landing_path_changed)
+    else if(event_name == custom_event_landing_path)
     {
 	if(use_landing_path.get_value_as_bool())
 	    act(custom_event_landing_path);
@@ -178,9 +177,8 @@ void html_entrepot_landing::load_json(const json & source)
     {
 	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
     }
-
-    trigger_changed_event();
-    on_event(landing_path_changed); // if checkbox is set, this will drive landing_path to be fetched by registered actors
+    on_event(html_entrepot::changed);
+    on_event(custom_event_landing_path);
 }
 
 json html_entrepot_landing::save_json() const
@@ -212,8 +210,9 @@ void html_entrepot_landing::clear_json()
 	throw;
     }
     ignore_events = false;
-    trigger_changed_event();
-    act(custom_event_landing_path);
+
+    on_event(html_entrepot::changed);
+    on_event(custom_event_landing_path);
 }
 
 void html_entrepot_landing::set_to_webdar_defaults()
