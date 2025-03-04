@@ -79,7 +79,7 @@ public:
 	/// \note if the provided webui already managed a thread, this method will not spawn a thread
 	/// for its inherited_run() but call it directly in the same thread, assuming another thread
 	/// already managed the webui for it get refreshed can react to user actions.
-    std::shared_ptr<libdar::entrepot> get_entrepot(std::shared_ptr<html_web_user_interaction> & webui) const;
+    std::shared_ptr<libdar::entrepot> & get_entrepot(std::shared_ptr<html_web_user_interaction> & webui) const;
 
 	/// fetch current landing path for the entrepot
     const std::string & get_landing_path() const { return landing_path.get_value(); };

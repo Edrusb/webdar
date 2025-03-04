@@ -132,7 +132,7 @@ html_entrepot::html_entrepot():
 }
 
 
-shared_ptr<libdar::entrepot> html_entrepot::get_entrepot(shared_ptr<html_web_user_interaction> & webui) const
+shared_ptr<libdar::entrepot> & html_entrepot::get_entrepot(shared_ptr<html_web_user_interaction> & webui) const
 {
     html_entrepot* me = const_cast<html_entrepot*>(this);
 
