@@ -60,6 +60,8 @@ html_entrepot_landing::html_entrepot_landing():
     else
 	throw WEBDAR_BUG;
 
+    landing_path.set_select_mode(html_form_input_file::select_dir);
+    landing_path.set_can_create_dir(true);
 
 	// adoption tree
     fs.adopt(&entrep);
@@ -98,9 +100,6 @@ void html_entrepot_landing::on_event(const string & event_name)
 
     if(event_name == html_entrepot::changed)
     {
-	if(is_running())
-	    throw WEBDAR_BUG;
-
 	if(! get_visible_recursively())
 	    delayed_landing_update = true;
 	else
