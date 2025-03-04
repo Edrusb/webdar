@@ -62,7 +62,7 @@ public:
     virtual void on_event(const std::string & event_name) override;
 
 	/// propagate request to web_ui
-    std::shared_ptr<html_web_user_interaction> get_html_user_interaction() { return web_ui; };
+    std::shared_ptr<html_web_user_interaction> & get_html_user_interaction() { return web_ui; };
 
 	/// propagate request to web_ui
     void run_and_control_thread(libthreadar::thread* arg) { web_ui->run_and_control_thread(arg); };
