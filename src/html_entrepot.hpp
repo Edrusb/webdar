@@ -34,6 +34,7 @@ extern "C"
     // C++ system header files
 #include <memory>
 #include <string>
+#include <libthreadar/libthreadar.hpp>
 
     // webdar headers
 #include "body_builder.hpp"
@@ -49,7 +50,11 @@ extern "C"
 
     /// class html_entrepot let user define an entrepot parameters
 
-class html_entrepot: public body_builder, public actor, public events, public libthreadar::thread_signal, public jsoner
+class html_entrepot: public body_builder,
+		     public actor,
+		     public events,
+		     public libthreadar::thread_signal,
+		     public jsoner
 {
 public:
 	/// event triggered when any entrepot parameters has changed *except landing_path* changes
