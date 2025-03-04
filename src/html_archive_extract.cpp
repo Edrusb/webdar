@@ -72,7 +72,7 @@ html_archive_extract::html_archive_extract():
     opt_extract->set_fs_root(extract_fs_root.get_value());
 
     in_place_msg.add_text(4, "Warning, \"in-place\" restoration is set!");
-    in_place_msg.add_text(0, "The field above will be used if the in-place information is not present in the archive");
+    in_place_msg.add_text(0, "The field above will only be used if the in-place information is not present in the archive");
     in_place_msg.add_nl();
     in_place_msg.add_text(0, "You can disable \"in-place\" restoration below in the section [Restoration Options | How to proceed]");
 
@@ -90,8 +90,8 @@ html_archive_extract::html_archive_extract():
     extract_fs_root.record_actor_on_event(this, extract_root_changed);
     opt_extract->record_actor_on_event(this, html_options_extract::changed);
 
-
 	// visible
+
     in_place_msg.set_visible(false);
 
 	//  css

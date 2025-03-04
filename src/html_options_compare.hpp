@@ -76,6 +76,9 @@ public:
 	/// gathering informations for libdar
     libdar::archive_options_diff get_options() const;
 
+	/// know whether the in-place restoration is set
+    bool get_in_place_mode() const { return in_place.get_value_as_bool(); };
+
 	/// inherited from jsoner
     virtual void load_json(const json & source) override;
 

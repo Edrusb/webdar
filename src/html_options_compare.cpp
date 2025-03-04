@@ -383,7 +383,7 @@ void html_options_compare::set_to_webdar_defaults()
     alter_atime.set_selected_num(0);
     furtive_read_mode.set_value_as_bool(true);
     zeroing_neg_date.set_value_as_bool(true);
-    in_place.set_value_as_bool(true);
+    in_place.set_value_as_bool(false);
     info_details.set_value_as_bool(true);
     display_treated.set_value_as_bool(true);
     display_treated_only_dir.set_value_as_bool(false);

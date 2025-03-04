@@ -42,7 +42,7 @@ extern "C"
 #include "html_form.hpp"
 #include "html_options_compare.hpp"
 #include "guichet.hpp"
-
+#include "html_text.hpp"
 
     /// html component used to let the user provide parameters for an isolation operation
 
@@ -85,12 +85,13 @@ private:
     html_form_fieldset diff_fs_root_fs;
     html_form_input_file diff_fs_root;
     html_form diff_fs_root_form;
+    html_text in_place_msg;
 
     guichet guichet_opt_diff;
     std::shared_ptr<html_options_compare> opt_diff;
 
     static const std::string diff_root_changed;
-
+    static constexpr const char* css_grey_text = "hac_grey";
 };
 
 #endif

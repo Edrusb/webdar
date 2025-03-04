@@ -69,10 +69,15 @@ html_archive_compare::html_archive_compare():
 
     opt_diff->set_fs_root(diff_fs_root.get_value());
 
+    in_place_msg.add_text(4, "Warning, \"in-place\" comparison is set!");
+    in_place_msg.add_text(0, "The field above will only be used if the in-place information is not present in the archive");
+    in_place_msg.add_nl();
+    in_place_msg.add_text(0, "You can disable \"in-place\" comparison below in the section [Comparison Options | How to proceed]");
 
 	// adoption tree
 
     diff_fs_root_fs.adopt(&diff_fs_root);
+    diff_fs_root_fs.adopt(&in_place_msg);
     diff_fs_root_form.adopt(&diff_fs_root_fs);
     diff_params.adopt_in_section(sect_diff_params, &diff_fs_root_form);
     diff_params.adopt_in_section(sect_diff_options, &guichet_opt_diff);
@@ -81,11 +86,16 @@ html_archive_compare::html_archive_compare():
 	// events
 
     diff_fs_root.record_actor_on_event(this, diff_root_changed);
+    opt_diff->record_actor_on_event(this, html_options_compare::changed);
 
+	// visible
+
+    in_place_msg.set_visible(false);
 
 	// css
-    webdar_css_style::normal_button(diff_params, true);
 
+    webdar_css_style::normal_button(diff_params, true);
+    in_place_msg.add_css_class(css_grey_text);
 }
 
 void html_archive_compare::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
@@ -117,6 +127,10 @@ void html_archive_compare::on_event(const string & event_name)
     {
 	opt_diff->set_fs_root(diff_fs_root.get_value());
     }
+    else if(event_name == html_options_compare::changed)
+    {
+	in_place_msg.set_visible(opt_diff->get_in_place_mode());
+    }
     else
 	throw WEBDAR_BUG;
 }
@@ -134,5 +148,15 @@ void html_archive_compare::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
+
+    if(! csslib->class_exists(css_grey_text))
+    {
+	css tmp;
+
+	tmp.css_color(COLOR_MENU_BORDER_GREY);
+	tmp.css_text_shadow("0.05em", "0.05em", "0.2em", "#888888");
+	csslib->add(css_grey_text, tmp);
+    }
+
 }
 
