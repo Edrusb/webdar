@@ -66,7 +66,6 @@ protected:
 
 private:
     html_derouleur deroule;
-
     html_form form;
     html_form_fieldset fs;
     html_form_radio action;

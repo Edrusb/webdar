@@ -110,22 +110,21 @@ protected:
     virtual void signaled_inherited_cancel() override;
 
 private:
-    html_derouleur deroule;
-    html_form form;
-    html_form_fieldset fs;
-    html_form_input_file arch_path;
-
-    guichet guichet_opt_read;
-    std::shared_ptr<html_options_read> opt_read;
-
-    html_libdar_running_popup libdarexec;
-
 	/// delay entrepot update when waiting inherited_get_body_part() to be executed
 
 	/// \note not doing so may lead to run() this object which involves an html_web_user_interaction
 	/// while the object is not visible and this this interaction component not operational
     bool need_entrepot_update;
     enum { event_propagated, event_ignored, event_pending } ignore_events_st;
+
+    html_derouleur deroule;
+    html_form form;
+    html_form_fieldset fs;
+    html_form_input_file arch_path;
+    html_libdar_running_popup libdarexec;
+
+    guichet guichet_opt_read;
+    std::shared_ptr<html_options_read> opt_read;
 
     void update_entrepot();
     void trigger_changed();

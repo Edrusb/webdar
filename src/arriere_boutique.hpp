@@ -123,6 +123,14 @@ private:
     std::string currently_loaded;
     std::shared_ptr<bibliotheque> biblio;
     bibliotheque::category categ;
+    std::string change_event_name;
+    bool ignore_events;
+
+    std::unique_ptr<T> wrapped;
+    jsoner* wrapped_jsoner;
+    body_builder* wrapped_body_builder;
+    events* wrapped_events;
+    bibliotheque_subconfig* wrapped_subconfig;
 
     html_text warning_message;
     html_text need_saving;
@@ -138,15 +146,6 @@ private:
 
     html_form_fieldset around_fs;
     html_form around_form;
-
-    std::unique_ptr<T> wrapped;
-    jsoner* wrapped_jsoner;
-    body_builder* wrapped_body_builder;
-    events* wrapped_events;
-    bibliotheque_subconfig* wrapped_subconfig;
-    std::string change_event_name;
-
-    bool ignore_events;
 
     void load_listing(); ///< fills the listing from existing config in biblio and triggers html_form_radio::changed event
     void set_warning(const std::string & wm);

@@ -84,22 +84,21 @@ protected:
 
 
 private:
-    html_derouleur deroule;
-    html_form_input_file repair_dest;
-    html_form_input basename;
-    html_form_fieldset repair_fs;
-    html_form repair_form;
-
-    guichet guichet_opt_repair;
-    std::shared_ptr<html_options_repair> opt_repair;
-
-    html_libdar_running_popup repoxfer;
-
 	/// delay entrepot update when waiting inherited_get_body_part() to be executed
 
 	/// \note not doing so may lead to run() this object which involves an html_web_user_interaction
 	/// while the object is not visible and this this interaction component not operational
     bool need_entrepot_update;
+
+    html_derouleur deroule;
+    html_form_input_file repair_dest;
+    html_form_input basename;
+    html_form_fieldset repair_fs;
+    html_form repair_form;
+    html_libdar_running_popup repoxfer;
+
+    guichet guichet_opt_repair;
+    std::shared_ptr<html_options_repair> opt_repair;
 
     void update_entrepot();
 };

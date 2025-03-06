@@ -245,6 +245,11 @@ private:
     bool hide_unless_interrupted; ///< disable autohide when thread ended due to user request
     bool was_interrupted;         ///< whether user asked for thread cancellation or exception thrown within thread
 
+    bool ignore_event;      ///< if true the on_event() method does not take any action
+
+    libthreadar::thread* managed_thread; // the thread object we manage (or nullptr if none is managed)
+    mutable libthreadar::condition all_threads_pending;
+
 	// body_builder fields
     html_form_radio h_pause;      ///< shows when libdar request a yes/no decision from the user
     html_form_fieldset h_inter;   ///< wraps h_pause and h_inter_text and is any visible when libdar request an information from the user
@@ -261,11 +266,6 @@ private:
     html_button force_close;      ///< button that shows to query libdar immediate shutdown
     html_text helper_text;        ///< shows when abortion requested but a question from libdar need an answer first
     html_button finish;           ///< button that shows to let the user read last logs before closing
-
-    bool ignore_event;      ///< if true the on_event() method does not take any action
-
-    libthreadar::thread* managed_thread; // the thread object we manage (or nullptr if none is managed)
-    mutable libthreadar::condition all_threads_pending;
 
     void adjust_visibility();
     void check_libdata() { if(!lib_data) throw WEBDAR_BUG; };

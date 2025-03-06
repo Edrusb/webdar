@@ -78,8 +78,8 @@ protected:
     virtual void signaled_inherited_cancel() override;
 
 private:
-    std::shared_ptr<html_web_user_interaction> ui;
     const saisie* param;
+    std::shared_ptr<html_web_user_interaction> ui;
 
 };
 

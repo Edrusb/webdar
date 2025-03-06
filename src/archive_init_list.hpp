@@ -92,9 +92,9 @@ protected:
 
 
 private:
-    std::shared_ptr<html_web_user_interaction> ui;
     const saisie* param;
     std::unique_ptr<libdar::archive> ptr;
+    std::shared_ptr<html_web_user_interaction> ui;
 
 };
 

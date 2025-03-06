@@ -64,10 +64,9 @@ protected:
     virtual void prefix_has_changed() override;
 
 private:
+    bool redir;
     html_page page;
     html_text msg;
-
-    bool redir;
 };
 
 #endif

@@ -123,12 +123,13 @@ protected:
     virtual void css_classes_have_changed() override;
 
 private:
-    html_form form;
-    html_form_mask_bool root;
     std::deque<std::string> labels;
     std::string sujet;
     bibliotheque::category categ;
+
     std::shared_ptr<bibliotheque> biblio;
+    html_form form;
+    html_form_mask_bool root;
 
     void init();
     template <class T> void init_bool_obj(T & obj) const;

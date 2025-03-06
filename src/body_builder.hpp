@@ -419,13 +419,13 @@ private:
     uri last_body_req_uri;                              ///< last req uri value provided to get_body_part()
     std::string last_body_req_body;                     ///< last req body value provided to get_body_part()
     std::string last_body_part;                         ///< last return of inherited_get_body_part()
+    bool body_changed;                                  ///< change status of inherited_get_body_part()/get_body_part()
+    bool ignore_children_body_changed;                  ///< ignore and propagate body_changed notif from adopted children
     bool library_asked;                                 ///< whether store_css_library() has been called,
 	                                                ///< this will trigger creation of css_library from get_body_part,
 	                                                ///< to allow store_css_library() being invoked from constructors of inherited classes
     std::unique_ptr<css_library> library;               ///< css library if stored by this object
     std::set<std::string> css_class_names;              ///< list of CSS class that apply to this object
-    bool body_changed;                                  ///< change status of inherited_get_body_part()/get_body_part()
-    bool ignore_children_body_changed;                  ///< ignore and propagate body_changed notif from adopted children
 
         /// unrecord 'this' from its parent as a adopted child
     void unrecord_from_parent();

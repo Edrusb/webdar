@@ -117,12 +117,13 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    bool ignore_events;
+    std::shared_ptr<const libdar::path> prefix;
+
     html_form_input_file filename;
     html_form_input exclude_checkbox;
     html_form_input casesensit;
     html_form_fieldset fs;
-    std::shared_ptr<const libdar::path> prefix;
-    bool ignore_events;
 
     void init();
     std::string tell_action() const;

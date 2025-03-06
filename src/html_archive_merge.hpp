@@ -86,11 +86,11 @@ private:
     html_form_fieldset fs;
     html_form_input_file sauv_path;
     html_form_input basename;
+    html_libdar_running_popup repoxfer;
 
     guichet guichet_options;
     std::shared_ptr<html_options_merge> options;
 
-    html_libdar_running_popup repoxfer;
 
 
 	/// delay entrepot update when waiting inherited_get_body_part() to be executed

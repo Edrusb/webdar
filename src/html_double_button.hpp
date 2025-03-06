@@ -106,9 +106,9 @@ private:
     static const std::string event_one;
     static const std::string event_two;
 
+    std::string my_event_name;
     html_button one;
     html_button two;
-    std::string my_event_name;
 
     void swap(bool show_one);
 };

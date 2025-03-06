@@ -125,6 +125,8 @@ protected:
 
 
 private:
+    bool ignore_events;
+
     html_derouleur deroule;
 
     html_form form_archgen;
@@ -203,7 +205,6 @@ private:
     guichet guichet_ciphering;
     std::shared_ptr<html_ciphering> ciphering;
 
-    bool ignore_events;
     void init(); ///< set default values to parameters
     void trigger_changed();
 

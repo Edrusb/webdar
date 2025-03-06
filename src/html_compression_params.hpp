@@ -107,6 +107,10 @@ protected:
     virtual void css_classes_have_changed() override;
 
 private:
+    bool x_show_resave;
+    bool x_show_min_size;
+    bool ignore_events;
+
     html_form form_compr;
     html_form_fieldset compr_fs;
     html_compression compression;
@@ -116,10 +120,6 @@ private:
     html_form_input never_resave_uncompressed;
     html_form_input compr_threads;
     html_form_input keep_compressed;
-    bool ignore_events;
-
-    bool x_show_resave;
-    bool x_show_min_size;
 
     static constexpr const unsigned int default_level = 9;
     static constexpr const unsigned int default_min_compr_size = 100;

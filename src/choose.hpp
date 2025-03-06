@@ -87,6 +87,8 @@ private:
     std::string owner;           ///< list only sessions for that owner
     bool confirm_mode;           ///< whether we display session list or kill confirmation
     mutable bool disconnect_req; ///< whether user has asked for disconnection
+    std::vector<html_form_input *> boxes; //< list of checkboxes in "page"
+    std::vector<session::session_summary> sess; //< list of sessions in page
 
 	/// listing session page and associated objects
     html_page page;          ///< page root for session listing
@@ -95,8 +97,6 @@ private:
     html_url nouvelle;
     html_form form;
     html_div div;
-    std::vector<html_form_input *> boxes; //< list of checkboxes in "page"
-    std::vector<session::session_summary> sess; //< list of sessions in page
 
 	/// confirmation page and associated objects
     html_page confirm;       ///< page root for kill confirmation

@@ -108,9 +108,9 @@ protected:
 
 
 private:
+    std::string child_event;   ///< used for sanity check in on_event()
     guichet wicket;
     std::shared_ptr<body_builder> inner;
-    std::string child_event;   ///< used for sanity check in on_event()
 
     void check_inner() const { if(!inner) throw WEBDAR_BUG; };
 };

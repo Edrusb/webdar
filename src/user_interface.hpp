@@ -131,7 +131,6 @@ private:
     html_summary_page in_summ;     ///< page issued when proceeding to archive summary
     std::shared_ptr<html_fichier> data; ///< content to send in download mode
 
-    libthreadar::thread *current_thread; ///< points to the running thread (either arch_test, arch_merge, ....)
     archive_test arch_test;        ///< holds thread created for testing archives
     archive_restore arch_rest;     ///< holds thread created for extracting archives
     archive_compare arch_diff;     ///< holds thread created for comparing archives
@@ -140,6 +139,7 @@ private:
     archive_merge arch_merge;      ///< holds thread created for archive merging
     archive_repair arch_repair;    ///< holds thread created for archive repairing
     archive_init_list arch_init_list; ///< holds thread created to open an archive for listing
+    libthreadar::thread *current_thread; ///< points to the running thread (either arch_test, arch_merge, ....)
 
 	/// available parameters for libdar execution
     const saisie & get_parametrage() const { return parametrage; };

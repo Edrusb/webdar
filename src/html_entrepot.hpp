@@ -120,6 +120,14 @@ private:
 
     static const std::string repo_type_changed;
 
+    std::string custom_event_name;
+    bool ignore_events;
+    mutable std::shared_ptr<libdar::user_interaction> dialog; ///< used by inherited_run
+    mutable std::shared_ptr<libdar::entrepot> entrep;         ///< set by inherited_run
+    mutable libthreadar::mutex entrep_ctrl;                   ///< control the write access to entrep
+    mutable bool entrep_type_has_changed;                     ///< variable local to inherited_get_body_part() and methods called from there
+    mutable bool entrep_need_update;
+
     html_form form;
     html_form_fieldset fs;
     html_form_select repo_type; // local, ftp or sftp
@@ -135,14 +143,6 @@ private:
     html_form_input_file known_hosts_file; // sftp only
     html_form_input wait_time; // ftp and sftp
     html_form_input verbose;   // ftp and sftp
-
-    std::string custom_event_name;
-    bool ignore_events;
-    mutable std::shared_ptr<libdar::user_interaction> dialog; ///< used by inherited_run
-    mutable std::shared_ptr<libdar::entrepot> entrep;         ///< set by inherited_run
-    mutable libthreadar::mutex entrep_ctrl;                   ///< control the write access to entrep
-    mutable bool entrep_type_has_changed;                     ///< variable local to inherited_get_body_part() and methods called from there
-    mutable bool entrep_need_update;
 
     void update_visible();
     void trigger_changed_event();

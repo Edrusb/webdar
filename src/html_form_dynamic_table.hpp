@@ -279,6 +279,8 @@ private:
         std::unique_ptr<html_form_input> del;
     };
 
+    bool left_label;
+    bool ignore_events;
     const html_form_dynamic_table_object_provider* my_provider; ///< the object provider to use
     std::string context;                 ///< the context string passed when to the object provider
     std::list<line> table_content;       ///< manages the objects adopted by "table"
@@ -287,10 +289,8 @@ private:
     std::deque<std::string> events_to_delete; ///< temporary list of events pending for deletion
     std::string default_choice;          ///< adder first choice used to invite user to select an option (provided with constructor)
 
-    bool left_label;
     html_table table;
     html_form_select adder;
-    bool ignore_events;
 
     void del_line(const std::string & event_name);
     void purge_to_delete();

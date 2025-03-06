@@ -91,10 +91,10 @@ protected:
     using body_builder::adopt;
 
 private:
-    html_div tab_bar;
     std::map<std::string, unsigned int> corres; ///< link eventname to tab number
     std::deque<html_button*> tabs;
 
+    html_div tab_bar;
     html_hr line;
     html_div content_wrapper;
     html_aiguille content;

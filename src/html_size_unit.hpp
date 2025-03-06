@@ -96,9 +96,9 @@ protected:
 private:
     static constexpr const char* mode_changed = "SI_mode changed";
 
+    bool manual_change;
     html_form_select unit;
     html_form_select SI_mode;
-    bool manual_change;
 
     void set_fields();
 };

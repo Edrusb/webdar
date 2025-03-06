@@ -111,6 +111,8 @@ private:
     static constexpr const char* treated_dir = "dir";
     static constexpr const char* treated_all = "all";
 
+    bool ignore_events;
+
     html_derouleur deroule;
 
     html_form form_reading;
@@ -144,7 +146,6 @@ private:
 
     html_fsa_scope fsa_scope;
 
-    bool ignore_events;
     void trigger_change();
 
     static constexpr const unsigned int format_version = 1;

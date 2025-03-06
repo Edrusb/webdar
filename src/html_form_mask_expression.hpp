@@ -146,13 +146,14 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    bool ignore_events;
     std::string sujet;
+
     html_form_fieldset fs;
     html_form_select mask_type;
     html_form_input negate;
     html_form_input casesensitivity;
     html_form_input mask_expression;
-    bool ignore_events;
 
     void init();
     std::string tell_action() const;

@@ -131,9 +131,10 @@ private:
 	~section() { if(title != nullptr) delete title; if(shrinker != nullptr) delete shrinker; };
     };
 
-    html_aiguille switcher;                     ///< holds the objects adopted inside the different sections
-    std::map<std::string, section> sections;    ///< map section name to its content and provide the title bars above each
     css_class_group css_url;                    ///< css classes to apply to title bar urls
+    std::map<std::string, section> sections;    ///< map section name to its content and provide the title bars above each
+
+    html_aiguille switcher;                     ///< holds the objects adopted inside the different sections
 
 
 	/// used from inherited_get_body_part to avoid duplicated code

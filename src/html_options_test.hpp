@@ -100,6 +100,8 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    bool ignore_events;
+
     html_derouleur deroule;
 
     html_form form;
@@ -118,8 +120,6 @@ private:
 
     guichet guichet_path_mask;
     std::shared_ptr<html_mask_form_path> path_mask;
-
-    bool ignore_events;
 
     void reset_non_pointer_fields();
     void trigger_change();

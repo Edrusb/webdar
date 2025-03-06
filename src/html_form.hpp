@@ -87,7 +87,6 @@ protected:
 private:
     std::string go_mesg;
     std::string enctype;
-
     std::set<std::string> css_button_classes;
 };
 

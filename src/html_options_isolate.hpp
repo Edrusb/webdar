@@ -120,6 +120,8 @@ private:
 	// specific events
     static constexpr const char* kdf_algo_changed = "kdf_algo_changed";
 
+    bool ignore_events;
+
     html_derouleur deroule;
 
     html_form form_delta_sig;
@@ -164,8 +166,6 @@ private:
 
     guichet guichet_ciphering;
     std::shared_ptr<html_ciphering> ciphering;
-
-    bool ignore_events;
 
     void init();  ///< set parameters to default values
     void trigger_changed();

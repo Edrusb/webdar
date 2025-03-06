@@ -117,10 +117,10 @@ protected:
     virtual void css_classes_have_changed() override;
 
 private:
-    html_form form;
-    html_form_mask_bool root;
     bool allow_abs_paths;
     std::deque<std::string> labels;
+    bibliotheque::category categ;
+    std::shared_ptr<bibliotheque> biblio;
     std::shared_ptr<libdar::path> fs_root;
 	// the use of a shared_ptr is done here because this
 	// information will be shared with a possibly wide
@@ -131,8 +131,8 @@ private:
 	// get notified of changes by mean of events triggered
 	// by this html_mask_form_path object
 
-    bibliotheque::category categ;
-    std::shared_ptr<bibliotheque> biblio;
+    html_form form;
+    html_form_mask_bool root;
 
     void init();
     void init_bool_obj(html_form_mask_bool & obj) const;

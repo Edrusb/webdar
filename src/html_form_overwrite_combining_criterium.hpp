@@ -119,6 +119,15 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    std::string current_bool_mode;   ///< current value combination mode
+
+    std::string bool_op_to_name(const std::string & op);
+    void update_table_content_logic(bool unconditionally);
+
+    html_form_fieldset fs;           ///< wrapps all html form components of this class
+    html_form_select crit_type;      ///< either "and" or "or" combination
+    html_form_dynamic_table table;   ///< adopts all member we are combining
+
 	// events
     static constexpr const char* bool_changed_event = "bool_changed";
     static constexpr const char* new_crit_to_add = "new_mask";
@@ -129,15 +138,6 @@ private:
 
 	// css class
     static constexpr const char* css_class_bool_text = "html_form_over_comb_crit";
-
-
-    html_form_fieldset fs;           ///< wrapps all html form components of this class
-    html_form_select crit_type;      ///< either "and" or "or" combination
-    html_form_dynamic_table table;   ///< adopts all member we are combining
-    std::string current_bool_mode;   ///< current value combination mode
-
-    std::string bool_op_to_name(const std::string & op);
-    void update_table_content_logic(bool unconditionally);
 
     static std::string invert_logic(const std::string & logic);
 

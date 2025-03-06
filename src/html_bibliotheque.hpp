@@ -129,6 +129,8 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    bool expect_upload;
+
     std::shared_ptr<bibliotheque> biblio;
 
     std::unique_ptr<arriere_boutique<html_entrepot_landing> > ab_entrepot;
@@ -174,8 +176,6 @@ private:
     html_div statusbar;
     html_text saved_status;
     html_text unsaved_status;
-
-    bool expect_upload;
 
     void set_saved_status();
     void clear_ok_messages();

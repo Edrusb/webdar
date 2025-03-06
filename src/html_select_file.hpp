@@ -211,6 +211,8 @@ private:
 
 	// object status
 
+    libthreadar::mutex content_mutex; ///< to avoid a subthread launched from on_event() to modify 'content' while also building body parts
+
     mutable enum
     {
 	st_init,      ///< not showing popup for user selection and not path available
@@ -228,15 +230,17 @@ private:
 
     mutable thread_to_run which_thread; ///< used by inherited_run to know which subroutine to run in the separated thread
 
+	// status field about html components
+    bool is_loading_mode;             ///< whether the content placeholder shows
+    bool fieldset_isdir;              ///< whether fieldset points to a directory or not
 
 	// settings
     std::string x_message;            ///< message passed at constructor time
-
     select_mode cur_select_mode;      ///< whether user is expected to select a directory
     std::string filter;               ///< only display files matching this filter (glob expression)
+    bool should_refresh;              ///< expected status of the page refresh
     std::shared_ptr<libdar::entrepot> entr;  ///< the entrepot we should fetch info from
     std::shared_ptr<libdar::user_interaction> mem_ui;  ///< the original UI the entrepot had when given to go_select()
-    bool should_refresh;              ///< expected status of the page refresh
 
 	// html components
 
@@ -249,12 +253,10 @@ private:
 
 	//
     std::string path_loaded;          ///< path displayed (empty string means not initialized)
+    std::map<std::string, item> listed; ///< associate a event message to each listed items
     html_double_button parentdir;     ///< change to parent dir
     html_text content_placeholder;    ///< replace content and *parentdir* when loading the directory content
     html_table content;               ///< parent of content objects
-    std::map<std::string, item> listed; ///< associate a event message to each listed items
-
-    libthreadar::mutex content_mutex; ///< to avoid a subthread launched from on_event() to modify 'content' while also building body parts
 
     html_div btn_box;                 ///< box containing the bottom buttons
     html_button btn_cancel;           ///< triggers the entry_cancelled event
@@ -264,10 +266,6 @@ private:
     html_form createdir_form;         ///< form for new directory
     html_form_input createdir_input;  ///< field to let user provide new dir name
 
-
-	// status field about html components
-    bool is_loading_mode;             ///< whether the content placeholder shows
-    bool fieldset_isdir;              ///< whether fieldset points to a directory or not
 
 
 	// internal routines

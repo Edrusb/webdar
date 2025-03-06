@@ -123,9 +123,9 @@ protected:
 						const request & req) override;
 
 private:
-    html_form_dynamic_table table;
-
     std::vector<std::string> gather_content_of_type(unsigned int type) const;
+
+    html_form_dynamic_table table;
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* myclass_id = "html_form_ignore_as_symlink";

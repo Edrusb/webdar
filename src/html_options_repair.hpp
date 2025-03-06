@@ -113,6 +113,8 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    bool ignore_events;
+
     html_derouleur deroule;
 
 	// entrepot
@@ -159,7 +161,6 @@ private:
     guichet guichet_ciphering;
     std::shared_ptr<html_ciphering> ciphering;
 
-    bool ignore_events;
     void init();
     void trigger_changed();
 

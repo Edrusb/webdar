@@ -136,14 +136,14 @@ protected:
                                                 const request & req) override;
 
 private:
+    bool trigger_change; ///< whether a change occurred in subcomponent during a inherited_get_body_part_evaluation, json_load or json_clear
+
     html_form_fieldset crit_fs; ///< wrapps all html form components of this class
     html_form_input negate; ///< checkbox
     html_form_input invert; ///< checkbox
     html_form_select base;  ///< selection of the base criterium
     html_datetime date; ///< for date related criterium
     html_form_input hourshift; ///< for date related criterium
-
-    bool trigger_change; ///< whether a change occurred in subcomponent during a inherited_get_body_part_evaluation, json_load or json_clear
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* myclass_id = "html_form_overwrite_base_criterium";

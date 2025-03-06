@@ -97,6 +97,10 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    html_form_overwrite_combining_criterium condition;
+    html_form_overwrite_action when_true;
+    html_form_overwrite_action when_false;
+
     static constexpr const char* act_true_changed = "true changed";
     static constexpr const char* act_false_changed = "false changed";
 
@@ -105,10 +109,6 @@ private:
     static constexpr const char* action_type_condition = "condition";
 
     static constexpr const char* css_cond = "html_form_overwrite_cond_act";
-
-    html_form_overwrite_combining_criterium condition;
-    html_form_overwrite_action when_true;
-    html_form_overwrite_action when_false;
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* myclass_id = "html_form_overwrite_conditional_action";

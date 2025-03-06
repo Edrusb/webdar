@@ -127,17 +127,17 @@ private:
     static constexpr const char* jlabel_type = "type";
     static constexpr const char* jlabel_value = "value";
 
-
-    html_form_fieldset fs;
-    html_form_select action_type;
-    html_form_overwrite_constant_action constant_action;
-    html_form_overwrite_chain_action chain_action;
     bool need_conditional_action;
 
 	// we use pointers for here
 	// to avoid cyclic dependency between html_form_overwrite_action
 	// and html_form_conditional_action
     std::unique_ptr<html_overwrite_action> conditional_action;
+
+    html_form_fieldset fs;
+    html_form_select action_type;
+    html_form_overwrite_constant_action constant_action;
+    html_form_overwrite_chain_action chain_action;
 
     void make_conditional_action();
     void set_visible();

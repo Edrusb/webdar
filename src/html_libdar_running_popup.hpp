@@ -85,8 +85,9 @@ protected:
     virtual void my_visibility_has_changed() override;
 
 private:
-    std::shared_ptr<html_web_user_interaction> web_ui;
     bool enable_refresh;    ///< refresh mode status
+
+    std::shared_ptr<html_web_user_interaction> web_ui;
 
 };
 

@@ -100,6 +100,8 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    bool ignore_events;
+
     html_form_input_unit delta_sig_min_size;
     html_text summary_f; // formula
     html_text summary_l; // limits
@@ -109,8 +111,6 @@ private:
     html_form_input divisor;
     html_form_input_unit min_size;
     html_form_input_unit max_size;
-
-    bool ignore_events;
 
     void make_summary();
 

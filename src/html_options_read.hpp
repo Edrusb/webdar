@@ -155,6 +155,14 @@ private:
     static constexpr const char* sect_ref_entrep = "ref_entrep";
     static constexpr const char* sect_extcat = "externalcat";
 
+	/// to gather many subcomponent changes into a single change event from us
+    bool ignore_events;
+
+	/// delay entrepot update when waiting inherited_get_body_part() to be executed
+
+	/// \note not doing so may lead to run() this object which involves an html_web_user_interaction
+	/// while the object is not visible and this this interaction component not operational
+    bool need_ref_entrepot_update;
 
     html_derouleur deroule;
     html_form form_src;
@@ -194,15 +202,6 @@ private:
 
 	// used to create ref_entrep during html interaction
     html_libdar_running_popup ref_webui;
-
-	/// to gather many subcomponent changes into a single change event from us
-    bool ignore_events;
-
-	/// delay entrepot update when waiting inherited_get_body_part() to be executed
-
-	/// \note not doing so may lead to run() this object which involves an html_web_user_interaction
-	/// while the object is not visible and this this interaction component not operational
-    bool need_ref_entrepot_update;
 
     void update_ref_entrepot();
     void set_defaults();

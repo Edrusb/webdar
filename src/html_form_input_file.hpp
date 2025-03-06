@@ -112,6 +112,13 @@ protected:
 
 
 private:
+    std::string changed_event_name;
+    std::shared_ptr<libdar::entrepot> entrep;
+    bool refresh_get_body;
+    select_mode selmode;
+    std::string min_digits;
+    bool internal_change;
+
 	// adoption tree:
 	//
 	//  html_div (this)
@@ -130,12 +137,6 @@ private:
     html_select_file user_select;  ///< the popup window letting the user select a file or dir
     html_text empty_text;    ///< to end the float:left CSS property applied to input and trigger
 
-    std::string changed_event_name;
-    std::shared_ptr<libdar::entrepot> entrep;
-    bool refresh_get_body;
-    select_mode selmode;
-    std::string min_digits;
-    bool internal_change;
 
     void init();
     std::string slicename_to_basename_update_min_digits(const std::string & val);

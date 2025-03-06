@@ -109,6 +109,8 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    bool ignore_events;
+
     html_derouleur deroule;
     html_form form_archgen;
     html_form_fieldset fs;
@@ -145,7 +147,6 @@ private:
 
     html_fsa_scope fsa_scope;
 
-    bool ignore_events;
     void init();
     void trigger_changed();
 
