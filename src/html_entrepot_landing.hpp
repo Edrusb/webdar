@@ -108,17 +108,23 @@ protected:
     virtual void signaled_inherited_cancel() override;
 
 private:
+    std::string custom_event_name;
+    std::string custom_event_landing_path;
+    bool ignore_events;
+    bool delayed_landing_update;
+
+	// warning, custom_event need to be declared before the html_libdar_running_popup
+	// because at destruction time of this object, the html_libdar_running_popup destructor
+	// may lead to an event 'this' is acting on and requires the custom_event_* string
+	// object to be defined. In this order the destructor of 'this' will not
+	// destroy the custom_event_* std::string objects before repoxfer below.
+
     html_form form;
     html_form_fieldset fs;
     html_entrepot entrep;
     html_form_input use_landing_path;
     html_form_input_file landing_path;
     html_libdar_running_popup repoxfer;
-
-    std::string custom_event_name;
-    std::string custom_event_landing_path;
-    bool ignore_events;
-    bool delayed_landing_update;
 
     void trigger_changed_event();
     void start_updating_landing();
