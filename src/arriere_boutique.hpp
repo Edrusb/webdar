@@ -369,19 +369,29 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
     }
     else if(event_name == bibliotheque::changed(categ))
     {
-	load_listing();
-
-	    // repositionning the selected object to the currently loaded config if any
-	if(!currently_loaded.empty())
+	ignore_events = true;
+	try
 	{
-	    if(biblio->has_config(categ, currently_loaded))
-		listing.set_selected_id(currently_loaded);
-	    else
+	    load_listing();
+
+		// repositionning the selected object to the currently loaded config if any
+	    if(!currently_loaded.empty())
 	    {
-		currently_loaded = "";
-		silently_update_config_name(currently_loaded);
+		if(biblio->has_config(categ, currently_loaded))
+		    listing.set_selected_id(currently_loaded);
+		else
+		{
+		    currently_loaded = "";
+		    silently_update_config_name(currently_loaded);
+		}
 	    }
 	}
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
     }
     else
 	throw WEBDAR_BUG;
@@ -396,6 +406,7 @@ template <class T> std::string arriere_boutique<T>::inherited_get_body_part(cons
 template <class T> void arriere_boutique<T>::load_listing()
 {
     std::deque<std::string> content = biblio->listing(categ);
+
     listing.clear();
 
     for(std::deque<std::string>::iterator it = content.begin(); it != content.end(); ++it)
