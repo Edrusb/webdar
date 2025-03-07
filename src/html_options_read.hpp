@@ -205,6 +205,7 @@ private:
 
     void update_ref_entrepot();
     void set_defaults();
+    void set_defaults_for_ref();
     void trigger_changed();
 
     static constexpr const unsigned int format_version = 1;

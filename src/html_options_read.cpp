@@ -300,14 +300,22 @@ void html_options_read::load_json(const json & source)
 	    multi_thread_crypto.set_value_as_int(config.at(jlabel_thread_crypto));
 	    multi_thread_compress.set_value_as_bool(config.at(jlabel_thread_compress));
 
-	    guichet_ref_entrep.load_json(config.at(jlabel_ref_entrep));
 	    ref_use_external_catalogue.set_value_as_bool(config.at(jlabel_ref_used));
-	    ref_path.set_value(config.at(jlabel_ref_path));
-	    ref_crypto_algo.set_selected_id(config.at(jlabel_ref_crypto_algo));
-	    ref_crypto_pass.set_value(config.at(jlabel_ref_crypto_pass));
-	    ref_crypto_size.set_value_as_infinint(libdar::deci(config.at(jlabel_ref_crypto_size)).computer());
-	    ref_execute.set_value(config.at(jlabel_ref_execute));
-	    ref_slice_min_digits.set_value(config.at(jlabel_ref_slice_min_digits));
+	    if(ref_use_external_catalogue.get_value_as_bool())
+	    {
+		guichet_ref_entrep.load_json(config.at(jlabel_ref_entrep));
+		ref_path.set_value(config.at(jlabel_ref_path));
+		ref_crypto_algo.set_selected_id(config.at(jlabel_ref_crypto_algo));
+		ref_crypto_pass.set_value(config.at(jlabel_ref_crypto_pass));
+		ref_crypto_size.set_value_as_infinint(libdar::deci(config.at(jlabel_ref_crypto_size)).computer());
+		ref_execute.set_value(config.at(jlabel_ref_execute));
+		ref_slice_min_digits.set_value(config.at(jlabel_ref_slice_min_digits));
+	    }
+	    else
+	    {
+		set_defaults_for_ref();
+		guichet_ref_entrep.clear_json();
+	    }
 	}
 	catch(...)
 	{
@@ -341,14 +349,17 @@ json html_options_read::save_json() const
     config[jlabel_thread_crypto] = multi_thread_crypto.get_value_as_int();
     config[jlabel_thread_compress] = multi_thread_compress.get_value_as_bool();
 
-    config[jlabel_ref_entrep] = guichet_ref_entrep.save_json();
     config[jlabel_ref_used] = ref_use_external_catalogue.get_value_as_bool();
-    config[jlabel_ref_path] = ref_path.get_value();
-    config[jlabel_ref_crypto_algo] = ref_crypto_algo.get_selected_id();
-    config[jlabel_ref_crypto_pass] = ref_crypto_pass.get_value();
-    config[jlabel_ref_crypto_size] = libdar::deci(ref_crypto_size.get_value_as_infinint()).human();
-    config[jlabel_ref_execute] = ref_execute.get_value();
-    config[jlabel_ref_slice_min_digits] = ref_slice_min_digits.get_value();
+    if(ref_use_external_catalogue.get_value_as_bool())
+    {
+	config[jlabel_ref_entrep] = guichet_ref_entrep.save_json();
+	config[jlabel_ref_path] = ref_path.get_value();
+	config[jlabel_ref_crypto_algo] = ref_crypto_algo.get_selected_id();
+	config[jlabel_ref_crypto_pass] = ref_crypto_pass.get_value();
+	config[jlabel_ref_crypto_size] = libdar::deci(ref_crypto_size.get_value_as_infinint()).human();
+	config[jlabel_ref_execute] = ref_execute.get_value();
+	config[jlabel_ref_slice_min_digits] = ref_slice_min_digits.get_value();
+    }
 
     return wrap_config_with_json_header(format_version,
 					myclass_id,
@@ -419,6 +430,17 @@ void html_options_read::on_event(const string & event_name)
 	    deroule.section_set_visible(sect_ref_entrep, false);
 	    force_first_slice.set_value_as_bool(false);
 	    force_first_slice.set_enabled(false);
+	    ignore_events = true;
+	    try
+	    {
+		guichet_ref_entrep.clear_json(); // avoiding dependency of a repo hidden to the user
+	    }
+	    catch(...)
+	    {
+		ignore_events = false;
+		throw;
+	    }
+	    ignore_events = false;
 	}
 
 	    // no need to call my_body_part_has_changed()
@@ -509,6 +531,7 @@ void html_options_read::set_defaults()
 {
     libdar::archive_options_read defaults;
 
+    guichet_entrep.clear_json();
     src_crypto_algo.set_value(defaults.get_crypto_algo());
     src_crypto_pass.set_value("");
     src_crypto_size.set_value_as_infinint(defaults.get_crypto_size());
@@ -517,9 +540,19 @@ void html_options_read::set_defaults()
     lax.set_value_as_bool(defaults.get_lax());
     sequential_read.set_value_as_bool(defaults.get_sequential_read());
     force_first_slice.set_value_as_bool(defaults.get_force_first_slice());
+    set_defaults_for_ref();
+}
+
+void html_options_read::set_defaults_for_ref()
+{
+    libdar::archive_options_read defaults;
+
+    guichet_ref_entrep.clear_json();
     ref_use_external_catalogue.set_value_as_bool(defaults.is_external_catalogue_set());
     if(ref_use_external_catalogue.get_value_as_bool())
 	ref_path.set_value(defaults.get_ref_path().display());
+    else
+	ref_path.set_value("");
     ref_crypto_algo.set_value(defaults.get_ref_crypto_algo());
     ref_crypto_pass.set_value("");
     ref_crypto_size.set_value_as_infinint(defaults.get_ref_crypto_size());
