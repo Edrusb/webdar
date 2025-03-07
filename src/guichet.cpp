@@ -173,6 +173,7 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
     select_fs.add_label_css_class(css_bold);
     select_form.add_css_class(css_below_margin);
     saveas_fs.add_css_class(css_above_margin);
+    box.clear_css_classes();
     box.add_css_class(css_border_left);
 }
 
