@@ -101,10 +101,8 @@ void html_entrepot_landing::on_event(const string & event_name)
 
     if(event_name == html_entrepot::changed)
     {
-	if(! get_visible_recursively())
-	    delayed_landing_update = true;
-	else
-	    start_updating_landing();
+	delayed_landing_update = true;
+	my_body_part_has_changed(); // update will be done from inherited_get_body_part()
 
 	trigger_changed_event();
 	    // yes we propagate right now as other
@@ -114,8 +112,10 @@ void html_entrepot_landing::on_event(const string & event_name)
     else if(event_name == html_libdar_running_popup::libdar_has_finished)
     {
 	if(delayed_landing_update)
+	{
+	    delayed_landing_update = false;
 	    trigger_changed_event();
-	delayed_landing_update = false;
+	}
     }
     else if(event_name == custom_event_landing_path)
     {
