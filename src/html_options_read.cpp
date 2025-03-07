@@ -92,7 +92,8 @@ html_options_read::html_options_read():
 
 	// set default values from libdar
 
-    set_defaults();
+	// settings need to be done once guichet have been fully
+	// initialized in set_biblio()
 
 	// build the adoption tree
     deroule.add_section(sect_entrep, "Backup Location");
@@ -174,9 +175,6 @@ html_options_read::html_options_read():
     register_name(entrepot_has_changed);
     register_name(changed);
 
-	// manually launching on event to have coherent visibility between fields
-    on_event(html_crypto_algo::changed);
-
 	// visible
     ref_webui.set_visible(false);
 
@@ -195,6 +193,11 @@ void html_options_read::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				 bibliotheque::repo,
 				 ref_entrep,
 				 false);
+
+    set_defaults();
+
+	// manually launching on event to have coherent visibility between fields
+    on_event(html_crypto_algo::changed);
 }
 
 libdar::archive_options_read html_options_read::get_options(shared_ptr<html_web_user_interaction> & webui) const
