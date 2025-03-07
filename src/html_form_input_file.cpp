@@ -44,6 +44,8 @@ using namespace std;
     // event names
 const string html_form_input_file::changed_event = "html_form_input_file_changed";
 const string html_form_input_file::changed_entrepot = "html_form_entrepot_changed";
+const string html_form_input_file::repo_update_needed = "hfif_need_repo_update";
+const string html_form_input_file::repo_updated = "hfif_repo_has_been_updated";
 const string html_form_input_file::triggered_event = "triggered";
 
     // class names
@@ -65,7 +67,8 @@ html_form_input_file::html_form_input_file(const string & label,
     entrep(nullptr),
     refresh_get_body(false),
     selmode(select_file),
-    internal_change(false)
+    internal_change(false),
+    repo_updater(nullptr)
 {
     init();
 
@@ -138,6 +141,14 @@ void html_form_input_file::set_entrepot(shared_ptr<libdar::entrepot> entrepot)
     act(changed_entrepot);
 }
 
+void html_form_input_file::set_entrepot_updater(events* updater)
+{
+    repo_updater = updater;
+
+    if(repo_updater != nullptr)
+	repo_updater->record_actor_on_event(this, repo_updated);
+};
+
 string html_form_input_file::get_min_digits() const
 {
     if(selmode != select_slice)
@@ -165,7 +176,10 @@ void html_form_input_file::on_event(const string & event_name)
     }
     else if(event_name == triggered_event)
     {
-	user_select.go_select(entrep, input.get_value());
+	if(repo_updater == nullptr)
+	    user_select.go_select(entrep, input.get_value());
+	else
+	    act(repo_update_needed);
     }
     else if(event_name == html_select_file::entry_selected)
     {
@@ -196,6 +210,8 @@ void html_form_input_file::on_event(const string & event_name)
 	my_body_part_has_changed(); // needed also to remove the selection popup
 	act(changed_event_name);
     }
+    else if(event_name == repo_updated)
+	user_select.go_select(entrep, input.get_value());
     else
 	throw WEBDAR_BUG;
 }
@@ -358,6 +374,8 @@ void html_form_input_file::init()
 
     register_name(changed_event_name);
     register_name(changed_entrepot);
+    register_name(repo_update_needed);
+	// we do not register repo_updated because this is the object given to set_entrepot_updater() that trigger those events
 
     input.record_actor_on_event(this, html_form_input::changed);
     trigger.record_actor_on_event(this, triggered_event);
