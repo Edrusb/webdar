@@ -289,6 +289,7 @@ void guichet::clear_json()
 
     clear_adopted = true;
     select.set_selected_num(0);
+    adopted_jsoner->clear_json();
 }
 
 
