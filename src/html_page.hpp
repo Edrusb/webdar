@@ -68,6 +68,10 @@ public:
 	/// of existing sessions
     void set_refresh_redirection(unsigned int seconds, const std::string & url);
 
+
+	/// get current deridection url
+    const std::string & get_refresh_redirection() const { return redirect; };
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
