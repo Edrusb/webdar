@@ -118,8 +118,8 @@ void html_libdar_running_popup::on_event(const string & event_name)
     else if(event_name == html_web_user_interaction::libdar_has_finished)
     {
 	my_body_part_has_changed();
-	act(libdar_has_finished); // propagating the event
 	set_visible(false); // nothing more to show
+	act(libdar_has_finished); // propagating the event
     }
     else if(event_name == html_web_user_interaction::can_refresh)
     {
