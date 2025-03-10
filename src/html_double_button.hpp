@@ -48,7 +48,7 @@ class html_double_button : public body_builder, public events, public actor
 {
 public:
     html_double_button(const std::string & label, const std::string & x_event_name);
-    html_double_button(const html_double_button & ref) = delete;
+    html_double_button(const html_double_button & ref) = default;
     html_double_button(html_double_button && ref) noexcept = delete;
     html_double_button & operator = (const html_double_button & ref) = delete;
     html_double_button & operator = (html_double_button && ref) noexcept = delete;
