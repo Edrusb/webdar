@@ -449,7 +449,6 @@ void html_web_user_interaction::set_mode(mode_type m)
 	finish.set_visible(false);
 	set_visible(true);
 	was_interrupted = false;
-	trigger_refresh();
 	check_clean_status();
 	break;
     case end_asked:
