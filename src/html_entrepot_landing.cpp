@@ -51,7 +51,7 @@ html_entrepot_landing::html_entrepot_landing():
 	custom_event_name(changed),
 	custom_event_landing_path(landing_path_changed),
 	ignore_events(false),
-	delayed_landing_update(false)
+	entrepot_changed(true)
 {
 
 	// component configuration
@@ -75,12 +75,15 @@ html_entrepot_landing::html_entrepot_landing():
     entrep.record_actor_on_event(this, html_entrepot::changed);
     landing_path.set_change_event_name(landing_path_changed);
     landing_path.record_actor_on_event(this, landing_path_changed);
+    landing_path.record_actor_on_event(this, html_form_input_file::repo_update_needed);
     use_landing_path.set_change_event_name(landing_path_changed);
     use_landing_path.record_actor_on_event(this, landing_path_changed);
     repoxfer.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
     register_name(custom_event_name);         // is equal to "changed" at cosntruction time (here)
     register_name(custom_event_landing_path); // is equal to landing_path_changed at construction time
 
+    register_name(html_form_input_file::repo_updated);
+    landing_path.set_entrepot_updater(this);
 
     	// visibility
     repoxfer.set_visible(false);
@@ -90,9 +93,24 @@ html_entrepot_landing::html_entrepot_landing():
 
 shared_ptr<libdar::entrepot> & html_entrepot_landing::get_entrepot(shared_ptr<html_web_user_interaction> & webui) const
 {
-    return entrep.get_entrepot(webui);
-}
+    entrep_ctrl.lock();
+    try
+    {
+	if(entrepot_changed)
+	{
+	    libdar_entrep = entrep.get_entrepot(webui);
+	    entrepot_changed = false;
+	}
+    }
+    catch(...)
+    {
+	entrep_ctrl.unlock();
+	throw;
+    }
+    entrep_ctrl.unlock();
 
+    return libdar_entrep;
+}
 
 void html_entrepot_landing::on_event(const string & event_name)
 {
@@ -101,26 +119,33 @@ void html_entrepot_landing::on_event(const string & event_name)
 
     if(event_name == html_entrepot::changed)
     {
-	delayed_landing_update = true;
-	my_body_part_has_changed(); // update will be done from inherited_get_body_part()
-
+	entrepot_changed = true;
 	trigger_changed_event();
-	    // yes we propagate right now as other
-	    // actor component may be visible and
-	    // able to handle this
     }
     else if(event_name == html_libdar_running_popup::libdar_has_finished)
     {
-	if(delayed_landing_update)
-	{
-	    delayed_landing_update = false;
-	    trigger_changed_event();
-	}
+	landing_path.set_entrepot(libdar_entrep);
+	act(html_form_input_file::repo_updated);
     }
     else if(event_name == custom_event_landing_path)
     {
 	if(use_landing_path.get_value_as_bool())
 	    act(custom_event_landing_path);
+    }
+    else if(event_name == html_form_input_file::repo_update_needed)
+    {
+	    // we will run a thread thus we should be visible for
+	    // repoxfer to be able to control the thread.
+	    // This is obviously the case else the repo_update_needed
+	    // event, which comes from one of our component (landing_path)
+	    // would not have been generated.
+	if(entrepot_changed)
+	    start_updating_landing();
+	else
+	{
+	    landing_path.set_entrepot(libdar_entrep);
+	    act(html_form_input_file::repo_updated);
+	}
     }
     else
 	throw WEBDAR_BUG;
@@ -225,9 +250,6 @@ void html_entrepot_landing::set_to_webdar_defaults()
 string html_entrepot_landing::inherited_get_body_part(const chemin & path,
 						      const request & req)
 {
-    if(delayed_landing_update)
-	start_updating_landing();
-
     return get_body_part_from_all_children(path, req);
 }
 
@@ -248,8 +270,21 @@ void html_entrepot_landing::inherited_run()
 
     if(!ptr)
 	throw WEBDAR_BUG;
-    landing_path.set_entrepot(entrep.get_entrepot(ptr));
-	// this should not trigger a change event from landing_path
+    entrep_ctrl.lock();
+    try
+    {
+	if(entrepot_changed)
+	{
+	    libdar_entrep = entrep.get_entrepot(ptr);
+	    entrepot_changed = false;
+	}
+    }
+    catch(...)
+    {
+	entrep_ctrl.unlock();
+	throw;
+    }
+    entrep_ctrl.unlock();
 }
 
 void html_entrepot_landing::signaled_inherited_cancel()
@@ -271,7 +306,5 @@ void html_entrepot_landing::trigger_changed_event()
 
 void html_entrepot_landing::start_updating_landing()
 {
-    delayed_landing_update = false;
-    repoxfer.set_visible(true);
     repoxfer.run_and_control_thread(this);
 }

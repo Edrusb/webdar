@@ -111,7 +111,9 @@ private:
     std::string custom_event_name;
     std::string custom_event_landing_path;
     bool ignore_events;
-    bool delayed_landing_update;
+    mutable libthreadar::mutex entrep_ctrl; ///< control write access to entrepot_changed and libdar_entrep
+    mutable bool entrepot_changed; ///< whether libdar_entrep should be re-fetched
+    mutable std::shared_ptr<libdar::entrepot> libdar_entrep;
 
 	// warning, custom_event need to be declared before the html_libdar_running_popup
 	// because at destruction time of this object, the html_libdar_running_popup destructor
