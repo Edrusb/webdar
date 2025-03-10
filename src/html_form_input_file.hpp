@@ -38,7 +38,7 @@ extern "C"
 #include "html_div.hpp"
 #include "events.hpp"
 #include "html_form_input.hpp"
-#include "html_button.hpp"
+#include "html_double_button.hpp"
 #include "html_select_file.hpp"
 #include "html_text.hpp"
 
@@ -175,7 +175,7 @@ private:
 
     html_form_input input;    ///< input field editable and/or filled by the popup window
     html_div input_div;       ///< wrapping the html_form_input for CSS class assignment
-    html_button trigger;      ///< the button that triggers the popup window
+    html_double_button trigger;      ///< the button that triggers the popup window
     html_select_file user_select;  ///< the popup window letting the user select a file or dir
     html_text empty_text;    ///< to end the float:left CSS property applied to input and trigger
 
