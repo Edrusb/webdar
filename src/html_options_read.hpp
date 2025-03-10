@@ -163,6 +163,7 @@ private:
 	/// \note not doing so may lead to run() this object which involves an html_web_user_interaction
 	/// while the object is not visible and this this interaction component not operational
     bool need_ref_entrepot_update;
+    bool updating_entrepot;
 
     html_derouleur deroule;
     html_form form_src;

@@ -72,6 +72,7 @@ html_options_read::html_options_read():
     ref_execute("Command to execute locally before reading each slice", html_form_input::text, "", "80%"),
     ref_slice_min_digits("Slice minimum digit", html_form_input::number, "0", "80%"),
     need_ref_entrepot_update(false),
+    updating_entrepot(false),
     ignore_events(false)
 {
     entrep.reset(new (nothrow) html_entrepot_landing());
@@ -169,6 +170,7 @@ html_options_read::html_options_read():
     ref_crypto_size.record_actor_on_event(this, html_form_input_unit::changed);
     ref_execute.record_actor_on_event(this, html_form_input::changed);
     ref_slice_min_digits.record_actor_on_event(this, html_form_input::changed);
+    ref_webui.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
 
 	// setting up our own events
     register_name(landing_path_changed);
@@ -401,7 +403,12 @@ void html_options_read::on_event(const string & event_name)
     }
     else if(event_name == ref_entrepot_has_changed)
     {
-	need_ref_entrepot_update = true;
+	if(! updating_entrepot)
+	    need_ref_entrepot_update = true;
+	    // this is necessary to avoid loop where
+	    // the entrepot update in inherited_run
+	    // triggers a ref_entrepot_has_changed
+	    // event.
     }
     else if(event_name == html_crypto_algo::changed
 	    || event_name == html_form_input::changed
@@ -459,6 +466,10 @@ void html_options_read::on_event(const string & event_name)
     {
 	ref_path.set_value(ref_entrep->get_landing_path());
     }
+    else if(event_name == html_libdar_running_popup::libdar_has_finished)
+    {
+	updating_entrepot = false;
+    }
     else
 	throw WEBDAR_BUG; // unexpected event
 }
@@ -477,8 +488,11 @@ void html_options_read::set_to_webdar_defaults()
 string html_options_read::inherited_get_body_part(const chemin & path,
 						  const request & req)
 {
-    if(need_ref_entrepot_update)
+    if(need_ref_entrepot_update && ! updating_entrepot)
+    {
+	updating_entrepot = true;
 	update_ref_entrepot();
+    }
     return get_body_part_from_all_children(path, req);
 }
 
