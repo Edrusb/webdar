@@ -345,6 +345,8 @@ void html_web_user_interaction::on_event(const string & event_name)
 
 void html_web_user_interaction::clear()
 {
+    update_controlled_thread_status();
+
     all_threads_pending.lock();
     try
     {
