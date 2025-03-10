@@ -54,7 +54,7 @@ const string html_web_user_interaction::force_end_libdar = "html_web_user_intera
 const string html_web_user_interaction::close_libdar_screen = "html_web_user_interaction_close_libdar_screen";
 
 html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
-    mode(closed), // to force set_mode(normal) to do something in constructor body below
+    mode(closed),
     autohide(false),
     hide_unless_interrupted(false),
     was_interrupted(false),
@@ -163,15 +163,30 @@ void html_web_user_interaction::run_and_control_thread(libthreadar::thread* arg)
     if(arg == nullptr)
 	throw WEBDAR_BUG;
 
+    if(managed_thread != nullptr)
+	throw WEBDAR_BUG; // already controlling a thread
+
+    switch(mode)
+    {
+    case normal:
+	    // clear() has already been run
+	break;
+    case end_asked:
+	throw WEBDAR_BUG;
+    case end_forced:
+	throw WEBDAR_BUG;
+    case finished:
+	throw WEBDAR_BUG;
+    case closed:
+	clear();
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+
     all_threads_pending.lock();
     try
     {
-	if(mode == finished
-	   || mode == closed)
-	    set_mode(normal);
-
-	if(managed_thread != nullptr)
-	    throw WEBDAR_BUG; // already controlling a thread
 	managed_thread = arg;
 
 	set_visible(true);
@@ -180,24 +195,6 @@ void html_web_user_interaction::run_and_control_thread(libthreadar::thread* arg)
 	// the component will not work as it will not receive any request
 	// to provide a body part, and thus allow user to control the thread
 	arg->run();
-
-	switch(mode)
-	{
-	case normal:
-	    break;
-	case end_asked:
-	    throw WEBDAR_BUG;
-	    break;
-	case end_forced:
-	    throw WEBDAR_BUG;
-	    break;
-	case finished:
-	    throw WEBDAR_BUG;
-	case closed:
-	    throw WEBDAR_BUG;
-	default:
-	    throw WEBDAR_BUG;
-	}
     }
     catch(...)
     {
@@ -351,11 +348,14 @@ void html_web_user_interaction::clear()
     all_threads_pending.lock();
     try
     {
-	update_controlled_thread_status();
+	if(managed_thread != nullptr)
+	    throw WEBDAR_BUG; // should not clear status when a thread is running
+
 	check_libdata();
 	lib_data->clear();
 	h_inter.set_visible(false);
 	h_gtstr_fs.set_visible(false);
+	h_form.set_visible(false);
 	adjust_visibility();
 	stats.clear_counters();
 	stats.clear_labels();
@@ -549,18 +549,8 @@ void html_web_user_interaction::update_html_from_libdar_status()
 
 void html_web_user_interaction::update_controlled_thread_status()
 {
-    switch(mode)
-    {
-    case normal:
-    case end_asked:
-    case end_forced:
-	break;    // execute the code below
-    case finished:
-    case closed:
-	return;   // end this method
-    default:
-	throw WEBDAR_BUG;
-    }
+    if(managed_thread == nullptr)
+	return;
 
     try
     {
@@ -577,11 +567,16 @@ void html_web_user_interaction::update_controlled_thread_status()
 		}
 		catch(...)
 		{
+
+			// Pay attention! this code here beelow is always executed
+			// even when join() does not throw exception above!!!
+			//
+
 		    all_threads_pending.broadcast(); // awaking all thread waiting this thread to end
 
 		    managed_thread = nullptr;
 		    if(real_exception)
-			throw;
+			throw;    // caught exception is one thrown by join(), we propagate it
 		}
 	    }
 	}
@@ -635,9 +630,6 @@ void html_web_user_interaction::clean_threads_termination(bool force)
 		// as the libdar threads do not rely on the
 		// libthreadar::thread::cancellation_checkoint() way,
 		// this is not a problem.
-	    managed_thread->join();
-		// may throw exception and interrupt
-		// the thread cleaning process
 	}
     }
     else

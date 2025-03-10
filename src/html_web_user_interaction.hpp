@@ -148,7 +148,9 @@ public:
 
 	/// clear counters, logs and reset html interface and make the component become visible if it was not already
 
-	/// \note this implies hide_statistics, but counters labels stay untouched
+	/// \note this implies hide_statistics, but counters labels stay untouched.
+	/// \warning this call should not be run when a thread has been given to run_and_control_thread() until
+	/// the libdar_has_finished event occured.
     void clear();
 
 	/// libdar strcture provided for user interaction
