@@ -197,12 +197,14 @@ void html_entrepot_landing::load_json(const json & source)
 	    throw;
 	}
 	ignore_events = false;
+
     }
     catch(json::exception & e)
     {
 	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
     }
-    on_event(html_entrepot::changed);
+    entrepot_changed = true;
+    trigger_changed_event();
     on_event(custom_event_landing_path);
 }
 
@@ -236,7 +238,8 @@ void html_entrepot_landing::clear_json()
     }
     ignore_events = false;
 
-    on_event(html_entrepot::changed);
+    entrepot_changed = true;
+    trigger_changed_event();
     on_event(custom_event_landing_path);
 }
 
