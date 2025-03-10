@@ -129,10 +129,7 @@ shared_ptr<libdar::entrepot> & html_entrepot::get_entrepot(shared_ptr<html_web_u
     if(!webui)
 	throw WEBDAR_BUG;
 
-    webui->clear();
-
     entrep_ctrl.lock();
-
     try
     {
 	dialog = webui->get_user_interaction();
