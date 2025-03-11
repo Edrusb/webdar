@@ -247,8 +247,16 @@ void html_options_isolate::load_json(const json & source)
 	{
 	    delta_sig.set_value_as_bool(config.at(jlabel_delta_sig));
 	    delta_transfer_mode.set_value_as_bool(config.at(jlabel_delta_xfer));
-	    guichet_sig_block_size.load_json(config.at(jlabel_sig_block_size));
-	    guichet_delta_mask.load_json(config.at(jlabel_delta_mask));
+	    if(delta_sig.get_value_as_bool() && delta_transfer_mode.get_value_as_bool())
+	    {
+		guichet_sig_block_size.load_json(config.at(jlabel_sig_block_size));
+		guichet_delta_mask.load_json(config.at(jlabel_delta_mask));
+	    }
+	    else
+	    {
+		guichet_sig_block_size.clear_json();
+		guichet_delta_mask.clear_json();
+	    }
 	    guichet_entrep.load_json(config.at(jlabel_entrep));
 	    allow_over.set_value_as_bool(config.at(jlabel_allow_over));
 	    warn_over.set_value_as_bool(config.at(jlabel_warn_over));
@@ -279,11 +287,23 @@ void html_options_isolate::load_json(const json & source)
 json html_options_isolate::save_json() const
 {
     json config;
+    html_options_isolate* me = const_cast<html_options_isolate*>(this);
+
+    if(me == nullptr)
+	throw WEBDAR_BUG;
 
     config[jlabel_delta_sig] = delta_sig.get_value_as_bool();
     config[jlabel_delta_xfer] = delta_transfer_mode.get_value_as_bool();
-    config[jlabel_sig_block_size] = guichet_sig_block_size.save_json();
-    config[jlabel_delta_mask] = guichet_delta_mask.save_json();
+    if(delta_sig.get_value_as_bool() && delta_transfer_mode.get_value_as_bool())
+    {
+	config[jlabel_sig_block_size] = guichet_sig_block_size.save_json();
+	config[jlabel_delta_mask] = guichet_delta_mask.save_json();
+    }
+    else
+    {
+	me->guichet_sig_block_size.clear_json();
+	me->guichet_delta_mask.clear_json();
+    }
     config[jlabel_entrep] = guichet_entrep.save_json();
     config[jlabel_allow_over] = allow_over.get_value_as_bool();
     config[jlabel_warn_over] = warn_over.get_value_as_bool();
