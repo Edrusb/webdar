@@ -371,11 +371,22 @@ void html_options_merge::load_json(const json & source)
 	    execute.set_value(config.at(jlabel_execute));
 	    empty.set_value_as_bool(config.at(jlabel_empty));
 	    has_aux.set_value_as_bool(config.at(jlabel_has_aux));
+	    if(has_aux.get_value_as_bool())
+		auxiliary.load_json(config.at(jlabel_auxiliary));
+	    else
+		auxiliary.clear_json();
 	    decremental.set_value_as_bool(config.at(jlabel_decremental));
-	    auxiliary.load_json(config.at(jlabel_auxiliary));
 	    delta_sig.set_selected_id(config.at(jlabel_delta_sig));
-	    guichet_sig_block_size.load_json(config.at(jlabel_sig_block_size));
-	    guichet_delta_mask.load_json(config.at(jlabel_delta_mask));
+	    if(delta_sig.get_selected_id() == "compute")
+	    {
+		guichet_sig_block_size.load_json(config.at(jlabel_sig_block_size));
+		guichet_delta_mask.load_json(config.at(jlabel_delta_mask));
+	    }
+	    else
+	    {
+		guichet_sig_block_size.clear_json();
+		guichet_delta_mask.clear_json();
+	    }
 	    info_details.set_value_as_bool(config.at(jlabel_info_details));
 	    display_treated.set_value_as_bool(config.at(jlabel_display_treated));
 	    display_treated_only_dir.set_value_as_bool(config.at(jlabel_display_only_dir));
@@ -408,6 +419,10 @@ void html_options_merge::load_json(const json & source)
 json html_options_merge::save_json() const
 {
     json config;
+    html_options_merge* me = const_cast<html_options_merge*>(this);
+
+    if(me == nullptr)
+	throw WEBDAR_BUG;
 
     config[jlabel_entrep] = guichet_entrep.save_json();
     config[jlabel_allow_over] = allow_over.get_value_as_bool();
@@ -420,11 +435,22 @@ json html_options_merge::save_json() const
     config[jlabel_execute] = execute.get_value();
     config[jlabel_empty] = empty.get_value_as_bool();
     config[jlabel_has_aux] = has_aux.get_value_as_bool();
+    if(has_aux.get_value_as_bool())
+	config[jlabel_auxiliary] = auxiliary.save_json();
+    else
+	me->auxiliary.clear_json();
     config[jlabel_decremental] = decremental.get_value_as_bool();
-    config[jlabel_auxiliary] = auxiliary.save_json();
     config[jlabel_delta_sig] = delta_sig.get_selected_id();
-    config[jlabel_sig_block_size] = guichet_sig_block_size.save_json();
-    config[jlabel_delta_mask] = guichet_delta_mask.save_json();
+    if(delta_sig.get_selected_id() == "compute")
+    {
+	config[jlabel_sig_block_size] = guichet_sig_block_size.save_json();
+	config[jlabel_delta_mask] = guichet_delta_mask.save_json();
+    }
+    else
+    {
+	me->guichet_sig_block_size.clear_json();
+	me->guichet_delta_mask.clear_json();
+    }
     config[jlabel_info_details] = info_details.get_value_as_bool();
     config[jlabel_display_treated] = display_treated.get_value_as_bool();
     config[jlabel_display_only_dir] = display_treated_only_dir.get_value_as_bool();
