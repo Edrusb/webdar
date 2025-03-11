@@ -285,6 +285,14 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 	    set_warning("Cannot save a configuration without a name");
 	else
 	{
+		// we use a config temporary variable here
+		// to be sure the save_json() method is called
+		// before the get_using_set() one, as the first
+		// may have impact on the second, some components
+		// making some cleanup (forgetting the unselected
+		// alternatives) within save_json()
+	    json config = wrapped_jsoner->save_json();
+
 	    try
 	    {
 		if(config_name.get_value() != currently_loaded)
@@ -294,11 +302,11 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 		    if(wrapped_subconfig == nullptr)
 			biblio->add_config(categ,
 					   config_name.get_value(),
-					   wrapped_jsoner->save_json());
+					   config);
 		    else
 			biblio->add_config(categ,
 					   config_name.get_value(),
-					   wrapped_jsoner->save_json(),
+					   config,
 					   wrapped_subconfig->get_using_set());
 		}
 		else
@@ -306,11 +314,11 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 		    if(wrapped_subconfig == nullptr)
 			biblio->update_config(categ,
 					      currently_loaded,
-					      wrapped_jsoner->save_json());
+					      config);
 		    else
 			biblio->update_config(categ,
 					      currently_loaded,
-					      wrapped_jsoner->save_json(),
+					      config,
 					      wrapped_subconfig->get_using_set());
 		}
 		    // these previous alternatives all trigger bibliotheque::changed(categ) event
