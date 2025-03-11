@@ -152,7 +152,7 @@ void html_entrepot_landing::on_event(const string & event_name)
 }
 
 
-void html_entrepot_landing::set_event_name(const string & name)
+void html_entrepot_landing::set_event_entrepot(const string & name)
 {
     rename_name(custom_event_entrepot, name);
     custom_event_entrepot = name;

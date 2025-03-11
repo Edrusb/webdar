@@ -75,7 +75,7 @@ public:
     virtual void on_event(const std::string & event_name) override;
 
 	/// change the change event name
-    void set_event_name(const std::string & name);
+    void set_event_entrepot(const std::string & name);
 
 	/// change landing_path_changed event name
     void set_event_landing_path(const std::string & name);

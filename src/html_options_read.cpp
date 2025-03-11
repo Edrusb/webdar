@@ -138,8 +138,8 @@ html_options_read::html_options_read():
 	// events
 
 	// modyfing entrepot objects to be able to differentiate which one has changed:
-    entrep->set_event_name(entrepot_has_changed);
-    ref_entrep->set_event_name(ref_entrepot_has_changed);
+    entrep->set_event_entrepot(entrepot_has_changed);
+    ref_entrep->set_event_entrepot(ref_entrepot_has_changed);
     ref_entrep->set_event_landing_path(ref_entrepot_landing_path_changed);
 
 	// these are the same event name as the ones we used for ourself
