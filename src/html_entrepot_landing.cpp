@@ -48,7 +48,7 @@ html_entrepot_landing::html_entrepot_landing():
 	fs(""),
 	use_landing_path("Replace current backup path by the landing path", html_form_input::check, "", "1"),
 	landing_path("Landing path", "/", "30", "Select default path to store and look for backups..."),
-	custom_event_name(entrepot_only_changed),
+	custom_event_entrepot(entrepot_only_changed),
 	custom_event_landing_path(landing_path_changed),
 	ignore_events(false),
 	entrepot_changed(true)
@@ -79,7 +79,7 @@ html_entrepot_landing::html_entrepot_landing():
     use_landing_path.set_change_event_name(landing_path_changed);
     use_landing_path.record_actor_on_event(this, landing_path_changed);
     repoxfer.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
-    register_name(custom_event_name);         // is equal to "changed" at cosntruction time (here)
+    register_name(custom_event_entrepot);     // is equal to "entrepot_only_changed" at construction time (here)
     register_name(custom_event_landing_path); // is equal to landing_path_changed at construction time
 
     register_name(html_form_input_file::repo_updated);
@@ -154,8 +154,8 @@ void html_entrepot_landing::on_event(const string & event_name)
 
 void html_entrepot_landing::set_event_name(const string & name)
 {
-    rename_name(custom_event_name, name);
-    custom_event_name = name;
+    rename_name(custom_event_entrepot, name);
+    custom_event_entrepot = name;
 }
 
 void html_entrepot_landing::set_event_landing_path(const string & name)
@@ -301,10 +301,10 @@ void html_entrepot_landing::signaled_inherited_cancel()
 
 void html_entrepot_landing::trigger_entrepot_changed_event()
 {
-    if(custom_event_name.empty())
+    if(custom_event_entrepot.empty())
 	act(entrepot_only_changed);
     else
-	act(custom_event_name);
+	act(custom_event_entrepot);
 }
 
 void html_entrepot_landing::start_updating_landing()

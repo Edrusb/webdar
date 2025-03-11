@@ -108,7 +108,7 @@ protected:
     virtual void signaled_inherited_cancel() override;
 
 private:
-    std::string custom_event_name;
+    std::string custom_event_entrepot;
     std::string custom_event_landing_path;
     bool ignore_events;
     mutable libthreadar::mutex entrep_ctrl; ///< control write access to entrepot_changed and libdar_entrep
