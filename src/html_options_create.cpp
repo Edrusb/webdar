@@ -472,8 +472,16 @@ void html_options_create::load_json(const json & source)
 		throw WEBDAR_BUG;
 	    }
 	    delta_sig.set_value_as_bool(config.at(jlabel_delta_sig));
-	    guichet_sig_block_size.load_json(config.at(jlabel_sig_block_size));
-	    guichet_delta_mask.load_json(config.at(jlabel_delta_mask));
+	    if(delta_sig.get_value_as_bool())
+	    {
+		guichet_sig_block_size.load_json(config.at(jlabel_sig_block_size));
+		guichet_delta_mask.load_json(config.at(jlabel_delta_mask));
+	    }
+	    else
+	    {
+		guichet_sig_block_size.clear_json();
+		guichet_delta_mask.clear_json();
+	    }
 	    alter_atime.set_selected_id_with_warning(config.at(jlabel_alter_atime), jlabel_alter_atime);
 	    furtive_read_mode.set_value_as_bool(config.at(jlabel_furtive_read));
 	    zeroing_neg_date.set_value_as_bool(config.at(jlabel_zeroing));
@@ -529,6 +537,10 @@ void html_options_create::load_json(const json & source)
 json html_options_create::save_json() const
 {
     json ret;
+    html_options_create* me = const_cast<html_options_create*>(this);
+
+    if(me == nullptr)
+	throw WEBDAR_BUG;
 
     ret[jlabel_entrep] = guichet_entrep.save_json();
     ret[jlabel_file_mask] = guichet_filename_mask.save_json();
@@ -539,7 +551,7 @@ json html_options_create::save_json() const
     switch(archtype.get_selected_num())
     {
     case 0:
-	const_cast<html_options_create*>(this)->reference.clear_json();
+	me->reference.clear_json();
 	break;
     case 1:
     case 2:
@@ -547,14 +559,22 @@ json html_options_create::save_json() const
 	break;
     case 3:
     case 4:
-	const_cast<html_options_create*>(this)->reference.clear_json();
+	me->reference.clear_json();
 	break;
     default:
 	throw WEBDAR_BUG;
     }
     ret[jlabel_delta_sig] = delta_sig.get_value_as_bool();
-    ret[jlabel_sig_block_size] = guichet_sig_block_size.save_json();
-    ret[jlabel_delta_mask] = guichet_delta_mask.save_json();
+    if(delta_sig.get_value_as_bool())
+    {
+	ret[jlabel_sig_block_size] = guichet_sig_block_size.save_json();
+	ret[jlabel_delta_mask] = guichet_delta_mask.save_json();
+    }
+    else
+    {
+	me->guichet_sig_block_size.clear_json();
+	me->guichet_delta_mask.clear_json();
+    }
     ret[jlabel_alter_atime] = alter_atime.get_selected_id();
     ret[jlabel_furtive_read] = furtive_read_mode.get_value_as_bool();
     ret[jlabel_zeroing] = zeroing_neg_date.get_value_as_bool();
