@@ -164,6 +164,7 @@ private:
 	/// while the object is not visible and this this interaction component not operational
     bool need_ref_entrepot_update;
     bool updating_entrepot;
+    bool update_from_load_json; ///< used to prevent event change when change comes from load_json()
 
     html_derouleur deroule;
     html_form form_src;

@@ -73,6 +73,7 @@ html_options_read::html_options_read():
     ref_slice_min_digits("Slice minimum digit", html_form_input::number, "0", "80%"),
     need_ref_entrepot_update(false),
     updating_entrepot(false),
+    update_from_load_json(false),
     ignore_events(false)
 {
     entrep.reset(new (nothrow) html_entrepot_landing());
@@ -326,6 +327,10 @@ void html_options_read::load_json(const json & source)
 	}
 	ignore_events = false;
 	trigger_changed();
+	    // we can trigger events within the load_json() call
+	    // but must prevent those later triggered from inherited_run() from inherited_get_body_part()
+	update_from_load_json = true;
+
     }
     catch(json::exception & e)
     {
@@ -450,10 +455,14 @@ void html_options_read::on_event(const string & event_name)
 	    ignore_events = false;
 	}
 
-	    // no need to call my_body_part_has_changed()
-	    // because changed done in on_event concern
-	    // body_builder objects we have adopted
-	trigger_changed();
+	if(! update_from_load_json)
+		// no need to call my_body_part_has_changed()
+		// because changed done in on_event concern
+		// body_builder objects we have adopted
+	    trigger_changed();
+	else
+
+	    update_from_load_json = false;
     }
     else if(event_name == html_form_input_file::changed_event)
     {

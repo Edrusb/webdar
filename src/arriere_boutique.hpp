@@ -364,16 +364,26 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
     {
 	    // user selected a configuration to load
 
-	if(listing.is_selected())
+	ignore_events = true;
+	try
 	{
-	    currently_loaded = listing.get_selected_id();
-	    silently_update_config_name(currently_loaded);
-	    wrapped_jsoner->load_json(biblio->fetch_config(categ, currently_loaded));
-	    need_saving.set_visible(false);
-	    clear_warning();
+	    if(listing.is_selected())
+	    {
+		currently_loaded = listing.get_selected_id();
+		silently_update_config_name(currently_loaded);
+		wrapped_jsoner->load_json(biblio->fetch_config(categ, currently_loaded));
+		need_saving.set_visible(false);
+		clear_warning();
+	    }
+	    else
+		set_warning("Select first the configuration to load");
 	}
-	else
-	    set_warning("Select first the configuration to load");
+	catch(...)
+	{
+	    ignore_events = false;
+	    throw;
+	}
+	ignore_events = false;
     }
     else if(event_name == bibliotheque::changed(categ))
     {
@@ -471,6 +481,8 @@ template <class T> void arriere_boutique<T>::set_warning(const std::string & wm)
 
 template <class T> void arriere_boutique<T>::silently_update_config_name(const std::string & val)
 {
+    bool original_status = ignore_events;
+
     ignore_events = true;
     try
     {
@@ -481,10 +493,10 @@ template <class T> void arriere_boutique<T>::silently_update_config_name(const s
     }
     catch(...)
     {
-	ignore_events = false;
+	ignore_events = original_status;
 	throw;
     }
-    ignore_events = false;
+    ignore_events = original_status;
 }
 
 #endif
