@@ -56,7 +56,7 @@ public:
     static const std::string entrepot_only_changed;
 
 	/// event triggered only when the landing path changed (and nothing else changed)
-    static const std::string landing_path_changed;
+    static const std::string landing_path_only_changed;
 
     html_entrepot_landing();
     html_entrepot_landing(const html_entrepot_landing & ref) = delete;

@@ -325,7 +325,7 @@ html_options_create::html_options_create():
     compr_params->record_actor_on_event(this, html_compression_params::changed);
 
     entrep->record_actor_on_event(this, html_entrepot_landing::entrepot_only_changed);
-    entrep->record_actor_on_event(this, html_entrepot_landing::landing_path_changed);
+    entrep->record_actor_on_event(this, html_entrepot_landing::landing_path_only_changed);
     filename_mask->record_actor_on_event(this, html_mask_form_filename::changed);
     path_mask->record_actor_on_event(this, html_mask_form_path::changed);
     ea_mask->record_actor_on_event(this, html_mask_form_filename::changed);
@@ -942,7 +942,7 @@ void html_options_create::on_event(const string & event_name)
     {
 	trigger_changed();
     }
-    else if(event_name == html_entrepot_landing::landing_path_changed)
+    else if(event_name == html_entrepot_landing::landing_path_only_changed)
     {
 	act(landing_path_changed);
     }

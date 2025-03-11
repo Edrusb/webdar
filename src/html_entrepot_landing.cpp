@@ -40,7 +40,7 @@ extern "C"
 using namespace std;
 
 const string html_entrepot_landing::entrepot_only_changed = "html_entrep_land_changed";
-const string html_entrepot_landing::landing_path_changed = "html_entrep_landing_changed";
+const string html_entrepot_landing::landing_path_only_changed = "html_entrep_landing_changed";
 
 
 html_entrepot_landing::html_entrepot_landing():
@@ -49,7 +49,7 @@ html_entrepot_landing::html_entrepot_landing():
 	use_landing_path("Replace current backup path by the landing path", html_form_input::check, "", "1"),
 	landing_path("Landing path", "/", "30", "Select default path to store and look for backups..."),
 	custom_event_entrepot(entrepot_only_changed),
-	custom_event_landing_path(landing_path_changed),
+	custom_event_landing_path(landing_path_only_changed),
 	ignore_events(false),
 	entrepot_changed(true)
 {
@@ -73,11 +73,11 @@ html_entrepot_landing::html_entrepot_landing():
 
 	// events
     entrep.record_actor_on_event(this, html_entrepot::changed);
-    landing_path.set_change_event_name(landing_path_changed);
-    landing_path.record_actor_on_event(this, landing_path_changed);
+    landing_path.set_change_event_name(landing_path_only_changed);
+    landing_path.record_actor_on_event(this, landing_path_only_changed);
     landing_path.record_actor_on_event(this, html_form_input_file::repo_update_needed);
-    use_landing_path.set_change_event_name(landing_path_changed);
-    use_landing_path.record_actor_on_event(this, landing_path_changed);
+    use_landing_path.set_change_event_name(landing_path_only_changed);
+    use_landing_path.record_actor_on_event(this, landing_path_only_changed);
     repoxfer.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
     register_name(custom_event_entrepot);     // is equal to "entrepot_only_changed" at construction time (here)
     register_name(custom_event_landing_path); // is equal to landing_path_changed at construction time

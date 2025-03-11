@@ -144,7 +144,7 @@ html_options_read::html_options_read():
 
 	// these are the same event name as the ones we used for ourself
     entrep->record_actor_on_event(this, entrepot_has_changed);
-    entrep->record_actor_on_event(this, html_entrepot_landing::landing_path_changed);
+    entrep->record_actor_on_event(this, html_entrepot_landing::landing_path_only_changed);
     ref_entrep->record_actor_on_event(this, ref_entrepot_has_changed);
     ref_entrep->record_actor_on_event(this, ref_entrepot_landing_path_changed);
 
@@ -469,7 +469,7 @@ void html_options_read::on_event(const string & event_name)
 	if(! ref_path.get_min_digits().empty())
 	    ref_slice_min_digits.set_value(ref_path.get_min_digits());
     }
-    else if(event_name == html_entrepot_landing::landing_path_changed)
+    else if(event_name == html_entrepot_landing::landing_path_only_changed)
 	act(landing_path_changed); // propagate the event
     else if(event_name == ref_entrepot_landing_path_changed)
     {

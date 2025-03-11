@@ -181,7 +181,7 @@ html_options_repair::html_options_repair():
     register_name(changed);
 
     entrep->record_actor_on_event(this, html_entrepot_landing::entrepot_only_changed);
-    entrep->record_actor_on_event(this, html_entrepot_landing::landing_path_changed);
+    entrep->record_actor_on_event(this, html_entrepot_landing::landing_path_only_changed);
     display_treated.record_actor_on_event(this, html_form_input::changed);
 
     info_details.record_actor_on_event(this, html_form_input::changed);
@@ -349,7 +349,7 @@ void html_options_repair::on_event(const string & event_name)
     {
 	trigger_changed();
     }
-    else if(event_name == html_entrepot_landing::landing_path_changed)
+    else if(event_name == html_entrepot_landing::landing_path_only_changed)
     {
 	act(landing_path_changed);
     }
