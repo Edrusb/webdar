@@ -167,7 +167,7 @@ html_options_isolate::html_options_isolate():
 
     delta_sig.record_actor_on_event(this, html_form_input::changed);
     delta_transfer_mode.record_actor_on_event(this, html_form_input::changed);
-    entrep->record_actor_on_event(this, html_entrepot_landing::changed);
+    entrep->record_actor_on_event(this, html_entrepot_landing::entrepot_only_changed);
     entrep->record_actor_on_event(this, html_entrepot_landing::landing_path_changed);
 
     sig_block_size->record_actor_on_event(this, html_form_sig_block_size::changed);
@@ -378,7 +378,7 @@ void html_options_isolate::on_event(const string & event_name)
 	    // body_builder objects we have adopted
 	trigger_changed();
     }
-    else if(event_name == html_entrepot_landing::changed)
+    else if(event_name == html_entrepot_landing::entrepot_only_changed)
     {
 	act(entrepot_changed);
 	trigger_changed();

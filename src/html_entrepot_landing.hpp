@@ -53,7 +53,7 @@ class html_entrepot_landing: public body_builder,
 {
 public:
 	// the use case is for the caller to know when to call get_entrepot()
-    static const std::string changed;
+    static const std::string entrepot_only_changed;
 
 	/// event triggered only when the landing path changed (and nothing else changed)
     static const std::string landing_path_changed;

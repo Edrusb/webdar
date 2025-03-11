@@ -145,7 +145,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     ab_entrepot.reset(new (nothrow) arriere_boutique<html_entrepot_landing>(ptr,
 									    bibliotheque::repo,
 									    tmp_e,
-									    html_entrepot_landing::changed,
+									    html_entrepot_landing::entrepot_only_changed,
 									    false));
     if(! ab_entrepot)
 	throw exception_memory();

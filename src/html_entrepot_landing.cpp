@@ -39,7 +39,7 @@ extern "C"
 
 using namespace std;
 
-const string html_entrepot_landing::changed = "html_entrep_land_changed";
+const string html_entrepot_landing::entrepot_only_changed = "html_entrep_land_changed";
 const string html_entrepot_landing::landing_path_changed = "html_entrep_landing_changed";
 
 
@@ -48,7 +48,7 @@ html_entrepot_landing::html_entrepot_landing():
 	fs(""),
 	use_landing_path("Replace current backup path by the landing path", html_form_input::check, "", "1"),
 	landing_path("Landing path", "/", "30", "Select default path to store and look for backups..."),
-	custom_event_name(changed),
+	custom_event_name(entrepot_only_changed),
 	custom_event_landing_path(landing_path_changed),
 	ignore_events(false),
 	entrepot_changed(true)
@@ -302,7 +302,7 @@ void html_entrepot_landing::signaled_inherited_cancel()
 void html_entrepot_landing::trigger_changed_event()
 {
     if(custom_event_name.empty())
-	act(changed);
+	act(entrepot_only_changed);
     else
 	act(custom_event_name);
 }

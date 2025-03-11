@@ -241,7 +241,7 @@ html_options_merge::html_options_merge():
     display_treated.record_actor_on_event(this, html_form_input::changed);
     compr_params->record_actor_on_event(this, html_compression_params::changed);
     has_aux.record_actor_on_event(this, html_form_input::changed);
-    entrep->record_actor_on_event(this, html_entrepot_landing::changed);
+    entrep->record_actor_on_event(this, html_entrepot_landing::entrepot_only_changed);
     entrep->record_actor_on_event(this, html_entrepot_landing::landing_path_changed);
 
     allow_over.record_actor_on_event(this, html_form_input::changed);
@@ -537,7 +537,7 @@ void html_options_merge::on_event(const string & event_name)
 	    // body_builder objects we have adopted
 	trigger_changed();
     }
-    else if(event_name == html_entrepot_landing::changed)
+    else if(event_name == html_entrepot_landing::entrepot_only_changed)
     {
 	act(entrepot_changed);
 	trigger_changed();
