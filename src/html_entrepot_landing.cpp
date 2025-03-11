@@ -39,9 +39,9 @@ extern "C"
 
 using namespace std;
 
-const string html_entrepot_landing::entrepot_only_changed = "html_entrep_land_changed";
-const string html_entrepot_landing::landing_path_only_changed = "html_entrep_landing_changed";
-
+const string html_entrepot_landing::changed = "html_entrep_landing_changed";
+const string html_entrepot_landing::entrepot_only_changed = "html_entrep_land_only_changed";
+const string html_entrepot_landing::landing_path_only_changed = "html_entrep_landing_only_hanged";
 
 html_entrepot_landing::html_entrepot_landing():
         form("Apply changes"),
@@ -81,6 +81,7 @@ html_entrepot_landing::html_entrepot_landing():
     repoxfer.record_actor_on_event(this, html_libdar_running_popup::libdar_has_finished);
     register_name(custom_event_entrepot);     // is equal to "entrepot_only_changed" at construction time (here)
     register_name(custom_event_landing_path); // is equal to landing_path_changed at construction time
+    register_name(changed);
 
     register_name(html_form_input_file::repo_updated);
     landing_path.set_entrepot_updater(this);
@@ -131,6 +132,7 @@ void html_entrepot_landing::on_event(const string & event_name)
     {
 	if(use_landing_path.get_value_as_bool())
 	    act(custom_event_landing_path);
+	act(changed);
     }
     else if(event_name == html_form_input_file::repo_update_needed)
     {
@@ -305,6 +307,7 @@ void html_entrepot_landing::trigger_entrepot_changed_event()
 	act(entrepot_only_changed);
     else
 	act(custom_event_entrepot);
+    act(changed);
 }
 
 void html_entrepot_landing::start_updating_landing()

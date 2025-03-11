@@ -52,10 +52,15 @@ class html_entrepot_landing: public body_builder,
 			     public jsoner
 {
 public:
-	// the use case is for the caller to know when to call get_entrepot()
+
+	/// event triggered for any change (entrepot and / or landing_path)
+    static const std::string changed;
+
+	/// the use case is for the caller to know when to call get_entrepot()
     static const std::string entrepot_only_changed;
 
 	/// event triggered only when the landing path changed (and nothing else changed)
+	/// \note this event is triggered only if landing_path is to be enforced to backup path
     static const std::string landing_path_only_changed;
 
     html_entrepot_landing();
