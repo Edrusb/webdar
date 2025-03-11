@@ -455,7 +455,22 @@ void html_options_create::load_json(const json & source)
 	    guichet_ea_mask.load_json(config.at(jlabel_ea_mask));
 	    archtype.set_selected_id_with_warning(config.at(jlabel_archtype), jlabel_archtype);
 	    fixed_date.set_value(libdar::deci(config.at(jlabel_fixed_date)).computer());
-	    reference.load_json(config.at(jlabel_reference));
+	    switch(archtype.get_selected_num())
+	    {
+	    case 0:
+		reference.clear_json();
+		break;
+	    case 1:
+	    case 2:
+		reference.load_json(config.at(jlabel_reference));
+		break;
+	    case 3:
+	    case 4:
+		reference.clear_json();
+		break;
+	    default:
+		throw WEBDAR_BUG;
+	    }
 	    delta_sig.set_value_as_bool(config.at(jlabel_delta_sig));
 	    guichet_sig_block_size.load_json(config.at(jlabel_sig_block_size));
 	    guichet_delta_mask.load_json(config.at(jlabel_delta_mask));
@@ -521,7 +536,22 @@ json html_options_create::save_json() const
     ret[jlabel_ea_mask] = guichet_ea_mask.save_json();
     ret[jlabel_archtype] = archtype.get_selected_id();
     ret[jlabel_fixed_date] = libdar::deci(fixed_date.get_value()).human();
-    ret[jlabel_reference] = reference.save_json();
+    switch(archtype.get_selected_num())
+    {
+    case 0:
+	const_cast<html_options_create*>(this)->reference.clear_json();
+	break;
+    case 1:
+    case 2:
+	ret[jlabel_reference] = reference.save_json();
+	break;
+    case 3:
+    case 4:
+	const_cast<html_options_create*>(this)->reference.clear_json();
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
     ret[jlabel_delta_sig] = delta_sig.get_value_as_bool();
     ret[jlabel_sig_block_size] = guichet_sig_block_size.save_json();
     ret[jlabel_delta_mask] = guichet_delta_mask.save_json();
