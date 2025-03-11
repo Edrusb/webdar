@@ -128,7 +128,7 @@ private:
     html_form_input_file landing_path;
     html_libdar_running_popup repoxfer;
 
-    void trigger_changed_event();
+    void trigger_entrepot_changed_event();
     void start_updating_landing();
 
     static constexpr const unsigned int format_version = 1;

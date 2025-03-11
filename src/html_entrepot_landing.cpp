@@ -120,7 +120,7 @@ void html_entrepot_landing::on_event(const string & event_name)
     if(event_name == html_entrepot::changed)
     {
 	entrepot_changed = true;
-	trigger_changed_event();
+	trigger_entrepot_changed_event();
     }
     else if(event_name == html_libdar_running_popup::libdar_has_finished)
     {
@@ -204,7 +204,7 @@ void html_entrepot_landing::load_json(const json & source)
 	throw exception_json(libdar::tools_printf("Error loading %s config", myclass_id), e);
     }
     entrepot_changed = true;
-    trigger_changed_event();
+    trigger_entrepot_changed_event();
     on_event(custom_event_landing_path);
 }
 
@@ -239,7 +239,7 @@ void html_entrepot_landing::clear_json()
     ignore_events = false;
 
     entrepot_changed = true;
-    trigger_changed_event();
+    trigger_entrepot_changed_event();
     on_event(custom_event_landing_path);
 }
 
@@ -299,7 +299,7 @@ void html_entrepot_landing::signaled_inherited_cancel()
 	th.cancel(libdar_tid, true, 0);
 }
 
-void html_entrepot_landing::trigger_changed_event()
+void html_entrepot_landing::trigger_entrepot_changed_event()
 {
     if(custom_event_name.empty())
 	act(entrepot_only_changed);
