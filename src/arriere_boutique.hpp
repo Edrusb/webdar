@@ -341,10 +341,10 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 	{
 	    std::string todelete = listing.get_selected_id();
 
-	    currently_loaded = "";
 	    silently_update_config_name(currently_loaded);
 	    biblio->delete_config(categ, todelete);
 		// this triggers bibliotheque::changed(categ) event
+	    currently_loaded = "";
 	    need_saving.set_visible(true);
 	    clear_warning();
 	}
