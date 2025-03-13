@@ -346,6 +346,26 @@ void bibliotheque::clear()
 	act(changed(cat));
 }
 
+bool bibliotheque::is_empty() const
+{
+    bool found = false;
+    category cat = filefilter;
+    map<category, asso>::const_iterator percat;
+
+    while(cat != EOE && ! found)
+    {
+	percat = content.find(cat);
+	if(percat == content.end())
+	    throw WEBDAR_BUG;
+
+	if(!percat->second.empty())
+	    found = true;
+	++cat;
+    }
+
+    return !found;
+}
+
 void bibliotheque::load_json(const json & source)
 {
     unsigned int version;

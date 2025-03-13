@@ -182,6 +182,8 @@ public:
 	/// clear all stored configurations
     void clear();
 
+	/// whether the bibliotheque has some configuration in one or more categories
+    bool is_empty() const;
 
 	/// inherited from jsoner
     virtual void load_json(const json & source) override;
