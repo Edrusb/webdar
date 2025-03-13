@@ -44,7 +44,7 @@ namespace webdar_css_style
     constexpr const char* wcs_8em_width = "width8em";
 
 	// class used by the *_button templates below (should not be used directly, it is publicly
-	// available because template body need to be stored in header file"
+	// available because template body need to be stored in header file")
     constexpr const char* wcs_btn_off = "wcs_btn_off";
     constexpr const char* wcs_btn_on = "wcs_btn_on";
     constexpr const char* wcs_btn_void = "wcs_btn_void";
