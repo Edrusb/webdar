@@ -66,7 +66,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     clear_fs(""),
     clear_conf("Clear all configurations", event_clear),
     generate_defaults("Regenerate missing default configs", event_defaults),
-    expect_upload(false)
+    expect_upload(false),
+    q_context(context_undefined)
 {
     unique_ptr<html_entrepot_landing> tmp_e;
     unique_ptr<html_mask_form_filename> tmp_fm;
@@ -437,6 +438,9 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
     adopt(&tabs);
 
+	// the popup question box
+    adopt(&question);
+
 	// actors and events
 
     register_name(event_download);
@@ -448,6 +452,8 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     upload_form.record_actor_on_event(this, html_form::changed);
     clear_conf.record_actor_on_event(this, event_clear);
     generate_defaults.record_actor_on_event(this, event_defaults);
+    question.record_actor_on_event(this, html_yes_no_box::answer_yes);
+    question.record_actor_on_event(this, html_yes_no_box::answer_no);
 
 	// visibility
     clear_ok_messages();
@@ -527,20 +533,14 @@ void html_bibliotheque::on_event(const std::string & event_name)
     }
     else if(event_name == event_load)
     {
-	clear_ok_messages();
-	ifstream input(filename.get_value());
-	if(input)
-	{
-	    json config = json::parse(input);
-	    if(!input)
-		throw exception_system(libdar::tools_printf("Failed reading configuration from %s", filename.get_value().c_str()), errno);
-	    input.close();
-	    biblio->load_json(config);
-	    autosave.set_value_as_bool(biblio->get_autosave_status());
-	}
+	if(q_context != context_undefined)
+	    throw WEBDAR_BUG;
+
+	q_context = context_load_conf;
+	if(! biblio->is_empty())
+	    question.ask_question("Loading a configuration from a file will erase all existing configurations, do you confirm this action?", false);
 	else
-	    throw exception_system(libdar::tools_printf("Failed openning %s", filename.get_value().c_str()), errno);
-	ok_loaded.set_visible(true);
+	    on_event(html_yes_no_box::answer_yes);
     }
     else if(event_name == html_form_input::changed)
     {
@@ -559,20 +559,66 @@ void html_bibliotheque::on_event(const std::string & event_name)
     }
     else if(event_name == event_clear)
     {
-	clear_ok_messages();
-	if(! biblio)
+	if(q_context != context_undefined)
 	    throw WEBDAR_BUG;
+
+	q_context = context_clear_conf;
+	if(! biblio->is_empty())
+	    question.ask_question("Warning, do you really wan to delete all configurations not saved to file?", false);
 	else
-	{
-	    biblio->clear();
-	    autosave.set_value_as_bool(biblio->get_autosave_status());
-	}
-	ok_cleared.set_visible(true);
+	    on_event(html_yes_no_box::answer_yes);
     }
     else if(event_name == event_defaults)
     {
 	clear_ok_messages();
 	set_default_configs();
+    }
+    else if(event_name == html_yes_no_box::answer_yes)
+    {
+	switch(q_context)
+	{
+	case context_clear_conf:
+	    clear_ok_messages();
+	    if(! biblio)
+		throw WEBDAR_BUG;
+	    else
+	    {
+		biblio->clear();
+		autosave.set_value_as_bool(biblio->get_autosave_status());
+	    }
+	    ok_cleared.set_visible(true);
+	    break;
+	case context_load_conf:
+	    if(true) // used to declare the input ifstream variable inside a switch/case structure
+	    {
+		clear_ok_messages();
+		ifstream input(filename.get_value());
+		if(input)
+		{
+		    json config = json::parse(input);
+		    if(!input)
+			throw exception_system(libdar::tools_printf("Failed reading configuration from %s", filename.get_value().c_str()), errno);
+		    input.close();
+		    biblio->load_json(config);
+		    autosave.set_value_as_bool(biblio->get_autosave_status());
+		}
+		else
+		    throw exception_system(libdar::tools_printf("Failed openning %s", filename.get_value().c_str()), errno);
+		ok_loaded.set_visible(true);
+	    }
+	    break;
+	case context_upload_conf:
+
+	    break;
+	default:
+	    throw WEBDAR_BUG;
+	}
+
+	q_context = context_undefined;
+    }
+    else if(event_name == html_yes_no_box::answer_no)
+    {
+	q_context = context_undefined;
     }
     else
 	throw WEBDAR_BUG;

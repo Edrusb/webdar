@@ -61,6 +61,7 @@ extern "C"
 #include "html_options_merge.hpp"
 #include "html_options_repair.hpp"
 #include "html_options_extract.hpp"
+#include "html_yes_no_box.hpp"
 
     /// class html_bibliotheque provide graphical mean to manipulate a bibliotheque object
 
@@ -176,6 +177,9 @@ private:
     html_div statusbar;
     html_text saved_status;
     html_text unsaved_status;
+
+    enum { context_undefined, context_clear_conf, context_load_conf, context_upload_conf } q_context;
+    html_yes_no_box question;
 
     void set_saved_status();
     void clear_ok_messages();
