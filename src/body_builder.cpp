@@ -293,9 +293,9 @@ css_class_group body_builder::get_css_class_group() const
     return ret;
 }
 
-string body_builder::get_css_classes() const
+string body_builder::get_css_classes(const string & extra) const
 {
-    string ret;
+    string ret = extra;
     set<string>::const_iterator it = css_class_names.begin();
 
     while(it != css_class_names.end())

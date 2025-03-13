@@ -213,8 +213,11 @@ public:
 
         /// return the class_name as inlined css, suitable to be added in a html marker
 
+	/// \param[in] extra a space sperated list of additional classes to add beside the ones assigned to this object.
+	/// The use case for extra parameter is to temporarily add a css class without having the object
+	/// considered modified (and his inherited_get_body_part() re-evaluated).
         /// \note the returned string if not empty is of the form: class="<classname> <classname>..."
-    std::string get_css_classes() const;
+    std::string get_css_classes(const std::string & extra = "") const;
 
         /// add a css definition on a css_library reachable by this object
         /// \note so far this object does not use it, a call to add_css_class must also be done
