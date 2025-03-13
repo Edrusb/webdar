@@ -44,16 +44,16 @@ const string html_yes_no_box::answer_yes = "html_yes_no_box_y";
 const string html_yes_no_box::answer_no = "html_yes_no_box_n";
 
 html_yes_no_box::html_yes_no_box():
-    html_popup(60, 60), // parent class
+    html_popup(50, 30), // parent class
     ignore_events(false),
     form("Confirm"),
-    form_fs("&lt;lack of initialization!&gt;")
+    form_fs("")
 {
-    rd.add_choice("undef", "--- make a choice ---");
     rd.add_choice("no", "No");
     rd.add_choice("yes", "Yes");
 
 	// building the body_builder tree
+    adopt(&question);
     form_fs.adopt(&rd);
     form.adopt(&form_fs);
     adopt(&form);
@@ -65,15 +65,26 @@ html_yes_no_box::html_yes_no_box():
 
 	// visibility
     set_visible(false);
+
+	// css
+    question.add_css_class(css_center);
 }
 
 void html_yes_no_box::ask_question(const string & message, bool default_value)
 {
-    form_fs.change_label(message);
+    if(get_visible())
+	return;
+	// ignoring subsequent request, as this can be
+	// the consequence of the changes done during the
+	// first invocation
+
     ignore_events = true;
     try
     {
-	rd.set_emphase(default_value ? 2 : 1);
+	question.clear();
+	question.add_text(4, message);
+	rd.set_emphase(default_value ? 1 : 0);
+	rd.unset_selected();
     }
     catch(...)
     {
@@ -90,9 +101,29 @@ void html_yes_no_box::on_event(const std::string & event_name)
     if(ignore_events)
 	return;
 
-    if(rd.get_selected_num() == 2)
+    if(rd.get_selected_num() == 1)
 	act(answer_yes);
     else
 	act(answer_no);
     set_visible(false);
+}
+
+void html_yes_no_box::new_css_library_available()
+{
+    css tmp;
+    std::unique_ptr<css_library> & csslib = lookup_css_library();
+
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    if(!csslib->class_exists(css_center))
+    {
+	tmp.clear();
+	tmp.css_width("80%", true);
+	tmp.css_text_h_align(css::al_center);
+	csslib->add(css_center, tmp);
+    }
+
+	// we also need css class definitions from the parent class
+    html_popup::new_css_library_available();
 }

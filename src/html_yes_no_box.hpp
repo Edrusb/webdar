@@ -43,6 +43,7 @@ extern "C"
 #include "html_form_radio.hpp"
 #include "html_form_fieldset.hpp"
 #include "html_popup.hpp"
+#include "html_text.hpp"
 
     /// html component for user to answer by yes or no to a provided question
 
@@ -69,14 +70,20 @@ public:
 	/// inherited from actor parent class
     virtual void on_event(const std::string & event_name) override;
 
+protected:
+
+	/// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 private:
-    static constexpr const char* css_default_choice = "html_ynb_bold";
+    static constexpr const char* css_center = "html_ynb_center";
 
     bool ignore_events;
 
     html_form form;
     html_form_fieldset form_fs;
     html_form_radio rd;
+    html_text question;
 
 };
 
