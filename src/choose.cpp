@@ -48,21 +48,16 @@ extern "C"
 
 using namespace std;
 
-const string choose::css_class_error_msg = "choose_error_msg";
 const string choose::css_class_normal_text = "choose_normal_text";
 
 choose::choose():
     page("Webdar - Choose a session"),
     disco(libdar::tools_printf("WebDar - %s", WEBDAR_VERSION)),
     owner(""),
-    confirm_mode(false),
     disconnect_req(false),
     table(6),
     nouvelle("/choose/new", "Create a new session"),
-    form("Kill the selected session"),
-    confirm("Killing a session"),
-    ctable(1),
-    confirmed("Confirm destruction of sessions listed above?", false)
+    form("Kill the selected session")
 {
     html_text tmp;
     css tmpcss, tmpcss2;
@@ -117,72 +112,21 @@ choose::choose():
     page.define_css_class_in_library(css_class_div, tmpcss);
     div.add_css_class(css_class_div);
 
-    	/// defining but not using yet the css_class_error_msg for html_page "page"
-
-    tmpcss.clear();
-    tmpcss.css_color(RED);
-    tmpcss.css_text_h_align(css::al_center);
-    tmpcss.css_font_weight_bold();
-    page.define_css_class_in_library(css_class_error_msg, tmpcss);
-
 	// setting up genealogy of body_builder objects for object page
 
     div.adopt(&table);
     form.adopt(&div);
     page.adopt(&form);
     page.adopt(&nouvelle);
+    page.adopt(&confirmed);
     page.set_prefix(chemin("choose"));
-
-
-	/// confirmation page setup
-
-	// we reuse the css_class_name stored in page's csslib
-	// to the confirm page which has its own csslib
-	// css_class named definition do differ between html_pages
-	// "page" and "confirm"!
-
-    tmpcss.clear();
-    tmpcss.css_background_color(COLOR_BACK);
-    tmpcss.css_color(COLOR_TEXT, true);
-    tmpcss.css_text_h_align(css::al_center);
-    confirm.define_css_class_in_library(css_class_page, tmpcss);
-    confirm.add_css_class(css_class_page);
-
-    tmpcss.clear();
-    tmpcss.css_width("90%", true);
-    confirm.define_css_class_in_library(css_class_table, tmpcss);
-    ctable.add_css_class(css_class_table);
-
-    tmpcss.clear();
-    tmpcss.css_text_h_align(css::al_left, true);
-    confirm.define_css_class_in_library(css_class_form, tmpcss);
-    confirmed.add_css_class(css_class_form);
-
-	/// defining but not using yet the css_class_error_msg for html_page "confirm"
-
-    tmpcss.clear();
-    tmpcss.css_padding("1em");
-    tmpcss.css_background_color("red");
-    tmpcss.css_color(COLOR_PADFRONT);
-    tmpcss.css_font_weight_bold();
-    tmpcss.css_border_width(css::bd_all, css::bd_medium);
-    tmpcss.css_border_style(css::bd_all, css::bd_solid);
-    tmpcss.css_border_color(css::bd_all, COLOR_PADBORD);
-    confirm.define_css_class_in_library(css_class_error_msg, tmpcss);
-
-    tmpcss.clear();
-    tmpcss.css_padding_left("1em");
-    confirm.define_css_class_in_library(css_class_normal_text, tmpcss);
-
-
-	// setting up genealogy of body_builder objects for confirm object
-
-    ctable.adopt(&confirmed);
-    confirm.adopt(&ctable);
-    confirm.set_prefix(chemin("choose"));
 
 	// events
     disco.record_actor_on_event(this, html_disconnect::event_disconn);
+    confirmed.record_actor_on_event(this, html_yes_no_box::answer_yes);
+    confirmed.record_actor_on_event(this, html_yes_no_box::answer_no);
+
+    regenerate_table_page();
 }
 
 void choose::set_owner(const std::string & user)
@@ -199,7 +143,7 @@ void choose::set_owner(const std::string & user)
 answer choose::give_answer(const request & req)
 {
     answer ret;
-    string error_msg = "";
+    string target_sessions;
 
 	// sanity checks
     if(owner.empty())
@@ -209,49 +153,10 @@ answer choose::give_answer(const request & req)
 
     if(req.get_method() == "POST")
     {
-	if(confirm_mode)
-	{
-		// updating form fields
-	    (void)confirm.get_body_part(req.get_uri().get_path(), req);
+	    // updating form fields
 
-	    if(confirmed.get_value()) // kill confirmed
-	    {
-		try
-		{
-		    kill_selected_sessions();
-		}
-		catch(exception_bug & e)
-		{
-		    throw;
-		}
-		catch(libthreadar::exception_base & e)
-		{
-		    e.push_message("Error met while killing a session");
-		    error_msg = e.get_message(": ");
-		}
-		catch(exception_base & e)
-		{
-		    error_msg = string("Error met while killing a session: ") + e.get_message();
-		}
-	    }
-	    confirm_mode = false;
-	}
-	else
-	{
-	    vector<html_form_input *>::iterator itb = boxes.begin();
+	(void)page.get_body_part(req.get_uri().get_path(), req);
 
-		// updating form fields
-	    (void)page.get_body_part(req.get_uri().get_path(), req);
-
-	    while(itb != boxes.end() && (*itb) != nullptr && (*itb)->get_value() == "")
-		++itb;
-
-	    if(itb != boxes.end() && (*itb) == nullptr)
-		throw WEBDAR_BUG;
-
-	    if(itb != boxes.end()) // at least one box has been checked
-		confirm_mode = true;
-	}
     }
 
 	// generate response HTML page
@@ -259,36 +164,49 @@ answer choose::give_answer(const request & req)
     ret.set_status(STATUS_CODE_OK);
     ret.set_reason("ok");
 
-    if(confirm_mode) // confirmation requested for session kill
-    {
-	regenerate_confirm_page();
-	ret.add_body(confirm.get_body_part(req.get_uri().get_path(), req));
-    }
-    else // normal table display
-    {
-	regenerate_table_page();
-	if(error_msg != "")
-	{
-	    html_text tmp;
+	// looking for sessions having a kill box checked
 
-	    tmp.add_text(1, error_msg);
-	    tmp.add_css_class(css_class_error_msg);
-	    table.adopt_static_html(tmp.get_body_part());
-	}
-	if(req.get_uri().get_path() == chemin("choose/new"))
+    for(unsigned int i = 0;
+	i < boxes.size();
+	++i)
+    {
+	if(boxes[i] == nullptr)
+	    throw WEBDAR_BUG;
+
+	if(boxes[i]->get_value_as_bool())
 	{
-	    if(!session::create_new_session(owner,
-					    false, // not espetially an initial session (some other may already exist for that user
-					    req,
-					    ret)) // the response to return
-		throw WEBDAR_BUG;
-		// with initial set to false the
-		// call should either succeed or
-		// throw an exception
+	    if(! target_sessions.empty())
+		target_sessions += ", ";
+	    target_sessions += sess[i].session_name;
 	}
-	else
-	    ret.add_body(page.get_body_part(req.get_uri().get_path(), req));
     }
+
+    if(!target_sessions.empty())
+    {
+	if(!confirmed.get_visible())
+	{
+	    target_sessions = "Confirm destruction of the following sessions: " + target_sessions;
+	    confirmed.ask_question(target_sessions, false);
+	}
+    }
+    else
+	regenerate_table_page();
+
+    if(req.get_uri().get_path() == chemin("choose/new"))
+    {
+	if(!session::create_new_session(owner,
+					false, // not espetially an initial session (some other may already exist for that user
+					req,
+					ret)) // the response to return
+	    throw WEBDAR_BUG;
+	    // with initial set to false the
+	    // call should either succeed or
+	    // throw an exception
+
+	regenerate_table_page();
+    }
+    else
+	ret.add_body(page.get_body_part(req.get_uri().get_path(), req));
 
     return ret;
 }
@@ -297,6 +215,15 @@ void choose::on_event(const std::string & event_name)
 {
     if(event_name == html_disconnect::event_disconn)
 	disconnect_req = true;
+    else if(event_name == html_yes_no_box::answer_yes)
+    {
+	kill_selected_sessions();
+	regenerate_table_page();
+    }
+    else if(event_name == html_yes_no_box::answer_no)
+    {
+	regenerate_table_page();
+    }
     else
 	throw WEBDAR_BUG;
 }
@@ -373,43 +300,6 @@ void choose::release_boxes()
 	}
     }
     boxes.clear();
-}
-
-void choose::regenerate_confirm_page()
-{
-    html_text text;
-    string tmp;
-
-    ctable.clear();
-    text.clear();
-    text.add_text(3, "The following sessions are about to be destroyed");
-    text.add_css_class(css_class_error_msg);
-    ctable.adopt_static_html(text.get_body_part());
-
-    text.clear_css_classes();
-    text.add_css_class(css_class_normal_text);
-
-    if(boxes.size() != sess.size())
-	throw WEBDAR_BUG;
-    for(unsigned int i = 0; i < boxes.size(); ++i)
-    {
-	if(boxes[i] == nullptr)
-	    throw WEBDAR_BUG;
-	if(boxes[i]->get_value() != "")
-	{
-	    text.clear();
-	    tmp = sess[i].session_name;
-	    if(tmp == "")
-		tmp = sess[i].session_ID;
-	    text.add_text(0,
-			  html_url(chemin(sess[i].session_ID).display(false),
-				   tmp).get_body_part());
-	    ctable.adopt_static_html(text.get_body_part());
-	}
-    }
-
-    ctable.adopt(&confirmed);
-    confirmed.set_value(false);
 }
 
 void choose::kill_selected_sessions() const

@@ -85,7 +85,6 @@ public:
 
 private:
     std::string owner;           ///< list only sessions for that owner
-    bool confirm_mode;           ///< whether we display session list or kill confirmation
     mutable bool disconnect_req; ///< whether user has asked for disconnection
     std::vector<html_form_input *> boxes; //< list of checkboxes in "page"
     std::vector<session::session_summary> sess; //< list of sessions in page
@@ -97,16 +96,11 @@ private:
     html_url nouvelle;
     html_form form;
     html_div div;
-
-	/// confirmation page and associated objects
-    html_page confirm;       ///< page root for kill confirmation
-    html_table ctable;
     html_yes_no_box confirmed;
 
-    void regenerate_table_page();
-    void release_boxes();
-    void regenerate_confirm_page();
-    void kill_selected_sessions() const;
+    void regenerate_table_page();          ///< regenerate sess and boxes components (shown as session table) from currently existing sessions
+    void release_boxes();                  ///< destroy checkboxes objects
+    void kill_selected_sessions() const;   ///< kill checked session but does not change html components
 
     static const std::string css_class_error_msg;
     static const std::string css_class_normal_text;
