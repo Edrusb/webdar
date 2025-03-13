@@ -61,7 +61,7 @@ public:
     ~html_form_radio() = default;
 
     void add_choice(const std::string & id, const std::string & label);
-    void clear() { choices.clear(); unset_selected(); my_body_part_has_changed(); };
+    void clear() { choices.clear(); unset_selected(); my_body_part_has_changed(); emphase = -1; };
 
 	/// set the radio buttons to item given in argument
 
@@ -97,6 +97,11 @@ public:
 	/// first check with is_selected() before calling this method
     const std::string & get_selected_id() const;
 
+	/// index of the item to display in bold
+    void set_emphase(unsigned int num);
+
+	/// disable emphasing a particular item (default behavior)
+    void set_emphase() { emphase = -1; };
 
 	/// the number of currently available options
     const unsigned int num_choices() const { return choices.size(); };
@@ -112,6 +117,10 @@ protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
+
+	/// inherited from html_div/body_builder
+    virtual void new_css_library_available() override;
+
 
 	/// used to record parameters of each option of the radio button
     struct record
@@ -134,10 +143,13 @@ protected:
     void unlock_update_field_from_request();
 
 private:
+    static constexpr const char* css_emphasis = "html_form_radio_emphasis";
+
     bool enabled;              ///< whether the control is enabled or disabled
     std::vector<record> choices;
     unsigned int selected;
     bool value_set;            ///< avoid POST request to overwrite set_seleected*()
+    int emphase;               ///< item displayed in bold, unless emphase < 0
 
     std::string modif_changed; ///< name of the event "changed" to use, empty string for the default
     void my_act();

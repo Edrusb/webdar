@@ -45,7 +45,8 @@ const string html_form_radio::changed = "html_form_radio::changed";
 html_form_radio::html_form_radio():
     enabled(true),
     selected(0),
-    value_set(false)
+    value_set(false),
+    emphase(-1)
 {
     register_name(changed);
 }
@@ -125,6 +126,14 @@ const string & html_form_radio::get_selected_id() const
 	throw WEBDAR_BUG;
 }
 
+void html_form_radio::set_emphase(unsigned int num)
+{
+    if(num < choices.size())
+	emphase = num;
+    else
+	throw WEBDAR_BUG;
+}
+
 void html_form_radio::set_change_event_name(const string & name)
 {
     if(name.empty())
@@ -169,7 +178,7 @@ string html_form_radio::inherited_get_body_part(const chemin & path,
 	if(!enabled)
 	    ret += "disabled ";
 	ret += "/>\n";
-	ret += "<label " + get_css_classes() + " for=\"" + choices[i].id + "\">" + choices[i].label + "</label>";
+	ret += "<label " + get_css_classes(i == emphase ? css_emphasis: "") + " for=\"" + choices[i].id + "\">" + choices[i].label + "</label>";
 	if(i+1 < choices.size() || !get_no_CR())
 	    ret += "<br />\n";
 	else
@@ -183,6 +192,23 @@ string html_form_radio::inherited_get_body_part(const chemin & path,
 
     return ret;
 }
+
+void html_form_radio::new_css_library_available()
+{
+    css tmp;
+    unique_ptr<css_library> & csslib = lookup_css_library();
+
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    if(!csslib->class_exists(css_emphasis))
+    {
+	tmp.clear();
+	tmp.css_font_weight_bold();
+	csslib->add(css_emphasis, tmp);
+    }
+}
+
 
 void html_form_radio::update_field_from_request(const request & req)
 {
