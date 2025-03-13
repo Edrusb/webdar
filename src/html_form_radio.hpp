@@ -61,7 +61,7 @@ public:
     ~html_form_radio() = default;
 
     void add_choice(const std::string & id, const std::string & label);
-    void clear() { choices.clear(); unset_selected(); my_body_part_has_changed(); emphase = -1; };
+    void clear() { choices.clear(); unset_selected(); emphase = -1; my_body_part_has_changed(); };
 
 	/// set the radio buttons to item given in argument
 
@@ -101,7 +101,7 @@ public:
     void set_emphase(unsigned int num);
 
 	/// disable emphasing a particular item (default behavior)
-    void set_emphase() { emphase = -1; };
+    void set_emphase() { emphase = -1; my_body_part_has_changed(); };
 
 	/// the number of currently available options
     const unsigned int num_choices() const { return choices.size(); };

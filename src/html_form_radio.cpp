@@ -132,6 +132,7 @@ void html_form_radio::set_emphase(unsigned int num)
 	emphase = num;
     else
 	throw WEBDAR_BUG;
+    my_body_part_has_changed();
 }
 
 void html_form_radio::set_change_event_name(const string & name)

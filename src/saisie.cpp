@@ -96,7 +96,6 @@ saisie::saisie():
     go_isolate("Isolate", event_isolate),
     go_merge("Merge", event_merge),
     go_repair("Repair", event_repair),
-    close("Do you really want to close this session?", false),
     disco(libdar::tools_printf("WebDar - %s", WEBDAR_VERSION))
 {
     status = st_idle;
@@ -277,6 +276,8 @@ saisie::saisie():
 	throw WEBDAR_BUG;
     else
 	h_biblio->record_actor_on_event(this, html_bibliotheque::event_download);
+    close.record_actor_on_event(this, html_yes_no_box::answer_yes);
+    close.record_actor_on_event(this, html_yes_no_box::answer_no);
 
     session_name.set_change_event_name(changed_session_name); // using the same event name as the we one we will trigger upon session name change
     session_name.record_actor_on_event(this, changed_session_name);
@@ -331,13 +332,11 @@ string saisie::inherited_get_body_part(const chemin & path,
     ignore_body_changed_from_my_children(false);
 
 	// now we can generate in return the whole HTML code for "this" object
-    if(choice.get_current_tag() == menu_close && close.get_value())
+    if(choice.get_current_tag() == menu_close)
     {
 	    // session is closing
 
-	act(event_closing);
-	set_title(webdar_tools_get_title(get_session_name(), "Session closed"));
-	set_refresh_redirection(0, "/");
+	close.ask_question("Do you really want to close this session?", false);
 	ret = html_page::inherited_get_body_part(path, req);
     }
     else
@@ -486,6 +485,16 @@ void saisie::on_event(const string & event_name)
 	    throw exception_json(string("dumping configuration from json object: "), e);
 	}
 	act(event_download);
+    }
+    else if(event_name == html_yes_no_box::answer_yes)
+    {
+	act(event_closing);
+	set_title(webdar_tools_get_title(get_session_name(), "Session closed"));
+	set_refresh_redirection(0, "/");
+    }
+    else if(event_name == html_yes_no_box::answer_no)
+    {
+	choice.set_current_mode(choice.get_previous_mode());
     }
     else
 	throw WEBDAR_BUG;
