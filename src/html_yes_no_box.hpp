@@ -37,33 +37,43 @@ extern "C"
     // webdar headers
 #include "exceptions.hpp"
 #include "body_builder.hpp"
+#include "events.hpp"
+#include "actor.hpp"
 #include "html_form.hpp"
 #include "html_form_radio.hpp"
 #include "html_form_fieldset.hpp"
+#include "html_popup.hpp"
 
     /// html component for user to answer by yes or no to a provided question
 
-class html_yes_no_box : public body_builder
+class html_yes_no_box : public html_popup, public events, public actor
 {
 public:
-    html_yes_no_box(const std::string & message, bool default_value);
+    static const std::string answer_yes;
+    static const std::string answer_no;
+
+    html_yes_no_box();
     html_yes_no_box(const html_yes_no_box & ref) = delete;
     html_yes_no_box(html_yes_no_box && ref) noexcept = delete;
     html_yes_no_box & operator = (const html_yes_no_box & ref) = delete;
     html_yes_no_box & operator = (html_yes_no_box && ref) noexcept = delete;
     ~html_yes_no_box() = default;
 
+	/// make the question to appear to the user
+    void ask_question(const std::string & message, bool default_value);
+
     bool get_value() const { return rd.get_selected_num() != 0; };
 
     void set_value(bool val) { rd.set_selected_num(val ? 1 : 0); };
 
-protected:
-	/// inherited from body_builder
-    virtual std::string inherited_get_body_part(const chemin & path,
-						const request & req) override
-    { return get_body_part_from_all_children(path, req); };
+	/// inherited from actor parent class
+    virtual void on_event(const std::string & event_name) override;
 
 private:
+    static constexpr const char* css_default_choice = "html_ynb_bold";
+
+    bool ignore_events;
+
     html_form form;
     html_form_fieldset form_fs;
     html_form_radio rd;

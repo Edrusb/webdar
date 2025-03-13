@@ -37,19 +37,62 @@ extern "C"
     //
 #include "html_yes_no_box.hpp"
 
-
 using namespace std;
 
-html_yes_no_box::html_yes_no_box(const string & message, bool default_value)
-    : form("Confirm"),
-      form_fs(message)
+
+const string html_yes_no_box::answer_yes = "html_yes_no_box_y";
+const string html_yes_no_box::answer_no = "html_yes_no_box_n";
+
+html_yes_no_box::html_yes_no_box():
+    html_popup(60, 60), // parent class
+    ignore_events(false),
+    form("Confirm"),
+    form_fs("&lt;lack of initialization!&gt;")
 {
+    rd.add_choice("undef", "--- make a choice ---");
     rd.add_choice("no", "No");
     rd.add_choice("yes", "Yes");
-    rd.set_selected_num(default_value ? 1 : 0);
 
-	/// building the body_builder tree
+	// building the body_builder tree
     form_fs.adopt(&rd);
     form.adopt(&form_fs);
     adopt(&form);
+
+	// events
+    rd.record_actor_on_event(this, html_form_radio::changed);
+    register_name(answer_yes);
+    register_name(answer_no);
+
+	// visibility
+    set_visible(false);
+}
+
+void html_yes_no_box::ask_question(const string & message, bool default_value)
+{
+    form_fs.change_label(message);
+    ignore_events = true;
+    try
+    {
+	rd.set_emphase(default_value ? 2 : 1);
+    }
+    catch(...)
+    {
+	ignore_events = false;
+	throw;
+    }
+    ignore_events = false;
+
+    set_visible(true);
+}
+
+void html_yes_no_box::on_event(const std::string & event_name)
+{
+    if(ignore_events)
+	return;
+
+    if(rd.get_selected_num() == 2)
+	act(answer_yes);
+    else
+	act(answer_no);
+    set_visible(false);
 }
