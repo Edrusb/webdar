@@ -396,8 +396,13 @@ void saisie::on_event(const string & event_name)
     {
 	// menu "choice" changed
 
+	string tag_to_use = choice.get_current_tag();
+
+	if(choice.get_current_tag() == menu_close)
+	    tag_to_use = choice.get_previous_tag();
+
 	set_title(webdar_tools_get_title(get_session_name(), choice.get_current_label()));
-	if(choice.get_current_tag() == menu_restore
+	if(tag_to_use == menu_restore
 	   || choice.get_current_tag() == menu_compare
 	   || choice.get_current_tag() == menu_test
 	   || choice.get_current_tag() == menu_list
@@ -407,7 +412,7 @@ void saisie::on_event(const string & event_name)
 	    archread.set_visible(true);
 	else
 	    archread.set_visible(false);
-	select.set_active_section(choice.get_current_mode());
+	select.set_active_section(tag_to_use);
 
 	    // not necessary to call my_body_part_has_changed()
 	    // as "choice" is adopted and will trigger my_body_part_has_changed()
