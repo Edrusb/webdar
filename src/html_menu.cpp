@@ -153,6 +153,14 @@ void html_menu::set_current_tag(const string & tag)
 	throw WEBDAR_BUG; // unknown tag in this html_menu
 }
 
+string html_menu::get_previous_tag() const
+{
+    if(previous_mode >= item.size())
+	throw WEBDAR_BUG;
+
+    return item[previous_mode].itag;
+}
+
 string html_menu::get_current_label() const
 {
     if(current_mode >= item.size())

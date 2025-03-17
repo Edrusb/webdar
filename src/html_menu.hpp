@@ -92,6 +92,9 @@ public:
 	/// set the current selected mode giving its tag
     void set_current_tag(const std::string & tag);
 
+	/// get previous tag
+    std::string get_previous_tag() const;
+
 	/// get current label (what is shown to the user)
     std::string get_current_label() const;
 
