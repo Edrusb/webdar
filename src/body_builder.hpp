@@ -135,7 +135,7 @@ public:
     body_builder & operator = (body_builder && ref) noexcept = delete;
 
         /// the (virtual) destructor
-    virtual ~body_builder() { orphan_all_children(); unrecord_from_parent(); };
+    virtual ~body_builder();
 
 
 
@@ -264,6 +264,21 @@ public:
 	/// behavior.
     void set_no_CR(bool no_cr = true);
 
+	/// assign an anchor to this object (the object body part will be preceeded by an HTML anchor: <a name="value"></a> )
+
+	/// The objective is for returned page to scroll down having the corresponding body builder object at the top
+	/// of the viewport when the URL ends by "#value". The value is selected by the body builder class
+	/// to provide unicity between all objects having been assigned an anchor.
+	/// \param[in] mode if true an anchor is assigned to the object and inserted before its body builder part. If
+	/// set to false (which is the default), no anchor is inserted before the body builder part of the object.
+	/// \see_also get_anchor()
+    void set_anchor(bool mode);
+
+	/// return the anchor value that has been assiged to this object (without the leading #)
+
+	/// \note an exception is thrown if calling get_anchor() while set_anchor(true) has not been called previously
+	/// for that object.
+    std::string get_anchor() const { return anchor; };
 
 protected:
 
@@ -429,6 +444,7 @@ private:
 	                                                ///< to allow store_css_library() being invoked from constructors of inherited classes
     std::unique_ptr<css_library> library;               ///< css library if stored by this object
     std::set<std::string> css_class_names;              ///< list of CSS class that apply to this object
+    std::string anchor;                                 ///< value of the anchor
 
         /// unrecord 'this' from its parent as a adopted child
     void unrecord_from_parent();
@@ -461,6 +477,12 @@ private:
     std::string get_body_part_or_cache(const chemin & path,
 				       const request & req);
 
+
+    static libthreadar::mutex assigned_anchors_ctrl;
+    static std::deque<bool> assigned_anchors;
+
+    static std::string get_available_anchor();
+    static void release_anchor(std::string & val);
 };
 
 #endif

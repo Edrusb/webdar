@@ -30,6 +30,7 @@ extern "C"
 
     // C++ system header files
 #include <algorithm>
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_tools.hpp"
@@ -41,6 +42,8 @@ extern "C"
 using namespace std;
 
 const unsigned int NAME_WIDTH = 4;
+libthreadar::mutex body_builder::assigned_anchors_ctrl;
+deque<bool> body_builder::assigned_anchors;
 
 body_builder::body_builder(const body_builder & ref)
 {
@@ -62,6 +65,15 @@ body_builder::body_builder(const body_builder & ref)
         library.reset();
     css_class_names = ref.css_class_names;
 }
+
+body_builder::~body_builder()
+{
+    orphan_all_children();
+    unrecord_from_parent();
+    if(!anchor.empty())
+	release_anchor(anchor);
+}
+
 
 body_builder & body_builder::operator = (const body_builder & ref)
 {
@@ -387,6 +399,24 @@ void body_builder::set_no_CR(bool no_cr)
     }
 }
 
+void body_builder::set_anchor(bool mode)
+{
+    if(mode)
+	if(! anchor.empty())
+	    throw WEBDAR_BUG; // anchor was already set
+	else
+	    anchor = get_available_anchor();
+    else
+	if(! anchor.empty())
+	{
+	    release_anchor(anchor);
+	    anchor = "";
+	}
+	else
+	    throw WEBDAR_BUG; // anchor was not assigned
+}
+
+
 void body_builder::my_body_part_has_changed()
 {
     if(ignore_children_body_changed)
@@ -605,6 +635,7 @@ void body_builder::clear()
     css_class_names.clear();
     body_changed = true;
     ignore_children_body_changed = false;
+    anchor = "";
 }
 
 void body_builder::create_css_lib_if_needed()
@@ -682,5 +713,75 @@ string body_builder::get_body_part_or_cache(const chemin & path,
 	    // field would not be used anyway.
     }
 
+	// inserting the anchor before the inherited returned body part
+    if(!anchor.empty())
+	ret = libdar::tools_printf("<a name=\"%s\"></a>\n%s",
+				   anchor.c_str(),
+				   ret.c_str());
+
     return ret;
+}
+
+string body_builder::get_available_anchor()
+{
+    string ret = "";
+    unsigned int i = 0;
+
+    assigned_anchors_ctrl.lock();
+    try
+    {
+	while(i < assigned_anchors.size() && assigned_anchors[i])
+	    ++i;
+
+	if(i == assigned_anchors.size())
+	    assigned_anchors.push_back(true);
+	else // assigned_anchors[i] was false (unassigned)
+	    assigned_anchors[i] = true;
+
+	ret = webdar_tools_convert_to_string(i);
+    }
+    catch(...)
+    {
+	assigned_anchors_ctrl.unlock();
+	throw;
+    }
+    assigned_anchors_ctrl.unlock();
+
+    return ret;
+}
+
+void body_builder::release_anchor(std::string & val)
+{
+    int i = 0;
+
+    try
+    {
+	webdar_tools_convert_to_int(val);
+    }
+    catch(exception_range & e)
+    {
+	throw WEBDAR_BUG;
+    }
+
+    if(i < 0)
+	throw WEBDAR_BUG;
+
+
+    assigned_anchors_ctrl.lock();
+    try
+    {
+	if(i < assigned_anchors.size())
+	    if(assigned_anchors[i])
+		assigned_anchors[i] = false;
+	    else
+		throw WEBDAR_BUG; // was not an assigned anchor!
+	else
+	    throw WEBDAR_BUG; // anchor has never been assigned!!!
+    }
+    catch(...)
+    {
+	assigned_anchors_ctrl.unlock();
+	throw;
+    }
+    assigned_anchors_ctrl.unlock();
 }
