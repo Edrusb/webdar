@@ -46,6 +46,7 @@ bool uri::operator == (const uri & arg) const
     return scheme == arg.scheme
 	&& hostname == arg.hostname
 	&& path == arg.path;
+	// anchor is only used for display purposes
 }
 
 
@@ -64,6 +65,9 @@ const string uri::get_string() const
     else
 	ret += path.display();
 
+    if(!anchor.empty())
+	ret += "#" + anchor;
+
     if(ret == "")
 	ret = "/";
 
@@ -72,7 +76,7 @@ const string uri::get_string() const
 
 void uri::read(const string & res)
 {
-    enum { l_scheme, l_hostname, l_host_path, l_path } lookup = l_scheme;
+    enum { l_scheme, l_hostname, l_host_path, l_path, l_anchor } lookup = l_scheme;
     string::const_iterator it = res.begin();
     string::const_iterator bk = it;
 
@@ -138,8 +142,24 @@ void uri::read(const string & res)
 		++it;
 	    break;
 	case l_path:
-	    path = chemin(string(it, res.end()));
+	    if(*it == '#')
+	    {
+		path = chemin(string(bk, it));
+		++it;
+		bk = it;
+		lookup = l_anchor;
+	    }
+	    else
+	    {
+		++it;
+
+		if(it == res.end())
+		    path = chemin(string(bk, it));
+	    }
+	    break;
+	case l_anchor:
 	    it = res.end();
+	    anchor = string(string(bk, it));
 	    break;
 	default:
 	    throw WEBDAR_BUG;

@@ -38,7 +38,7 @@ extern "C"
     // webdar headers
 #include "chemin.hpp"
 
-    /// uri type holds the splitted list of the scheme / hostname / path
+    /// uri type holds the splitted list of the scheme / hostname / path # anchor
 
 class uri
 {
@@ -52,13 +52,14 @@ public:
     uri & operator = (uri && ref) noexcept = default;
     ~uri() = default;
 
+	/// the anchor part of the path is not used for comparison
     bool operator == (const uri & arg) const;
 
 	/// convert an uri from a string
     void read(const std::string & res);
 
 	/// clear the uri (empty uri)
-    void clear() { path.clear(); hostname = scheme = ""; };
+    void clear() { path.clear(); hostname = scheme = anchor = ""; };
 
 	/// clear the path part only
     void trim_path() { path.clear(); };
@@ -72,6 +73,12 @@ public:
 	/// retrieve a path of the uri
     const chemin & get_path() const { return path; };
 
+	/// retrieve the anchor previously assigned to this uri (empty string if none)
+    const std::string & get_anchor() const { return anchor; };
+
+	/// assign/replace an anchor to this uri (or remove it "" is provided)
+    void set_anchor_to(const std::string & val) const { anchor = val; };
+
 	/// rebuid the uri as a single string
     const std::string get_string() const;
 
@@ -83,6 +90,7 @@ private:
     std::string scheme;
     std::string hostname;
     chemin path;
+    mutable std::string anchor;
 };
 
 #endif
