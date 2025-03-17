@@ -248,13 +248,17 @@ saisie::saisie():
 	// other sessions sub_page
 	// nothing to add "saisie" is not involved in that context
 
-    	// close session sub_page
-    select.adopt_in_section(menu_close, &close);
+	// close section is put at the end of adoption tree for the close
+	// confirmation popup (close)
+	// to show over a complete rendered page
 
 	/// configuration of "select"
     select.set_active_section(menu_main);
     right_pan.adopt(&select);
     adopt(&right_pan);
+
+	// session close confirmation popup
+    adopt(&close);
 
 	// define the closing event for this
     register_name(event_closing);
