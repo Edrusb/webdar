@@ -42,6 +42,19 @@ using namespace std;
 
 const string html_form::changed = "form_changed";
 
+html_form::html_form(const std::string & validate_msg):
+    go_mesg(validate_msg),
+    enctype(""),
+    anchor_to(""),
+    self_anchor(false)
+{
+    register_name(changed);
+
+	// by default all html_form anchors to themselves
+    set_anchor_to_self(true);
+}
+
+
 void html_form::clear_button_css_classes()
 {
     css_button_classes.clear();
@@ -78,12 +91,34 @@ string html_form::get_button_css_classes() const
     return ret;
 }
 
+void html_form::set_anchor_to(const string & value)
+{
+    free_anchor_to();
+    anchor_to = value;
+}
+
+void html_form::set_anchor_to_self(bool mode)
+{
+    free_anchor_to();
+
+    if(mode)
+    {
+	set_anchor(true);
+	anchor_to = get_anchor();
+	self_anchor = true;
+    }
+}
+
 string html_form::inherited_get_body_part(const chemin & path,
 					  const request & req)
 {
     string ret = "";
+    uri cible(get_path().display());
 
-    ret += "<form " + get_css_classes() + " method=\"post\" action=\"" + get_path().display() + "\"";
+    if(!anchor_to.empty())
+	cible.set_anchor_to(anchor_to);
+
+    ret += "<form " + get_css_classes() + " method=\"post\" action=\"" + cible.get_string() + "\"";
     if(!enctype.empty())
 	ret += " enctype=\""+enctype+"\"";
     ret += ">\n";
@@ -103,4 +138,18 @@ string html_form::inherited_get_body_part(const chemin & path,
     ret += "</form>\n";
 
     return ret;
+}
+
+
+void html_form::free_anchor_to()
+{
+    if(!anchor_to.empty())
+    {
+	if(self_anchor)
+	{
+	    set_anchor(false);
+	    self_anchor = false;
+	}
+	anchor_to = "";
+    }
 }

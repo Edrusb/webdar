@@ -52,7 +52,7 @@ class html_form : public body_builder, public events
 public:
     static const std::string changed;
 
-    html_form(const std::string & validate_msg = "send") { go_mesg = validate_msg; register_name(changed); };
+    html_form(const std::string & validate_msg = "send");
     html_form(const html_form & ref) = default;
     html_form(html_form && ref) noexcept = default;
     html_form & operator = (const html_form & ref) = default;
@@ -79,6 +79,17 @@ public:
         /// \note the returned string if not empty is of the form: class="<classname> <classname>..."
     std::string get_button_css_classes() const;
 
+	/// set an anchor in the html_form returned uri
+
+	/// \note if set_anchor_to_self() was set, this call implicitely call set_anchor_to_slef(false)
+	/// before assiging this new anchor as target
+    void set_anchor_to(const std::string & value);
+
+	/// set anchor to self (form after validation with be on top of the viewport)
+
+	/// \note calling set_anchor_to_self() implicitely invokes set_anchor_to("")
+    void set_anchor_to_self(bool mode);
+
 protected:
 	/// inherited methods from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
@@ -88,6 +99,10 @@ private:
     std::string go_mesg;
     std::string enctype;
     std::set<std::string> css_button_classes;
+    std::string anchor_to;
+    bool self_anchor;
+
+    void free_anchor_to();
 };
 
 #endif
