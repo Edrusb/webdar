@@ -111,7 +111,4 @@ void html_button::init()
     path_has_changed(); // to set link value of "inside" field
 
     register_name(event_name);
-
-	// by default all button anchors to themselves
-    set_anchor(true);
 }
