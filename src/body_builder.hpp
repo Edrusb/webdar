@@ -280,6 +280,9 @@ public:
 	/// for that object.
     std::string get_anchor() const { return anchor; };
 
+	/// return whether an anchor has been set
+    bool has_anchor() const { return ! anchor.empty(); };
+
 protected:
 
 	/// implementation of get_body_part() method for inherited classes
