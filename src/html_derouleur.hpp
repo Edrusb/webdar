@@ -66,9 +66,9 @@ public:
 
     void add_section(const std::string & name, const std::string & title);
 
-    void adopt_in_section(const std::string & section_name, body_builder* obj) { switcher.adopt_in_section(section_name, obj); };
+    void adopt_in_section(const std::string & section_name, body_builder* obj);
 
-    void adopt_in_section(signed int num, body_builder* obj) { switcher.adopt_in_section(num, obj); };
+    void adopt_in_section(signed int num, body_builder* obj);
 
     void clear_section(const std::string & section_name) { switcher.clear_section(section_name); };
 

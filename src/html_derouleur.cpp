@@ -103,6 +103,29 @@ void html_derouleur::add_section(const string & name, const string & title)
     }
 }
 
+void html_derouleur::adopt_in_section(const std::string & section_name, body_builder* obj)
+{
+    if(obj == nullptr)
+	throw WEBDAR_BUG;
+    else
+    {
+	map<string, section>::iterator it = sections.find(section_name);
+	if(it != sections.end()
+	   && it->second.shrinker != nullptr)
+	    obj->set_anchor_to(it->second.shrinker->get_anchor());
+	else
+	    throw WEBDAR_BUG; // should have a shrinker with a valid anchor
+    }
+
+    switcher.adopt_in_section(section_name, obj);
+}
+
+void html_derouleur::adopt_in_section(signed int num, body_builder* obj)
+{
+    adopt_in_section(switcher.num_to_section_name(num), obj);
+}
+
+
 void html_derouleur::remove_section(const string & section_name)
 {
     map<string, section>::iterator it = sections.find(section_name);
