@@ -77,10 +77,13 @@ public:
     const std::string & get_anchor() const { return anchor; };
 
 	/// assign/replace an anchor to this uri (or remove it "" is provided)
-    void set_anchor_to(const std::string & val) const { anchor = val; };
+    void set_anchor_to(const std::string & val) { anchor = val; };
 
 	/// rebuid the uri as a single string
-    const std::string get_string() const;
+    std::string get_string() const;
+
+	/// get relative url (path + anchor)
+    std::string url_path_part() const;
 
 	/// add members to the uri
     void add(const std::string & suppath) { path.push_back(suppath); };

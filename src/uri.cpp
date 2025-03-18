@@ -50,7 +50,7 @@ bool uri::operator == (const uri & arg) const
 }
 
 
-const string uri::get_string() const
+string uri::get_string() const
 {
     string ret = "";
 
@@ -60,6 +60,18 @@ const string uri::get_string() const
     if(hostname != "")
 	ret += "//" + hostname;
 
+    ret += url_path_part();
+
+    if(ret == "")
+       ret = "/";
+
+    return ret;
+}
+
+string uri::url_path_part() const
+{
+    string ret;
+
     if(path.empty() && hostname != "")
 	ret += "/";
     else
@@ -67,9 +79,6 @@ const string uri::get_string() const
 
     if(!anchor.empty())
 	ret += "#" + anchor;
-
-    if(ret == "")
-	ret = "/";
 
     return ret;
 }
