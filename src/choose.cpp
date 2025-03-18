@@ -49,6 +49,7 @@ extern "C"
 using namespace std;
 
 const string choose::css_class_normal_text = "choose_normal_text";
+const string choose::url_new_session = "/choose/new";
 
 choose::choose():
     page("Webdar - Choose a session"),
@@ -56,7 +57,7 @@ choose::choose():
     owner(""),
     disconnect_req(false),
     table(6),
-    nouvelle("/choose/new", "Create a new session"),
+    nouvelle(url_new_session, "Create a new session"),
     form("Kill the selected session")
 {
     html_text tmp;
@@ -122,6 +123,7 @@ choose::choose():
     page.set_prefix(chemin("choose"));
 
 	// events
+    form.record_actor_on_event(this, html_form::changed);
     disco.record_actor_on_event(this, html_disconnect::event_disconn);
     confirmed.record_actor_on_event(this, html_yes_no_box::answer_yes);
     confirmed.record_actor_on_event(this, html_yes_no_box::answer_no);
@@ -143,56 +145,20 @@ void choose::set_owner(const std::string & user)
 answer choose::give_answer(const request & req)
 {
     answer ret;
-    string target_sessions;
 
 	// sanity checks
+
     if(owner.empty())
 	throw WEBDAR_BUG;
 
 	// update the form fields when request is a POST
 
     if(req.get_method() == "POST")
-    {
-	    // updating form fields
-
 	(void)page.get_body_part(req.get_uri().get_path(), req);
-
-    }
 
 	// generate response HTML page
 
-    ret.set_status(STATUS_CODE_OK);
-    ret.set_reason("ok");
-
-	// looking for sessions having a kill box checked
-
-    for(unsigned int i = 0;
-	i < boxes.size();
-	++i)
-    {
-	if(boxes[i] == nullptr)
-	    throw WEBDAR_BUG;
-
-	if(boxes[i]->get_value_as_bool())
-	{
-	    if(! target_sessions.empty())
-		target_sessions += ", ";
-	    target_sessions += sess[i].session_name;
-	}
-    }
-
-    if(!target_sessions.empty())
-    {
-	if(!confirmed.get_visible())
-	{
-	    target_sessions = "Confirm destruction of the following sessions: " + target_sessions;
-	    confirmed.ask_question(target_sessions, false);
-	}
-    }
-    else
-	regenerate_table_page();
-
-    if(req.get_uri().get_path() == chemin("choose/new"))
+    if(req.get_uri().get_path() == chemin(url_new_session))
     {
 	if(!session::create_new_session(owner,
 					false, // not espetially an initial session (some other may already exist for that user
@@ -206,14 +172,47 @@ answer choose::give_answer(const request & req)
 	regenerate_table_page();
     }
     else
+    {
+	ret.set_status(STATUS_CODE_OK);
+	ret.set_reason("ok");
+	regenerate_table_page();
 	ret.add_body(page.get_body_part(req.get_uri().get_path(), req));
+    }
 
     return ret;
 }
 
 void choose::on_event(const std::string & event_name)
 {
-    if(event_name == html_disconnect::event_disconn)
+    if(event_name == html_form::changed)
+    {
+	string target_sessions;
+
+	for(unsigned int i = 0;
+	    i < boxes.size();
+	    ++i)
+	{
+	    if(boxes[i] == nullptr)
+		throw WEBDAR_BUG;
+
+	    if(boxes[i]->get_value_as_bool())
+	    {
+		if(! target_sessions.empty())
+		    target_sessions += ", ";
+		target_sessions += sess[i].session_name;
+	    }
+	}
+
+	if(!target_sessions.empty())
+	{
+	    if(!confirmed.get_visible())
+	    {
+		target_sessions = "Confirm destruction of the following sessions: " + target_sessions;
+		confirmed.ask_question(target_sessions, false);
+	    }
+	}
+    }
+    else if(event_name == html_disconnect::event_disconn)
 	disconnect_req = true;
     else if(event_name == html_yes_no_box::answer_yes)
     {
@@ -231,6 +230,14 @@ void choose::on_event(const std::string & event_name)
 void choose::regenerate_table_page()
 {
     html_form_input *check = nullptr;
+    set<string> selected_ids;
+
+	// recording session which box was checked
+    for(unsigned int i = 0; i < boxes.size(); ++i)
+    {
+	if(boxes[i] != nullptr && boxes[i]->get_value_as_bool())
+	    selected_ids.insert(sess[i].session_ID);
+    }
 
 	// releasing old objects of the table
 
@@ -281,6 +288,8 @@ void choose::regenerate_table_page()
 	    delete check;
 	    throw;
 	}
+	if(selected_ids.find(it->session_ID) != selected_ids.end())
+	    check->set_value_as_bool(true); // box was checked for this session ID
 	if(it->owner != owner)
 	    check->set_enabled(false);
 	table.adopt(check);

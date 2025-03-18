@@ -102,8 +102,8 @@ private:
     void release_boxes();                  ///< destroy checkboxes objects
     void kill_selected_sessions() const;   ///< kill checked session but does not change html components
 
-    static const std::string css_class_error_msg;
     static const std::string css_class_normal_text;
+    static const std::string url_new_session;
 };
 
 #endif
