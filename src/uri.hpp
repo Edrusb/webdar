@@ -93,7 +93,7 @@ private:
     std::string scheme;
     std::string hostname;
     chemin path;
-    mutable std::string anchor;
+    std::string anchor;
 };
 
 #endif
