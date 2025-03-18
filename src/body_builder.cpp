@@ -715,7 +715,7 @@ string body_builder::get_body_part_or_cache(const chemin & path,
 
 	// inserting the anchor before the inherited returned body part
     if(!anchor.empty())
-	ret = libdar::tools_printf("<a name=\"%s\"></a>\n%s",
+	ret = libdar::tools_printf("<a name=\"%s\">\n%s</a>\n",
 				   anchor.c_str(),
 				   ret.c_str());
 
