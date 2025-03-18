@@ -32,7 +32,7 @@ extern "C"
 
 
     // webdar headers
-
+#include "html_page.hpp"
 
 
     //
@@ -77,6 +77,19 @@ string html_button::inherited_get_body_part(const chemin & path,
     else
 	choice = "";
 
+    if(has_anchor())
+    {
+	html_page* page = nullptr;
+	closest_ancestor_of_type(page);
+	if(page != nullptr)
+	{
+	    uri u = req.get_uri();
+
+	    u.set_anchor_to(get_anchor());
+	    page->set_refresh_redirection(0, u.url_path_part());
+	}
+    }
+
     if(target == get_path() && choice == action)
 	act(event_name);
 
@@ -98,4 +111,7 @@ void html_button::init()
     path_has_changed(); // to set link value of "inside" field
 
     register_name(event_name);
+
+	// by default all button anchors to themselves
+    set_anchor(true);
 }
