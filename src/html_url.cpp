@@ -73,6 +73,7 @@ string html_url::get_body_part() const
     string ret = "<a";
     string x_class = get_css_classes();
     string dnl = download ? " download": "";
+    string anchor = anchor_to.empty() ? "" : string("#") + anchor_to;
 
     if(! filename.empty() && download)
 	dnl = dnl + "=\"" + filename + "\"";
@@ -80,7 +81,7 @@ string html_url::get_body_part() const
     if(! x_class.empty())
 	ret += " " + x_class;
 
-    ret += " href=\"" + x_url + "\"" + dnl + ">" + x_label + "</a>";
+    ret += " href=\"" + x_url + anchor + "\"" + dnl + ">" + x_label + "</a>";
     if(!get_no_CR())
 	ret += "\n";
 
