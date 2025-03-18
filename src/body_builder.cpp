@@ -756,7 +756,7 @@ void body_builder::release_anchor(std::string & val)
 
     try
     {
-	webdar_tools_convert_to_int(val);
+	i = webdar_tools_convert_to_int(val);
     }
     catch(exception_range & e)
     {
