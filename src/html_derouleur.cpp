@@ -76,6 +76,8 @@ void html_derouleur::add_section(const string & name, const string & title)
 	it->second.title->record_actor_on_event(this, name);
 	it->second.shrinker->record_actor_on_event(this, shrink_event);
 
+	it->second.title->set_anchor(true);
+
 	if(! css_url.is_empty())
 	{
 	    it->second.title->url_clear_css_classes();
