@@ -89,13 +89,13 @@ void server::inherited_run()
     {
 	try
 	{
-		// outer while loop
+		// outer while loop(while we are in the same TCP session)
 
 	    while(src.get_status() == proto_connexion::connected)
 	    {
 		try
 		{
-			// inner while loop
+			// inner while loop (split the flow, request by request)
 
 		    while(sess == nullptr ||
 			  (src.get_next_request_uri(url)
