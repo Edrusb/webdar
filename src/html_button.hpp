@@ -89,8 +89,8 @@ public:
 	/// \note providing a empty string get to the default behavior (no filename specified in URL)
     void set_filename(const std::string & name) { inside.set_filename(name); };
 
-	/// set a target anchor for this button click URL (empty string to disable)
-    void set_anchor_to(const std::string & val) { inside.set_anchor_to(val); };
+	/// inherited from body_builder
+    virtual void set_anchor_to(const std::string & val) override { inside.set_anchor_to(val); };
 
 protected:
 

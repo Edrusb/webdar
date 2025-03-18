@@ -283,6 +283,9 @@ public:
 	/// return whether an anchor has been set
     bool has_anchor() const { return ! anchor.empty(); };
 
+	/// ask inherited components to use this anchor in the URL they generate when this makes sense
+    virtual void set_anchor_to(const std::string & val) {};
+
 protected:
 
 	/// implementation of get_body_part() method for inherited classes

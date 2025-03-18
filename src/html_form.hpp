@@ -83,7 +83,7 @@ public:
 
 	/// \note if set_anchor_to_self() was set, this call implicitely call set_anchor_to_slef(false)
 	/// before assiging this new anchor as target
-    void set_anchor_to(const std::string & value);
+    virtual void set_anchor_to(const std::string & value) override;
 
 	/// set anchor to self (form after validation with be on top of the viewport)
 

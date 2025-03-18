@@ -49,9 +49,6 @@ html_form::html_form(const std::string & validate_msg):
     self_anchor(false)
 {
     register_name(changed);
-
-	// by default all html_form anchors to themselves
-    set_anchor_to_self(true);
 }
 
 

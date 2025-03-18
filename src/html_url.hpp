@@ -52,8 +52,8 @@ public:
     void change_url(const std::string & newurl);
     void change_label(const std::string & newlabel);
 
-	/// set a target anchor for this button click URL (empty string to disable)
-    void set_anchor_to(const std::string & val) { anchor_to = val; };
+	/// inherited from body_builder
+    virtual void set_anchor_to(const std::string & val) override { anchor_to = val; };
 
 	/// whether to download or display the URL target
     void set_download(bool mode) { download = mode; };
