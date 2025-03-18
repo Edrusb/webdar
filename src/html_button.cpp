@@ -77,19 +77,6 @@ string html_button::inherited_get_body_part(const chemin & path,
     else
 	choice = "";
 
-    if(has_anchor())
-    {
-	html_page* page = nullptr;
-	closest_ancestor_of_type(page);
-	if(page != nullptr)
-	{
-	    uri u = req.get_uri();
-
-	    u.set_anchor_to(get_anchor());
-	    page->set_refresh_redirection(0, u.url_path_part());
-	}
-    }
-
     if(target == get_path() && choice == action)
 	act(event_name);
 
