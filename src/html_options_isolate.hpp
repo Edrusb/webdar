@@ -152,7 +152,7 @@ private:
     html_hash_algo hash_algo;
     html_form_input execute;
     html_form_input empty;
-
+    html_form_input repair_mode;
 
     html_form form_shown;
     html_form_fieldset fs_shown;
@@ -185,6 +185,7 @@ private:
     static constexpr const char* jlabel_hash_algo = "hash-algo";
     static constexpr const char* jlabel_execute = "execute";
     static constexpr const char* jlabel_empty = "dry-run";
+    static constexpr const char* jlabel_repair_mode = "repair-mode";
     static constexpr const char* jlabel_info_details = "info-details";
     static constexpr const char* jlabel_compr_params = "compr-params";
     static constexpr const char* jlabel_slicing = "slicing";

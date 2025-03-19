@@ -61,6 +61,7 @@ html_options_isolate::html_options_isolate():
     hash_algo("Hashing algorithm"),
     execute("Command to execute after each slice", html_form_input::text, "", "80%"),
     empty("Dry run execution", html_form_input::check, "", "1"),
+    repair_mode("Repair mode", html_form_input::check, "", "1"),
     form_shown("Update"),
     fs_shown(""),
     info_details("Detailed informations", html_form_input::check, "1", "1"),
@@ -145,6 +146,7 @@ html_options_isolate::html_options_isolate():
     fs_archgen.adopt(&hash_algo);
     fs_archgen.adopt(&execute);
     fs_archgen.adopt(&empty);
+    fs_archgen.adopt(&repair_mode);
     form_archgen.adopt(&fs_archgen);
     deroule.adopt_in_section(sect_general, &form_archgen);
 
@@ -180,6 +182,7 @@ html_options_isolate::html_options_isolate():
     hash_algo.record_actor_on_event(this, html_hash_algo::changed);
     execute.record_actor_on_event(this, html_form_input::changed);
     empty.record_actor_on_event(this, html_form_input::changed);
+    repair_mode.record_actor_on_event(this, html_form_input::changed);
     info_details.record_actor_on_event(this, html_form_input::changed);
     compr_params->record_actor_on_event(this, html_compression_params::changed);
     slicing->record_actor_on_event(this, html_slicing::changed);
@@ -265,6 +268,7 @@ void html_options_isolate::load_json(const json & source)
 	    hash_algo.set_selected_id(config.at(jlabel_hash_algo));
 	    execute.set_value(config.at(jlabel_execute));
 	    empty.set_value_as_bool(config.at(jlabel_empty));
+	    repair_mode.set_value_as_bool(config.at(jlabel_repair_mode));
 	    info_details.set_value_as_bool(config.at(jlabel_info_details));
 	    guichet_compr_params.load_json(config.at(jlabel_compr_params));
 	    guichet_slicing.load_json(config.at(jlabel_slicing));
@@ -312,6 +316,7 @@ json html_options_isolate::save_json() const
     config[jlabel_hash_algo] = hash_algo.get_selected_id();
     config[jlabel_execute] = execute.get_value();
     config[jlabel_empty] = empty.get_value_as_bool();
+    config[jlabel_repair_mode] = repair_mode.get_value_as_bool();
     config[jlabel_info_details] = info_details.get_value_as_bool();
     config[jlabel_compr_params] = guichet_compr_params.save_json();
     config[jlabel_slicing] = guichet_slicing.save_json();
@@ -419,6 +424,7 @@ libdar::archive_options_isolate html_options_isolate::get_options(shared_ptr<htm
     ret.set_slice_min_digits(slicing->get_min_digits());
     ret.set_hash_algo(hash_algo.get_value());
     ret.set_empty(empty.get_value_as_bool());
+    ret.set_repair_mode(repair_mode.get_value_as_bool());
     ret.set_execute(execute.get_value());
     ret.set_info_details(info_details.get_value_as_bool());
     ret.set_compression(compr_params->get_compression_algo());
@@ -529,6 +535,7 @@ void html_options_isolate::init()
     hash_algo.set_value(defaults.get_hash_algo());
     execute.set_value(defaults.get_execute());
     empty.set_value_as_bool(defaults.get_empty());
+    repair_mode.set_value_as_bool(defaults.get_repair_mode());
     info_details.set_value_as_bool(defaults.get_info_details());
     guichet_compr_params.clear_json();
     guichet_slicing.clear_json();
