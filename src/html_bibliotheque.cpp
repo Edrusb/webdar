@@ -538,7 +538,7 @@ void html_bibliotheque::on_event(const std::string & event_name)
 
 	q_context = context_load_conf;
 	if(! biblio->is_empty())
-	    question.ask_question("Loading a configuration from a file will erase all existing configurations, do you confirm this action?", false);
+	    question.ask_question("Loading a configuration from a file will erase all already loaded configurations to memory, do you confirm this action?", false);
 	else
 	    on_event(html_yes_no_box::answer_yes);
     }
