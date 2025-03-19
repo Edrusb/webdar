@@ -399,7 +399,7 @@ void body_builder::set_no_CR(bool no_cr)
     }
 }
 
-void body_builder::set_anchor(bool mode)
+void body_builder::assign_anchor(bool mode)
 {
     if(mode)
 	if(! anchor.empty())

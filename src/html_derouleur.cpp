@@ -76,8 +76,8 @@ void html_derouleur::add_section(const string & name, const string & title)
 	it->second.title->record_actor_on_event(this, name);
 	it->second.shrinker->record_actor_on_event(this, shrink_event);
 
-	it->second.shrinker->set_anchor(true);
-	it->second.title->set_anchor_to(it->second.shrinker->get_anchor());
+	it->second.shrinker->assign_anchor(true);
+	it->second.title->set_anchor_to(it->second.shrinker->get_assigned_anchor());
 
 	if(! css_url.is_empty())
 	{
@@ -112,7 +112,7 @@ void html_derouleur::adopt_in_section(const std::string & section_name, body_bui
 	map<string, section>::iterator it = sections.find(section_name);
 	if(it != sections.end()
 	   && it->second.shrinker != nullptr)
-	    obj->set_anchor_to(it->second.shrinker->get_anchor());
+	    obj->set_anchor_to(it->second.shrinker->get_assigned_anchor());
 	else
 	    throw WEBDAR_BUG; // should have a shrinker with a valid anchor
     }

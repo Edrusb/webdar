@@ -272,13 +272,13 @@ public:
 	/// \param[in] mode if true an anchor is assigned to the object and inserted before its body builder part. If
 	/// set to false (which is the default), no anchor is inserted before the body builder part of the object.
 	/// \see_also get_anchor()
-    void set_anchor(bool mode);
+    void assign_anchor(bool mode);
 
 	/// return the anchor value that has been assiged to this object (without the leading #)
 
 	/// \note an exception is thrown if calling get_anchor() while set_anchor(true) has not been called previously
 	/// for that object.
-    std::string get_anchor() const { return anchor; };
+    std::string get_assigned_anchor() const { return anchor; };
 
 	/// return whether an anchor has been set
     bool has_anchor() const { return ! anchor.empty(); };

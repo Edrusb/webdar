@@ -100,8 +100,8 @@ void html_form::set_anchor_to_self(bool mode)
 
     if(mode)
     {
-	set_anchor(true);
-	anchor_to = get_anchor();
+	assign_anchor(true);
+	anchor_to = get_assigned_anchor();
 	self_anchor = true;
     }
 }
@@ -144,7 +144,7 @@ void html_form::free_anchor_to()
     {
 	if(self_anchor)
 	{
-	    set_anchor(false);
+	    assign_anchor(false);
 	    self_anchor = false;
 	}
 	anchor_to = "";
