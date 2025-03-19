@@ -43,7 +43,7 @@ using namespace std;
 
 const unsigned int NAME_WIDTH = 4;
 libthreadar::mutex body_builder::assigned_anchors_ctrl;
-deque<bool> body_builder::assigned_anchors;
+set<unsigned int> body_builder::assigned_anchors;
 
 body_builder::body_builder(const body_builder & ref)
 {
@@ -725,19 +725,18 @@ string body_builder::get_body_part_or_cache(const chemin & path,
 string body_builder::get_available_anchor()
 {
     string ret = "";
-    unsigned int i = 0;
+    unsigned int increment_amplitude = 2;
+    unsigned int i = 0 + rand() % increment_amplitude;
 
     assigned_anchors_ctrl.lock();
     try
     {
-	while(i < assigned_anchors.size() && assigned_anchors[i])
-	    ++i;
-
-	if(i == assigned_anchors.size())
-	    assigned_anchors.push_back(true);
-	else // assigned_anchors[i] was false (unassigned)
-	    assigned_anchors[i] = true;
-
+	while(assigned_anchors.find(i) != assigned_anchors.end())
+	{
+	    increment_amplitude *= 2;
+	    i += rand() % increment_amplitude;
+	}
+	assigned_anchors.insert(i);
 	ret = webdar_tools_convert_to_string(i);
     }
     catch(...)
@@ -770,13 +769,12 @@ void body_builder::release_anchor(std::string & val)
     assigned_anchors_ctrl.lock();
     try
     {
-	if(i < assigned_anchors.size())
-	    if(assigned_anchors[i])
-		assigned_anchors[i] = false;
-	    else
-		throw WEBDAR_BUG; // was not an assigned anchor!
+	set<unsigned int>::iterator it = assigned_anchors.find(i);
+
+	if(it == assigned_anchors.end())
+	    throw WEBDAR_BUG; // unsassigned anchor !!!
 	else
-	    throw WEBDAR_BUG; // anchor has never been assigned!!!
+	    assigned_anchors.erase(it);
     }
     catch(...)
     {

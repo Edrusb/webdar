@@ -481,7 +481,7 @@ private:
 
 
     static libthreadar::mutex assigned_anchors_ctrl;
-    static std::deque<bool> assigned_anchors;
+    static std::set<unsigned int> assigned_anchors; ///< used/assigned anchors
 
     static std::string get_available_anchor();
     static void release_anchor(std::string & val);
