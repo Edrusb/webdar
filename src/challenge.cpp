@@ -64,7 +64,7 @@ bool challenge::is_an_authoritative_request(const request & req, string & user)
 	webdar_tools_split_in_two(' ', val, sp1, sp2);
 	if(webdar_tools_to_canonical_case(sp1) == webdar_tools_to_canonical_case("Basic"))
 	{
-	    string clear = base64(sp2).decode();
+	    string clear = base64().decode(sp2);
 	    webdar_tools_split_in_two(':', clear, sp1, sp2);
 
 	    if(database->valid_credentials(sp1, sp2))

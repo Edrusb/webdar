@@ -42,21 +42,31 @@ extern "C"
 class base64
 {
 public:
-    base64(const std::string & str);
+    base64() {};
     base64(const base64 & ref) = default;
     base64(base64 && ref) noexcept = default;
     base64 & operator = (const base64 & ref) = default;
     base64 & operator = (base64 && ref) noexcept = default;
     ~base64() = default;
 
-    std::string decode() const;
-    std::string encode() const { throw exception_feature("base64::encode"); }
+    std::string decode(const std::string & str) const;
+    std::string encode(const std::string & str) const;
+
+    typedef char decoded_block[3];
+    typedef char encoded_block[4];
+
+    void small_decode(const encoded_block & b64, decoded_block & out) const;
+    void small_encode(unsigned int num_bytes, const decoded_block & bin, encoded_block & out) const;
 
 private:
-    std::string ch;
-
-    static std::string convert(char a, char b, char c, char d);
-    static unsigned int value64(char a);
+    static std::string convert(char a, char b, char c, char d);         ///< output 3 chars of the original binary data
+    static std::string unconvert(int num_char,
+				 unsigned char a,
+				 unsigned char b,
+				 unsigned char c); ///< outputs 4 chars in base64
+    static unsigned int value64(char a);      ///< convert base64 char to its corresponding value
+    static char to_value64(unsigned int val); ///< convert integer < 64 to base64 its char representation
+    static void complement(std::string & ref); ///< add '=' bytes at the end to get a length multiple of 4 chars
 };
 
 #endif
