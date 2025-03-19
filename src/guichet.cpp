@@ -40,6 +40,7 @@ extern "C"
 using namespace std;
 
 guichet::guichet(bool subcomponent):
+    anchor_to(""),
     is_sub(subcomponent),
     ignore_events(false),
     clear_adopted(true),
@@ -162,6 +163,9 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
     clear.record_actor_on_event(this, event_clear);
     saveas_name.record_actor_on_event(this, event_saveas);
     biblio->record_actor_on_event(this, bibliotheque::changed(categ));
+
+	// anchor
+    bind_to_anchor(anchor_to);
 
 	// csss
 
@@ -421,6 +425,17 @@ void guichet::on_event(const std::string & event_name)
     }
     else
 	throw WEBDAR_BUG;
+}
+
+void guichet::bind_to_anchor(const std::string & val)
+{
+    anchor_to = val;
+    if(adopted)
+	adopted->bind_to_anchor(anchor_to);
+    select_form.bind_to_anchor(anchor_to);
+    edit.bind_to_anchor(anchor_to);
+    clear.bind_to_anchor(anchor_to);
+    saveas_form.bind_to_anchor(anchor_to);
 }
 
 string guichet::inherited_get_body_part(const chemin & path,

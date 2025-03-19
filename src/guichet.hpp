@@ -149,6 +149,10 @@ public:
 	/// \note exception thrown if the requested configuration does not exist
     void load_from_bibliotheque(const std::string & name) { select.set_selected_id(name); };
 
+	/// inherited from body_builder
+    virtual void bind_to_anchor(const std::string & val);
+
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
@@ -158,6 +162,7 @@ protected:
     virtual void new_css_library_available() override;
 
 private:
+    std::string anchor_to;
     bibliotheque::category categ;
     std::shared_ptr<bibliotheque> biblio;
     std::shared_ptr<body_builder> adopted;
