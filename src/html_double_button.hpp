@@ -92,6 +92,10 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
+	/// inherited from body_builder
+    virtual void bind_to_anchor(const std::string & val) { one.bind_to_anchor(val); two.bind_to_anchor(val); };
+
+
 protected:
 
 	/// inherited from body_builder
