@@ -74,6 +74,7 @@ const char* GREEN = "rgb(0,150,80)";
 const char* STATIC_PATH_ID = "st";
 // STATIC_PATH_ID's length should be strictly less than the lenght of session_ID, as defined INITIAL_SESSION_ID_WIDTH in session.cpp to avoid collision with session_ID.
 const char* STATIC_OBJ_LICENSING = "licensing";
+const char* STATIC_LOGO = "logo.jpg";
 
 
 const libdar::U_I tokens_min_compr_bs = 50*1024;

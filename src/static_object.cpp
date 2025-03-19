@@ -33,7 +33,7 @@ extern "C"
 
     // webdar headers
 #include "tokens.hpp"
-
+#include "base64.hpp"
 
     //
 #include "static_object.hpp"
@@ -47,6 +47,39 @@ answer static_object_text::give_answer() const
     ret.set_status(STATUS_CODE_OK);
     ret.set_reason("ok");
     ret.set_attribute(HDR_CONTENT_TYPE, "text/plain");
+    ret.add_body(data);
+	// recreating the answer at each request consume CPU cycles
+	// at the advantage of avoiding permanently duplicating
+	// text data in memory (present once as static data in data segment
+	// and a second time in the answer object as std::string data, but
+	// here this second time is temporary for the duration of the request
+
+    return ret;
+}
+
+static_object_jpeg::static_object_jpeg(const char *base_64)
+{
+    unsigned int num = strlen(base_64);
+    unsigned int capa = ((num+1)/4)*3;
+
+    if(num % 4 != 0)
+	throw WEBDAR_BUG;
+
+    if(capa > data.max_size())
+	throw exception_range("maximum std::string size exceeded");
+    else
+	data.reserve(capa);
+
+    data = base64().decode(base_64);
+}
+
+answer static_object_jpeg::give_answer() const
+{
+    answer ret;
+
+    ret.set_status(STATUS_CODE_OK);
+    ret.set_reason("ok");
+    ret.set_attribute(HDR_CONTENT_TYPE, "image/jpeg");
     ret.add_body(data);
 	// recreating the answer at each request consume CPU cycles
 	// at the advantage of avoiding permanently duplicating

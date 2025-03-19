@@ -23,6 +23,8 @@
 
 #include "my_config.h"
 
+extern "C"
+{
 #if HAVE_STDIO_H
 #include <stdio.h>
 #endif
@@ -54,6 +56,9 @@
 #if HAVE_ERRNO_H
 #include <errno.h>
 #endif
+}
+
+#include "base64.hpp"
 
 #define CODE_OK 0
 #define CODE_USAGE 1
@@ -69,13 +74,24 @@ int routine_text(char *objname, char *arg);
 char *convert_file_to_text(char * filename);
 unsigned int count_char_to_escape(int fd);
 int escape_and_copy_from_file_to_string(int fd, char *buffer, unsigned int allocated);
+int routine_jpeg(char *objname, char *arg);
+
+using namespace std;
 
 int main(int argc, char *argv[])
 {
-    if(argc != 4)
-	return usage(argv[0]);
-    else
-	return routine(argv[1], argv[2], argv[3]);
+    try
+    {
+	if(argc != 4)
+	    return usage(argv[0]);
+	else
+	    return routine(argv[1], argv[2], argv[3]);
+    }
+    catch(exception_base & e)
+    {
+	fprintf(stderr, "Aborting execution upon exception: %s\n", e.get_message().c_str());
+	return CODE_ERROR;
+    }
 }
 
 int usage(char *cmd)
@@ -95,6 +111,8 @@ int routine(char *objname, char *type, char *arg)
 {
     if(strcmp(type, "text") == 0)
 	return routine_text(objname, arg);
+    else if(strcmp(type, "jpeg") == 0)
+	return routine_jpeg(objname, arg);
     else
 	return error(type);
 }
@@ -239,3 +257,43 @@ int escape_and_copy_from_file_to_string(int fd, char *buffer, unsigned int alloc
     return copied;
 }
 
+int routine_jpeg(char *objname, char *arg)
+{
+    int fd = open(arg, O_RDONLY);
+    int ret;
+
+    if(fd < 0)
+    {
+	cerr << "Error met while reading file " << arg << " : " << strerror(errno) << "endl";
+	return CODE_FILE_ERR;
+    }
+
+    base64::decoded_block dec;
+    base64::encoded_block enc;
+
+    printf("static const char * jpeg_%s = \"", objname);
+
+    do
+    {
+	ret = read(fd, dec, sizeof(dec));
+	if(ret > 0)
+	{
+	    base64().small_encode(ret, dec, enc);
+	    printf("%c%c%c%c", enc[0], enc[1], enc[2], enc[3]);
+	}
+    }
+    while(ret > 0);
+
+    printf("\";\n");
+    printf("static_object_jpeg *obj_%s = new (nothrow) static_object_jpeg(jpeg_%s);\n", objname, objname);
+    printf("if(obj_%s == NULL)\n", objname);
+    printf("    throw exception_memory();\n");
+    printf("try\n{\n");
+    printf("    add_object_to_library(%s, obj_%s);\n", objname, objname);
+    printf("}\n");
+    printf("catch(...)\n{\n");
+    printf("    delete obj_%s;\n", objname);
+    printf("    obj_%s = NULL;\n", objname);
+    printf("}\n\n");
+    return CODE_OK;
+}

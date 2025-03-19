@@ -71,4 +71,23 @@ private:
     const char *data;
 };
 
+    /// static_object to return base64 encoded jpegs
+
+class static_object_jpeg : public static_object
+{
+public:
+    static_object_jpeg(const char *base_64);
+    static_object_jpeg(const static_object_jpeg & ref) = default;
+    static_object_jpeg(static_object_jpeg && ref) noexcept = default;
+    static_object_jpeg & operator = (const static_object_jpeg & ref) = default;
+    static_object_jpeg & operator = (static_object_jpeg && ref) noexcept = default;
+    ~static_object_jpeg() = default;
+
+	/// inherited from static_object
+    virtual answer give_answer() const override;
+
+private:
+    std::string data;
+};
+
 #endif
