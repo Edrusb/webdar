@@ -79,16 +79,8 @@ public:
         /// \note the returned string if not empty is of the form: class="<classname> <classname>..."
     std::string get_button_css_classes() const;
 
-	/// set an anchor in the html_form returned uri
-
-	/// \note if set_anchor_to_self() was set, this call implicitely call set_anchor_to_slef(false)
-	/// before assiging this new anchor as target
-    virtual void bind_to_anchor(const std::string & value) override;
-
-	/// set anchor to self (form after validation with be on top of the viewport)
-
-	/// \note calling set_anchor_to_self() implicitely invokes set_anchor_to("")
-    void set_anchor_to_self(bool mode);
+	/// inherited from body_builder
+    virtual void bind_to_anchor(const std::string & value) override { anchor_to = value; };
 
 protected:
 	/// inherited methods from body_builder
@@ -100,9 +92,6 @@ private:
     std::string enctype;
     std::set<std::string> css_button_classes;
     std::string anchor_to;
-    bool self_anchor;
-
-    void free_anchor_to();
 };
 
 #endif

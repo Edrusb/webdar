@@ -44,9 +44,7 @@ const string html_form::changed = "form_changed";
 
 html_form::html_form(const std::string & validate_msg):
     go_mesg(validate_msg),
-    enctype(""),
-    anchor_to(""),
-    self_anchor(false)
+    enctype("")
 {
     register_name(changed);
 }
@@ -88,24 +86,6 @@ string html_form::get_button_css_classes() const
     return ret;
 }
 
-void html_form::bind_to_anchor(const string & value)
-{
-    free_anchor_to();
-    anchor_to = value;
-}
-
-void html_form::set_anchor_to_self(bool mode)
-{
-    free_anchor_to();
-
-    if(mode)
-    {
-	assign_anchor(true);
-	anchor_to = get_assigned_anchor();
-	self_anchor = true;
-    }
-}
-
 string html_form::inherited_get_body_part(const chemin & path,
 					  const request & req)
 {
@@ -135,18 +115,4 @@ string html_form::inherited_get_body_part(const chemin & path,
     ret += "</form>\n";
 
     return ret;
-}
-
-
-void html_form::free_anchor_to()
-{
-    if(!anchor_to.empty())
-    {
-	if(self_anchor)
-	{
-	    assign_anchor(false);
-	    self_anchor = false;
-	}
-	anchor_to = "";
-    }
 }
