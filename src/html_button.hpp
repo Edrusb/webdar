@@ -90,7 +90,7 @@ public:
     void set_filename(const std::string & name) { inside.set_filename(name); };
 
 	/// inherited from body_builder
-    virtual void set_anchor_to(const std::string & val) override { inside.set_anchor_to(val); };
+    virtual void bind_to_anchor(const std::string & val) override { inside.bind_to_anchor(val); };
 
 protected:
 

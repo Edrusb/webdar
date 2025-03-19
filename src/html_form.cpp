@@ -88,7 +88,7 @@ string html_form::get_button_css_classes() const
     return ret;
 }
 
-void html_form::set_anchor_to(const string & value)
+void html_form::bind_to_anchor(const string & value)
 {
     free_anchor_to();
     anchor_to = value;

@@ -53,7 +53,7 @@ public:
     void change_label(const std::string & newlabel);
 
 	/// inherited from body_builder
-    virtual void set_anchor_to(const std::string & val) override { anchor_to = val; };
+    virtual void bind_to_anchor(const std::string & val) override { anchor_to = val; };
 
 	/// whether to download or display the URL target
     void set_download(bool mode) { download = mode; };
