@@ -45,7 +45,7 @@ endif
 bin_PROGRAMS = webdar
 noinst_PROGRAMS = static_object_builder
 
-static_object_builder_SOURCES = static_object_builder.c
+static_object_builder_SOURCES = static_object_builder.cpp base64.cpp base64.hpp
 
 static_object.sto: static_object_batch static_object_builder
 	./static_object_batch > static_object.sto
