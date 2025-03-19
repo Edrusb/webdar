@@ -120,7 +120,21 @@ void html_archive_repair::set_biblio(const shared_ptr<bibliotheque> & ptr)
 				 false);
 
     if(ptr->has_config(bibliotheque::confrepair, bibliotheque::default_config_name))
-	guichet_opt_repair.load_from_bibliotheque(bibliotheque::default_config_name);
+    {
+	try
+	{
+	    guichet_opt_repair.load_from_bibliotheque(bibliotheque::default_config_name);
+	}
+	catch(...)
+	{
+		// ignore exception here, as this is called from constructor
+		// of the session components and nothing is yet available to
+		// display execeptions messages (due to old config in configuration file
+		// or corrupted configuration file we read from)
+		// The consequence is that we have a cleared configuration:
+	    guichet_opt_repair.clear_json();
+	}
+    }
 }
 
 

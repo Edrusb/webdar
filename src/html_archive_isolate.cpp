@@ -100,8 +100,22 @@ void html_archive_isolate::set_biblio(const shared_ptr<bibliotheque> & ptr)
 			      false);
 
     if(ptr->has_config(bibliotheque::confisolate, bibliotheque::default_config_name))
-	guichet_options.load_from_bibliotheque(bibliotheque::default_config_name);
-};
+    {
+	try
+	{
+	    guichet_options.load_from_bibliotheque(bibliotheque::default_config_name);
+	}
+	catch(...)
+	{
+		// ignore exception here, as this is called from constructor
+		// of the session components and nothing is yet available to
+		// display execeptions messages (due to old config in configuration file
+		// or corrupted configuration file we read from)
+		// The consequence is that we have a cleared configuration:
+	    guichet_options.clear_json();
+	}
+    }
+}
 
 const string & html_archive_isolate::get_archive_basename() const
 {
