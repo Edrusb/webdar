@@ -574,8 +574,11 @@ void html_web_user_interaction::update_controlled_thread_status()
 			//
 
 		    all_threads_pending.broadcast(); // awaking all thread waiting this thread to end
-
 		    managed_thread = nullptr;
+		    if(real_exception)
+			was_interrupted = true;
+		    set_mode(finished);
+		    check_clean_status();
 		    if(real_exception)
 			throw;    // caught exception is one thrown by join(), we propagate it
 		}
@@ -603,12 +606,6 @@ void html_web_user_interaction::update_controlled_thread_status()
     {
 	was_interrupted = true;
 	throw;
-    }
-
-    if(managed_thread == nullptr)
-    {
-	set_mode(finished);
-	check_clean_status();
     }
 }
 
