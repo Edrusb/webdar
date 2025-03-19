@@ -350,9 +350,6 @@ void html_web_user_interaction::clear()
     all_threads_pending.lock();
     try
     {
-	if(managed_thread != nullptr)
-	    throw WEBDAR_BUG; // should not clear status when a thread is running
-
 	check_libdata();
 	lib_data->clear();
 	h_inter.set_visible(false);
