@@ -77,6 +77,7 @@ const string saisie::css_class_margin = "saisie_marge";
 const string saisie::css_class_choice = "saisie_choice";
 const string saisie::css_class_license = "saisie_license";
 const string saisie::css_class_rightpan = "saisie_rightpan";
+const string saisie::css_class_float_clear = "saisie_floatclear";
 
 
 saisie::saisie():
@@ -88,6 +89,7 @@ saisie::saisie():
 		 "20"),
     about_fs(""),
     about_form("Change"),
+    webdar_logo((chemin(STATIC_PATH_ID) + chemin(STATIC_LOGO)).display(false), "Webdar logo"),
     go_extract("Restore", event_restore),
     go_compare("Compare", event_compare),
     go_test("Test", event_test),
@@ -182,6 +184,7 @@ saisie::saisie():
 	// configuration of the sub-pages brought by "select"
 
 	//  configuration of the about sub-page
+    select.adopt_in_section(menu_main, &webdar_logo);
     text.clear();
     text.add_text(1,"WEBDAR");
     text.add_paragraph();
@@ -195,7 +198,6 @@ saisie::saisie():
     text.add_text(0, "Capucine and C&eacute;lestine");
     text.add_nl();
     text.add_paragraph();
-    text.add_css_class(css_class_text);
     around_licensing.adopt_static_html(text.get_body_part());
     around_licensing.adopt(&licensing);
     around_licensing.adopt_static_html(html_text(0,"").add_paragraph().get_body_part());
@@ -301,6 +303,11 @@ saisie::saisie():
     register_name(event_download);
 
 	// css
+    text.add_css_class(css_class_text);
+    around_licensing.add_css_class(css_class_right);
+    right_pan.add_css_class(css_class_rightpan);
+    webdar_logo.add_css_class(css_class_choice);
+    about_form.add_css_class(css_class_float_clear);
     webdar_css_style::normal_button(go_extract);
     webdar_css_style::normal_button(go_compare);
     webdar_css_style::normal_button(go_test);
@@ -662,20 +669,17 @@ bool saisie::do_we_list() const
 void saisie::new_css_library_available()
 {
     css tmp;
-    string css_class_right = "saisie_right";
-    string css_class_margin = "saisie_marge";
-    string css_class_choice = "saisie_choice";
-    string css_class_license = "saisie_license";
-    string css_class_rightpan = "saisie_rightpan";
+
     unique_ptr<css_library> & csslib = lookup_css_library();
     if(!csslib)
 	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
 
     tmp.clear();
     tmp.css_margin_left("10em");
     tmp.css_box_sizing(css::bx_border);
     csslib->add(css_class_rightpan, tmp);
-    right_pan.add_css_class(css_class_rightpan);
 
     tmp.clear();
     tmp.css_float(css::fl_right);
@@ -686,9 +690,8 @@ void saisie::new_css_library_available()
     csslib->add(css_class_choice, tmp);
 
     tmp.clear();
-    tmp.css_width("90%", true);
-    tmp.css_margin_bottom("1em");
-    tmp.css_margin_top("1em");
+    tmp.css_width("25em", true);
+    tmp.css_margin("2em");
     tmp.css_text_h_align(css::al_center);
     csslib->add(css_class_license, tmp);
 
@@ -701,5 +704,7 @@ void saisie::new_css_library_available()
     tmp.css_margin_left("9.4em");
     csslib->add(css_class_margin, tmp);
 
-    webdar_css_style::update_library(*csslib);
+    tmp.clear();
+    tmp.css_float_clear(css::fc_right);
+    csslib->add(css_class_float_clear, tmp);
 }

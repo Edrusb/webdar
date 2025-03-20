@@ -59,6 +59,7 @@ extern "C"
 #include "bibliotheque.hpp"
 #include "html_bibliotheque.hpp"
 #include "html_fichier.hpp"
+#include "html_image.hpp"
 
     /// class saisie
 
@@ -224,6 +225,7 @@ private:
     html_div div_about;
     html_div around_licensing;
     html_url licensing;
+    html_image webdar_logo;
     html_form_input session_name;
     html_form_fieldset about_fs;
     html_form about_form;
@@ -285,6 +287,7 @@ private:
     static const std::string css_class_choice;
     static const std::string css_class_license;
     static const std::string css_class_rightpan;
+    static const std::string css_class_float_clear;
 
 };
 
