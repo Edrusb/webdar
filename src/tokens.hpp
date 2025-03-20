@@ -133,6 +133,7 @@ extern const char* GREEN;
 extern const char* STATIC_PATH_ID;
 extern const char* STATIC_OBJ_LICENSING;
 extern const char* STATIC_LOGO;
+extern const char* STATIC_FAVICON;
 
 
     // Webdar chosen min & max values

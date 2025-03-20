@@ -23,3 +23,6 @@
 #######################################################################
 
 ./static_object_builder STATIC_OBJ_LICENSING text ../COPYING
+./static_object_builder STATIC_FAVICON jpeg ../resources/favicon.jpg
+./static_object_builder STATIC_LOGO jpeg ../resources/webdar_logo.jpg
+

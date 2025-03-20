@@ -89,6 +89,7 @@ string html_page::get_body_part_given_the_body(const chemin & path,
     ret += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n";
     ret += "<meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"content-type\">\n";
     ret += "<meta charset=\"UTF-8\">";
+    ret += "<link rel=\"icon\" type=\"image/x-icon\" href=\"" + (chemin(STATIC_PATH_ID) + chemin(STATIC_FAVICON)).display(false) + "\">";
 
     if(redirect != "")
 	ret += redirect + "\n";
