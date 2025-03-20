@@ -388,19 +388,19 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
 
     	// global component setups
 
-    tabs.add_tab("Main", tab_main);
-    tabs.add_tab("Repos", tab_repo);
+    tabs.add_tab("Global Settings", tab_main);
+    tabs.add_tab("Repositories", tab_repo);
+    tabs.add_tab("Delta signatures", tab_delta_sig);
     tabs.add_tab("Filename Masks", tab_filemask);
     tabs.add_tab("Path Masks", tab_pathmask);
     tabs.add_tab("Compression", tab_compression);
     tabs.add_tab("Slicing", tab_slicing);
     tabs.add_tab("Ciphering", tab_ciphering);
-    tabs.add_tab("Delta signatures", tab_delta_sig);
     tabs.add_tab("Overwriting Policy", tab_over_policy);
+    tabs.add_tab("Creation Options", tab_options_create);
+    tabs.add_tab("Reading Options", tab_options_read);
     tabs.add_tab("Testing Options", tab_options_test);
     tabs.add_tab("Comparison Options", tab_options_compare);
-    tabs.add_tab("Reading Options", tab_options_read);
-    tabs.add_tab("Creation Options", tab_options_create);
     tabs.add_tab("Isolation Options", tab_options_isolate);
     tabs.add_tab("Merging Options", tab_options_merge);
     tabs.add_tab("Repairing Options", tab_options_repair);
