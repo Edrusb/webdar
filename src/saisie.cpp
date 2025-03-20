@@ -104,6 +104,7 @@ saisie::saisie():
     disco(libdar::tools_printf("WebDar - %s", WEBDAR_VERSION))
 {
     status = st_idle;
+    html_text title; // used to build static text content
     html_text text; // used to build static text content
 
     licensing.set_download(true);
@@ -143,9 +144,11 @@ saisie::saisie():
 	guichet_test.load_from_bibliotheque(bibliotheque::default_config_name);
 
 	// disconnect
+
     adopt(&disco);
 
 	// configuration of "choice"
+
     choice.add_entry("Main Page", menu_main);
     select.add_section(menu_main, "");
     choice.add_entry("", "");
@@ -187,10 +190,11 @@ saisie::saisie():
 	// configuration of the sub-pages brought by "select"
 
 	//  configuration of the about sub-page
-    select.adopt_in_section(menu_main, &webdar_logo);
+    title.clear();
+    title.add_text(1,"WEBDAR");
+    around_licensing.adopt_static_html(title.get_body_part());
+    around_licensing.adopt(&webdar_logo);
     text.clear();
-    text.add_text(1,"WEBDAR");
-    text.add_paragraph();
     text.add_text(4,string("version ") + WEBDAR_VERSION);
     text.add_paragraph();
     text.add_text(0, "by Denis CORBIN");
@@ -312,9 +316,8 @@ saisie::saisie():
 
 	// css
     text.add_css_class(css_class_text);
-    around_licensing.add_css_class(css_class_right);
     right_pan.add_css_class(css_class_rightpan);
-    webdar_logo.add_css_class(css_class_choice);
+    webdar_logo.add_css_class(css_class_text);
     about_form.add_css_class(css_class_float_clear);
     webdar_css_style::normal_button(go_extract);
     webdar_css_style::normal_button(go_compare);
@@ -705,7 +708,7 @@ void saisie::new_css_library_available()
     csslib->add(css_class_choice, tmp);
 
     tmp.clear();
-    tmp.css_width("25em", true);
+    tmp.css_width("100%", true);
     tmp.css_margin("2em");
     tmp.css_text_h_align(css::al_center);
     csslib->add(css_class_license, tmp);

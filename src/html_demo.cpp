@@ -47,7 +47,7 @@ html_demo::html_demo():
     left_input("Enter some text here",
 	       html_form_input::text,
 	       "",
-	       "30em"),
+	       "10em"),
     left_fs("Information at Browser level"),
     form("Update"),
     btn_incr("Increment", event_incr),
@@ -55,7 +55,7 @@ html_demo::html_demo():
     right_input("Entered text",
 		html_form_input::text,
 		"",
-		"80%"),
+		"10em"),
     right_fs("Information known by Webdar"),
     counter("Counter", html_form_input::number, "0", "10"),
     close("Close", event_close)
@@ -184,12 +184,13 @@ void html_demo::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
+
     webdar_css_style::normal_button(btn_incr);
     webdar_css_style::normal_button(btn_clear);
     webdar_css_style::normal_button(close);
     btn_incr.add_css_class(css_btn);
     btn_clear.add_css_class(css_btn_clear);
-    close.add_css_class(css_btn_clear);
+    close.add_css_class(css_btn_close);
 
     if(! csslib->class_exists(css_table))
     {
@@ -202,7 +203,7 @@ void html_demo::new_css_library_available()
 	csslib->add(css_cells, tmp);
 
 	tmp.clear();
-	tmp.css_width("80%", true);
+	tmp.css_width("95%", true);
 	tmp.css_margin_top("2em");
 	csslib->add(css_table, tmp);
 
@@ -213,6 +214,13 @@ void html_demo::new_css_library_available()
 	tmp.clear();
 	tmp.css_float(css::fl_right);
 	csslib->add(css_btn_clear, tmp);
+
+	tmp.clear();
+	tmp.css_position_type(css::pos_sticky);
+	tmp.css_float(css::fl_right);
+	tmp.css_position_bottom("1em");
+	tmp.css_position_right("1em");
+	csslib->add(css_btn_close, tmp);
     }
 
     html_popup::new_css_library_available();

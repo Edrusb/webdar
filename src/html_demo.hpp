@@ -96,6 +96,8 @@ private:
     static constexpr const char* css_table = "html_demo_table";
     static constexpr const char* css_btn = "html_demo_button";
     static constexpr const char* css_btn_clear = "html_demo_button_clear";
+    static constexpr const char* css_btn_close = "html_demo_button_close";
+
 
     html_div desc_div;
     html_text description;
