@@ -36,7 +36,7 @@
 #include "server_pool.hpp"
 
     /// class listener
-    ///
+
     /// listen to the defined TCP port for new proto_connexions.
     /// Upon new proto_connexion, it builds proto_connexion objects
     /// and assign it to a new server object that will

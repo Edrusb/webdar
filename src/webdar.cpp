@@ -114,13 +114,13 @@ extern "C"
     /// - a \ref static_object for static components (images, licensing text, and so on)!
     /// - a \ref challenge object if the client has not yet been authenticated
     /// - a \ref choose object if the client is authenticated but the pointed to session does not exist
-    /// - the \ref user_interface object for the \ref session pointed to by the HTTP request.
+    /// - the \ref user_interface object from the \ref session pointed to by the HTTP request.
     /// The user_interface object is acquired by the server object from the \ref session class.
     ///
     /// the \ref session *class* manages a list of session *objects* associated with a reference counter
     /// that keep trace of the servers that have been given the session reference (only one can interact
     /// with the session at a given time). Only when the counter drops to zero that a closing session
-    /// request can be executing and the session is torn down. A few flags are also associated with
+    /// request can be executed leading the session to be torn down. A few flags are also associated with
     /// this session object in that table (locked, running libdar, or closing).
     ///
     /// The \ref session *objects* manage a \ref user_interface object to provide the answer to each HTTP request.
@@ -131,9 +131,9 @@ extern "C"
     ///
     /// \ref user_interface class provides mean to setup HTTP response to HTTP request for that particular
     /// session. In other words, it handle user interaction thought the web interface. For that it
-    /// relies on a set of \ref body_builder inherited classes which complex objects are build from simpler
-    /// one and for hierachical tree of adopted body_builder objects from the \ref html_page
-    /// down to simpler components like \ref html_button or \ref html_text objects. The user_interface class has
+    /// relies on a set of \ref body_builder inherited classes within which, complex objects are build from simpler
+    /// ones. Body builder objects are setup under a tree-like hierachy of adopted body_builder objects, with the a
+    /// \ref html_page at the root. The user_interface class has
     /// several status and for each a different body_builder object is used to provide the body of the
     /// HTTP answer:
     /// - config:       object parametrage of class \ref saisie
