@@ -44,6 +44,7 @@ extern "C"
 #include "html_form.hpp"
 #include "html_double_button.hpp"
 #include "html_div.hpp"
+#include "html_popup.hpp"
 
     /// class html_demo show how webdar interacts with the browser
 
@@ -67,7 +68,7 @@ extern "C"
 	+-----------------------+------------------------+
     \endverbatim **/
 
-class html_demo : public body_builder, public actor
+class html_demo : public html_popup, public actor
 {
 public:
     html_demo();
@@ -81,9 +82,6 @@ public:
     virtual void on_event(const std::string & event_name) override;
 
 protected:
-	/// inherited from body_builder
-    virtual std::string inherited_get_body_part(const chemin & path,
-						const request & req) override;
 
 	/// inherited from body_builder
     virtual void new_css_library_available() override;
@@ -92,11 +90,12 @@ protected:
 private:
     static constexpr const char* event_incr = "increment";
     static constexpr const char* event_clear = "clear";
+    static constexpr const char* event_close = "close";
+
     static constexpr const char* css_cells = "html_demo_cells";
     static constexpr const char* css_table = "html_demo_table";
     static constexpr const char* css_btn = "html_demo_button";
     static constexpr const char* css_btn_clear = "html_demo_button_clear";
-
 
     html_div desc_div;
     html_text description;
@@ -112,6 +111,7 @@ private:
     html_form_radio right_radio;
     html_form_fieldset right_fs;
     html_form_input counter;
+    html_button close;
 };
 
 #endif

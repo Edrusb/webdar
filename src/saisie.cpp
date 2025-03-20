@@ -79,6 +79,8 @@ const string saisie::css_class_license = "saisie_license";
 const string saisie::css_class_rightpan = "saisie_rightpan";
 const string saisie::css_class_float_clear = "saisie_floatclear";
 
+const string saisie::event_demo = "demo";
+
 
 saisie::saisie():
     archread(""),
@@ -89,6 +91,7 @@ saisie::saisie():
 		 "20"),
     about_fs(""),
     about_form("Change"),
+    show_demo("Mini tuto", event_demo),
     webdar_logo((chemin(STATIC_PATH_ID) + chemin(STATIC_LOGO)).display(false), "Webdar logo"),
     go_extract("Restore", event_restore),
     go_compare("Compare", event_compare),
@@ -206,6 +209,7 @@ saisie::saisie():
     about_form.adopt(&about_fs);
     select.adopt_in_section(menu_main, &about_form);
     select.adopt_in_section(menu_main, &demo);
+    select.adopt_in_section(menu_main, &show_demo);
 
 	// configuration of the restore sub-page
     select.adopt_in_section(menu_restore, &extract);
@@ -287,6 +291,7 @@ saisie::saisie():
 
     session_name.set_change_event_name(changed_session_name); // using the same event name as the we one we will trigger upon session name change
     session_name.record_actor_on_event(this, changed_session_name);
+    show_demo.record_actor_on_event(this, event_demo);
 
 	// other event to register
     register_name(event_restore);
@@ -301,6 +306,9 @@ saisie::saisie():
     register_name(changed_session_name);
     register_name(event_disconn);
     register_name(event_download);
+
+	// visibility
+    demo.set_visible(false);
 
 	// css
     text.add_css_class(css_class_text);
@@ -328,6 +336,9 @@ saisie::saisie():
     choice.add_css_class(css_class_choice);
     around_licensing.add_css_class(css_class_license);
     select.add_css_class(css_class_margin);
+
+    webdar_css_style::normal_button(show_demo);
+    show_demo.add_css_class(css_class_right);
 }
 
 string saisie::inherited_get_body_part(const chemin & path,
@@ -511,6 +522,10 @@ void saisie::on_event(const string & event_name)
     else if(event_name == html_yes_no_box::answer_no)
     {
 	choice.set_current_mode(choice.get_previous_mode());
+    }
+    else if(event_name == event_demo)
+    {
+	demo.set_visible(true);
     }
     else
 	throw WEBDAR_BUG;

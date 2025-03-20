@@ -42,11 +42,12 @@ extern "C"
 using namespace std;
 
 html_demo::html_demo():
+    html_popup(80, 80),
     table(2),
     left_input("Enter some text here",
 	       html_form_input::text,
 	       "",
-	       "80%"),
+	       "30em"),
     left_fs("Information at Browser level"),
     form("Update"),
     btn_incr("Increment", event_incr),
@@ -56,7 +57,8 @@ html_demo::html_demo():
 		"",
 		"80%"),
     right_fs("Information known by Webdar"),
-    counter("Counter", html_form_input::number, "0", "10")
+    counter("Counter", html_form_input::number, "0", "10"),
+    close("Close", event_close)
 {
 
 	// components configuration
@@ -110,6 +112,7 @@ html_demo::html_demo():
     btn_div.adopt(&btn_clear);
 
     table.adopt(&counter);
+    adopt(&close);
 
 	// events
 
@@ -117,6 +120,7 @@ html_demo::html_demo():
     left_radio.record_actor_on_event(this, html_form_radio::changed);
     btn_incr.record_actor_on_event(this, event_incr);
     btn_clear.record_actor_on_event(this, event_clear);
+    close.record_actor_on_event(this, event_close);
 
 	// visibility and enablement
 
@@ -167,17 +171,11 @@ void html_demo::on_event(const string & event_name)
 	counter.set_value(webdar_tools_convert_to_string(webdar_tools_convert_to_int(counter.get_value()) + 1));
     else if(event_name == event_clear)
 	counter.set_value("0");
+    else if(event_name == event_close)
+	set_visible(false);
     else
 	throw WEBDAR_BUG;
 }
-
-
-string html_demo::inherited_get_body_part(const chemin & path,
-					  const request & req)
-{
-    return get_body_part_from_all_children(path, req);
-}
-
 
 void html_demo::new_css_library_available()
 {
@@ -188,8 +186,10 @@ void html_demo::new_css_library_available()
     webdar_css_style::update_library(*csslib);
     webdar_css_style::normal_button(btn_incr);
     webdar_css_style::normal_button(btn_clear);
+    webdar_css_style::normal_button(close);
     btn_incr.add_css_class(css_btn);
     btn_clear.add_css_class(css_btn_clear);
+    close.add_css_class(css_btn_clear);
 
     if(! csslib->class_exists(css_table))
     {
@@ -214,4 +214,6 @@ void html_demo::new_css_library_available()
 	tmp.css_float(css::fl_right);
 	csslib->add(css_btn_clear, tmp);
     }
+
+    html_popup::new_css_library_available();
 }

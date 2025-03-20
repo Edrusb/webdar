@@ -229,6 +229,7 @@ private:
     html_form_input session_name;
     html_form_fieldset about_fs;
     html_form about_form;
+    html_double_button show_demo;
     html_demo demo;
 	//
     html_archive_extract extract;
@@ -289,6 +290,7 @@ private:
     static const std::string css_class_rightpan;
     static const std::string css_class_float_clear;
 
+    static const std::string event_demo;
 };
 
 #endif
