@@ -208,7 +208,7 @@ string session::create_new(const string & owner)
     unsigned id_width = INITIAL_SESSION_ID_WIDTH;
 
     if(obj == nullptr)
-	throw exception_memory();
+	throw exception_range("Cannot create a new session, lack of memory to do so");
     else
 	obj->wui.set_username(owner);
 

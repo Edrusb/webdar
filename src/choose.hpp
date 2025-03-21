@@ -90,9 +90,11 @@ private:
     std::vector<session::session_summary> sess; //< list of sessions in page
 
 	/// listing session page and associated objects
+
     html_page page;          ///< page root for session listing
     html_disconnect disco;
     html_table table;
+    html_div box_nouvelle;
     html_url nouvelle;
     html_form form;
     html_div div;

@@ -57,12 +57,12 @@ choose::choose():
     disconnect_req(false),
     table(6),
     nouvelle(url_new_session, "Create a new session"),
-    form("Kill the selected session")
+    form("Kill the selected session(s)")
 {
     html_text tmp;
     css tmpcss, tmpcss2;
     static const string css_class_page = "choose_page";
-    static const string css_class_tmp_text = "choose_text";
+    static const string css_class_text = "choose_text";
     static const string css_class_table = "choose_table";
     static const string css_class_table_cells = "choose_table_cells";
     static const string css_class_table_title = "choose_table_title";
@@ -77,10 +77,13 @@ choose::choose():
 
     tmpcss.clear();
     tmpcss.css_color(COLOR_TEXT);
-    tmpcss.css_text_h_align(css::al_center);
     page.define_css_class_in_library(css_class_page, tmpcss);
     page.add_css_class(css_class_page);
 
+    tmpcss.clear();
+    tmpcss.css_text_h_align(css::al_center);
+    page.define_css_class_in_library(css_class_text, tmpcss);
+    tmp.add_css_class(css_class_text);
     tmp.add_text(3, "Current sessions");
     page.adopt_static_html(tmp.get_body_part());
 
@@ -89,6 +92,7 @@ choose::choose():
     tmpcss.css_border_width(css::bd_all, css::bd_thin, true);
     tmpcss.css_border_style(css::bd_all, css::bd_solid, true);
     tmpcss.css_border_color(css::bd_all, COLOR_TEXT, true);
+    tmpcss.css_text_h_align(css::al_center);
     page.define_css_class_in_library(css_class_table_cells, tmpcss);
     table.set_css_class_cells(css_class_table_cells);
     tmpcss2.css_inherit_from(tmpcss);
@@ -103,21 +107,25 @@ choose::choose():
     table.add_css_class(css_class_table);
 
     tmpcss.clear();
-    tmpcss.css_margin_top("1em", true);
+    tmpcss.css_text_h_align(css::al_center);
     page.define_css_class_in_library(css_class_form, tmpcss);
     form.add_css_class(css_class_form);
 
     tmpcss.clear();
+    tmpcss.css_text_h_align(css::al_center);
     tmpcss.css_width("90%", true);
+    tmpcss.css_padding_bottom("1em");
     page.define_css_class_in_library(css_class_div, tmpcss);
     div.add_css_class(css_class_div);
+    box_nouvelle.add_css_class(css_class_div);
 
 	// setting up genealogy of body_builder objects for object page
 
     div.adopt(&table);
     form.adopt(&div);
     page.adopt(&form);
-    page.adopt(&nouvelle);
+    box_nouvelle.adopt(&nouvelle);
+    page.adopt(&box_nouvelle);
     page.adopt(&confirmed);
     page.set_prefix(chemin("choose"));
 

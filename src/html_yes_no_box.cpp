@@ -68,6 +68,7 @@ html_yes_no_box::html_yes_no_box():
 
 	// css
     question.add_css_class(css_center);
+    form.add_css_class(css_center);
 }
 
 void html_yes_no_box::ask_question(const string & message, bool default_value)
