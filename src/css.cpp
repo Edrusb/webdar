@@ -72,6 +72,7 @@ void css::clear()
     padding_right.clear();
     padding_bottom.clear();
     padding_left.clear();
+    font_size.clear();
     font_style.clear();
     font_weight.clear();
     text_h_align.clear();
@@ -456,6 +457,14 @@ void css::css_padding_left(const string & left,
     css_updated(inherit);
 }
 
+void css::css_font_size(const std::string & val,
+			bool inherit)
+{
+    font_size.set_value(string(" font-size: ") + val + ";");
+    font_size.set_inheritance(inherit);
+    css_updated(inherit);
+}
+
 void css::css_font_style_italic(bool inherit)
 {
     font_style.set_value(" font-style: italic;");
@@ -747,6 +756,7 @@ void css::css_inherit_from(const css & ref, bool all, bool force)
     padding_right.inherit_from(ref.padding_right, all, force);
     padding_bottom.inherit_from(ref.padding_bottom, all, force);
     padding_left.inherit_from(ref.padding_left, all, force);
+    font_size.inherit_from(ref.font_size, all, force);
     font_style.inherit_from(ref.font_style, all, force);
     font_weight.inherit_from(ref.font_weight, all, force);
     text_h_align.inherit_from(ref.text_h_align, all, force);
@@ -827,6 +837,7 @@ string css::css_get_raw_string() const
     ret += padding_right.get_value();
     ret += padding_bottom.get_value();
     ret += padding_left.get_value();
+    ret += font_size.get_value();
     ret += font_style.get_value();
     ret += font_weight.get_value();
     ret += text_h_align.get_value();

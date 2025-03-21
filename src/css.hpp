@@ -242,6 +242,7 @@ public:
 	dc_none
     };
 
+    void css_font_size(const std::string & val, bool inherit=false);
     void css_font_style_italic(bool inherit=false);
     void css_font_style_normal(bool inherit=false);
     void css_font_style() { font_style.clear(); };
@@ -381,6 +382,7 @@ private:
     css_property padding_left;
 
 	// text properties
+    css_property font_size;
     css_property font_style;
     css_property font_weight;
     css_property text_h_align;
