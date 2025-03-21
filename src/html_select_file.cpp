@@ -74,13 +74,14 @@ html_select_file::html_select_file(const string & message):
     parentdir("Parent Directory", op_chdir_parent),
     content(2),
     content_placeholder(2, "Loading directory content..."),
+    need_reload_content(false),
     btn_cancel("Cancel", op_cancelled),
     btn_validate("Select", entry_selected),
     btn_createdir("New Folder", op_createdir),
     btn_hide_createdir("New Folder", op_hide_createdir),
     createdir_form("Create Folder"),
     createdir_input("Folder Name", html_form_input::text, "", "80%"),
-    fieldset_isdir(true)
+    fieldset_isdir(libdar::inode_type::isdir)
 {
     entr.reset();       // entr points to nothing
     mem_ui.reset();     // mem_ui points to nothing
@@ -141,7 +142,7 @@ html_select_file::html_select_file(const string & message):
 
     set_visible(false); // make us invisible until go_select() is called
     webui.set_visible(false);
-    webui.auto_hide(true, true);
+    webui.auto_hide(true, false);
     ignore_body_changed_from_my_children(false); // end of ignore visibility change
     loading_mode(false);
 }
@@ -169,9 +170,7 @@ void html_select_file::go_select(const shared_ptr<libdar::entrepot> & x_entr,
 	throw WEBDAR_BUG;
     mem_ui = entr->get_current_user_interaction();
     entr->change_user_interaction(webui.get_user_interaction());
-    entrepot_url.clear();
-    entrepot_url.add_text(0, "Entrepot location: ");
-    entrepot_url.add_text(0, entr->get_url());
+    update_entrepot_url();
     fieldset.change_label(start_dir);
     createdir_form.set_visible(false);
     clear_content();
@@ -183,7 +182,7 @@ void html_select_file::on_event(const string & event_name)
 {
     if(event_name == entry_selected)
     {
-	if(fieldset_isdir && cur_select_mode != sel_dir)
+	if(fieldset_isdir == libdar::inode_type::isdir && cur_select_mode != sel_dir)
 	{
 	    warning.add_text(3, string("This is a directory, please select a non-directory file"));
 		// not necessary to call my_body_part_has_changed() as we just changed "warning" one of our own children
@@ -204,7 +203,7 @@ void html_select_file::on_event(const string & event_name)
     else if(event_name == op_chdir_parent)
     {
 	fieldset.change_label(get_parent_path(fieldset.get_label()));
-	fieldset_isdir = true;
+	fieldset_isdir = libdar::inode_type::isdir;
 	run_thread(run_fill_only);
     }
     else if(event_name == op_createdir)
@@ -281,7 +280,7 @@ void html_select_file::on_event(const string & event_name)
 		throw WEBDAR_BUG;
 
 
-	    if(!fieldset_isdir)
+	    if(fieldset_isdir != libdar::inode_type::isdir)
 	    {
 		    // if the current select item is not a directory we have not
 		    // changed directory into it, the current path is the dirname
@@ -292,31 +291,16 @@ void html_select_file::on_event(const string & event_name)
 
 		// we concatenate (as a path subdir) the current path with the filename the user has clicked on:
 
+	    fieldset_isdir = it->second.target_type;
+
 	    curdir += chemin((it->second.btn)->get_label());
 	    fieldset.change_label(curdir.display());
-	    if(it->second.type == libdar::inode_type::unknown)
-	    {
-		    // we must determine whether this a directory or not
-		try
-		{
-		    entr->set_location(fieldset.get_label());
-		    entr->read_dir_reset_dirinfo();
-		    it->second.type = libdar::inode_type::isdir;
-		}
-		catch(...)
-		{
-		    it->second.type = libdar::inode_type::nondir;
-		}
-	    }
-
-
-	    fieldset_isdir = (it->second.type == libdar::inode_type::isdir);
 
 		// Warning: clearing content here will delete
 		// the object which generated the event we
 		// act on... leading to a SEGFAULT as at return
 		// of on_event() the object will no more exist.
-	    if(fieldset_isdir)
+	    if(fieldset_isdir == libdar::inode_type::isdir)
 		run_thread(run_fill_only);
 	}
 	else
@@ -345,7 +329,14 @@ string html_select_file::inherited_get_body_part(const chemin & path,
 	    // ELSE as we are in loading mode or no thread will run until we release the mutex
 	    // either we will not read 'content' because it is hidden, or no subthread will
 	    // run during the time we proceed with html_popup::inherited_get_get_body_part()
+
 	ret = html_popup::inherited_get_body_part(path, req);
+
+	if(need_reload_content && ! webui.is_libdar_running())
+	{
+	    run_thread(run_fill_only);
+	    need_reload_content = false;
+	}
     }
     catch(...)
     {
@@ -484,58 +475,67 @@ bool html_select_file::init_fieldset_isdir()
 {
     bool ret = false;
 
-    chemin target(fieldset.get_label());
+//    chemin target(fieldset.get_label());
 
     if(!entr)
 	throw WEBDAR_BUG;
 
-	// first trying to open target as a if it was a directory
+	// first trying to open the target as a if it was a directory
 	// if that fails we will try to open the parent directory
 	// to check for a possible existence of target
 
     try
     {
-	entr->set_location(target.display());
+	entr->set_location(fieldset.get_label());
 	entr->read_dir_reset_dirinfo();
-	fieldset_isdir = true;
+	fieldset_isdir = libdar::inode_type::isdir;
 	ret = true;
-    }
-    catch(libdar::Erange & e)
-    {
-	    // assuming the operation failed
-	    // because the target is not a directory
-	    // trying to open the parent directory
-	try
-	{
-	    target.pop_back();
-	    entr->set_location(target.display());
-	    entr->read_dir_reset_dirinfo();
-	    fieldset_isdir = false;
-	    ret = true;
-	}
-	catch(exception_range & f)
-	{
-		// target.pop_back() failed
-		// this means target was empty (aka root file system)
-		// and "/" was not a directory or failed to be openned
-		// reporting the first exception
-	    warning.clear();
-	    warning.add_text(3, e.get_message());
-	}
-	catch(libdar::Erange & f)
-	{
-		// target.pop_back() succeeded by the
-		// libdar iperation failed, propagating this
-		// exception
-	    warning.clear();
-	    warning.add_text(3, f.get_message());
-	}
     }
     catch(libdar::Egeneric & e)
     {
-	warning.clear();
-	warning.add_text(3, string("Unexpected error returned by libdar:"));
-	warning.add_text(4, e.get_message());
+	libdar::Erange* e_range = dynamic_cast<libdar::Erange*>(&e);
+	libdar::Enet_auth* e_netauth = dynamic_cast<libdar::Enet_auth*>(&e);
+
+	    // when trying to read an non directory as a directory:
+	    // local entrepot fails in Erange
+	    // libcurl fails en Enet_auth
+	if(e_range != nullptr || e_netauth != nullptr)
+	{
+	    try
+	    {
+		fieldset.change_label(get_parent_path(fieldset.get_label()));
+		entr->set_location(fieldset.get_label());
+		entr->read_dir_reset_dirinfo();
+		fieldset_isdir = libdar::inode_type::isdir;
+		update_entrepot_url();
+		ret = true;
+	    }
+	    catch(exception_range & f)
+	    {
+		    // target.pop_back() failed
+		    // this means target was empty (aka root file system)
+		    // and "/" was not a directory or failed to be openned
+		    // reporting the first exception
+		warning.clear();
+		warning.add_text(3, e.get_message());
+		fieldset_isdir = libdar::inode_type::isdir;
+	    }
+	    catch(libdar::Erange & f)
+	    {
+		    // target.pop_back() succeeded but the
+		    // libdar operation failed, propagating this
+		    // exception
+		warning.clear();
+		warning.add_text(3, f.get_message());
+		fieldset_isdir = libdar::inode_type::unknown;
+	    }
+	}
+	else
+	{
+	    warning.clear();
+	    warning.add_text(3, string("Unexpected error returned by libdar:"));
+	    warning.add_text(4, e.get_message());
+	}
     }
 
     return ret;
@@ -543,47 +543,90 @@ bool html_select_file::init_fieldset_isdir()
 
 void html_select_file::fill_content()
 {
+    struct couple
+    {
+	string name;
+	libdar::inode_type target_tp;
+
+	bool operator < (const couple & ref) const { return name < ref.name; };
+	bool operator == (const couple & ref) const { return name == ref.name; };
+    };
+
     string entry;
     bool isdir;
     string event_name;
     unsigned int count = 0;
-    deque<string> entry_dirs;
-    deque<string> entry_files;
-    deque<string> entry_symlinks;
-    deque<string> entry_unknown;
+    deque<couple> entry_dirs;
+    deque<couple> entry_files;
+    deque<couple> entry_symlinks;
+    deque<couple> entry_unknown;
+    deque<couple> tout;
     libdar::inode_type tp;
+    couple with_target;
+    deque<couple>::iterator it;
+
 
     clear_content();
 
     if(!entr)
 	throw WEBDAR_BUG;
 
-    if(fieldset_isdir)
+    if(fieldset_isdir == libdar::inode_type::isdir)
+    {
 	entr->set_location(fieldset.get_label());
+    }
+    else
+	throw WEBDAR_BUG; // we should not get there if fieldset is not a directory
     cancellation_checkpoint();
-    entr->read_dir_reset_dirinfo();
+    try
+    {
+	entr->read_dir_reset_dirinfo();
+	update_entrepot_url();
+    }
+    catch(libdar::Erange & e)
+    {
+	need_reload_content = true;
+	throw;
+    }
 
     while(entr->read_dir_next_dirinfo(entry, tp))
     {
-	cancellation_checkpoint();
-	if(tp == libdar::inode_type::isdir
-	   || tp == libdar::inode_type::unknown
+	with_target.name = entry;
+	with_target.target_tp = tp;
+
+	tout.push_back(with_target);
+    }
+
+    cancellation_checkpoint();
+
+    for(deque<couple>::iterator it = tout.begin(); it != tout.end(); ++it)
+    {
+	tp = it->target_tp;
+	if(tp == libdar::inode_type::symlink || tp == libdar::inode_type::unknown)
+	{
+	    if(is_a_valid_dir(fieldset.get_label(), it->name))
+		it->target_tp = libdar::inode_type::isdir;
+	    else
+		it->target_tp = libdar::inode_type::nondir;
+	}
+
+	if(it->target_tp == libdar::inode_type::isdir
 	   || filter.empty()
-	   || fnmatch(filter.c_str(), entry.c_str(), FNM_PERIOD) == 0)
+	   || fnmatch(filter.c_str(), it->name.c_str(), FNM_PERIOD) == 0)
 	{
 	    switch(tp)
 	    {
 	    case libdar::inode_type::isdir:
-		entry_dirs.push_back(entry);
+		entry_dirs.push_back(*it);
 		break;
 	    case libdar::inode_type::nondir:
-		entry_files.push_back(entry);
+		entry_files.push_back(*it);
 		break;
 	    case libdar::inode_type::symlink:
-		entry_symlinks.push_back(entry);
+		entry_symlinks.push_back(*it);
 		break;
 	    case libdar::inode_type::unknown:
-		entry_unknown.push_back(entry);
+		entry_unknown.push_back(*it);
 		break;
 	    default:
 		throw WEBDAR_BUG;
@@ -595,25 +638,25 @@ void html_select_file::fill_content()
 	    // and the entry does not match the filter
     }
 
+    tout.clear();
     sort(entry_dirs.begin(), entry_dirs.end());
     sort(entry_files.begin(), entry_files.end());
     sort(entry_symlinks.begin(), entry_symlinks.end());
     sort(entry_unknown.begin(), entry_unknown.end());
-
-    deque<string>::iterator it = entry_dirs.begin();
 
 	// we do the following complicated thing to
 	// have the listing starting with directories
 	// then symlinks, then non directories, followed
 	// last by those we don't even know what's their type is.
 
+    it = entry_dirs.begin();
     while(it != entry_dirs.end())
     {
 	cancellation_checkpoint();
 	event_name = "x_" + to_string(count++);
 	if(listed.find(event_name) != listed.end())
 	    throw WEBDAR_BUG; // event already exists!?!
-	add_content_entry(event_name, libdar::inode_type::isdir, *it);
+	add_content_entry(event_name, libdar::inode_type::isdir, it->target_tp, it->name);
 	++it;
     }
 
@@ -624,7 +667,7 @@ void html_select_file::fill_content()
 	event_name = "x_" + to_string(count++);
 	if(listed.find(event_name) != listed.end())
 	    throw WEBDAR_BUG; // event already exists!?!
-	add_content_entry(event_name, libdar::inode_type::symlink, *it);
+	add_content_entry(event_name, libdar::inode_type::symlink, it->target_tp, it->name);
 	++it;
     }
 
@@ -635,7 +678,7 @@ void html_select_file::fill_content()
 	event_name = "x_" + to_string(count++);
 	if(listed.find(event_name) != listed.end())
 	    throw WEBDAR_BUG; // event already exists!?!
-	add_content_entry(event_name, libdar::inode_type::nondir, *it);
+	add_content_entry(event_name, libdar::inode_type::nondir, it->target_tp, it->name);
 	++it;
     }
 
@@ -646,7 +689,7 @@ void html_select_file::fill_content()
 	event_name = "x_" + to_string(count++);
 	if(listed.find(event_name) != listed.end())
 	    throw WEBDAR_BUG; // event already exists!?!
-	add_content_entry(event_name, libdar::inode_type::unknown, *it);
+	add_content_entry(event_name, libdar::inode_type::unknown, it->target_tp, it->name);
 	++it;
     }
 
@@ -666,7 +709,10 @@ void html_select_file::create_dir()
     entr->create_dir(createdir_input.get_value(), 0700);
 }
 
-void html_select_file::add_content_entry(const string & event_name, libdar::inode_type tp, const string & entry)
+void html_select_file::add_content_entry(const string & event_name,
+					 libdar::inode_type tp,
+					 libdar::inode_type target_tp,
+					 const string & entry)
 {
     item current;
     bool hyperlink = false;
@@ -679,21 +725,28 @@ void html_select_file::add_content_entry(const string & event_name, libdar::inod
 	break;
     case libdar::inode_type::symlink:
 	content.adopt_static_html(" LNK ");
-	hyperlink = true;
+	if(target_tp == libdar::inode_type::isdir)
+	    hyperlink = true;
+	else
+	    hyperlink = (cur_select_mode == sel_file) || (cur_select_mode == sel_symlinks);
 	break;
     case libdar::inode_type::nondir:
 	content.adopt_static_html("");
 	hyperlink = (cur_select_mode == sel_file);
 	break;
     case libdar::inode_type::unknown:
+	if(target_tp == libdar::inode_type::isdir)
+	    hyperlink = true;
+	else
+	    hyperlink = (cur_select_mode == sel_file);
 	content.adopt_static_html("?");
-	hyperlink = true; // because it may be a directory or symlink to a directory user would like to chdir into
 	break;
     default:
 	throw WEBDAR_BUG;
     }
 
     current.type = tp;
+    current.target_type = target_tp;
     if(hyperlink)
     {
 	current.btn = new (nothrow) html_button(entry, event_name);
@@ -835,3 +888,30 @@ void html_select_file::my_closing()
     mem_ui.reset(); // forget about the user_interaction entr had
 }
 
+
+bool html_select_file::is_a_valid_dir(const std::string & pathval, const std::string & name) const
+{
+    bool ret = true;
+    chemin tmp(pathval);
+
+    tmp += name;
+
+    try
+    {
+	entr->set_location(tmp.display(false));
+	entr->read_dir_reset_dirinfo();
+    }
+    catch(...)
+    {
+	ret = false;
+    }
+
+    return ret;
+}
+
+void html_select_file::update_entrepot_url()
+{
+    entrepot_url.clear();
+    entrepot_url.add_text(0, "Entrepot location: ");
+    entrepot_url.add_text(0, entr->get_url());
+}

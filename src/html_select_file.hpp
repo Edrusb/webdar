@@ -118,7 +118,7 @@ public:
     enum select_mode
     {
 	sel_file,    ///< only non dir and symlinks and non symlink should be selectable
-	sel_dir,     ///< only directories and symlinks should be selectable
+	sel_dir,     ///< only directories and symlinks pointing to dir
 	sel_symlinks ///< only symlinks should be selectable
     };
 
@@ -204,8 +204,9 @@ private:
     {
 	html_button* btn;
 	libdar::inode_type type;
-	item() { btn = nullptr; type = libdar::inode_type::unknown; };
-	item(html_button* ptr) { btn = ptr; type = libdar::inode_type::unknown; };
+	libdar::inode_type target_type; ///< used when type is symlink or unknown (else equals type)
+	item() { btn = nullptr; type = target_type = libdar::inode_type::unknown; };
+	item(html_button* ptr) { btn = ptr; type = target_type = libdar::inode_type::unknown; };
     };
 
 
@@ -232,7 +233,7 @@ private:
 
 	// status field about html components
     bool is_loading_mode;             ///< whether the content placeholder shows
-    bool fieldset_isdir;              ///< whether fieldset points to a directory or not
+    libdar::inode_type fieldset_isdir;///< whether fieldset points to a directory or not
 
 	// settings
     std::string x_message;            ///< message passed at constructor time
@@ -256,7 +257,9 @@ private:
     std::map<std::string, item> listed; ///< associate a event message to each listed items
     html_double_button parentdir;     ///< change to parent dir
     html_text content_placeholder;    ///< replace content and *parentdir* when loading the directory content
+    bool need_reload_content;         ///< whether a force content reload is needed
     html_table content;               ///< parent of content objects
+
 
     html_div btn_box;                 ///< box containing the bottom buttons
     html_button btn_cancel;           ///< triggers the entry_cancelled event
@@ -281,9 +284,10 @@ private:
     void create_dir();
 
 	/// used by fill_content() to add a single entry to the "listed" field
-    void add_content_entry(const std::string & event_name,
-			   libdar::inode_type pt,
-			   const std::string & entry);
+    void add_content_entry(const std::string & event_name,///< event name
+			   libdar::inode_type tp,         ///< entry type
+			   libdar::inode_type target_tp,  ///< target type of the entry (for symlinks or unknown type entries)
+			   const std::string & entry);    ///< entry name
 
 	/// run requested thread after sanity checks
 
@@ -308,6 +312,12 @@ private:
 	/// \note when 'last' is false it only cleans up and restore states changed by run_thread()
 	/// but if 'last' is true, this cleans up and restore states changed by go_select()
     void my_closing();
+
+	/// for symlinks or unknown type entries tries to open it as a directory and return the status
+    bool is_a_valid_dir(const std::string & pathval, const std::string & name) const;
+
+	/// update url displayed for the current selected entry
+    void update_entrepot_url();
 
 };
 
