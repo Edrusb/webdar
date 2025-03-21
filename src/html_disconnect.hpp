@@ -40,6 +40,7 @@ extern "C"
 #include "events.hpp"
 #include "html_text.hpp"
 #include "html_button.hpp"
+#include "html_image.hpp"
 
     /// html component used for the user to define a has algorithm
 
@@ -49,7 +50,7 @@ public:
 	/// disconnect event
     static const std::string event_disconn;
 
-    html_disconnect(const std::string & webdar_title);
+    html_disconnect();
     html_disconnect(const html_disconnect & ref) = delete;
     html_disconnect(html_disconnect && ref) noexcept = delete;
     html_disconnect & operator = (const html_disconnect & ref) = delete;
@@ -85,6 +86,7 @@ protected:
 
 private:
     static const std::string css_global;
+    static const std::string css_logo;
     static const std::string css_title;
     static const std::string css_title_box;
     static const std::string css_status;
@@ -92,6 +94,7 @@ private:
     static const std::string css_quit_box;
     static const std::string css_quit_link;
 
+    html_image logo;
     html_div title_box;
     html_text title;
     html_div status_box;

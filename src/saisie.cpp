@@ -100,8 +100,7 @@ saisie::saisie():
     go_create("Create", event_create),
     go_isolate("Isolate", event_isolate),
     go_merge("Merge", event_merge),
-    go_repair("Repair", event_repair),
-    disco(libdar::tools_printf("WebDar - %s", WEBDAR_VERSION))
+    go_repair("Repair", event_repair)
 {
     status = st_idle;
     html_text title; // used to build static text content

@@ -53,7 +53,6 @@ const string choose::url_new_session = "/choose/new";
 
 choose::choose():
     page("Webdar - Choose a session"),
-    disco(libdar::tools_printf("WebDar - %s", WEBDAR_VERSION)),
     owner(""),
     disconnect_req(false),
     table(6),

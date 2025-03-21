@@ -41,6 +41,7 @@ using namespace std;
 
 const string html_disconnect::event_disconn = "disconnect";
 const string html_disconnect::css_global = "html_disco_global";
+const string html_disconnect::css_logo = "html_disco_logo";
 const string html_disconnect::css_title = "html_disco_title";
 const string html_disconnect::css_title_box = "html_disco_title_box";
 const string html_disconnect::css_status = "html_disco_status";
@@ -50,14 +51,20 @@ const string html_disconnect::css_quit_link = "html_disco_quit_lnk";
 
 bool html_disconnect::default_basic_auth = true;
 
-html_disconnect::html_disconnect(const string & webdar_title):
+html_disconnect::html_disconnect():
+    logo((chemin(STATIC_PATH_ID) + chemin(STATIC_TITLE_LOGO)).display(false), "Webdar logo"),
     quit("Disconnect", event_disconn)
 {
+
 	// components configuration
+
+    logo.set_dimensions("100em", "100em");
+
     title.clear();
-    title.add_text(3, webdar_title);
+    title.add_text(3, "WEBDAR");
 
 	// adoption tree
+    title_box.adopt(&logo);
     title_box.adopt(&title);
     adopt(&title_box);
     adopt(&quit);
@@ -74,6 +81,7 @@ html_disconnect::html_disconnect(const string & webdar_title):
 
 	// css
     add_css_class(css_global);
+    logo.add_css_class(css_logo);
     title.add_css_class(css_title);
     title_box.add_css_class(css_title_box);
     status.add_css_class(css_status);
@@ -120,6 +128,14 @@ void html_disconnect::new_css_library_available()
 
 	csslib->add(css_global, tmp);
 
+		    // for the html_image logo
+	tmp.clear();
+
+	tmp.css_float(css::fl_left);
+	tmp.css_margin_right("1em");
+
+	csslib->add(css_logo, tmp);
+
 
 	    // for the html_text title
 	tmp.clear();
@@ -136,6 +152,7 @@ void html_disconnect::new_css_library_available()
 	tmp.clear();
 
 	tmp.css_float(css::fl_left);
+	tmp.css_width("60%", false);
 
 	csslib->add(css_title_box, tmp);
 
