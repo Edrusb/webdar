@@ -307,7 +307,7 @@ private:
 	/// \param[in] last whether we have to set back entrepot and forget about it
 	/// \note when 'last' is false it only cleans up and restore states changed by run_thread()
 	/// but if 'last' is true, this cleans up and restore states changed by go_select()
-    void my_join(bool last);
+    void my_closing();
 
 };
 

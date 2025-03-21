@@ -170,8 +170,12 @@ public:
 	/// this method will run() the thread, monitor its liveness then join() it when it has completed.
 	///
 	/// The caller can either register to the event libdar_has_finished to be informed when the thread
-	/// will have completed at which time it must call join_controlled_thread() or directly call
-	/// join_controlled_thread() in which case it will be suspending for the thread to terminate.
+	/// will have completed or directly call join_controlled_thread() in which case it will be suspending
+	/// for the thread to terminate.
+	///
+	/// In case the controlled thread is interrupted by an exception, this exception is propagated to the
+	/// controlling thread while the body_builder::get_body_part() / inherited_get_body_part() method is
+	/// invoked.
 	///
 	/// During the life of the thread, this body_builder component displays buttons to stop the
 	/// provided thread, as well as the output of the get_user_interaction() returned component (which

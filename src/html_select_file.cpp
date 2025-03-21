@@ -192,14 +192,14 @@ void html_select_file::on_event(const string & event_name)
 	{
 	    status = st_completed;
 	    act(entry_selected); // propagate the event to object that subscribed to us
-	    my_join(true);
+	    my_closing();
 	}
     }
     else if(event_name == op_cancelled)
     {
 	status = st_init;
 	act(op_cancelled); // propagate the event to objects that subscribed to us
-	my_join(true);
+	my_closing();
     }
     else if(event_name == op_chdir_parent)
     {
@@ -335,14 +335,6 @@ string html_select_file::inherited_get_body_part(const chemin & path,
     string ret;
     html_page* page = nullptr;
     closest_ancestor_of_type(page);
-
-    if(! webui.is_libdar_running())
-    {
-	my_join(false);
-
-	if(!entr)
-	    throw WEBDAR_BUG;
-    }
 
     bool lock_acquired = content_mutex.try_lock();
 
@@ -832,61 +824,14 @@ string html_select_file::get_parent_path(const string & somepath)
     return chem.display();
 }
 
-void html_select_file::my_join(bool last)
+void html_select_file::my_closing()
 {
-    try
+    set_visible(false);
+    if(entr)
     {
-	bool ok = false;
-	try
-	{
-	    if(last)
-		set_visible(false);
-	    ok = true;
-	    throw ok;
-	}
-	catch(...)
-	{
-	    if(last)
-	    {
-		if(entr)
-		{
-		    entr->change_user_interaction(mem_ui);
-		    entr.reset();   // forget about the go_select() provided entrepot
-		}
-		else
-		    throw WEBDAR_BUG;
-
-		mem_ui.reset(); // forget about the user_interaction entr had
-	    }
-
-	    if(!ok)
-		throw;
-	}
+	entr->change_user_interaction(mem_ui);
+	entr.reset();   // forget about the go_select() provided entrepot
     }
-    catch(exception_bug &)
-    {
-	throw;
-    }
-    catch(libthreadar::exception_base & e)
-    {
-	if(last)
-	    throw;
-	else
-	    warning.add_text(3, e.get_message(": "));
-    }
-    catch(exception_base & e)
-    {
-	if(last)
-	    throw; // cannot display the error in 'warning' is visible is now false
-	else
-	    warning.add_text(3, e.get_message());
-    }
-    catch(libdar::Egeneric & e)
-    {
-	if(last)
-	    throw; // cannot display the error in 'warning' is visible is now false
-	else
-	    warning.add_text(3, e.get_message());
-    }
+    mem_ui.reset(); // forget about the user_interaction entr had
 }
 
