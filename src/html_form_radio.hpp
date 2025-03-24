@@ -143,8 +143,6 @@ protected:
     void unlock_update_field_from_request();
 
 private:
-    static constexpr const char* css_emphasis = "html_form_radio_emphasis";
-
     bool enabled;              ///< whether the control is enabled or disabled
     std::vector<record> choices;
     unsigned int selected;

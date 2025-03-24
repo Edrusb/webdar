@@ -32,7 +32,7 @@ extern "C"
 #include <dar/tools.hpp>
 
     // webdar headers
-
+#include "webdar_css_style.hpp"
 
 
     //
@@ -179,7 +179,7 @@ string html_form_radio::inherited_get_body_part(const chemin & path,
 	if(!enabled)
 	    ret += "disabled ";
 	ret += "/>\n";
-	ret += "<label " + get_css_classes(i == emphase ? css_emphasis: "") + " for=\"" + choices[i].id + "\">" + choices[i].label + "</label>";
+	ret += "<label " + get_css_classes(i == emphase ? webdar_css_style::text_bold : "") + " for=\"" + choices[i].id + "\">" + choices[i].label + "</label>";
 	if(i+1 < choices.size() || !get_no_CR())
 	    ret += "<br />\n";
 	else
@@ -196,18 +196,12 @@ string html_form_radio::inherited_get_body_part(const chemin & path,
 
 void html_form_radio::new_css_library_available()
 {
-    css tmp;
     unique_ptr<css_library> & csslib = lookup_css_library();
-
     if(!csslib)
 	throw WEBDAR_BUG;
 
-    if(!csslib->class_exists(css_emphasis))
-    {
-	tmp.clear();
-	tmp.css_font_weight_bold();
-	csslib->add(css_emphasis, tmp);
-    }
+    webdar_css_style::update_library(*csslib);
+
 }
 
 
