@@ -370,7 +370,7 @@ html_options_create::html_options_create():
 
 	// css
     webdar_css_style::grey_button(deroule, true);
-    display_treated_only_dir.add_css_class(webdar_css_style::wcs_indent);
+    display_treated_only_dir.add_css_class(webdar_css_style::indent);
 }
 
 void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)

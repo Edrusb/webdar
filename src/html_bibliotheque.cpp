@@ -472,9 +472,9 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     clear_conf.add_css_class(css_float);
     generate_defaults.add_css_class(css_float);
 
-    upload_form.add_button_css_class(webdar_css_style::wcs_btn_off);
-    upload_form.add_button_css_class(webdar_css_style::wcs_url_normal);
-    upload_form.add_button_css_class(webdar_css_style::wcs_8em_width);
+    upload_form.add_button_css_class(webdar_css_style::btn_off);
+    upload_form.add_button_css_class(webdar_css_style::url_normal);
+    upload_form.add_button_css_class(webdar_css_style::width_8em);
     upload_form.add_button_css_class(css_float);
 
     ok_loaded.add_css_class(css_green_text);

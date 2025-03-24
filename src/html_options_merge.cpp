@@ -274,7 +274,7 @@ html_options_merge::html_options_merge():
 
 	// CSS
     webdar_css_style::grey_button(deroule, true);
-    display_treated_only_dir.add_css_class(webdar_css_style::wcs_indent);
+    display_treated_only_dir.add_css_class(webdar_css_style::indent);
 }
 
 void html_options_merge::set_biblio(const std::shared_ptr<bibliotheque> & ptr)

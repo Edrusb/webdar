@@ -239,28 +239,28 @@ string html_form_mask_subdir::inherited_get_body_part(const chemin & path,
 
 	    if(valpath.is_absolute())
 	    {
-		if(!mask_subdir.has_css_class(webdar_css_style::wcs_red_border))
+		if(!mask_subdir.has_css_class(webdar_css_style::red_border))
 		{
-		    mask_subdir.add_css_class(webdar_css_style::wcs_red_border);
+		    mask_subdir.add_css_class(webdar_css_style::red_border);
 		    throw exception_range("absolute path are not allowed for path filtering in that context");
 		}
 	    }
 	    else
 	    {
-		if(mask_subdir.has_css_class(webdar_css_style::wcs_red_border))
-		    mask_subdir.remove_css_class(webdar_css_style::wcs_red_border);
+		if(mask_subdir.has_css_class(webdar_css_style::red_border))
+		    mask_subdir.remove_css_class(webdar_css_style::red_border);
 	    }
 	}
 	else
 	{
-	    if(mask_subdir.has_css_class(webdar_css_style::wcs_red_border))
-		mask_subdir.remove_css_class(webdar_css_style::wcs_red_border);
+	    if(mask_subdir.has_css_class(webdar_css_style::red_border))
+		mask_subdir.remove_css_class(webdar_css_style::red_border);
 	}
     }
     else
     {
-	if(mask_subdir.has_css_class(webdar_css_style::wcs_red_border))
-	    mask_subdir.remove_css_class(webdar_css_style::wcs_red_border);
+	if(mask_subdir.has_css_class(webdar_css_style::red_border))
+	    mask_subdir.remove_css_class(webdar_css_style::red_border);
     }
 
     return ret;
@@ -297,7 +297,7 @@ void html_form_mask_subdir::init()
     regex.set_visible(mask_type.get_selected_num() == 1);
 
 	// css stuff
-    fs.add_label_css_class(webdar_css_style::wcs_bold_text);
+    fs.add_label_css_class(webdar_css_style::bold_text);
 }
 
 

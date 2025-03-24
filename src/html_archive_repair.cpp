@@ -103,8 +103,8 @@ const string & html_archive_repair::get_archive_basename() const
 {
     if(basename.get_value().empty())
     {
-	if(!basename.has_css_class(webdar_css_style::wcs_red_border))
-	    const_cast<html_archive_repair*>(this)->basename.add_css_class(webdar_css_style::wcs_red_border);
+	if(!basename.has_css_class(webdar_css_style::red_border))
+	    const_cast<html_archive_repair*>(this)->basename.add_css_class(webdar_css_style::red_border);
 	throw exception_range("Archive basename cannot be an empty string");
     }
     return basename.get_value();
@@ -152,12 +152,12 @@ void html_archive_repair::on_event(const string & event_name)
     {
 	    // will change the css class if only one
 	    // of the if() argument is true (XOR operator)
-	if(basename.get_value().empty() ^ basename.has_css_class(webdar_css_style::wcs_red_border))
+	if(basename.get_value().empty() ^ basename.has_css_class(webdar_css_style::red_border))
 	{
 	    if(basename.get_value().empty())
-		basename.add_css_class(webdar_css_style::wcs_red_border);
+		basename.add_css_class(webdar_css_style::red_border);
 	    else
-		basename.remove_css_class(webdar_css_style::wcs_red_border);
+		basename.remove_css_class(webdar_css_style::red_border);
 	}
     }
     else

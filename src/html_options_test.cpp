@@ -120,7 +120,7 @@ html_options_test::html_options_test():
 	// css
 
     webdar_css_style::grey_button(deroule, true);
-    display_treated_only_dir.add_css_class(webdar_css_style::wcs_indent);
+    display_treated_only_dir.add_css_class(webdar_css_style::indent);
 
 	// components visibility status
     on_event(html_form_input::changed);

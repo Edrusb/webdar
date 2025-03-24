@@ -74,7 +74,7 @@ html_form_mask_bool::html_form_mask_bool(const string & initial_mode):
 
 	// css stuff
     table.set_css_class_first_column(css_class_bool_text);
-    fs.add_label_css_class(webdar_css_style::wcs_bold_text);
+    fs.add_label_css_class(webdar_css_style::bold_text);
 
 	// final table update
     update_table_content_logic(true); // true = update unconditionally

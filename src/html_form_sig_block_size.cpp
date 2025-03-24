@@ -88,7 +88,7 @@ html_form_sig_block_size::html_form_sig_block_size():
 
 
 	// csss
-    summary_f.add_css_class(webdar_css_style::wcs_bold_text);
+    summary_f.add_css_class(webdar_css_style::bold_text);
 }
 
 void html_form_sig_block_size::set_value(const libdar::delta_sig_block_size & val)
@@ -249,19 +249,19 @@ void html_form_sig_block_size::on_event(const string & event_name)
 
 	if(max < min && ! max.is_zero())
 	{
-	    if(! min_size.has_css_class(webdar_css_style::wcs_red_border))
-		min_size.add_css_class(webdar_css_style::wcs_red_border);
-	    if(! max_size.has_css_class(webdar_css_style::wcs_red_border))
-		max_size.add_css_class(webdar_css_style::wcs_red_border);
+	    if(! min_size.has_css_class(webdar_css_style::red_border))
+		min_size.add_css_class(webdar_css_style::red_border);
+	    if(! max_size.has_css_class(webdar_css_style::red_border))
+		max_size.add_css_class(webdar_css_style::red_border);
 
 	    throw exception_range("Minimum block size should be less or equal than maximum block size");
 	}
 	else
 	{
-	    if(min_size.has_css_class(webdar_css_style::wcs_red_border))
-		min_size.remove_css_class(webdar_css_style::wcs_red_border);
-	    if(max_size.has_css_class(webdar_css_style::wcs_red_border))
-		max_size.remove_css_class(webdar_css_style::wcs_red_border);
+	    if(min_size.has_css_class(webdar_css_style::red_border))
+		min_size.remove_css_class(webdar_css_style::red_border);
+	    if(max_size.has_css_class(webdar_css_style::red_border))
+		max_size.remove_css_class(webdar_css_style::red_border);
 	}
 
 	make_summary();

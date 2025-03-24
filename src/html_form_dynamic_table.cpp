@@ -73,7 +73,7 @@ html_form_dynamic_table::html_form_dynamic_table(bool has_left_labels,
 	// visibility
 
 	// css stuff
-    table.add_css_class(webdar_css_style::wcs_full_width);
+    table.add_css_class(webdar_css_style::width_full);
 }
 
 void html_form_dynamic_table::set_obj_type_provider(const html_form_dynamic_table_object_provider* provider)

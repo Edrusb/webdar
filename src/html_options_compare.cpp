@@ -188,7 +188,7 @@ html_options_compare::html_options_compare():
 	// css
 
     webdar_css_style::grey_button(deroule, true);
-    display_treated_only_dir.add_css_class(webdar_css_style::wcs_indent);
+    display_treated_only_dir.add_css_class(webdar_css_style::indent);
 
 	// components visibility setup
 

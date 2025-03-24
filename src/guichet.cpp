@@ -172,9 +172,9 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
     webdar_css_style::normal_button(edit);
     webdar_css_style::normal_button(clear);
 
-    edit.add_css_class(webdar_css_style::wcs_float_right);
-    clear.add_css_class(webdar_css_style::wcs_float_right);
-    select_fs.add_label_css_class(webdar_css_style::wcs_text_bold);
+    edit.add_css_class(webdar_css_style::float_right);
+    clear.add_css_class(webdar_css_style::float_right);
+    select_fs.add_label_css_class(webdar_css_style::text_bold);
     select_form.add_css_class(css_below_margin);
     saveas_fs.add_css_class(css_above_margin);
     box.clear_css_classes();

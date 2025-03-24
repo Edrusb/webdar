@@ -97,8 +97,8 @@ html_archive_extract::html_archive_extract():
 	//  css
 
     webdar_css_style::normal_button(extract_params, true);
-    in_place_msg.add_css_class(webdar_css_style::wcs_text_color_normal);
-    in_place_msg.add_css_class(webdar_css_style::wcs_text_shadow_dark);
+    in_place_msg.add_css_class(webdar_css_style::text_color_normal);
+    in_place_msg.add_css_class(webdar_css_style::text_shadow_dark);
 
 }
 

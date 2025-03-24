@@ -95,7 +95,7 @@ html_archive_compare::html_archive_compare():
 	// css
 
     webdar_css_style::normal_button(diff_params, true);
-    in_place_msg.add_css_class(webdar_css_style::wcs_text_grey);
+    in_place_msg.add_css_class(webdar_css_style::text_grey);
 }
 
 void html_archive_compare::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
