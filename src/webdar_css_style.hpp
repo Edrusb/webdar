@@ -37,10 +37,22 @@ extern "C"
     // webdar headers
 #include "css_library.hpp"
 
+    /// the webdar_css_style namespace defines a set of global css objets and some routines to use them
+
 namespace webdar_css_style
 {
+	/// update a css_library with webdar global css_class definitions
+    extern void update_library(css_library & ref);
 
+
+    constexpr const char* wcs_cadre_rouge = "wcs_cadre_rouge";
+    constexpr const char* wcs_grey_text = "wcs_grey_text";
+
+
+	/// CSS used for button width in normal_button()/active_button()/void_button() routines
     constexpr const char* wcs_full_width = "fullwidth";
+
+	/// CSS used for button width in normal_button()/active_button()/void_button() routines
     constexpr const char* wcs_8em_width = "width8em";
 
 	// class used by the *_button templates below (should not be used directly, it is publicly
@@ -57,9 +69,6 @@ namespace webdar_css_style
     constexpr const char* wcs_red_border = "wcs_red_border";
     constexpr const char* wcs_indent = "wcs_indent";
 
-
-	/// update a css_library with css_class definitions used by the three following routines
-    extern void update_library(css_library & ref);
 
 	/// apply to the given button the css_classe names defined by update_library to get a normal button style
     template <class T> void normal_button(T & obj, bool fullwidth = false)
