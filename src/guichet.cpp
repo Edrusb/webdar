@@ -172,9 +172,9 @@ void guichet::set_child(const shared_ptr<bibliotheque> & ptr,
     webdar_css_style::normal_button(edit);
     webdar_css_style::normal_button(clear);
 
-    edit.add_css_class(css_float);
-    clear.add_css_class(css_float);
-    select_fs.add_label_css_class(css_bold);
+    edit.add_css_class(webdar_css_style::wcs_float_right);
+    clear.add_css_class(webdar_css_style::wcs_float_right);
+    select_fs.add_label_css_class(webdar_css_style::wcs_text_bold);
     select_form.add_css_class(css_below_margin);
     saveas_fs.add_css_class(css_above_margin);
     box.clear_css_classes();
@@ -454,22 +454,6 @@ void guichet::new_css_library_available()
     if(!csslib)
 	throw WEBDAR_BUG;
 
-    if(!csslib->class_exists(css_float))
-    {
-	tmp.clear();
-	tmp.css_float(css::fl_right);
-	csslib->add(css_float, tmp);
-    }
-
-    if(!csslib->class_exists(css_bold))
-    {
-	css tmp;
-
-	tmp.css_font_weight_bold();
-
-	csslib->add(css_bold, tmp);
-    }
-
     if(!csslib->class_exists(css_left_margin))
     {
 	css tmp;
@@ -510,7 +494,6 @@ void guichet::new_css_library_available()
 
 	csslib->add(css_border_left, tmp);
     }
-
 
     webdar_css_style::update_library(*csslib);
 }

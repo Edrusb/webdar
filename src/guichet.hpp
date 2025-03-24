@@ -207,8 +207,6 @@ private:
     static constexpr const char* jlabel_name = "configname"; // string: config name
     static constexpr const char* jlabel_conf = "config";   ; // json; object configuration
 
-    static constexpr const char* css_float = "guichet_float";
-    static constexpr const char* css_bold = "guichet_bold";
     static constexpr const char* css_left_margin = "guichet_left_margin";
     static constexpr const char* css_below_margin = "guichet_below_margin";
     static constexpr const char* css_above_margin = "guichet_above_margin";

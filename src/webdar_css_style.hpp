@@ -45,8 +45,12 @@ namespace webdar_css_style
     extern void update_library(css_library & ref);
 
 
-    constexpr const char* wcs_cadre_rouge = "wcs_cadre_rouge";
-    constexpr const char* wcs_grey_text = "wcs_grey_text";
+    constexpr const char* wcs_cadre_rouge = "wcs_cr";
+    constexpr const char* wcs_text_grey = "wcs_tg";
+    constexpr const char* wcs_text_bold = "wcs_tb";
+    constexpr const char* wcs_float_left = "wcs_fll";
+    constexpr const char* wcs_float_right = "wcs_flr";
+
 
 
         /// CSS used for button width in normal_button()/active_button()/void_button() routines

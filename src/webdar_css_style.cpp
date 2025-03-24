@@ -45,27 +45,11 @@ namespace webdar_css_style
     static libthreadar::mutex init_lock;
     static bool initialized = false;
 
-    void update_library(css_library & csslib)
-    {
-        init();
-
-        if(!csslib.class_exists(btn_on.get_name()))
-        {
-            csslib.add(btn_on);
-            csslib.add(btn_off);
-            csslib.add(btn_void);
-            csslib.add(btn_grey);
-            csslib.add(url_selected);
-            csslib.add(url_normal);
-            csslib.add(url_void);
-            csslib.add(url_grey);
-            csslib.add(full_width);
-            csslib.add(width_8em);
-            csslib.add(bold_text);
-            csslib.add(red_border);
-            csslib.add(indent);
-        }
-    }
+    static css_class cadre_rouge(wcs_cadre_rouge);
+    static css_class text_grey(wcs_text_grey);
+    static css_class text_bold(wcs_text_bold);
+    static css_class float_left(wcs_float_left);
+    static css_class float_right(wcs_float_right);
 
     static css_class full_width(wcs_full_width);     ///< full screen large buttons (html_derouleur for exmple)
     static css_class width_8em(wcs_8em_width);       ///< normal width buttons (html_button, html_double_button, html_tabs,...)
@@ -93,12 +77,32 @@ namespace webdar_css_style
             if(!initialized)
             {
                 css tmp;
-                css box_off, box_on, box_void, box_grey;
+
+		tmp.clear();
+		    //
+                cadre_rouge.set_value(tmp);
 
                 tmp.clear();
                 tmp.css_color(COLOR_MENU_BORDER_GREY);
                 tmp.css_text_shadow("0.05em", "0.05em", "0.2em", "#888888");
-                wcs_grey_text.sse_value(tmp);
+                text_grey.set_value(tmp);
+
+		tmp.clear();
+		tmp.css_font_weight_bold();
+                text_bold.set_value(tmp);
+
+		tmp.clear();
+		tmp.css_float(css::fl_left);
+                float_left.set_value(tmp);
+
+		tmp.clear();
+		tmp.css_float(css::fl_right);
+                float_right.set_value(tmp);
+
+
+		     //////
+
+		css box_off, box_on, box_void, box_grey;
 
                 tmp.clear();
                 tmp.css_box_sizing(css::bx_border);
@@ -213,5 +217,32 @@ namespace webdar_css_style
         init_lock.unlock();
     }
 
+    void update_library(css_library & csslib)
+    {
+        init();
+
+        if(!csslib.class_exists(btn_on.get_name()))
+        {
+            csslib.add(btn_on);
+            csslib.add(btn_off);
+            csslib.add(btn_void);
+            csslib.add(btn_grey);
+            csslib.add(url_selected);
+            csslib.add(url_normal);
+            csslib.add(url_void);
+            csslib.add(url_grey);
+            csslib.add(full_width);
+            csslib.add(width_8em);
+            csslib.add(bold_text);
+            csslib.add(red_border);
+            csslib.add(indent);
+
+	    csslib.add(cadre_rouge);
+	    csslib.add(text_grey);
+	    csslib.add(text_bold);
+	    csslib.add(float_left);
+	    csslib.add(float_right);
+        }
+    }
 
 }  // end of namespace
