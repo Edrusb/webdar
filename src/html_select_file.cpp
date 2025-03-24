@@ -232,6 +232,7 @@ void html_select_file::on_event(const string & event_name)
 	{
 	    createdir_form.set_visible(false);
 	    run_thread(run_create_dir);
+	    need_reload_content = true;
 	}
 
 	my_body_part_has_changed();
