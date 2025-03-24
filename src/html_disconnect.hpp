@@ -88,6 +88,7 @@ private:
     static const std::string css_global;
     static const std::string css_logo;
     static const std::string css_title;
+    static const std::string css_title_vers;
     static const std::string css_title_box;
     static const std::string css_status;
     static const std::string css_status_box;
@@ -97,6 +98,7 @@ private:
     html_image logo;
     html_div title_box;
     html_text title;
+    html_text title_vers;
     html_div status_box;
     html_text status;
     html_button quit;

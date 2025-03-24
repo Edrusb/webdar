@@ -43,6 +43,7 @@ const string html_disconnect::event_disconn = "disconnect";
 const string html_disconnect::css_global = "html_disco_global";
 const string html_disconnect::css_logo = "html_disco_logo";
 const string html_disconnect::css_title = "html_disco_title";
+const string html_disconnect::css_title_vers = "html_disco_title_vers";
 const string html_disconnect::css_title_box = "html_disco_title_box";
 const string html_disconnect::css_status = "html_disco_status";
 const string html_disconnect::css_status_box = "html_disco_status_box";
@@ -61,11 +62,14 @@ html_disconnect::html_disconnect():
     logo.set_dimensions("100em", "100em");
 
     title.clear();
-    title.add_text(3, "WEBDAR");
+    title.add_text(0, "WEBDAR");
+    title_vers.clear();
+    title_vers.add_text(0, libdar::tools_printf("Version %s", WEBDAR_VERSION));
 
 	// adoption tree
     title_box.adopt(&logo);
     title_box.adopt(&title);
+    title_box.adopt(&title_vers);
     adopt(&title_box);
     adopt(&quit);
     status_box.adopt(&status);
@@ -83,6 +87,7 @@ html_disconnect::html_disconnect():
     add_css_class(css_global);
     logo.add_css_class(css_logo);
     title.add_css_class(css_title);
+    title_vers.add_css_class(css_title_vers);
     title_box.add_css_class(css_title_box);
     status.add_css_class(css_status);
     status_box.add_css_class(css_status_box);
@@ -141,12 +146,24 @@ void html_disconnect::new_css_library_available()
 	tmp.clear();
 
 	tmp.css_font_weight_bold();
+	tmp.css_font_size("2em");
 	tmp.css_text_shadow("0.2em", "0.2em", "0.1em", "#888888");
 	tmp.css_margin_right("1em");
 	tmp.css_margin_left("1em");
 	tmp.css_color(COLOR_MENU_BORDER_OFF);
 
 	csslib->add(css_title, tmp);
+
+	    // for the html_text title versions
+	tmp.clear();
+
+	tmp.css_font_size("0.8em");
+	tmp.css_margin_right("1em");
+	tmp.css_margin_left("1em");
+	tmp.css_color(COLOR_MENU_BORDER_OFF);
+
+	csslib->add(css_title_vers, tmp);
+
 
 	    // the transparent title_box
 	tmp.clear();
