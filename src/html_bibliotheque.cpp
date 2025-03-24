@@ -466,24 +466,30 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     webdar_css_style::normal_button(clear_conf);
     webdar_css_style::normal_button(generate_defaults);
 
-    load.add_css_class(css_float);
-    save.add_css_class(css_float);
-    download.add_css_class(css_float);
-    clear_conf.add_css_class(css_float);
-    generate_defaults.add_css_class(css_float);
+    load.add_css_class(css_margin_left);
+    load.add_css_class(webdar_css_style::float_right);
+    save.add_css_class(css_margin_left);
+    save.add_css_class(webdar_css_style::float_right);
+    download.add_css_class(css_margin_left);
+    download.add_css_class(webdar_css_style::float_right);
+    clear_conf.add_css_class(css_margin_left);
+    clear_conf.add_css_class(webdar_css_style::float_right);
+    generate_defaults.add_css_class(css_margin_left);
+    generate_defaults.add_css_class(webdar_css_style::float_right);
 
     upload_form.add_button_css_class(webdar_css_style::btn_off);
     upload_form.add_button_css_class(webdar_css_style::url_normal);
     upload_form.add_button_css_class(webdar_css_style::width_8em);
-    upload_form.add_button_css_class(css_float);
+    upload_form.add_button_css_class(css_margin_left);
+    upload_form.add_button_css_class(webdar_css_style::float_right);
 
-    ok_loaded.add_css_class(css_green_text);
-    ok_saved.add_css_class(css_green_text);
-    ok_uploaded.add_css_class(css_green_text);
-    ok_cleared.add_css_class(css_green_text);
-    nok_message.add_css_class(css_red_text);
-    saved_status.add_css_class(css_green_text);
-    unsaved_status.add_css_class(css_red_text);
+    ok_loaded.add_css_class(webdar_css_style::text_color_green);
+    ok_saved.add_css_class(webdar_css_style::text_color_green);
+    ok_uploaded.add_css_class(webdar_css_style::text_color_green);
+    ok_cleared.add_css_class(webdar_css_style::text_color_green);
+    nok_message.add_css_class(webdar_css_style::text_color_red);
+    saved_status.add_css_class(webdar_css_style::text_color_green);
+    unsaved_status.add_css_class(webdar_css_style::text_color_red);
 
     statusbar.add_css_class(css_statusbar);
 
@@ -679,28 +685,11 @@ void html_bibliotheque::new_css_library_available()
     if(!csslib)
 	throw WEBDAR_BUG;
 
-    if(!csslib->class_exists(css_float))
+    if(!csslib->class_exists(css_margin_left))
     {
 	tmp.clear();
-	tmp.css_float(css::fl_right);
 	tmp.css_margin_left("1em", true);
-	csslib->add(css_float, tmp);
-    }
-
-    if(!csslib->class_exists(css_red_text))
-    {
-	tmp.clear();
-	tmp.css_color(RED);
-	tmp.css_font_weight_bold();
-	csslib->add(css_red_text, tmp);
-    }
-
-    if(!csslib->class_exists(css_green_text))
-    {
-	tmp.clear();
-	tmp.css_color(GREEN);
-	tmp.css_font_style_italic();
-	csslib->add(css_green_text, tmp);
+	csslib->add(css_margin_left, tmp);
     }
 
     if(!csslib->class_exists(css_statusbar))

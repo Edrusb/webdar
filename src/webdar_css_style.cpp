@@ -50,6 +50,8 @@ namespace webdar_css_style
     static css_class c_text_shadow_dark(text_shadow_dark);
     static css_class c_text_shadow_bright(text_shadow_bright);
     static css_class c_text_color_normal(text_color_normal);
+    static css_class c_text_color_red(text_color_red);
+    static css_class c_text_color_green(text_color_green);
     static css_class c_float_left(float_left);
     static css_class c_float_right(float_right);
 
@@ -98,8 +100,14 @@ namespace webdar_css_style
                 c_text_shadow_bright.set_value(tmp);
 
 		tmp.clear();
-		tmp.css_color(COLOR_MENU_BORDER_GREY);
-                c_text_color_normal.set_value(tmp);
+		tmp.css_color(RED);
+		tmp.css_font_weight_bold();
+                c_text_color_red.set_value(tmp);
+
+		tmp.clear();
+		tmp.css_color(GREEN);
+		tmp.css_font_style_italic();
+                c_text_color_green.set_value(tmp);
 
 		tmp.clear();
 		tmp.css_float(css::fl_left);
@@ -252,6 +260,8 @@ namespace webdar_css_style
 	    csslib.add(c_text_shadow_dark);
 	    csslib.add(c_text_shadow_bright);
 	    csslib.add(c_text_color_normal);
+	    csslib.add(c_text_color_red);
+	    csslib.add(c_text_color_green);
 	    csslib.add(c_float_left);
 	    csslib.add(c_float_right);
         }
