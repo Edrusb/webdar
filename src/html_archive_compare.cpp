@@ -95,7 +95,7 @@ html_archive_compare::html_archive_compare():
 	// css
 
     webdar_css_style::normal_button(diff_params, true);
-    in_place_msg.add_css_class(css_grey_text);
+    in_place_msg.add_css_class(wcs_grey_text);
 }
 
 void html_archive_compare::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
@@ -162,15 +162,5 @@ void html_archive_compare::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
-
-    if(! csslib->class_exists(css_grey_text))
-    {
-	css tmp;
-
-	tmp.css_color(COLOR_MENU_BORDER_GREY);
-	tmp.css_text_shadow("0.05em", "0.05em", "0.2em", "#888888");
-	csslib->add(css_grey_text, tmp);
-    }
-
 }
 
