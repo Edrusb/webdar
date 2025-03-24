@@ -49,7 +49,6 @@ const string html_form_input_file::repo_updated = "hfif_repo_has_been_updated";
 const string html_form_input_file::triggered_event = "triggered";
 
     // class names
-const string html_form_input_file::css_input = "html_form_input_file_input";
 const string html_form_input_file::css_button_box = "html_form_input_file_button_box";
 const string html_form_input_file::css_button_link = "html_form_input_file_button_lnk";
 const string html_form_input_file::css_empty_text = "html_form_input_file_eol";
@@ -225,22 +224,14 @@ void html_form_input_file::new_css_library_available()
 
     webdar_css_style::update_library(*csslib);
 
-    if(!csslib->class_exists(css_input))
+    if(!csslib->class_exists(css_button_box))
     {
-	if(csslib->class_exists(css_button_box))
-	    throw WEBDAR_BUG;
+	css tmp;
+
 	if(csslib->class_exists(css_button_link))
 	    throw WEBDAR_BUG;
 	if(csslib->class_exists(css_empty_text))
 	    throw WEBDAR_BUG;
-
-
-	    // css_input definition
-
-	css tmp;
-
-	tmp.css_float(css::fl_left);
-	csslib->add(css_input, tmp);
 
 	    // css_empty_text definition
 
@@ -249,7 +240,6 @@ void html_form_input_file::new_css_library_available()
 	csslib->add(css_empty_text, tmp);
 
 	    // css_button_box definition
-
 
 	tmp.clear();
         tmp.css_color(COLOR_MENU_FRONT_OFF);
@@ -383,5 +373,5 @@ void html_form_input_file::init()
 
 	// css classes
 
-    input_div.add_css_class(css_input);
+    input_div.add_css_class(webdar_css_style::float_left);
 }
