@@ -105,10 +105,11 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	// inherited from body_builder
+    virtual void new_css_library_available() override;
 
 private:
     static const std::string shrink_event;
-
 
 	/// struct used to store for each section the title components and status
     struct section

@@ -32,7 +32,7 @@ extern "C"
 #include <algorithm>
 
     // webdar headers
-
+#include "webdar_css_style.hpp"
 
     //
 #include "html_derouleur.hpp"
@@ -92,8 +92,10 @@ void html_derouleur::add_section(const string & name, const string & title)
 	{
 	    it->second.title->clear_css_classes();
 	    it->second.title->add_css_class(css_box);
+	    it->second.title->add_css_class(webdar_css_style::vertical_spacing);
 	    it->second.shrinker->clear_css_classes();
 	    it->second.shrinker->add_css_class(css_box);
+	    it->second.shrinker->add_css_class(webdar_css_style::vertical_spacing);
 	}
     }
     catch(...)
@@ -217,8 +219,10 @@ void html_derouleur::css_classes_have_changed()
 	    throw WEBDAR_BUG;
 	it->second.title->clear_css_classes();
 	it->second.title->add_css_class(updated_set);
+	it->second.title->add_css_class(webdar_css_style::vertical_spacing);
 	it->second.shrinker->clear_css_classes();
 	it->second.shrinker->add_css_class(updated_set);
+	it->second.shrinker->add_css_class(webdar_css_style::vertical_spacing);
 	++it;
     }
 }
@@ -235,6 +239,16 @@ string html_derouleur::inherited_get_body_part(const chemin & path,
     return generate_html(sub_path, req);
 }
 
+void html_derouleur::new_css_library_available()
+{
+    css tmp;
+
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
+}
 
 string html_derouleur::generate_html(const chemin & path,
 				     const request & req)

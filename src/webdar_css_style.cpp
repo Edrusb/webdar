@@ -54,6 +54,7 @@ namespace webdar_css_style
     static css_class c_text_color_green(text_color_green);
     static css_class c_float_left(float_left);
     static css_class c_float_right(float_right);
+    static css_class c_vertical_spacing(vertical_spacing);
 
     static css_class c_width_full(width_full);     ///< full screen large buttons (html_derouleur for exmple)
     static css_class c_width_8em(width_8em);       ///< normal width buttons (html_button, html_double_button, html_tabs,...)
@@ -119,6 +120,10 @@ namespace webdar_css_style
 		tmp.css_margin_left("1em");
                 c_float_right.set_value(tmp);
 
+		tmp.clear();
+		tmp.css_margin_top("0.2em");
+		tmp.css_margin_bottom("0.2em");
+                c_vertical_spacing.set_value(tmp);
 
 		     //////
 
@@ -137,7 +142,6 @@ namespace webdar_css_style
                 box_off.css_border_style(css::bd_all, css::bd_solid, true);
                 box_off.css_border_width(css::bd_all, css::bd_medium, true);
                 box_off.css_padding("0.5em", true);
-                box_off.css_margin("0.2em", true);
                 box_off.css_text_h_align(css::al_center, true);
 
                     // copy common aspects to box_off and box_void
@@ -266,6 +270,7 @@ namespace webdar_css_style
 	    csslib.add(c_text_color_green);
 	    csslib.add(c_float_left);
 	    csslib.add(c_float_right);
+	    csslib.add(c_vertical_spacing);
         }
     }
 
