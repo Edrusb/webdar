@@ -893,6 +893,7 @@ bool html_select_file::is_a_valid_dir(const std::string & pathval, const std::st
 {
     bool ret = true;
     chemin tmp(pathval);
+    libdar::path cur = entr->get_location();
 
     tmp += name;
 
@@ -905,6 +906,7 @@ bool html_select_file::is_a_valid_dir(const std::string & pathval, const std::st
     {
 	ret = false;
     }
+    entr->set_location(cur);
 
     return ret;
 }
