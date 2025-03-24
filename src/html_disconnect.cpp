@@ -41,7 +41,6 @@ using namespace std;
 
 const string html_disconnect::event_disconn = "disconnect";
 const string html_disconnect::css_global = "html_disco_global";
-const string html_disconnect::css_logo = "html_disco_logo";
 const string html_disconnect::css_title = "html_disco_title";
 const string html_disconnect::css_title_vers = "html_disco_title_vers";
 const string html_disconnect::css_title_box = "html_disco_title_box";
@@ -85,11 +84,13 @@ html_disconnect::html_disconnect():
 
 	// css
     add_css_class(css_global);
-    logo.add_css_class(css_logo);
+    logo.add_css_class(webdar_css_style::float_left);
     title.add_css_class(css_title);
+    title.add_css_class(webdar_css_style::text_shadow_dark);
     title_vers.add_css_class(css_title_vers);
     title_box.add_css_class(css_title_box);
     status.add_css_class(css_status);
+    status.add_css_class(webdar_css_style::text_shadow_dark);
     status_box.add_css_class(css_status_box);
     quit.add_css_class(css_quit_box);
     quit.url_add_css_class(css_quit_link);
@@ -122,6 +123,7 @@ void html_disconnect::new_css_library_available()
     {
 	css tmp;
 	css_class btn_class(css_quit_link);
+	string small_text = "0.8em";
 
 	    // top bar (the html_disconnect (html_div) itself)
 	tmp.clear();
@@ -133,22 +135,11 @@ void html_disconnect::new_css_library_available()
 
 	csslib->add(css_global, tmp);
 
-		    // for the html_image logo
-	tmp.clear();
-
-	tmp.css_float(css::fl_left);
-	tmp.css_margin_right("1em");
-
-	csslib->add(css_logo, tmp);
-
-
 	    // for the html_text title
 	tmp.clear();
 
 	tmp.css_font_weight_bold();
 	tmp.css_font_size("2em");
-	tmp.css_text_shadow("0.2em", "0.2em", "0.1em", "#888888");
-	tmp.css_margin_right("1em");
 	tmp.css_margin_left("1em");
 	tmp.css_color(COLOR_MENU_BORDER_OFF);
 
@@ -157,8 +148,7 @@ void html_disconnect::new_css_library_available()
 	    // for the html_text title versions
 	tmp.clear();
 
-	tmp.css_font_size("0.8em");
-	tmp.css_margin_right("1em");
+	tmp.css_font_size(small_text);
 	tmp.css_margin_left("1em");
 	tmp.css_color(COLOR_MENU_BORDER_OFF);
 
@@ -177,9 +167,10 @@ void html_disconnect::new_css_library_available()
 	    // for the html_text status
 	tmp.clear();
 
+	tmp.css_font_size(small_text);
 	tmp.css_font_weight_bold();
 	tmp.css_font_style_italic();
-	tmp.css_text_shadow("0.1em", "0.1em", "0");
+	tmp.css_margin("0.2em", true);
 	tmp.css_text_v_align(css::al_middle);
 	tmp.css_margin_right("1em");
 	tmp.css_color(WHITE);
@@ -189,9 +180,6 @@ void html_disconnect::new_css_library_available()
 	    // the transparent status_box
 	tmp.clear();
 
-	tmp.css_border_color(css::bd_all, COLOR_TOPBAR_BACK, true);
-	tmp.css_border_style(css::bd_all, css::bd_solid, true);
-	tmp.css_border_width(css::bd_all, css::bd_medium, true);
 	tmp.css_margin("0.2em", true);
 	tmp.css_float(css::fl_right);
 
@@ -202,6 +190,7 @@ void html_disconnect::new_css_library_available()
 
 	tmp.clear();
 
+	tmp.css_font_size(small_text);
 	tmp.css_background_color(COLOR_MENU_BACK_OFF, true);
 	tmp.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
 	tmp.css_border_style(css::bd_all, css::bd_solid, true);
@@ -229,4 +218,3 @@ void html_disconnect::new_css_library_available()
 	csslib->add(btn_class);
     }
 }
-
