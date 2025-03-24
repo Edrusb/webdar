@@ -466,21 +466,15 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     webdar_css_style::normal_button(clear_conf);
     webdar_css_style::normal_button(generate_defaults);
 
-    load.add_css_class(css_margin_left);
     load.add_css_class(webdar_css_style::float_right);
-    save.add_css_class(css_margin_left);
     save.add_css_class(webdar_css_style::float_right);
-    download.add_css_class(css_margin_left);
     download.add_css_class(webdar_css_style::float_right);
-    clear_conf.add_css_class(css_margin_left);
     clear_conf.add_css_class(webdar_css_style::float_right);
-    generate_defaults.add_css_class(css_margin_left);
     generate_defaults.add_css_class(webdar_css_style::float_right);
 
     upload_form.add_button_css_class(webdar_css_style::btn_off);
     upload_form.add_button_css_class(webdar_css_style::url_normal);
     upload_form.add_button_css_class(webdar_css_style::width_8em);
-    upload_form.add_button_css_class(css_margin_left);
     upload_form.add_button_css_class(webdar_css_style::float_right);
 
     ok_loaded.add_css_class(webdar_css_style::text_color_green);
@@ -684,13 +678,6 @@ void html_bibliotheque::new_css_library_available()
 
     if(!csslib)
 	throw WEBDAR_BUG;
-
-    if(!csslib->class_exists(css_margin_left))
-    {
-	tmp.clear();
-	tmp.css_margin_left("1em", true);
-	csslib->add(css_margin_left, tmp);
-    }
 
     if(!csslib->class_exists(css_statusbar))
     {

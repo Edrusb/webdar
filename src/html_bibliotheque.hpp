@@ -210,7 +210,6 @@ private:
     static constexpr const char* event_clear = "clear";
     static constexpr const char* event_defaults = "defaults";
 
-    static constexpr const char* css_margin_left = "html_biblio_ml";
     static constexpr const char* css_statusbar = "html_biblio_bar";
 };
 

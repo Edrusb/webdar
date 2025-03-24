@@ -111,10 +111,12 @@ namespace webdar_css_style
 
 		tmp.clear();
 		tmp.css_float(css::fl_left);
+		tmp.css_margin_right("1em");
                 c_float_left.set_value(tmp);
 
 		tmp.clear();
 		tmp.css_float(css::fl_right);
+		tmp.css_margin_left("1em");
                 c_float_right.set_value(tmp);
 
 
