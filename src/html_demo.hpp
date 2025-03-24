@@ -94,8 +94,6 @@ private:
 
     static constexpr const char* css_cells = "html_demo_cells";
     static constexpr const char* css_table = "html_demo_table";
-    static constexpr const char* css_btn = "html_demo_button";
-    static constexpr const char* css_btn_clear = "html_demo_button_clear";
     static constexpr const char* css_btn_close = "html_demo_button_close";
 
 

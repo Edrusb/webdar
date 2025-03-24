@@ -137,6 +137,14 @@ html_demo::html_demo():
     table.css_border_collapsed(true);
     table.add_css_class(css_table);
 
+    webdar_css_style::normal_button(btn_incr);
+    webdar_css_style::normal_button(btn_clear);
+    webdar_css_style::normal_button(close);
+    btn_incr.add_css_class(webdar_css_style::float_left);
+    btn_clear.add_css_class(webdar_css_style::float_right);
+    close.add_css_class(css_btn_close);
+
+
 	// visibility & coherence
     on_event(html_form_input::changed);
     on_event(html_form_radio::changed);
@@ -185,12 +193,6 @@ void html_demo::new_css_library_available()
 
     webdar_css_style::update_library(*csslib);
 
-    webdar_css_style::normal_button(btn_incr);
-    webdar_css_style::normal_button(btn_clear);
-    webdar_css_style::normal_button(close);
-    btn_incr.add_css_class(css_btn);
-    btn_clear.add_css_class(css_btn_clear);
-    close.add_css_class(css_btn_close);
 
     if(! csslib->class_exists(css_table))
     {
@@ -206,14 +208,6 @@ void html_demo::new_css_library_available()
 	tmp.css_width("95%", true);
 	tmp.css_margin_top("2em");
 	csslib->add(css_table, tmp);
-
-	tmp.clear();
-	tmp.css_float(css::fl_left);
-	csslib->add(css_btn, tmp);
-
-	tmp.clear();
-	tmp.css_float(css::fl_right);
-	csslib->add(css_btn_clear, tmp);
 
 	tmp.clear();
 	tmp.css_position_type(css::pos_sticky);
