@@ -88,6 +88,7 @@ html_disconnect::html_disconnect():
     title.add_css_class(css_title);
     title.add_css_class(webdar_css_style::text_shadow_dark);
     title_vers.add_css_class(css_title_vers);
+    title_vers.add_css_class(webdar_css_style::text_shadow_dark);
     title_box.add_css_class(css_title_box);
     status.add_css_class(css_status);
     status.add_css_class(webdar_css_style::text_shadow_dark);
