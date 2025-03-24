@@ -55,6 +55,8 @@ html_error::html_error():
     css tmp;
 
     the_error.add_css_class(class_message);
+    the_error.add_css_class(webdar_css_style::text_color_red);
+    global.add_css_class(webdar_css_style::red_border);
     global.add_css_class(class_global);
     webdar_css_style::normal_button(close);
     close.add_css_class(class_button);
@@ -101,9 +103,7 @@ void html_error::new_css_library_available()
 	try
 	{
 	    tmp.clear();
-	    tmp.css_color(RED);
 	    tmp.css_text_h_align(css::al_center);
-	    tmp.css_font_weight_bold();
 	    csslib->add(class_message, tmp);
 
 	    tmp.clear();
