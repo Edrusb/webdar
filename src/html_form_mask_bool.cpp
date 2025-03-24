@@ -73,7 +73,7 @@ html_form_mask_bool::html_form_mask_bool(const string & initial_mode):
 
 
 	// css stuff
-    table.set_css_class_first_column(css_class_bool_text);
+    table.set_css_class_first_column(webdar_css_style::text_top_right);
     fs.add_label_css_class(webdar_css_style::bold_text);
 
 	// final table update
@@ -287,17 +287,6 @@ void html_form_mask_bool::new_css_library_available()
     unique_ptr<css_library> & csslib = lookup_css_library();
     if(!csslib)
 	throw WEBDAR_BUG;
-
-    if(!csslib->class_exists(css_class_bool_text))
-    {
-	css tmp;
-
-	tmp.css_text_h_align(css::al_right);
-	tmp.css_text_v_align(css::al_top);
-	tmp.css_font_weight_bold();
-
-	csslib->add(css_class_bool_text, tmp);
-    }
 
     webdar_css_style::update_library(*csslib);
 }

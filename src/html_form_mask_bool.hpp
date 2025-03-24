@@ -181,7 +181,6 @@ protected:
 
 private:
     static constexpr const char* bool_changed_event = "bool_changed";
-    static constexpr const char* css_class_bool_text = "html_form_mask_bool_bool_text";
 
     std::string current_bool_mode; ///< currently displayed logic in table
     bool ignore_events;            ///< to be able to temporarily ignore changed events from childs

@@ -136,9 +136,6 @@ private:
     static constexpr const char* base_crit = "base_crit";
     static constexpr const char* combining_crit = "combining_crit";
 
-	// css class
-    static constexpr const char* css_class_bool_text = "html_form_over_comb_crit";
-
     static std::string invert_logic(const std::string & logic);
 
     static constexpr const unsigned int format_version = 1;

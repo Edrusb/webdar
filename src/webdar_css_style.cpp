@@ -52,9 +52,11 @@ namespace webdar_css_style
     static css_class c_text_color_normal(text_color_normal);
     static css_class c_text_color_red(text_color_red);
     static css_class c_text_color_green(text_color_green);
+    static css_class c_text_top_right(text_top_right);
     static css_class c_float_left(float_left);
     static css_class c_float_right(float_right);
     static css_class c_vertical_spacing(vertical_spacing);
+
 
     static css_class c_width_full(width_full);     ///< full screen large buttons (html_derouleur for exmple)
     static css_class c_width_8em(width_8em);       ///< normal width buttons (html_button, html_double_button, html_tabs,...)
@@ -109,6 +111,12 @@ namespace webdar_css_style
 		tmp.css_color(GREEN);
 		tmp.css_font_style_italic();
                 c_text_color_green.set_value(tmp);
+
+		tmp.clear();
+		tmp.css_text_h_align(css::al_right);
+		tmp.css_text_v_align(css::al_top);
+		tmp.css_font_weight_bold();
+		c_text_top_right.set_value(tmp);
 
 		tmp.clear();
 		tmp.css_float(css::fl_left);
@@ -268,6 +276,7 @@ namespace webdar_css_style
 	    csslib.add(c_text_color_normal);
 	    csslib.add(c_text_color_red);
 	    csslib.add(c_text_color_green);
+	    csslib.add(c_text_top_right);
 	    csslib.add(c_float_left);
 	    csslib.add(c_float_right);
 	    csslib.add(c_vertical_spacing);

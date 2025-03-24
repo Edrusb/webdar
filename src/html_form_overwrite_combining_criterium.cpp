@@ -33,7 +33,7 @@ extern "C"
 
     // webdar headers
 #include "html_form_overwrite_base_criterium.hpp"
-
+#include "webdar_css_style.hpp"
 
     //
 #include "html_form_overwrite_combining_criterium.hpp"
@@ -75,7 +75,7 @@ html_form_overwrite_combining_criterium::html_form_overwrite_combining_criterium
 	// visibility
 
 	// css stuff
-    table.set_css_class_first_column(css_class_bool_text);
+    table.set_css_class_first_column(webdar_css_style::text_top_right);
 
 	// final setup
     update_table_content_logic(true); // true = update unconditionally
@@ -259,16 +259,7 @@ void html_form_overwrite_combining_criterium::new_css_library_available()
     if(!csslib)
 	throw WEBDAR_BUG;
 
-    if(!csslib->class_exists(css_class_bool_text))
-    {
-	css tmp;
-
-	tmp.css_text_h_align(css::al_right);
-	tmp.css_text_v_align(css::al_top);
-	tmp.css_font_weight_bold();
-
-	csslib->add(css_class_bool_text, tmp);
-    }
+    webdar_css_style::update_library(*csslib);
 }
 
 string html_form_overwrite_combining_criterium::bool_op_to_name(const std::string & op)

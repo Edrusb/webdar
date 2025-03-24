@@ -51,9 +51,11 @@ namespace webdar_css_style
     constexpr const char* text_color_normal = "wcs_cn";
     constexpr const char* text_color_red = "wcs_cr";
     constexpr const char* text_color_green = "wcs_cg";
+    constexpr const char* text_top_right = "wcs_ttr";
     constexpr const char* float_left = "wcs_fll";
     constexpr const char* float_right = "wcs_flr";
     constexpr const char* vertical_spacing = "wcs_vspc";
+
 
 
         /// CSS used for button width in normal_button()/active_button()/void_button() routines
