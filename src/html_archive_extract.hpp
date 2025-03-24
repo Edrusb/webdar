@@ -86,8 +86,6 @@ private:
 
     static const std::string extract_root_changed;
 
-    static constexpr const char* css_grey_text = "hae_grey";
-
 };
 
 #endif

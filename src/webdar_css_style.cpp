@@ -48,6 +48,9 @@ namespace webdar_css_style
     static css_class cadre_rouge(wcs_cadre_rouge);
     static css_class text_grey(wcs_text_grey);
     static css_class text_bold(wcs_text_bold);
+    static css_class text_shadow_dark(wcs_text_shadow_dark);
+    static css_class text_shadow_bright(wcs_text_shadow_bright);
+    static css_class text_color_normal(wcs_text_color_normal);
     static css_class float_left(wcs_float_left);
     static css_class float_right(wcs_float_right);
 
@@ -90,6 +93,18 @@ namespace webdar_css_style
 		tmp.clear();
 		tmp.css_font_weight_bold();
                 text_bold.set_value(tmp);
+
+		tmp.clear();
+		tmp.css_text_shadow("0.05em", "0.05em", "0.2em", "#888888");
+                text_shadow_dark.set_value(tmp);
+
+		tmp.clear();
+		    ///<<< a faire
+                text_shadow_bright.set_value(tmp);
+
+		tmp.clear();
+		tmp.css_color(COLOR_MENU_BORDER_GREY);
+                text_color_normal.set_value(tmp);
 
 		tmp.clear();
 		tmp.css_float(css::fl_left);
@@ -240,6 +255,9 @@ namespace webdar_css_style
 	    csslib.add(cadre_rouge);
 	    csslib.add(text_grey);
 	    csslib.add(text_bold);
+	    csslib.add(text_shadow_dark);
+	    csslib.add(text_shadow_bright);
+	    csslib.add(text_color_normal);
 	    csslib.add(float_left);
 	    csslib.add(float_right);
         }

@@ -97,7 +97,9 @@ html_archive_extract::html_archive_extract():
 	//  css
 
     webdar_css_style::normal_button(extract_params, true);
-    in_place_msg.add_css_class(css_grey_text);
+    in_place_msg.add_css_class(webdar_css_style::wcs_text_color_normal);
+    in_place_msg.add_css_class(webdar_css_style::wcs_text_shadow_dark);
+
 }
 
 void html_archive_extract::set_biblio(const shared_ptr<bibliotheque> & ptr)
@@ -155,13 +157,4 @@ void html_archive_extract::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
-
-    if(! csslib->class_exists(css_grey_text))
-    {
-	css tmp;
-
-	tmp.css_color(COLOR_MENU_BORDER_GREY);
-	tmp.css_text_shadow("0.05em", "0.05em", "0.2em", "#888888");
-	csslib->add(css_grey_text, tmp);
-    }
 }
