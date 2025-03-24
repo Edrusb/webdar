@@ -47,24 +47,24 @@ namespace webdar_css_style
 
     void update_library(css_library & csslib)
     {
-	init();
+        init();
 
-	if(!csslib.class_exists(btn_on.get_name()))
-	{
-	    csslib.add(btn_on);
-	    csslib.add(btn_off);
-	    csslib.add(btn_void);
-	    csslib.add(btn_grey);
-	    csslib.add(url_selected);
-	    csslib.add(url_normal);
-	    csslib.add(url_void);
-	    csslib.add(url_grey);
-	    csslib.add(full_width);
-	    csslib.add(width_8em);
-	    csslib.add(bold_text);
-	    csslib.add(red_border);
-	    csslib.add(indent);
-	}
+        if(!csslib.class_exists(btn_on.get_name()))
+        {
+            csslib.add(btn_on);
+            csslib.add(btn_off);
+            csslib.add(btn_void);
+            csslib.add(btn_grey);
+            csslib.add(url_selected);
+            csslib.add(url_normal);
+            csslib.add(url_void);
+            csslib.add(url_grey);
+            csslib.add(full_width);
+            csslib.add(width_8em);
+            csslib.add(bold_text);
+            csslib.add(red_border);
+            csslib.add(indent);
+        }
     }
 
     static css_class full_width(wcs_full_width);     ///< full screen large buttons (html_derouleur for exmple)
@@ -95,19 +95,19 @@ namespace webdar_css_style
                 css tmp;
                 css box_off, box_on, box_void, box_grey;
 
-		tmp.clear();
-		tmp.css_color(COLOR_MENU_BORDER_GREY);
-		tmp.css_text_shadow("0.05em", "0.05em", "0.2em", "#888888");
-		wcs_grey_text.sse_value(tmp);
+                tmp.clear();
+                tmp.css_color(COLOR_MENU_BORDER_GREY);
+                tmp.css_text_shadow("0.05em", "0.05em", "0.2em", "#888888");
+                wcs_grey_text.sse_value(tmp);
 
-		tmp.clear();
-		tmp.css_box_sizing(css::bx_border);
-		tmp.css_width("100%", true);
-		full_width.set_value(tmp);
+                tmp.clear();
+                tmp.css_box_sizing(css::bx_border);
+                tmp.css_width("100%", true);
+                full_width.set_value(tmp);
 
-		tmp.clear();
-		tmp.css_width("8em", false, true);
-		width_8em.set_value(tmp);
+                tmp.clear();
+                tmp.css_width("8em", false, true);
+                width_8em.set_value(tmp);
 
                     // Common aspects
                 box_off.css_border_style(css::bd_all, css::bd_solid, true);
@@ -119,7 +119,7 @@ namespace webdar_css_style
                     // copy common aspects to box_off and box_void
                 box_on.css_inherit_from(box_off);
                 box_void.css_inherit_from(box_off);
-		box_grey.css_inherit_from(box_off);
+                box_grey.css_inherit_from(box_off);
                 box_void.css_border_style(css::bd_all, css::bd_none);
 
                     // box_off COLORS
@@ -159,7 +159,7 @@ namespace webdar_css_style
                 tmp.css_color(COLOR_MENU_FRONT_ACTIVE_ON, true);
                 url_selected.set_selector(css_class::active, tmp);
 
-		    // box_grey COLORS
+                    // box_grey COLORS
                 tmp.css_color(COLOR_MENU_FRONT_GREY, true);
                 tmp.css_background_color(COLOR_MENU_BACK_GREY, true);
                 tmp.css_font_weight_bold(true);
@@ -170,37 +170,37 @@ namespace webdar_css_style
                 url_grey.set_selector(css_class::visited, tmp);
                 box_grey.css_border_color(css::bd_all, COLOR_MENU_BORDER_GREY, true);
 
-		    // Link Hover and Active in box_grey
+                    // Link Hover and Active in box_grey
 
-		tmp.css_color(COLOR_MENU_FRONT_HOVER_GREY, true);
+                tmp.css_color(COLOR_MENU_FRONT_HOVER_GREY, true);
                 tmp.css_text_decoration(css::dc_underline, true);
                 url_grey.set_selector(css_class::hover, tmp);
                 tmp.css_color(COLOR_MENU_FRONT_ACTIVE_GREY, true);
                 url_grey.set_selector(css_class::active, tmp);
 
-		    //
+                    //
 
                 btn_off.set_value(box_off);
                 btn_on.set_value(box_on);
                 btn_void.set_value(box_void);
-		btn_grey.set_value(box_grey);
+                btn_grey.set_value(box_grey);
 
-		    //
+                    //
 
-		tmp.clear();
-		tmp.css_font_weight_bold();
-		bold_text.set_value(tmp);
+                tmp.clear();
+                tmp.css_font_weight_bold();
+                bold_text.set_value(tmp);
 
-		    //
-		tmp.clear();
-		tmp.css_border_width(css::bd_all, css::bd_thick, false);
-		tmp.css_border_color(css::bd_all, RED);
-		red_border.set_value(tmp);
+                    //
+                tmp.clear();
+                tmp.css_border_width(css::bd_all, css::bd_thick, false);
+                tmp.css_border_color(css::bd_all, RED);
+                red_border.set_value(tmp);
 
-		    //
-		tmp.clear();
-		tmp.css_margin_left("4em");
-		indent.set_value(tmp);
+                    //
+                tmp.clear();
+                tmp.css_margin_left("4em");
+                indent.set_value(tmp);
 
                 initialized = true;
             }
