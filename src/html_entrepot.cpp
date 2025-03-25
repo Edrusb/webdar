@@ -37,6 +37,7 @@ extern "C"
 #include "webdar_tools.hpp"
 #include "css.hpp"
 #include "tokens.hpp"
+#include "webdar_css_style.hpp"
 
     //
 #include "html_entrepot.hpp"
@@ -50,9 +51,9 @@ html_entrepot::html_entrepot():
     form("Apply changes"),
     fs(""),
     repo_type("Repository type", repo_type_changed),
-    host("Remote host", html_form_input::text, "", "80%"),
+    host("Remote host", html_form_input::text, "", "", webdar_css_style::width_80vw),
     port("Port", html_form_input::number, "0", "10"),
-    login("Login", html_form_input::text, "", "80%"),
+    login("Login", html_form_input::text, "", "", webdar_css_style::width_80vw),
     auth_type("Authentication mode"),
     pass("Password", html_form_input::password, "", "80%"),
     auth_from_file("Fetch password from netrc file", html_form_input::check, "", "1"),
@@ -387,6 +388,15 @@ void html_entrepot::css_classes_have_changed()
 	it != css_classes.end();
 	++it)
 	form.add_css_class(*it);
+}
+
+void html_entrepot::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
 }
 
 void html_entrepot::inherited_run()

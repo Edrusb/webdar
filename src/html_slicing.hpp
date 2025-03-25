@@ -100,6 +100,9 @@ protected:
 	/// inherited from body_builder
     virtual void css_classes_have_changed() override;
 
+	/// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 private:
     html_form form_slicing;
     html_form_fieldset slicing_fs;

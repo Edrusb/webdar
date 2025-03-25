@@ -46,7 +46,8 @@ const string html_form_input::changed = "html_form_input_changed";
 html_form_input::html_form_input(const string & label,
 				 input_type type,
 				 const string & initial_value,
-				 const string & size):
+				 const string & size,
+				 const string & css_class):
     enabled(true),
     x_label(label),
     x_type(string_for_type(type)),
@@ -58,6 +59,8 @@ html_form_input::html_form_input(const string & label,
     modif_change("")
 {
     register_name(changed);
+    if(! css_class.empty())
+	add_css_class(css_class);
 }
 
 void html_form_input::set_range(const libdar::infinint & min,

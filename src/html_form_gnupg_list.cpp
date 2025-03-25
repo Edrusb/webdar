@@ -32,7 +32,7 @@ extern "C"
 #include <dar/tools.hpp>
 
     // webdar headers
-
+#include "webdar_css_style.hpp"
 
     //
 #include "html_form_gnupg_list.hpp"
@@ -82,7 +82,8 @@ unique_ptr<body_builder> html_form_gnupg_list::provide_object_of_type(unsigned i
 		  html_form_input("Gnupg recipient key id or email",
 				  html_form_input::text,
 				  "",
-				  "80%"));
+				  "",
+				  webdar_css_style::width_80vw));
 	changed_event = html_form_input::changed;
 	break;
     case 1:
@@ -90,7 +91,8 @@ unique_ptr<body_builder> html_form_gnupg_list::provide_object_of_type(unsigned i
 		  html_form_input("Gnupg signatory email",
 				  html_form_input::text,
 				  "",
-				  "80%"));
+				  "",
+				  webdar_css_style::width_80vw));
 	changed_event = html_form_input::changed;
 	break;
     default:
@@ -157,6 +159,15 @@ string html_form_gnupg_list::inherited_get_body_part(const chemin & path,
 						    const request & req)
 {
     return get_body_part_from_all_children(path, req);
+}
+
+void html_form_gnupg_list::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
 }
 
 vector<string> html_form_gnupg_list::gather_content_of_type(unsigned int type) const

@@ -44,7 +44,7 @@ html_archive_merge::html_archive_merge():
     form("Update"),
     fs(""),
     sauv_path("Where to create the backup", "/", "80%", "Select directory where to create the backup..."),
-    basename("Backup Basename", html_form_input::text, "", "80%"),
+    basename("Backup Basename", html_form_input::text, "", "", webdar_css_style::width_80vw),
     need_entrepot_update(false)
 {
     static const char* sect_archive = "archive";

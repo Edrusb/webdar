@@ -60,7 +60,7 @@ html_web_user_interaction::html_web_user_interaction(unsigned int x_warn_size):
     was_interrupted(false),
     h_inter(""),
     h_gtstr_fs("Question regarding the above logs"),
-    h_get_string("", html_form_input::text, "", "20"),
+    h_get_string("", html_form_input::text, "", "", webdar_css_style::width_60vw),
     h_form("Update"),
     h_logs("Last logs"),
     h_global("Interaction with libdar"),

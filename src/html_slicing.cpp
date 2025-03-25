@@ -32,7 +32,7 @@ extern "C"
 #include <dar/tools.hpp>
 
     // webdar headers
-
+#include "webdar_css_style.hpp"
 
 
     //
@@ -49,9 +49,9 @@ html_slicing::html_slicing():
     slice_size("Slice size", 0, "10"),
     different_first_slice("Specific size for first slice", html_form_input::check, "", "1"), // unchecked
     first_slice_size("Slice size", 0, "10"),
-    slice_permission("Slice permission (octal)", html_form_input::text, "", "10"),
-    slice_user_ownership("Slice user ownership", html_form_input::text, "", "80%"),
-    slice_group_ownership("slice group ownership", html_form_input::text, "", "80%"),
+    slice_permission("Slice permission (octal)", html_form_input::text, "", "", webdar_css_style::width_60vw),
+    slice_user_ownership("Slice user ownership", html_form_input::text, "", "", webdar_css_style::width_80vw),
+    slice_group_ownership("slice group ownership", html_form_input::text, "", "", webdar_css_style::width_80vw),
     slice_min_digits("Minimum digits in slice file names", html_form_input::number, "0", "3")
 {
 
@@ -298,3 +298,11 @@ void html_slicing::css_classes_have_changed()
 	form_slicing.add_css_class(*it);
 }
 
+void html_slicing::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
+}

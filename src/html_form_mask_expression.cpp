@@ -58,7 +58,8 @@ html_form_mask_expression::html_form_mask_expression(const string & subject):
     mask_expression("Mask Expression",
 		    html_form_input::text,
 		    "",   // (see clear())
-		    "80%"),
+		    "",
+		    webdar_css_style::width_80vw),
     ignore_events(false)
 {
 

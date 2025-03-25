@@ -163,7 +163,7 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     categ(cat),
     config_form("Save/Save as"),
     config_fs(""),
-    config_name("Configuration name", html_form_input::text, "", "50"),
+    config_name("Configuration name", html_form_input::text, "", "", webdar_css_style::width_100vw),
     listing_form("Load selected"),
     listing_fs("Available configurations"),
     delete_selected("Delete loaded config", event_delete),

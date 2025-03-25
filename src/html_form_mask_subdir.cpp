@@ -60,7 +60,8 @@ html_form_mask_subdir::html_form_mask_subdir(bool absolute_path_accepted,
     mask_subdir("Concerned path",
 		html_form_input::text,
 		"",
-		"80%")
+		"",
+		webdar_css_style::width_80vw)
 {
     check_ptr();
 

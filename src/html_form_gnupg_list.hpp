@@ -115,6 +115,9 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 private:
     std::vector<std::string> gather_content_of_type(unsigned int type) const;
 

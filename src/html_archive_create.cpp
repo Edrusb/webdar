@@ -51,7 +51,7 @@ html_archive_create::html_archive_create():
 	      "/",
 	      "80%",
 	      "Select path where to create the backup..."),
-    basename("Backup basename", html_form_input::text, "", "80%"),
+    basename("Backup basename", html_form_input::text, "", "", webdar_css_style::width_80vw),
     need_entrepot_update(false)
 {
     static const char* sect_archive = "archive";

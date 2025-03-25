@@ -48,7 +48,8 @@ html_archive_repair::html_archive_repair():
     basename("Repaired backup basename",
 	     html_form_input::text,
 	     "",
-	     "80%"),
+	     "",
+	     webdar_css_style::width_80vw),
     repair_fs(""),
     repair_form("Update"),
     need_entrepot_update(false)

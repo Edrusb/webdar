@@ -58,7 +58,7 @@ html_form_input_file::html_form_input_file(const string & label,
 					   const string & initial_value,
 					   const string & size,
 					   const string & popup_message):
-    input(label, html_form_input::text, initial_value, size),
+    input(label, html_form_input::text, initial_value, "", size),
     trigger("+", triggered_event),
     user_select(popup_message),
     empty_text(),  // must not add text now, need first to set the css_class

@@ -77,7 +77,7 @@ html_select_file::html_select_file(const string & message):
     btn_createdir("New Folder", op_createdir),
     btn_hide_createdir("New Folder", op_hide_createdir),
     createdir_form("Create Folder"),
-    createdir_input("Folder Name", html_form_input::text, "", "80%"),
+    createdir_input("Folder Name", html_form_input::text, "", "", webdar_css_style::width_80vw),
     fieldset_isdir(libdar::inode_type::isdir)
 {
     entr.reset();       // entr points to nothing
