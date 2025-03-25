@@ -46,7 +46,7 @@ const string html_entrepot_landing::landing_path_only_changed = "html_entrep_lan
 html_entrepot_landing::html_entrepot_landing():
         form("Apply changes"),
 	fs(""),
-	use_landing_path("Replace current backup path by the landing path", html_form_input::check, "", "1"),
+	use_landing_path("Replace current backup path by the landing path", html_form_input::check, "", "", ""),
 	landing_path("Landing path", "/", "30", "Select default path to store and look for backups..."),
 	custom_event_entrepot(entrepot_only_changed),
 	custom_event_landing_path(landing_path_only_changed),

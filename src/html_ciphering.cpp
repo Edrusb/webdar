@@ -33,7 +33,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_tools.hpp"
-
+#include "webdar_css_style.hpp"
 
     //
 #include "html_ciphering.hpp"
@@ -48,12 +48,12 @@ html_ciphering::html_ciphering():
     crypto_fs(""),
     crypto_type("type of cryptography"),
     crypto_algo("Cipher used"),
-    crypto_pass1("Pass phrase", html_form_input::password, "", "80%"),
-    crypto_pass2("Confirm pass phrase", html_form_input::password, "", "80%"),
+    crypto_pass1("Pass phrase", html_form_input::password, "", "", webdar_css_style::width_80vw),
+    crypto_pass2("Confirm pass phrase", html_form_input::password, "", "", webdar_css_style::width_80vw),
     crypto_size("Cipher Block size", 0, "30"),
-    crypto_threads("Number of threads for ciphering", html_form_input::number, "2", "5"),
+    crypto_threads("Number of threads for ciphering", html_form_input::number, "2", "5", ""),
     crypto_fs_kdf_hash("Key Derivation Function"),
-    iteration_count("Iteration count", html_form_input::number, "1", "30"),
+    iteration_count("Iteration count", html_form_input::number, "1", "30", ""),
     ignore_events(false)
 
 {
@@ -390,6 +390,15 @@ void html_ciphering::css_classes_have_changed()
 	it != css_classes.end();
 	++it)
 	form_crypto.add_css_class(*it);
+}
+
+void html_ciphering::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
 }
 
 void html_ciphering::set_kdf_hash(libdar::hash_algo hash)

@@ -59,7 +59,7 @@ html_demo::html_demo():
 		"",
 		webdar_css_style::width_60vw),
     right_fs("Information known by Webdar"),
-    counter("Counter", html_form_input::number, "0", "10"),
+    counter("Counter", html_form_input::number, "0", "10", ""),
     close("Close", event_close)
 {
 

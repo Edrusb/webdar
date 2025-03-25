@@ -44,11 +44,11 @@ const string html_form_overwrite_base_criterium::changed = "hfobc_changed";
 
 html_form_overwrite_base_criterium::html_form_overwrite_base_criterium():
     crit_fs(""),
-    negate("Not", html_form_input::check, "", "1"),
-    invert("Invert roles", html_form_input::check, "", "1"),
+    negate("Not", html_form_input::check, "", "", ""),
+    invert("Invert roles", html_form_input::check, "", "", ""),
     base("Criterium"),
     date("Date"),
-    hourshift("Hourshift", html_form_input::number, "0", "5"),
+    hourshift("Hourshift", html_form_input::number, "0", "5", ""),
     trigger_change(false)
 
 {

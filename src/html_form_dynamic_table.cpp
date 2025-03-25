@@ -130,7 +130,8 @@ void html_form_dynamic_table::add_line(unsigned int typenum)
     newline.del.reset(new (nothrow) html_form_input("delete",
 						    html_form_input::check,
 						    "",
-						    "1"));
+						    "",
+						    ""));
     if(! newline.del)
 	throw exception_memory();
 

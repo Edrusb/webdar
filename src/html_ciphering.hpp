@@ -109,6 +109,9 @@ protected:
 	/// inherited from body_builder
     virtual void css_classes_have_changed() override;
 
+	/// inherited from body_builder
+    virtual void new_css_library_available() override;
+
 private:
 	// specific events
     static constexpr const char* kdf_algo_changed = "kdf_algo_changed";

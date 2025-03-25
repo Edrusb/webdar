@@ -45,8 +45,8 @@ const string html_fsa_scope::changed = "hfscope_changed";
 html_fsa_scope::html_fsa_scope():
     form("Update"),
     fs("File system Specific Attributes to consider"),
-    hfs_family("HFS+ (MacOS) family attributes", html_form_input::check, "1", "1"),
-    ext_family("Ext* (Linux) family attributes", html_form_input::check, "1", "1")
+    hfs_family("HFS+ (MacOS) family attributes", html_form_input::check, "1", "", ""),
+    ext_family("Ext* (Linux) family attributes", html_form_input::check, "1", "", "")
 {
 
 	// components setup

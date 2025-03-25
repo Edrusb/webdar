@@ -45,14 +45,14 @@ const string html_slicing::changed = "html_slicing_changed";
 html_slicing::html_slicing():
     form_slicing("Update"),
     slicing_fs(""),
-    slicing("Sliced archive", html_form_input::check, "", "1"), // unchecked
+    slicing("Sliced archive", html_form_input::check, "", "", ""), // unchecked
     slice_size("Slice size", 0, "10"),
-    different_first_slice("Specific size for first slice", html_form_input::check, "", "1"), // unchecked
+    different_first_slice("Specific size for first slice", html_form_input::check, "", "", ""), // unchecked
     first_slice_size("Slice size", 0, "10"),
     slice_permission("Slice permission (octal)", html_form_input::text, "", "", webdar_css_style::width_60vw),
     slice_user_ownership("Slice user ownership", html_form_input::text, "", "", webdar_css_style::width_80vw),
     slice_group_ownership("slice group ownership", html_form_input::text, "", "", webdar_css_style::width_80vw),
-    slice_min_digits("Minimum digits in slice file names", html_form_input::number, "0", "3")
+    slice_min_digits("Minimum digits in slice file names", html_form_input::number, "0", "3", "")
 {
 
 	// component setup

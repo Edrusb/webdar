@@ -280,7 +280,7 @@ void choose::regenerate_table_page()
 	table.adopt_static_html(it->locked ? "locked" : " ");
 	table.adopt_static_html(it->libdar_running ? "running" : " ");
 	table.adopt_static_html(it->closing ? "closing" : " ");
-	check = new (nothrow) html_form_input("", html_form_input::check, "", "10");
+	check = new (nothrow) html_form_input("", html_form_input::check, "", "", "");
 	if(check == nullptr)
 	    throw exception_memory();
 	try

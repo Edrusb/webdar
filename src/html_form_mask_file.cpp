@@ -51,11 +51,13 @@ html_form_mask_file::html_form_mask_file(const std::shared_ptr<const libdar::pat
     exclude_checkbox("Exclude listed files",
 		     html_form_input::check,
 		     "", // see clear() for defaults
-		     "1"),
+		     "",
+		     ""),
     casesensit("Case sensitivivity",
 	       html_form_input::check,
 	       "1", // see clear() for defaults
-	       "1"),
+	       "",
+	       ""),
     fs("File listing"),
     prefix(fs_root),
     ignore_events(false)

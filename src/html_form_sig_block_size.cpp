@@ -45,8 +45,8 @@ const string html_form_sig_block_size::changed = "hfsbs_changed";
 html_form_sig_block_size::html_form_sig_block_size():
     delta_sig_min_size("Avoid calculating delta signature for file smaller than", 0, "30"),
     fs_function("Function used to derive delta signature block size from the file size to sign"),
-    multiply("Multicative factor", html_form_input::number, "1", "10"),
-    divisor("Divisor factor", html_form_input::number, "1", "10"),
+    multiply("Multicative factor", html_form_input::number, "1", "10", ""),
+    divisor("Divisor factor", html_form_input::number, "1", "10", ""),
     min_size("Minimum block size", 1, "10"),
     max_size("Maximum block size (set to zero to disable max size)", 1, "10"),
     ignore_events(false)
