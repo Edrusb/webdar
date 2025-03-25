@@ -134,6 +134,21 @@ namespace webdar_css_style
 		tmp.css_margin_right("0.2em");
                 classes[spacing_horizontal] = tmp;
 
+		tmp.clear();
+		tmp.css_max_width("100vw");
+		tmp.css_width("100%", false);
+                classes[width_100vw] = tmp;
+
+		tmp.clear();
+		tmp.css_max_width("80vw");
+		tmp.css_width("80%", false);
+                classes[width_80vw] = tmp;
+
+		tmp.clear();
+		tmp.css_max_width("60vw");
+		tmp.css_width("60%", false);
+                classes[width_60vw] = tmp;
+
 		     //////
 
 		css box_off, box_on, box_void, box_grey;
