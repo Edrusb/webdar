@@ -32,7 +32,7 @@ extern "C"
 
 
     // webdar headers
-
+#include "webdar_css_style.hpp"
 
 
     //
@@ -43,6 +43,32 @@ using namespace std;
 html_statistics::html_statistics()
 {
     table = nullptr;
+
+	// css
+
+    treated_lbl.add_css_class(webdar_css_style::text_right);
+    hard_links_lbl.add_css_class(webdar_css_style::text_right);
+    skipped_lbl.add_css_class(webdar_css_style::text_right);
+    ignored_lbl.add_css_class(webdar_css_style::text_right);
+    tooold_lbl.add_css_class(webdar_css_style::text_right);
+    errored_lbl.add_css_class(webdar_css_style::text_right);
+    deleted_lbl.add_css_class(webdar_css_style::text_right);
+    ea_treated_lbl.add_css_class(webdar_css_style::text_right);
+    byte_amount_lbl.add_css_class(webdar_css_style::text_right);
+    total_lbl.add_css_class(webdar_css_style::text_right);
+
+    total_lbl.add_css_class(webdar_css_style::text_bold);
+
+    treated_count.add_css_class(webdar_css_style::text_bold);
+    hard_links_count.add_css_class(webdar_css_style::text_bold);
+    skipped_count.add_css_class(webdar_css_style::text_bold);
+    ignored_count.add_css_class(webdar_css_style::text_bold);
+    tooold_count.add_css_class(webdar_css_style::text_bold);
+    errored_count.add_css_class(webdar_css_style::text_bold);
+    deleted_count.add_css_class(webdar_css_style::text_bold);
+    ea_treated_count.add_css_class(webdar_css_style::text_bold);
+    byte_amount_count.add_css_class(webdar_css_style::text_bold);
+    total_count.add_css_class(webdar_css_style::text_bold);
 }
 
 void html_statistics::clear_counters()
@@ -81,56 +107,10 @@ string html_statistics::inherited_get_body_part(const chemin & path,
 
 void html_statistics::new_css_library_available()
 {
-    static const string css_right_name = "html_stats_right";
-    static const string css_bold_name = "html_stats_bold";
-    css css_right;
-    css css_bold;
-
     unique_ptr<css_library> & csslib = lookup_css_library();
     if(!csslib)
 	throw WEBDAR_BUG;
-
-    if(csslib->class_exists(css_right_name))
-    {
-	if(!csslib->class_exists(css_bold_name))
-	    throw WEBDAR_BUG;
-	return; // nothing to do, csslib already setup
-    }
-    else
-    {
-	if(csslib->class_exists(css_bold_name))
-	    throw WEBDAR_BUG;
-    }
-
-    css_right.css_text_h_align(css::al_right);
-    css_bold.css_font_weight_bold();
-
-    csslib->add(css_right_name, css_right);
-    csslib->add(css_bold_name, css_bold);
-
-    treated_lbl.add_css_class(css_right_name);
-    hard_links_lbl.add_css_class(css_right_name);
-    skipped_lbl.add_css_class(css_right_name);
-    ignored_lbl.add_css_class(css_right_name);
-    tooold_lbl.add_css_class(css_right_name);
-    errored_lbl.add_css_class(css_right_name);
-    deleted_lbl.add_css_class(css_right_name);
-    ea_treated_lbl.add_css_class(css_right_name);
-    byte_amount_lbl.add_css_class(css_right_name);
-    total_lbl.add_css_class(css_right_name);
-
-    total_lbl.add_css_class(css_bold_name);
-
-    treated_count.add_css_class(css_bold_name);
-    hard_links_count.add_css_class(css_bold_name);
-    skipped_count.add_css_class(css_bold_name);
-    ignored_count.add_css_class(css_bold_name);
-    tooold_count.add_css_class(css_bold_name);
-    errored_count.add_css_class(css_bold_name);
-    deleted_count.add_css_class(css_bold_name);
-    ea_treated_count.add_css_class(css_bold_name);
-    byte_amount_count.add_css_class(css_bold_name);
-    total_count.add_css_class(css_bold_name);
+    webdar_css_style::update_library(*csslib);
 }
 
 void html_statistics::build()

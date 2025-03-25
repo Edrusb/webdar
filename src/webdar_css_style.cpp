@@ -53,6 +53,7 @@ namespace webdar_css_style
     static css_class c_text_color_red(text_color_red);
     static css_class c_text_color_green(text_color_green);
     static css_class c_text_top_right(text_top_right);
+    static css_class c_text_right(text_right);
     static css_class c_float_left(float_left);
     static css_class c_float_right(float_right);
     static css_class c_spacing_vertical(spacing_vertical);
@@ -117,6 +118,10 @@ namespace webdar_css_style
 		tmp.css_text_v_align(css::al_top);
 		tmp.css_font_weight_bold();
 		c_text_top_right.set_value(tmp);
+
+		tmp.clear();
+		tmp.css_font_weight_bold();
+		c_text_right.set_value(tmp);
 
 		tmp.clear();
 		tmp.css_float(css::fl_left);
@@ -282,6 +287,7 @@ namespace webdar_css_style
 	    csslib.add(c_text_color_red);
 	    csslib.add(c_text_color_green);
 	    csslib.add(c_text_top_right);
+	    csslib.add(c_text_right);
 	    csslib.add(c_float_left);
 	    csslib.add(c_float_right);
 	    csslib.add(c_spacing_vertical);
