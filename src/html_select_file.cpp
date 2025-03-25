@@ -53,9 +53,6 @@ const string html_select_file::op_chdir_parent = "parent";
 const string html_select_file::op_createdir = "createdir";
 const string html_select_file::op_hide_createdir = "hide_createdir";
 
-const string html_select_file::css_float_button_right = "html_select_file_btn_right";
-const string html_select_file::css_float_button_left = "html_select_file_btn_left";
-const string html_select_file::css_warning = "html_select_warning";
 const string html_select_file::css_sticky_top = "html_select_sticky_top";
 const string html_select_file::css_sticky_bot = "html_select_sticky_bot";
 
@@ -124,21 +121,21 @@ html_select_file::html_select_file(const string & message):
 
 	// assigning CSS classes names to html components
     title_box.add_css_class(css_sticky_top);
-    warning.add_css_class(css_warning);
+    warning.add_css_class(webdar_css_style::text_color_red);
     webdar_css_style::normal_button(btn_cancel);
     webdar_css_style::normal_button(btn_validate);
     webdar_css_style::normal_button(btn_createdir);
     webdar_css_style::normal_button(btn_hide_createdir);
     btn_box.add_css_class(css_sticky_bot);
-    btn_cancel.add_css_class(css_float_button_right);
+    btn_cancel.add_css_class(webdar_css_style::float_right);
     btn_cancel.add_css_class(webdar_css_style::spacing_horizontal);
     btn_cancel.add_css_class(webdar_css_style::spacing_vertical);
-    btn_validate.add_css_class(css_float_button_right);
+    btn_validate.add_css_class(webdar_css_style::float_right);
     btn_validate.add_css_class(webdar_css_style::spacing_vertical);
-    btn_createdir.add_css_class(css_float_button_left);
+    btn_createdir.add_css_class(webdar_css_style::float_left);
     btn_createdir.add_css_class(webdar_css_style::spacing_horizontal);
     btn_createdir.add_css_class(webdar_css_style::spacing_vertical);
-    btn_hide_createdir.add_css_class(css_float_button_left);
+    btn_hide_createdir.add_css_class(webdar_css_style::float_left);
     btn_hide_createdir.add_css_class(webdar_css_style::spacing_vertical);
     btn_hide_createdir.add_css_class(webdar_css_style::spacing_horizontal);
 
@@ -386,25 +383,6 @@ void html_select_file::new_css_library_available()
 
     tmp.clear();
 
-    tmp.css_float(css::fl_right);
-    if(!csslib->class_exists(css_float_button_right))
-	csslib->add(css_float_button_right, tmp);
-
-    tmp.clear();
-
-    tmp.css_float(css::fl_left);
-    if(!csslib->class_exists(css_float_button_left))
-	csslib->add(css_float_button_left, tmp);
-
-    tmp.clear();
-
-    tmp.css_font_weight_bold();
-    tmp.css_color(COLOR_ARED);
-    if(!csslib->class_exists(css_warning))
-	csslib->add(css_warning, tmp);
-
-    tmp.clear();
-
     tmp.css_position_type(css::pos_sticky);
     tmp.css_box_sizing(css::bx_border);
     tmp.css_position_top("0");
@@ -414,7 +392,7 @@ void html_select_file::new_css_library_available()
     tmp.css_padding("10px");
     tmp.css_padding_bottom("10px");
     tmp.css_width("100%", true);
-    tmp.css_background_color("white");
+    tmp.css_background_color(WHITE);
     if(!csslib->class_exists(css_sticky_top))
 	csslib->add(css_sticky_top, tmp);
 
@@ -429,7 +407,7 @@ void html_select_file::new_css_library_available()
     tmp.css_margin("0");
     tmp.css_padding("10px");
     tmp.css_width("100%", true);
-    tmp.css_background_color("white");
+    tmp.css_background_color(WHITE);
     if(!csslib->class_exists(css_sticky_bot))
 	csslib->add(css_sticky_bot, tmp);
 }

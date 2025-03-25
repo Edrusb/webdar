@@ -188,9 +188,6 @@ private:
     static const std::string op_hide_createdir;
 
 	// internal css class names
-    static const std::string css_float_button_right;
-    static const std::string css_float_button_left;
-    static const std::string css_warning;
     static const std::string css_sticky_top;
     static const std::string css_sticky_bot;
 
