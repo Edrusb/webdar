@@ -77,10 +77,10 @@ void html_popup::new_css_library_available()
 
 	innerdef.css_position_type(css::pos_fixed);
 	innerdef.css_box_sizing(css::bx_border);
-	innerdef.css_position_top(to_string((100-height)/2)+"%");
-	innerdef.css_position_left(to_string((100-width)/2)+"%");
-	innerdef.css_width(to_string(width)+"%", true);
-	innerdef.css_height(to_string(height)+"%", true);
+	innerdef.css_position_top(to_string((100-height)/2)+"vh");
+	innerdef.css_position_left(to_string((100-width)/2)+"vw");
+	innerdef.css_width(to_string(width)+"vw", true);
+	innerdef.css_height(to_string(height)+"vh", true);
 	innerdef.css_corner_radius("10px");
 	innerdef.css_box_shadow("10px", "10px", "5px");
 	innerdef.css_overflow(css::ov_auto);
