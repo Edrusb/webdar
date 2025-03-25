@@ -94,12 +94,13 @@ html_summary_page::html_summary_page():
 	// css
     about.add_css_class(css_about_box);
     about_text.add_css_class(css_about_text);
+    about_text.add_css_class(webdar_css_style::text_shadow_dark);
 
-    format_title.add_css_class(css_title);
-    slice_title.add_css_class(css_title);
-    overall_title.add_css_class(css_title);
-    content_title.add_css_class(css_title);
-    saved_title.add_css_class(css_title);
+    format_title.add_css_class(webdar_css_style::text_shadow_dark);
+    slice_title.add_css_class(webdar_css_style::text_shadow_dark);
+    overall_title.add_css_class(webdar_css_style::text_shadow_dark);
+    content_title.add_css_class(webdar_css_style::text_shadow_dark);
+    saved_title.add_css_class(webdar_css_style::text_shadow_dark);
 
     format_table.set_css_class_cells(css_table_rest);
     slice_table.set_css_class_cells(css_table_rest);
@@ -311,13 +312,6 @@ void html_summary_page::new_css_library_available()
     if(!csslib)
 	throw WEBDAR_BUG;
 
-    if(!csslib->class_exists(css_title))
-    {
-	tmp.clear();
-	tmp.css_text_shadow("0.2em", "0.2em", "0.1em", "#888888");
-	csslib->add(css_title, tmp);
-    }
-
     if(!csslib->class_exists(css_close))
     {
 	tmp.clear();
@@ -331,9 +325,11 @@ void html_summary_page::new_css_library_available()
 
     if(!csslib->class_exists(css_table_top))
     {
-	tmp.clear();
+	tmp = webdar_css_style::get_css_class(webdar_css_style::text_shadow_dark);
+
 	tmp.css_border_width(css::bd_all, css::bd_medium, true);
 	tmp.css_border_style(css::bd_all, css::bd_solid, true);
+	tmp.css_font_weight_bold(false);
 	tmp.css_background_color(COLOR_BACK);
 	tmp.css_color(COLOR_TEXT);
 	csslib->add(css_table_top, tmp);
@@ -369,7 +365,6 @@ void html_summary_page::new_css_library_available()
     if(!csslib->class_exists(css_about_box))
     {
 	tmp.clear();
-	tmp.css_background_color(COLOR_BACK);
 	tmp.css_overflow(css::ov_hidden);
 	tmp.css_width("100%", true);
 	tmp.css_background_color(COLOR_TOPBAR_BACK, true);
@@ -380,9 +375,8 @@ void html_summary_page::new_css_library_available()
     {
 	tmp.clear();
 	tmp.css_font_weight_bold();
-	tmp.css_text_shadow("0.2em", "0.2em", "0.1em", "#888888");
 	tmp.css_text_v_align(css::al_middle);
-	tmp.css_margin_right("1em");
+	tmp.css_margin_left("1em");
 	tmp.css_color(COLOR_MENU_BORDER_OFF);
 	csslib->add(css_about_text, tmp);
     }

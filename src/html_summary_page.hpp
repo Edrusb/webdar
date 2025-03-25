@@ -81,7 +81,6 @@ protected:
 
 
 private:
-    static constexpr const char* css_title = "html_sum_page_title";
     static constexpr const char* css_close = "html_sum_page_close";
     static constexpr const char* css_table_top = "html_sum_page_table_top";
     static constexpr const char* css_table_left = "html_sum_page_table_left";
