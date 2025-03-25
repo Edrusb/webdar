@@ -164,8 +164,6 @@ private:
     void init();
     void trigger_changed();
 
-    static const std::string css_indent;
-
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* myclass_id = "html_options_repair";
 

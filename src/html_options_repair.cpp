@@ -46,8 +46,6 @@ const string html_options_repair::landing_path_changed = "html_options_repair_la
 const string html_options_repair::entrepot_changed = "html_options_repair_entrep_changed";
 const string html_options_repair::changed = "html_options_repair_changed";
 
-const string html_options_repair::css_indent = "html_options_repair_css_indent";
-
 
 html_options_repair::html_options_repair():
     info_details("Detailed information",
@@ -203,7 +201,7 @@ html_options_repair::html_options_repair():
 
 	// css
 
-    display_only_dir.add_css_class(css_indent);
+    display_only_dir.add_css_class(webdar_css_style::indent);
     webdar_css_style::grey_button(deroule, true);
 }
 
@@ -442,14 +440,6 @@ void html_options_repair::new_css_library_available()
 	throw WEBDAR_BUG;
 
     webdar_css_style::update_library(*csslib);
-
-    if(! csslib->class_exists(css_indent))
-    {
-	css tmp;
-
-	tmp.css_margin_left("3em");
-	csslib->add(css_indent, tmp);
-    }
 }
 
 void html_options_repair::init()
