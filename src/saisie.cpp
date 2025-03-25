@@ -72,7 +72,6 @@ const string saisie::menu_biblio = "bibliotheque";
 const string saisie::menu_sessions = "sessions";
 const string saisie::menu_close = "close";
 
-const string saisie::css_class_right = "saisie_right";
 const string saisie::css_class_margin = "saisie_marge";
 const string saisie::css_class_choice = "saisie_choice";
 const string saisie::css_class_license = "saisie_license";
@@ -326,21 +325,21 @@ saisie::saisie():
     webdar_css_style::normal_button(go_isolate);
     webdar_css_style::normal_button(go_merge);
     webdar_css_style::normal_button(go_repair);
-    go_extract.add_css_class(css_class_right);
-    go_compare.add_css_class(css_class_right);
-    go_test.add_css_class(css_class_right);
-    go_list.add_css_class(css_class_right);
-    go_create.add_css_class(css_class_right);
-    go_isolate.add_css_class(css_class_right);
-    go_merge.add_css_class(css_class_right);
-    go_repair.add_css_class(css_class_right);
+    go_extract.add_css_class(webdar_css_style::float_right);
+    go_compare.add_css_class(webdar_css_style::float_right);
+    go_test.add_css_class(webdar_css_style::float_right);
+    go_list.add_css_class(webdar_css_style::float_right);
+    go_create.add_css_class(webdar_css_style::float_right);
+    go_isolate.add_css_class(webdar_css_style::float_right);
+    go_merge.add_css_class(webdar_css_style::float_right);
+    go_repair.add_css_class(webdar_css_style::float_right);
     webdar_css_style::normal_button(test_params, true);
     choice.add_css_class(css_class_choice);
     around_licensing.add_css_class(css_class_license);
     select.add_css_class(css_class_margin);
 
     webdar_css_style::normal_button(show_demo);
-    show_demo.add_css_class(css_class_right);
+    show_demo.add_css_class(webdar_css_style::float_right);
 }
 
 string saisie::inherited_get_body_part(const chemin & path,
@@ -697,10 +696,6 @@ void saisie::new_css_library_available()
     tmp.css_margin_left("10em");
     tmp.css_box_sizing(css::bx_border);
     csslib->add(css_class_rightpan, tmp);
-
-    tmp.clear();
-    tmp.css_float(css::fl_right);
-    csslib->add(css_class_right, tmp);
 
     tmp.clear();
     tmp.css_float(css::fl_left);

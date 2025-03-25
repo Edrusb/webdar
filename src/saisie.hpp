@@ -283,7 +283,6 @@ private:
     static const std::string menu_sessions;
     static const std::string menu_close;
 
-    static const std::string css_class_right;
     static const std::string css_class_margin;
     static const std::string css_class_choice;
     static const std::string css_class_license;
