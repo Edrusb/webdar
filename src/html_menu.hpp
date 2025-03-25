@@ -144,12 +144,6 @@ private:
     unsigned int current_mode;  ///< which item is currently selected
     unsigned int previous_mode; ///< which item was previously selected
     std::deque<cell> item;      ///< items for choices
-
-    static const std::string box_off_class;
-    static const std::string box_on_class;
-    static const std::string box_void_class;
-    static const std::string url_selected_class;
-    static const std::string url_normal_class;
 };
 
 #endif

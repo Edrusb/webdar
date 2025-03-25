@@ -23,6 +23,7 @@
 
     // C system header files
 #include "my_config.h"
+
 extern "C"
 {
 
@@ -35,6 +36,7 @@ extern "C"
 #include "html_text.hpp"
 #include "tokens.hpp"
 #include "exceptions.hpp"
+#include "webdar_css_style.hpp"
 
     //
 #include "html_menu.hpp"
@@ -42,12 +44,6 @@ extern "C"
 using namespace std;
 
 const string html_menu::changed = "html_menu_changed";
-
-const string html_menu::box_off_class = "html_menu_box_off";
-const string html_menu::box_on_class = "html_menu_box_on";
-const string html_menu::box_void_class = "html_menu_box_void";
-const string html_menu::url_selected_class = "url_selected";
-const string html_menu::url_normal_class = "url_normal";
 
 html_menu::html_menu()
 {
@@ -74,10 +70,11 @@ void html_menu::add_entry(const string & label, const string & tag)
     item.back().ibtn->record_actor_on_event(this, event_name);
 
     if(label != "")
-	item.back().ibtn->add_css_class(box_off_class);
+	webdar_css_style::normal_button(*(item.back().ibtn));
     else
-	item.back().ibtn->add_css_class(box_void_class);
-    item.back().ibtn->url_add_css_class(url_normal_class);
+	webdar_css_style::void_button(*(item.back().ibtn));
+
+    item.back().ibtn->add_css_class(webdar_css_style::vertical_spacing);
 
 	/// building the body_builder tree
     adopt(item.back().ibtn);
@@ -107,23 +104,14 @@ void html_menu::set_current_mode(unsigned int mode, bool force)
 
     if(has_changed)
     {
-	item[current_mode].ibtn->url_clear_css_classes();
-	item[current_mode].ibtn->url_add_css_class(url_normal_class);
 	if(item[current_mode].ibtn->get_label() == "")
-	{
-	    item[current_mode].ibtn->clear_css_classes();
-	    item[current_mode].ibtn->add_css_class(box_void_class);
-	}
+	    webdar_css_style::void_button(*(item[current_mode].ibtn));
 	else
-	{
-	    item[current_mode].ibtn->clear_css_classes();
-	    item[current_mode].ibtn->add_css_class(box_off_class);
-	}
+	    webdar_css_style::normal_button(*(item[current_mode].ibtn));
+	item[current_mode].ibtn->add_css_class(webdar_css_style::vertical_spacing);
 
-	item[mode].ibtn->url_clear_css_classes();
-	item[mode].ibtn->url_add_css_class(url_selected_class);
-	item[mode].ibtn->clear_css_classes();
-	item[mode].ibtn->add_css_class(box_on_class);
+	webdar_css_style::active_button(*(item[mode].ibtn));
+	item[mode].ibtn->add_css_class(webdar_css_style::vertical_spacing);
 
 	previous_mode = current_mode;
 	current_mode = mode;
@@ -230,78 +218,6 @@ string html_menu::inherited_get_body_part(const chemin & path,
 
 void html_menu::new_css_library_available()
 {
-    css_class cl_off(box_off_class);
-    css_class cl_on(box_on_class);
-    css_class cl_void(box_void_class);
-    css_class cl_url_sel(url_selected_class);
-    css_class cl_url_norm(url_normal_class);
-
-    css box_off;   ///< used to assign CSS attributes: unselected item
-    css box_on;    ///< used to assign CSS attributes: selected item
-    css box_void;  ///< used to assign CSS attributes: separators
-
-    css tmp_set;   ///< common setup for the several css
-
-	// Common aspects
-    tmp_set.css_border_style(css::bd_all, css::bd_solid, true);
-    tmp_set.css_border_width(css::bd_all, css::bd_medium, true);
-    tmp_set.css_box_sizing(css::bx_border);
-    tmp_set.css_width("8em", true, true);
-    tmp_set.css_padding("0.5em", true);
-    tmp_set.css_margin("0.2em", true);
-    tmp_set.css_text_h_align(css::al_center, true);
-
-	// copy common aspects to box_on, box_off and box_void
-    box_off.css_inherit_from(tmp_set);
-    box_on.css_inherit_from(tmp_set);
-    box_void.css_inherit_from(tmp_set);
-    box_void.css_border_style(css::bd_all, css::bd_none);
-
-	// box_off and tmp_norm COLORS
-    tmp_set.clear();
-    tmp_set.css_color(COLOR_MENU_FRONT_OFF, true);
-    tmp_set.css_background_color(COLOR_MENU_BACK_OFF, true);
-    tmp_set.css_font_weight_bold(true);
-    tmp_set.css_font_style_italic(true);
-    tmp_set.css_text_decoration(css::dc_none, true);
-
-    cl_url_norm.set_selector(css_class::link, tmp_set);
-    cl_url_norm.set_selector(css_class::visited, tmp_set);
-    box_off.css_inherit_from(tmp_set);
-    box_off.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
-
-	// Link Hover and Active in box_off
-    tmp_set.css_color(COLOR_MENU_FRONT_HOVER_OFF, true);
-    tmp_set.css_text_decoration(css::dc_underline, true);
-    cl_url_norm.set_selector(css_class::hover, tmp_set);
-    tmp_set.css_color(COLOR_MENU_FRONT_ACTIVE_OFF, true);
-    cl_url_norm.set_selector(css_class::active, tmp_set);
-
-	// box_on and tmp_select COLORS
-    tmp_set.css_color(COLOR_MENU_FRONT_ON, true);
-    tmp_set.css_background_color(COLOR_MENU_BACK_ON, true);
-    tmp_set.css_font_weight_bold(true);
-    tmp_set.css_font_style_normal(true);
-    tmp_set.css_text_decoration(css::dc_none, true);
-
-    cl_url_sel.set_selector(css_class::link, tmp_set);
-    cl_url_sel.set_selector(css_class::visited, tmp_set);
-    box_on.css_inherit_from(tmp_set);
-    box_on.css_border_color(css::bd_all, COLOR_MENU_BORDER_ON, true);
-
-	// Link Hover and Active in box_on
-    tmp_set.css_color(COLOR_MENU_FRONT_HOVER_ON, true);
-    tmp_set.css_text_decoration(css::dc_underline, true);
-    cl_url_sel.set_selector(css_class::hover, tmp_set);
-    tmp_set.css_color(COLOR_MENU_FRONT_ACTIVE_ON, true);
-    cl_url_sel.set_selector(css_class::active, tmp_set);
-
-	// the selectors are now set,
-	// setting the classes from the css boxes:
-
-    cl_off.set_value(box_off);
-    cl_on.set_value(box_on);
-    cl_void.set_value(box_void);
 
 	// recording those classes and selectors to the css_library
 
@@ -309,9 +225,5 @@ void html_menu::new_css_library_available()
     if(!csslib)
 	throw WEBDAR_BUG;
 
-    csslib->add(cl_off);
-    csslib->add(cl_on);
-    csslib->add(cl_void);
-    csslib->add(cl_url_sel);
-    csslib->add(cl_url_norm);
+    webdar_css_style::update_library(*csslib);
 }
