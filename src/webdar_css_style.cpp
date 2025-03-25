@@ -30,6 +30,7 @@ extern "C"
 
     // C++ system header files
 #include <libthreadar/libthreadar.hpp>
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "tokens.hpp"
@@ -45,19 +46,7 @@ namespace webdar_css_style
     static libthreadar::mutex init_lock;
     static bool initialized = false;
 
-    static css_class c_text_grey(text_grey);
-    static css_class c_text_bold(text_bold);
-    static css_class c_text_shadow_dark(text_shadow_dark);
-    static css_class c_text_shadow_bright(text_shadow_bright);
-    static css_class c_text_color_normal(text_color_normal);
-    static css_class c_text_color_red(text_color_red);
-    static css_class c_text_color_green(text_color_green);
-    static css_class c_text_top_right(text_top_right);
-    static css_class c_text_right(text_right);
-    static css_class c_float_left(float_left);
-    static css_class c_float_right(float_right);
-    static css_class c_spacing_vertical(spacing_vertical);
-    static css_class c_spacing_horizontal(spacing_horizontal);
+    static map<string, css> classes;
 
     static css_class c_width_full(width_full);     ///< full screen large buttons (html_derouleur for exmple)
     static css_class c_width_8em(width_8em);       ///< normal width buttons (html_button, html_double_button, html_tabs,...)
@@ -86,62 +75,64 @@ namespace webdar_css_style
             {
                 css tmp;
 
+		classes.clear();
+
                 tmp.clear();
                 tmp.css_color(COLOR_MENU_BORDER_GREY);
                 tmp.css_text_shadow("0.05em", "0.05em", "0.2em", "#888888");
-                c_text_grey.set_value(tmp);
+                classes[text_grey] = tmp;
 
 		tmp.clear();
 		tmp.css_font_weight_bold();
-                c_text_bold.set_value(tmp);
+		classes[text_bold] = tmp;
 
 		tmp.clear();
 		tmp.css_text_shadow("0.05em", "0.05em", "0.2em", "#888888");
-                c_text_shadow_dark.set_value(tmp);
+                classes[text_shadow_dark] = tmp;
 
 		tmp.clear();
 		    ///<<< a faire
-                c_text_shadow_bright.set_value(tmp);
+                classes[text_shadow_bright] = tmp;
 
 		tmp.clear();
 		tmp.css_color(RED);
 		tmp.css_font_weight_bold();
-                c_text_color_red.set_value(tmp);
+                classes[text_color_red] = tmp;
 
 		tmp.clear();
 		tmp.css_color(GREEN);
 		tmp.css_font_style_italic();
-                c_text_color_green.set_value(tmp);
+                classes[text_color_green] = tmp;
 
 		tmp.clear();
 		tmp.css_text_h_align(css::al_right);
 		tmp.css_text_v_align(css::al_top);
 		tmp.css_font_weight_bold();
-		c_text_top_right.set_value(tmp);
+		classes[text_top_right] = tmp;
 
 		tmp.clear();
 		tmp.css_font_weight_bold();
-		c_text_right.set_value(tmp);
+		classes[text_right] = tmp;
 
 		tmp.clear();
 		tmp.css_float(css::fl_left);
 		tmp.css_margin_right("1em");
-                c_float_left.set_value(tmp);
+                classes[float_left] = tmp;
 
 		tmp.clear();
 		tmp.css_float(css::fl_right);
 		tmp.css_margin_left("1em");
-                c_float_right.set_value(tmp);
+                classes[float_right] = tmp;
 
 		tmp.clear();
 		tmp.css_margin_top("0.2em");
 		tmp.css_margin_bottom("0.2em");
-                c_spacing_vertical.set_value(tmp);
+                classes[spacing_vertical] = tmp;
 
 		tmp.clear();
 		tmp.css_margin_left("0.2em");
 		tmp.css_margin_right("0.2em");
-                c_spacing_horizontal.set_value(tmp);
+                classes[spacing_horizontal] = tmp;
 
 		     //////
 
@@ -279,20 +270,22 @@ namespace webdar_css_style
             csslib.add(c_red_border);
             csslib.add(c_indent);
 
-	    csslib.add(c_text_grey);
-	    csslib.add(c_text_bold);
-	    csslib.add(c_text_shadow_dark);
-	    csslib.add(c_text_shadow_bright);
-	    csslib.add(c_text_color_normal);
-	    csslib.add(c_text_color_red);
-	    csslib.add(c_text_color_green);
-	    csslib.add(c_text_top_right);
-	    csslib.add(c_text_right);
-	    csslib.add(c_float_left);
-	    csslib.add(c_float_right);
-	    csslib.add(c_spacing_vertical);
-	    csslib.add(c_spacing_horizontal);
+
+	    for(map<string, css>::iterator it = classes.begin();
+		it != classes.end();
+		++it)
+		csslib.add(it->first, it->second);
         }
+    }
+
+    const css & get_css_class(const std::string & name)
+    {
+	map<string, css>::iterator it = classes.find(name);
+
+	if(it == classes.end())
+	    throw exception_range(libdar::tools_printf("Unknown css class name %s in webdar_css_style module", name.c_str()));
+
+	return it->second;
     }
 
 }  // end of namespace

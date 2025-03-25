@@ -41,7 +41,7 @@ extern "C"
 
 namespace webdar_css_style
 {
-        /// update a css_library with webdar global css_class definitions
+        /// update a css_library with all css definitions of this webdar_css_style module
     extern void update_library(css_library & ref);
 
     constexpr const char* text_grey = "wcs_tg";
@@ -58,16 +58,16 @@ namespace webdar_css_style
     constexpr const char* spacing_vertical = "wcs_spcv";
     constexpr const char* spacing_horizontal = "wcs_spch";
 
+	/// obtain the css class object corresponding to the given name
 
+	/// \param[in] name must correspond to an existing class name defined above (text_grey, text_bold,...)
+	/// \exception exception throw if the povided name does not exist
+    const css & get_css_class(const std::string & name);
 
-        /// CSS used for button width in normal_button()/active_button()/void_button() routines
-    constexpr const char* width_full = "fullwidth";
-
-        /// CSS used for button width in normal_button()/active_button()/void_button() routines
-    constexpr const char* width_8em = "wcs_w8em";
-
-        // class used by the *_button templates below (should not be used directly, it is publicly
+	// class used by the *_button templates below (should not be used directly, it is publicly
         // available because template body need to be stored in header file")
+    constexpr const char* width_8em = "wcs_w8em";
+    constexpr const char* width_full = "fullwidth";
     constexpr const char* btn_off = "wcs_btn_off";
     constexpr const char* btn_on = "wcs_btn_on";
     constexpr const char* btn_void = "wcs_btn_void";
