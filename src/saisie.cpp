@@ -72,6 +72,7 @@ const string saisie::menu_biblio = "bibliotheque";
 const string saisie::menu_sessions = "sessions";
 const string saisie::menu_close = "close";
 
+const string saisie::css_class_logo = "saisie_logo";
 const string saisie::css_class_margin = "saisie_marge";
 const string saisie::css_class_choice = "saisie_choice";
 const string saisie::css_class_license = "saisie_license";
@@ -316,6 +317,7 @@ saisie::saisie():
     text.add_css_class(css_class_text);
     right_pan.add_css_class(css_class_rightpan);
     webdar_logo.add_css_class(css_class_text);
+    webdar_logo.add_css_class(css_class_logo);
     about_form.add_css_class(css_class_float_clear);
     webdar_css_style::normal_button(go_extract);
     webdar_css_style::normal_button(go_compare);
@@ -693,6 +695,10 @@ void saisie::new_css_library_available()
     webdar_css_style::update_library(*csslib);
 
     tmp.clear();
+    tmp.css_max_width("100%");
+    csslib->add(css_class_logo, tmp);
+
+    tmp.clear();
     tmp.css_margin_left("10em");
     tmp.css_box_sizing(css::bx_border);
     csslib->add(css_class_rightpan, tmp);
@@ -702,7 +708,7 @@ void saisie::new_css_library_available()
     csslib->add(css_class_choice, tmp);
 
     tmp.clear();
-    tmp.css_width("100%", true);
+    tmp.css_max_width("100%", true);
     tmp.css_margin("2em");
     tmp.css_text_h_align(css::al_center);
     csslib->add(css_class_license, tmp);
