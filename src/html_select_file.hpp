@@ -260,7 +260,6 @@ private:
     bool need_reload_content;         ///< whether a force content reload is needed
     html_table content;               ///< parent of content objects
 
-
     html_div btn_box;                 ///< box containing the bottom buttons
     html_button btn_cancel;           ///< triggers the entry_cancelled event
     html_button btn_validate;         ///< trigger the entry_selected event

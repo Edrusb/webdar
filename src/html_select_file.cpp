@@ -131,9 +131,16 @@ html_select_file::html_select_file(const string & message):
     webdar_css_style::normal_button(btn_hide_createdir);
     btn_box.add_css_class(css_sticky_bot);
     btn_cancel.add_css_class(css_float_button_right);
+    btn_cancel.add_css_class(webdar_css_style::spacing_horizontal);
+    btn_cancel.add_css_class(webdar_css_style::spacing_vertical);
     btn_validate.add_css_class(css_float_button_right);
+    btn_validate.add_css_class(webdar_css_style::spacing_vertical);
     btn_createdir.add_css_class(css_float_button_left);
+    btn_createdir.add_css_class(webdar_css_style::spacing_horizontal);
+    btn_createdir.add_css_class(webdar_css_style::spacing_vertical);
     btn_hide_createdir.add_css_class(css_float_button_left);
+    btn_hide_createdir.add_css_class(webdar_css_style::spacing_vertical);
+    btn_hide_createdir.add_css_class(webdar_css_style::spacing_horizontal);
 
 	// setup default visibility property
 
