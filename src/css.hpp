@@ -118,6 +118,9 @@ public:
 		   bool center,
 		   bool inherit=false);
     void css_width() { width.clear(); };
+    void css_max_width(const std::string & val,
+		       bool inherit=false);
+    void css_max_width() { max_width.clear(); };
     void css_z_index(unsigned int index,
 		     bool inherit=false);
     void css_z_index() { z_index.clear(); };
@@ -362,6 +365,7 @@ private:
     css_property margin_left;
     css_property height;
     css_property width;
+    css_property max_width;
     css_property z_index;
     css_property position_type;
     css_property position_top;

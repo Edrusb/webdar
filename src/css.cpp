@@ -58,6 +58,7 @@ void css::clear()
     margin_left.clear();
     height.clear();
     width.clear();
+    max_width.clear();
     z_index.clear();
     position_type.clear();
     position_top.clear();
@@ -262,6 +263,14 @@ void css::css_width(const string & val,
 	css_margin_left("auto", inherit);
 	css_margin_right("auto", inherit);
     }
+    css_updated(inherit);
+}
+
+void css::css_max_width(const string & val,
+			bool inherit)
+{
+    max_width.set_value(string(" max-width: ") + val + ";");
+    width.set_inheritance(inherit);
     css_updated(inherit);
 }
 
@@ -742,6 +751,7 @@ void css::css_inherit_from(const css & ref, bool all, bool force)
     margin_left.inherit_from(ref.margin_left, all, force);
     height.inherit_from(ref.height, all, force);
     width.inherit_from(ref.width, all, force);
+    max_width.inherit_from(ref.max_width, all, force);
     z_index.inherit_from(ref.z_index, all, force);
     position_type.inherit_from(ref.position_type, all, force);
     position_top.inherit_from(ref.position_top, all, force);
@@ -806,6 +816,7 @@ string css::css_get_raw_string() const
     ret += margin_left.get_value();
     ret += height.get_value();
     ret += width.get_value();
+    ret += max_width.get_value();
 
     if(!position_top.is_unset() && position_type.is_unset())
 	const_cast<css *>(this)->css_position_type(pos_absolute, position_top.get_inheritance());
