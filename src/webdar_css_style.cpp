@@ -55,7 +55,7 @@ namespace webdar_css_style
     static css_class c_text_top_right(text_top_right);
     static css_class c_float_left(float_left);
     static css_class c_float_right(float_right);
-    static css_class c_vertical_spacing(vertical_spacing);
+    static css_class c_spacing_vertical(spacing_vertical);
 
 
     static css_class c_width_full(width_full);     ///< full screen large buttons (html_derouleur for exmple)
@@ -131,7 +131,7 @@ namespace webdar_css_style
 		tmp.clear();
 		tmp.css_margin_top("0.2em");
 		tmp.css_margin_bottom("0.2em");
-                c_vertical_spacing.set_value(tmp);
+                c_spacing_vertical.set_value(tmp);
 
 		     //////
 
@@ -279,7 +279,7 @@ namespace webdar_css_style
 	    csslib.add(c_text_top_right);
 	    csslib.add(c_float_left);
 	    csslib.add(c_float_right);
-	    csslib.add(c_vertical_spacing);
+	    csslib.add(c_spacing_vertical);
         }
     }
 

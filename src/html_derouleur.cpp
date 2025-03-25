@@ -92,10 +92,10 @@ void html_derouleur::add_section(const string & name, const string & title)
 	{
 	    it->second.title->clear_css_classes();
 	    it->second.title->add_css_class(css_box);
-	    it->second.title->add_css_class(webdar_css_style::vertical_spacing);
+	    it->second.title->add_css_class(webdar_css_style::spacing_vertical);
 	    it->second.shrinker->clear_css_classes();
 	    it->second.shrinker->add_css_class(css_box);
-	    it->second.shrinker->add_css_class(webdar_css_style::vertical_spacing);
+	    it->second.shrinker->add_css_class(webdar_css_style::spacing_vertical);
 	}
     }
     catch(...)
@@ -219,10 +219,10 @@ void html_derouleur::css_classes_have_changed()
 	    throw WEBDAR_BUG;
 	it->second.title->clear_css_classes();
 	it->second.title->add_css_class(updated_set);
-	it->second.title->add_css_class(webdar_css_style::vertical_spacing);
+	it->second.title->add_css_class(webdar_css_style::spacing_vertical);
 	it->second.shrinker->clear_css_classes();
 	it->second.shrinker->add_css_class(updated_set);
-	it->second.shrinker->add_css_class(webdar_css_style::vertical_spacing);
+	it->second.shrinker->add_css_class(webdar_css_style::spacing_vertical);
 	++it;
     }
 }

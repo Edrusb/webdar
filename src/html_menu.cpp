@@ -74,7 +74,7 @@ void html_menu::add_entry(const string & label, const string & tag)
     else
 	webdar_css_style::void_button(*(item.back().ibtn));
 
-    item.back().ibtn->add_css_class(webdar_css_style::vertical_spacing);
+    item.back().ibtn->add_css_class(webdar_css_style::spacing_vertical);
 
 	/// building the body_builder tree
     adopt(item.back().ibtn);
@@ -108,10 +108,10 @@ void html_menu::set_current_mode(unsigned int mode, bool force)
 	    webdar_css_style::void_button(*(item[current_mode].ibtn));
 	else
 	    webdar_css_style::normal_button(*(item[current_mode].ibtn));
-	item[current_mode].ibtn->add_css_class(webdar_css_style::vertical_spacing);
+	item[current_mode].ibtn->add_css_class(webdar_css_style::spacing_vertical);
 
 	webdar_css_style::active_button(*(item[mode].ibtn));
-	item[mode].ibtn->add_css_class(webdar_css_style::vertical_spacing);
+	item[mode].ibtn->add_css_class(webdar_css_style::spacing_vertical);
 
 	previous_mode = current_mode;
 	current_mode = mode;

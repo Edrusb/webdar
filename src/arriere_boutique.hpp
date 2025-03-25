@@ -253,9 +253,9 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
 
 	// css
     webdar_css_style::normal_button(delete_selected);
-    delete_selected.add_css_class(webdar_css_style::vertical_spacing);
+    delete_selected.add_css_class(webdar_css_style::spacing_vertical);
     webdar_css_style::normal_button(clear_cur_config);
-    clear_cur_config.add_css_class(webdar_css_style::vertical_spacing);
+    clear_cur_config.add_css_class(webdar_css_style::spacing_vertical);
     floteur.add_css_class(css_float);
     warning_message.add_css_class(css_warn);
     need_saving.add_css_class(css_warn);
