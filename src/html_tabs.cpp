@@ -33,17 +33,14 @@ extern "C"
 
     // webdar headers
 #include "tokens.hpp"
-
+#include "webdar_css_style.hpp"
 
     //
 #include "html_tabs.hpp"
 
 using namespace std;
 
-const char* html_tabs::tab_on = "html_tabs_on";
-const char* html_tabs::tab_on_url = "html_tabs_on_url";
-const char* html_tabs::tab_off = "html_tabs_off";
-const char* html_tabs::tab_off_url = "html_tabs_off_url";
+const char* html_tabs::tab_shape = "html_tabs_shape";
 const char* html_tabs::menu_bar = "html_tabs_bar";
 const char* html_tabs::tab_sep = "html_tabs_sep";
 const char* html_tabs::css_content_wrapper = "html_tabs_wrapper";
@@ -90,7 +87,8 @@ void html_tabs::add_tab(const string & label, const string & tag)
     tabs.push_back(tmp);
     tab_bar.adopt(tmp);
     tmp->record_actor_on_event(this, event_name);
-    tmp->url_add_css_class(tab_off_url);
+    webdar_css_style::normal_button(*tmp);
+    tmp->url_add_css_class(tab_shape);
 
     try
     {
@@ -153,21 +151,11 @@ void html_tabs::new_css_library_available()
 
     if(!csslib)
 	throw WEBDAR_BUG;
+    webdar_css_style::update_library(*csslib);
 
-    if(csslib->class_exists(tab_on))
+    if(!csslib->class_exists(tab_shape))
     {
-	if(! csslib->class_exists(tab_off))
-	    throw WEBDAR_BUG;
-
-	    // else nothing to do, class definitions have already been setup
-    }
-    else
-    {
-	if(csslib->class_exists(tab_off))
-	    throw WEBDAR_BUG;
-
 	css tmp;
-	css_class forlink(tab_off_url);
 
 	    // the tab / content separator
 	tmp.css_border_width(css::bd_bottom, css::bd_thin, true);
@@ -182,66 +170,18 @@ void html_tabs::new_css_library_available()
 	tmp.css_border_width(css::bd_top, width);
 	tmp.css_border_width(css::bd_left, width);
 	tmp.css_border_width(css::bd_right, width);
-	tmp.css_background_color(COLOR_MENU_BACK_ON);
-	tmp.css_border_style(css::bd_top, css::bd_solid);
-	tmp.css_border_style(css::bd_left, css::bd_solid);
-	tmp.css_border_style(css::bd_right, css::bd_solid);
-	tmp.css_border_color(css::bd_all, COLOR_MENU_BORDER_ON);
-	tmp.css_width("8em", true);
-	tmp.css_padding("0.5em", true);
 	tmp.css_margin_top("0.2em", true);
 	tmp.css_margin_right("0.2em", true);
 	tmp.css_margin_left("0.2em", true);
 	tmp.css_margin_bottom("0", true);
-	tmp.css_text_h_align(css::al_center, true);
 	tmp.css_corner_radius("20%", "20%", "0", "0");
 	tmp.css_height("3em", false);
-	csslib->add(tab_on, tmp);
-
-	    // the unselected tabs (not their text)
-	tmp.css_background_color(COLOR_MENU_BACK_OFF);
-	tmp.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
-	csslib->add(tab_off, tmp);
+	csslib->add(tab_shape, tmp);
 
 	    // the tab bar
 	tmp.clear();
 	tmp.css_width("100%", true);
 	csslib->add(menu_bar, tmp);
-
-	    // the text of unselected tabs
-	tmp.clear();
-	tmp.css_color(COLOR_MENU_FRONT_OFF, true);
-	tmp.css_background_color(COLOR_MENU_BACK_OFF, true);
-	tmp.css_text_decoration(css::dc_none, true);
-	tmp.css_font_weight_bold(true);
-	tmp.css_font_style_italic(true);
-	forlink.set_selector(css_class::link, tmp);
-	forlink.set_selector(css_class::visited, tmp);
-	tmp.css_color(COLOR_MENU_FRONT_HOVER_OFF, true);
-	tmp.css_text_decoration(css::dc_underline, true);
-	forlink.set_selector(css_class::hover, tmp);
-	tmp.css_color(COLOR_MENU_FRONT_ACTIVE_OFF, true);
-	forlink.set_selector(css_class::active, tmp);
-	csslib->add(forlink);
-
-	    // the text of the selected tab
-	forlink.change_name(tab_on_url);
-	forlink.clear_selector(css_class::link);
-	forlink.clear_selector(css_class::visited);
-	forlink.clear_selector(css_class::hover);
-	forlink.clear_selector(css_class::active);
-	tmp.css_color(COLOR_MENU_FRONT_ON, true);
-	tmp.css_font_style_normal(false);
-	tmp.css_text_decoration(css::dc_none, true);
-	tmp.css_background_color(COLOR_MENU_BACK_ON, true);
-	forlink.set_selector(css_class::link, tmp);
-	forlink.set_selector(css_class::visited, tmp);
-	tmp.css_color(COLOR_MENU_FRONT_HOVER_ON, true);
-	tmp.css_text_decoration(css::dc_underline, true);
-	forlink.set_selector(css_class::hover, tmp);
-	tmp.css_color(COLOR_MENU_FRONT_ACTIVE_ON, true);
-	forlink.set_selector(css_class::active, tmp);
-	csslib->add(forlink);
 
 	tmp.clear();
 	tmp.css_width("100%", false);
@@ -262,10 +202,9 @@ void html_tabs::set_mode(unsigned int mode)
 	    throw WEBDAR_BUG;
 	if(tabs[current_mode] == nullptr)
 	    throw WEBDAR_BUG;
-	tabs[current_mode]->clear_css_classes();
-	tabs[current_mode]->url_clear_css_classes();
-	tabs[current_mode]->add_css_class(tab_off);
-	tabs[current_mode]->url_add_css_class(tab_off_url);
+	webdar_css_style::normal_button(*(tabs[current_mode]));
+	tabs[current_mode]->add_css_class(tab_shape);
+
     }
     else
     {
@@ -284,10 +223,8 @@ void html_tabs::set_mode(unsigned int mode)
     if(tabs[mode] == nullptr)
 	throw WEBDAR_BUG;
 
-    tabs[mode]->clear_css_classes();
-    tabs[mode]->url_clear_css_classes();
-    tabs[mode]->add_css_class(tab_on);
-    tabs[mode]->url_add_css_class(tab_on_url);
+    webdar_css_style::active_button(*(tabs[mode]));
+    tabs[mode]->add_css_class(tab_shape);
 
     content.set_active_section(mode);
 	// html_aiguille::set_active_section will trigger my_body_part_has_changed()

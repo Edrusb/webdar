@@ -102,10 +102,7 @@ private:
 
     void set_mode(unsigned int mode);
 
-    static const char* tab_on;
-    static const char* tab_on_url;
-    static const char* tab_off;
-    static const char* tab_off_url;
+    static const char* tab_shape;
     static const char* menu_bar;
     static const char* tab_sep;
 
