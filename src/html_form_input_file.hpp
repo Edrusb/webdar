@@ -66,7 +66,7 @@ public:
 			 const std::string & size,
 			 const std::string & popup_message);
 
-    html_form_input_file(const html_form_input_file & ref);
+    html_form_input_file(const html_form_input_file & ref) = delete;
     html_form_input_file(html_form_input_file && ref) noexcept = delete;
     html_form_input_file & operator = (const html_form_input_file & ref) = delete;
     html_form_input_file & operator = (html_form_input_file && ref) noexcept = delete;

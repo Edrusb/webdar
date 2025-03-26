@@ -66,16 +66,6 @@ html_form_mask_file::html_form_mask_file(const std::shared_ptr<const libdar::pat
     clear();
 }
 
-html_form_mask_file::html_form_mask_file(const html_form_mask_file & ref):
-    filename(ref.filename),
-    exclude_checkbox(ref.exclude_checkbox),
-    casesensit(ref.casesensit),
-    fs(ref.fs),
-    prefix(ref.prefix)
-{
-    init();
-}
-
 void html_form_mask_file::clear()
 {
     ignore_events = true;

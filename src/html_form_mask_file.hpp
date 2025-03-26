@@ -82,7 +82,7 @@ public:
     static const std::string changed;
 
     html_form_mask_file(const std::shared_ptr<const libdar::path> & fs_root);
-    html_form_mask_file(const html_form_mask_file & ref);
+    html_form_mask_file(const html_form_mask_file & ref) = delete;
     html_form_mask_file(html_form_mask_file && ref) noexcept = delete;
     html_form_mask_file & operator = (const html_form_mask_file & ref) = delete;
     html_form_mask_file & operator = (html_form_mask_file && ref) noexcept = delete;

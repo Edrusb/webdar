@@ -82,22 +82,8 @@ html_form_input_file::html_form_input_file(const string & label,
     entrep.reset(new (nothrow) libdar::entrepot_local("", "", false));
     if(!entrep)
 	throw exception_memory();
-}
 
-html_form_input_file::html_form_input_file(const html_form_input_file & ref):
-    input(ref.input),
-	// input_div not copy constructable, must be set in init()
-    trigger(ref.trigger),
-    user_select(ref.user_select.get_message()), // no copy constructor available for this class
-    empty_text(ref.empty_text),
-    changed_event_name(ref.changed_event),
-    entrep(ref.entrep),
-    refresh_get_body(ref.refresh_get_body),
-    selmode(ref.selmode),
-    min_digits(ref.min_digits),
-    internal_change(ref.internal_change)
-{
-    init();
+	// css
 }
 
 void html_form_input_file::set_change_event_name(const string & name)
