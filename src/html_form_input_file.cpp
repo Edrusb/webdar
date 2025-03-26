@@ -69,7 +69,29 @@ html_form_input_file::html_form_input_file(const string & label,
     internal_change(false),
     repo_updater(nullptr)
 {
-    init();
+	// html adoption tree
+
+    input_div.adopt(&input);
+    adopt(&input_div);
+    adopt(&trigger);
+    adopt(&user_select);
+    adopt(&empty_text);
+
+	// cabling events
+
+    register_name(changed_event_name);
+    register_name(changed_entrepot);
+    register_name(repo_update_needed);
+	// we do not register repo_updated because this is the object given to set_entrepot_updater() that trigger those events
+
+    input.record_actor_on_event(this, html_form_input::changed);
+    trigger.record_actor_on_event(this, triggered_event);
+    user_select.record_actor_on_event(this, html_select_file::entry_selected);
+
+	// css classes
+
+    input_div.add_css_class(webdar_css_style::float_left);
+
 
     trigger.add_css_class(css_button_box);
     trigger.url_add_css_class(css_button_link);
@@ -333,31 +355,4 @@ string html_form_input_file::slicename_to_basename_update_min_digits(const strin
 	ret += sep_str + splitted[i];
 
     return ret;
-}
-
-
-void html_form_input_file::init()
-{
-	// html adoption tree
-
-    input_div.adopt(&input);
-    adopt(&input_div);
-    adopt(&trigger);
-    adopt(&user_select);
-    adopt(&empty_text);
-
-	// cabling events
-
-    register_name(changed_event_name);
-    register_name(changed_entrepot);
-    register_name(repo_update_needed);
-	// we do not register repo_updated because this is the object given to set_entrepot_updater() that trigger those events
-
-    input.record_actor_on_event(this, html_form_input::changed);
-    trigger.record_actor_on_event(this, triggered_event);
-    user_select.record_actor_on_event(this, html_select_file::entry_selected);
-
-	// css classes
-
-    input_div.add_css_class(webdar_css_style::float_left);
 }
