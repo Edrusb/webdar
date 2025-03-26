@@ -62,7 +62,24 @@ html_form_mask_file::html_form_mask_file(const std::shared_ptr<const libdar::pat
     prefix(fs_root),
     ignore_events(false)
 {
-    init();
+
+	// adoption tree
+
+    fs.adopt(&filename);
+    fs.adopt(&exclude_checkbox);
+    fs.adopt(&casesensit);
+    adopt(&fs);
+    fs.change_label(tell_action());
+
+	// events
+    filename.record_actor_on_event(this, html_form_input_file::changed_event);
+    exclude_checkbox.record_actor_on_event(this, html_form_input::changed);
+    casesensit.record_actor_on_event(this, html_form_input::changed);
+    register_name(changed);
+
+	// css
+    fs.add_label_css_class(webdar_css_style::bold_text);
+
     clear();
 }
 
@@ -193,29 +210,6 @@ void html_form_mask_file::new_css_library_available()
 
     webdar_css_style::update_library(*csslib);
 }
-
-
-void html_form_mask_file::init()
-{
-	// adoption tree
-
-    fs.adopt(&filename);
-    fs.adopt(&exclude_checkbox);
-    fs.adopt(&casesensit);
-    adopt(&fs);
-    fs.change_label(tell_action());
-
-	// events
-    filename.record_actor_on_event(this, html_form_input_file::changed_event);
-    exclude_checkbox.record_actor_on_event(this, html_form_input::changed);
-    casesensit.record_actor_on_event(this, html_form_input::changed);
-    register_name(changed);
-
-	// css
-    fs.add_label_css_class(webdar_css_style::bold_text);
-
-}
-
 
 string html_form_mask_file::tell_action() const
 {

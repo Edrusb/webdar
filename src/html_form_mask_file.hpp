@@ -125,7 +125,6 @@ private:
     html_form_input casesensit;
     html_form_fieldset fs;
 
-    void init();
     std::string tell_action() const;
 
     static constexpr const unsigned int format_version = 1;
