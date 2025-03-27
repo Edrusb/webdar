@@ -31,7 +31,7 @@ extern "C"
 #include <dar/tools.hpp>
 
     // webdar headers
-
+#include "webdar_css_style.hpp"
 
 
     //
@@ -47,7 +47,7 @@ html_entrepot_landing::html_entrepot_landing():
         form("Apply changes"),
 	fs(""),
 	use_landing_path("Replace current backup path by the landing path", html_form_input::check, "", "", ""),
-	landing_path("Landing path", "/", "30", "Select default path to store and look for backups..."),
+	landing_path("Landing path", "/", "", webdar_css_style::width_80vw, "Select default path to store and look for backups..."),
 	custom_event_entrepot(entrepot_only_changed),
 	custom_event_landing_path(landing_path_only_changed),
 	ignore_events(false),
@@ -268,6 +268,16 @@ void html_entrepot_landing::css_classes_have_changed()
 	++it)
 	form.add_css_class(*it);
 }
+
+void html_entrepot_landing::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
+}
+
 
 void html_entrepot_landing::inherited_run()
 {

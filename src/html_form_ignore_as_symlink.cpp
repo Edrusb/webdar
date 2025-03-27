@@ -33,6 +33,7 @@ extern "C"
 
     // webdar headers
 #include "html_form_input_file.hpp"
+#include "webdar_css_style.hpp"
 
     //
 #include "html_form_ignore_as_symlink.hpp"
@@ -104,7 +105,8 @@ unique_ptr<body_builder> html_form_ignore_as_symlink::provide_object_of_type(uns
 	tmp.reset(new (nothrow)
 		  html_form_input_file("Followed symlink",
 				       "/",
-				       "80%",
+				       "",
+				       webdar_css_style::width_80vw,
 				       "Select a symlink..."));
 	break;
     default:
@@ -173,4 +175,13 @@ string html_form_ignore_as_symlink::inherited_get_body_part(const chemin & path,
 						    const request & req)
 {
     return get_body_part_from_all_children(path, req);
+}
+
+void html_form_ignore_as_symlink::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
 }

@@ -46,7 +46,8 @@ const string html_form_mask_file::changed = "hfmf_changed";
 html_form_mask_file::html_form_mask_file(const std::shared_ptr<const libdar::path> & fs_root):
     filename("File name",
 	     "/",   // see clear() for defaults
-	     "80%",
+	     "",
+	     webdar_css_style::width_80vw,
 	     "Select a listing text file..."),
     exclude_checkbox("Exclude listed files",
 		     html_form_input::check,

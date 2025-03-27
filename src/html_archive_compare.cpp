@@ -46,7 +46,8 @@ html_archive_compare::html_archive_compare():
     diff_fs_root_fs(""),
     diff_fs_root("Directory to compare the backup against",
 		 global_envir.get_value_with_default("HOME", "/"),
-		 "80%",
+		 "",
+		 webdar_css_style::width_80vw,
 		 "Select the directory to compare with..."),
     diff_fs_root_form("Update")
 {

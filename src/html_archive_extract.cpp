@@ -47,7 +47,8 @@ html_archive_extract::html_archive_extract():
     extract_fs_root_fs(""),
     extract_fs_root("Directory to take as root for restoration",
 		    global_envir.get_value_with_default("HOME", "/"),
-		    "80%",
+		    "",
+		    webdar_css_style::width_80vw,
 		    "Select a directory where to restore to..."),
     extract_fs_root_form("Update")
 {

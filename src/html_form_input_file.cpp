@@ -49,16 +49,17 @@ const string html_form_input_file::repo_updated = "hfif_repo_has_been_updated";
 const string html_form_input_file::triggered_event = "triggered";
 
     // class names
+const string html_form_input_file::css_input = "html_form_input_file_input";
 const string html_form_input_file::css_button_box = "html_form_input_file_button_box";
 const string html_form_input_file::css_button_link = "html_form_input_file_button_lnk";
 const string html_form_input_file::css_empty_text = "html_form_input_file_eol";
 
-
 html_form_input_file::html_form_input_file(const string & label,
 					   const string & initial_value,
 					   const string & size,
+					   const string & css_class,
 					   const string & popup_message):
-    input(label, html_form_input::text, initial_value, "", size),
+    input(label, html_form_input::text, initial_value, size, webdar_css_style::width_100vw),
     trigger("+", triggered_event),
     user_select(popup_message),
     empty_text(),  // must not add text now, need first to set the css_class
@@ -69,6 +70,13 @@ html_form_input_file::html_form_input_file(const string & label,
     internal_change(false),
     repo_updater(nullptr)
 {
+	// components setup
+
+    entrep.reset(new (nothrow) libdar::entrepot_local("", "", false));
+    if(!entrep)
+	throw exception_memory();
+    empty_text.add_text(0,"");
+
 	// html adoption tree
 
     input_div.adopt(&input);
@@ -88,24 +96,14 @@ html_form_input_file::html_form_input_file(const string & label,
     trigger.record_actor_on_event(this, triggered_event);
     user_select.record_actor_on_event(this, html_select_file::entry_selected);
 
-	// css classes
+	// css
 
-    input_div.add_css_class(webdar_css_style::float_left);
-
-
+    add_css_class(css_class); // for the whole component
+    input_div.add_css_class(css_input);
     trigger.add_css_class(css_button_box);
     trigger.url_add_css_class(css_button_link);
     input.set_no_CR();
-
     empty_text.add_css_class(css_empty_text);
-	// we ca now add text to empty_text
-    empty_text.add_text(0,"");
-
-    entrep.reset(new (nothrow) libdar::entrepot_local("", "", false));
-    if(!entrep)
-	throw exception_memory();
-
-	// css
 }
 
 void html_form_input_file::set_change_event_name(const string & name)
@@ -247,7 +245,7 @@ void html_form_input_file::new_css_library_available()
 	tmp.css_float_clear(css::fc_both);
 	csslib->add(css_empty_text, tmp);
 
-	    // css_button_box definition
+	    // css_button_box definition (for trigger button)
 
 	tmp.clear();
         tmp.css_color(COLOR_MENU_FRONT_OFF);
@@ -258,12 +256,10 @@ void html_form_input_file::new_css_library_available()
 	tmp.css_text_h_align(css::al_center);
 	tmp.css_width("2em", false);
 	tmp.css_padding("0");
-	tmp.css_margin_left("1em");
 	tmp.css_float(css::fl_left);
-
 	csslib->add(css_button_box, tmp);
 
-	    // css_button_link definition
+	    // css_button_link definition (for trigger button)
 
 	css_class tmp_class(css_button_link);
 
@@ -285,6 +281,13 @@ void html_form_input_file::new_css_library_available()
 	tmp_class.set_selector(css_class::active, tmp);
 
 	csslib->add(tmp_class);
+
+	    // css for input_div
+
+	tmp.clear();
+	tmp.css_width("calc(100% - 4em)",false); // 2em for the trigger button plus more for the spacing around
+	tmp.css_float(css::fl_left);
+	csslib->add(css_input, tmp);
     }
     else
     {

@@ -43,7 +43,11 @@ using namespace std;
 html_archive_isolate::html_archive_isolate():
     form("Update"),
     fs(""),
-    sauv_path("Where to create the isolated catalog", "/", "80%", "Select the directory where to create the isolated catalog..."),
+    sauv_path("Where to create the isolated catalog",
+	      "/",
+	      "",
+	      webdar_css_style::width_80vw,
+	      "Select the directory where to create the isolated catalog..."),
     basename("Isolated Catalog basename", html_form_input::text, "", "", webdar_css_style::width_80vw),
     need_entrepot_update(false)
 {

@@ -43,7 +43,8 @@ using namespace std;
 html_archive_repair::html_archive_repair():
     repair_dest("Where to create the repaired backup",
 		"/",
-		"80%",
+		"",
+		webdar_css_style::width_80vw,
 		"Select path where will be created the repaired backup"),
     basename("Repaired backup basename",
 	     html_form_input::text,

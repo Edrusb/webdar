@@ -48,7 +48,8 @@ html_archive_read::html_archive_read(const string & archive_description):
     fs(archive_description),
     arch_path("Backup Path",
 	      "/",
-	      "80%",
+	      "",
+	      webdar_css_style::width_80vw,
 	      "Select the backup to read..."),
     need_entrepot_update(false),
     ignore_events_st(event_propagated)

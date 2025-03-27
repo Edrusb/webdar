@@ -65,7 +65,7 @@ html_options_read::html_options_read():
     force_first_slice("Start reading the first instead of the last (available when external catalog is used)", html_form_input::check, "", "", ""),
     ref_use_external_catalogue("Use external catalog to open the archive", html_form_input::check, "", "", ""),
     form_ref("Update Options"),
-    ref_path("External catalog path", "/", "80%", "Select the external catalog..."),
+    ref_path("External catalog path", "/", "", webdar_css_style::width_80vw, "Select the external catalog..."),
     ref_crypto_algo("Cipher (for recent archives/backups, this is auto-detected, do not select any cipher)"),
     ref_crypto_pass("Passphrase", html_form_input::password, "", "", webdar_css_style::width_80vw),
     ref_crypto_size("Cipher block size", 0, "80%"),

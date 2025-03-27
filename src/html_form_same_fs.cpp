@@ -33,6 +33,7 @@ extern "C"
 
     // webdar headers
 #include "html_form_input_file.hpp"
+#include "webdar_css_style.hpp"
 
     //
 #include "html_form_same_fs.hpp"
@@ -87,14 +88,16 @@ unique_ptr<body_builder> html_form_same_fs::provide_object_of_type(unsigned int 
 	ret.reset(new (nothrow)
 		  html_form_input_file("Included mount point",
 				       "/",
-				       "80%",
+				       "",
+				       webdar_css_style::width_80vw,
 				       "Select a path which filesystem will be included in the operation..."));
 	break;
     case 1:
 	ret.reset(new (nothrow)
 		  html_form_input_file("Excluded mount point",
 				       "/",
-				       "80%",
+				       "",
+				       webdar_css_style::width_80vw,
 				       "Select a path which filesystem will be excluded from the operation..."));
 	break;
     default:
@@ -168,6 +171,16 @@ string html_form_same_fs::inherited_get_body_part(const chemin & path,
 {
     return get_body_part_from_all_children(path, req);
 }
+
+void html_form_same_fs::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
+}
+
 
 vector<string> html_form_same_fs::gather_content_of_type(unsigned int type) const
 {

@@ -141,12 +141,12 @@ namespace webdar_css_style
 
 		tmp.clear();
 		tmp.css_max_width("80vw");
-		tmp.css_width("80%", false);
+		tmp.css_width("100%", false); // not a typo: 100%
                 classes[width_80vw] = tmp;
 
 		tmp.clear();
 		tmp.css_max_width("60vw");
-		tmp.css_width("60%", false);
+		tmp.css_width("100%", false); // not a typo: 100%
                 classes[width_60vw] = tmp;
 
 		     //////
