@@ -112,6 +112,10 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// inherited from body_builder
+    virtual void new_css_library_available() override;
+
+
 private:
     bool enabled;        ///< whether the control is enabled or disabled
     std::string x_label; ///< field text shown to the user
@@ -126,6 +130,10 @@ private:
 
     void my_act() { act(modif_change.empty() ? changed: modif_change); };
     void check_min_max_change(const std::string & next_min, const std::string & next_max);
+    std::string generate_label(const std::string & css, const std::string & id);
+    std::string generate_input(const std::string & css, const std::string & id);
+
+
 
     static std::string string_for_type(input_type type);
 
@@ -133,6 +141,12 @@ private:
     static constexpr const char* myclass_id = "html_form_input";
 
     static constexpr const char* jlabel_init = "value";
+
+    static const std::string css_label;
+    static const std::string css_input;
+    static const std::string css_check;
+    static const std::string css_checktitle;
+
 };
 
 #endif

@@ -43,6 +43,12 @@ using namespace std;
 
 const string html_form_input::changed = "html_form_input_changed";
 
+const string html_form_input::css_label = "html_form_input_label";
+const string html_form_input::css_input = "html_form_input_input";
+const string html_form_input::css_check = "html_form_input_check";
+const string html_form_input::css_checktitle = "html_form_input_checktitle";
+
+
 html_form_input::html_form_input(const string & label,
 				 input_type type,
 				 const string & initial_value,
@@ -250,27 +256,28 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 	// we can now return the up to date value of
 	// the field
 
+	// here we could rely on the html_div component, but this would require
+	// to setup two classes:
+	// - one for the <label> tag
+	// - one for the <input> tag
+	// unless those are used elsewehre in the future, we decide not to rely
+	// on html_div and implement manually a div here, as it is simpler to do
+
+    ret += "<div " + get_css_classes() + ">\n";
+
     if(x_type != "checkbox")
-	ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
-    ret += "<input " + get_css_classes() + " type=\"" + x_type + "\" name=\"" + x_id + "\" id=\"" + x_id + "\" ";
-    if(x_min != "")
-	ret += "min=\"" + x_min + "\" ";
-    if(x_max != "")
-	ret += "max=\"" + x_max + "\" ";
-    if(x_init != "")
     {
-	if(x_type == "checkbox")
-	    ret += "checked ";
-	else
-	    ret += "value=\"" + webdar_tools_html_display(x_init) +"\" ";
+	ret += generate_label(css_label, x_id);
+	ret += generate_input(css_input, x_id);
     }
-    if(x_size != "")
-	ret += "size=\"" + x_size + "\" ";
-    if(!enabled)
-	ret += "disabled ";
-    ret += "/>";
-    if(x_type == "checkbox")
-	ret += "<label for=\"" + x_id + "\">" + x_label + "</label>\n";
+    else
+    {
+	ret += generate_input(css_check, x_id);
+	ret += generate_label(css_checktitle, x_id);
+    }
+
+    ret += "</div>\n";
+
     if(!get_no_CR())
 	ret += "<br />\n";
 
@@ -278,6 +285,44 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 	value_set = false;
 
     return ret;
+}
+
+void html_form_input::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    if(! csslib->class_exists(css_label))
+    {
+	css tmp;
+
+	if(csslib->class_exists(css_input))
+	    throw WEBDAR_BUG;
+
+	tmp.clear();
+	tmp.css_width("40%", false);
+	tmp.css_display("inline-block");
+	csslib->add(css_label, tmp);
+
+	tmp.clear();
+	tmp.css_width("58%", false);
+	csslib->add(css_input, tmp);
+
+	tmp.clear();
+	tmp.css_width("4em", false);
+	csslib->add(css_check, tmp);
+
+	tmp.clear();
+	tmp.css_width("calc(100% - 4em)", false);
+	tmp.css_display("inline-block");
+	csslib->add(css_checktitle, tmp);
+    }
+    else
+    {
+	if(! csslib->class_exists(css_input))
+	    throw WEBDAR_BUG;
+    }
 }
 
 void html_form_input::set_change_event_name(const string & name)
@@ -339,3 +384,32 @@ string html_form_input::string_for_type(input_type type)
     return ret;
 }
 
+
+string html_form_input::generate_label(const string & css, const string & id)
+{
+    return "<label class=\"" + css + "\" for=\"" + id + "\">" + x_label + "</label>\n";
+}
+
+string html_form_input::generate_input(const string & css, const string & id)
+{
+    string ret = "<input class=\"" + css + "\" type=\"" + x_type + "\" name=\"" + id + "\" id=\"" + id + "\" ";
+
+    if(x_min != "")
+	ret += "min=\"" + x_min + "\" ";
+    if(x_max != "")
+	ret += "max=\"" + x_max + "\" ";
+    if(x_init != "")
+    {
+	if(x_type == "checkbox")
+	    ret += "checked ";
+	else
+	    ret += "value=\"" + webdar_tools_html_display(x_init) +"\" ";
+    }
+    if(x_size != "")
+	ret += "size=\"" + x_size + "\" ";
+    if(!enabled)
+	ret += "disabled ";
+    ret += "/>";
+
+    return ret;
+}
