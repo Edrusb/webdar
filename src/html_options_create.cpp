@@ -66,10 +66,10 @@ html_options_create::html_options_create():
     retry_on_change_times("Max retries saving files that changed", html_form_input::number, "", "5", ""),
     allow_over("Allow slice overwriting", html_form_input::check, "", "", ""),
     warn_over("Warn before overwriting", html_form_input::check, "", "", ""),
-    retry_on_change_overhead("Max wasted bytes retrying saving changed files", 0, "10", webdar_css_style::width_60vw),
+    retry_on_change_overhead("Max wasted bytes retrying saving changed files", 0, "10"),
     sequential_marks("Add sequential marks", html_form_input::check, "", "", ""),
     user_comment("User comment in slice header", html_form_input::text, "", "", webdar_css_style::width_100vw),
-    sparse_file_min_size("Minimum size of holes to lookup in sparse files", 0, "10", webdar_css_style::width_60vw),
+    sparse_file_min_size("Minimum size of holes to lookup in sparse files", 0, "10"),
     hash_algo("Hashing algorithm"),
     execute("Command to execute after each slice", html_form_input::text, "", "", webdar_css_style::width_100vw),
     hourshift("Ignore difference of exactly +/- N hour(s)", html_form_input::number, "", "5", ""),
@@ -371,6 +371,8 @@ html_options_create::html_options_create():
 	// css
     webdar_css_style::grey_button(deroule, true);
     display_treated_only_dir.add_css_class(webdar_css_style::indent);
+    retry_on_change_overhead.add_css_class(webdar_css_style::width_60vw);
+    sparse_file_min_size.add_css_class(webdar_css_style::width_60vw);
 }
 
 void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)

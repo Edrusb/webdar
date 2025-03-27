@@ -242,29 +242,17 @@ string html_form_mask_subdir::inherited_get_body_part(const chemin & path,
 
 	    if(valpath.is_absolute())
 	    {
-		if(!mask_subdir.has_css_class(webdar_css_style::red_border))
-		{
-		    mask_subdir.add_css_class(webdar_css_style::red_border);
-		    throw exception_range("absolute path are not allowed for path filtering in that context");
-		}
+		mask_subdir.box_set_css_class(webdar_css_style::red_border);
+		throw exception_range("absolute path are not allowed for path filtering in that context");
 	    }
 	    else
-	    {
-		if(mask_subdir.has_css_class(webdar_css_style::red_border))
-		    mask_subdir.remove_css_class(webdar_css_style::red_border);
-	    }
+		mask_subdir.box_set_css_class("");
 	}
 	else
-	{
-	    if(mask_subdir.has_css_class(webdar_css_style::red_border))
-		mask_subdir.remove_css_class(webdar_css_style::red_border);
-	}
+	    mask_subdir.box_set_css_class("");
     }
     else
-    {
-	if(mask_subdir.has_css_class(webdar_css_style::red_border))
-	    mask_subdir.remove_css_class(webdar_css_style::red_border);
-    }
+	mask_subdir.box_set_css_class("");
 
     return ret;
 }

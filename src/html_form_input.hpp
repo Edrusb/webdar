@@ -86,6 +86,9 @@ public:
 	/// set whether the HTML control is enable or disabled
     void set_enabled(bool val);
 
+	/// apply css to the box (text box if checkbox, but not to the label)
+    void box_set_css_class(const std::string & val) { box_css = val; };
+
 	/// change the name of the event generated when this control changes
 
 	/// \param[in] name must not be an empty string
@@ -126,6 +129,7 @@ private:
     std::string x_min;   ///< minimum value of the field (for type = number)
     std::string x_max;   ///< maximum value of the field (for type = number)
     bool value_set;      ///< record that a manual set_value has been done and POST request received from body_part should not overwrite the change
+    std::string box_css; ///< css class applied to the box if non an empty string
 
     std::string modif_change; ///< name of the event "changed" to use, if set to an empty string default behavior is used
 

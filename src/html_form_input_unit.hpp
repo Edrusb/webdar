@@ -74,6 +74,9 @@ public:
 	/// \note setting this to zero disable max value
     void set_max_only(const libdar::infinint & x_max);
 
+	/// apply css to the box (text box if checkbox, but not to the label)
+    void box_set_css_class(const std::string & val) { field.box_set_css_class(val); };
+
 	/// change the label
     void change_label(const std::string & label) { field.change_label(label); };
 

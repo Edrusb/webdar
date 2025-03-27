@@ -249,19 +249,15 @@ void html_form_sig_block_size::on_event(const string & event_name)
 
 	if(max < min && ! max.is_zero())
 	{
-	    if(! min_size.has_css_class(webdar_css_style::red_border))
-		min_size.add_css_class(webdar_css_style::red_border);
-	    if(! max_size.has_css_class(webdar_css_style::red_border))
-		max_size.add_css_class(webdar_css_style::red_border);
+	    min_size.box_set_css_class(webdar_css_style::red_border);
+	    max_size.box_set_css_class(webdar_css_style::red_border);
 
 	    throw exception_range("Minimum block size should be less or equal than maximum block size");
 	}
 	else
 	{
-	    if(min_size.has_css_class(webdar_css_style::red_border))
-		min_size.remove_css_class(webdar_css_style::red_border);
-	    if(max_size.has_css_class(webdar_css_style::red_border))
-		max_size.remove_css_class(webdar_css_style::red_border);
+	    min_size.box_set_css_class("");
+	    max_size.box_set_css_class("");
 	}
 
 	make_summary();

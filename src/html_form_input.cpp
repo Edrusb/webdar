@@ -423,7 +423,21 @@ string html_form_input::generate_label(const string & css, const string & id)
 
 string html_form_input::generate_input(const string & css, const string & id)
 {
-    string ret = "<input class=\"" + css + "\" type=\"" + x_type + "\" name=\"" + id + "\" id=\"" + id + "\" ";
+    string ret;
+    string css_classes = css;
+
+    if(css.empty())
+	if(box_css.empty())
+	    css_classes = "";
+	else
+	    css_classes = box_css;
+    else
+	if(box_css.empty())
+	    css_classes = css;
+	else
+	    css_classes = css + " " + box_css;
+
+    ret = "<input class=\"" + css_classes + "\" type=\"" + x_type + "\" name=\"" + id + "\" id=\"" + id + "\" ";
 
     if(x_min != "")
 	ret += "min=\"" + x_min + "\" ";
