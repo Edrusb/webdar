@@ -52,6 +52,7 @@ void css::clear()
     box_shadow.clear();
     text_shadow.clear();
     box_sizing.clear();
+    display.clear();
     margin_top.clear();
     margin_right.clear();
     margin_bottom.clear();
@@ -200,7 +201,12 @@ void css::css_box_sizing(bx_sizing val,
     css_updated(inherit);
 }
 
-
+void css::css_display(const string & val, bool inherit)
+{
+    display.set_value(string(" display: ") + val + ";");
+    display.set_inheritance(inherit);
+    css_updated(inherit);
+}
 
 void css::css_margin(const string & all, bool inherit)
 {
@@ -745,6 +751,7 @@ void css::css_inherit_from(const css & ref, bool all, bool force)
     box_shadow.inherit_from(ref.box_shadow, all, force);
     text_shadow.inherit_from(ref.text_shadow, all, force);
     box_sizing.inherit_from(ref.box_sizing, all, force);
+    display.inherit_from(ref.display, all, force);
     margin_top.inherit_from(ref.margin_top, all, force);
     margin_right.inherit_from(ref.margin_right, all, force);
     margin_bottom.inherit_from(ref.margin_bottom, all, force);
@@ -810,6 +817,7 @@ string css::css_get_raw_string() const
     ret += box_shadow.get_value();
     ret += text_shadow.get_value();
     ret += box_sizing.get_value();
+    ret += display.get_value();
     ret += margin_top.get_value();
     ret += margin_right.get_value();
     ret += margin_bottom.get_value();

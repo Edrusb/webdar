@@ -199,6 +199,9 @@ public:
     void css_box_sizing(bx_sizing val,
 			bool inherit = false);
 
+    void css_display(const std::string & val,
+		     bool inherit = false);
+
     void css_padding(const std::string & val,
 		     bool inherit=false);
     void css_padding() { css_padding_top(); css_padding_right(); css_padding_bottom(); css_padding_left(); };
@@ -359,6 +362,7 @@ private:
 
 	// position properties
     css_property box_sizing;
+    css_property display;
     css_property margin_top;
     css_property margin_right;
     css_property margin_bottom;
