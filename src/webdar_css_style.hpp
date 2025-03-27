@@ -55,9 +55,11 @@ namespace webdar_css_style
     constexpr const char* text_right = "wcs_tr";
     constexpr const char* float_left = "wcs_fll";
     constexpr const char* float_right = "wcs_flr";
+    constexpr const char* float_flush = "wcs_flf";
     constexpr const char* spacing_vertical = "wcs_spcv";
     constexpr const char* spacing_horizontal = "wcs_spch";
     constexpr const char* width_100vw = "wcs_w100";
+    constexpr const char* width_100vw_3em = "wcs_w100_3em"; // 100% - 3em
     constexpr const char* width_80vw = "wcs_w80";
     constexpr const char* width_60vw = "wcs_w60";
 

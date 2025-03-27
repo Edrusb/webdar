@@ -38,6 +38,7 @@ extern "C"
 #include "body_builder.hpp"
 #include "events.hpp"
 #include "jsoner.hpp"
+#include "html_text.hpp"
 
     /// class html_form_input implements HTML input feature
 
@@ -133,7 +134,7 @@ private:
     std::string generate_label(const std::string & css, const std::string & id);
     std::string generate_input(const std::string & css, const std::string & id);
 
-
+    html_text new_line;
 
     static std::string string_for_type(input_type type);
 
@@ -146,7 +147,8 @@ private:
     static const std::string css_input;
     static const std::string css_check;
     static const std::string css_checktitle;
-
+    static const std::string css_vertical_space;
+    static const std::string css_display_no_CR;
 };
 
 #endif

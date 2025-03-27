@@ -188,7 +188,6 @@ private:
     static const std::string css_input;
     static const std::string css_button_box;
     static const std::string css_button_link;
-    static const std::string css_empty_text;
 };
 
 

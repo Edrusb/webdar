@@ -43,8 +43,8 @@ using namespace std;
 html_archive_merge::html_archive_merge():
     form("Update"),
     fs(""),
-    sauv_path("Where to create the backup", "/", "", webdar_css_style::width_80vw, "Select directory where to create the backup..."),
-    basename("Backup Basename", html_form_input::text, "", "", webdar_css_style::width_80vw),
+    sauv_path("Where to create the backup", "/", "", webdar_css_style::width_100vw, "Select directory where to create the backup..."),
+    basename("Backup Basename", html_form_input::text, "", "", webdar_css_style::width_100vw_3em),
     need_entrepot_update(false)
 {
     static const char* sect_archive = "archive";

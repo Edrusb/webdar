@@ -52,7 +52,6 @@ const string html_form_input_file::triggered_event = "triggered";
 const string html_form_input_file::css_input = "html_form_input_file_input";
 const string html_form_input_file::css_button_box = "html_form_input_file_button_box";
 const string html_form_input_file::css_button_link = "html_form_input_file_button_lnk";
-const string html_form_input_file::css_empty_text = "html_form_input_file_eol";
 
 html_form_input_file::html_form_input_file(const string & label,
 					   const string & initial_value,
@@ -103,7 +102,7 @@ html_form_input_file::html_form_input_file(const string & label,
     trigger.add_css_class(css_button_box);
     trigger.url_add_css_class(css_button_link);
     input.set_no_CR();
-    empty_text.add_css_class(css_empty_text);
+    empty_text.add_css_class(webdar_css_style::float_flush);
 }
 
 void html_form_input_file::set_change_event_name(const string & name)
@@ -236,14 +235,6 @@ void html_form_input_file::new_css_library_available()
 
 	if(csslib->class_exists(css_button_link))
 	    throw WEBDAR_BUG;
-	if(csslib->class_exists(css_empty_text))
-	    throw WEBDAR_BUG;
-
-	    // css_empty_text definition
-
-	tmp.clear();
-	tmp.css_float_clear(css::fc_both);
-	csslib->add(css_empty_text, tmp);
 
 	    // css_button_box definition (for trigger button)
 
@@ -285,7 +276,7 @@ void html_form_input_file::new_css_library_available()
 	    // css for input_div
 
 	tmp.clear();
-	tmp.css_width("calc(100% - 4em)",false); // 2em for the trigger button plus more for the spacing around
+	tmp.css_width("calc(100% - 3em)",false); // 2em for the trigger button plus more for the spacing around
 	tmp.css_float(css::fl_left);
 	csslib->add(css_input, tmp);
     }
@@ -294,8 +285,6 @@ void html_form_input_file::new_css_library_available()
 	if(!csslib->class_exists(css_button_box))
 	    throw WEBDAR_BUG;
 	if(!csslib->class_exists(css_button_link))
-	    throw WEBDAR_BUG;
-	if(!csslib->class_exists(css_empty_text))
 	    throw WEBDAR_BUG;
     }
 }

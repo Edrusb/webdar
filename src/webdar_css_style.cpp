@@ -125,6 +125,10 @@ namespace webdar_css_style
                 classes[float_right] = tmp;
 
 		tmp.clear();
+		tmp.css_float_clear(css::fc_both);
+		classes[float_flush] = tmp;
+
+		tmp.clear();
 		tmp.css_margin_top("0.2em");
 		tmp.css_margin_bottom("0.2em");
                 classes[spacing_vertical] = tmp;
@@ -140,14 +144,20 @@ namespace webdar_css_style
                 classes[width_100vw] = tmp;
 
 		tmp.clear();
+		tmp.css_max_width("100vw");
+		tmp.css_width("calc(100% - 3em)", false);
+                classes[width_100vw_3em] = tmp;
+
+		tmp.clear();
 		tmp.css_max_width("80vw");
-		tmp.css_width("100%", false); // not a typo: 100%
+		tmp.css_width("80%", false);
                 classes[width_80vw] = tmp;
 
 		tmp.clear();
 		tmp.css_max_width("60vw");
-		tmp.css_width("100%", false); // not a typo: 100%
+		tmp.css_width("60%", false);
                 classes[width_60vw] = tmp;
+
 
 		     //////
 

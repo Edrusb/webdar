@@ -46,14 +46,14 @@ html_archive_create::html_archive_create():
     fs_root("Directory to take as root for the backup",
 	    global_envir.get_value_with_default("HOME", "/"),
 	    "",
-	    webdar_css_style::width_80vw,
+	    webdar_css_style::width_100vw,
 	    "Select root directory to backup..."),
     sauv_path("Where to create the backup",
 	      "/",
 	      "",
-	      webdar_css_style::width_80vw,
+	      webdar_css_style::width_100vw,
 	      "Select path where to create the backup..."),
-    basename("Backup basename", html_form_input::text, "", "", webdar_css_style::width_80vw),
+    basename("Backup basename", html_form_input::text, "", "", webdar_css_style::width_100vw_3em),
     need_entrepot_update(false)
 {
     static const char* sect_archive = "archive";

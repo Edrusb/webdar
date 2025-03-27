@@ -47,7 +47,7 @@ html_entrepot_landing::html_entrepot_landing():
         form("Apply changes"),
 	fs(""),
 	use_landing_path("Replace current backup path by the landing path", html_form_input::check, "", "", ""),
-	landing_path("Landing path", "/", "", webdar_css_style::width_80vw, "Select default path to store and look for backups..."),
+	landing_path("Landing path", "/", "", webdar_css_style::width_100vw, "Select default path to store and look for backups..."),
 	custom_event_entrepot(entrepot_only_changed),
 	custom_event_landing_path(landing_path_only_changed),
 	ignore_events(false),

@@ -61,7 +61,7 @@ html_form_mask_expression::html_form_mask_expression(const string & subject):
 		    html_form_input::text,
 		    "",   // (see clear())
 		    "",
-		    webdar_css_style::width_80vw),
+		    webdar_css_style::width_100vw),
     ignore_events(false)
 {
 

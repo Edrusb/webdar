@@ -94,7 +94,7 @@ html_options_repair::html_options_repair():
 	    html_form_input::text,
 	    "",
 	    "",
-	    webdar_css_style::width_80vw),
+	    webdar_css_style::width_100vw),
     dry_run("Dry-run execution",
 	    html_form_input::check,
 	    "",
@@ -112,7 +112,7 @@ html_options_repair::html_options_repair():
 		 html_form_input::text,
 		 "",
 		 "",
-		 webdar_css_style::width_80vw),
+		 webdar_css_style::width_100vw),
     target_fs(""),
     target_form("Update"),
     ignore_events(false)

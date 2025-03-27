@@ -34,7 +34,7 @@ extern "C"
     // webdar headers
 #include "webdar_tools.hpp"
 #include "exceptions.hpp"
-
+#include "webdar_css_style.hpp"
 
     //
 #include "html_form_input.hpp"
@@ -47,6 +47,8 @@ const string html_form_input::css_label = "html_form_input_label";
 const string html_form_input::css_input = "html_form_input_input";
 const string html_form_input::css_check = "html_form_input_check";
 const string html_form_input::css_checktitle = "html_form_input_checktitle";
+const string html_form_input::css_vertical_space = "html_form_input_vertspc";
+const string html_form_input::css_display_no_CR = "html_form_input_nocr";
 
 
 html_form_input::html_form_input(const string & label,
@@ -64,9 +66,16 @@ html_form_input::html_form_input(const string & label,
     value_set(false),
     modif_change("")
 {
+    new_line.add_text(0,"");
+
+	// there is no adoption tree in that component
+
     register_name(changed);
     if(! css_class.empty())
 	add_css_class(css_class);
+    add_css_class(css_vertical_space);
+
+    new_line.add_css_class(webdar_css_style::float_flush);
 }
 
 void html_form_input::set_range(const libdar::infinint & min,
@@ -272,14 +281,23 @@ string html_form_input::inherited_get_body_part(const chemin & path,
     }
     else
     {
-	ret += generate_input(css_check, x_id);
 	ret += generate_label(css_checktitle, x_id);
+	ret += generate_input(css_check, x_id);
     }
 
     ret += "</div>\n";
 
-    if(!get_no_CR())
-	ret += "<br />\n";
+    if(! get_no_CR())
+    {
+	ret += new_line.get_body_part();
+	if(has_css_class(css_display_no_CR))
+	    remove_css_class(css_display_no_CR);
+    }
+    else
+    {
+	if(!has_css_class(css_display_no_CR))
+	    add_css_class(css_display_no_CR);
+    }
 
     if(!has_my_body_part_changed())
 	value_set = false;
@@ -296,27 +314,37 @@ void html_form_input::new_css_library_available()
     if(! csslib->class_exists(css_label))
     {
 	css tmp;
+	int label_width = 50;
 
 	if(csslib->class_exists(css_input))
 	    throw WEBDAR_BUG;
 
 	tmp.clear();
-	tmp.css_width("40%", false);
+	tmp.css_width(libdar::tools_printf("%d%%", label_width), false);
 	tmp.css_display("inline-block");
 	csslib->add(css_label, tmp);
 
 	tmp.clear();
-	tmp.css_width("58%", false);
+	tmp.css_width(libdar::tools_printf("%d%%", 100 - label_width - 6), false);
 	csslib->add(css_input, tmp);
 
 	tmp.clear();
-	tmp.css_width("4em", false);
+	tmp.css_width(libdar::tools_printf("%d%%", label_width), false);
+	tmp.css_display("inline-block");
+	tmp.css_float(css::fl_left);
+	csslib->add(css_checktitle, tmp);
+
+	tmp.clear();
+	tmp.css_width("3em", false);
 	csslib->add(css_check, tmp);
 
 	tmp.clear();
-	tmp.css_width("calc(100% - 4em)", false);
+	tmp.css_margin_top("0.2em");
+	csslib->add(css_vertical_space, tmp);
+
+	tmp.clear();
 	tmp.css_display("inline-block");
-	csslib->add(css_checktitle, tmp);
+	csslib->add(css_display_no_CR, tmp);
     }
     else
     {
@@ -387,7 +415,10 @@ string html_form_input::string_for_type(input_type type)
 
 string html_form_input::generate_label(const string & css, const string & id)
 {
-    return "<label class=\"" + css + "\" for=\"" + id + "\">" + x_label + "</label>\n";
+    if(! x_label.empty())
+	return "<label class=\"" + css + "\" for=\"" + id + "\">" + x_label + "</label>\n";
+    else
+	return "";
 }
 
 string html_form_input::generate_input(const string & css, const string & id)

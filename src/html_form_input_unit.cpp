@@ -34,7 +34,7 @@ extern "C"
     // webdar headers
 #include "webdar_tools.hpp"
 #include "exceptions.hpp"
-
+#include "webdar_css_style.hpp"
 
     //
 #include "html_form_input_unit.hpp"
@@ -52,7 +52,7 @@ html_form_input_unit::html_form_input_unit(const string & label,
 	  html_form_input::number,
 	  "", // we will set the field value below
 	  size,
-	  ""),
+	  webdar_css_style::width_60vw),
     val(initial_value),
     min(0),
     max(0),

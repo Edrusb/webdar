@@ -46,9 +46,9 @@ html_archive_isolate::html_archive_isolate():
     sauv_path("Where to create the isolated catalog",
 	      "/",
 	      "",
-	      webdar_css_style::width_80vw,
+	      webdar_css_style::width_100vw,
 	      "Select the directory where to create the isolated catalog..."),
-    basename("Isolated Catalog basename", html_form_input::text, "", "", webdar_css_style::width_80vw),
+    basename("Isolated Catalog basename", html_form_input::text, "", "", webdar_css_style::width_100vw_3em),
     need_entrepot_update(false)
 {
     static const char* sect_archive = "isolation";
