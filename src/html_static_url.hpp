@@ -21,8 +21,8 @@
 //  to contact the author: dar.linux@free.fr
 /*********************************************************************/
 
-#ifndef HTML_URL_HPP
-#define HTML_URL_HPP
+#ifndef HTML_STATIC_URL_HPP
+#define HTML_STATIC_URL_HPP
 
     // C system header files
 #include "my_config.h"
@@ -39,15 +39,15 @@ extern "C"
 
     /// html component implementing the usual hyperlink component
 
-class html_url : public body_builder, public static_body_builder
+class html_static_url : public body_builder, public static_body_builder
 {
 public:
-    html_url(const std::string & url, const std::string & label);
-    html_url(const html_url & ref) = default;
-    html_url(html_url && ref) noexcept = default;
-    html_url & operator = (const html_url & ref) = default;
-    html_url & operator = (html_url && ref) noexcept = default;
-    ~html_url() = default;
+    html_static_url(const std::string & url, const std::string & label);
+    html_static_url(const html_static_url & ref) = default;
+    html_static_url(html_static_url && ref) noexcept = default;
+    html_static_url & operator = (const html_static_url & ref) = default;
+    html_static_url & operator = (html_static_url && ref) noexcept = default;
+    ~html_static_url() = default;
 
     void change_url(const std::string & newurl);
     void change_label(const std::string & newlabel);

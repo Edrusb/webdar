@@ -36,11 +36,11 @@ extern "C"
 
 
     //
-#include "html_url.hpp"
+#include "html_static_url.hpp"
 
 using namespace std;
 
-html_url::html_url(const std::string & url,
+html_static_url::html_static_url(const std::string & url,
 		   const std::string & label):
     x_url(url),
     x_label(label),
@@ -49,7 +49,7 @@ html_url::html_url(const std::string & url,
 {
 }
 
-void html_url::change_url(const string & newurl)
+void html_static_url::change_url(const string & newurl)
 {
     if(x_url != newurl)
     {
@@ -58,7 +58,7 @@ void html_url::change_url(const string & newurl)
     }
 }
 
-void html_url::change_label(const string & newlabel)
+void html_static_url::change_label(const string & newlabel)
 {
     if(x_label != newlabel)
     {
@@ -68,7 +68,7 @@ void html_url::change_label(const string & newlabel)
 }
 
 
-string html_url::get_body_part() const
+string html_static_url::get_body_part() const
 {
     string ret = "<a";
     string x_class = get_css_classes();

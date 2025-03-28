@@ -36,7 +36,7 @@ extern "C"
 #include "html_form.hpp"
 #include "html_table.hpp"
 #include "html_page.hpp"
-#include "html_url.hpp"
+#include "html_static_url.hpp"
 #include "html_text.hpp"
 #include "html_form_fieldset.hpp"
 #include "tokens.hpp"
@@ -271,7 +271,7 @@ void choose::regenerate_table_page()
 	    string label = it->session_name;
 	    if(label == "")
 		label = it->session_ID;
-	    table.adopt_static_html(html_url(string("/") + it->session_ID,
+	    table.adopt_static_html(html_static_url(string("/") + it->session_ID,
 					     label).get_body_part());
 	}
 	else

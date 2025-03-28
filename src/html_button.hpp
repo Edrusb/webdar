@@ -36,7 +36,7 @@ extern "C"
 
     // webdar headers
 #include "events.hpp"
-#include "html_url.hpp"
+#include "html_static_url.hpp"
 #include "html_div.hpp"
 #include "css_class_group.hpp"
 
@@ -102,7 +102,7 @@ protected:
     virtual void path_has_changed() override;
 
 private:
-    html_url inside;
+    html_static_url inside;
     std::string event_name;
 
     void init();

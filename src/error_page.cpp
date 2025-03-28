@@ -106,7 +106,7 @@ void error_page::set_message_body(const string & message)
 void error_page::set_return_uri(const uri &ref, const string & label)
 {
     text.clear();
-    text.add_text(0, html_url(ref.get_string(), label).get_body_part());
+    text.add_text(0, html_static_url(ref.get_string(), label).get_body_part());
 }
 
 answer error_page::give_answer(const request & req)

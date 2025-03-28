@@ -42,7 +42,7 @@ extern "C"
 #include "actor.hpp"
 #include "events.hpp"
 #include "html_page.hpp"
-#include "html_url.hpp"
+#include "html_static_url.hpp"
 #include "html_form.hpp"
 #include "html_div.hpp"
 #include "html_table.hpp"
@@ -95,7 +95,7 @@ private:
     html_disconnect disco;
     html_table table;
     html_div box_nouvelle;
-    html_url nouvelle;
+    html_static_url nouvelle;
     html_form form;
     html_div div;
     html_yes_no_box confirmed;

@@ -224,7 +224,7 @@ private:
 	// the different sub pages contained by "select" and shown depending on choice's value
     html_div div_about;
     html_div around_licensing;
-    html_url licensing;
+    html_static_url licensing;
     html_image webdar_logo;
     html_form_input session_name;
     html_form_fieldset about_fs;

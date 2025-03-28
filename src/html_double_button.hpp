@@ -37,7 +37,7 @@ extern "C"
     // webdar headers
 #include "events.hpp"
 #include "actor.hpp"
-#include "html_url.hpp"
+#include "html_static_url.hpp"
 #include "html_div.hpp"
 #include "css_class_group.hpp"
 #include "html_button.hpp"
