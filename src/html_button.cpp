@@ -46,21 +46,11 @@ html_button::html_button(const string & label, const string & x_event_name):
     inside("", label),
     event_name(x_event_name)
 {
-    init();
-}
+    adopt(&inside);
+    path_has_changed(); // to set link value of "inside" field
 
-html_button::html_button(const html_button & ref):
-    inside(ref.inside),
-    event_name(ref.event_name)
-{
-    init();
+    register_name(event_name);
 
-	// we need to manually recopy the css classes
-	// because we could not use the html_div copy constructor
-	// which is not available due to its html_level parent class
-	// thus the body_builder fields are not copied,
-	// here the css classes
-    add_css_class(ref.get_css_class_group());
 }
 
 string html_button::inherited_get_body_part(const chemin & path,
@@ -90,12 +80,4 @@ void html_button::path_has_changed()
 
     tmp.push_back(action);
     inside.change_url(tmp.display());
-}
-
-void html_button::init()
-{
-    adopt(&inside);
-    path_has_changed(); // to set link value of "inside" field
-
-    register_name(event_name);
 }
