@@ -44,10 +44,10 @@ extern "C"
 
     /// \note upon user 'click' on the button a event is generated that
     /// can be used for actors that registered to it, to perform some action
-class html_button : public html_div, public events
+class html_button : public body_builder, public events
 {
 public:
-    html_button(const std::string & label, const std::string & x_event_name);
+    html_button(const std::string & x_label, const std::string & x_event_name);
     html_button(const html_button & ref) = delete;
     html_button(html_button && ref) noexcept = delete;
     html_button & operator = (const html_button & ref) = delete;
@@ -67,9 +67,9 @@ public:
     void url_clear_css_classes() { inside.clear_css_classes(); };
 
         /// the label is the text show for the URL
-    void change_label(const std::string & label) { inside.change_label(label); };
+    void change_label(const std::string & x_label);
 
-    std::string get_label() const { return inside.get_label(); };
+    const std::string & get_label() const { return label; };
 
 	/// get the URL that will lead this button to be clicked
     std::string get_url() const { return inside.get_url(); };
@@ -101,8 +101,16 @@ protected:
         /// inherited from body_builder
     virtual void path_has_changed() override;
 
+	/// inherited from body_builder
+    virtual void css_classes_have_changed() override;
+
+
 private:
-    html_static_url inside;
+    std::string label; /// what label text has been set with, (html_text does not provide it back)
+
+    html_div outside;
+    html_text text;
+    html_url inside;
     std::string event_name;
 
     static const std::string action;

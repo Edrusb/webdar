@@ -42,16 +42,29 @@ using namespace std;
 
 const string html_button::action = "click";
 
-html_button::html_button(const string & label, const string & x_event_name):
-    inside("", label),
+html_button::html_button(const string & x_label, const string & x_event_name):
+    label(x_label),
+    inside(""),
     event_name(x_event_name)
 {
+    change_label(x_label);
+    outside.adopt(&text);
+    inside.adopt(&outside); // yes, historically the url was inside the box... :)
     adopt(&inside);
     path_has_changed(); // to set link value of "inside" field
 
     register_name(event_name);
 
 }
+
+void html_button::change_label(const std::string & x_label)
+{
+    label = x_label;
+    text.clear();
+    text.add_text(0, label);
+    my_body_part_has_changed();
+}
+
 
 string html_button::inherited_get_body_part(const chemin & path,
 					    const request & req)
@@ -70,9 +83,8 @@ string html_button::inherited_get_body_part(const chemin & path,
     if(target == get_path() && choice == action)
 	act(event_name);
 
-    return html_div::inherited_get_body_part(path, req);
+    return get_body_part_from_all_children(path, req);
 }
-
 
 void html_button::path_has_changed()
 {
@@ -80,4 +92,13 @@ void html_button::path_has_changed()
 
     tmp.push_back(action);
     inside.change_url(tmp.display());
+}
+
+void html_button::css_classes_have_changed()
+{
+    css_class_group assigned_css = get_css_class_group();
+
+	// we transfer to 'outside' the css classes assigned to 'this'
+    outside.clear_css_classes();
+    outside.add_css_class(assigned_css);
 }
