@@ -37,6 +37,7 @@ extern "C"
     // webdar headers
 #include "html_div.hpp"
 #include "events.hpp"
+#include "jsoner.hpp"
 #include "html_form_input.hpp"
 #include "html_double_button.hpp"
 #include "html_select_file.hpp"
@@ -52,7 +53,10 @@ extern "C"
     /// as a normal html_form_input object adopted by an
     /// html_form
 
-class html_form_input_file: public html_div, public events, public actor
+class html_form_input_file: public html_div,
+			    public events,
+			    public actor,
+			    public jsoner
 {
 public:
 
@@ -144,6 +148,16 @@ public:
 	// inherited from events
 
     virtual void on_event(const std::string & event_name) override;
+
+	/// inherited from jsoner
+    virtual void load_json(const json & source) override { input.load_json(source); };
+
+	/// inherited from jsoner
+    virtual json save_json() const override { return input.save_json(); };
+
+	/// inherited from jsoner
+    virtual void clear_json() override { input.clear_json(); };
+
 
 protected:
 
