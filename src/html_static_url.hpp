@@ -32,14 +32,16 @@ extern "C"
 }
 
     // C++ system header files
-#include "body_builder.hpp"
 #include "static_body_builder.hpp"
+#include "html_url.hpp"
+#include "html_text.hpp"
+#include "central_report.hpp"
 
     // webdar headers
 
     /// html component implementing the usual hyperlink component
 
-class html_static_url : public body_builder, public static_body_builder
+class html_static_url : public html_url, public static_body_builder
 {
 public:
     html_static_url(const std::string & url, const std::string & label);
@@ -49,38 +51,19 @@ public:
     html_static_url & operator = (html_static_url && ref) noexcept = default;
     ~html_static_url() = default;
 
-    void change_url(const std::string & newurl);
     void change_label(const std::string & newlabel);
-
-	/// inherited from body_builder
-    virtual void bind_to_anchor(const std::string & val) override { anchor_to = val; };
-
-	/// whether to download or display the URL target
-    void set_download(bool mode) { download = mode; };
-
-	/// change the filename to create on client/browser side if download is set to true
-	/// \note providing a empty string get to the default behavior (no filename specified in URL)
-    void set_filename(const std::string & name) { filename = name; };
-
     const std::string & get_label() const { return x_label; };
-    const std::string & get_url() const { return x_url; };
 
 	/// inherited from static_body_builder
     virtual std::string get_body_part() const override;
 
 protected:
-	/// inherited from body_builder
-    virtual std::string inherited_get_body_part(const chemin & path,
-						const request & req) override { return get_body_part(); };
-
+    using body_builder::adopt; // forbidding object to adopt other body_builder objects
 
 private:
-    std::string anchor_to;
-    std::string x_url;
     std::string x_label;
-    bool download;
-    std::string filename;
+    html_text child;
+    std::shared_ptr<central_report_stdout> faked;
 };
-
 
 #endif

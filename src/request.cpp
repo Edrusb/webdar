@@ -436,6 +436,14 @@ troncon request::get_body_of_multipart(unsigned int num) const
     return mp_body[num];
 }
 
+void request::fake_valid_request()
+{
+    clear();
+    status = completed;
+    maj_vers = 1;
+    min_vers = 0;
+}
+
 void request::extract_cookies()
 {
     string key, val;

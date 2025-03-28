@@ -134,6 +134,11 @@ public:
 	/// \return the document inclosed in the multipart number "num" of the body
     troncon get_body_of_multipart(unsigned int num) const;
 
+	/// set the fields in consistent state to mimic a valid request
+
+	/// \used to convert body_builder class with static adopted child to static_body_builder class
+    void fake_valid_request();
+
 private:
     enum { init, method_read, uri_read, reading_all, completed } status;
 

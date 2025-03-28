@@ -41,21 +41,15 @@ extern "C"
 using namespace std;
 
 html_static_url::html_static_url(const std::string & url,
-		   const std::string & label):
-    x_url(url),
-    x_label(label),
-    download(false),
-    filename("")
+				 const std::string & label):
+    html_url(url)
 {
-}
+    faked.reset(new (nothrow) central_report_stdout(crit));
+    if(!faked)
+	throw exception_memory();
 
-void html_static_url::change_url(const string & newurl)
-{
-    if(x_url != newurl)
-    {
-	x_url = newurl;
-	my_body_part_has_changed();
-    }
+    adopt(&child);
+    change_label(label);
 }
 
 void html_static_url::change_label(const string & newlabel)
@@ -63,27 +57,18 @@ void html_static_url::change_label(const string & newlabel)
     if(x_label != newlabel)
     {
 	x_label = newlabel;
+	child.clear();
+	child.add_text(0, x_label);
 	my_body_part_has_changed();
     }
 }
 
-
 string html_static_url::get_body_part() const
 {
-    string ret = "<a";
-    string x_class = get_css_classes();
-    string dnl = download ? " download": "";
-    string anchor = anchor_to.empty() ? "" : string("#") + anchor_to;
+    chemin path;
+    request req(faked);
 
-    if(! filename.empty() && download)
-	dnl = dnl + "=\"" + filename + "\"";
+    req.fake_valid_request();
 
-    if(! x_class.empty())
-	ret += " " + x_class;
-
-    ret += " href=\"" + x_url + anchor + "\"" + dnl + ">" + x_label + "</a>";
-    if(!get_no_CR())
-	ret += "\n";
-
-    return ret;
+    return const_cast<html_static_url*>(this)->html_url::get_body_part(path, req);
 }
