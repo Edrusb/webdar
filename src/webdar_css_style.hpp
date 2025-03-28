@@ -74,6 +74,7 @@ namespace webdar_css_style
     constexpr const char* width_8em = "wcs_w8em";
     constexpr const char* width_full = "fullwidth";
     constexpr const char* btn_off = "wcs_btn_off";
+    constexpr const char* btn_small = "wcs_btn_small";
     constexpr const char* btn_on = "wcs_btn_on";
     constexpr const char* btn_void = "wcs_btn_void";
     constexpr const char* btn_grey = "wcs_btn_grey";
@@ -96,6 +97,15 @@ namespace webdar_css_style
         if(!fullwidth)
             obj.add_css_class(width_8em);
     }
+
+    template <class T> void small_button(T & obj)
+    {
+        obj.clear_css_classes();
+        obj.add_css_class(btn_small);
+        obj.url_clear_css_classes();
+        obj.url_add_css_class(url_normal);
+    }
+
 
         /// apply to the given button the css_classe names defined by update_library to get an active button style
     template <class T> void active_button(T & obj, bool fullwidth = false)

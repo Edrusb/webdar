@@ -33,7 +33,6 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
-#include "webdar_css_style.hpp"
 #include "webdar_tools.hpp"
 
     //
@@ -51,7 +50,6 @@ const string html_form_input_file::triggered_event = "triggered";
     // class names
 const string html_form_input_file::css_input = "html_form_input_file_input";
 const string html_form_input_file::css_button_box = "html_form_input_file_button_box";
-const string html_form_input_file::css_button_link = "html_form_input_file_button_lnk";
 
 html_form_input_file::html_form_input_file(const string & label,
 					   const string & initial_value,
@@ -99,8 +97,8 @@ html_form_input_file::html_form_input_file(const string & label,
 
     add_css_class(css_class); // for the whole component
     input_div.add_css_class(css_input);
+    webdar_css_style::small_button(trigger);
     trigger.add_css_class(css_button_box);
-    trigger.url_add_css_class(css_button_link);
     input.set_no_CR();
     empty_text.add_css_class(webdar_css_style::float_flush);
 }
@@ -229,49 +227,15 @@ void html_form_input_file::new_css_library_available()
 
     webdar_css_style::update_library(*csslib);
 
-    if(!csslib->class_exists(css_button_box))
+    if(!csslib->class_exists(css_input))
     {
 	css tmp;
-
-	if(csslib->class_exists(css_button_link))
-	    throw WEBDAR_BUG;
 
 	    // css_button_box definition (for trigger button)
 
 	tmp.clear();
-        tmp.css_color(COLOR_MENU_FRONT_OFF);
-	tmp.css_background_color(COLOR_MENU_BACK_OFF);
-	tmp.css_border_width(css::bd_all, css::bd_medium);
-	tmp.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
-	tmp.css_border_style(css::bd_all, css::bd_solid);
-	tmp.css_text_h_align(css::al_center);
-	tmp.css_width("2em", false);
-	tmp.css_padding("0");
 	tmp.css_float(css::fl_left);
 	csslib->add(css_button_box, tmp);
-
-	    // css_button_link definition (for trigger button)
-
-	css_class tmp_class(css_button_link);
-
-	tmp.clear();
-        tmp.css_color(COLOR_MENU_FRONT_OFF);
-	tmp.css_background_color(COLOR_MENU_BACK_OFF);
-	tmp.css_font_style_normal();
-	tmp.css_font_weight_bold();
-	tmp.css_text_decoration(css::dc_none);
-	tmp.css_text_h_align(css::al_center);
-
-	tmp_class.set_selector(css_class::link, tmp);
-	tmp_class.set_selector(css_class::visited, tmp);
-
-	tmp.css_color(COLOR_MENU_FRONT_HOVER_OFF, true);
-	tmp.css_text_decoration(css::dc_underline, true);
-
-	tmp_class.set_selector(css_class::hover, tmp);
-	tmp_class.set_selector(css_class::active, tmp);
-
-	csslib->add(tmp_class);
 
 	    // css for input_div
 
@@ -279,13 +243,6 @@ void html_form_input_file::new_css_library_available()
 	tmp.css_width("calc(100% - 3em)",false); // 2em for the trigger button plus more for the spacing around
 	tmp.css_float(css::fl_left);
 	csslib->add(css_input, tmp);
-    }
-    else
-    {
-	if(!csslib->class_exists(css_button_box))
-	    throw WEBDAR_BUG;
-	if(!csslib->class_exists(css_button_link))
-	    throw WEBDAR_BUG;
     }
 }
 

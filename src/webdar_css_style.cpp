@@ -52,6 +52,7 @@ namespace webdar_css_style
     static css_class c_width_8em(width_8em);       ///< normal width buttons (html_button, html_double_button, html_tabs,...)
 
     static css_class c_btn_off(btn_off);           ///< used to assign CSS attributes: unselected item
+    static css_class c_btn_small(btn_small);         ///< used to assign CSS attributes: small unselected box
     static css_class c_btn_on(btn_on);             ///< used to assign CSS attributes: selected item
     static css_class c_btn_void(btn_void);         ///< used to assign CSS attributes: separators
     static css_class c_btn_grey(btn_grey);         ///< used to assign CSS attributes: disabled or greyed
@@ -161,11 +162,11 @@ namespace webdar_css_style
 
 		     //////
 
-		css box_off, box_on, box_void, box_grey;
+		css box_off, box_on, box_void, box_grey, box_small;
 
                 tmp.clear();
                 tmp.css_box_sizing(css::bx_border);
-                tmp.css_width("100%", true);
+		tmp.css_width("100%", true);
                 c_width_full.set_value(tmp);
 
                 tmp.clear();
@@ -175,14 +176,21 @@ namespace webdar_css_style
                     // Common aspects
                 box_off.css_border_style(css::bd_all, css::bd_solid, true);
                 box_off.css_border_width(css::bd_all, css::bd_medium, true);
-                box_off.css_padding("0.5em", true);
                 box_off.css_text_h_align(css::al_center, true);
+		box_off.css_padding("0.5em", true);
+
 
                     // copy common aspects to box_off and box_void
                 box_on.css_inherit_from(box_off);
                 box_void.css_inherit_from(box_off);
                 box_grey.css_inherit_from(box_off);
+
+		    //
                 box_void.css_border_style(css::bd_all, css::bd_none);
+
+		    //
+		box_off.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
+
 
                     // box_off COLORS
                 tmp.clear();
@@ -191,10 +199,18 @@ namespace webdar_css_style
                 tmp.css_font_weight_bold(true);
                 tmp.css_font_style_italic(true);
                 tmp.css_text_decoration(css::dc_none, true);
-                box_off.css_inherit_from(tmp);
+		box_off.css_inherit_from(tmp);
+
+		box_small = box_off;
+		box_small.css_width("2em", true);
+		box_small.css_padding("0", true);
+		box_small.css_margin("0", true);
+
+		    ///
+
                 c_url_normal.set_selector(css_class::link, tmp);
                 c_url_normal.set_selector(css_class::visited, tmp);
-                box_off.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
+
 
                     // Link Hover and Active in box_off
                 tmp.css_color(COLOR_MENU_FRONT_HOVER_OFF, true);
@@ -243,6 +259,7 @@ namespace webdar_css_style
                     //
 
                 c_btn_off.set_value(box_off);
+		c_btn_small.set_value(box_small);
                 c_btn_on.set_value(box_on);
                 c_btn_void.set_value(box_void);
                 c_btn_grey.set_value(box_grey);
@@ -282,6 +299,7 @@ namespace webdar_css_style
         if(!csslib.class_exists(c_btn_on.get_name()))
         {
             csslib.add(c_btn_on);
+	    csslib.add(c_btn_small);
             csslib.add(c_btn_off);
             csslib.add(c_btn_void);
             csslib.add(c_btn_grey);
