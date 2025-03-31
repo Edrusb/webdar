@@ -97,8 +97,10 @@ void html_button::path_has_changed()
 void html_button::css_classes_have_changed()
 {
     css_class_group assigned_css = get_css_class_group();
+    css_class_group assigned_inside = inside.get_css_class_group();
 
 	// we transfer to 'outside' the css classes assigned to 'this'
     outside.clear_css_classes();
     outside.add_css_class(assigned_css);
+    outside.add_css_class(assigned_inside);
 }

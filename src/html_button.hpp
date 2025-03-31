@@ -55,16 +55,16 @@ public:
     ~html_button() = default;
 
         /// the inherited add_css_class() applies to the html_div around, this one to the url inside
-    void url_add_css_class(const std::string & name) { inside.add_css_class(name); };
+    void url_add_css_class(const std::string & name) { inside.add_css_class(name); outside.add_css_class(name); };
 
 	/// add a several CSS classes at once for the url inside the button
-    void url_add_css_class(const css_class_group & cg) { inside.add_css_class(cg); };
+    void url_add_css_class(const css_class_group & cg) { inside.add_css_class(cg); outside.add_css_class(cg); };
 
         /// the inherited add_css_class() applies to the html_div around, this one to the url inside
-    void url_remove_css_class(const std::string & name) { inside.remove_css_class(name); };
+    void url_remove_css_class(const std::string & name) { inside.remove_css_class(name); outside.remove_css_class(name); };
 
         /// the inherited add_css_class() applies to the html_div around, this one to the url inside
-    void url_clear_css_classes() { inside.clear_css_classes(); };
+    void url_clear_css_classes() { inside.clear_css_classes(); css_classes_have_changed(); };
 
         /// the label is the text show for the URL
     void change_label(const std::string & x_label);
