@@ -700,7 +700,7 @@ void saisie::new_css_library_available()
     csslib->add(css_class_logo, tmp);
 
     tmp.clear();
-    tmp.css_margin_left("10em");
+    tmp.css_margin_left("9.2em");
     tmp.css_box_sizing(css::bx_border);
     csslib->add(css_class_rightpan, tmp);
 
@@ -709,14 +709,14 @@ void saisie::new_css_library_available()
     csslib->add(css_class_choice, tmp);
 
     tmp.clear();
-    tmp.css_max_width("100%", true);
+    tmp.css_max_width("100%");
     tmp.css_margin("2em");
     tmp.css_text_h_align(css::al_center);
     csslib->add(css_class_license, tmp);
 
     tmp.clear();
-    tmp.css_text_h_align(css::al_center, true);
-    tmp.css_margin("2em", true);
+    tmp.css_text_h_align(css::al_center);
+    tmp.css_margin("2em");
     csslib->add(css_class_text, tmp);
 
     tmp.clear();

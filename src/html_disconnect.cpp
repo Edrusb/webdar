@@ -132,7 +132,7 @@ void html_disconnect::new_css_library_available()
 	tmp.css_background_color(COLOR_BACK);
 	tmp.css_overflow(css::ov_hidden);
 	tmp.css_width("100%", true);
-	tmp.css_background_color(COLOR_TOPBAR_BACK, true);
+	tmp.css_background_color(COLOR_TOPBAR_BACK);
 
 	csslib->add(css_global, tmp);
 
@@ -171,7 +171,7 @@ void html_disconnect::new_css_library_available()
 	tmp.css_font_size(small_text);
 	tmp.css_font_weight_bold();
 	tmp.css_font_style_italic();
-	tmp.css_margin("0.2em", true);
+	tmp.css_margin("0.2em");
 	tmp.css_text_v_align(css::al_middle);
 	tmp.css_margin_right("1em");
 	tmp.css_color(WHITE);
@@ -181,7 +181,7 @@ void html_disconnect::new_css_library_available()
 	    // the transparent status_box
 	tmp.clear();
 
-	tmp.css_margin("0.2em", true);
+	tmp.css_margin("0.2em");
 	tmp.css_float(css::fl_right);
 
 	csslib->add(css_status_box, tmp);
@@ -192,13 +192,13 @@ void html_disconnect::new_css_library_available()
 	tmp.clear();
 
 	tmp.css_font_size(small_text);
-	tmp.css_background_color(COLOR_MENU_BACK_OFF, true);
-	tmp.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
-	tmp.css_border_style(css::bd_all, css::bd_solid, true);
-	tmp.css_border_width(css::bd_all, css::bd_medium, true);
-	tmp.css_padding_right("0.5em", true);
-	tmp.css_padding_left("0.5em", true);
-	tmp.css_margin("0.2em", true);
+	tmp.css_background_color(COLOR_MENU_BACK_OFF);
+	tmp.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
+	tmp.css_border_style(css::bd_all, css::bd_solid);
+	tmp.css_border_width(css::bd_all, css::bd_medium);
+	tmp.css_padding_right("0.5em");
+	tmp.css_padding_left("0.5em");
+	tmp.css_margin("0.2em");
 	tmp.css_float(css::fl_right);
 
 	csslib->add(css_quit_box, tmp);
@@ -207,11 +207,11 @@ void html_disconnect::new_css_library_available()
 	btn_class.clear();
 	tmp.clear();
 
-	tmp.css_color(COLOR_MENU_FRONT_OFF, true);
-	tmp.css_font_weight_bold(true);
-	tmp.css_font_style_italic(true);
-	tmp.css_text_decoration(css::dc_none, true);
-	tmp.css_text_h_align(css::al_center, true);
+	tmp.css_color(COLOR_MENU_FRONT_OFF);
+	tmp.css_font_weight_bold();
+	tmp.css_font_style_italic();
+	tmp.css_text_decoration(css::dc_none);
+	tmp.css_text_h_align(css::al_center);
 	tmp.css_text_v_align(css::al_middle);
 
 	btn_class.set_selector(css_class::link, tmp);

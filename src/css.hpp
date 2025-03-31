@@ -55,15 +55,16 @@ public:
     css & operator = (css && ref) noexcept = default;
     virtual ~css() = default;
 
+	/// update current object with argument ignoring all fields which are unset
+    void update_from(const css & ref);
+
 	/// set css attributes to their default
     void clear();
 
 	// colors
 
-    void css_color(const std::string & col,
-		   bool inherit=false);
-    void css_background_color(const std::string & col,
-			      bool inherit=false);
+    void css_color(const std::string & col);
+    void css_background_color(const std::string & col);
     void css_background_color() { bg_col.clear(); }; // unset previously set value
 
 	// background image
@@ -71,58 +72,45 @@ public:
     void css_background_image(const std::string & url,
 			      bool repeat_x,
 			      bool repeat_y,
-			      bool fixed,
-			      bool inherit=false);
+			      bool fixed);
     void css_background_image() { bg_img.clear(); };
 
     void css_background_position(const std::string & x,
-				     const std::string & y,
-				     bool inherit=false);
+				 const std::string & y);
     void css_background_position() { img_pos.clear(); };
 
 	// shadow
     void css_box_shadow(const std::string & x_shift = "10px",
 			const std::string & y_shift = "10px",
 			const std::string & blur_size = "0",
-			const std::string & color = "#444444",
-			bool inherit=false);
+			const std::string & color = "#444444");
 
     void css_text_shadow(const std::string & x_shift = "10px",
 			 const std::string & y_shift = "10px",
 			 const std::string & blur_size = "0",
-			 const std::string & color = "#444444",
-			 bool inherit=false);
+			 const std::string & color = "#444444");
 
 	// position in the window
 
-    void css_margin(const std::string & all,
-		    bool inherit=false);
+    void css_margin(const std::string & all);
     void css_margin() { css_margin_top(); css_margin_right(); css_margin_bottom(); css_margin_left(); };
-    void css_margin_top(const std::string & top,
-			bool inherit=false);
+    void css_margin_top(const std::string & top);
     void css_margin_top() { margin_top.clear(); };
-    void css_margin_right(const std::string & right,
-			  bool inherit=false);
+    void css_margin_right(const std::string & right);
     void css_margin_right() { margin_right.clear(); };
-    void css_margin_bottom(const std::string & bottom,
-			   bool inherit=false);
+    void css_margin_bottom(const std::string & bottom);
     void css_margin_bottom() { margin_bottom.clear(); };
-    void css_margin_left(const std::string & left,
-			 bool inherit=false);
+    void css_margin_left(const std::string & left);
     void css_margin_left() { margin_left.clear(); };
     void css_height(const std::string & val,
-		    bool center,
-		    bool inherit=false);
+		    bool center);
     void css_height() { height.clear(); };
     void css_width(const std::string & val,
-		   bool center,
-		   bool inherit=false);
+		   bool center);
     void css_width() { width.clear(); };
-    void css_max_width(const std::string & val,
-		       bool inherit=false);
+    void css_max_width(const std::string & val);
     void css_max_width() { max_width.clear(); };
-    void css_z_index(unsigned int index,
-		     bool inherit=false);
+    void css_z_index(unsigned int index);
     void css_z_index() { z_index.clear(); };
 
     enum positionning { pos_absolute,  ///< absolute in the document
@@ -131,20 +119,15 @@ public:
 			pos_sticky     ///< either relative or fixed depending on scrolling of parent object
     };
 
-    void css_position_type(positionning val,
-			   bool inherit=false);
+    void css_position_type(positionning val);
     void css_position_type() { position_type.clear(); };
-    void css_position_top(const std::string & top,
-			  bool inherit=false);
+    void css_position_top(const std::string & top);
     void css_position_top() { position_top.clear(); };
-    void css_position_left(const std::string & left,
-			   bool inherit=false);
+    void css_position_left(const std::string & left);
     void css_position_left() { position_left.clear(); };
-    void css_position_bottom(const std::string & bottom,
-			     bool inherit=false);
+    void css_position_bottom(const std::string & bottom);
     void css_position_bottom() { position_bottom.clear(); };
-    void css_position_right(const std::string & right,
-			    bool inherit=false);
+    void css_position_right(const std::string & right);
     void css_position_right() { position_right.clear(); };
 
     enum overflowing { ov_visible,   // show even what exceed the parent dimensions
@@ -156,13 +139,13 @@ public:
 	/// set both x and y overflow
 
 	/// \note css_overflow, css_overflow_x and css_overflow_y are mutual exclusive
-    void css_overflow(overflowing val, bool inherit=false);
+    void css_overflow(overflowing val);
 
 	/// set only x overflow
-    void css_overflow_x(overflowing val, bool inherit=false);
+    void css_overflow_x(overflowing val);
 
 	/// set only y overflow
-    void css_overflow_y(overflowing val, bool inherit=false);
+    void css_overflow_y(overflowing val);
 
 	/// clear both x and y overflow (default value)
     void css_overflow() { overflow.clear(); };
@@ -178,14 +161,14 @@ public:
 		      fc_both,
 		      fc_none };
 
-    void css_float(floating val, bool inherit=false);
+    void css_float(floating val);
     void css_float() { float_pos.clear(); };
-    void css_float_clear(floatclear val, bool inherit=false);
+    void css_float_clear(floatclear val);
     void css_float_clear() { float_clear.clear(); };
 
 	// opacity
 
-    void css_opacity(const std::string & opacity, bool inherit=false);
+    void css_opacity(const std::string & opacity);
 
 
 	// padding
@@ -196,26 +179,19 @@ public:
 	bx_border   ///< width and height define the box size (reduce content space to fit within the border+padding)
     };
 
-    void css_box_sizing(bx_sizing val,
-			bool inherit = false);
+    void css_box_sizing(bx_sizing val);
 
-    void css_display(const std::string & val,
-		     bool inherit = false);
+    void css_display(const std::string & val);
 
-    void css_padding(const std::string & val,
-		     bool inherit=false);
+    void css_padding(const std::string & val);
     void css_padding() { css_padding_top(); css_padding_right(); css_padding_bottom(); css_padding_left(); };
-    void css_padding_top(const std::string & top,
-			 bool inherit=false);
+    void css_padding_top(const std::string & top);
     void css_padding_top() { padding_top.clear(); };
-    void css_padding_right(const std::string & right,
-			   bool inherit=false);
+    void css_padding_right(const std::string & right);
     void css_padding_right() { padding_right.clear(); };
-    void css_padding_bottom(const std::string & bottom,
-			    bool inherit=false);
+    void css_padding_bottom(const std::string & bottom);
     void css_padding_bottom() { padding_bottom.clear(); };
-    void css_padding_left(const std::string & left,
-			  bool inherit=false);
+    void css_padding_left(const std::string & left);
     void css_padding_left() { padding_left.clear(); };
 
 	// text
@@ -248,18 +224,18 @@ public:
 	dc_none
     };
 
-    void css_font_size(const std::string & val, bool inherit=false);
-    void css_font_style_italic(bool inherit=false);
-    void css_font_style_normal(bool inherit=false);
+    void css_font_size(const std::string & val);
+    void css_font_style_italic();
+    void css_font_style_normal();
     void css_font_style() { font_style.clear(); };
-    void css_font_weight_bold(bool inherit=false);
-    void css_font_weight_normal(bool inherit=false);
+    void css_font_weight_bold();
+    void css_font_weight_normal();
     void css_font_weight() { font_weight.clear(); };
-    void css_text_h_align(h_align val, bool inherit=false);
+    void css_text_h_align(h_align val);
     void css_text_h_align() { text_h_align.clear(); };
-    void css_text_v_align(v_align val, bool inherit=false);
+    void css_text_v_align(v_align val);
     void css_text_v_align() { text_v_align.clear(); };
-    void css_text_decoration(decoration val, bool inherit=false);
+    void css_text_decoration(decoration val);
     void css_text_decoration() { text_deco.clear(); };
 
 	// border
@@ -285,20 +261,19 @@ public:
 		    bd_outset,
 		    bd_none };
 
-    void css_border_width(border which, bd_width val, bool inherit=false);
+    void css_border_width(border which, bd_width val);
     void css_border_width() { border_width.clear(); };
-    void css_border_color(border which, const std::string & col, bool inherit=false);
+    void css_border_color(border which, const std::string & col);
     void css_border_color() { border_color.clear(); };
-    void css_border_style(border which, bd_style val, bool inherit=false);
+    void css_border_style(border which, bd_style val);
     void css_border_style() { border_style.clear(); };
 
 	// round corners
-    void css_corner_radius(const std::string & all, bool inherit=false);
+    void css_corner_radius(const std::string & all);
     void css_corner_radius(const std::string & topleft,
 			   const std::string & topright,
 			   const std::string & botright,
-			   const std::string & botleft,
-			   bool inherit=false);
+			   const std::string & botleft);
     void css_corner_radius(); // clear all css_corner radius relative information
 
 	/// css_visibility does not prevent sending HTML code to the browser
@@ -308,31 +283,19 @@ public:
 	/// but no html code is sent to the browser. Here CSS visibility sends
 	/// html code to the browser and may lead an object to change its visibility without
 	/// webdar - browser communication (Responsive CSSS)
-    void css_visibility(bool val, bool inherit=false);
-
-
-	/// inherit css properties and html classes from the given reference
-	///
-	/// \param[in] ref from which to inherit properties
-	/// \param[in] all if true even properties of "ref" having inheritance unset are taken into account
-	/// \param[in] force if false, only unset properties of "this" are inhertied, we do not erase existing properties by those of "ref"
-	/// \note when both "all" and "force" are false only unset properties of "this" are set to the value of the given reference
-	/// and only inheritable properties of the references are copied
-    void css_inherit_from(const css & ref, bool all=false, bool force=false);
+    void css_visibility(bool val);
 
 	/// returns the css raw string
     std::string css_get_raw_string() const;
 
 protected:
 
-	// this method is called when a property has been modified
-	//
-	// \param[in] inherit is set to true if the modified property has inheritance set
-    virtual void css_updated(bool inherited) {};
+	/// this method is called when a property has been modified
+    virtual void css_updated() {};
 
     	/// custom css properties, method available for inherited classes
 
-	/// \note storing css properties par this css parent class
+	/// \note storing css properties by this css methods
 	/// lead them to be integrated in the css_get_string/css_get_raw_string methods
 	/// they also can be abstracted to html class by body builder derived class
 
@@ -340,7 +303,7 @@ protected:
     void declare_custom_css(const std::string & label);
 
 	/// set value to a previously declared custom css
-    void set_custom_css(const std::string & label, const std::string & val, bool inherit=false);
+    void set_custom_css(const std::string & label, const std::string & val);
 
 	/// unset value of a previously declared custom css
     void clear_custom_css(const std::string & label);

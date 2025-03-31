@@ -89,13 +89,13 @@ choose::choose():
 
     tmpcss.clear();
     tmpcss2.clear();
-    tmpcss.css_border_width(css::bd_all, css::bd_thin, true);
-    tmpcss.css_border_style(css::bd_all, css::bd_solid, true);
-    tmpcss.css_border_color(css::bd_all, COLOR_TEXT, true);
+    tmpcss.css_border_width(css::bd_all, css::bd_thin);
+    tmpcss.css_border_style(css::bd_all, css::bd_solid);
+    tmpcss.css_border_color(css::bd_all, COLOR_TEXT);
     tmpcss.css_text_h_align(css::al_center);
     page.define_css_class_in_library(css_class_table_cells, tmpcss);
     table.set_css_class_cells(css_class_table_cells);
-    tmpcss2.css_inherit_from(tmpcss);
+    tmpcss2.update_from(tmpcss);
     tmpcss.css_background_color(COLOR_MENU_BACK_OFF);
     tmpcss.css_color(COLOR_MENU_FRONT_OFF);
     tmpcss.css_font_style_italic();

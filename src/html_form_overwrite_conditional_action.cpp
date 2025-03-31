@@ -160,7 +160,7 @@ void html_form_overwrite_conditional_action::new_css_library_available()
 	css tmp;
 	tmp.css_float(css::fl_left);
 	tmp.css_width("50%", false);
-	tmp.css_overflow_x(css::ov_auto, false);
+	tmp.css_overflow_x(css::ov_auto);
 	csslib->add(css_cond, tmp);
     }
 }

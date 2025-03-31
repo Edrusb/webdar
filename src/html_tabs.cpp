@@ -158,9 +158,9 @@ void html_tabs::new_css_library_available()
 	css tmp;
 
 	    // the tab / content separator
-	tmp.css_border_width(css::bd_bottom, css::bd_thin, true);
-	tmp.css_border_color(css::bd_bottom, COLOR_MENU_BORDER_OFF, true);
-	tmp.css_border_style(css::bd_bottom, css::bd_solid, true);
+	tmp.css_border_width(css::bd_bottom, css::bd_thin);
+	tmp.css_border_color(css::bd_bottom, COLOR_MENU_BORDER_OFF);
+	tmp.css_border_style(css::bd_bottom, css::bd_solid);
 	csslib->add(tab_sep, tmp);
 
 	    // the selected tab (not their text)
@@ -170,12 +170,12 @@ void html_tabs::new_css_library_available()
 	tmp.css_border_width(css::bd_top, width);
 	tmp.css_border_width(css::bd_left, width);
 	tmp.css_border_width(css::bd_right, width);
-	tmp.css_margin_top("0.2em", true);
-	tmp.css_margin_right("0.2em", true);
-	tmp.css_margin_left("0.2em", true);
-	tmp.css_margin_bottom("0", true);
+	tmp.css_margin_top("0.2em");
+	tmp.css_margin_right("0.2em");
+	tmp.css_margin_left("0.2em");
+	tmp.css_margin_bottom("0");
 	tmp.css_corner_radius("20%", "20%", "0", "0");
-	tmp.css_height("3em", false);
+	tmp.css_height("4em", false);
 	csslib->add(tab_shape, tmp);
 
 	    // the tab bar

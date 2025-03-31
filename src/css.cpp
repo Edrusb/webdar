@@ -42,6 +42,70 @@ extern "C"
 using namespace std;
 
 
+void css::update_from(const css & ref)
+{
+    color.update_from(ref.color);
+    bg_col.update_from(ref.bg_col);
+    bg_img.update_from(ref.bg_img);
+    img_pos.update_from(ref.img_pos);
+    box_shadow.update_from(ref.box_shadow);
+    text_shadow.update_from(ref.text_shadow);
+    box_sizing.update_from(ref.box_sizing);
+    display.update_from(ref.display);
+    margin_top.update_from(ref.margin_top);
+    margin_right.update_from(ref.margin_right);
+    margin_bottom.update_from(ref.margin_bottom);
+    margin_left.update_from(ref.margin_left);
+    height.update_from(ref.height);
+    width.update_from(ref.width);
+    max_width.update_from(ref.max_width);
+    z_index.update_from(ref.z_index);
+    position_type.update_from(ref.position_type);
+    position_top.update_from(ref.position_top);
+    position_left.update_from(ref.position_left);
+    position_bottom.update_from(ref.position_bottom);
+    position_right.update_from(ref.position_right);
+    overflow.update_from(ref.overflow);
+    float_pos.update_from(ref.float_pos);
+    float_clear.update_from(ref.float_clear);
+    opacity.update_from(ref.opacity);
+    padding_top.update_from(ref.padding_top);
+    padding_right.update_from(ref.padding_right);
+    padding_bottom.update_from(ref.padding_bottom);
+    padding_left.update_from(ref.padding_left);
+    font_size.update_from(ref.font_size);
+    font_style.update_from(ref.font_style);
+    font_weight.update_from(ref.font_weight);
+    text_h_align.update_from(ref.text_h_align);
+    text_v_align.update_from(ref.text_v_align);
+    text_deco.update_from(ref.text_deco);
+    border_width.update_from(ref.border_width);
+    border_color.update_from(ref.border_color);
+    border_style.update_from(ref.border_style);
+    corner_radius.update_from(ref.corner_radius);
+
+    map<string, css_property>::const_iterator it = ref.custom_css.begin();
+    map<string, css_property>::iterator mit;
+    while(it != ref.custom_css.end())
+    {
+	if(! it->second.is_unset())
+	{
+	    mit = custom_css.find(it->first);
+	    if(mit == custom_css.end()) // not such property in 'this'
+	    {
+		declare_custom_css(it->first);
+		mit = custom_css.find(it->first);
+		if(mit == custom_css.end())
+		    throw WEBDAR_BUG;
+	    }
+
+	    mit->second.update_from(it->second);
+	}
+
+	++it;
+    }
+}
+
 
 void css::clear()
 {
@@ -93,28 +157,21 @@ void css::clear()
     }
 }
 
-void css::css_color(const string & col,
-		    bool inherit)
+void css::css_color(const string & col)
 {
     color.set_value(string(" color: ") + col + ";");
-    color.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_background_color(const string & col,
-			       bool inherit)
+void css::css_background_color(const string & col)
 {
     bg_col.set_value(string(" background-color: ") + col + ";");
-    bg_col.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
 
 void css::css_background_image(const string & url,
 			       bool repeat_x,
 			       bool repeat_y,
-			       bool fixed,
-			       bool inherit)
+			       bool fixed)
 {
     string tmp = " background-repeat: ";
     string val = string(" background-image: url(\"") + url + "\");";
@@ -131,56 +188,42 @@ void css::css_background_image(const string & url,
     val += string(" background-attachment: ") + (fixed ? "fixed;" : "scroll;");
 
     bg_img.set_value(val);
-    bg_img.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
 void css::css_background_position(const string & x,
-				  const string & y,
-				  bool inherit)
+				  const string & y)
 {
     if(x != "" && y != "") // yes both
-    {
 	img_pos.set_value(string(" background-position: ") + x + " " + y + ";");
-	img_pos.set_inheritance(inherit);
-    }
     else
 	img_pos.clear();
-    css_updated(inherit);
 }
 
 void css::css_box_shadow(const string & x_shift,
 			 const string & y_shift,
 			 const string & blur_size,
-			 const string & color,
-			 bool inherit)
+			 const string & color)
 {
     box_shadow.set_value(string(" box-shadow: ")
 			 + x_shift + " "
 			 + y_shift + " "
 			 + blur_size + " "
 			 + color + ";");
-    box_shadow.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
 void css::css_text_shadow(const string & x_shift,
 			  const string & y_shift,
 			  const string & blur_size,
-			  const string & color,
-			  bool inherit)
+			  const string & color)
 {
     text_shadow.set_value(string(" text-shadow: ")
 			  + x_shift + " "
 			  + y_shift + " "
 			  + blur_size + " "
 			  + color + ";");
-    text_shadow.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_box_sizing(bx_sizing val,
-			 bool inherit)
+void css::css_box_sizing(bx_sizing val)
 {
     string tmp;
 
@@ -197,98 +240,74 @@ void css::css_box_sizing(bx_sizing val,
     }
 
     box_sizing.set_value(string(" box-sizing: ") + tmp + ";");
-    box_sizing.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_display(const string & val, bool inherit)
+void css::css_display(const string & val)
 {
     display.set_value(string(" display: ") + val + ";");
-    display.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_margin(const string & all, bool inherit)
+void css::css_margin(const string & all)
 {
-    css_margin_top(all, inherit);
-    css_margin_right(all, inherit);
-    css_margin_bottom(all, inherit);
-    css_margin_left(all, inherit);
+    css_margin_top(all);
+    css_margin_right(all);
+    css_margin_bottom(all);
+    css_margin_left(all);
 }
 
-void css::css_margin_top(const string & top, bool inherit)
+void css::css_margin_top(const string & top)
 {
     margin_top.set_value(string(" margin-top: ") + top + ";");
-    margin_top.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_margin_right(const string & right, bool inherit)
+void css::css_margin_right(const string & right)
 {
     margin_right.set_value(string(" margin-right: ") + right + ";");
-    margin_right.set_inheritance(inherit);
-    css_updated(inherit);
 
 }
-void css::css_margin_bottom(const string & bottom, bool inherit)
+void css::css_margin_bottom(const string & bottom)
 {
     margin_bottom.set_value(string(" margin-bottom: ") + bottom + ";");
-    margin_bottom.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_margin_left(const string & left, bool inherit)
+void css::css_margin_left(const string & left)
 {
     margin_left.set_value(string(" margin-left: ") + left + ";");
-    margin_left.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
 void css::css_height(const string & val,
-		     bool center,
-		     bool inherit)
+		     bool center)
 {
     height.set_value(string(" height: ") + val + ";");
-    height.set_inheritance(inherit);
     if(center)
     {
-	css_margin_top("auto", inherit);
-	css_margin_bottom("auto", inherit);
+	css_margin_top("auto");
+	css_margin_bottom("auto");
     }
-    css_updated(inherit);
 }
 
 void css::css_width(const string & val,
-		    bool center,
-		    bool inherit)
+		    bool center)
 {
     width.set_value(string(" width: ") + val + ";");
-    width.set_inheritance(inherit);
     if(center)
     {
-	css_margin_left("auto", inherit);
-	css_margin_right("auto", inherit);
+	css_margin_left("auto");
+	css_margin_right("auto");
     }
-    css_updated(inherit);
 }
 
-void css::css_max_width(const string & val,
-			bool inherit)
+void css::css_max_width(const string & val)
 {
     max_width.set_value(string(" max-width: ") + val + ";");
-    width.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_z_index(unsigned int index, bool inherit)
+void css::css_z_index(unsigned int index)
 {
     z_index.set_value(string(" z-index: ") + webdar_tools_convert_to_string(index) + ";");
-    z_index.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_position_type(positionning val,
-			    bool inherit)
+void css::css_position_type(positionning val)
 {
     static const string command = " position: ";
 
@@ -309,73 +328,51 @@ void css::css_position_type(positionning val,
     default:
 	throw WEBDAR_BUG;
     }
-
-
-    position_type.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
 
-void css::css_position_top(const string & top,
-			  bool inherit)
+void css::css_position_top(const string & top)
 {
     position_top.set_value(string(" top:") + top + ";");
-    position_top.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_position_left(const string & left,
-			   bool inherit)
+void css::css_position_left(const string & left)
 {
     position_left.set_value(string(" left:") + left + ";");
-    position_left.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_position_bottom(const string & bottom,
-			     bool inherit)
+void css::css_position_bottom(const string & bottom)
 {
     position_bottom.set_value(string(" bottom:") + bottom + ";");
-    position_bottom.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_position_right(const string & right,
-			    bool inherit)
+void css::css_position_right(const string & right)
 {
     position_right.set_value(string(" right:") + right + ";");
-    position_right.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_overflow(overflowing val, bool inherit)
+void css::css_overflow(overflowing val)
 {
     string arg = " overflow: " + overflow_to_string(val);
 
     overflow.set_value(arg);
-    overflow.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_overflow_x(overflowing val, bool inherit)
+void css::css_overflow_x(overflowing val)
 {
     string arg = " overflow-x: " + overflow_to_string(val);
 
     overflow.set_value(arg);
-    overflow.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_overflow_y(overflowing val, bool inherit)
+void css::css_overflow_y(overflowing val)
 {
     string arg = " overflow-y: " + overflow_to_string(val);
 
     overflow.set_value(arg);
-    overflow.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_float(floating val, bool inherit)
+void css::css_float(floating val)
 {
     string arg = " float: ";
 
@@ -395,11 +392,9 @@ void css::css_float(floating val, bool inherit)
     }
 
     float_pos.set_value(arg);
-    float_pos.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_float_clear(floatclear val, bool inherit)
+void css::css_float_clear(floatclear val)
 {
     string arg = " clear: ";
 
@@ -421,94 +416,67 @@ void css::css_float_clear(floatclear val, bool inherit)
 	throw WEBDAR_BUG;
     }
     float_clear.set_value(arg);
-    float_clear.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_opacity(const string & val,
-		      bool inherit)
+void css::css_opacity(const string & val)
 {
     opacity.set_value(string(" opacity: ") + val + ";");
-    opacity.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_padding(const string & val,
-		      bool inherit)
+void css::css_padding(const string & val)
 {
-    css_padding_top(val, inherit);
-    css_padding_right(val, inherit);
-    css_padding_bottom(val, inherit);
-    css_padding_left(val, inherit);
+    css_padding_top(val);
+    css_padding_right(val);
+    css_padding_bottom(val);
+    css_padding_left(val);
 }
 
-void css::css_padding_top(const string & top,
-		     bool inherit)
+void css::css_padding_top(const string & top)
 {
     padding_top.set_value(string(" padding-top: ") + top + ";");
-    padding_top.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_padding_right(const string & right,
-		       bool inherit)
+void css::css_padding_right(const string & right)
 {
     padding_right.set_value(string(" padding-right: ") + right + ";");
-    padding_right.set_inheritance(inherit);
-    css_updated(inherit);
 }
-void css::css_padding_bottom(const string & bottom,
-			bool inherit)
+
+void css::css_padding_bottom(const string & bottom)
 {
     padding_bottom.set_value(string(" padding-bottom: ") + bottom + ";");
-    padding_bottom.set_inheritance(inherit);
-    css_updated(inherit);
 }
-void css::css_padding_left(const string & left,
-		      bool inherit)
+
+void css::css_padding_left(const string & left)
 {
     padding_left.set_value(string(" padding-left: ") + left + ";");
-    padding_left.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_font_size(const std::string & val,
-			bool inherit)
+void css::css_font_size(const std::string & val)
 {
     font_size.set_value(string(" font-size: ") + val + ";");
-    font_size.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_font_style_italic(bool inherit)
+void css::css_font_style_italic()
 {
     font_style.set_value(" font-style: italic;");
-    font_style.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_font_style_normal(bool inherit)
+void css::css_font_style_normal()
 {
     font_style.set_value(" font-style: normal;");
-    font_style.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_font_weight_bold(bool inherit)
+void css::css_font_weight_bold()
 {
     font_weight.set_value(" font-weight: bold;");
-    font_weight.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_font_weight_normal(bool inherit)
+void css::css_font_weight_normal()
 {
     font_weight.set_value(" font-weight: normal;");
-    font_weight.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_text_h_align(h_align val, bool inherit)
+void css::css_text_h_align(h_align val)
 {
     string arg = " text-align: ";
     switch(val)
@@ -529,11 +497,9 @@ void css::css_text_h_align(h_align val, bool inherit)
 	throw WEBDAR_BUG;
     }
     text_h_align.set_value(arg);
-    text_h_align.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_text_v_align(v_align val, bool inherit)
+void css::css_text_v_align(v_align val)
 {
     string arg = " vertical-align: ";
     switch(val)
@@ -566,11 +532,9 @@ void css::css_text_v_align(v_align val, bool inherit)
 	throw WEBDAR_BUG;
     }
     text_v_align.set_value(arg);
-    text_v_align.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_text_decoration(decoration val, bool inherit)
+void css::css_text_decoration(decoration val)
 {
     string arg = " text-decoration: ";
 
@@ -592,11 +556,9 @@ void css::css_text_decoration(decoration val, bool inherit)
 	throw WEBDAR_BUG;
     }
     text_deco.set_value(arg);
-    text_deco.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_border_width(border which, bd_width val, bool inherit)
+void css::css_border_width(border which, bd_width val)
 {
     string arg = string(" border") + border_to_string(which) + "width: ";
 
@@ -615,7 +577,6 @@ void css::css_border_width(border which, bd_width val, bool inherit)
 	throw WEBDAR_BUG;
     }
 
-    border_width.set_inheritance(inherit);
     switch(which)
     {
     case bd_all:
@@ -628,16 +589,14 @@ void css::css_border_width(border which, bd_width val, bool inherit)
 	border_width.set_value(border_width.get_value() + arg);
 	break; // not usefull here, but does not hurt
     }
-    css_updated(inherit);
 }
 
-void css::css_border_color(border which, const string & col, bool inherit)
+void css::css_border_color(border which, const string & col)
 {
     string arg = string(" border") + border_to_string(which) + "color: ";
 
     arg += col + ";";
 
-    border_color.set_inheritance(inherit);
     switch(which)
     {
     case bd_all:
@@ -650,10 +609,9 @@ void css::css_border_color(border which, const string & col, bool inherit)
 	border_color.set_value(border_color.get_value() + arg);
 	break; // not usefull here, but does not hurt
     }
-    css_updated(inherit);
 }
 
-void css::css_border_style(border which, bd_style val, bool inherit)
+void css::css_border_style(border which, bd_style val)
 {
     string arg = string(" border") + border_to_string(which) + "style: ";
 
@@ -690,7 +648,6 @@ void css::css_border_style(border which, bd_style val, bool inherit)
 	throw WEBDAR_BUG;
     }
 
-    border_style.set_inheritance(inherit);
     switch(which)
     {
     case bd_all:
@@ -703,20 +660,18 @@ void css::css_border_style(border which, bd_style val, bool inherit)
 	border_style.set_value(border_style.get_value() + arg);
 	break; // not usefull here, but does not hurt
     }
-    css_updated(inherit);
 }
 
-void css::css_corner_radius(const string & all, bool inherit)
+void css::css_corner_radius(const string & all)
 {
-    css_corner_radius(all, all, all, all, inherit);
+    css_corner_radius(all, all, all, all);
 }
 
 
 void css::css_corner_radius(const string & topleft,
 			    const string & topright,
 			    const string & botright,
-			    const string & botleft,
-			    bool inherit)
+			    const string & botleft)
 {
     string arg = " border-radius: ";
 
@@ -728,83 +683,15 @@ void css::css_corner_radius(const string & topleft,
 	arg += topleft + " " + topright + " " + botright + " " + botleft + ";";
 
     corner_radius.set_value(arg);
-    corner_radius.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-void css::css_visibility(bool val, bool inherit)
+void css::css_visibility(bool val)
 {
     string text_val = val ? "visible" : "hidden";
 
     visibility.set_value(string(" visibility: ") + text_val + ";");
-    visibility.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
-
-void css::css_inherit_from(const css & ref, bool all, bool force)
-{
-    color.inherit_from(ref.color, all, force);
-    bg_col.inherit_from(ref.bg_col, all, force);
-    bg_img.inherit_from(ref.bg_img, all, force);
-    img_pos.inherit_from(ref.img_pos, all, force);
-    box_shadow.inherit_from(ref.box_shadow, all, force);
-    text_shadow.inherit_from(ref.text_shadow, all, force);
-    box_sizing.inherit_from(ref.box_sizing, all, force);
-    display.inherit_from(ref.display, all, force);
-    margin_top.inherit_from(ref.margin_top, all, force);
-    margin_right.inherit_from(ref.margin_right, all, force);
-    margin_bottom.inherit_from(ref.margin_bottom, all, force);
-    margin_left.inherit_from(ref.margin_left, all, force);
-    height.inherit_from(ref.height, all, force);
-    width.inherit_from(ref.width, all, force);
-    max_width.inherit_from(ref.max_width, all, force);
-    z_index.inherit_from(ref.z_index, all, force);
-    position_type.inherit_from(ref.position_type, all, force);
-    position_top.inherit_from(ref.position_top, all, force);
-    position_left.inherit_from(ref.position_left, all, force);
-    position_bottom.inherit_from(ref.position_bottom, all, force);
-    position_right.inherit_from(ref.position_right, all, force);
-    overflow.inherit_from(ref.overflow, all, force);
-    float_pos.inherit_from(ref.float_pos, all, force);
-    float_clear.inherit_from(ref.float_clear, all, force);
-    opacity.inherit_from(ref.opacity, all, force);
-    padding_top.inherit_from(ref.padding_top, all, force);
-    padding_right.inherit_from(ref.padding_right, all, force);
-    padding_bottom.inherit_from(ref.padding_bottom, all, force);
-    padding_left.inherit_from(ref.padding_left, all, force);
-    font_size.inherit_from(ref.font_size, all, force);
-    font_style.inherit_from(ref.font_style, all, force);
-    font_weight.inherit_from(ref.font_weight, all, force);
-    text_h_align.inherit_from(ref.text_h_align, all, force);
-    text_v_align.inherit_from(ref.text_v_align, all, force);
-    text_deco.inherit_from(ref.text_deco, all, force);
-    border_width.inherit_from(ref.border_width, all, force);
-    border_color.inherit_from(ref.border_color, all, force);
-    border_style.inherit_from(ref.border_style, all, force);
-    corner_radius.inherit_from(ref.corner_radius, all, force);
-    visibility.inherit_from(ref.visibility, all, force);
-
-	// custom css inheritance
-
-    map<string, css_property>::const_iterator crefit = ref.custom_css.begin();
-    map<string, css_property>::iterator cit;
-
-    while(crefit != ref.custom_css.end())
-    {
-	cit = custom_css.find(crefit->first);
-	if(cit != custom_css.end())
-	    cit->second.inherit_from(crefit->second, all, force);
-	else
-	{
-	    if(crefit->second.get_inheritance() || all)
-		custom_css[crefit->first] = crefit->second;
-	}
-	++crefit;
-    }
-
-    css_updated(true);
-}
 
 string css::css_get_raw_string() const
 {
@@ -827,13 +714,13 @@ string css::css_get_raw_string() const
     ret += max_width.get_value();
 
     if(!position_top.is_unset() && position_type.is_unset())
-	const_cast<css *>(this)->css_position_type(pos_absolute, position_top.get_inheritance());
+	const_cast<css *>(this)->css_position_type(pos_absolute);
     if(!position_left.is_unset() && position_type.is_unset())
-	const_cast<css *>(this)->css_position_type(pos_absolute, position_left.get_inheritance());
+	const_cast<css *>(this)->css_position_type(pos_absolute);
     if(!position_bottom.is_unset() && position_type.is_unset())
-	const_cast<css *>(this)->css_position_type(pos_absolute, position_bottom.get_inheritance());
+	const_cast<css *>(this)->css_position_type(pos_absolute);
     if(!position_right.is_unset() && position_type.is_unset())
-	const_cast<css *>(this)->css_position_type(pos_absolute, position_right.get_inheritance());
+	const_cast<css *>(this)->css_position_type(pos_absolute);
 
     if(!position_top.is_unset()
        || !position_left.is_unset()
@@ -889,7 +776,7 @@ void css::declare_custom_css(const string & label)
     custom_css[label] = css_property();
 }
 
-void css::set_custom_css(const string & label, const string & val, bool inherit)
+void css::set_custom_css(const string & label, const string & val)
 {
     map<string, css_property>::iterator it = custom_css.find(label);
 
@@ -897,8 +784,6 @@ void css::set_custom_css(const string & label, const string & val, bool inherit)
 	throw exception_range(string("cannot set an undeclared custom css: ") + label);
 
     it->second.set_value(val);
-    it->second.set_inheritance(inherit);
-    css_updated(inherit);
 }
 
 void css::clear_custom_css(const string & label)

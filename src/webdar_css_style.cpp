@@ -170,90 +170,94 @@ namespace webdar_css_style
                 c_width_full.set_value(tmp);
 
                 tmp.clear();
-                tmp.css_width("8em", false, true);
+                tmp.css_box_sizing(css::bx_border);
+                tmp.css_width("9em", false);
                 c_width_8em.set_value(tmp);
 
                     // Common aspects
-                box_off.css_border_style(css::bd_all, css::bd_solid, true);
-                box_off.css_border_width(css::bd_all, css::bd_medium, true);
-                box_off.css_text_h_align(css::al_center, true);
-		box_off.css_padding("0.5em", true);
+
+                box_off.css_border_style(css::bd_all, css::bd_solid);
+                box_off.css_border_width(css::bd_all, css::bd_medium);
+                box_off.css_text_h_align(css::al_center);
+		box_off.css_padding("0.5em");
 
 
                     // copy common aspects to box_off and box_void
-                box_on.css_inherit_from(box_off);
-                box_void.css_inherit_from(box_off);
-                box_grey.css_inherit_from(box_off);
+                box_on = box_off;
+		box_void = box_off;
+                box_grey = box_off;
 
 		    //
                 box_void.css_border_style(css::bd_all, css::bd_none);
 
 		    //
-		box_off.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF, true);
+		box_off.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
 
 
                     // box_off COLORS
-                tmp.clear();
-                tmp.css_color(COLOR_MENU_FRONT_OFF, true);
-                tmp.css_background_color(COLOR_MENU_BACK_OFF, true);
-                tmp.css_font_weight_bold(true);
-                tmp.css_font_style_italic(true);
-                tmp.css_text_decoration(css::dc_none, true);
-		box_off.css_inherit_from(tmp);
+                box_off.css_color(COLOR_MENU_FRONT_OFF);
+                box_off.css_background_color(COLOR_MENU_BACK_OFF);
+                box_off.css_font_weight_bold();
+                box_off.css_font_style_italic();
+                box_off.css_text_decoration(css::dc_none);
 
 		box_small = box_off;
 		box_small.css_width("2em", true);
-		box_small.css_padding("0", true);
-		box_small.css_margin("0", true);
+		box_small.css_padding("0");
+		box_small.css_margin("0");
 
 		    ///
+
+		tmp.clear();
+                tmp.css_box_sizing(css::bx_border);
+		tmp.css_text_decoration(css::dc_none);
 
                 c_url_normal.set_selector(css_class::link, tmp);
                 c_url_normal.set_selector(css_class::visited, tmp);
 
 
                     // Link Hover and Active in box_off
-                tmp.css_color(COLOR_MENU_FRONT_HOVER_OFF, true);
-                tmp.css_text_decoration(css::dc_underline, true);
+                tmp.css_color(COLOR_MENU_FRONT_HOVER_OFF);
+                tmp.css_text_decoration(css::dc_underline);
                 c_url_normal.set_selector(css_class::hover, tmp);
-                tmp.css_color(COLOR_MENU_FRONT_ACTIVE_OFF, true);
+                tmp.css_color(COLOR_MENU_FRONT_ACTIVE_OFF);
                 c_url_normal.set_selector(css_class::active, tmp);
 
                     // box_on COLORS
-                tmp.css_color(COLOR_MENU_FRONT_ON, true);
-                tmp.css_background_color(COLOR_MENU_BACK_ON, true);
-                tmp.css_font_weight_bold(true);
-                tmp.css_font_style_normal(true);
-                tmp.css_text_decoration(css::dc_none, true);
-                box_on.css_inherit_from(tmp);
+                tmp.css_color(COLOR_MENU_FRONT_ON);
+                tmp.css_background_color(COLOR_MENU_BACK_ON);
+                tmp.css_font_weight_bold();
+                tmp.css_font_style_normal();
+                tmp.css_text_decoration(css::dc_none);
+                box_on.update_from(tmp);
                 c_url_selected.set_selector(css_class::link, tmp);
                 c_url_selected.set_selector(css_class::visited, tmp);
-                box_on.css_border_color(css::bd_all, COLOR_MENU_BORDER_ON, true);
+                box_on.css_border_color(css::bd_all, COLOR_MENU_BORDER_ON);
 
                     // Link Hover and Active in box_on
-                tmp.css_color(COLOR_MENU_FRONT_HOVER_ON, true);
-                tmp.css_text_decoration(css::dc_underline, true);
+                tmp.css_color(COLOR_MENU_FRONT_HOVER_ON);
+                tmp.css_text_decoration(css::dc_underline);
                 c_url_selected.set_selector(css_class::hover, tmp);
-                tmp.css_color(COLOR_MENU_FRONT_ACTIVE_ON, true);
+                tmp.css_color(COLOR_MENU_FRONT_ACTIVE_ON);
                 c_url_selected.set_selector(css_class::active, tmp);
 
                     // box_grey COLORS
-                tmp.css_color(COLOR_MENU_FRONT_GREY, true);
-                tmp.css_background_color(COLOR_MENU_BACK_GREY, true);
-                tmp.css_font_weight_bold(true);
-                tmp.css_font_style_normal(true);
-                tmp.css_text_decoration(css::dc_none, true);
-                box_grey.css_inherit_from(tmp);
+                tmp.css_color(COLOR_MENU_FRONT_GREY);
+                tmp.css_background_color(COLOR_MENU_BACK_GREY);
+                tmp.css_font_weight_bold();
+                tmp.css_font_style_normal();
+                tmp.css_text_decoration(css::dc_none);
+                box_grey.update_from(tmp);
                 c_url_grey.set_selector(css_class::link, tmp);
                 c_url_grey.set_selector(css_class::visited, tmp);
-                box_grey.css_border_color(css::bd_all, COLOR_MENU_BORDER_GREY, true);
+                box_grey.css_border_color(css::bd_all, COLOR_MENU_BORDER_GREY);
 
                     // Link Hover and Active in box_grey
 
-                tmp.css_color(COLOR_MENU_FRONT_HOVER_GREY, true);
-                tmp.css_text_decoration(css::dc_underline, true);
+                tmp.css_color(COLOR_MENU_FRONT_HOVER_GREY);
+                tmp.css_text_decoration(css::dc_underline);
                 c_url_grey.set_selector(css_class::hover, tmp);
-                tmp.css_color(COLOR_MENU_FRONT_ACTIVE_GREY, true);
+                tmp.css_color(COLOR_MENU_FRONT_ACTIVE_GREY);
                 c_url_grey.set_selector(css_class::active, tmp);
 
                     //
@@ -272,7 +276,7 @@ namespace webdar_css_style
 
                     //
                 tmp.clear();
-                tmp.css_border_width(css::bd_all, css::bd_thick, false);
+                tmp.css_border_width(css::bd_all, css::bd_thick);
                 tmp.css_border_color(css::bd_all, RED);
                 c_red_border.set_value(tmp);
 

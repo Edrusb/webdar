@@ -446,9 +446,9 @@ template <class T> void arriere_boutique<T>::new_css_library_available()
     if(!csslib->class_exists(css_float))
     {
 	tmp.clear();
-	tmp.css_border_width(css::bd_all, css::bd_medium, true);
+	tmp.css_border_width(css::bd_all, css::bd_medium);
 	tmp.css_float(css::fl_right);
-	tmp.css_margin_left("1em", true);
+	tmp.css_margin_left("1em");
 	csslib->add(css_float, tmp);
     }
 
