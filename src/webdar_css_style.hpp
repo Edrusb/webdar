@@ -62,6 +62,9 @@ namespace webdar_css_style
     constexpr const char* width_100vw_3em = "wcs_w100_3em"; // 100% - 3em
     constexpr const char* width_80vw = "wcs_w80";
     constexpr const char* width_60vw = "wcs_w60";
+    constexpr const char* red_border = "wcs_red_border";
+    constexpr const char* indent = "wcs_indent";
+
 
 	/// obtain the css class object corresponding to the given name
 
@@ -82,10 +85,6 @@ namespace webdar_css_style
     constexpr const char* url_normal = "wcs_url_normal";
     constexpr const char* url_void = "wcs_url_void";
     constexpr const char* url_grey = "wcs_url_grey";
-    constexpr const char* bold_text = "wcs_bold_text";
-    constexpr const char* red_border = "wcs_red_border";
-    constexpr const char* indent = "wcs_indent";
-
 
         /// apply to the given button the css_classe names defined by update_library to get a normal button style
     template <class T> void normal_button(T & obj, bool fullwidth = false)

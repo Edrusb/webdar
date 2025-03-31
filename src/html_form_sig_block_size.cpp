@@ -88,7 +88,7 @@ html_form_sig_block_size::html_form_sig_block_size():
 
 
 	// csss
-    summary_f.add_css_class(webdar_css_style::bold_text);
+    summary_f.add_css_class(webdar_css_style::text_bold);
 }
 
 void html_form_sig_block_size::set_value(const libdar::delta_sig_block_size & val)

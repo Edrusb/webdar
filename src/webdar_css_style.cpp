@@ -60,9 +60,6 @@ namespace webdar_css_style
     static css_class c_url_normal(url_normal);     ///< links when button no selected
     static css_class c_url_void(url_void);         ///< links when button is a void
     static css_class c_url_grey(url_grey);         ///< links when button is disabled or greyed
-    static css_class c_bold_text(bold_text);       ///< bold text
-    static css_class c_red_border(red_border);     ///< red border
-    static css_class c_indent(indent);             ///< indentation (4em shift to the right)
 
     static void init()
     {
@@ -159,8 +156,14 @@ namespace webdar_css_style
 		tmp.css_width("60%", false);
                 classes[width_60vw] = tmp;
 
+		tmp.clear();
+                tmp.css_border_width(css::bd_all, css::bd_thick);
+                tmp.css_border_color(css::bd_all, RED);
+                classes[red_border] = tmp;
 
-		     //////
+		tmp.clear();
+                tmp.css_margin_left("4em");
+		classes[indent] = tmp;
 
 		css box_off, box_on, box_void, box_grey, box_small;
 
@@ -270,20 +273,6 @@ namespace webdar_css_style
 
                     //
 
-                tmp.clear();
-                tmp.css_font_weight_bold();
-                c_bold_text.set_value(tmp);
-
-                    //
-                tmp.clear();
-                tmp.css_border_width(css::bd_all, css::bd_thick);
-                tmp.css_border_color(css::bd_all, RED);
-                c_red_border.set_value(tmp);
-
-                    //
-                tmp.clear();
-                tmp.css_margin_left("4em");
-                c_indent.set_value(tmp);
 
                 initialized = true;
             }
@@ -313,10 +302,6 @@ namespace webdar_css_style
             csslib.add(c_url_grey);
             csslib.add(c_width_full);
             csslib.add(c_width_8em);
-            csslib.add(c_bold_text);
-            csslib.add(c_red_border);
-            csslib.add(c_indent);
-
 
 	    for(map<string, css>::iterator it = classes.begin();
 		it != classes.end();

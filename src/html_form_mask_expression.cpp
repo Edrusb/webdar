@@ -263,7 +263,7 @@ void html_form_mask_expression::init()
 	// visibity
 
 	// css stuff
-    fs.add_label_css_class(webdar_css_style::bold_text);
+    fs.add_label_css_class(webdar_css_style::text_bold);
 
     clear();
 }

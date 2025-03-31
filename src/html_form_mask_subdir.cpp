@@ -288,7 +288,7 @@ void html_form_mask_subdir::init()
     regex.set_visible(mask_type.get_selected_num() == 1);
 
 	// css stuff
-    fs.add_label_css_class(webdar_css_style::bold_text);
+    fs.add_label_css_class(webdar_css_style::text_bold);
 }
 
 
