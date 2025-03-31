@@ -165,7 +165,7 @@ namespace webdar_css_style
                 tmp.css_margin_left("4em");
 		classes[indent] = tmp;
 
-		css box_off, box_on, box_void, box_grey, box_small;
+		     // Button sizing
 
                 tmp.clear();
                 tmp.css_box_sizing(css::bx_border);
@@ -177,104 +177,158 @@ namespace webdar_css_style
                 tmp.css_width("9em", false);
                 c_width_8em.set_value(tmp);
 
-                    // Common aspects
+                    // Button CSS classes
 
-                box_off.css_border_style(css::bd_all, css::bd_solid);
-                box_off.css_border_width(css::bd_all, css::bd_medium);
-                box_off.css_text_h_align(css::al_center);
-		box_off.css_padding("0.5em");
+		    // temporary variables used to setup c_btn_* static classes of this module
+		css box_off, box_on, box_void, box_grey, box_small;
 
+		    // void box
 
-                    // copy common aspects to box_off and box_void
-                box_on = box_off;
-		box_void = box_off;
-                box_grey = box_off;
+		tmp.clear();
+		tmp.css_padding("0.5em");
+		c_btn_void.set_value(tmp);
 
-		    //
-                box_void.css_border_style(css::bd_all, css::bd_none);
+		    // common aspect of all other boxes
 
-		    //
-		box_off.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
+		tmp.clear();
+		tmp.css_box_sizing(css::bx_border);
+                tmp.css_text_h_align(css::al_center);
+		tmp.css_corner_radius("0.5em","0", "0.5em", "0");
+		tmp.css_padding("0.5em");
+		tmp.css_border_style(css::bd_all, css::bd_outset);
+		tmp.css_border_width(css::bd_all, css::bd_thin);
 
+		    // normal box
 
-                    // box_off COLORS
-                box_off.css_color(COLOR_MENU_FRONT_OFF);
-                box_off.css_background_color(COLOR_MENU_BACK_OFF);
-                box_off.css_font_weight_bold();
-                box_off.css_font_style_italic();
-                box_off.css_text_decoration(css::dc_none);
+		box_off = tmp;
+		box_off.css_background_color(COLOR_DAR_GREYBLUE);
+		box_off.css_border_color(css::bd_all, COLOR_DAR_GREYBLUE);
 
 		box_small = box_off;
+
+		c_btn_off.set_value(box_off);
+		c_btn_off.set_selector(css_class::active, box_off);
+		c_btn_off.set_selector(css_class::visited, box_off);
+		c_btn_off.set_selector(css_class::link, box_off);
+		box_off.css_box_shadow("0.25em", "0.25em", "0.2em");
+		c_btn_off.set_selector(css_class::hover, box_off);
+
+
+		    // small box
+
+		    // box_small is set a few lines above from box_off
 		box_small.css_width("2em", true);
 		box_small.css_padding("0");
 		box_small.css_margin("0");
+		c_btn_small.set_value(box_small);
+		c_btn_small.set_selector(css_class::active, box_small);
+		c_btn_small.set_selector(css_class::visited, box_small);
+		c_btn_small.set_selector(css_class::link, box_small);
+		box_small.css_box_shadow("0.25em", "0.25em", "0.2em");
+		c_btn_small.set_selector(css_class::hover, box_small);
 
-		    ///
+		    // active box
+
+		box_on = tmp;
+
+		box_on.css_box_shadow("0.1em", "0.1em", "0.1em");
+		box_on.css_background_color(COLOR_MENU_BACK_ON);
+		box_on.css_border_color(css::bd_all, COLOR_MENU_BACK_ON);
+		c_btn_on.set_value(box_on);
+		c_btn_on.set_selector(css_class::active, box_on);
+		c_btn_on.set_selector(css_class::hover, box_on);
+		c_btn_on.set_selector(css_class::visited, box_on);
+		c_btn_on.set_selector(css_class::link, box_on);
+
+		    // grey box
+
+		box_grey = tmp;
+		box_grey.css_background_color(COLOR_MENU_BACK_GREY);
+		box_grey.css_border_color(css::bd_all, COLOR_MENU_BACK_GREY);
+                c_btn_grey.set_value(box_grey);
+		c_btn_grey.set_value(box_grey);
+		c_btn_grey.set_selector(css_class::active, box_grey);
+		c_btn_grey.set_selector(css_class::visited, box_grey);
+		c_btn_grey.set_selector(css_class::link, box_grey);
+		box_grey.css_box_shadow("0.25em", "0.25em", "0.2em");
+		c_btn_grey.set_selector(css_class::hover, box_grey);
+
+
+		    // URL common
+		    // we recycle the box_off, box_on, box_grey local variable to setup the button URL:
+
+		    // common property to all URLs
+
+		map<string, css>::iterator it = classes.find(text_shadow_dark);
+		if(it == classes.end())
+		    throw WEBDAR_BUG;
 
 		tmp.clear();
-                tmp.css_box_sizing(css::bx_border);
+		tmp.update_from(it->second);
+		tmp.css_font_weight_bold();
+		tmp.css_font_style_italic();
 		tmp.css_text_decoration(css::dc_none);
 
-                c_url_normal.set_selector(css_class::link, tmp);
-                c_url_normal.set_selector(css_class::visited, tmp);
+		    // void URL
+
+		c_url_void.clear(); // empty class
+
+		    // Normal URL
+
+		box_off = tmp;
+
+		box_off.css_color(COLOR_MENU_FRONT_OFF);
+		c_url_normal.set_value(box_off);
+                c_url_normal.set_selector(css_class::link, box_off);
+                c_url_normal.set_selector(css_class::visited, box_off);
+
+		box_off.css_color(COLOR_MENU_FRONT_ACTIVE_OFF);
+                c_url_normal.set_selector(css_class::active, box_off);
+
+		box_off.css_color(COLOR_MENU_FRONT_HOVER_OFF);
+		box_off.css_font_style_normal();
+		box_off.css_text_decoration(css::dc_underline);
+		box_off.css_text_shadow("0", "0", "2em", "yellow");
+                c_url_normal.set_selector(css_class::hover, box_off);
 
 
-                    // Link Hover and Active in box_off
-                tmp.css_color(COLOR_MENU_FRONT_HOVER_OFF);
-                tmp.css_text_decoration(css::dc_underline);
-                c_url_normal.set_selector(css_class::hover, tmp);
-                tmp.css_color(COLOR_MENU_FRONT_ACTIVE_OFF);
-                c_url_normal.set_selector(css_class::active, tmp);
+		    // Active URL
 
-                    // box_on COLORS
-                tmp.css_color(COLOR_MENU_FRONT_ON);
-                tmp.css_background_color(COLOR_MENU_BACK_ON);
-                tmp.css_font_weight_bold();
-                tmp.css_font_style_normal();
-                tmp.css_text_decoration(css::dc_none);
-                box_on.update_from(tmp);
-                c_url_selected.set_selector(css_class::link, tmp);
-                c_url_selected.set_selector(css_class::visited, tmp);
-                box_on.css_border_color(css::bd_all, COLOR_MENU_BORDER_ON);
+		box_on = tmp;
 
-                    // Link Hover and Active in box_on
-                tmp.css_color(COLOR_MENU_FRONT_HOVER_ON);
-                tmp.css_text_decoration(css::dc_underline);
-                c_url_selected.set_selector(css_class::hover, tmp);
-                tmp.css_color(COLOR_MENU_FRONT_ACTIVE_ON);
-                c_url_selected.set_selector(css_class::active, tmp);
+		box_on.css_color(COLOR_MENU_FRONT_ON);
+		box_on.css_background_color(COLOR_MENU_FRONT_ON);
+		box_on.css_font_style_normal();
+		c_url_selected.set_selector(css_class::link, box_on);
+                c_url_selected.set_selector(css_class::visited, box_on);
 
-                    // box_grey COLORS
-                tmp.css_color(COLOR_MENU_FRONT_GREY);
-                tmp.css_background_color(COLOR_MENU_BACK_GREY);
-                tmp.css_font_weight_bold();
-                tmp.css_font_style_normal();
-                tmp.css_text_decoration(css::dc_none);
-                box_grey.update_from(tmp);
-                c_url_grey.set_selector(css_class::link, tmp);
-                c_url_grey.set_selector(css_class::visited, tmp);
-                box_grey.css_border_color(css::bd_all, COLOR_MENU_BORDER_GREY);
+                box_on.css_color(COLOR_MENU_FRONT_ACTIVE_ON);
+                c_url_selected.set_selector(css_class::active, box_on);
 
-                    // Link Hover and Active in box_grey
-
-                tmp.css_color(COLOR_MENU_FRONT_HOVER_GREY);
-                tmp.css_text_decoration(css::dc_underline);
-                c_url_grey.set_selector(css_class::hover, tmp);
-                tmp.css_color(COLOR_MENU_FRONT_ACTIVE_GREY);
-                c_url_grey.set_selector(css_class::active, tmp);
-
-                    //
-
-                c_btn_off.set_value(box_off);
-		c_btn_small.set_value(box_small);
-                c_btn_on.set_value(box_on);
-                c_btn_void.set_value(box_void);
-                c_btn_grey.set_value(box_grey);
-
-                    //
+                box_on.css_color(COLOR_MENU_FRONT_HOVER_ON);
+                box_on.css_text_decoration(css::dc_underline);
+		box_on.css_text_shadow("0", "0", "2em", "yellow");
+                c_url_selected.set_selector(css_class::hover, box_on);
 
 
-                initialized = true;
+		    // Grey URL
+
+		box_grey = tmp;
+
+                box_grey.css_color(COLOR_MENU_FRONT_GREY);
+                c_url_grey.set_selector(css_class::link, box_grey);
+                c_url_grey.set_selector(css_class::visited, box_grey);
+
+                box_grey.css_color(COLOR_MENU_FRONT_ACTIVE_GREY);
+                c_url_grey.set_selector(css_class::active, box_grey);
+
+		box_grey.css_color(COLOR_MENU_FRONT_HOVER_GREY);
+		box_grey.css_font_style_normal();
+		box_grey.css_text_decoration(css::dc_underline);
+		box_grey.css_text_shadow("0", "0", "2em", "yellow");
+                c_url_grey.set_selector(css_class::hover, box_grey);
+
+		initialized = true;
             }
         }
         catch(...)

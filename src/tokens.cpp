@@ -49,27 +49,31 @@ const char* COLOR_TEXT = "rgb(42, 0, 100)";
 const char* COLOR_PADBACK = "rgb(10, 0, 30)";
 const char* COLOR_PADFRONT = "rgb(200,200,255)";
 const char* COLOR_PADBORD = "back";
-const char* COLOR_MENU_FRONT_ON = "rgb(255, 255, 255)";
-const char* COLOR_MENU_BACK_ON = "rgb(200,150,150)";
-const char* COLOR_MENU_BORDER_ON = "rgb(255,0,0)";
-const char* COLOR_MENU_FRONT_OFF = "rgb(150,150,255)";
+const char* COLOR_MENU_FRONT_ON = "black";
+const char* COLOR_MENU_FRONT_OFF = "black";
+const char* COLOR_MENU_FRONT_GREY = "rgb(0,0,100)";
 const char* COLOR_MENU_BACK_OFF = "rgb(0,0,150)";
-const char* COLOR_MENU_BORDER_OFF = "rgb(0,0,100)";
-const char* COLOR_MENU_FRONT_GREY = COLOR_MENU_BORDER_OFF;
-const char* COLOR_MENU_BACK_GREY = "rgb(200,200,200)";
-const char* COLOR_MENU_BORDER_GREY = "rgb(150,150,150)";
+const char* COLOR_MENU_BACK_ON = "rgb(200,150,150)";
+const char* COLOR_MENU_BACK_GREY = "rgb(240,240,255)";
 const char* COLOR_MENU_FRONT_HOVER_ON = "purple";
-const char* COLOR_MENU_FRONT_HOVER_OFF = "white";
-const char* COLOR_MENU_FRONT_HOVER_GREY = "yellow";
+const char* COLOR_MENU_FRONT_HOVER_OFF = "purple";
+const char* COLOR_MENU_FRONT_HOVER_GREY = "purple";
 const char* COLOR_MENU_FRONT_ACTIVE_ON = "red";
 const char* COLOR_MENU_FRONT_ACTIVE_OFF = "red";
 const char* COLOR_MENU_FRONT_ACTIVE_GREY = "blue";
+
+// a supprimer des que possible (3 lignes)
+const char* COLOR_MENU_BORDER_ON = "rgb(255,0,0)";
+const char* COLOR_MENU_BORDER_OFF = "rgb(0,0,100)";
+const char* COLOR_MENU_BORDER_GREY = "rgb(150,150,150)";
+
 const char* COLOR_TOPBAR_BACK = COLOR_BACK;
 
 const char* COLOR_ARED = "rgb(255,30,10)";
 const char* RED = "red";
 const char* WHITE = "white";
 const char* GREEN = "rgb(0,150,80)";
+const char* COLOR_DAR_GREYBLUE = "rgb(221, 221, 255)";
 
 const char* STATIC_PATH_ID = "st";
 // STATIC_PATH_ID's length should be strictly less than the lenght of session_ID, as defined INITIAL_SESSION_ID_WIDTH in session.cpp to avoid collision with session_ID.
