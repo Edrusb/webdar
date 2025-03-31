@@ -80,14 +80,16 @@ public:
     void css_background_position() { img_pos.clear(); };
 
 	// shadow
-    void css_box_shadow(const std::string & x_shift = "10px",
-			const std::string & y_shift = "10px",
-			const std::string & blur_size = "0",
+    void css_box_shadow() { box_shadow.clear(); };
+    void css_box_shadow(const std::string & x_shift,
+			const std::string & y_shift,
+			const std::string & blur_size,
 			const std::string & color = "#444444");
 
-    void css_text_shadow(const std::string & x_shift = "10px",
-			 const std::string & y_shift = "10px",
-			 const std::string & blur_size = "0",
+    void css_text_shadow() { text_shadow.clear(); };
+    void css_text_shadow(const std::string & x_shift,
+			 const std::string & y_shift,
+			 const std::string & blur_size,
 			 const std::string & color = "#444444");
 
 	// position in the window
