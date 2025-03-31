@@ -297,7 +297,6 @@ namespace webdar_css_style
 		box_on = tmp;
 
 		box_on.css_color(COLOR_MENU_FRONT_ON);
-		box_on.css_background_color(COLOR_MENU_FRONT_ON);
 		box_on.css_font_style_normal();
 		c_url_selected.set_selector(css_class::link, box_on);
                 c_url_selected.set_selector(css_class::visited, box_on);
