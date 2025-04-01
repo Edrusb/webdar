@@ -96,7 +96,7 @@ public:
     void clear_selector(selector_type sel);
 
 	/// clear css_class value and all selector values
-    void clear() { class_value = ""; };
+    void clear_value() { class_value = ""; };
 
 	/// returns the css class definition
     std::string get_definition() const;

@@ -204,7 +204,7 @@ void html_disconnect::new_css_library_available()
 	csslib->add(css_quit_box, tmp);
 
 	    // the html_button (disconnect): for the url inside the box
-	btn_class.clear();
+	btn_class.clear_value();
 	tmp.clear();
 
 	tmp.css_color(COLOR_MENU_FRONT_OFF);

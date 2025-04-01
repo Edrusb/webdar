@@ -271,7 +271,7 @@ namespace webdar_css_style
 
 		    // void URL
 
-		c_url_void.clear(); // empty class
+		c_url_void.clear_value(); // empty class
 
 		    // Normal URL
 
