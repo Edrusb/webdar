@@ -46,6 +46,11 @@ class css_property
 {
 public:
     css_property() { clear(); };
+    css_property(const css_property & ref) = default;
+    css_property(css_property && ref) noexcept = default;
+    css_property & operator = (const css_property & ref) = default;
+    css_property & operator = (css_property && ref) noexcept = default;
+    ~css_property() = default;
 
     void clear();
     void set_value(const std::string & val);
