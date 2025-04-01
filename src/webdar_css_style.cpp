@@ -48,19 +48,6 @@ namespace webdar_css_style
 
     static map<string, css_class> classes;
 
-    static css_class c_width_full(width_full);     ///< full screen large buttons (html_derouleur for exmple)
-    static css_class c_width_8em(width_8em);       ///< normal width buttons (html_button, html_double_button, html_tabs,...)
-
-    static css_class c_btn_off(btn_off);           ///< used to assign CSS attributes: unselected item
-    static css_class c_btn_small(btn_small);         ///< used to assign CSS attributes: small unselected box
-    static css_class c_btn_on(btn_on);             ///< used to assign CSS attributes: selected item
-    static css_class c_btn_void(btn_void);         ///< used to assign CSS attributes: separators
-    static css_class c_btn_grey(btn_grey);         ///< used to assign CSS attributes: disabled or greyed
-    static css_class c_url_selected(url_selected); ///< links when button selected
-    static css_class c_url_normal(url_normal);     ///< links when button no selected
-    static css_class c_url_void(url_void);         ///< links when button is a void
-    static css_class c_url_grey(url_grey);         ///< links when button is disabled or greyed
-
     static void init()
     {
         if(initialized)
@@ -82,7 +69,6 @@ namespace webdar_css_style
                 tmp.css_text_shadow("0.05em", "0.05em", "0.2em", "#888888");
 		tmp_class.set_value(tmp);
                 tmp_class.change_name(text_grey);
-		tmp_class.set_value(tmp);
 		classes[text_grey] = tmp_class;
 
 		tmp.clear();
@@ -90,7 +76,6 @@ namespace webdar_css_style
 		tmp.css_font_weight_bold();
 		tmp_class.set_value(tmp);
 		tmp_class.change_name(text_bold);
-		tmp_class.set_value(tmp);
 		classes[text_bold] = tmp_class;
 
 		tmp.clear();
@@ -98,22 +83,21 @@ namespace webdar_css_style
 		tmp.css_text_shadow("0.05em", "0.05em", "0.2em", "#888888");
 		tmp_class.set_value(tmp);
                 tmp_class.change_name(text_shadow_dark);
-		tmp_class.set_value(tmp);
 		classes[text_shadow_dark] = tmp_class;
 
 		tmp.clear();
 		tmp_class.clear();
 		    ///<<< a faire
 		tmp_class.set_value(tmp);
-                tmp_class.change_name(text_shadow_bright);
 		tmp_class.set_value(tmp);
+                tmp_class.change_name(text_shadow_bright);
 		classes[text_shadow_bright] = tmp_class;
 
 		tmp.clear();
 		tmp_class.clear();
 		tmp.css_color(BLACK);
-		tmp_class.change_name(text_color_normal);
 		tmp_class.set_value(tmp);
+		tmp_class.change_name(text_color_normal);
 		classes[text_color_normal] = tmp_class;
 
 		tmp.clear();
@@ -121,8 +105,8 @@ namespace webdar_css_style
 		tmp.css_color(RED);
 		tmp.css_font_weight_bold();
 		tmp_class.set_value(tmp);
-                tmp_class.change_name(text_color_red);
 		tmp_class.set_value(tmp);
+                tmp_class.change_name(text_color_red);
 		classes[text_color_red] = tmp_class;
 
 		tmp.clear();
@@ -130,8 +114,8 @@ namespace webdar_css_style
 		tmp.css_color(GREEN);
 		tmp.css_font_style_italic();
 		tmp_class.set_value(tmp);
-                tmp_class.change_name(text_color_green);
 		tmp_class.set_value(tmp);
+                tmp_class.change_name(text_color_green);
 		classes[text_color_green] = tmp_class;
 
 		tmp.clear();
@@ -140,16 +124,16 @@ namespace webdar_css_style
 		tmp.css_text_v_align(css::al_top);
 		tmp.css_font_weight_bold();
 		tmp_class.set_value(tmp);
-		tmp_class.change_name(text_top_right);
 		tmp_class.set_value(tmp);
+		tmp_class.change_name(text_top_right);
 		classes[text_top_right] = tmp_class;
 
 		tmp.clear();
 		tmp_class.clear();
 		tmp.css_font_weight_bold();
 		tmp_class.set_value(tmp);
-		tmp_class.change_name(text_right);
 		tmp_class.set_value(tmp);
+		tmp_class.change_name(text_right);
 		classes[text_right] = tmp_class;
 
 		tmp.clear();
@@ -157,8 +141,8 @@ namespace webdar_css_style
 		tmp.css_float(css::fl_left);
 		tmp.css_margin_right("1em");
 		tmp_class.set_value(tmp);
-                tmp_class.change_name(float_left);
 		tmp_class.set_value(tmp);
+                tmp_class.change_name(float_left);
 		classes[float_left] = tmp_class;
 
 		tmp.clear();
@@ -166,16 +150,16 @@ namespace webdar_css_style
 		tmp.css_float(css::fl_right);
 		tmp.css_margin_left("1em");
 		tmp_class.set_value(tmp);
-                tmp_class.change_name(float_right);
 		tmp_class.set_value(tmp);
+                tmp_class.change_name(float_right);
 		classes[float_right] = tmp_class;
 
 		tmp.clear();
 		tmp_class.clear();
 		tmp.css_float_clear(css::fc_both);
 		tmp_class.set_value(tmp);
-		tmp_class.change_name(float_flush);
 		tmp_class.set_value(tmp);
+		tmp_class.change_name(float_flush);
 		classes[float_flush] = tmp_class;
 
 		tmp.clear();
@@ -183,8 +167,8 @@ namespace webdar_css_style
 		tmp.css_margin_top("0.2em");
 		tmp.css_margin_bottom("0.2em");
 		tmp_class.set_value(tmp);
-                tmp_class.change_name(spacing_vertical);
 		tmp_class.set_value(tmp);
+                tmp_class.change_name(spacing_vertical);
 		classes[spacing_vertical] = tmp_class;
 
 		tmp.clear();
@@ -192,8 +176,8 @@ namespace webdar_css_style
 		tmp.css_margin_left("0.2em");
 		tmp.css_margin_right("0.2em");
 		tmp_class.set_value(tmp);
-                tmp_class.change_name(spacing_horizontal);
 		tmp_class.set_value(tmp);
+                tmp_class.change_name(spacing_horizontal);
 		classes[spacing_horizontal] = tmp_class;
 
 		tmp.clear();
@@ -201,8 +185,8 @@ namespace webdar_css_style
 		tmp.css_max_width("100vw");
 		tmp.css_width("100%", false);
 		tmp_class.set_value(tmp);
-                tmp_class.change_name(width_100vw);
 		tmp_class.set_value(tmp);
+                tmp_class.change_name(width_100vw);
 		classes[width_100vw] = tmp_class;
 
 		tmp.clear();
@@ -210,8 +194,8 @@ namespace webdar_css_style
 		tmp.css_max_width("100vw");
 		tmp.css_width("calc(100% - 3em)", false);
 		tmp_class.set_value(tmp);
-                tmp_class.change_name(width_100vw_3em);
 		tmp_class.set_value(tmp);
+                tmp_class.change_name(width_100vw_3em);
 		classes[width_100vw_3em] = tmp_class;
 
 		tmp.clear();
@@ -219,8 +203,8 @@ namespace webdar_css_style
 		tmp.css_max_width("80vw");
 		tmp.css_width("80%", false);
 		tmp_class.set_value(tmp);
-                tmp_class.change_name(width_80vw);
 		tmp_class.set_value(tmp);
+                tmp_class.change_name(width_80vw);
 		classes[width_80vw] = tmp_class;
 
 		tmp.clear();
@@ -228,8 +212,8 @@ namespace webdar_css_style
 		tmp.css_max_width("60vw");
 		tmp.css_width("60%", false);
 		tmp_class.set_value(tmp);
-                tmp_class.change_name(width_60vw);
 		tmp_class.set_value(tmp);
+                tmp_class.change_name(width_60vw);
 		classes[width_60vw] = tmp_class;
 
 		tmp.clear();
@@ -237,29 +221,36 @@ namespace webdar_css_style
                 tmp.css_border_width(css::bd_all, css::bd_thick);
                 tmp.css_border_color(css::bd_all, RED);
 		tmp_class.set_value(tmp);
-                tmp_class.change_name(red_border);
 		tmp_class.set_value(tmp);
+                tmp_class.change_name(red_border);
 		classes[red_border] = tmp_class;
 
 		tmp.clear();
 		tmp_class.clear();
                 tmp.css_margin_left("4em");
 		tmp_class.set_value(tmp);
-		tmp_class.change_name(indent);
 		tmp_class.set_value(tmp);
+		tmp_class.change_name(indent);
 		classes[indent] = tmp_class;
 
 		     // Button sizing
 
                 tmp.clear();
+		tmp_class.clear();
                 tmp.css_box_sizing(css::bx_border);
 		tmp.css_width("100%", true);
-                c_width_full.set_value(tmp);
+                tmp_class.set_value(tmp);
+		tmp_class.change_name(width_full);
+		classes[width_full] = tmp_class;
+
 
                 tmp.clear();
+		tmp_class.clear();
                 tmp.css_box_sizing(css::bx_border);
                 tmp.css_width("9em", false);
-                c_width_8em.set_value(tmp);
+                tmp_class.set_value(tmp);
+		tmp_class.change_name(width_8em);
+		classes[width_8em] = tmp_class;
 
                     // Button CSS classes
 
@@ -268,9 +259,12 @@ namespace webdar_css_style
 
 		    // void box
 
+		tmp_class.clear();
 		tmp.clear();
 		tmp.css_padding("0.5em");
-		c_btn_void.set_value(tmp);
+		tmp_class.set_value(tmp);
+		tmp_class.change_name(btn_void);
+		classes[btn_void] = tmp_class;
 
 		    // common aspect of all other boxes
 
@@ -290,53 +284,66 @@ namespace webdar_css_style
 
 		box_small = box_off;
 
-		c_btn_off.set_value(box_off);
-		c_btn_off.set_selector(css_class::active, box_off);
-		c_btn_off.set_selector(css_class::visited, box_off);
-		c_btn_off.set_selector(css_class::link, box_off);
+		tmp_class.clear();
+		tmp_class.set_value(box_off);
+		tmp_class.set_selector(css_class::active, box_off);
+		tmp_class.set_selector(css_class::visited, box_off);
+		tmp_class.set_selector(css_class::link, box_off);
 		box_off.css_box_shadow("0.25em", "0.25em", "0.2em");
-		c_btn_off.set_selector(css_class::hover, box_off);
-
+		tmp_class.set_selector(css_class::hover, box_off);
+		tmp_class.change_name(btn_off);
+		classes[btn_off] = tmp_class;
 
 		    // small box
 
 		    // box_small is set a few lines above from box_off
+		tmp_class.clear();
+
 		box_small.css_width("2em", false);
 		box_small.css_padding("0");
 		box_small.css_min_width("2em");
 		box_small.css_min_height("1.5em");
-		c_btn_small.set_value(box_small);
-		c_btn_small.set_selector(css_class::active, box_small);
-		c_btn_small.set_selector(css_class::visited, box_small);
-		c_btn_small.set_selector(css_class::link, box_small);
+		tmp_class.set_value(box_small);
+		tmp_class.set_selector(css_class::active, box_small);
+		tmp_class.set_selector(css_class::visited, box_small);
+		tmp_class.set_selector(css_class::link, box_small);
 		box_small.css_box_shadow("0.25em", "0.25em", "0.2em");
-		c_btn_small.set_selector(css_class::hover, box_small);
+		tmp_class.set_selector(css_class::hover, box_small);
+		tmp_class.change_name(btn_small);
+		classes[btn_small] = tmp_class;
 
 		    // active box
 
 		box_on = tmp;
+		tmp_class.clear();
 
 		box_on.css_box_shadow("0.1em", "0.1em", "0.1em");
 		box_on.css_background_color(COLOR_MENU_BACK_ON);
 		box_on.css_border_color(css::bd_all, COLOR_MENU_BACK_ON);
-		c_btn_on.set_value(box_on);
-		c_btn_on.set_selector(css_class::active, box_on);
-		c_btn_on.set_selector(css_class::hover, box_on);
-		c_btn_on.set_selector(css_class::visited, box_on);
-		c_btn_on.set_selector(css_class::link, box_on);
+		tmp_class.set_value(box_on);
+		tmp_class.set_selector(css_class::active, box_on);
+		tmp_class.set_selector(css_class::hover, box_on);
+		tmp_class.set_selector(css_class::visited, box_on);
+		tmp_class.set_selector(css_class::link, box_on);
+		tmp_class.change_name(btn_on);
+		classes[btn_on] = tmp_class;
 
 		    // grey box
 
 		box_grey = tmp;
+		tmp_class.clear();
+
 		box_grey.css_background_color(COLOR_MENU_BACK_GREY);
 		box_grey.css_border_color(css::bd_all, COLOR_MENU_BACK_GREY);
-                c_btn_grey.set_value(box_grey);
-		c_btn_grey.set_value(box_grey);
-		c_btn_grey.set_selector(css_class::active, box_grey);
-		c_btn_grey.set_selector(css_class::visited, box_grey);
-		c_btn_grey.set_selector(css_class::link, box_grey);
+                tmp_class.set_value(box_grey);
+		tmp_class.set_value(box_grey);
+		tmp_class.set_selector(css_class::active, box_grey);
+		tmp_class.set_selector(css_class::visited, box_grey);
+		tmp_class.set_selector(css_class::link, box_grey);
 		box_grey.css_box_shadow("0.25em", "0.25em", "0.2em");
-		c_btn_grey.set_selector(css_class::hover, box_grey);
+		tmp_class.set_selector(css_class::hover, box_grey);
+		tmp_class.change_name(btn_grey);
+		classes[btn_grey] = tmp_class;
 
 
 		    // URL common
@@ -356,61 +363,71 @@ namespace webdar_css_style
 
 		    // void URL
 
-		c_url_void.clear_value(); // empty class
+		tmp_class.clear(); // empty class
+		tmp_class.change_name(url_void);
+		classes[url_void] = tmp_class;
 
 		    // Normal URL
 
 		box_off = tmp;
 
 		box_off.css_color(COLOR_MENU_FRONT_OFF);
-		c_url_normal.set_value(box_off);
-                c_url_normal.set_selector(css_class::link, box_off);
-                c_url_normal.set_selector(css_class::visited, box_off);
+		tmp_class.clear();
+		tmp_class.set_value(box_off);
+                tmp_class.set_selector(css_class::link, box_off);
+                tmp_class.set_selector(css_class::visited, box_off);
 
 		box_off.css_color(COLOR_MENU_FRONT_ACTIVE_OFF);
-                c_url_normal.set_selector(css_class::active, box_off);
+                tmp_class.set_selector(css_class::active, box_off);
 
 		box_off.css_color(COLOR_MENU_FRONT_HOVER_OFF);
 		box_off.css_font_style_normal();
 		box_off.css_text_decoration(css::dc_underline);
 		box_off.css_text_shadow("0", "0", "2em", "yellow");
-                c_url_normal.set_selector(css_class::hover, box_off);
+                tmp_class.set_selector(css_class::hover, box_off);
+		tmp_class.change_name(url_normal);
+		classes[url_normal] = tmp_class;
 
 
 		    // Active URL
 
 		box_on = tmp;
+		tmp_class.clear();
 
 		box_on.css_color(COLOR_MENU_FRONT_ON);
 		box_on.css_font_style_normal();
-		c_url_selected.set_selector(css_class::link, box_on);
-                c_url_selected.set_selector(css_class::visited, box_on);
+		tmp_class.set_selector(css_class::link, box_on);
+                tmp_class.set_selector(css_class::visited, box_on);
 
                 box_on.css_color(COLOR_MENU_FRONT_ACTIVE_ON);
-                c_url_selected.set_selector(css_class::active, box_on);
+                tmp_class.set_selector(css_class::active, box_on);
 
                 box_on.css_color(COLOR_MENU_FRONT_HOVER_ON);
                 box_on.css_text_decoration(css::dc_underline);
 		box_on.css_text_shadow("0", "0", "2em", "yellow");
-                c_url_selected.set_selector(css_class::hover, box_on);
-
+                tmp_class.set_selector(css_class::hover, box_on);
+		tmp_class.change_name(url_selected);
+		classes[url_selected] = tmp_class;
 
 		    // Grey URL
 
 		box_grey = tmp;
+		tmp_class.clear();
 
                 box_grey.css_color(COLOR_MENU_FRONT_GREY);
-                c_url_grey.set_selector(css_class::link, box_grey);
-                c_url_grey.set_selector(css_class::visited, box_grey);
+                tmp_class.set_selector(css_class::link, box_grey);
+                tmp_class.set_selector(css_class::visited, box_grey);
 
                 box_grey.css_color(COLOR_MENU_FRONT_ACTIVE_GREY);
-                c_url_grey.set_selector(css_class::active, box_grey);
+                tmp_class.set_selector(css_class::active, box_grey);
 
 		box_grey.css_color(COLOR_MENU_FRONT_HOVER_GREY);
 		box_grey.css_font_style_normal();
 		box_grey.css_text_decoration(css::dc_underline);
 		box_grey.css_text_shadow("0", "0", "2em", "yellow");
-                c_url_grey.set_selector(css_class::hover, box_grey);
+                tmp_class.set_selector(css_class::hover, box_grey);
+		tmp_class.change_name(url_grey);
+		classes[url_grey] = tmp_class;
 
 		initialized = true;
             }
@@ -427,25 +444,13 @@ namespace webdar_css_style
     {
         init();
 
-        if(!csslib.class_exists(c_btn_on.get_name()))
-        {
-            csslib.add(c_btn_on);
-	    csslib.add(c_btn_small);
-            csslib.add(c_btn_off);
-            csslib.add(c_btn_void);
-            csslib.add(c_btn_grey);
-            csslib.add(c_url_selected);
-            csslib.add(c_url_normal);
-            csslib.add(c_url_void);
-            csslib.add(c_url_grey);
-            csslib.add(c_width_full);
-            csslib.add(c_width_8em);
-
+	if(!csslib.class_exists(btn_on))
+	{
 	    for(map<string, css_class>::iterator it = classes.begin();
 		it != classes.end();
 		++it)
 		csslib.add(it->second);
-        }
+	}
     }
 
     const css_class & get_css_class(const std::string & name)
