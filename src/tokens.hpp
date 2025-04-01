@@ -129,6 +129,7 @@ extern const char* COLOR_ARED; // almost red
 extern const char* RED;
 extern const char* WHITE;
 extern const char* GREEN;
+extern const char* BLACK;
 extern const char* COLOR_DAR_GREYBLUE;
 
 extern const char* STATIC_PATH_ID;
