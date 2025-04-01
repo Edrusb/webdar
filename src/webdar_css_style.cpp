@@ -178,6 +178,7 @@ namespace webdar_css_style
 		tmp_class.set_value(tmp);
                 tmp_class.change_name(spacing_vertical);
 		tmp_class.set_value(tmp);
+		tmp_class.set_selector(css_class::hover, tmp);
 		classes[spacing_vertical] = tmp_class;
 
 		tmp.clear();
@@ -187,6 +188,7 @@ namespace webdar_css_style
 		tmp_class.set_value(tmp);
                 tmp_class.change_name(spacing_horizontal);
 		tmp_class.set_value(tmp);
+		tmp_class.set_selector(css_class::hover, tmp);
 		classes[spacing_horizontal] = tmp_class;
 
 		tmp.clear();
