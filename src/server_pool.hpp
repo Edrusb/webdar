@@ -57,7 +57,7 @@ public:
     bool run_new_server(const std::shared_ptr<const authentication> & auth,
 			std::unique_ptr<proto_connexion> & source);
 
-	// run() method (inherited from libthreadar::thrad_signal to be used
+	// run() method (inherited from libthreadar::thread_signal to be used
 	// to run the server_pool.
 
 protected:
