@@ -111,6 +111,13 @@ namespace webdar_css_style
 
 		tmp.clear();
 		tmp_class.clear();
+		tmp.css_color(BLACK);
+		tmp_class.change_name(text_color_normal);
+		tmp_class.set_value(tmp);
+		classes[text_color_normal] = tmp_class;
+
+		tmp.clear();
+		tmp_class.clear();
 		tmp.css_color(RED);
 		tmp.css_font_weight_bold();
 		tmp_class.set_value(tmp);
