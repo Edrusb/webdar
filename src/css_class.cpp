@@ -53,23 +53,39 @@ css_class::css_class(const string & name, const css & ref)
 	throw WEBDAR_BUG;
 
     class_name = name;
-    set_value(ref);
+    class_value = ref;
 }
 
 
 void css_class::set_selector(selector_type sel, const css & ref)
 {
-    map<selector_type, string>::iterator it = selectors.find(sel);
+    map<selector_type, css>::iterator it = selectors.find(sel);
 
     if(it == selectors.end())
-	selectors[sel] = ref.css_get_raw_string();
+	selectors[sel] = ref;
     else
 	throw WEBDAR_BUG;
 }
 
+bool css_class::get_selector(selector_type sel, css & val) const
+{
+    map<selector_type, css>::const_iterator it = selectors.find(sel);
+
+    if(class_name.empty())
+	throw WEBDAR_BUG; // name is missing
+
+    if(it != selectors.end())
+    {
+	val = it->second;
+	return true;
+    }
+    else
+	return false;
+}
+
 void css_class::clear_selector(selector_type sel)
 {
-    map<selector_type, string>::iterator it = selectors.find(sel);
+    map<selector_type, css>::iterator it = selectors.find(sel);
 
     if(it != selectors.end())
 	selectors.erase(sel);
@@ -77,23 +93,29 @@ void css_class::clear_selector(selector_type sel)
 }
 
 
+
 string css_class::get_definition() const
 {
     string ret;
-    map<selector_type, string>::const_iterator it = selectors.begin();
+    map<selector_type, css>::const_iterator it = selectors.begin();
+    string raw_val = class_value.css_get_raw_string();
 
-    if(class_value.empty() && selectors.empty())
+    if(class_name.empty())
+	throw WEBDAR_BUG; // name is missing
+
+    if(raw_val.empty() && selectors.empty())
 	return "";
 
-    if(!class_value.empty())
-	ret += "*." + class_name + " { " + class_value + " }\n";
+    if(! raw_val.empty())
+	ret += "*." + class_name + " { " + raw_val + " }\n";
 
     while(it != selectors.end())
     {
-	if(it->second.empty())
-	    throw WEBDAR_BUG;
+	raw_val = it->second.css_get_raw_string();
+	if(raw_val.empty())
+	    throw WEBDAR_BUG; // why adding a css if it has no properties at all!
 
-	ret += "*." + class_name + ":" + get_selector_name(it->first) + " { " + it->second + " }\n";
+	ret += "*." + class_name + ":" + get_selector_name(it->first) + " { " + raw_val + " }\n";
 	++it;
     }
 

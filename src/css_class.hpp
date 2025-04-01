@@ -72,7 +72,7 @@ public:
 	visited
     };
 
-    css_class(const std::string & name);
+    css_class(const std::string & name = "");
     css_class(const std::string & name, const css & ref);
     css_class(const css_class & ref) = default;
     css_class(css_class && ref) noexcept = default;
@@ -87,24 +87,37 @@ public:
     const std::string & get_name() const { return class_name; };
 
 	/// defines or overwirte the css_class value from a css object
-    void set_value(const css & ref) { class_value = ref.css_get_raw_string(); };
+    void set_value(const css & ref) { class_value = ref; };
+
+	/// obtain the current value
+    const css & get_value() const { if(class_name.empty()) throw WEBDAR_BUG; return class_value; };
+
+	/// clear css_class value and all selector values
+    void clear_value() { class_value.clear(); };
 
 	/// defines the value for a given css_selector on that class
     void set_selector(selector_type sel, const css & ref);
+
+	/// obtain the value of the provided selector type
+
+	/// \param[in] sel the selector to look at
+	/// \param[out] val the css value associated to this selector if present
+	/// \return true if such selector has been defined and val has been set, false else.
+    bool get_selector(selector_type sel, css & val) const;
 
 	/// remove definition for the given selector type
     void clear_selector(selector_type sel);
 
 	/// clear all css definition, including those provided with selector, only the css name is kept
-    void clear_all() { class_value = ""; selectors.clear(); };
+    void clear() { class_value.clear(); selectors.clear(); };
 
 	/// returns the css class definition
     std::string get_definition() const;
 
 private:
     std::string class_name;
-    std::string class_value;
-    std::map<selector_type, std::string> selectors;
+    css class_value;
+    std::map<selector_type, css> selectors;
 
     static std::string get_selector_name(selector_type sel);
 };
