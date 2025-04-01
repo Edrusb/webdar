@@ -43,8 +43,6 @@ using namespace std;
 css_class::css_class(const string & name):
     class_name(name)
 {
-    if(name.empty())
-	throw WEBDAR_BUG;
 }
 
 css_class::css_class(const string & name, const css & ref)
