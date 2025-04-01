@@ -74,19 +74,19 @@ server::server(const shared_ptr<central_report> & log,
 
 void server::inherited_run()
 {
-    answer ans;
-    string session_ID = "";
-    uri url;
-    session *sess = nullptr;
-    challenge chal(authsrc);
-    session::session_summary info;
-    string user;
-    disconnected_page disconned;
-    choose chooser;
-    bool initial = true;
-
     try
     {
+	answer ans;
+	string session_ID = "";
+	uri url;
+	session *sess = nullptr;
+	challenge chal(authsrc);
+	session::session_summary info;
+	string user;
+	disconnected_page disconned;
+	choose chooser;
+	bool initial = true;
+
 	try
 	{
 		// outer while loop(while we are in the same TCP session)
