@@ -185,7 +185,6 @@ namespace webdar_css_style
 		tmp_class.set_value(tmp);
                 tmp_class.change_name(spacing_vertical);
 		tmp_class.set_value(tmp);
-		tmp_class.set_selector(css_class::hover, tmp);
 		classes[spacing_vertical] = tmp_class;
 
 		tmp.clear();
@@ -195,7 +194,6 @@ namespace webdar_css_style
 		tmp_class.set_value(tmp);
                 tmp_class.change_name(spacing_horizontal);
 		tmp_class.set_value(tmp);
-		tmp_class.set_selector(css_class::hover, tmp);
 		classes[spacing_horizontal] = tmp_class;
 
 		tmp.clear();
@@ -303,9 +301,10 @@ namespace webdar_css_style
 		    // small box
 
 		    // box_small is set a few lines above from box_off
-		box_small.css_width("2em", true);
+		box_small.css_width("2em", false);
 		box_small.css_padding("0");
-		box_small.css_margin("0");
+		box_small.css_min_width("2em");
+		box_small.css_min_height("1.5em");
 		c_btn_small.set_value(box_small);
 		c_btn_small.set_selector(css_class::active, box_small);
 		c_btn_small.set_selector(css_class::visited, box_small);
