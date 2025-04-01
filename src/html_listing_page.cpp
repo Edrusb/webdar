@@ -42,6 +42,13 @@ using namespace std;
 
 const string html_listing_page::event_close = "html_listing_page::close";
 
+static const char* css_page = "html_listing_page";
+static const char* css_tree = "html_listing_page_tree";
+static const char* css_title = "html_listing_page_title";
+static const char* css_close = "html_listing_page_close";
+static const char* css_focus = "html_listing_page_focus";
+
+
 html_listing_page::html_listing_page():
     tree(""),
     close("Close", event_close)
@@ -62,6 +69,16 @@ html_listing_page::html_listing_page():
 	// linking tree with focus
     tree.set_drop_content(&focus);
     tree.set_drop_path(&title);
+
+	// css
+
+    webdar_css_style::normal_button(close);
+    close.add_css_class(css_close);
+
+    tree.add_css_class(css_tree);
+    title.add_css_class(css_title);
+    title.add_css_class(webdar_css_style::btn_off);
+    focus.add_css_class(css_focus);
 }
 
 void html_listing_page::on_event(const string & event_name)
@@ -87,57 +104,53 @@ void html_listing_page::set_session_name(const string & session_name)
 
 void html_listing_page::new_css_library_available()
 {
-    css_class page("html_listing_page");
-    css_class c_tree("html_listing_page_tree");
-    css_class c_title("html_listing_page_title");
-    css_class c_close("html_listing_page_close");
-    css_class c_focus("html_listing_page_focus");
     css tmp;
+
     unique_ptr<css_library> & csslib = lookup_css_library();
 
     if(!csslib)
 	throw WEBDAR_BUG;
 
-    	// set css properties
-    clear_css_classes();
-    tmp.css_height("100%",true); // applied to the html_page assign this CSS to the <body>
-    page.set_value(tmp);
-    add_css_class(page.get_name());
-    csslib->add(page);
+    if(csslib->class_exists(css_tree))
+	return;
+
+	// left dir tree
 
     tree.clear_css_classes();
     tmp.clear();
+    tmp.css_box_sizing(css::bx_border);
     tmp.css_float(css::fl_left);
-    tmp.css_height("100%", false);
-    tmp.css_width("32.6%", false);
-    tmp.css_padding("0.2%");
+    tmp.css_max_height("calc(100vh - 1em)");
+    tmp.css_width("30%", false);
+    tmp.css_padding("1em");
     tmp.css_overflow(css::ov_scroll);
-    tmp.css_margin_right("1%");
-    c_tree.set_value(tmp);
-    tmp.clear();
-    tmp.css_color(COLOR_TEXT);
-    tree.add_css_class(c_tree.get_name());
-    csslib->add(c_tree);
+    csslib->add(css_tree, tmp);
+
+	// title
 
     title.clear_css_classes();
     tmp.clear();
-    tmp.css_width("64%", false);
-    tmp.css_padding_top("1em");
-    tmp.css_padding_bottom("1em");
-    tmp.css_font_weight_bold();
-    tmp.css_font_style_italic();
-    tmp.css_text_h_align(css::al_center);
-    tmp.css_border_width(css::bd_all, css::bd_medium);
-    tmp.css_border_style(css::bd_all, css::bd_solid);
-    tmp.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
-    tmp.css_color(COLOR_MENU_FRONT_OFF);
-    tmp.css_background_color(COLOR_MENU_BACK_OFF);
+    tmp.css_box_sizing(css::bx_border);
     tmp.css_position_type(css::pos_fixed);
     tmp.css_position_top("1em");
-    tmp.css_position_right("1%");
-    c_title.set_value(tmp);
-    title.add_css_class(c_title.get_name());
-    csslib->add(c_title);
+    tmp.css_position_right("1em");
+    tmp.css_width("calc(70% - 1em)", false); // 1em is the margin on the right
+    csslib->add(css_title, tmp);
+
+	// focus area
+
+    focus.clear_css_classes();
+    tmp.clear();
+    tmp.css_box_sizing(css::bx_border);
+    tmp.css_margin_top("5em");
+    tmp.css_margin_right("1em");
+    tmp.css_float(css::fl_right);
+    tmp.css_overflow(css::ov_scroll);
+    tmp.css_max_height("calc(100vh - 6em)");
+    tmp.css_width("calc(70% - 1em)", false); // 1em for the right margin
+    csslib->add(css_focus, tmp);
+
+	// close button
 
     close.clear_css_classes();
     tmp.clear();
@@ -146,18 +159,7 @@ void html_listing_page::new_css_library_available()
     tmp.css_position_type(css::pos_fixed);
     tmp.css_position_bottom("1em");
     tmp.css_position_right("1em");
-    c_close.set_value(tmp);
-    webdar_css_style::normal_button(close);
-    close.add_css_class(c_close.get_name());
-    csslib->add(c_close);
-
-    focus.clear_css_classes();
-    tmp.clear();
-    tmp.css_margin_top("5em");
-    tmp.css_width("66%", false);
-    c_focus.set_value(tmp);
-    focus.add_css_class(c_focus.get_name());
-    csslib->add(c_focus);
+    csslib->add(css_close, tmp);
 
     webdar_css_style::update_library(*csslib);
 }

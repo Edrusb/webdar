@@ -35,6 +35,7 @@ extern "C"
 #include "tokens.hpp"
 #include "html_table.hpp"
 #include "html_text.hpp"
+#include "webdar_css_style.hpp"
 
     //
 #include "html_dir_tree.hpp"
@@ -44,6 +45,14 @@ using namespace std;
 const string html_dir_tree::event_shrink = "html_dir_tree_shrink";
 const string html_dir_tree::event_expand = "html_dir_tree_expand";
 const string html_dir_tree::event_click = "html_dir_tree_click";
+
+static constexpr const char* name_css_this = "hdt_this";
+static constexpr const char* name_css_button = "html_dir_tree_button"; // applied to shrink/expand/nosubdir
+static constexpr const char* name_css_name = "html_dir_tree_name";
+static constexpr const char* name_css_forsubdirs = "html_dir_tree_forsubdir";
+static constexpr const char* name_css_contents = "html_dir_tree_contents";
+static constexpr const char* name_css_contents_title = "html_dir_tree_contents_title";
+static constexpr const char* name_css_contents_cells = "html_dir_tree_contents_cells";
 
 html_dir_tree::html_dir_tree(const string & chemin):
     shrink("-", event_shrink),
@@ -90,18 +99,36 @@ void html_dir_tree::init(const string & chemin)
     adopt(&line);
     adopt(&for_subdirs);
 
-	// to have the name of the directory beside the shrink/expand button
-    set_no_CR();
-    line.set_no_CR();
-    nosubdir.set_no_CR();
-    shrink.set_no_CR();
-    expand.set_no_CR();
-    name.set_no_CR();
-
 	// binding to events
     shrink.record_actor_on_event(this, event_shrink);
     expand.record_actor_on_event(this, event_expand);
     name.record_actor_on_event(this, event_click);
+
+	// css
+    add_css_class(name_css_this);
+
+    webdar_css_style::small_button(shrink);
+    webdar_css_style::small_button(expand);
+    webdar_css_style::small_button(nosubdir);
+
+    nosubdir.add_css_class(webdar_css_style::float_left);
+    shrink.add_css_class(webdar_css_style::float_left);
+    expand.add_css_class(webdar_css_style::float_left);
+    line.add_css_class(webdar_css_style::float_left);
+
+    name.add_css_class(webdar_css_style::float_left);
+    name.url_add_css_class(name_css_name);
+    name.add_css_class(webdar_css_style::text_shadow_dark);
+
+    nosubdir.add_css_class(name_css_button);
+    shrink.add_css_class(name_css_button);
+    expand.add_css_class(name_css_button);
+
+    for_subdirs.add_css_class(name_css_forsubdirs);
+
+    contents.add_css_class(name_css_contents);
+    contents.set_css_class_cells(name_css_contents_cells);
+    contents.set_css_class_first_row(name_css_contents_title);
 
 	// set initial visibility of objects
     on_event(event_shrink);
@@ -308,63 +335,25 @@ void html_dir_tree::go_init_indent()
 
 void html_dir_tree::new_css_library_available()
 {
-    static constexpr const char* name_css_line = "html_dir_tree_line";
-    static constexpr const char* name_css_common = "html_dir_tree_common";
-    static constexpr const char* name_css_shrink = "html_dir_tree_shrunk";
-    static constexpr const char* name_css_nosub = "html_dir_tree_nosubdir";
-    static constexpr const char* name_css_name = "html_dir_tree_name";
-    static constexpr const char* name_css_forsubdirs = "html_dir_tree_forsubdir";
-    static constexpr const char* name_css_contents = "html_dir_tree_contents";
-    static constexpr const char* name_css_contents_cells = "html_dir_tree_contents_cells";
-    static constexpr const char* name_css_contents_title = "html_dir_tree_contents_title";
 
-    if(is_css_class_defined_in_library(name_css_line))
+    if(is_css_class_defined_in_library(name_css_name))
     {
-	if(! is_css_class_defined_in_library(name_css_common)
-	   || ! is_css_class_defined_in_library(name_css_nosub)
-	   || ! is_css_class_defined_in_library(name_css_shrink)
-	   || ! is_css_class_defined_in_library(name_css_name)
-	   || ! is_css_class_defined_in_library(name_css_forsubdirs)
+	if(! is_css_class_defined_in_library(name_css_forsubdirs)
 	   || ! is_css_class_defined_in_library(name_css_contents)
 	   || ! is_css_class_defined_in_library(name_css_contents_cells)
-	   || ! is_css_class_defined_in_library(name_css_contents_title))
+	    )
 	    throw WEBDAR_BUG;
     }
     else
     {
-
 	css tmpcss;
 	css_class tmpclass(name_css_name);
 
-	    // setting css properties
+	    // property for the directory name/link in the directory tree
 
-	tmpcss.clear();
 	tmpcss.css_box_sizing(css::bx_border);
-	tmpcss.css_float(css::fl_left);
-	tmpcss.css_float_clear(css::fc_both);
-	tmpcss.css_width("100%", false);
-	define_css_class_in_library(name_css_line, tmpcss);
-
-	tmpcss.clear();
-	tmpcss.css_float(css::fl_left);
-	tmpcss.css_float_clear(css::fc_both);
-	tmpcss.css_width("2em", false);
-	tmpcss.css_height("1em", false);
-	tmpcss.css_text_h_align(css::al_center);
-	tmpcss.css_margin_right("1em");
-	tmpcss.css_border_width(css::bd_all, css::bd_medium);
-	tmpcss.css_border_style(css::bd_all, css::bd_solid);
-	define_css_class_in_library(name_css_common, tmpcss);
-
-	tmpcss.clear();
-	tmpcss.css_border_color(css::bd_all, COLOR_BACK);
-	tmpcss.css_height("1em", false);
-	define_css_class_in_library(name_css_nosub, tmpcss);
-
-	tmpcss.clear();
-	tmpcss.css_box_sizing(css::bx_border);
-	tmpcss.css_text_h_align(css::al_left);
 	tmpcss.css_text_decoration(css::dc_none);
+	tmpcss.css_color(BLACK);
 	tmpclass.set_value(tmpcss);
 	tmpclass.set_selector(css_class::link, tmpcss);
 	tmpclass.set_selector(css_class::active, tmpcss);
@@ -373,20 +362,34 @@ void html_dir_tree::new_css_library_available()
 	tmpclass.set_selector(css_class::hover, tmpcss);
 	define_css_class_in_library(tmpclass);
 
+	    // property for this component as a whole
+
+	    // as it is nested in another components, it must
+	    // have his own line, where from the clear property:
 	tmpcss.clear();
-	tmpcss.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
-	define_css_class_in_library(name_css_shrink, tmpcss);
+	tmpcss.css_float_clear(css::fc_left);
+	define_css_class_in_library(name_css_this, tmpcss);
+
+	    // property for the shrink/expand/nosubdir button of the left directory tree
+
+	tmpcss.clear();
+	tmpcss.css_float_clear(css::fc_left);
+	define_css_class_in_library(name_css_button, tmpcss);
+
+	    // property for the subdirectory box (that will contain nested html_dir_tree objects
 
 	tmpcss.clear();
 	tmpcss.css_box_sizing(css::bx_border);
 	tmpcss.css_float(css::fl_left);
+	tmpcss.css_float_clear(css::fc_left);
 	tmpcss.css_float_clear(css::fc_both);
-	tmpcss.css_width("100%", false);
 	tmpcss.css_border_width(css::bd_left, css::bd_thin);
 	tmpcss.css_border_style(css::bd_left, css::bd_solid);
 	tmpcss.css_border_color(css::bd_left, COLOR_MENU_BORDER_OFF);
 	tmpcss.css_margin_left("1em");
 	define_css_class_in_library(name_css_forsubdirs, tmpcss);
+
+	    // property for the table as a whole
 
 	tmpcss.clear();
 	tmpcss.css_box_sizing(css::bx_border);
@@ -394,34 +397,23 @@ void html_dir_tree::new_css_library_available()
 	tmpcss.css_border_width(css::bd_all, css::bd_thin);
 	tmpcss.css_border_style(css::bd_all, css::bd_dashed);
 	tmpcss.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
+	tmpcss.css_font_size("0.8em");
 	define_css_class_in_library(name_css_contents, tmpcss);
 
-	    // assigning style for all lines
+	    // property for the title line
+
+	tmpcss = webdar_css_style::get_css_class(webdar_css_style::btn_off).get_value();
+	tmpcss.css_font_size("0.8em");
+	define_css_class_in_library(name_css_contents_title, tmpcss);
+
+	    // property for the table line contents (exculding the title line)
+
 	tmpcss.clear();
 	tmpcss.css_border_width(css::bd_top, css::bd_thin);
 	tmpcss.css_border_style(css::bd_top, css::bd_dashed);
 	tmpcss.css_border_color(css::bd_top, COLOR_MENU_BORDER_OFF);
 	define_css_class_in_library(name_css_contents_cells, tmpcss);
-
-
-	    // assigning modified style for header line
-	tmpcss.css_background_color(COLOR_MENU_BACK_OFF);
-	tmpcss.css_color(COLOR_MENU_FRONT_OFF);
-	define_css_class_in_library(name_css_contents_title, tmpcss);
     }
-
-    line.add_css_class(name_css_line);
-    shrink.add_css_class(name_css_common);
-    nosubdir.add_css_class(name_css_common);
-    expand.add_css_class(name_css_common);
-    nosubdir.add_css_class(name_css_nosub);
-    name.url_add_css_class(name_css_name);
-    shrink.add_css_class(name_css_shrink);
-    expand.add_css_class(name_css_shrink);
-    for_subdirs.add_css_class(name_css_forsubdirs);
-    contents.add_css_class(name_css_contents);
-    contents.set_css_class_cells(name_css_contents_cells);
-    contents.set_css_class_first_row(name_css_contents_title);
 }
 
 void html_dir_tree::clear_contents()

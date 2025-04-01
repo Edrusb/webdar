@@ -139,7 +139,7 @@ private:
     html_div for_subdirs; //< where take place subdirs
     html_focus *focus_place; //< where to send contents upon focus
     html_table contents; //< directory contents
-    html_div *focus_title; //< where to write title of the contents when under focus
+    html_div *focus_title; //< where to write title of the contents when are under focus
 
     void init(const std::string & chemin);
     void go_init_indent();
