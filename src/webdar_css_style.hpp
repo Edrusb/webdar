@@ -66,11 +66,11 @@ namespace webdar_css_style
     constexpr const char* indent = "wcs_indent";
 
 
-	/// obtain the css class object corresponding to the given name
+	/// obtain the css_class object corresponding to the given name
 
 	/// \param[in] name must correspond to an existing class name defined above (text_grey, text_bold,...)
 	/// \exception exception throw if the povided name does not exist
-    const css & get_css_class(const std::string & name);
+    const css_class & get_css_class(const std::string & name);
 
 	// class used by the *_button templates below (should not be used directly, it is publicly
         // available because template body need to be stored in header file")
@@ -85,6 +85,7 @@ namespace webdar_css_style
     constexpr const char* url_normal = "wcs_url_normal";
     constexpr const char* url_void = "wcs_url_void";
     constexpr const char* url_grey = "wcs_url_grey";
+
 
         /// apply to the given button the css_classe names defined by update_library to get a normal button style
     template <class T> void normal_button(T & obj, bool fullwidth = false)

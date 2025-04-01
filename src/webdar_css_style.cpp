@@ -46,7 +46,7 @@ namespace webdar_css_style
     static libthreadar::mutex init_lock;
     static bool initialized = false;
 
-    static map<string, css> classes;
+    static map<string, css_class> classes;
 
     static css_class c_width_full(width_full);     ///< full screen large buttons (html_derouleur for exmple)
     static css_class c_width_8em(width_8em);       ///< normal width buttons (html_button, html_double_button, html_tabs,...)
@@ -72,98 +72,175 @@ namespace webdar_css_style
             if(!initialized)
             {
                 css tmp;
+		css_class tmp_class;
 
 		classes.clear();
 
                 tmp.clear();
+		tmp_class.clear();
                 tmp.css_color(COLOR_MENU_BORDER_GREY);
                 tmp.css_text_shadow("0.05em", "0.05em", "0.2em", "#888888");
-                classes[text_grey] = tmp;
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(text_grey);
+		tmp_class.set_value(tmp);
+		classes[text_grey] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		tmp.css_font_weight_bold();
-		classes[text_bold] = tmp;
+		tmp_class.set_value(tmp);
+		tmp_class.change_name(text_bold);
+		tmp_class.set_value(tmp);
+		classes[text_bold] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		tmp.css_text_shadow("0.05em", "0.05em", "0.2em", "#888888");
-                classes[text_shadow_dark] = tmp;
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(text_shadow_dark);
+		tmp_class.set_value(tmp);
+		classes[text_shadow_dark] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		    ///<<< a faire
-                classes[text_shadow_bright] = tmp;
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(text_shadow_bright);
+		tmp_class.set_value(tmp);
+		classes[text_shadow_bright] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		tmp.css_color(RED);
 		tmp.css_font_weight_bold();
-                classes[text_color_red] = tmp;
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(text_color_red);
+		tmp_class.set_value(tmp);
+		classes[text_color_red] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		tmp.css_color(GREEN);
 		tmp.css_font_style_italic();
-                classes[text_color_green] = tmp;
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(text_color_green);
+		tmp_class.set_value(tmp);
+		classes[text_color_green] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		tmp.css_text_h_align(css::al_right);
 		tmp.css_text_v_align(css::al_top);
 		tmp.css_font_weight_bold();
-		classes[text_top_right] = tmp;
+		tmp_class.set_value(tmp);
+		tmp_class.change_name(text_top_right);
+		tmp_class.set_value(tmp);
+		classes[text_top_right] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		tmp.css_font_weight_bold();
-		classes[text_right] = tmp;
+		tmp_class.set_value(tmp);
+		tmp_class.change_name(text_right);
+		tmp_class.set_value(tmp);
+		classes[text_right] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		tmp.css_float(css::fl_left);
 		tmp.css_margin_right("1em");
-                classes[float_left] = tmp;
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(float_left);
+		tmp_class.set_value(tmp);
+		classes[float_left] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		tmp.css_float(css::fl_right);
 		tmp.css_margin_left("1em");
-                classes[float_right] = tmp;
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(float_right);
+		tmp_class.set_value(tmp);
+		classes[float_right] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		tmp.css_float_clear(css::fc_both);
-		classes[float_flush] = tmp;
+		tmp_class.set_value(tmp);
+		tmp_class.change_name(float_flush);
+		tmp_class.set_value(tmp);
+		classes[float_flush] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		tmp.css_margin_top("0.2em");
 		tmp.css_margin_bottom("0.2em");
-                classes[spacing_vertical] = tmp;
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(spacing_vertical);
+		tmp_class.set_value(tmp);
+		classes[spacing_vertical] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		tmp.css_margin_left("0.2em");
 		tmp.css_margin_right("0.2em");
-                classes[spacing_horizontal] = tmp;
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(spacing_horizontal);
+		tmp_class.set_value(tmp);
+		classes[spacing_horizontal] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		tmp.css_max_width("100vw");
 		tmp.css_width("100%", false);
-                classes[width_100vw] = tmp;
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(width_100vw);
+		tmp_class.set_value(tmp);
+		classes[width_100vw] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		tmp.css_max_width("100vw");
 		tmp.css_width("calc(100% - 3em)", false);
-                classes[width_100vw_3em] = tmp;
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(width_100vw_3em);
+		tmp_class.set_value(tmp);
+		classes[width_100vw_3em] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		tmp.css_max_width("80vw");
 		tmp.css_width("80%", false);
-                classes[width_80vw] = tmp;
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(width_80vw);
+		tmp_class.set_value(tmp);
+		classes[width_80vw] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
 		tmp.css_max_width("60vw");
 		tmp.css_width("60%", false);
-                classes[width_60vw] = tmp;
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(width_60vw);
+		tmp_class.set_value(tmp);
+		classes[width_60vw] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
                 tmp.css_border_width(css::bd_all, css::bd_thick);
                 tmp.css_border_color(css::bd_all, RED);
-                classes[red_border] = tmp;
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(red_border);
+		tmp_class.set_value(tmp);
+		classes[red_border] = tmp_class;
 
 		tmp.clear();
+		tmp_class.clear();
                 tmp.css_margin_left("4em");
-		classes[indent] = tmp;
+		tmp_class.set_value(tmp);
+		tmp_class.change_name(indent);
+		tmp_class.set_value(tmp);
+		classes[indent] = tmp_class;
 
 		     // Button sizing
 
@@ -259,12 +336,12 @@ namespace webdar_css_style
 
 		    // common property to all URLs
 
-		map<string, css>::iterator it = classes.find(text_shadow_dark);
+		map<string, css_class>::iterator it = classes.find(text_shadow_dark);
 		if(it == classes.end())
 		    throw WEBDAR_BUG;
 
 		tmp.clear();
-		tmp.update_from(it->second);
+		tmp.update_from(it->second.get_value());
 		tmp.css_font_weight_bold();
 		tmp.css_font_style_italic();
 		tmp.css_text_decoration(css::dc_none);
@@ -356,16 +433,16 @@ namespace webdar_css_style
             csslib.add(c_width_full);
             csslib.add(c_width_8em);
 
-	    for(map<string, css>::iterator it = classes.begin();
+	    for(map<string, css_class>::iterator it = classes.begin();
 		it != classes.end();
 		++it)
-		csslib.add(it->first, it->second);
+		csslib.add(it->second);
         }
     }
 
-    const css & get_css_class(const std::string & name)
+    const css_class & get_css_class(const std::string & name)
     {
-	map<string, css>::iterator it = classes.find(name);
+	map<string, css_class>::iterator it = classes.find(name);
 
 	if(it == classes.end())
 	    throw exception_range(libdar::tools_printf("Unknown css class name %s in webdar_css_style module", name.c_str()));

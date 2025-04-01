@@ -325,7 +325,7 @@ void html_summary_page::new_css_library_available()
 
     if(!csslib->class_exists(css_table_top))
     {
-	tmp = webdar_css_style::get_css_class(webdar_css_style::text_shadow_dark);
+	tmp = webdar_css_style::get_css_class(webdar_css_style::text_shadow_dark).get_value();
 
 	tmp.css_border_width(css::bd_all, css::bd_medium);
 	tmp.css_border_style(css::bd_all, css::bd_solid);
