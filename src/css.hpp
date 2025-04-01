@@ -107,9 +107,15 @@ public:
     void css_height(const std::string & val,
 		    bool center);
     void css_height() { height.clear(); };
+    void css_min_height(const std::string & val);
+    void css_min_height() { min_height.clear(); };
+    void css_max_height(const std::string & val);
+    void css_max_height() { max_height.clear(); };
     void css_width(const std::string & val,
 		   bool center);
     void css_width() { width.clear(); };
+    void css_min_width(const std::string & val);
+    void css_min_width() { min_width.clear(); };
     void css_max_width(const std::string & val);
     void css_max_width() { max_width.clear(); };
     void css_z_index(unsigned int index);
@@ -333,7 +339,10 @@ private:
     css_property margin_bottom;
     css_property margin_left;
     css_property height;
+    css_property min_height;
+    css_property max_height;
     css_property width;
+    css_property min_width;
     css_property max_width;
     css_property z_index;
     css_property position_type;

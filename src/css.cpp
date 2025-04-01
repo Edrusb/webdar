@@ -57,7 +57,10 @@ void css::update_from(const css & ref)
     margin_bottom.update_from(ref.margin_bottom);
     margin_left.update_from(ref.margin_left);
     height.update_from(ref.height);
+    min_height.update_from(ref.min_height);
+    max_height.update_from(ref.max_height);
     width.update_from(ref.width);
+    min_width.update_from(ref.min_width);
     max_width.update_from(ref.max_width);
     z_index.update_from(ref.z_index);
     position_type.update_from(ref.position_type);
@@ -122,7 +125,10 @@ void css::clear()
     margin_bottom.clear();
     margin_left.clear();
     height.clear();
+    min_height.clear();
+    max_height.clear();
     width.clear();
+    min_width.clear();
     max_width.clear();
     z_index.clear();
     position_type.clear();
@@ -286,6 +292,16 @@ void css::css_height(const string & val,
     }
 }
 
+void css::css_min_height(const string & val)
+{
+    min_height.set_value(string(" min-height: ") + val + ";");
+}
+
+void css::css_max_height(const string & val)
+{
+    max_height.set_value(string(" max-height: ") + val + ";");
+}
+
 void css::css_width(const string & val,
 		    bool center)
 {
@@ -295,6 +311,11 @@ void css::css_width(const string & val,
 	css_margin_left("auto");
 	css_margin_right("auto");
     }
+}
+
+void css::css_min_width(const string & val)
+{
+    min_width.set_value(string(" min-width: ") + val + ";");
 }
 
 void css::css_max_width(const string & val)
@@ -710,7 +731,10 @@ string css::css_get_raw_string() const
     ret += margin_bottom.get_value();
     ret += margin_left.get_value();
     ret += height.get_value();
+    ret += min_height.get_value();
+    ret += max_height.get_value();
     ret += width.get_value();
+    ret += min_width.get_value();
     ret += max_width.get_value();
 
     if(!position_top.is_unset() && position_type.is_unset())
