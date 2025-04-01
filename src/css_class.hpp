@@ -95,8 +95,8 @@ public:
 	/// remove definition for the given selector type
     void clear_selector(selector_type sel);
 
-	/// clear css_class value and all selector values
-    void clear_value() { class_value = ""; };
+	/// clear all css definition, including those provided with selector, only the css name is kept
+    void clear_all() { class_value = ""; selectors.clear(); };
 
 	/// returns the css class definition
     std::string get_definition() const;
