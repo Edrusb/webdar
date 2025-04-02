@@ -436,6 +436,7 @@ void guichet::bind_to_anchor(const std::string & val)
     edit.bind_to_anchor(anchor_to);
     clear.bind_to_anchor(anchor_to);
     saveas_form.bind_to_anchor(anchor_to);
+    around_adopted.bind_to_anchor(anchor_to);
 }
 
 string guichet::inherited_get_body_part(const chemin & path,
