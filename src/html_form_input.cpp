@@ -322,29 +322,37 @@ void html_form_input::new_css_library_available()
 	    throw WEBDAR_BUG;
 
 	tmp.clear();
+	tmp.css_box_sizing(css::bx_border);
 	tmp.css_width(libdar::tools_printf("%d%%", label_width), false);
 	tmp.css_display("inline-block");
 	csslib->add(css_label, tmp);
 
 	tmp.clear();
-	tmp.css_width(libdar::tools_printf("%d%%", 100 - label_width - 6), false);
+	tmp.css_box_sizing(css::bx_border);
+	tmp.css_width(libdar::tools_printf("calc(%d%% - 0.5em)", 100 - label_width), false);
 	csslib->add(css_input, tmp);
+	    // we removed 9em from the whole width to keep place on the line
+	    // for other components like units of html_form_input_units that rely on us
 
 	tmp.clear();
+	tmp.css_box_sizing(css::bx_border);
 	tmp.css_width(libdar::tools_printf("%d%%", label_width), false);
 	tmp.css_display("inline-block");
 	tmp.css_float(css::fl_left);
 	csslib->add(css_checktitle, tmp);
 
 	tmp.clear();
+	tmp.css_box_sizing(css::bx_border);
 	tmp.css_width("3em", false);
 	csslib->add(css_check, tmp);
 
 	tmp.clear();
+	tmp.css_box_sizing(css::bx_border);
 	tmp.css_margin_top("0.2em");
 	csslib->add(css_vertical_space, tmp);
 
 	tmp.clear();
+	tmp.css_box_sizing(css::bx_border);
 	tmp.css_display("inline-block");
 	csslib->add(css_display_no_CR, tmp);
     }

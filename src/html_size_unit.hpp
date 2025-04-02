@@ -36,11 +36,11 @@ extern "C"
 
     // webdar headers
 #include "html_form_select.hpp"
-#include "html_span.hpp"
+#include "html_div.hpp"
 
     /// html component in a form a couple of dropdown list for user to define a size in byte or larger units
 
-class html_size_unit : public html_span, public actor, public events
+class html_size_unit : public html_div, public actor, public events
 {
 public:
     static const std::string changed;

@@ -39,6 +39,7 @@ extern "C"
 #include "html_size_unit.hpp"
 #include "events.hpp"
 #include "actor.hpp"
+#include "html_div.hpp"
 
     /// class html_form_input_unit implements HTML input::number feature with added unit box
 
@@ -46,7 +47,7 @@ extern "C"
     /// or through an html_form_fieldset, to provide a mean for
     /// user to provide information.
 
-class html_form_input_unit : public body_builder, public events, public actor
+class html_form_input_unit : public html_div, public events, public actor
 {
 public:
 	// default event name used to signal component change
@@ -124,12 +125,9 @@ public:
     virtual void on_event(const std::string & event_name) override;
 
 protected:
-	/// inherited from body_builder
-    virtual std::string inherited_get_body_part(const chemin & path,
-						const request & req) override;
 
 	/// inherited from body_builder
-    virtual void css_classes_have_changed() override;
+    virtual void new_css_library_available() override;
 
 private:
     bool ignore_events;  ///< do not act on received event
@@ -154,6 +152,10 @@ private:
 
 	/// returns the closest value to val but not less than val expresed in number of "unit"
     static libdar::infinint reduce_to_unit_above(const libdar::infinint & val, const libdar::infinint & unit);
+
+    static const std::string css_input;
+    static const std::string css_unit;
+
 
 };
 

@@ -43,6 +43,9 @@ using namespace std;
 
 const string html_form_input_unit::changed = "html_form_input_unit_changed";
 
+const string html_form_input_unit::css_input = "hfiu_input";
+const string html_form_input_unit::css_unit = "hfiu_unit";
+
 html_form_input_unit::html_form_input_unit(const string & label,
 					   const libdar::infinint & initial_value,
 					   const string & size):
@@ -51,8 +54,8 @@ html_form_input_unit::html_form_input_unit(const string & label,
     field(label,
 	  html_form_input::number,
 	  "", // we will set the field value below
-	  size,
-	  webdar_css_style::width_60vw),
+	  "",
+	  ""),
     val(initial_value),
     min(0),
     max(0),
@@ -78,6 +81,10 @@ html_form_input_unit::html_form_input_unit(const string & label,
 
 	// updating the value representation
     set_value_to_largest_unit();
+
+	// css
+    field.add_css_class(css_input);
+    unit_box.add_css_class(css_unit);
 }
 
 void html_form_input_unit::set_range(const libdar::infinint & x_min,
@@ -174,19 +181,26 @@ void html_form_input_unit::on_event(const std::string & event_name)
     }
 }
 
-string html_form_input_unit::inherited_get_body_part(const chemin & path,
-						     const request & req)
+void html_form_input_unit::new_css_library_available()
 {
-    return get_body_part_from_all_children(path, req);
-}
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
 
-void html_form_input_unit::css_classes_have_changed()
-{
-    css_class_group applied_to_me = get_css_class_group();
+    webdar_css_style::update_library(*csslib);
 
-	// propagating our css class only to the "field" field
-    field.clear_css_classes();
-    field.add_css_class(applied_to_me);
+    if(! csslib->class_exists(css_input))
+    {
+	css tmp;
+
+	tmp.css_width("calc(100% - 8em)", false);
+	tmp.css_float(css::fl_left);
+	csslib->add(css_input, tmp);
+
+	tmp.clear();
+	tmp.css_padding_top("0.2em");
+	csslib->add(css_unit, tmp);
+    }
 }
 
 void html_form_input_unit::set_change_event_name(const string & name)

@@ -46,13 +46,13 @@ html_slicing::html_slicing():
     form_slicing("Update"),
     slicing_fs(""),
     slicing("Sliced archive", html_form_input::check, "", "", ""), // unchecked
-    slice_size("Slice size", 0, "10"),
+    slice_size("Slice size", 1, "10"),
     different_first_slice("Specific size for first slice", html_form_input::check, "", "", ""), // unchecked
-    first_slice_size("Slice size", 0, "10"),
-    slice_permission("Slice permission (octal)", html_form_input::text, "", "10", ""),
-    slice_user_ownership("Slice user ownership", html_form_input::text, "", "20", ""),
-    slice_group_ownership("slice group ownership", html_form_input::text, "", "20", ""),
-    slice_min_digits("Minimum digits in slice file names", html_form_input::number, "0", "3", "")
+    first_slice_size("Slice size", 1, "10"),
+    slice_permission("Slice permission (octal)", html_form_input::text, "", "", ""),
+    slice_user_ownership("Slice user ownership", html_form_input::text, "", "", ""),
+    slice_group_ownership("slice group ownership", html_form_input::text, "", "", ""),
+    slice_min_digits("Minimum digits in slice file names", html_form_input::number, "0", "", "")
 {
 
 	// component setup
