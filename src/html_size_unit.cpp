@@ -178,12 +178,6 @@ void html_size_unit::on_event(const string & event_name)
 	throw WEBDAR_BUG;
 }
 
-string html_size_unit::inherited_get_body_part(const chemin & path,
-					       const request & req)
-{
-    return get_body_part_from_all_children(path, req);
-}
-
 void html_size_unit::set_fields()
 {
     switch(SI_mode.get_selected_num())

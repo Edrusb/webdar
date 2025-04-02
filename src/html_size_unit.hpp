@@ -36,10 +36,11 @@ extern "C"
 
     // webdar headers
 #include "html_form_select.hpp"
+#include "html_span.hpp"
 
     /// html component in a form a couple of dropdown list for user to define a size in byte or larger units
 
-class html_size_unit : public body_builder, public actor, public events
+class html_size_unit : public html_span, public actor, public events
 {
 public:
     static const std::string changed;
@@ -87,11 +88,6 @@ public:
 	/// actor inheritance
     virtual void on_event(const std::string & event_name) override;
 
-protected:
-
-	/// body_builder indirect inheritance
-    virtual std::string inherited_get_body_part(const chemin & path,
-						const request & req) override;
 
 private:
     static constexpr const char* mode_changed = "SI_mode changed";
