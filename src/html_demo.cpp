@@ -48,7 +48,7 @@ html_demo::html_demo():
 	       html_form_input::text,
 	       "",
 	       "",
-	       webdar_css_style::width_60vw),
+	       ""),
     left_fs("Information at Browser level"),
     form("Update"),
     btn_incr("Increment", event_incr),
@@ -57,7 +57,7 @@ html_demo::html_demo():
 		html_form_input::text,
 		"",
 		"",
-		webdar_css_style::width_60vw),
+		""),
     right_fs("Information known by Webdar"),
     counter("Counter", html_form_input::number, "0", "10", ""),
     close("Close", event_close)

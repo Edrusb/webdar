@@ -371,8 +371,6 @@ html_options_create::html_options_create():
 	// css
     webdar_css_style::grey_button(deroule, true);
     display_treated_only_dir.add_css_class(webdar_css_style::indent);
-    retry_on_change_overhead.add_css_class(webdar_css_style::width_60vw);
-    sparse_file_min_size.add_css_class(webdar_css_style::width_60vw);
 }
 
 void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)

@@ -53,7 +53,7 @@ guichet::guichet(bool subcomponent):
     clear("Clear", event_clear),
     saveas_form("Save As"),
     saveas_fs(""),
-    saveas_name("New configuration name", html_form_input::text, "", "",  webdar_css_style::width_60vw)
+    saveas_name("New configuration name", html_form_input::text, "", "", "")
 {
 	// all the rest of initialization is done in set_child()
     adopted_jsoner = nullptr;

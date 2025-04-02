@@ -63,6 +63,10 @@ public:
 	/// make the question to appear to the user
     void ask_question(const std::string & message, bool default_value);
 
+	/// read the answer returned by the user
+
+	/// \note the use of answer_yes and answer_no events
+	/// is more flexible than reading the value (no pooling)
     bool get_value() const { return rd.get_selected_num() != 0; };
 
     void set_value(bool val) { rd.set_selected_num(val ? 1 : 0); };
