@@ -52,6 +52,7 @@ extern "C"
 #include "webdar_css_style.hpp"
 #include "html_div.hpp"
 #include "tokens.hpp"
+#include "html_yes_no_box.hpp"
 
     /// class arriere_boutique provides mean to add/load a given component type to/from a bibliotheque object
 
@@ -143,6 +144,7 @@ private:
     html_double_button delete_selected;
     html_double_button clear_cur_config;
     html_div floteur;
+    html_yes_no_box confirm;
 
     html_form_fieldset around_fs;
     html_form around_form;
@@ -241,12 +243,14 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     config_fs.adopt(&need_saving);
     config_form.adopt(&config_fs);
     adopt(&config_form);
+    adopt(&confirm);
 
 	// events and actors
     wrapped_events->record_actor_on_event(this, change_event_name);
     config_form.record_actor_on_event(this, html_form::changed);
     delete_selected.record_actor_on_event(this, event_delete);
     clear_cur_config.record_actor_on_event(this, event_clear);
+    confirm.record_actor_on_event(this, html_yes_no_box::answer_yes);
 
     listing.record_actor_on_event(this, html_form_radio::changed);
     ptr->record_actor_on_event(this, bibliotheque::changed(categ));
@@ -338,6 +342,13 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
     else if(event_name == event_delete)
     {
 	    // user asked to delete the selected configuration
+
+	    // asking confirmation
+	confirm.ask_question("Are you sure to delete the loaded configuration?", false);
+    }
+    else if(event_name == html_yes_no_box::answer_yes)
+    {
+	    // user confirm configuration deletion
 
 	if(listing.is_selected())
 	{
