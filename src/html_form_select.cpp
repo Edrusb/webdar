@@ -88,7 +88,8 @@ string html_form_select::inherited_get_body_part(const chemin & path, const requ
 
 	// for any request provide an updated HTML content in response
 
-    ret += "<label for=\"" + select_id + "\">" + x_label + "</label>\n";
+    if(! x_label.empty())
+	ret += "<label for=\"" + select_id + "\">" + x_label + "</label>\n";
     ret += "<select name=\"" + select_id + "\" id=\"" + select_id + "\"";
     if(!enabled)
 	ret += " disabled";
