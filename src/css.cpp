@@ -744,6 +744,7 @@ void css::css_grid_area_name(const string & name)
 string css::css_get_raw_string() const
 {
     string ret = "";
+    string tmp;
 
     ret += color.get_value();
     ret += bg_col.get_value();
@@ -806,7 +807,9 @@ string css::css_get_raw_string() const
     ret += corner_radius.get_value();
     ret += visibility.get_value();
     ret += grid_template.get_value();
-    ret += grid_template_lines.get_value() + ";"; // needed adding ';' after all grid template lines
+    tmp = grid_template_lines.get_value();
+    if(!tmp.empty())
+	ret += tmp + ";"; // needed adding ';' after all grid template lines
     ret += grid_area.get_value();
 
     map<string, css_property>::const_iterator it = custom_css.begin();
