@@ -35,6 +35,7 @@ extern "C"
 #include "webdar_tools.hpp"
 #include "exceptions.hpp"
 #include "webdar_css_style.hpp"
+#include "css.hpp"
 
     //
 #include "html_form_input.hpp"
@@ -413,29 +414,49 @@ string html_form_input::string_for_type(input_type type)
 }
 
 
-string html_form_input::generate_label(const string & css, const string & id)
+string html_form_input::generate_label(const string & csscl, const string & id)
 {
+    string area;
+
+    if(! label_area.empty())
+    {
+        css tmp;
+
+        tmp.css_grid_area_name(label_area);
+        area = " style=\"" + tmp.css_get_raw_string() + "\"";
+    }
+
     if(! x_label.empty())
-	return "<label class=\"" + css + "\" for=\"" + id + "\">" + x_label + "</label>\n";
+        return "<label class=\"" + csscl + "\" for=\"" + id + "\"" + area + ">" + x_label + "</label>\n";
     else
-	return "";
+        return "";
 }
 
-string html_form_input::generate_input(const string & css, const string & id)
+string html_form_input::generate_input(const string & csscl, const string & id)
 {
     string ret;
-    string css_classes = css;
+    string css_classes = csscl;
+    string area;
 
-    if(css.empty())
+    if(csscl.empty())
 	if(box_css.empty())
 	    css_classes = "";
 	else
 	    css_classes = box_css;
     else
 	if(box_css.empty())
-	    css_classes = css;
+	    css_classes = csscl;
 	else
-	    css_classes = css + " " + box_css;
+	    css_classes = csscl + " " + box_css;
+
+    if(! input_area.empty())
+    {
+	css tmp;
+
+	tmp.css_grid_area_name(input_area);
+	area = " style=\"" + tmp.css_get_raw_string() + "\"";
+    }
+
 
     ret = "<input class=\"" + css_classes + "\" type=\"" + x_type + "\" name=\"" + id + "\" id=\"" + id + "\" ";
 
