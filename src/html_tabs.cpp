@@ -40,7 +40,8 @@ extern "C"
 
 using namespace std;
 
-const char* html_tabs::tab_shape = "html_tabs_shape";
+const char* html_tabs::tab_shape_on = "html_tabs_shapeon";
+const char* html_tabs::tab_shape_off = "html_tabs_shapeoff";
 const char* html_tabs::menu_bar = "html_tabs_bar";
 const char* html_tabs::tab_sep = "html_tabs_sep";
 const char* html_tabs::css_content_wrapper = "html_tabs_wrapper";
@@ -87,8 +88,7 @@ void html_tabs::add_tab(const string & label, const string & tag)
     tabs.push_back(tmp);
     tab_bar.adopt(tmp);
     tmp->record_actor_on_event(this, event_name);
-    webdar_css_style::normal_button(*tmp);
-    tmp->url_add_css_class(tab_shape);
+    set_css_off(*tmp);
 
     try
     {
@@ -153,9 +153,10 @@ void html_tabs::new_css_library_available()
 	throw WEBDAR_BUG;
     webdar_css_style::update_library(*csslib);
 
-    if(!csslib->class_exists(tab_shape))
+    if(!csslib->class_exists(tab_shape_on))
     {
 	css tmp;
+	css_class tmp_class;
 
 	    // the tab / content separator
 	tmp.css_border_width(css::bd_bottom, css::bd_thin);
@@ -163,20 +164,37 @@ void html_tabs::new_css_library_available()
 	tmp.css_border_style(css::bd_bottom, css::bd_solid);
 	csslib->add(tab_sep, tmp);
 
-	    // the selected tab (not their text)
-	tmp.clear();
+	    // the unselected tab (not their text)
+	tmp_class = webdar_css_style::get_css_class(webdar_css_style::btn_off);
+	tmp = tmp_class.get_value();
+
 	tmp.css_float(css::fl_left);
-	css::bd_width width = css::bd_thin;
-	tmp.css_border_width(css::bd_top, width);
-	tmp.css_border_width(css::bd_left, width);
-	tmp.css_border_width(css::bd_right, width);
 	tmp.css_margin_top("0.2em");
 	tmp.css_margin_right("0.2em");
 	tmp.css_margin_left("0.2em");
 	tmp.css_margin_bottom("0");
 	tmp.css_corner_radius("20%", "20%", "0", "0");
 	tmp.css_height("4em", false);
-	csslib->add(tab_shape, tmp);
+
+	tmp_class.change_name(tab_shape_off);
+	tmp_class.set_value(tmp);
+	csslib->add(tmp_class);
+
+	    // the selected tab (not their text)
+	tmp_class = webdar_css_style::get_css_class(webdar_css_style::btn_on);
+	tmp = tmp_class.get_value();
+
+	tmp.css_float(css::fl_left);
+	tmp.css_margin_top("0.2em");
+	tmp.css_margin_right("0.2em");
+	tmp.css_margin_left("0.2em");
+	tmp.css_margin_bottom("0");
+	tmp.css_corner_radius("20%", "20%", "0", "0");
+	tmp.css_height("4em", false);
+
+	tmp_class.change_name(tab_shape_on);
+	tmp_class.set_value(tmp);
+	csslib->add(tmp_class);
 
 	    // the tab bar
 	tmp.clear();
@@ -202,9 +220,7 @@ void html_tabs::set_mode(unsigned int mode)
 	    throw WEBDAR_BUG;
 	if(tabs[current_mode] == nullptr)
 	    throw WEBDAR_BUG;
-	webdar_css_style::normal_button(*(tabs[current_mode]));
-	tabs[current_mode]->add_css_class(tab_shape);
-
+	set_css_off(*(tabs[current_mode]));
     }
     else
     {
@@ -223,11 +239,28 @@ void html_tabs::set_mode(unsigned int mode)
     if(tabs[mode] == nullptr)
 	throw WEBDAR_BUG;
 
-    webdar_css_style::active_button(*(tabs[mode]));
-    tabs[mode]->add_css_class(tab_shape);
+    set_css_on(*(tabs[mode]));
 
     content.set_active_section(mode);
 	// html_aiguille::set_active_section will trigger my_body_part_has_changed()
 }
 
 
+void html_tabs::set_css_on(html_button & ref)
+{
+    ref.clear_css_classes();
+    ref.add_css_class(tab_shape_on);
+    ref.url_clear_css_classes();
+    ref.url_add_css_class(webdar_css_style::url_selected);
+    ref.add_css_class(webdar_css_style::width_8em);
+}
+
+
+void html_tabs::set_css_off(html_button & ref)
+{
+    ref.clear_css_classes();
+    ref.add_css_class(tab_shape_off);
+    ref.url_clear_css_classes();
+    ref.url_add_css_class(webdar_css_style::url_normal);
+    ref.add_css_class(webdar_css_style::width_8em);
+}

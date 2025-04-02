@@ -94,15 +94,39 @@ private:
     std::map<std::string, unsigned int> corres; ///< link eventname to tab number
     std::deque<html_button*> tabs;
 
+	/// adoption tree
+	///
+	/** /verbatim
+
+	    this (adopter)
+	    |
+	    +---- tab_bar
+	    |        |
+	    |        +--- html_buttons in tabs deque
+	    |
+	    +---- line
+	    |
+	    +---- content_wrapper
+	            |
+		    +---- content
+		             |
+			     +--- adopted_in_section() objects
+
+	    /endverbatim **/
+
     html_div tab_bar;
     html_hr line;
     html_div content_wrapper;
     html_aiguille content;
     unsigned int current_mode;
 
+    void set_css_on(html_button & ref);
+    void set_css_off(html_button & ref);
+
     void set_mode(unsigned int mode);
 
-    static const char* tab_shape;
+    static const char* tab_shape_on;
+    static const char* tab_shape_off;
     static const char* menu_bar;
     static const char* tab_sep;
 
