@@ -100,6 +100,9 @@ public:
 	/// set the object to webdar defaults
     void set_to_webdar_defaults();
 
+	/// inherited from body_builder
+    virtual void bind_to_anchor(const std::string & val) { form_crypto.bind_to_anchor(val); };
+
 protected:
 
 	/// inherited from body_builder
