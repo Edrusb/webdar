@@ -52,10 +52,19 @@ public:
     html_div & operator = (html_div && ref) noexcept = default;
     ~html_div() = default;
 
+	/// to be used when the component is adopted by another having a grid-template css property set
+
+	/// \note set to an empty string to clear/disable this property
+    void set_grid_area_name(const std::string & area_name) { grid_area = area_name; };
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
+
+private:
+    std::string grid_area; ///< CSS grid area name (empty if not used)
+
 
 };
 

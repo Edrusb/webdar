@@ -47,17 +47,26 @@ string html_div::inherited_get_body_part(const chemin & path,
     string ret;
     string cssdef = get_css_classes();
     string sub = get_body_part_from_children_as_a_block(path, req);
+    string css_grid;
+
+    if(! grid_area.empty())
+    {
+	css tmp;
+
+	tmp.css_grid_area_name(grid_area);
+	css_grid = " style=\"" + tmp.css_get_raw_string() + ";";
+    }
 
     if(cssdef.empty())
 	if(sub.empty())
 	    ret = "";
 	else
-	    ret = "<div>\n" + sub + "</div>\n";
+	    ret = "<div" + css_grid +">\n" + sub + "</div>\n";
     else // cssdef not empty
 	if(sub.empty())
-	    ret = "<div " + cssdef + ">" + "</div>\n";
+	    ret = "<div " + cssdef + css_grid + ">" + "</div>\n";
 	else
-	    ret = "<div " + cssdef + ">\n" + sub + "</div>\n";
+	    ret = "<div " + cssdef + css_grid + ">\n" + sub + "</div>\n";
 
     return ret;
 }
