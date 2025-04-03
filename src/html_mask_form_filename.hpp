@@ -114,7 +114,7 @@ public:
     std::deque<std::string> get_labels() const { return labels; };
 
 	/// inherited from body_builder
-    virtual void bind_to_anchor(const std::string & val) { form.bind_to_anchor(val); };
+    virtual void bind_to_anchor(const std::string & val) override { form.bind_to_anchor(val); };
 
 protected:
 

@@ -150,7 +150,7 @@ public:
     void load_from_bibliotheque(const std::string & name) { select.set_selected_id(name); };
 
 	/// inherited from body_builder
-    virtual void bind_to_anchor(const std::string & val);
+    virtual void bind_to_anchor(const std::string & val) override;
 
 
 protected:

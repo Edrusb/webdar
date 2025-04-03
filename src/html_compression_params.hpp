@@ -98,7 +98,7 @@ public:
     void set_to_webdar_defaults();
 
 	/// inherited from body_builder
-    virtual void bind_to_anchor(const std::string & val) { form_compr.bind_to_anchor(val); };
+    virtual void bind_to_anchor(const std::string & val) override { form_compr.bind_to_anchor(val); };
 
 protected:
 
