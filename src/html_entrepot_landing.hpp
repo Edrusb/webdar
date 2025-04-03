@@ -82,7 +82,7 @@ public:
 	/// change the change event name
     void set_event_entrepot(const std::string & name);
 
-	/// change landing_path_changed event name
+	/// change landing_path_only_changed event name
     void set_event_landing_path(const std::string & name);
 
 	/// inherited from jsoner
@@ -140,7 +140,6 @@ private:
     html_form_input_file landing_path;
     html_libdar_running_popup repoxfer;
 
-    void trigger_entrepot_changed_event();
     void start_updating_landing();
 
     static constexpr const unsigned int format_version = 1;
