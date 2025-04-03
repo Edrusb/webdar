@@ -302,8 +302,10 @@ html_options_create::html_options_create():
 	// compression
     deroule.adopt_in_section(sect_compr, &guichet_compr_params);
     deroule.adopt_in_section(sect_compr, &compr_filter_title);
-    deroule.adopt_in_section(sect_compr,&guichet_compr_mask);
+    deroule.adopt_in_section(sect_compr, &guichet_compr_mask);
 
+    guichet_compr_mask.assign_anchor(true);
+    guichet_compr_mask.bind_to_anchor(guichet_compr_mask.get_assigned_anchor());
 
 	// slicing
 
