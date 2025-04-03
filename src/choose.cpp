@@ -42,6 +42,7 @@ extern "C"
 #include "tokens.hpp"
 #include "html_div.hpp"
 #include "html_yes_no_box.hpp"
+#include "webdar_css_style.hpp"
 
     //
 #include "choose.hpp"
@@ -60,8 +61,7 @@ choose::choose():
     form("Kill the selected session(s)")
 {
     html_text tmp;
-    css tmpcss, tmpcss2;
-    static const string css_class_page = "choose_page";
+    css tmpcss;
     static const string css_class_text = "choose_text";
     static const string css_class_table = "choose_table";
     static const string css_class_table_cells = "choose_table_cells";
@@ -74,50 +74,63 @@ choose::choose():
 	/// setup of session table page
 
     page.adopt(&disco);
+	// attention disco will load the page's css_library with webdar_css_style
+	// definitions
 
-    tmpcss.clear();
-    tmpcss.css_color(COLOR_TEXT);
-    page.define_css_class_in_library(css_class_page, tmpcss);
-    page.add_css_class(css_class_page);
+	// title above session table
 
-    tmpcss.clear();
-    tmpcss.css_text_h_align(css::al_center);
-    page.define_css_class_in_library(css_class_text, tmpcss);
-    tmp.add_css_class(css_class_text);
     tmp.add_text(3, "Current sessions");
+    tmp.add_css_class(css_class_text);
+    tmp.add_css_class(webdar_css_style::text_shadow_dark);
     page.adopt_static_html(tmp.get_body_part());
+    if(! page.is_css_class_defined_in_library(webdar_css_style::text_shadow_dark))
+	page.define_css_class_in_library(webdar_css_style::get_css_class(webdar_css_style::text_shadow_dark));
+
+
+	// overall table
 
     tmpcss.clear();
-    tmpcss2.clear();
+    tmpcss.css_box_sizing(css::bx_border);
+    tmpcss.css_text_h_align(css::al_center);
     tmpcss.css_border_width(css::bd_all, css::bd_thin);
-    tmpcss.css_border_style(css::bd_all, css::bd_solid);
-    tmpcss.css_border_color(css::bd_all, COLOR_TEXT);
-    tmpcss.css_text_h_align(css::al_center);
-    page.define_css_class_in_library(css_class_table_cells, tmpcss);
-    table.set_css_class_cells(css_class_table_cells);
-    tmpcss2.update_from(tmpcss);
-    tmpcss.css_background_color(COLOR_MENU_BACK_OFF);
-    tmpcss.css_color(COLOR_MENU_FRONT_OFF);
-    tmpcss.css_font_style_italic();
-    page.define_css_class_in_library(css_class_table_title, tmpcss);
-    table.set_css_class_first_row(css_class_table_title);
-    table.css_border_collapsed(true);
-    tmpcss2.css_width("90%", true);
-    page.define_css_class_in_library(css_class_table, tmpcss2);
+    tmpcss.css_border_style(css::bd_all, css::bd_dashed);
+    tmpcss.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
+    tmpcss.css_width("90%", true);
     table.add_css_class(css_class_table);
+    page.define_css_class_in_library(css_class_table, tmpcss);
+
+
+	// all cells except the first row
+
+    tmpcss.clear();
+    tmpcss.css_border_width(css::bd_top, css::bd_thin);
+    tmpcss.css_border_style(css::bd_top, css::bd_dashed);
+    tmpcss.css_border_color(css::bd_top, COLOR_MENU_BORDER_OFF);
+    table.set_css_class_cells(css_class_table_cells);
+    page.define_css_class_in_library(css_class_table_cells, tmpcss);
+
+	// first row
+
+    tmpcss = webdar_css_style::get_css_class(webdar_css_style::btn_off).get_value();
+    table.set_css_class_first_row(css_class_table_title);
+    page.define_css_class_in_library(css_class_table_title, tmpcss);
+
+	// form button around the table
 
     tmpcss.clear();
     tmpcss.css_text_h_align(css::al_center);
-    page.define_css_class_in_library(css_class_form, tmpcss);
     form.add_css_class(css_class_form);
+    page.define_css_class_in_library(css_class_form, tmpcss);
+
+	// new session url below the table
 
     tmpcss.clear();
     tmpcss.css_text_h_align(css::al_center);
     tmpcss.css_width("90%", true);
     tmpcss.css_padding_bottom("1em");
-    page.define_css_class_in_library(css_class_div, tmpcss);
     div.add_css_class(css_class_div);
     box_nouvelle.add_css_class(css_class_div);
+    page.define_css_class_in_library(css_class_div, tmpcss);
 
 	// setting up genealogy of body_builder objects for object page
 
