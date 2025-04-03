@@ -138,6 +138,12 @@ html_options_isolate::html_options_isolate():
     deroule.adopt_in_section(sect_delta, &delta_filter_title);
     deroule.adopt_in_section(sect_delta, &guichet_delta_mask);
 
+	// by-passing anchor assigned by deroule
+    delta_filter_params.assign_anchor(true);
+    guichet_sig_block_size.bind_to_anchor(delta_filter_params.get_assigned_anchor());
+    delta_filter_title.assign_anchor(true);
+    guichet_delta_mask.bind_to_anchor(delta_filter_title.get_assigned_anchor());
+
     fs_archgen.adopt(&allow_over);
     fs_archgen.adopt(&warn_over);
     fs_archgen.adopt(&pause);
