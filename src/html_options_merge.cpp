@@ -203,6 +203,12 @@ html_options_merge::html_options_merge():
     deroule.adopt_in_section(sect_delta, &delta_filter_title);
     deroule.adopt_in_section(sect_delta, &guichet_delta_mask);
 
+	// by-passing deroule/html_derouleur anchor assigment
+    delta_filter_params.assign_anchor(true);
+    guichet_sig_block_size.bind_to_anchor(delta_filter_params.get_assigned_anchor());
+    delta_filter_title.assign_anchor(true);
+    guichet_delta_mask.bind_to_anchor(delta_filter_title.get_assigned_anchor());
+
     fs_shown.adopt(&info_details);
     fs_shown.adopt(&display_treated);
     fs_shown.adopt(&display_treated_only_dir);
