@@ -66,7 +66,7 @@ string html_libdar_running_page::inherited_get_body_part(const chemin & path,
     string body = get_body_part_from_children_as_a_block(path, req);
 
     if(enable_refresh)
-	set_refresh_redirection(1, req.get_uri().get_path().display(false));
+	set_refresh_redirection(1, req.get_uri().url_path_part());
     else
 	set_refresh_redirection(0, ""); // disable refresh
 

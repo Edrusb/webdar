@@ -355,7 +355,7 @@ string html_select_file::inherited_get_body_part(const chemin & path,
     if(page != nullptr)
     {
 	if(should_refresh)
-	    page->set_refresh_redirection(1, req.get_uri().get_path().display(false));
+	    page->set_refresh_redirection(1, req.get_uri().url_path_part());
 	else
 	    page->set_refresh_redirection(0, ""); // disable refresh
     }

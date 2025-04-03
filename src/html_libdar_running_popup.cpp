@@ -94,7 +94,7 @@ string html_libdar_running_popup::inherited_get_body_part(const chemin & path,
     ret = html_popup::inherited_get_body_part(path, req);
 
     if(enable_refresh)
-	page->set_refresh_redirection(1, req.get_uri().get_path().display(false));
+	page->set_refresh_redirection(1, req.get_uri().url_path_part());
     else
 	page->set_refresh_redirection(0, ""); // disable refresh
 
