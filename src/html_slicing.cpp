@@ -243,9 +243,9 @@ json html_slicing::save_json() const
 void html_slicing::clear_json()
 {
     slicing.set_value_as_bool(false);
-    slice_size.set_value_as_infinint(0);
+    slice_size.set_value_as_infinint(1024*1024*1024);
     different_first_slice.set_value_as_bool(false);
-    first_slice_size.set_value_as_infinint(0);
+    first_slice_size.set_value_as_infinint(1024*1024*1024);
     slice_permission.set_value("");
     slice_user_ownership.set_value("");
     slice_group_ownership.set_value("");
