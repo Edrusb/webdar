@@ -84,6 +84,12 @@ html_slicing::html_slicing():
     register_name(changed);
 
 	// css
+    slicing.add_css_class(webdar_css_style::width_100vw_8em);
+    different_first_slice.add_css_class(webdar_css_style::width_100vw_8em);
+    slice_permission.add_css_class(webdar_css_style::width_100vw_8em);
+    slice_user_ownership.add_css_class(webdar_css_style::width_100vw_8em);
+    slice_group_ownership.add_css_class(webdar_css_style::width_100vw_8em);
+    slice_min_digits.add_css_class(webdar_css_style::width_100vw_8em);
 
 	// visibility
     on_event(html_form_input::changed);

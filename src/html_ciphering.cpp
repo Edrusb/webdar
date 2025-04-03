@@ -115,6 +115,10 @@ html_ciphering::html_ciphering():
     on_event(kdf_algo_changed);
 
 	// csss
+    crypto_pass1.add_css_class(webdar_css_style::width_100vw_8em);
+    crypto_pass2.add_css_class(webdar_css_style::width_100vw_8em);
+    crypto_threads.add_css_class(webdar_css_style::width_100vw_8em);
+    iteration_count.add_css_class(webdar_css_style::width_100vw_8em);
 
 	// nothing //
 }

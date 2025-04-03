@@ -200,6 +200,24 @@ namespace webdar_css_style
 
 		tmp.clear();
 		tmp_class.clear();
+		tmp.css_max_width("100vw");
+		tmp.css_width("calc(100% - 8em)", false);
+		tmp_class.set_value(tmp);
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(width_100vw_8em);
+		classes[width_100vw_8em] = tmp_class;
+
+		tmp.clear();
+		tmp_class.clear();
+		tmp.css_max_width("100vw");
+		tmp.css_width("calc(100% - 5em)", false);
+		tmp_class.set_value(tmp);
+		tmp_class.set_value(tmp);
+                tmp_class.change_name(width_100vw_5em);
+		classes[width_100vw_5em] = tmp_class;
+
+		tmp.clear();
+		tmp_class.clear();
 		tmp.css_max_width("80vw");
 		tmp.css_width("80%", false);
 		tmp_class.set_value(tmp);

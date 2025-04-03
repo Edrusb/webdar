@@ -65,9 +65,9 @@ html_options_read::html_options_read():
     force_first_slice("Start reading the first instead of the last (available when external catalog is used)", html_form_input::check, "", "", ""),
     ref_use_external_catalogue("Use external catalog to open the archive", html_form_input::check, "", "", ""),
     form_ref("Update Options"),
-    ref_path("External catalog path", "/", "", webdar_css_style::width_80vw, "Select the external catalog..."),
+    ref_path("External catalog path", "/", "", "", "Select the external catalog..."),
     ref_crypto_algo("Cipher (for recent archives/backups, this is auto-detected, do not select any cipher)"),
-    ref_crypto_pass("Passphrase", html_form_input::password, "", "", webdar_css_style::width_80vw),
+    ref_crypto_pass("Passphrase", html_form_input::password, "", "", ""),
     ref_crypto_size("Cipher block size", 0, "80%"),
     ref_execute("Command to execute locally before reading each slice", html_form_input::text, "", "", webdar_css_style::width_100vw),
     ref_slice_min_digits("Slice minimum digit", html_form_input::number, "0", "6", ""),
@@ -184,6 +184,21 @@ html_options_read::html_options_read():
 	// css
 
     webdar_css_style::grey_button(deroule, true);
+    src_crypto_pass.add_css_class(webdar_css_style::width_100vw_8em);
+    src_ignore_sig_failure.add_css_class(webdar_css_style::width_100vw_8em);
+    src_execute.add_css_class(webdar_css_style::width_100vw_8em);
+    src_slice_min_digits.add_css_class(webdar_css_style::width_100vw_8em);
+    info_details.add_css_class(webdar_css_style::width_100vw_8em);
+    lax.add_css_class(webdar_css_style::width_100vw_8em);
+    sequential_read.add_css_class(webdar_css_style::width_100vw_8em);
+    force_first_slice.add_css_class(webdar_css_style::width_100vw_8em);
+    multi_thread_crypto.add_css_class(webdar_css_style::width_100vw_8em);
+    multi_thread_compress.add_css_class(webdar_css_style::width_100vw_8em);
+    ref_use_external_catalogue.add_css_class(webdar_css_style::width_100vw_8em);
+    ref_path.add_css_class(webdar_css_style::width_100vw_5em);
+    ref_crypto_pass.add_css_class(webdar_css_style::width_100vw_8em);
+    ref_execute.add_css_class(webdar_css_style::width_100vw_8em);
+    ref_slice_min_digits.add_css_class(webdar_css_style::width_100vw_8em);
 }
 
 void html_options_read::set_biblio(const shared_ptr<bibliotheque> & ptr)

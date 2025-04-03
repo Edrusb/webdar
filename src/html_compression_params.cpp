@@ -32,7 +32,7 @@ extern "C"
 #include <dar/tools.hpp>
 
     // webdar headers
-
+#include "webdar_css_style.hpp"
 
 
     //
@@ -101,7 +101,10 @@ html_compression_params::html_compression_params(bool show_resave,
 	// wich setup the visibility of components
 
 	// css
-
+    compression_level.add_css_class(webdar_css_style::width_100vw_8em);
+    never_resave_uncompressed.add_css_class(webdar_css_style::width_100vw_8em);
+    compr_threads.add_css_class(webdar_css_style::width_100vw_8em);
+    keep_compressed.add_css_class(webdar_css_style::width_100vw_8em);
 }
 
 void html_compression_params::load_json(const json & source)
@@ -312,4 +315,13 @@ void html_compression_params::css_classes_have_changed()
 	it != css_classes.end();
 	++it)
 	form_compr.add_css_class(*it);
+}
+
+void html_compression_params::new_css_library_available()
+{
+    unique_ptr<css_library> & csslib = lookup_css_library();
+    if(!csslib)
+	throw WEBDAR_BUG;
+
+    webdar_css_style::update_library(*csslib);
 }

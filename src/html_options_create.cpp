@@ -381,6 +381,14 @@ html_options_create::html_options_create():
 	// css
     webdar_css_style::grey_button(deroule, true);
     display_treated_only_dir.add_css_class(webdar_css_style::indent);
+    allow_over.add_css_class(webdar_css_style::width_100vw_8em);
+    warn_over.add_css_class(webdar_css_style::width_100vw_8em);
+    pause.add_css_class(webdar_css_style::width_100vw_8em);
+    retry_on_change_times.add_css_class(webdar_css_style::width_100vw_8em);
+    sequential_marks.add_css_class(webdar_css_style::width_100vw_8em);
+    user_comment.add_css_class(webdar_css_style::width_100vw_8em);
+    execute.add_css_class(webdar_css_style::width_100vw_8em);
+    empty.add_css_class(webdar_css_style::width_100vw_8em);
 }
 
 void html_options_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
