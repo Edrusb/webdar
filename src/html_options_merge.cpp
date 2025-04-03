@@ -226,6 +226,11 @@ html_options_merge::html_options_merge():
     deroule.adopt_in_section(sect_compr, &compr_filter_title);
     deroule.adopt_in_section(sect_compr, &guichet_compr_mask);
 
+	// by-passing anchor assigned by deroule
+    compr_filter_title.assign_anchor(true);
+    guichet_compr_mask.bind_to_anchor(compr_filter_title.get_assigned_anchor());
+
+
     deroule.adopt_in_section(sect_slice, &guichet_slicing);
 
     deroule.adopt_in_section(sect_cipher, &guichet_ciphering);
