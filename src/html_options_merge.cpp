@@ -286,6 +286,13 @@ html_options_merge::html_options_merge():
 	// CSS
     webdar_css_style::grey_button(deroule, true);
     display_treated_only_dir.add_css_class(webdar_css_style::indent);
+    allow_over.add_css_class(webdar_css_style::width_100vw_8em);
+    warn_over.add_css_class(webdar_css_style::width_100vw_8em);
+    pause.add_css_class(webdar_css_style::width_100vw_8em);
+    sequential_marks.add_css_class(webdar_css_style::width_100vw_8em);
+    user_comment.add_css_class(webdar_css_style::width_100vw_8em);
+    execute.add_css_class(webdar_css_style::width_100vw_8em);
+    empty.add_css_class(webdar_css_style::width_100vw_8em);
 }
 
 void html_options_merge::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
