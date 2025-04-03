@@ -69,13 +69,25 @@ public:
 	/// clear and destroy previously added objects
     void clear() { orphan_all_children(); adopt(&legend); };
 
+	/// inherited from body_builder
+    virtual void bind_to_anchor(const std::string & val) override { update_anchor(val); };
+
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// inherited from body_builder
+    virtual void has_adopted(body_builder *obj) override;
+
+
 private:
     html_legend legend;
+    std::string bounded_anchor;
+
+    void update_anchor(const std::string & val);
+
 
 };
 

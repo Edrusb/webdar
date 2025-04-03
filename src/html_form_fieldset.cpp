@@ -51,3 +51,24 @@ string html_form_fieldset::inherited_get_body_part(const chemin & path,
 
     return ret;
 }
+
+void html_form_fieldset::has_adopted(body_builder *obj)
+{
+    if(obj == nullptr)
+	throw WEBDAR_BUG;
+
+    if(! bounded_anchor.empty())
+	obj->bind_to_anchor(bounded_anchor);
+}
+
+void html_form_fieldset::update_anchor(const std::string & val)
+{
+    bounded_anchor = val;
+
+    for(unsigned int i = 0; i < size(); ++i)
+    {
+	if((*this)[i] == nullptr)
+	    throw WEBDAR_BUG;
+	(*this)[i]->bind_to_anchor(bounded_anchor);
+    }
+}
