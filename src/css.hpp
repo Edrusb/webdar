@@ -282,7 +282,9 @@ public:
 			   const std::string & topright,
 			   const std::string & botright,
 			   const std::string & botleft);
-    void css_corner_radius(); // clear all css_corner radius relative information
+
+	// clear all css_corner radius relative information
+    void css_corner_radius() { corner_radius.clear(); };
 
 	/// css_visibility does not prevent sending HTML code to the browser
 
