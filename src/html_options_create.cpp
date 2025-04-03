@@ -233,6 +233,13 @@ html_options_create::html_options_create():
     deroule.adopt_in_section(sect_delta, &delta_filter_title);
     deroule.adopt_in_section(sect_delta, &guichet_delta_mask);
 
+	// by-passing deroule/html_derouleur anchor assigment
+    delta_filter_params.assign_anchor(true);
+    guichet_sig_block_size.bind_to_anchor(delta_filter_params.get_assigned_anchor());
+    delta_filter_title.assign_anchor(true);
+    guichet_delta_mask.bind_to_anchor(delta_filter_title.get_assigned_anchor());
+
+
 	// source data
     fs_alter_atime.adopt(&alter_atime);
     form_reading.adopt(&furtive_read_mode);
@@ -304,6 +311,7 @@ html_options_create::html_options_create():
     deroule.adopt_in_section(sect_compr, &compr_filter_title);
     deroule.adopt_in_section(sect_compr, &guichet_compr_mask);
 
+	// by-passing deroule/html_derouleur anchor assignment
     guichet_compr_mask.assign_anchor(true);
     guichet_compr_mask.bind_to_anchor(guichet_compr_mask.get_assigned_anchor());
 
