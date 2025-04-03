@@ -75,6 +75,9 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
+	/// inherited from body_builder
+    virtual void bind_to_anchor(const std::string & val) { form.bind_to_anchor(val); };
+
 protected:
 
 	/// inherited from body_builder
