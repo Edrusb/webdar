@@ -79,6 +79,9 @@ void html_derouleur::add_section(const string & name, const string & title)
 	it->second.shrinker->assign_anchor(true);
 	it->second.title->bind_to_anchor(it->second.shrinker->get_assigned_anchor());
 
+	it->second.title->assign_anchor(true);
+	it->second.shrinker->bind_to_anchor(it->second.title->get_assigned_anchor());
+
 	if(! css_url.is_empty())
 	{
 	    it->second.title->url_clear_css_classes();
