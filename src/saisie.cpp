@@ -200,7 +200,9 @@ saisie::saisie():
     text.add_text(0, "by Denis CORBIN");
     text.add_nl();
     text.add_nl();
-    text.add_text(0, "to my parents and my daughters");
+    text.add_text(0, "to my parents");
+    text.add_nl();
+    text.add_text(0, "and my daughters");
     text.add_nl();
     text.add_text(0, "Capucine and C&eacute;lestine");
     text.add_nl();
