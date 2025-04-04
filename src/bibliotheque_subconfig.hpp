@@ -24,6 +24,8 @@
 #ifndef BIBLIOTHEQUE_SUBCONFIG_HPP
 #define BIBLIOTHEQUE_SUBCONFIG_HPP
 
+#include "my_config.h"
+
     // C system header files
 extern "C"
 {

@@ -24,6 +24,8 @@
 #ifndef REQUEST_HPP
 #define REQUEST_HPP
 
+#include "my_config.h"
+
     // C++ system header files
 #include <string>
 #include <map>

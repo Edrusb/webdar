@@ -24,6 +24,8 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
+#include "my_config.h"
+
     // C++ system header files
 #include <memory>
 

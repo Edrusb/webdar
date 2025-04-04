@@ -24,6 +24,8 @@
 #ifndef PROTO_CONNEXION_HPP
 #define PROTO_CONNEXION_HPP
 
+#include "my_config.h"
+
     // C++ system header files
 #include <string>
 

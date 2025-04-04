@@ -24,6 +24,8 @@
 #ifndef HTML_OVER_GUICHET_HPP
 #define HTML_OVER_GUICHET_HPP
 
+#include "my_config.h"
+
     // C system header files
 extern "C"
 {

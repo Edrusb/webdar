@@ -24,6 +24,8 @@
 #ifndef LISTENER_HPP
 #define LISTENER_HPP
 
+#include "my_config.h"
+
     // C++ system header files
 #include <libthreadar/libthreadar.hpp>
 #include <memory>

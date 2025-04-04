@@ -33,6 +33,8 @@
     ///   can implement (but is not obliged to) this interface to be notified of status changes of the
     ///   html_void object, by implementing (overriding) the specified methods of that class.
 
+#include "my_config.h"
+
     // C system header files
 extern "C"
 {

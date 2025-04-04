@@ -24,6 +24,8 @@
 #ifndef GUICHET_HPP
 #define GUICHET_HPP
 
+#include "my_config.h"
+
     // C system header files
 extern "C"
 {

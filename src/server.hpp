@@ -24,6 +24,8 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#include "my_config.h"
+
     // C++ system header files
 #include <list>
 #include <libthreadar/libthreadar.hpp>

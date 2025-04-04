@@ -24,6 +24,8 @@
 #ifndef CONNEXION_HPP
 #define CONNEXION_HPP
 
+#include "my_config.h"
+
     // C++ system header files
 #include <string>
 

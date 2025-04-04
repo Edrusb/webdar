@@ -24,6 +24,8 @@
 #ifndef RESPONDER_HPP
 #define RESPONDER_HPP
 
+#include "my_config.h"
+
     // C++ system header files
 #include <string>
 #include <vector>

@@ -24,6 +24,8 @@
 #ifndef HTML_FICHIER_HPP
 #define HTML_FICHIER_HPP
 
+#include "my_config.h"
+
     // C system header files
 extern "C"
 {

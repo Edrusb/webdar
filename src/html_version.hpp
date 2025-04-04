@@ -24,6 +24,8 @@
 #ifndef HTML_VERSION_HPP
 #define HTML_VERSION_HPP
 
+#include "my_config.h"
+
     // C system header files
 extern "C"
 {

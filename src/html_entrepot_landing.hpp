@@ -24,6 +24,8 @@
 #ifndef HTML_ENTREPOT_LANDING_HPP
 #define HTML_ENTREPOT_LANDING_HPP
 
+#include "my_config.h"
+
     // C system header files
 extern "C"
 {

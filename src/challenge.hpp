@@ -24,8 +24,10 @@
 #ifndef CHALLENGE_HPP
 #define CHALLENGE_HPP
 
-    // C system header files
 #include "my_config.h"
+
+    // C system header files
+
 extern "C"
 {
 

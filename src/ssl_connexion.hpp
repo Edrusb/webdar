@@ -24,8 +24,10 @@
 #ifndef SSL_CONNEXION_HPP
 #define SSL_CONNEXION_HPP
 
-    // C system header files
 #include "my_config.h"
+
+    // C system header files
+
 extern "C"
 {
 #if HAVE_OPENSSL_SSL_H

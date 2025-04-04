@@ -24,8 +24,10 @@
 #ifndef TOKENS_HPP
 #define TOKENS_HPP
 
-    // C system header files
 #include "my_config.h"
+
+    // C system header files
+
 extern "C"
 {
 
@@ -34,7 +36,7 @@ extern "C"
 #include <dar/libdar.hpp>
 
     // webdar headers
-#include "my_config.h"
+
 
     // WEBDAR Version
 #ifndef WEBDAR_VERSION
