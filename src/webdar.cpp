@@ -54,6 +54,18 @@ extern "C"
 #endif
 }
 
+/// the compiler version MACRO
+#ifndef __VERSION__
+#define __VERSION__ "unknown"
+#endif
+
+/// the compiler Nature MACRO
+#ifdef __GNUC__
+#define CC_NAT "GNUC"
+#else
+#define CC_NAT "unknown"
+#endif
+
     // C++ system header files
 #include <iostream>
 #include <vector>
@@ -177,6 +189,7 @@ static void close_all_listeners(int sig);
 static void libdar_init();
 static void libdar_end();
 static void usage(const char* argv0);
+static void show_ver();
 
     // yes, this will point to a global object, this class handle concurrent access,
     // no problem in this multi-threaded program.
@@ -506,7 +519,7 @@ static void parse_cmd(int argc, char *argv[],
     max_srv = DEFAULT_POOL_SIZE;
     ecoute.clear();
 
-    while((lu = getopt(argc, argv, "vl:bC:K:hm:w:")) != -1)
+    while((lu = getopt(argc, argv, "vl:bC:K:hm:w:V")) != -1)
     {
 	switch(lu)
 	{
@@ -553,6 +566,9 @@ static void parse_cmd(int argc, char *argv[],
 	    }
 	    else
 		throw exception_range("-w option needs \"yes\" or \"no\" as argument");
+	    break;
+	case 'V':
+	    show_ver();
 	    break;
 	default:
 	    throw WEBDAR_BUG; // "known option by getopt but not known by webdar!
@@ -749,6 +765,12 @@ static void signal_handler(int x)
 static void usage(const char* argv0)
 {
     string msg = libdar::tools_printf("Usage: %s [-l <IP>[:port]] [-v] [-b] [-w <yes|no>] [-C <certificate file> -K <private key file>]\n", argv0);
+
+static void show_ver()
+{
+    string msg;
+    msg += libdar::tools_printf("\nWebdar version %s, Copyright (C) 2002-2025 Denis Corbin\n", WEBDAR_VERSION);
+    msg += libdar::tools_printf(gettext(" compiled the %s with %s version %s\n"), __DATE__, CC_NAT, __VERSION__);
 
     cout << msg << endl;
     exit(1);
