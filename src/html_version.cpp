@@ -149,7 +149,7 @@ void html_version::new_css_library_available()
     {
 	tmp = webdar_css_style::get_css_class(webdar_css_style::text_shadow_dark).get_value();
 
-	tmp.css_border_width(css::bd_all, css::bd_medium);
+	tmp.css_border_width(css::bd_all, css::bd_thin);
 	tmp.css_border_style(css::bd_all, css::bd_solid);
 	tmp.css_font_weight_bold();
 	tmp.css_background_color(COLOR_BACK);
@@ -160,7 +160,7 @@ void html_version::new_css_library_available()
     if(!csslib->class_exists(css_table_left))
     {
 	tmp.clear();
-	tmp.css_border_width(css::bd_all, css::bd_medium);
+	tmp.css_border_width(css::bd_all, css::bd_thin);
 	tmp.css_border_style(css::bd_all, css::bd_solid);
 	tmp.css_text_h_align(css::al_left);
 	tmp.css_font_weight_bold();
@@ -171,7 +171,7 @@ void html_version::new_css_library_available()
     if(!csslib->class_exists(css_table_cells))
     {
 	tmp.clear();
-	tmp.css_border_width(css::bd_all, css::bd_medium);
+	tmp.css_border_width(css::bd_all, css::bd_thin);
 	tmp.css_border_style(css::bd_all, css::bd_solid);
 	tmp.css_text_h_align(css::al_center);
 	tmp.css_width("90%", true);
