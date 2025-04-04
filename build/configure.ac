@@ -436,12 +436,24 @@ AS_IF(	       [ test "x$enable_dev" != "xno" ],
 	       [] # else we just keep silent
 	       )
 
+AC_ARG_ENABLE( [webdar-static],
+               AS_HELP_STRING(--disable-webdar-static, [building webdar_static, a webdar statically linked version]),
+               [
+                 explicit_webdar_static=yes
+                 AS_IF([ test "x$enable_webdar_static" != "xyes" ],
+                       [ build_static="no" ],
+                       [ build_static="yes" ])
+               ],
+               [build_static="yes"])
+
+
+
 # Checks for libraries.
 AC_CHECK_LIB(dar64, [for_autoconf], [], [AC_MSG_ERROR([cannot link with libdar library]) ])
 AC_CHECK_LIB(threadar, [for_autoconf], [], [AC_MSG_ERROR([Cannot link with libthreadar library]) ])
 AC_CHECK_LIB(ssl, [SSL_new], [], [AC_MSG_ERROR([Cannot link with libssl library]) ])
 
-
+AM_CONDITIONAL([BUILD_WEBDAR_STATIC], [ test $build_static = "yes" ])
 AM_CONDITIONAL([BUILD_MODE32], [test "$build_mode" = "32"])
 AM_CONDITIONAL([BUILD_MODE64], [test "$build_mode" = "64" -o -z "$build_mode"])
 AM_CONDITIONAL([USE_UPX], [test "$upx" = "yes"])
