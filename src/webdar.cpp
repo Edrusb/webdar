@@ -764,7 +764,27 @@ static void signal_handler(int x)
 
 static void usage(const char* argv0)
 {
-    string msg = libdar::tools_printf("Usage: %s [-l <IP>[:port]] [-v] [-b] [-w <yes|no>] [-C <certificate file> -K <private key file>]\n", argv0);
+    string msg = "\n";
+    msg += libdar::tools_printf("Usage: %s [-l <IP>[:port]] [-v] [-b <facility>] [-w <yes|no>] [-m <num>] [-C <certificate file> -K <private key file>]\n", argv0);
+    msg += libdar::tools_printf("     : %s -V\n", argv0);
+    msg += libdar::tools_printf("     : %s -h\n\n", argv0);
+    msg += libdar::tools_printf("  -l : IP/port webdar will listen on. Defaults to loopback IP on TCP port %d\n", DEFAULT_TCP_PORT);
+    msg += libdar::tools_printf("  -v : verbose output\n");
+    msg += libdar::tools_printf("  -b : webdar in background sending messages to syslog <facility> (not yet implemented)\n");
+    msg += libdar::tools_printf("  -w : yes: basic auth (no disconnection from browser), no: authentication requested for each TCP session\n");
+    msg += libdar::tools_printf("  -m : max number of concurrent TCP sessions (%d by default)\n", DEFAULT_POOL_SIZE);
+    msg += libdar::tools_printf("  -V : shows version information and exits\n");
+    msg += libdar::tools_printf("  -h : displays this short help\n");
+    msg += libdar::tools_printf("  -C : certificate from the PKI to authenticate the -K-given private key\n");
+    msg += libdar::tools_printf("  -K : private key to use to cipher exchanges with ssl (HTTPS sessions)\n\n");
+    msg += libdar::tools_printf("Creating a self signed certificate can be achieved with:\n");
+    msg += libdar::tools_printf("     openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout mycert.pem -out mycert.pem\n");
+    msg += libdar::tools_printf("You can then setup webdar for HTTPS this way:\n");
+    msg += libdar::tools_printf("     webdar -l 0.0.0.0 -v -C mycert.pem -K mycert.pem\n\n");
+
+    cout << msg << endl;
+    exit(1);
+}
 
 static void show_ver()
 {
