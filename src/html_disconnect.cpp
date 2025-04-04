@@ -40,6 +40,8 @@ extern "C"
 using namespace std;
 
 const string html_disconnect::event_disconn = "disconnect";
+const string html_disconnect::event_version = "version";
+
 const string html_disconnect::css_global = "html_disco_global";
 const string html_disconnect::css_title = "html_disco_title";
 const string html_disconnect::css_title_vers = "html_disco_title_vers";
@@ -53,6 +55,7 @@ bool html_disconnect::default_basic_auth = true;
 
 html_disconnect::html_disconnect():
     logo((chemin(STATIC_PATH_ID) + chemin(STATIC_TITLE_LOGO)).display(false), "Webdar logo"),
+    title_vers(libdar::tools_printf("Version %s", WEBDAR_VERSION), event_version),
     quit("Disconnect", event_disconn)
 {
 
@@ -62,8 +65,6 @@ html_disconnect::html_disconnect():
 
     title.clear();
     title.add_text(0, "WEBDAR");
-    title_vers.clear();
-    title_vers.add_text(0, libdar::tools_printf("Version %s", WEBDAR_VERSION));
 
 	// adoption tree
     title_box.adopt(&logo);
@@ -76,6 +77,7 @@ html_disconnect::html_disconnect():
 
 	// events
     quit.record_actor_on_event(this, event_disconn);
+    title_vers.record_actor_on_event(this, event_version);
     register_name(event_disconn); // to be able to propagate the event
 
 	// visible status
@@ -87,8 +89,8 @@ html_disconnect::html_disconnect():
     logo.add_css_class(webdar_css_style::float_left);
     title.add_css_class(css_title);
     title.add_css_class(webdar_css_style::text_shadow_dark);
+    webdar_css_style::normal_button(title_vers);
     title_vers.add_css_class(css_title_vers);
-    title_vers.add_css_class(webdar_css_style::text_shadow_dark);
     title_box.add_css_class(css_title_box);
     status.add_css_class(css_status);
     status.add_css_class(webdar_css_style::text_shadow_dark);
@@ -108,6 +110,10 @@ void html_disconnect::on_event(const string & event_name)
 {
     if(event_name == event_disconn)
 	act(event_disconn); // propagate the event
+    else if(event_name == event_version)
+    {
+	    // fire the version popup
+    }
     else
 	throw WEBDAR_BUG;
 }
@@ -150,8 +156,8 @@ void html_disconnect::new_css_library_available()
 	tmp.clear();
 
 	tmp.css_font_size(small_text);
+	tmp.css_float(css::fl_left);
 	tmp.css_margin_left("1em");
-	tmp.css_color(COLOR_MENU_BORDER_OFF);
 
 	csslib->add(css_title_vers, tmp);
 

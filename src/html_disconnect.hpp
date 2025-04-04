@@ -85,6 +85,8 @@ protected:
 
 
 private:
+    static const std::string event_version;
+
     static const std::string css_global;
     static const std::string css_logo;
     static const std::string css_title;
@@ -98,7 +100,7 @@ private:
     html_image logo;
     html_div title_box;
     html_text title;
-    html_text title_vers;
+    html_button title_vers;
     html_div status_box;
     html_text status;
     html_button quit;
