@@ -89,7 +89,6 @@ namespace webdar_css_style
 		tmp_class.clear();
 		    ///<<< a faire
 		tmp_class.set_value(tmp);
-		tmp_class.set_value(tmp);
                 tmp_class.change_name(text_shadow_bright);
 		classes[text_shadow_bright] = tmp_class;
 
@@ -105,7 +104,6 @@ namespace webdar_css_style
 		tmp.css_color(RED);
 		tmp.css_font_weight_bold();
 		tmp_class.set_value(tmp);
-		tmp_class.set_value(tmp);
                 tmp_class.change_name(text_color_red);
 		classes[text_color_red] = tmp_class;
 
@@ -113,7 +111,6 @@ namespace webdar_css_style
 		tmp_class.clear();
 		tmp.css_color(GREEN);
 		tmp.css_font_style_italic();
-		tmp_class.set_value(tmp);
 		tmp_class.set_value(tmp);
                 tmp_class.change_name(text_color_green);
 		classes[text_color_green] = tmp_class;
@@ -124,14 +121,12 @@ namespace webdar_css_style
 		tmp.css_text_v_align(css::al_top);
 		tmp.css_font_weight_bold();
 		tmp_class.set_value(tmp);
-		tmp_class.set_value(tmp);
 		tmp_class.change_name(text_top_right);
 		classes[text_top_right] = tmp_class;
 
 		tmp.clear();
 		tmp_class.clear();
 		tmp.css_font_weight_bold();
-		tmp_class.set_value(tmp);
 		tmp_class.set_value(tmp);
 		tmp_class.change_name(text_right);
 		classes[text_right] = tmp_class;
@@ -141,7 +136,6 @@ namespace webdar_css_style
 		tmp.css_float(css::fl_left);
 		tmp.css_margin_right("1em");
 		tmp_class.set_value(tmp);
-		tmp_class.set_value(tmp);
                 tmp_class.change_name(float_left);
 		classes[float_left] = tmp_class;
 
@@ -150,14 +144,12 @@ namespace webdar_css_style
 		tmp.css_float(css::fl_right);
 		tmp.css_margin_left("1em");
 		tmp_class.set_value(tmp);
-		tmp_class.set_value(tmp);
                 tmp_class.change_name(float_right);
 		classes[float_right] = tmp_class;
 
 		tmp.clear();
 		tmp_class.clear();
 		tmp.css_float_clear(css::fc_both);
-		tmp_class.set_value(tmp);
 		tmp_class.set_value(tmp);
 		tmp_class.change_name(float_flush);
 		classes[float_flush] = tmp_class;
@@ -167,7 +159,6 @@ namespace webdar_css_style
 		tmp.css_margin_top("0.2em");
 		tmp.css_margin_bottom("0.2em");
 		tmp_class.set_value(tmp);
-		tmp_class.set_value(tmp);
                 tmp_class.change_name(spacing_vertical);
 		classes[spacing_vertical] = tmp_class;
 
@@ -175,7 +166,6 @@ namespace webdar_css_style
 		tmp_class.clear();
 		tmp.css_margin_left("0.2em");
 		tmp.css_margin_right("0.2em");
-		tmp_class.set_value(tmp);
 		tmp_class.set_value(tmp);
                 tmp_class.change_name(spacing_horizontal);
 		classes[spacing_horizontal] = tmp_class;
@@ -185,7 +175,6 @@ namespace webdar_css_style
 		tmp.css_max_width("100vw");
 		tmp.css_width("100%", false);
 		tmp_class.set_value(tmp);
-		tmp_class.set_value(tmp);
                 tmp_class.change_name(width_100vw);
 		classes[width_100vw] = tmp_class;
 
@@ -193,7 +182,6 @@ namespace webdar_css_style
 		tmp_class.clear();
 		tmp.css_max_width("100vw");
 		tmp.css_width("calc(100% - 3em)", false);
-		tmp_class.set_value(tmp);
 		tmp_class.set_value(tmp);
                 tmp_class.change_name(width_100vw_3em);
 		classes[width_100vw_3em] = tmp_class;
@@ -203,7 +191,6 @@ namespace webdar_css_style
 		tmp.css_max_width("100vw");
 		tmp.css_width("calc(100% - 8em)", false);
 		tmp_class.set_value(tmp);
-		tmp_class.set_value(tmp);
                 tmp_class.change_name(width_100vw_8em);
 		classes[width_100vw_8em] = tmp_class;
 
@@ -211,7 +198,6 @@ namespace webdar_css_style
 		tmp_class.clear();
 		tmp.css_max_width("100vw");
 		tmp.css_width("calc(100% - 5em)", false);
-		tmp_class.set_value(tmp);
 		tmp_class.set_value(tmp);
                 tmp_class.change_name(width_100vw_5em);
 		classes[width_100vw_5em] = tmp_class;
@@ -221,7 +207,6 @@ namespace webdar_css_style
 		tmp.css_max_width("80vw");
 		tmp.css_width("80%", false);
 		tmp_class.set_value(tmp);
-		tmp_class.set_value(tmp);
                 tmp_class.change_name(width_80vw);
 		classes[width_80vw] = tmp_class;
 
@@ -229,7 +214,6 @@ namespace webdar_css_style
 		tmp_class.clear();
 		tmp.css_max_width("60vw");
 		tmp.css_width("60%", false);
-		tmp_class.set_value(tmp);
 		tmp_class.set_value(tmp);
                 tmp_class.change_name(width_60vw);
 		classes[width_60vw] = tmp_class;
@@ -239,14 +223,12 @@ namespace webdar_css_style
                 tmp.css_border_width(css::bd_all, css::bd_thick);
                 tmp.css_border_color(css::bd_all, RED);
 		tmp_class.set_value(tmp);
-		tmp_class.set_value(tmp);
                 tmp_class.change_name(red_border);
 		classes[red_border] = tmp_class;
 
 		tmp.clear();
 		tmp_class.clear();
                 tmp.css_margin_left("4em");
-		tmp_class.set_value(tmp);
 		tmp_class.set_value(tmp);
 		tmp_class.change_name(indent);
 		classes[indent] = tmp_class;
