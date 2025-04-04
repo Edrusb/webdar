@@ -271,7 +271,7 @@ public:
 	/// to provide unicity between all objects having been assigned an anchor.
 	/// \param[in] mode if true an anchor is assigned to the object and inserted before its body builder part. If
 	/// set to false (which is the default), no anchor is inserted before the body builder part of the object.
-	/// \see_also get_anchor()
+	/// \note see_also get_anchor()
     void assign_anchor(bool mode);
 
 	/// return the anchor value that has been assiged to this object (without the leading #)

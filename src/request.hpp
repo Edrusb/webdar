@@ -138,7 +138,7 @@ public:
 
 	/// set the fields in consistent state to mimic a valid request
 
-	/// \used to convert body_builder class with static adopted child to static_body_builder class
+	/// \note used to convert body_builder class with static adopted child to static_body_builder class
     void fake_valid_request();
 
 private:

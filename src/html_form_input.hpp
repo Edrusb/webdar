@@ -59,11 +59,12 @@ public:
 
     enum input_type { text, password, number, range, check, file };
 
-    html_form_input(const std::string & label,
-		    input_type type,
+    html_form_input(const std::string & label,           ///< label beside the input
+		    input_type type,                     ///< type of input
 		    const std::string & initial_value,   ///< for check set empty string for unchecked, anything else for checked
 		    const std::string & size,            ///< the size in the HTML component is not resizeable use "" to not use it
-		    const std::string & css_class);      ///< a CSS class with "max-width/width/min-width" properties *is* reactive and better than size
+		    const std::string & css_class        ///< a CSS class with "max-width/width/min-width" properties *is* reactive and better than size
+	);
     html_form_input(const html_form_input & ref) = default;
     html_form_input(html_form_input && ref) noexcept = default;
     html_form_input & operator = (const html_form_input & ref) = default;
