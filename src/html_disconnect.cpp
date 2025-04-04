@@ -49,7 +49,6 @@ const string html_disconnect::css_title_box = "html_disco_title_box";
 const string html_disconnect::css_status = "html_disco_status";
 const string html_disconnect::css_status_box = "html_disco_status_box";
 const string html_disconnect::css_quit_box = "html_disco_quit_box";
-const string html_disconnect::css_quit_link = "html_disco_quit_lnk";
 
 bool html_disconnect::default_basic_auth = true;
 
@@ -97,8 +96,9 @@ html_disconnect::html_disconnect():
     status.add_css_class(css_status);
     status.add_css_class(webdar_css_style::text_shadow_dark);
     status_box.add_css_class(css_status_box);
+    webdar_css_style::active_button(quit);
+    quit.add_css_class(webdar_css_style::float_right);
     quit.add_css_class(css_quit_box);
-    quit.url_add_css_class(css_quit_link);
 }
 
 void html_disconnect::set_username(const string & username)
@@ -129,7 +129,6 @@ void html_disconnect::new_css_library_available()
     if(!csslib->class_exists(css_global))
     {
 	css tmp;
-	css_class btn_class(css_quit_link);
 	string small_text = "0.8em";
 
 	    // top bar (the html_disconnect (html_div) itself)
@@ -177,18 +176,18 @@ void html_disconnect::new_css_library_available()
 	tmp.css_font_size(small_text);
 	tmp.css_font_weight_bold();
 	tmp.css_font_style_italic();
-	tmp.css_margin("0.2em");
 	tmp.css_text_v_align(css::al_middle);
 	tmp.css_margin_right("1em");
 	tmp.css_color(WHITE);
+	tmp.css_float(css::fl_right);
 
 	csslib->add(css_status, tmp);
 
 	    // the transparent status_box
 	tmp.clear();
 
-	tmp.css_margin("0.2em");
 	tmp.css_float(css::fl_right);
+	tmp.css_float_clear(css::fc_right);
 
 	csslib->add(css_status_box, tmp);
 
@@ -198,30 +197,8 @@ void html_disconnect::new_css_library_available()
 	tmp.clear();
 
 	tmp.css_font_size(small_text);
-	tmp.css_background_color(COLOR_MENU_BACK_OFF);
-	tmp.css_border_color(css::bd_all, COLOR_MENU_BORDER_OFF);
-	tmp.css_border_style(css::bd_all, css::bd_solid);
-	tmp.css_border_width(css::bd_all, css::bd_medium);
-	tmp.css_padding_right("0.5em");
-	tmp.css_padding_left("0.5em");
 	tmp.css_margin("0.2em");
-	tmp.css_float(css::fl_right);
-
 	csslib->add(css_quit_box, tmp);
 
-	    // the html_button (disconnect): for the url inside the box
-	btn_class.clear_value();
-	tmp.clear();
-
-	tmp.css_color(COLOR_MENU_FRONT_OFF);
-	tmp.css_font_weight_bold();
-	tmp.css_font_style_italic();
-	tmp.css_text_decoration(css::dc_none);
-	tmp.css_text_h_align(css::al_center);
-	tmp.css_text_v_align(css::al_middle);
-
-	btn_class.set_selector(css_class::link, tmp);
-	btn_class.set_selector(css_class::visited, tmp);
-	csslib->add(btn_class);
     }
 }

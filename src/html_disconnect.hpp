@@ -96,7 +96,6 @@ private:
     static const std::string css_status;
     static const std::string css_status_box;
     static const std::string css_quit_box;
-    static const std::string css_quit_link;
 
     html_image logo;
     html_div title_box;
