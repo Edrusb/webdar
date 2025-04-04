@@ -120,11 +120,11 @@ html_summary_page::html_summary_page():
     overall_table.set_css_class_first_column(css_table_left);
     saved_table.set_css_class_first_column (css_table_left);
 
-    format_float.add_css_class(css_div_float);
-    slice_float.add_css_class(css_div_float);
-    overall_float.add_css_class(css_div_float);
-    content_float.add_css_class(css_div_float);
-    saved_float.add_css_class(css_div_float);
+    format_float.add_css_class(webdar_css_style::float_left);
+    slice_float.add_css_class(webdar_css_style::float_left);
+    overall_float.add_css_class(webdar_css_style::float_left);
+    content_float.add_css_class(webdar_css_style::float_left);
+    saved_float.add_css_class(webdar_css_style::float_left);
 
     webdar_css_style::normal_button(close, false);
     close.add_css_class(css_close);
@@ -352,14 +352,6 @@ void html_summary_page::new_css_library_available()
 	tmp.css_border_style(css::bd_all, css::bd_solid);
 	tmp.css_text_h_align(css::al_right);
 	csslib->add(css_table_rest, tmp);
-    }
-
-    if(!csslib->class_exists(css_div_float))
-    {
-	tmp.clear();
-	tmp.css_float(css::fl_left);
-	tmp.css_margin("1em");
-	csslib->add(css_div_float, tmp);
     }
 
     if(!csslib->class_exists(css_about_box))

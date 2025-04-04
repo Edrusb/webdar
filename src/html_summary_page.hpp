@@ -85,7 +85,6 @@ private:
     static constexpr const char* css_table_top = "html_sum_page_table_top";
     static constexpr const char* css_table_left = "html_sum_page_table_left";
     static constexpr const char* css_table_rest = "html_sum_page_table_rest";
-    static constexpr const char* css_div_float = "html_sum_page_div";
     static constexpr const char* css_about_box = "html_sum_page_about";
     static constexpr const char* css_about_text = "html_sum_page_about_text";
 
