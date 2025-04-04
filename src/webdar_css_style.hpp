@@ -52,6 +52,7 @@ namespace webdar_css_style
     constexpr const char* text_color_red = "wcs_cr";
     constexpr const char* text_color_green = "wcs_cg";
     constexpr const char* text_top_right = "wcs_ttr";
+    constexpr const char* text_top_center = "wcs_tc";
     constexpr const char* text_right = "wcs_tr";
     constexpr const char* float_left = "wcs_fll";
     constexpr const char* float_right = "wcs_flr";

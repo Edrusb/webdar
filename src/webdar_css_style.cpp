@@ -126,6 +126,14 @@ namespace webdar_css_style
 
 		tmp.clear();
 		tmp_class.clear();
+		tmp.css_text_h_align(css::al_center);
+		tmp.css_text_v_align(css::al_top);
+		tmp_class.set_value(tmp);
+		tmp_class.change_name(text_top_center);
+		classes[text_top_center] = tmp_class;
+
+		tmp.clear();
+		tmp_class.clear();
 		tmp.css_font_weight_bold();
 		tmp_class.set_value(tmp);
 		tmp_class.change_name(text_right);
