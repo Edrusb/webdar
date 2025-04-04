@@ -216,6 +216,7 @@ void html_demo::new_css_library_available()
 	tmp.css_float(css::fl_right);
 	tmp.css_position_bottom("1em");
 	tmp.css_position_right("1em");
+	tmp.css_margin_top("1em");
 	csslib->add(css_btn_close, tmp);
     }
 
