@@ -44,7 +44,7 @@ const string html_form_mask_subdir::changed = "hfms_changed";
 const string html_form_mask_subdir::update = "hfms_update";
 
 html_form_mask_subdir::html_form_mask_subdir(bool absolute_path_accepted,
-					     const std::shared_ptr<const libdar::path> & fs_root):
+					     const shared_ptr<const libdar::path> & fs_root):
     absolute_ok(absolute_path_accepted),
     prefix(fs_root),
     fs(""),
@@ -204,7 +204,7 @@ json html_form_mask_subdir::save_json() const
 					ret);
 }
 
-void html_form_mask_subdir::on_event(const std::string & event_name)
+void html_form_mask_subdir::on_event(const string & event_name)
 {
     if(event_name == html_form_select::changed)
     {

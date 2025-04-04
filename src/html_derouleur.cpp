@@ -108,7 +108,7 @@ void html_derouleur::add_section(const string & name, const string & title)
     }
 }
 
-void html_derouleur::adopt_in_section(const std::string & section_name, body_builder* obj)
+void html_derouleur::adopt_in_section(const string & section_name, body_builder* obj)
 {
     if(obj == nullptr)
 	throw WEBDAR_BUG;

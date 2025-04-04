@@ -461,7 +461,7 @@ namespace webdar_css_style
 	}
     }
 
-    const css_class & get_css_class(const std::string & name)
+    const css_class & get_css_class(const string & name)
     {
 	map<string, css_class>::iterator it = classes.find(name);
 

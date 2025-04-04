@@ -104,7 +104,7 @@ html_archive_create::html_archive_create():
     webdar_css_style::normal_button(deroule, true);
 }
 
-void html_archive_create::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
+void html_archive_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
 {
     options->set_biblio(ptr);
 
@@ -131,7 +131,7 @@ void html_archive_create::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
     }
 }
 
-const std::string & html_archive_create::get_archive_basename() const
+const string & html_archive_create::get_archive_basename() const
 {
     if(basename.get_value().empty())
     {

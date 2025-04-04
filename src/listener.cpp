@@ -82,7 +82,7 @@ static string network_IPv6_to_string(const struct in6_addr & ip);
 listener::listener(const shared_ptr<central_report> & log,
 		   const shared_ptr<const authentication> & auth,
 		   unique_ptr<ssl_context> & ciphering,
-		   std::shared_ptr<server_pool> & pool,
+		   shared_ptr<server_pool> & pool,
 		   unsigned int port)
 {
     try
@@ -103,7 +103,7 @@ listener::listener(const shared_ptr<central_report> & log,
 listener::listener(const shared_ptr<central_report> & log,
 		   const shared_ptr<const authentication> & auth,
 		   unique_ptr<ssl_context> & ciphering,
-		   std::shared_ptr<server_pool> & pool,
+		   shared_ptr<server_pool> & pool,
 		   const string & ip,
 		   unsigned int port)
 {
@@ -113,7 +113,7 @@ listener::listener(const shared_ptr<central_report> & log,
 void listener::init(const shared_ptr<central_report> & log,
 		    const shared_ptr<const authentication> & auth,
 		    unique_ptr<ssl_context> & ciphering,
-		    std::shared_ptr<server_pool> & pool,
+		    shared_ptr<server_pool> & pool,
 		    const string & ip,
 		    unsigned int port)
 {

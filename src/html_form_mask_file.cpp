@@ -43,7 +43,7 @@ using namespace std;
 
 const string html_form_mask_file::changed = "hfmf_changed";
 
-html_form_mask_file::html_form_mask_file(const std::shared_ptr<const libdar::path> & fs_root):
+html_form_mask_file::html_form_mask_file(const shared_ptr<const libdar::path> & fs_root):
     filename("File name",
 	     "/",   // see clear() for defaults
 	     "",
@@ -181,7 +181,7 @@ json html_form_mask_file::save_json() const
 					ret);
 }
 
-void html_form_mask_file::on_event(const std::string & event_name)
+void html_form_mask_file::on_event(const string & event_name)
 {
     if(ignore_events)
 	return;

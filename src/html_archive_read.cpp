@@ -93,7 +93,7 @@ html_archive_read::html_archive_read(const string & archive_description):
 
 }
 
-void html_archive_read::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
+void html_archive_read::set_biblio(const shared_ptr<bibliotheque> & ptr)
 {
     opt_read->set_biblio(ptr);
     guichet_opt_read.set_child(ptr,

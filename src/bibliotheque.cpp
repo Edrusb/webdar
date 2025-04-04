@@ -41,7 +41,7 @@ extern "C"
 
 using namespace std;
 
-std::string bibliotheque::changed(category cat)
+string bibliotheque::changed(category cat)
 {
     string ret(string(myclass_id) + "::");
 
@@ -279,7 +279,7 @@ void bibliotheque::delete_config(category categ, const string & name)
     act(changed(categ));
 }
 
-void bibliotheque::delete_external_ref_to(category categ, const std::string & name, const void* from_where)
+void bibliotheque::delete_external_ref_to(category categ, const string & name, const void* from_where)
 {
     coordinates coord(categ, name);
 
@@ -299,7 +299,7 @@ void bibliotheque::delete_external_ref_to(category categ, const std::string & na
        outside.erase(ut);   // removing entry for that config from outside
 }
 
-bool bibliotheque::has_config(category categ, const std::string & name) const
+bool bibliotheque::has_config(category categ, const string & name) const
 {
     table::iterator catit;
     asso::iterator it;
@@ -593,7 +593,7 @@ bibliotheque::using_set bibliotheque::get_direct_dependencies_of(coordinates use
     return ret;
 }
 
-void bibliotheque::check_against_cyclic_dependencies(coordinates source, const std::set<coordinates> & seen)
+void bibliotheque::check_against_cyclic_dependencies(coordinates source, const set<coordinates> & seen)
 {
     using_set next = seen;
     using_set children = get_direct_dependencies_of(source);

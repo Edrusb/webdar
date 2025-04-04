@@ -217,7 +217,7 @@ html_options_repair::html_options_repair():
     webdar_css_style::grey_button(deroule, true);
 }
 
-void html_options_repair::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
+void html_options_repair::set_biblio(const shared_ptr<bibliotheque> & ptr)
 {
     guichet_entrep.set_child(ptr,
 			     bibliotheque::repo,

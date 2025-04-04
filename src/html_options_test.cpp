@@ -131,7 +131,7 @@ html_options_test::html_options_test():
     on_event(html_form_input::changed);
 }
 
-void html_options_test::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
+void html_options_test::set_biblio(const shared_ptr<bibliotheque> & ptr)
 {
     filename_mask->set_child(ptr, bibliotheque::filefilter);
     guichet_filename_mask.set_child(ptr,

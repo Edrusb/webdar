@@ -140,7 +140,7 @@ void html_form_overwrite_conditional_action::clear_json()
     when_false.clear_json();
 }
 
-void html_form_overwrite_conditional_action::on_event(const std::string & event_name)
+void html_form_overwrite_conditional_action::on_event(const string & event_name)
 {
     if(event_name == html_form_overwrite_combining_criterium::changed
        || event_name == html_form_overwrite_action::changed)

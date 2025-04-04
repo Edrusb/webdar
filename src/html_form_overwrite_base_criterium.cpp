@@ -234,7 +234,7 @@ void html_form_overwrite_base_criterium::clear_json()
 	act(changed);
 }
 
-void html_form_overwrite_base_criterium::on_event(const std::string & event_name)
+void html_form_overwrite_base_criterium::on_event(const string & event_name)
 {
     if(event_name == html_form_select::changed)
     {

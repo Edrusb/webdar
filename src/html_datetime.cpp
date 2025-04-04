@@ -251,7 +251,7 @@ void html_datetime::set_value(const libdar::infinint & val)
     update_from(splitted);
 }
 
-void html_datetime::on_event(const std::string & event_name)
+void html_datetime::on_event(const string & event_name)
 {
     if(event_name == html_form_input::changed
        || event_name == html_form_select::changed)

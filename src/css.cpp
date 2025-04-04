@@ -480,7 +480,7 @@ void css::css_padding_left(const string & left)
     padding_left.set_value(string(" padding-left: ") + left + ";");
 }
 
-void css::css_font_size(const std::string & val)
+void css::css_font_size(const string & val)
 {
     font_size.set_value(string(" font-size: ") + val + ";");
 }

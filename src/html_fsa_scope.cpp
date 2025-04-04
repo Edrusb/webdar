@@ -128,7 +128,7 @@ void html_fsa_scope::clear_json()
     ext_family.set_value_as_bool(true);
 }
 
-void html_fsa_scope::on_event(const std::string & event_name)
+void html_fsa_scope::on_event(const string & event_name)
 {
     if(event_name == html_form_input::changed)
 	act(changed);

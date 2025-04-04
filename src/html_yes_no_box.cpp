@@ -97,7 +97,7 @@ void html_yes_no_box::ask_question(const string & message, bool default_value)
     set_visible(true);
 }
 
-void html_yes_no_box::on_event(const std::string & event_name)
+void html_yes_no_box::on_event(const string & event_name)
 {
     if(ignore_events)
 	return;
@@ -112,7 +112,7 @@ void html_yes_no_box::on_event(const std::string & event_name)
 void html_yes_no_box::new_css_library_available()
 {
     css tmp;
-    std::unique_ptr<css_library> & csslib = lookup_css_library();
+    unique_ptr<css_library> & csslib = lookup_css_library();
 
     if(!csslib)
 	throw WEBDAR_BUG;

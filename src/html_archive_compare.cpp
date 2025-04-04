@@ -99,7 +99,7 @@ html_archive_compare::html_archive_compare():
     in_place_msg.add_css_class(webdar_css_style::text_grey);
 }
 
-void html_archive_compare::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
+void html_archive_compare::set_biblio(const shared_ptr<bibliotheque> & ptr)
 {
     if(!opt_diff)
 	throw WEBDAR_BUG;

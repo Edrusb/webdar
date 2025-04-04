@@ -749,7 +749,7 @@ string body_builder::get_available_anchor()
     return ret;
 }
 
-void body_builder::release_anchor(std::string & val)
+void body_builder::release_anchor(string & val)
 {
     int i = 0;
 

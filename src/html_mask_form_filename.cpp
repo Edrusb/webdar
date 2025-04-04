@@ -40,7 +40,7 @@ extern "C"
 
 using namespace std;
 
-const std::string html_mask_form_filename::changed = "hmff_changed";
+const string html_mask_form_filename::changed = "hmff_changed";
 
 html_mask_form_filename::html_mask_form_filename(const string & subject):
     form("Update"),
@@ -59,7 +59,7 @@ html_mask_form_filename::html_mask_form_filename(const html_mask_form_filename &
     init();
 }
 
-void html_mask_form_filename::set_child(const std::shared_ptr<bibliotheque> & ptr,
+void html_mask_form_filename::set_child(const shared_ptr<bibliotheque> & ptr,
 					bibliotheque::category cat)
 {
     biblio = ptr;
@@ -68,7 +68,7 @@ void html_mask_form_filename::set_child(const std::shared_ptr<bibliotheque> & pt
 
 unique_ptr<body_builder> html_mask_form_filename::provide_object_of_type(unsigned int num,
 									 const string & context,
-									 std::string & changed_event) const
+									 string & changed_event) const
 {
     unique_ptr<body_builder> ret;
     unique_ptr<html_form_mask_bool> tmp;
@@ -180,7 +180,7 @@ bibliotheque::using_set html_mask_form_filename::get_using_set() const
     return root.get_using_set();
 }
 
-void html_mask_form_filename::on_event(const std::string & event_name)
+void html_mask_form_filename::on_event(const string & event_name)
 {
     if(event_name == html_form_mask_bool::changed)
 	act(changed);

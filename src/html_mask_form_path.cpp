@@ -41,7 +41,7 @@ extern "C"
 
 using namespace std;
 
-const std::string html_mask_form_path::changed = "hmff_changed";
+const string html_mask_form_path::changed = "hmff_changed";
 
 html_mask_form_path::html_mask_form_path(bool allow_absolute_paths):
     form("Update"),
@@ -80,14 +80,14 @@ html_mask_form_path::html_mask_form_path(const html_mask_form_path & ref):
     const_cast<html_mask_form_path*>(&ref)->record_actor_on_event(this, html_form_mask_subdir::update);
 }
 
-void html_mask_form_path::set_child(const std::shared_ptr<bibliotheque> & ptr,
+void html_mask_form_path::set_child(const shared_ptr<bibliotheque> & ptr,
 				    bibliotheque::category cat)
 {
     biblio = ptr;
     categ = cat;
 }
 
-void html_mask_form_path::set_fs_root(const std::string & prefix)
+void html_mask_form_path::set_fs_root(const string & prefix)
 {
     try
     {
@@ -242,7 +242,7 @@ bibliotheque::using_set html_mask_form_path::get_using_set() const
     return root.get_using_set();
 }
 
-void html_mask_form_path::on_event(const std::string & event_name)
+void html_mask_form_path::on_event(const string & event_name)
 {
     if(event_name == html_form_mask_bool::changed)
 	act(changed);

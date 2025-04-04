@@ -42,7 +42,7 @@ using namespace std;
 
 const string html_form::changed = "form_changed";
 
-html_form::html_form(const std::string & validate_msg):
+html_form::html_form(const string & validate_msg):
     go_mesg(validate_msg),
     enctype("")
 {

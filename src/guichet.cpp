@@ -315,7 +315,7 @@ bibliotheque::using_set guichet::get_using_set() const
     return ret;
 }
 
-void guichet::on_event(const std::string & event_name)
+void guichet::on_event(const string & event_name)
 {
     check_adopted();
 
@@ -427,7 +427,7 @@ void guichet::on_event(const std::string & event_name)
 	throw WEBDAR_BUG;
 }
 
-void guichet::bind_to_anchor(const std::string & val)
+void guichet::bind_to_anchor(const string & val)
 {
     anchor_to = val;
     if(adopted)
@@ -450,7 +450,7 @@ string guichet::inherited_get_body_part(const chemin & path,
 void guichet::new_css_library_available()
 {
     css tmp;
-    std::unique_ptr<css_library> & csslib = lookup_css_library();
+    unique_ptr<css_library> & csslib = lookup_css_library();
 
     if(!csslib)
 	throw WEBDAR_BUG;

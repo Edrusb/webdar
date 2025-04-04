@@ -266,7 +266,7 @@ void html_form_dynamic_table::clear_json()
     clear();
 }
 
-void html_form_dynamic_table::on_event(const std::string & event_name)
+void html_form_dynamic_table::on_event(const string & event_name)
 {
     if(event_name == new_line_to_add)
     {

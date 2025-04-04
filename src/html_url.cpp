@@ -40,7 +40,7 @@ extern "C"
 
 using namespace std;
 
-html_url::html_url(const std::string & url):
+html_url::html_url(const string & url):
     x_url(url),
     download(false),
     filename("")

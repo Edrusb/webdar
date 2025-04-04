@@ -173,13 +173,13 @@ shared_ptr<body_builder> html_form_mask_bool::manually_add_object(unsigned int n
     return ret;
 }
 
-void html_form_mask_bool::manually_set_bool_mode(const std::string & mode)
+void html_form_mask_bool::manually_set_bool_mode(const string & mode)
 {
     mask_type.set_selected_id(mode);
     update_table_content_logic(false);
 }
 
-string html_form_mask_bool::invert_logic(const std::string & logic)
+string html_form_mask_bool::invert_logic(const string & logic)
 {
     if(logic == and_op)
 	return or_op;

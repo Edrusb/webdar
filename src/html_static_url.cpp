@@ -40,8 +40,8 @@ extern "C"
 
 using namespace std;
 
-html_static_url::html_static_url(const std::string & url,
-				 const std::string & label):
+html_static_url::html_static_url(const string & url,
+				 const string & label):
     html_url(url)
 {
     faked.reset(new (nothrow) central_report_stdout(crit));

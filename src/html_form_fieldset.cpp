@@ -61,7 +61,7 @@ void html_form_fieldset::has_adopted(body_builder *obj)
 	obj->bind_to_anchor(bounded_anchor);
 }
 
-void html_form_fieldset::update_anchor(const std::string & val)
+void html_form_fieldset::update_anchor(const string & val)
 {
     bounded_anchor = val;
 

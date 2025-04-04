@@ -214,7 +214,7 @@ void html_form_overwrite_action::clear_json()
     chain_action.clear_json();
 }
 
-void html_form_overwrite_action::on_event(const std::string & event_name)
+void html_form_overwrite_action::on_event(const string & event_name)
 {
     if(event_name == act_changed)
     {

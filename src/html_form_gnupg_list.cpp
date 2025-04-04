@@ -147,7 +147,7 @@ void html_form_gnupg_list::clear_json()
     table.clear_json();
 }
 
-void html_form_gnupg_list::on_event(const std::string & event_name)
+void html_form_gnupg_list::on_event(const string & event_name)
 {
     if(event_name == html_form_dynamic_table::changed)
 	act(changed);

@@ -108,7 +108,7 @@ html_version::html_version():
 }
 
 
-void html_version::on_event(const std::string & event_name)
+void html_version::on_event(const string & event_name)
 {
     if(event_name == event_close)
 	set_visible(false);

@@ -295,7 +295,7 @@ html_options_merge::html_options_merge():
     empty.add_css_class(webdar_css_style::width_100vw_8em);
 }
 
-void html_options_merge::set_biblio(const std::shared_ptr<bibliotheque> & ptr)
+void html_options_merge::set_biblio(const shared_ptr<bibliotheque> & ptr)
 {
     guichet_entrep.set_child(ptr,
 			     bibliotheque::repo,

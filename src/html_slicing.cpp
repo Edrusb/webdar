@@ -115,17 +115,17 @@ void html_slicing::set_slicing(const libdar::infinint & x_slice_size,
     }
 }
 
-void html_slicing::set_permission(const std::string & perm)
+void html_slicing::set_permission(const string & perm)
 {
     slice_permission.set_value(perm);
 }
 
-void html_slicing::set_user_ownership(const std::string & username)
+void html_slicing::set_user_ownership(const string & username)
 {
     slice_user_ownership.set_value(username);
 }
 
-void html_slicing::set_group_ownership(const std::string & groupname)
+void html_slicing::set_group_ownership(const string & groupname)
 {
     slice_group_ownership.set_value(groupname);
 }
@@ -172,17 +172,17 @@ libdar::infinint html_slicing::get_min_digits() const
     return ret;
 }
 
-std::string html_slicing::get_permission() const
+string html_slicing::get_permission() const
 {
     return slice_permission.get_value();
 }
 
-std::string html_slicing::get_user_ownership() const
+string html_slicing::get_user_ownership() const
 {
     return slice_user_ownership.get_value();
 }
 
-std::string html_slicing::get_group_ownership() const
+string html_slicing::get_group_ownership() const
 {
     return slice_group_ownership.get_value();
 }
@@ -255,7 +255,7 @@ void html_slicing::clear_json()
 }
 
 
-void html_slicing::on_event(const std::string & event_name)
+void html_slicing::on_event(const string & event_name)
 {
     if(event_name == html_form_input::changed
        || event_name == html_form_input_unit::changed)

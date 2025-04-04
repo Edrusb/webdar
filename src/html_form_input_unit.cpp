@@ -141,7 +141,7 @@ void html_form_input_unit::set_value_as_infinint(const libdar::infinint & x_val)
     set_value_to_largest_unit();
 }
 
-void html_form_input_unit::on_event(const std::string & event_name)
+void html_form_input_unit::on_event(const string & event_name)
 {
     if(ignore_events)
 	return;

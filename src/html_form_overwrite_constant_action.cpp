@@ -200,7 +200,7 @@ void html_form_overwrite_constant_action::clear_json()
     ea_action.set_selected_num(0);
 }
 
-void html_form_overwrite_constant_action::on_event(const std::string & event_name)
+void html_form_overwrite_constant_action::on_event(const string & event_name)
 {
     if(event_name == html_form_select::changed)
 	act(changed);

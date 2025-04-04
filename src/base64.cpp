@@ -41,7 +41,7 @@ extern "C"
 using namespace std;
 
 
-string base64::decode(const std::string & str) const
+string base64::decode(const string & str) const
 {
     string ret = "";
     string tmp = str;
@@ -88,7 +88,7 @@ void base64::small_encode(unsigned int num_bytes, const decoded_block & bin, enc
 }
 
 
-std::string base64::encode(const std::string & str) const
+string base64::encode(const string & str) const
 {
     string ret = "";
     unsigned int num = str.size() / 3;

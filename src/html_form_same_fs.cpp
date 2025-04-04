@@ -157,7 +157,7 @@ void html_form_same_fs::clear_json()
     table.clear_json();
 }
 
-void html_form_same_fs::on_event(const std::string & event_name)
+void html_form_same_fs::on_event(const string & event_name)
 {
     if(event_name == html_form_dynamic_table::changed)
 	act(changed);

@@ -137,7 +137,7 @@ unique_ptr<libdar::criterium> html_form_overwrite_combining_criterium::get_overw
 
 	while(it != table.end())
 	{
-	    std::shared_ptr<body_builder> tmp = it.get_object();
+	    shared_ptr<body_builder> tmp = it.get_object();
 	    if(!tmp)
 		throw WEBDAR_BUG;
 	    html_overwrite_criterium* sub = dynamic_cast<html_overwrite_criterium*>(tmp.get());
@@ -202,7 +202,7 @@ void html_form_overwrite_combining_criterium::clear_json()
     table.clear_json();
 }
 
-void html_form_overwrite_combining_criterium::on_event(const std::string & event_name)
+void html_form_overwrite_combining_criterium::on_event(const string & event_name)
 {
     if(event_name == html_form_select::changed)
 	update_table_content_logic(false);
@@ -262,7 +262,7 @@ void html_form_overwrite_combining_criterium::new_css_library_available()
     webdar_css_style::update_library(*csslib);
 }
 
-string html_form_overwrite_combining_criterium::bool_op_to_name(const std::string & op)
+string html_form_overwrite_combining_criterium::bool_op_to_name(const string & op)
 {
     if(op == and_op)
 	return "and";
@@ -308,7 +308,7 @@ void html_form_overwrite_combining_criterium::update_table_content_logic(bool un
 }
 
 
-string html_form_overwrite_combining_criterium::invert_logic(const std::string & logic)
+string html_form_overwrite_combining_criterium::invert_logic(const string & logic)
 {
     if(logic == and_op)
 	return or_op;

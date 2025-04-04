@@ -389,7 +389,7 @@ string webdar_tools_html_display(const string & arg)
     return ret;
 }
 
-bool webdar_tools_exists_and_is_file(const std::string & path, bool follow_symlink)
+bool webdar_tools_exists_and_is_file(const string & path, bool follow_symlink)
 {
     struct stat info;
     int ret;
@@ -402,7 +402,7 @@ bool webdar_tools_exists_and_is_file(const std::string & path, bool follow_symli
     return ret == 0 && (info.st_mode & S_IFREG) != 0;
 }
 
-bool webdar_tools_exists_and_is_dir(const std::string & path, bool follow_symlink)
+bool webdar_tools_exists_and_is_dir(const string & path, bool follow_symlink)
 {
     struct stat info;
     int ret;

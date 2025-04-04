@@ -875,7 +875,7 @@ void html_select_file::my_closing()
 }
 
 
-bool html_select_file::is_a_valid_dir(const std::string & pathval, const std::string & name) const
+bool html_select_file::is_a_valid_dir(const string & pathval, const string & name) const
 {
     bool ret = true;
     chemin tmp(pathval);

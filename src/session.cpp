@@ -407,7 +407,7 @@ session::session_summary session::publish(map<string, table>::iterator it)
 }
 
 
-bool session::create_new_session(const std::string & user, bool initial, const request & req, answer & ret)
+bool session::create_new_session(const string & user, bool initial, const request & req, answer & ret)
 {
     vector<session_summary> inventaire = get_summary();
     vector<session_summary>::iterator it = inventaire.begin();

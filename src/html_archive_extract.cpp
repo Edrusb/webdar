@@ -131,7 +131,7 @@ void html_archive_extract::set_biblio(const shared_ptr<bibliotheque> & ptr)
 }
 
 
-void html_archive_extract::on_event(const std::string & event_name)
+void html_archive_extract::on_event(const string & event_name)
 {
     if(event_name == extract_root_changed)
     {

@@ -151,7 +151,7 @@ choose::choose():
     regenerate_table_page();
 }
 
-void choose::set_owner(const std::string & user)
+void choose::set_owner(const string & user)
 {
     if(user.empty())
 	throw WEBDAR_BUG;
@@ -202,7 +202,7 @@ answer choose::give_answer(const request & req)
     return ret;
 }
 
-void choose::on_event(const std::string & event_name)
+void choose::on_event(const string & event_name)
 {
     if(event_name == html_form::changed)
     {

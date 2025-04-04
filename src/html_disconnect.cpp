@@ -101,7 +101,7 @@ html_disconnect::html_disconnect():
     quit.url_add_css_class(css_quit_link);
 }
 
-void html_disconnect::set_username(const std::string & username)
+void html_disconnect::set_username(const string & username)
 {
     status.clear();
     if(!username.empty())

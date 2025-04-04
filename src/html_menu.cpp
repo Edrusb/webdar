@@ -37,6 +37,7 @@ extern "C"
 #include "tokens.hpp"
 #include "exceptions.hpp"
 #include "webdar_css_style.hpp"
+#include "webdar_tools.hpp"
 
     //
 #include "html_menu.hpp"
@@ -61,7 +62,7 @@ html_menu::~html_menu()
 void html_menu::add_entry(const string & label, const string & tag)
 {
     unsigned int num = item.size();
-    string event_name = std::to_string(num);
+    string event_name = webdar_tools_convert_to_string(num);
 
     item.push_back(cell(label, event_name, tag));
     if(item.size() != num + 1)

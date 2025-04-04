@@ -42,7 +42,7 @@ using namespace std;
 
 const string html_form_overwrite_chain_action::changed = "hfo_chain_action_changed";
 
-html_form_overwrite_chain_action::html_form_overwrite_chain_action(const std::string & label):
+html_form_overwrite_chain_action::html_form_overwrite_chain_action(const string & label):
     fs(label),
     table(false, true, "New action", "--- select ---")
 {
@@ -116,7 +116,7 @@ unique_ptr<libdar::crit_action> html_form_overwrite_chain_action::get_overwritin
 }
 
 unique_ptr<body_builder> html_form_overwrite_chain_action::provide_object_of_type(unsigned int num,
-										  const std::string & context,
+										  const string & context,
 										  string & changed_event) const
 {
     unique_ptr<body_builder> ret;
@@ -141,7 +141,7 @@ unique_ptr<body_builder> html_form_overwrite_chain_action::provide_object_of_typ
 }
 
 
-void html_form_overwrite_chain_action::on_event(const std::string & event_name)
+void html_form_overwrite_chain_action::on_event(const string & event_name)
 {
     if(event_name == html_form_dynamic_table::changed)
 	act(changed);

@@ -54,7 +54,7 @@ html_over_guichet::html_over_guichet():
 	// css
 }
 
-void html_over_guichet::set_child(const std::shared_ptr<bibliotheque> & ptr,
+void html_over_guichet::set_child(const shared_ptr<bibliotheque> & ptr,
 				  unique_ptr<body_builder> & to_give,
 				  bibliotheque::category cat,
 				  const string & changed_event)
@@ -123,7 +123,7 @@ bibliotheque::using_set html_over_guichet::get_using_set() const
     return wicket.get_using_set();
 }
 
-void html_over_guichet::on_event(const std::string & event_name)
+void html_over_guichet::on_event(const string & event_name)
 {
     if(event_name == child_event)
 	act(changed);

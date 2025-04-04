@@ -81,7 +81,7 @@ void html_table::set_css_class_first_row()
 }
 
 
-void html_table::set_css_class_first_column(const std::string & val)
+void html_table::set_css_class_first_column(const string & val)
 {
     if(!cells_first_column_set || css_class_column1 != val)
     {

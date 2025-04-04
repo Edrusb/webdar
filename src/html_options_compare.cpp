@@ -365,7 +365,7 @@ bibliotheque::using_set html_options_compare::get_using_set() const
     return ret;
 }
 
-void html_options_compare::on_event(const std::string & event_name)
+void html_options_compare::on_event(const string & event_name)
 {
     if(event_name == html_form_input::changed)
     {

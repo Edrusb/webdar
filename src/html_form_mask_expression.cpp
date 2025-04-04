@@ -131,7 +131,7 @@ unique_ptr<libdar::mask> html_form_mask_expression::get_mask() const
     return ret;
 }
 
-void html_form_mask_expression::on_event(const std::string & event_name)
+void html_form_mask_expression::on_event(const string & event_name)
 {
     if(ignore_events)
 	return;

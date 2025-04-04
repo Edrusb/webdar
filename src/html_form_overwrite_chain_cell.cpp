@@ -79,7 +79,7 @@ unique_ptr<libdar::crit_action> html_form_overwrite_chain_cell::get_overwriting_
 }
 
 
-void html_form_overwrite_chain_cell::on_event(const std::string & event_name)
+void html_form_overwrite_chain_cell::on_event(const string & event_name)
 {
     if(event_name == html_form_overwrite_action::changed)
 	act(changed);

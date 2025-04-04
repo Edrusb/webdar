@@ -57,7 +57,7 @@ html_button::html_button(const string & x_label, const string & x_event_name):
 
 }
 
-void html_button::change_label(const std::string & x_label)
+void html_button::change_label(const string & x_label)
 {
     label = x_label;
     text.clear();

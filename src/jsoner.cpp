@@ -41,7 +41,7 @@ extern "C"
 using namespace std;
 
 json jsoner::wrap_config_with_json_header(unsigned int version,
-					  const std::string & class_id,
+					  const string & class_id,
 					  const json & config)
 {
     json ret;
@@ -62,7 +62,7 @@ json jsoner::wrap_config_with_json_header(unsigned int version,
 
 json jsoner::unwrap_config_from_json_header(const json & source,
 					    unsigned int & version,
-					    std::string & class_id)
+					    string & class_id)
 {
     json ret;
     string step;

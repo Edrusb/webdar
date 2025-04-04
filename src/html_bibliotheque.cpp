@@ -49,7 +49,7 @@ using namespace std;
 const string html_bibliotheque::event_download = "html_bibl_download";
 
 
-html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
+html_bibliotheque::html_bibliotheque(shared_ptr<bibliotheque> & ptr,
 				     const string & bib_path):
     top_fs(""),
     form("Update"),
@@ -510,7 +510,7 @@ html_bibliotheque::html_bibliotheque(std::shared_ptr<bibliotheque> & ptr,
     }
 }
 
-void html_bibliotheque::on_event(const std::string & event_name)
+void html_bibliotheque::on_event(const string & event_name)
 {
     if(!biblio)
 	throw WEBDAR_BUG;
@@ -674,7 +674,7 @@ string html_bibliotheque::inherited_get_body_part(const chemin & path,
 void html_bibliotheque::new_css_library_available()
 {
     css tmp;
-    std::unique_ptr<css_library> & csslib = lookup_css_library();
+    unique_ptr<css_library> & csslib = lookup_css_library();
 
     if(!csslib)
 	throw WEBDAR_BUG;
