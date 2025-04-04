@@ -74,6 +74,7 @@ html_disconnect::html_disconnect():
     adopt(&quit);
     status_box.adopt(&status);
     adopt(&status_box);
+    adopt(&version_details);
 
 	// events
     quit.record_actor_on_event(this, event_disconn);
@@ -83,6 +84,7 @@ html_disconnect::html_disconnect():
 	// visible status
     if(default_basic_auth)
 	quit.set_visible(false);
+    version_details.set_visible(false);
 
 	// css
     add_css_class(css_global);
@@ -111,9 +113,7 @@ void html_disconnect::on_event(const string & event_name)
     if(event_name == event_disconn)
 	act(event_disconn); // propagate the event
     else if(event_name == event_version)
-    {
-	    // fire the version popup
-    }
+	version_details.set_visible(true);
     else
 	throw WEBDAR_BUG;
 }

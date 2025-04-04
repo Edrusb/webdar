@@ -39,8 +39,9 @@ extern "C"
 #include "actor.hpp"
 #include "events.hpp"
 #include "html_text.hpp"
-#include "html_button.hpp"
+#include "html_double_button.hpp"
 #include "html_image.hpp"
+#include "html_version.hpp"
 
     /// html component used for the user to define a has algorithm
 
@@ -103,7 +104,8 @@ private:
     html_button title_vers;
     html_div status_box;
     html_text status;
-    html_button quit;
+    html_double_button quit;
+    html_version version_details;
 
     static bool default_basic_auth;     ///< if true, no disconnection is provided (unless browser is restarted)
 
