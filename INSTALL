@@ -4,7 +4,14 @@ you need:
 - C++ compiler
 - make
 - common system libraries and included files
-- installed libdar library and header files (version >= 2.8.0)
+- standard C and standard C++ libraries
+- opensssl [1] version 3.0.15 or greater
+- libthreadar [2] vesion 1.5.2 or more recent
+- libdar [3] vers 7.0.0 (dar release 2.8.0) or more recent
+
+[1] https://www.openssl.org/
+[2] https://libthreadar.sourceforge.net/
+[3] http://dar.linux.free.fr/
 
 
 INSTALLATION
@@ -17,7 +24,10 @@ to install webdar type (as root):
 
    make install
 
-(or make install-strip for a smaller binary)
+Note: if upx is available and detected in the system at the time ./configure
+is run, replace 'make install' by 'make install-strip' for the installed binary
+to be the smallest possible (upx compressed without the symbol table)
+
 
 It will be installed under /usr/local
 you can specify another place using the the PREFIX
@@ -25,8 +35,8 @@ variable:
 
    ./configure --prefix=/usr
 
-Last if you want to build a distro package, you can use
-the DESTDIR variable in addition, and no more need root
+Last if you want to build a package for a distro, you can use
+the DESTDIR variable in addition, and no more require root
 priviledge:
 
    make DESTDIR=/tmp install
@@ -37,7 +47,7 @@ be the same as the one used at installation step:
 
    make uninstall
 
-or
+or for example:
 
    make DESTDIR=/tmp --prefix=/usr uninstall
 
@@ -45,3 +55,5 @@ or
 What's next? Read the man page:
 
        man webdar
+
+or simpler, just run webdar and follow the displayed instructions
