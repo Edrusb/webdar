@@ -71,7 +71,12 @@ public:
     authentication_cli & operator = (authentication_cli && ref) noexcept = default;
     ~authentication_cli() = default;
 
-    virtual bool valid_credentials(const std::string & username, const std::string & credential) const override { return username == user && credential == pass; }; // no need of mutex for this class
+    virtual bool valid_credentials(const std::string & username, const std::string & credential) const override
+    {
+	    // due to different charset and encoding between CLI and web interface we compare
+	    // strings downgrading then to C strings:
+	return (strcmp(username.c_str(),user.c_str()) == 0) && strcmp(credential.c_str(), pass.c_str()) == 0;
+    };      // no need of mutex for this class
 
 private:
     std::string user;
