@@ -34,7 +34,10 @@ extern "C"
     // C++ system header files
 #include <dar/libdar.hpp>
 #include <string>
+
+#if HAVE_NLOHMANN_JSON_HPP
 #include <nlohmann/json.hpp>
+#endif
 
     // webdar headers
 #include "exceptions.hpp"
