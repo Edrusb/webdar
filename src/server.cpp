@@ -110,48 +110,48 @@ void server::inherited_run()
 				// extract session info if any
 			    session_ID = get_session_ID_from(req);
 
-				// show the disconnected page with uri cleaned from session info
-			    if(ignore_auth == ignore_auth_redir)
+			    if(session_ID == STATIC_PATH_ID)
 			    {
-				ignore_auth = ignore_auth_steady;
-				disconned.set_redirect(false);
-				ans = disconned.give_answer(req);
-			    }
-				// check whether the session is authenticated
-			    else if(!chal.is_an_authoritative_request(req, user)
-				    || ignore_auth == ignore_auth_steady)
-			    {
-				    // ask for user authentication
-				ans = chal.give_answer(req);
-				ignore_auth = no_ignore;
-			    }
-			    else // session authenticated for user "user"
-			    {
-				if(session_ID == STATIC_PATH_ID)
+				try
 				{
-				    try
-				    {
-					const static_object *obj = nullptr;
-					chemin tmp = req.get_uri().get_path();
+				    const static_object *obj = nullptr;
+				    chemin tmp = req.get_uri().get_path();
 
-					string objname = tmp.back();
-					tmp.pop_back();
-					if(tmp.front() != STATIC_PATH_ID)
-					    throw WEBDAR_BUG;
-					if(tmp.size() != 1)
-					    throw exception_range("local exception to trigger an answer with STATUS_CODE_NOT_FOUND");
-					obj = static_object_library::find_object(objname);
-					if(obj == nullptr)
-					    throw WEBDAR_BUG;
-					ans = obj->give_answer();
-				    }
-				    catch(exception_range & e)
-				    {
-					ans.set_reason("unknown static object");
-					ans.set_status(STATUS_CODE_NOT_FOUND);
-				    }
+				    string objname = tmp.back();
+				    tmp.pop_back();
+				    if(tmp.front() != STATIC_PATH_ID)
+					throw WEBDAR_BUG;
+				    if(tmp.size() != 1)
+					throw exception_range("local exception to trigger an answer with STATUS_CODE_NOT_FOUND");
+				    obj = static_object_library::find_object(objname);
+				    if(obj == nullptr)
+					throw WEBDAR_BUG;
+				    ans = obj->give_answer();
 				}
-				else // not a path to a static object
+				catch(exception_range & e)
+				{
+				    ans.set_reason("unknown static object");
+				    ans.set_status(STATUS_CODE_NOT_FOUND);
+				}
+			    }
+			    else // not a path to a static object
+			    {
+				    // show the disconnected page with uri cleaned from session info
+				if(ignore_auth == ignore_auth_redir)
+				{
+				    ignore_auth = ignore_auth_steady;
+				    disconned.set_redirect(false);
+				    ans = disconned.give_answer(req);
+				}
+				    // check whether the session is authenticated
+				else if(!chal.is_an_authoritative_request(req, user)
+					|| ignore_auth == ignore_auth_steady)
+				{
+					// ask for user authentication
+				    ans = chal.give_answer(req);
+				    ignore_auth = no_ignore;
+				}
+				else // session authenticated for user "user"
 				{
 				    chooser.set_owner(user);
 
