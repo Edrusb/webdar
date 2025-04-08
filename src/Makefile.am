@@ -55,6 +55,8 @@ endif
 bin_PROGRAMS = webdar $(ALSO_BUILD)
 noinst_PROGRAMS = static_object_builder
 
+LDADD = @LIBDAR_LIBS@ @LIBTHREADAR_LIBS@ @OPENSSL_LIBS@
+
 static_object_builder_SOURCES = static_object_builder.cpp base64.cpp base64.hpp
 
 static_object.sto: static_object_batch static_object_builder ../resources/favicon.jpg ../resources/webdar_logo.jpg ../resources/webdar_title_logo.jpg

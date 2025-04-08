@@ -73,9 +73,11 @@ AC_PROG_RANLIB
 
 AC_MSG_CHECKING([for C++ compiler usability])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],
-                                  [ class test { public: int test; }; ])],
-                  [AC_MSG_RESULT(ok)],
-                  [AC_MSG_ERROR([No C++ compiler found])])
+                                  [ class test { public: int test; }; ])
+	          ],
+                  [ AC_MSG_RESULT(ok) ],
+                  [ AC_MSG_ERROR([No C++ compiler found]) ]
+		  )
 
 # Defining _XOPEN_SOURCE to get extra field in struct stat
 AC_DEFINE(_XOPEN_SOURCE, 700, [activates POSIX.1-2008 symbols in order to allow microsecond time setting, as well as ctime_r() call])
@@ -120,10 +122,9 @@ AC_PROG_EGREP
 
 AC_HEADER_SYS_WAIT
 
-AC_CHECK_HEADERS([stdio.h stdlib.h syslog.h pthread.h errno.h limits.h sys/types.h sys/stat.h sys/socket.h time.h ctype.h openssl/err.h string.h fnmatch.h netinet/ip.h arpa/inet.h strings.h unistd.h fcntl.h signal.h])
+AC_CHECK_HEADERS([stdio.h stdlib.h syslog.h pthread.h errno.h limits.h sys/types.h sys/stat.h sys/socket.h time.h ctype.h openssl/err.h openssl/ssl.h string.h fnmatch.h netinet/ip.h arpa/inet.h strings.h unistd.h fcntl.h signal.h sys/capability.h linux/capability.h dar/libdar./hpp libthreadar/libthreadar.hpp nlohmann/json.hpp])
 
 # mandatory headers
-AC_CHECK_HEADERS([openssl/ssl.h dar/libdar.hpp libthreadar/libthreadar.hpp])
 AC_CHECK_HEADER([openssl/ssl.h],
 		[],
 		[
@@ -136,12 +137,23 @@ AC_CHECK_HEADER([dar/libdar.hpp],
 		  AC_MSG_ERROR([missing required <dar/libdar.hpp> included file])
 		])
 
-AC_CHECK_HEADERS([libthreadar/libthreadar.hpp],
+AC_CHECK_HEADER([dar/tools.hpp],
+		[],
+		[
+		  AC_MSG_ERROR([missing required <dar/tools.hpp> included file])
+		])
+
+AC_CHECK_HEADER([libthreadar/libthreadar.hpp],
 		[],
 		[
 		  AC_MSG_ERROR([missing required <libthreadar/libthreadar.hpp> included file])
 		])
 
+AC_CHECK_HEADER([nlohmann/json.hpp],
+		[],
+		[
+		AC_MSG_ERROR([missing required <nlohmann/json.hpp> included file])
+		])
 
 AC_SYS_LARGEFILE
 
@@ -235,8 +247,6 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 		     AC_MSG_ERROR([Niels Lohmann's Json library for C++ is missing])
 		   ])
 
-#include <nlohmann/json.hpp>
-
 AC_MSG_CHECKING([for getopt() in <unistd.h>])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[extern "C" {
                                     #if HAVE_UNISTD_H
@@ -287,7 +297,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[extern "C" {
                   [AC_MSG_RESULT([not available])])
 
 
-AC_MSG_CHECKING([for POSIX.1e capabilities support])
+AC_MSG_CHECKING([for POSIX sys/capability support])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[extern "C" {
                                   #if HAVE_SYS_CAPABILITY_H
                                   #include <sys/capability.h>
@@ -334,7 +344,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[extern "C"
 
 
 AC_ARG_ENABLE( [mode],
-                AS_HELP_STRING(--enable-mode=arg, [where arg is either 32 or infinint. Makes dar internally use 32 bits or limitless integers in place of 64 bits integers (which is the case if this option is not given)]),
+                AS_HELP_STRING(--enable-mode=arg, [where arg is either 32, 64 (the default) or "infinint". Makes libdar internally use 32 bits or limitless integers in place of 64 bits integers]),
 		[
 		    build_mode=$enableval
 		    if test "$build_mode" != "32" -a "$build_mode" != "64" -a "$build_mode" != "infinint" ; then
@@ -351,20 +361,6 @@ else
          build_mode_suffix=""
      fi
 fi
-
-PKG_CHECK_MODULES(OPENSSL,
-		  openssl,
-		  [],
-		  [])
-
-PKG_CHECK_MODULES(LIBDAR,
-                  libdar${build_mode_suffix},
-		  [],
-		  [
-		     AC_MSG_ERROR([libdar${build_mod_suffix} was not found or pkg-config is not installed])
-		  ]
-		  )
-
 
 AC_ARG_ENABLE( [upx],
                 AS_HELP_STRING(--disable-upx, [by default configure looks for UPX and if available make executables compressed at installation time, you can disable this feature]),
@@ -383,7 +379,6 @@ AS_IF(          [ test "x$enable_upx" != "xyes" ],
                         )
                 ]
              )
-
 
 AC_ARG_ENABLE( [build-html],
                AS_HELP_STRING(--disable-build-html, [don't build programming documentation (in particular libdar API documentation) and html man page]),
@@ -437,21 +432,37 @@ AS_IF(	       [ test "x$enable_dev" != "xno" ],
 	       )
 
 AC_ARG_ENABLE( [webdar-static],
-               AS_HELP_STRING(--disable-webdar-static, [building webdar_static, a webdar statically linked version]),
-               [
-                 explicit_webdar_static=yes
-                 AS_IF([ test "x$enable_webdar_static" != "xyes" ],
-                       [ build_static="no" ],
-                       [ build_static="yes" ])
-               ],
-               [build_static="yes"])
+               AS_HELP_STRING(--enable-webdar-static, [building webdar_static, a webdar statically linked version]))
 
+AS_IF(         [ test "x$enable_webdar_static" = "xyes" ],
+               [build_static="yes"],
+	       [build_static="no"])
 
+PKG_CHECK_MODULES(OPENSSL,
+		  openssl,
+		  [],
+		  [])
+
+PKG_CHECK_MODULES(LIBDAR,
+                  libdar${build_mode_suffix},
+		  [],
+		  [
+		     AC_MSG_ERROR([libdar${build_mod_suffix} was not found or pkg-config is not installed (see also PKG_CONFIG_PATH env variable, if libdar is installed in a non-standard place)])
+		  ]
+		  )
+
+PKG_CHECK_MODULES(LIBTHREADAR,
+		  libthreadar,
+		  [],
+		  [
+		    AC_MSG_ERROR([libthreadar was not found or pkg-config is not installed (see also PKG_CONFIG_PATH env variable, if libthreadar is installed in a non-standard place)])
+	          ]
+		  )
 
 # Checks for libraries.
-AC_CHECK_LIB(dar64, [for_autoconf], [], [AC_MSG_ERROR([cannot link with libdar library]) ])
-AC_CHECK_LIB(threadar, [for_autoconf], [], [AC_MSG_ERROR([Cannot link with libthreadar library]) ])
-AC_CHECK_LIB(ssl, [SSL_new], [], [AC_MSG_ERROR([Cannot link with libssl library]) ])
+# AC_CHECK_LIB(ssl, [SSL_new], [], [AC_MSG_ERROR([Cannot link with libssl library]) ], [ ${OPENSSL_LIBS} ${LIBTHREADAR_LIBS} ${LIBDAR_LIBS} ])
+AC_CHECK_LIB(dar${build_mode_suffix}, [for_autoconf], [], [AC_MSG_ERROR([cannot link with libdar library]) ], [ ${OPENSSL_LIBS} ${LIBTHREADAR_LIBS} ${LIBDAR_LIBS} ])
+AC_CHECK_LIB(threadar, [for_autoconf], [], [AC_MSG_ERROR([Cannot link with libthreadar library]) ], [ ${OPENSSL_LIBS} ${LIBTHREADAR_LIBS} ${LIBDAR_LIBS} ])
 
 AM_CONDITIONAL([BUILD_WEBDAR_STATIC], [ test $build_static = "yes" ])
 AM_CONDITIONAL([BUILD_MODE32], [test "$build_mode" = "32"])
@@ -476,5 +487,5 @@ AC_CONFIG_COMMANDS([hack-libtool], [
 ])
 
 
-AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile misc/Makefile])
 AC_OUTPUT
