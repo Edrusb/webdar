@@ -21,18 +21,6 @@
 #  to contact the author: dar.linux@free.fr
 ########################################################################
 
-SUBDIRS = src doc po misc
-dist_noinst_DATA = INSTALL README TODO AUTHORS COPYING ChangeLog
 
-CPPCHECKDIR=./cppcheckbuilddir
-
-cppcheck:
-	@if cppcheck --help > /dev/null ; then \
-	( mkdir -p $(CPPCHECKDIR) && cppcheck --force --file-filter="*.?pp" -isrc/testing -isrc/python --cppcheck-build-dir=$(CPPCHECKDIR) `pwd` ) || exit 1 ; \
-	else \
-	echo "cppcheck not present, aborting" || exit 1 ; \
-	fi
-
-clean-local:
-	rm -rf $(CPPCHECKDIR)
+dist_noinst_DATA = webdar_static_builder_with_musl_voidlinux.bash
 

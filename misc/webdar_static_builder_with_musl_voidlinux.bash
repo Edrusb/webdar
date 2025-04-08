@@ -3,24 +3,36 @@
 if [ ! -z "$1" ] && [ "$1" -gt 1 ] ; then
     export MAKE_FLAGS="-j $1"
 else
-    echo "usage: $0 <num CPU cores to use>"
+    echo "usage: $0 <num CPU cores to use> [root]"
     exit 1
 fi
 
+if [ -z "$2" ] ; then
+    export ROOT_PERM=no
+else
+    export ROOT_PERM=yes
+fi
+
+echo "ROOT_PERM = $ROOT_PERM"
+
 # config/compilation/linking related variables
 
-export LOCAL_PKG_CONFIG_DIR="$(pwd)/pkgconfig"
+export LOCAL_PREFIX="$HOME/usr"
 
-export PKG_CONFIG_PATH="${LOCAL_PKG_CONFIG_DIR}":/usr/local/lib/pkgconfig:/lib/pkgconfig:/usr/lib/pkgconfig
-export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:/usr/lib
+export LOCAL_PKG_CONFIG_DIR1="$LOCAL_PREFIX/lib/pkgconfig"
+export LOCAL_PKG_CONFIG_DIR2="$LOCAL_PREFIX/lib64/pkgconfig"
 
-#export LDFLAGS=-L/usr/local/lib
-#export CFLAGS=-I/usr/local/include
-#export CXXFLAGS=${CFLAGS}
+export PKG_CONFIG_PATH="$LOCAL_PKG_CONFIG_DIR1:$LOCAL_PKG_CONFIG_DIR2:/usr/lib/pkgconfig:/usr/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib64/pkgconfig"
+export CFLAGS="-I$LOCAL_PREFIX/include -I/usr/local/include -I/usr/include"
+export CXXFLAGS="$CFLAGS"
+export LDFLAGS="-L$LOCAL_PREFIX/lib -L$LOCAL_PREFIX/lib64 -L/usr/local/lib -L/usr/local/lib64 -L/usr/lib -L/usr/lib64 -L/lib -L/lib64"
+export LD_LIBRARY_PATH="$LOCAL_PREFIX/lib:$LOCAL_PREFIX/lib64:/usr/local/lib:/usr/local/lib64:/usr/lib:/usr/lib64:/lib:/lib64"
+export PATH="$LOCAL_PREFIX/bin:/usr/local/bin:$PATH"
+
 
 # packages version
 
-OPENSSL=3.3.3
+OPENSSL=3.0.16
 
 # wget options need for gnutls website that does not provide all chain of trust in its certificate
 GNUTLS_WGET_OPT="--no-check-certificate"
@@ -63,74 +75,85 @@ check()
     fi
 
     if [ ! -d "${REPO}" ] ; then
-       echo "${REPO} exists but is not a directory, aborting"
-       exit 1
-    fi
-
-    if [ ! -e "${LOCAL_PKG_CONFIG_DIR}" ] ; then
-	mkdir "${LOCAL_PKG_CONFIG_DIR}"
-    fi
-
-    if [ ! -d "${LOCAL_PKG_CONFIG_DIR}" ] ; then
-	echo "${LOCAL_PKG_CONFIG_DIR} exists but is not a directory, aborting"
+	echo "${REPO} exists but is not a directory, aborting"
 	exit 1
+    fi
+
+    if [ ! -e "${LOCAL_PKG_CONFIG_DIR1}" ] ; then
+        mkdir -p "${LOCAL_PKG_CONFIG_DIR1}"
+    fi
+
+    if [ ! -e "${LOCAL_PKG_CONFIG_DIR2}" ] ; then
+        mkdir -p "${LOCAL_PKG_CONFIG_DIR2}"
+    fi
+
+    if [ ! -d "${LOCAL_PKG_CONFIG_DIR1}" ] ; then
+        echo "${LOCAL_PKG_CONFIG_DIR1} exists but is not a directory, aborting"
+        exit 1
+    fi
+
+    if [ ! -d "${LOCAL_PKG_CONFIG_DIR2}" ] ; then
+        echo "${LOCAL_PKG_CONFIG_DIR2} exists but is not a directory, aborting"
+        exit 1
     fi
 }
 
 requirements()
 {
 
-    #updating xbps db
-    xbps-install -SU -y
+    if [ "$ROOT_PERM" = "yes" ] ; then
 
-    # tools used to build the different packages involved here
-    xbps-install -y gcc make wget pkg-config cmake xz || exit 1
+	#updating xbps db
+	xbps-install -SU -y
 
-    #direct dependencies of libdar
-    xbps-install -y bzip2-devel e2fsprogs-devel libargon2-devel libgcc-devel libgcrypt-devel liblz4-devel \
-		 liblzma-devel libstdc++-devel libzstd-devel lz4-devel \
-		 lzo-devel musl-devel zlib-devel || exit 1
+	# tools used to build the different packages involved here
+	xbps-install -y gcc make wget pkg-config cmake xz || exit 1
 
-    # needed to build static flavor of librsync
-    xbps-install -y libb2-devel || exit 1
+	#direct dependencies of libdar
+	xbps-install -y bzip2-devel e2fsprogs-devel libargon2-devel libgcc-devel libgcrypt-devel liblz4-devel \
+		     liblzma-devel libstdc++-devel libzstd-devel lz4-devel \
+		     lzo-devel musl-devel zlib-devel || exit 1
 
-    # needed to build static flavor of gnutls
-    xbps-install -y  nettle-devel libtasn1-devel libunistring-devel unbound-devel unbound || exit 1
+	# needed to build static flavor of librsync
+	xbps-install -y libb2-devel || exit 1
 
-    #needed for static flavor of libcurl
-    xbps-install -y libssp-devel || echo "ignoring error if libssp-devel fails to install due to musl-devel already installed"
+	# needed to build static flavor of gnutls
+	xbps-install -y  nettle-devel libtasn1-devel libunistring-devel unbound-devel unbound || exit 1
 
-    # need to tweak the hogweed.pc file provided by the system, we do not modify the system but shadow it by a local version located in higher priority dir
-    HOGWEED_PC=/usr/lib/pkgconfig/hogweed.pc
-    if [ -e "${HOGWEED_PC}" ] ; then
-	sed -r -e 's/#\snettle/nettle/' < "${HOGWEED_PC}" > "${LOCAL_PKG_CONFIG_DIR}/$(basename ${HOGWEED_PC})"
-    else
-	echo "${HOGWEED_PC} not found"
-	exit 1
+	#needed for static flavor of libcurl
+	xbps-install -y libssp-devel || echo "ignoring error if libssp-devel fails to install due to musl-devel already installed"
+
+
+	# optional but interesting to get a smaller dar_static binary
+	xbps-install -y upx || echo "" && echo "WARNING!" && echo "Failed to install upx, will do without" && echo && sleep 3
+
+	# openssl needs perl
+	xbps-install -y perl || echo "" && echo "WARNING!" && echo "Failed to install perl" && exit 1
+
     fi
-
-    # optional but interesting to get a smaller dar_static binary
-    xbps-install -y upx || echo "" && echo "WARNING!" && echo "Failed to install upx, will do without" && echo && sleep 3
-
-    # openssl needs perl
-    xbps-install -y perl || echo "" && echo "WARNING!" && echo "Failed to install perl" && exit 1
-
 }
 
-libssl()
+openssl()
 {
-    local LIBSSL_PKG=openssl-${LIBTSSL_VERSION}.tar.gz
+    local OPENSSL_PKG=openssl-${OPENSSL}.tar.gz
 
-    if [ ! -e "${REPO}/${LIBSSL_PKG}" ] ; then wget "https://github.com/openssl/openssl/releases/download/openssl-3.3.3/${LIBSSL_PKG}" && mv "${LIBSSL_PKG}" "${REPO}" || exit 1 ; fi
-    tar -xf "${REPO}/${LIBSSL_PKG}" || exit 1
-    cd libssl-${LIBTHREADAR_VERSION} || exit 1
-    ./Configure && make ${MAKE_FLAGS} || exit 1
-    make install
+    if [ ! -e "${REPO}/${OPENSSL_PKG}" ] ; then wget "https://github.com/openssl/openssl/releases/download/openssl-$OPENSSL/${OPENSSL_PKG}" && mv "${OPENSSL_PKG}" "${REPO}" || exit 1 ; fi
+    tar -xf "${REPO}/${OPENSSL_PKG}" || exit 1
+    cd openssl-${OPENSSL} || exit 1
+    ./Configure --prefix="$LOCAL_PREFIX" enable-ktls threads || exit 1
+    make ${MAKE_FLAGS} || exit 1
+    make install || exit 1
     cd ..
     ldconfig
-    rm -rf openssl-${LIBTHREADAR_VERSION}
+    rm -rf openssl-${OPENSSL}
 }
 
+nlhomann()
+{
+    mkdir -p "$LOCAL_PREFIX/include/nlohmann" || exit 1
+    wget https://raw.githubusercontent.com/nlohmann/json/refs/heads/release/3.12.0/single_include/nlohmann/json.hpp || exit 1
+    mv json.hpp "$LOCAL_PREFIX/include/nlohmann" || exit 1
+}
 
 webdar_static()
 {
@@ -138,14 +161,14 @@ webdar_static()
     make distclean || /bin/true
     ./configure --enable-static\
 		--disable-shared\
-		--prefix=/DAR || exit 1
+		--prefix="$LOCAL_PREFIX" || exit 1
     make ${MAKE_FLAGS} || exit 1
     make DESTDIR=${tmp_dir} install-strip || exit 1
-    mv ${tmp_dir}/DAR/bin/webdar_static . && echo "webdar_static binary is available in the current directory"
-    rm -rf ${tmp_dir}/DAR
+    mv "$LOCAL_PREFIX"/bin/webdar_static . && echo "webdar_static binary is available in the current directory"
 }
 
 check
 requirements || (echo "Failed setting up requirements" && exit 1)
-libssl || (echo "Failed building libssl" && exit 1)
+openssl || (echo "Failed building libssl" && exit 1)
+nlhomann || (echo "Failed installing json lib by Neils Lhomann" && exit 1)
 webdar_static || (echo "Failed building dar_static" && exit 1)
