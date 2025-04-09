@@ -161,6 +161,7 @@ webdar_static()
     make distclean || /bin/true
     ./configure --enable-static\
 		--disable-shared\
+		--enable-webdar-static\
 		--prefix="$LOCAL_PREFIX" || exit 1
     make ${MAKE_FLAGS} || exit 1
     make DESTDIR=${tmp_dir} install-strip || exit 1
@@ -171,4 +172,4 @@ check
 requirements || (echo "Failed setting up requirements" && exit 1)
 openssl || (echo "Failed building libssl" && exit 1)
 nlhomann || (echo "Failed installing json lib by Neils Lhomann" && exit 1)
-webdar_static || (echo "Failed building dar_static" && exit 1)
+webdar_static || (echo "Failed building webdar_static" && exit 1)
