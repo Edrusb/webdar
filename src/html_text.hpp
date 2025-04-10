@@ -54,9 +54,9 @@ public:
     html_text() { txt = ""; };
     html_text(unsigned int level, const std::string & text) { add_text(level, text); };
     html_text(const html_text & ref) = default;
-    html_text(html_text && ref) noexcept = default;
+    html_text(html_text && ref) noexcept = delete;
     html_text & operator = (const html_text & ref) = default;
-    html_text & operator = (html_text && ref) noexcept = default;
+    html_text & operator = (html_text && ref) noexcept = delete;
     ~html_text() = default;
 
 	/// adding text

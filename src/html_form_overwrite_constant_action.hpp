@@ -76,10 +76,10 @@ public:
     static constexpr const char* ea_ask = "Ask user what to do for each file in conflict";
 
     html_form_overwrite_constant_action();
-    html_form_overwrite_constant_action(const html_form_overwrite_constant_action & ref) = default;
-    html_form_overwrite_constant_action(html_form_overwrite_constant_action && ref) noexcept = default;
-    html_form_overwrite_constant_action & operator = (const html_form_overwrite_constant_action & ref) = default;
-    html_form_overwrite_constant_action & operator = (html_form_overwrite_constant_action && ref) noexcept = default;
+    html_form_overwrite_constant_action(const html_form_overwrite_constant_action & ref) = delete;
+    html_form_overwrite_constant_action(html_form_overwrite_constant_action && ref) noexcept = delete;
+    html_form_overwrite_constant_action & operator = (const html_form_overwrite_constant_action & ref) = delete;
+    html_form_overwrite_constant_action & operator = (html_form_overwrite_constant_action && ref) noexcept = delete;
     ~html_form_overwrite_constant_action() = default;
 
 

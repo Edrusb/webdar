@@ -110,10 +110,10 @@ public:
     static const std::string event_download;
 
     html_bibliotheque(std::shared_ptr<bibliotheque> & ptr, const std::string & bib_path);
-    html_bibliotheque(const html_bibliotheque & ref) = default;
-    html_bibliotheque(html_bibliotheque && ref) noexcept = default;
-    html_bibliotheque & operator = (const html_bibliotheque & ref) = default;
-    html_bibliotheque & operator = (html_bibliotheque && ref) noexcept = default;
+    html_bibliotheque(const html_bibliotheque & ref) = delete;
+    html_bibliotheque(html_bibliotheque && ref) noexcept = delete;
+    html_bibliotheque & operator = (const html_bibliotheque & ref) = delete;
+    html_bibliotheque & operator = (html_bibliotheque && ref) noexcept = delete;
     ~html_bibliotheque() = default;
 
 

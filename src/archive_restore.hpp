@@ -45,9 +45,9 @@ class archive_restore : public libthreadar::thread_signal
 {
 public:
     archive_restore(): param(nullptr) {};
-    archive_restore(const archive_restore & ref) = default;
+    archive_restore(const archive_restore & ref) = delete;
     archive_restore(archive_restore && ref) noexcept = default;
-    archive_restore & operator = (const archive_restore & ref) = default;
+    archive_restore & operator = (const archive_restore & ref) = delete;
     archive_restore & operator = (archive_restore && ref) noexcept = default;
     ~archive_restore() { cancel(); join(); };
 

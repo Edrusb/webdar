@@ -46,9 +46,9 @@ class html_hr : public body_builder
 public:
     html_hr() = default;
     html_hr(const html_hr & ref) = default;
-    html_hr(html_hr && ref) noexcept = default;
+    html_hr(html_hr && ref) noexcept = delete;
     html_hr & operator = (const html_hr & ref) = default;
-    html_hr & operator = (html_hr && ref) noexcept = default;
+    html_hr & operator = (html_hr && ref) noexcept = delete;
     ~html_hr() = default;
 
 protected:

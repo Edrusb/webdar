@@ -46,10 +46,10 @@ class html_div : public html_level
 {
 public:
     html_div() = default;
-    html_div(const html_div & ref) = default;
-    html_div(html_div && ref) noexcept = default;
-    html_div & operator = (const html_div & ref) = default;
-    html_div & operator = (html_div && ref) noexcept = default;
+    html_div(const html_div & ref) = delete;
+    html_div(html_div && ref) noexcept = delete;
+    html_div & operator = (const html_div & ref) = delete;
+    html_div & operator = (html_div && ref) noexcept = delete;
     ~html_div() = default;
 
 	/// to be used when the component is adopted by another having a grid-template css property set

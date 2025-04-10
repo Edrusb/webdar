@@ -82,10 +82,10 @@ public:
 
 
     html_form_overwrite_base_criterium();
-    html_form_overwrite_base_criterium(const html_form_overwrite_base_criterium & ref) = default;
-    html_form_overwrite_base_criterium(html_form_overwrite_base_criterium && ref) noexcept = default;
-    html_form_overwrite_base_criterium & operator = (const html_form_overwrite_base_criterium & ref) = default;
-    html_form_overwrite_base_criterium & operator = (html_form_overwrite_base_criterium && ref) noexcept = default;
+    html_form_overwrite_base_criterium(const html_form_overwrite_base_criterium & ref) = delete;
+    html_form_overwrite_base_criterium(html_form_overwrite_base_criterium && ref) noexcept = delete;
+    html_form_overwrite_base_criterium & operator = (const html_form_overwrite_base_criterium & ref) = delete;
+    html_form_overwrite_base_criterium & operator = (html_form_overwrite_base_criterium && ref) noexcept = delete;
     ~html_form_overwrite_base_criterium() = default;
 
 	/// set the base mode (use crit_* static char* above)

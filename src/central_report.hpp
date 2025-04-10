@@ -86,7 +86,7 @@ class central_report_syslog : public central_report
 {
 public:
     central_report_syslog(priority_t min_logged, const std::string & fixed_label, int facility);
-    ~central_report_syslog();
+    ~central_report_syslog() noexcept(false);
 
 protected:
     virtual void inherited_report(priority_t priority, const std::string & message) override;

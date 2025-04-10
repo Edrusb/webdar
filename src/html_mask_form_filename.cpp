@@ -226,7 +226,7 @@ void html_mask_form_filename::init()
 	// we use tools_printf to ease future message translation
 	// if in other languages the subject is not at the beginning
 	// but in the middle or at the end of the translated string:
-    labels.push_back(libdar::tools_printf("%S expression", sujet));
+    labels.push_back(libdar::tools_printf("%S expression", &sujet));
     labels.push_back("Logical combination");
     labels.push_back("Recorded configuration");
 

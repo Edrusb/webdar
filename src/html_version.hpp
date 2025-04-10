@@ -49,10 +49,10 @@ class html_version: public html_popup, public actor
 {
 public:
     html_version();
-    html_version(const html_version & ref) = default;
-    html_version(html_version && ref) noexcept = default;
-    html_version & operator = (const html_version & ref) = default;
-    html_version & operator = (html_version && ref) noexcept = default;
+    html_version(const html_version & ref) = delete;
+    html_version(html_version && ref) noexcept = delete;
+    html_version & operator = (const html_version & ref) = delete;
+    html_version & operator = (html_version && ref) noexcept = delete;
     ~html_version() = default;
 
     	/// inherited from actor

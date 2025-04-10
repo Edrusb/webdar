@@ -46,9 +46,9 @@ class html_static_url : public html_url, public static_body_builder
 public:
     html_static_url(const std::string & url, const std::string & label);
     html_static_url(const html_static_url & ref) = default;
-    html_static_url(html_static_url && ref) noexcept = default;
+    html_static_url(html_static_url && ref) noexcept = delete;
     html_static_url & operator = (const html_static_url & ref) = default;
-    html_static_url & operator = (html_static_url && ref) noexcept = default;
+    html_static_url & operator = (html_static_url && ref) noexcept = delete;
     ~html_static_url() = default;
 
     void change_label(const std::string & newlabel);

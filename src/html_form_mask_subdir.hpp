@@ -97,9 +97,9 @@ public:
     html_form_mask_subdir(bool absolute_path_accepted,
 			  const std::shared_ptr<const libdar::path> & fs_root);
     html_form_mask_subdir(const html_form_mask_subdir & ref);
-    html_form_mask_subdir(html_form_mask_subdir && ref) noexcept = default;
-    html_form_mask_subdir & operator = (const html_form_mask_subdir & ref) = default;
-    html_form_mask_subdir & operator = (html_form_mask_subdir && ref) noexcept = default;
+    html_form_mask_subdir(html_form_mask_subdir && ref) noexcept = delete;
+    html_form_mask_subdir & operator = (const html_form_mask_subdir & ref) = delete;
+    html_form_mask_subdir & operator = (html_form_mask_subdir && ref) noexcept = delete;
     ~html_form_mask_subdir() = default;
 
 	/// reset object to default

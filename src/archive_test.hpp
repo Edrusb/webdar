@@ -45,9 +45,9 @@ class archive_test : public libthreadar::thread_signal
 {
 public:
     archive_test(): param(nullptr) {};
-    archive_test(const archive_test & ref) = default;
+    archive_test(const archive_test & ref) = delete;
     archive_test(archive_test && ref) noexcept = default;
-    archive_test & operator = (const archive_test & ref) = default;
+    archive_test & operator = (const archive_test & ref) = delete;
     archive_test & operator = (archive_test && ref) noexcept = default;
     ~archive_test() { cancel(); join(); };
 

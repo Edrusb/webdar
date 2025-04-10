@@ -224,7 +224,7 @@ void guichet::load_json(const json & source)
 	    if(newcateg != categ)
 		throw exception_range(libdar::tools_printf("Unexpected configuration category in json data: found %s, expected %s",
 							   conf_cat.c_str(),
-							   bibliotheque::category_to_string(categ)));
+							   bibliotheque::category_to_string(categ).c_str()));
 	    try
 	    {
 		select.set_selected_id_with_warning(conf_name, jlabel_name);

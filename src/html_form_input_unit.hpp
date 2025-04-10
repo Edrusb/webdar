@@ -56,10 +56,10 @@ public:
     html_form_input_unit(const std::string & label,
 			 const libdar::infinint & initial_value,
 			 const std::string & size);
-    html_form_input_unit(const html_form_input_unit & ref) = default;
-    html_form_input_unit(html_form_input_unit && ref) noexcept = default;
-    html_form_input_unit & operator = (const html_form_input_unit & ref) = default;
-    html_form_input_unit & operator = (html_form_input_unit && ref) noexcept = default;
+    html_form_input_unit(const html_form_input_unit & ref) = delete;
+    html_form_input_unit(html_form_input_unit && ref) noexcept = delete;
+    html_form_input_unit & operator = (const html_form_input_unit & ref) = delete;
+    html_form_input_unit & operator = (html_form_input_unit && ref) noexcept = delete;
     ~html_form_input_unit() = default;
 
 	/// set both min and max

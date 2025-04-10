@@ -62,10 +62,10 @@ public:
     static const std::string changed;
 
     html_form_overwrite_chain_action(const std::string & label);
-    html_form_overwrite_chain_action(const html_form_overwrite_chain_action & ref) = default;
-    html_form_overwrite_chain_action(html_form_overwrite_chain_action && ref) noexcept = default;
-    html_form_overwrite_chain_action & operator = (const html_form_overwrite_chain_action & ref) = default;
-    html_form_overwrite_chain_action & operator = (html_form_overwrite_chain_action && ref) noexcept = default;
+    html_form_overwrite_chain_action(const html_form_overwrite_chain_action & ref) = delete;
+    html_form_overwrite_chain_action(html_form_overwrite_chain_action && ref) noexcept = delete;
+    html_form_overwrite_chain_action & operator = (const html_form_overwrite_chain_action & ref) = delete;
+    html_form_overwrite_chain_action & operator = (html_form_overwrite_chain_action && ref) noexcept = delete;
     ~html_form_overwrite_chain_action() = default;
 
 	/// add a new entry in the chain

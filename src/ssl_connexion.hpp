@@ -55,9 +55,9 @@ public:
 
 	/// copy is forbidden, move is allowed
     ssl_connexion(const ssl_connexion & ref) = delete;
-    ssl_connexion(ssl_connexion && ref) noexcept = default;
+    ssl_connexion(ssl_connexion && ref) noexcept = delete;
     ssl_connexion & operator = (const ssl_connexion & ref) = delete;
-    ssl_connexion & operator = (ssl_connexion && ref) noexcept = default;
+    ssl_connexion & operator = (ssl_connexion && ref) noexcept = delete;
 
 	/// destructor
     ~ssl_connexion();

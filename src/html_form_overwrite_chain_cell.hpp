@@ -55,10 +55,10 @@ public:
     static const std::string changed;
 
     html_form_overwrite_chain_cell(std::unique_ptr<html_form_overwrite_action> & insert);
-    html_form_overwrite_chain_cell(const html_form_overwrite_chain_cell & ref) = default;
-    html_form_overwrite_chain_cell(html_form_overwrite_chain_cell && ref) noexcept = default;
-    html_form_overwrite_chain_cell & operator = (const html_form_overwrite_chain_cell & ref) = default;
-    html_form_overwrite_chain_cell & operator = (html_form_overwrite_chain_cell && ref) noexcept = default;
+    html_form_overwrite_chain_cell(const html_form_overwrite_chain_cell & ref) = delete;
+    html_form_overwrite_chain_cell(html_form_overwrite_chain_cell && ref) noexcept = delete;
+    html_form_overwrite_chain_cell & operator = (const html_form_overwrite_chain_cell & ref) = delete;
+    html_form_overwrite_chain_cell & operator = (html_form_overwrite_chain_cell && ref) noexcept = delete;
     ~html_form_overwrite_chain_cell() = default;
 
     html_form_overwrite_action & get_cell_action();

@@ -121,7 +121,7 @@ public:
 
 	/** \verbatim
 
-		/* caller code example
+		// caller code example
 
 	     html_form_input_file hfif(<constructor params>);
 
@@ -129,7 +129,7 @@ public:
 	     hfif.register_name(html_form_input::repo_updated);
 	     hfif.set_entrepot_updater(this);
 
-		 /* in 'this' on_event(event_name) method
+		 // in 'this' on_event(event_name) method
 
 	     if(event_name == html_form_input::repo_update_needed)
 	     {
@@ -164,7 +164,7 @@ protected:
 	// inherited from body_builder
     virtual void new_css_library_available() override;
     virtual std::string inherited_get_body_part(const chemin & path,
-						const request & req);
+						const request & req) override;
 
 
 private:

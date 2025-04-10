@@ -45,10 +45,10 @@ class html_page : public html_level
 {
 public:
     html_page(const std::string & title = "") { x_title = title; store_css_library(); };
-    html_page(const html_page & ref) = default;
-    html_page(html_page && ref) noexcept = default;
-    html_page & operator = (const html_page & ref) = default;
-    html_page & operator = (html_page && ref) noexcept = default;
+    html_page(const html_page & ref) = delete;
+    html_page(html_page && ref) noexcept = delete;
+    html_page & operator = (const html_page & ref) = delete;
+    html_page & operator = (html_page && ref) noexcept = delete;
     ~html_page() = default;
 
 	/// change page title

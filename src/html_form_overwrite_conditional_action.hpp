@@ -55,10 +55,10 @@ public:
     static const std::string changed;
 
     html_form_overwrite_conditional_action();
-    html_form_overwrite_conditional_action(const html_form_overwrite_conditional_action & ref) = default;
-    html_form_overwrite_conditional_action(html_form_overwrite_conditional_action && ref) noexcept = default;
-    html_form_overwrite_conditional_action & operator = (const html_form_overwrite_conditional_action & ref) = default;
-    html_form_overwrite_conditional_action & operator = (html_form_overwrite_conditional_action && ref) noexcept = default;
+    html_form_overwrite_conditional_action(const html_form_overwrite_conditional_action & ref) = delete;
+    html_form_overwrite_conditional_action(html_form_overwrite_conditional_action && ref) noexcept = delete;
+    html_form_overwrite_conditional_action & operator = (const html_form_overwrite_conditional_action & ref) = delete;
+    html_form_overwrite_conditional_action & operator = (html_form_overwrite_conditional_action && ref) noexcept = delete;
     ~html_form_overwrite_conditional_action() = default;
 
 	/// provide access to the condition object

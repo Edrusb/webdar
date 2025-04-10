@@ -55,9 +55,9 @@ public:
 
     html_form_radio();
     html_form_radio(const html_form_radio & ref) = default;
-    html_form_radio(html_form_radio && ref) noexcept = default;
+    html_form_radio(html_form_radio && ref) noexcept = delete;
     html_form_radio & operator = (const html_form_radio & ref) = default;
-    html_form_radio & operator = (html_form_radio && ref) noexcept = default;
+    html_form_radio & operator = (html_form_radio && ref) noexcept = delete;
     ~html_form_radio() = default;
 
     void add_choice(const std::string & id, const std::string & label);

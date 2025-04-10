@@ -44,9 +44,9 @@ class html_url : public body_builder
 public:
     html_url(const std::string & url);
     html_url(const html_url & ref) = default;
-    html_url(html_url && ref) noexcept = default;
+    html_url(html_url && ref) noexcept = delete;
     html_url & operator = (const html_url & ref) = default;
-    html_url & operator = (html_url && ref) noexcept = default;
+    html_url & operator = (html_url && ref) noexcept = delete;
     ~html_url() = default;
 
     void change_url(const std::string & newurl);

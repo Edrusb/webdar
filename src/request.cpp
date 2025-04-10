@@ -255,7 +255,7 @@ unsigned int request::get_multipart_number() const
 	static const char* expected_type = "multipart/";
 
 	if(tmp.size() <= strlen(expected_type)
-	   || strncasecmp(tmp.c_str(), expected_type, strlen(expected_type) != 0))
+	   || strncasecmp(tmp.c_str(), expected_type, strlen(expected_type)) != 0)
 	    throw exception_input(libdar::tools_printf("Content-Type is not of type %s", expected_type),
 				  STATUS_CODE_EXPECTATION_FAILED);
 

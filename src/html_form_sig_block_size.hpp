@@ -60,10 +60,10 @@ public:
     static const std::string changed;
 
     html_form_sig_block_size();
-    html_form_sig_block_size(const html_form_sig_block_size & ref) = default;
-    html_form_sig_block_size(html_form_sig_block_size && ref) noexcept = default;
-    html_form_sig_block_size & operator = (const html_form_sig_block_size & ref) = default;
-    html_form_sig_block_size & operator = (html_form_sig_block_size && ref) noexcept = default;
+    html_form_sig_block_size(const html_form_sig_block_size & ref) = delete;
+    html_form_sig_block_size(html_form_sig_block_size && ref) noexcept = delete;
+    html_form_sig_block_size & operator = (const html_form_sig_block_size & ref) = delete;
+    html_form_sig_block_size & operator = (html_form_sig_block_size && ref) noexcept = delete;
     ~html_form_sig_block_size() = default;
 
 	/// define default/initial file size value below which to never try performing binary delta

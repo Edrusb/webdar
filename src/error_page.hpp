@@ -54,7 +54,7 @@ public:
     void set_return_uri(const uri &ref, const std::string & label);
 
 	/// inherited from responder
-    answer give_answer(const request & req);
+    answer give_answer(const request & req) override;
 
 protected:
     virtual void prefix_has_changed() override;

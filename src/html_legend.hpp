@@ -46,9 +46,9 @@ class html_legend : public body_builder
 public:
     html_legend(const std::string & label) { x_label = label; };
     html_legend(const html_legend & ref) = default;
-    html_legend(html_legend && ref) noexcept = default;
+    html_legend(html_legend && ref) noexcept = delete;
     html_legend & operator = (const html_legend & ref) = default;
-    html_legend & operator = (html_legend && ref) noexcept = default;
+    html_legend & operator = (html_legend && ref) noexcept = delete;
     ~html_legend() = default;
 
     void change_label(const std::string & label);

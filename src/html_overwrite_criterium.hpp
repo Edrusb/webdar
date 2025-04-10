@@ -48,9 +48,9 @@ class html_overwrite_criterium : public body_builder
 public:
     html_overwrite_criterium() {};
     html_overwrite_criterium(const html_overwrite_criterium & ref) = default;
-    html_overwrite_criterium(html_overwrite_criterium && ref) noexcept = default;
+    html_overwrite_criterium(html_overwrite_criterium && ref) noexcept = delete;
     html_overwrite_criterium & operator = (const html_overwrite_criterium & ref) = default;
-    html_overwrite_criterium & operator = (html_overwrite_criterium && ref) noexcept = default;
+    html_overwrite_criterium & operator = (html_overwrite_criterium && ref) noexcept = delete;
     ~html_overwrite_criterium() = default;
 
 	/// obtain the crit_criterium object for libdar option

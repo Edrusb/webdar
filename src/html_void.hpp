@@ -89,9 +89,9 @@ class html_void: public body_builder
 public:
     html_void() {}
     html_void(const html_void & ref) = default;
-    html_void(html_void && ref) noexcept = default;
+    html_void(html_void && ref) noexcept = delete;
     html_void & operator = (const html_void & ref) = default;
-    html_void & operator = (html_void && ref) noexcept = default;
+    html_void & operator = (html_void && ref) noexcept = delete;
     ~html_void() = default;
 
 protected:

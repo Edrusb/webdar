@@ -72,10 +72,10 @@ class html_demo : public html_popup, public actor
 {
 public:
     html_demo();
-    html_demo(const html_demo & ref) = default;
-    html_demo(html_demo && ref) noexcept = default;
-    html_demo & operator = (const html_demo & ref) = default;
-    html_demo & operator = (html_demo && ref) noexcept = default;
+    html_demo(const html_demo & ref) = delete;
+    html_demo(html_demo && ref) noexcept = delete;
+    html_demo & operator = (const html_demo & ref) = delete;
+    html_demo & operator = (html_demo && ref) noexcept = delete;
     ~html_demo() = default;
 
 	/// inherited from actor

@@ -52,8 +52,8 @@ public:
     html_popup(unsigned int width_pct, unsigned int height_pct);
     html_popup(const html_popup & ref) = delete;
     html_popup(html_popup && ref) noexcept = delete;
-    html_popup & operator = (const html_popup & ref) = default;
-    html_popup & operator = (html_popup && ref) noexcept = default;
+    html_popup & operator = (const html_popup & ref) = delete;
+    html_popup & operator = (html_popup && ref) noexcept = delete;
     ~html_popup() = default;
 
 protected:

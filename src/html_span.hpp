@@ -46,10 +46,10 @@ class html_span : public html_level
 {
 public:
     html_span() = default;
-    html_span(const html_span & ref) = default;
-    html_span(html_span && ref) noexcept = default;
-    html_span & operator = (const html_span & ref) = default;
-    html_span & operator = (html_span && ref) noexcept = default;
+    html_span(const html_span & ref) = delete;
+    html_span(html_span && ref) noexcept = delete;
+    html_span & operator = (const html_span & ref) = delete;
+    html_span & operator = (html_span && ref) noexcept = delete;
     ~html_span() = default;
 
 	/// to be used when the component is adopted by another having a grid-template css property set

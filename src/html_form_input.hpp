@@ -66,9 +66,9 @@ public:
 		    const std::string & css_class        ///< a CSS class with "max-width/width/min-width" properties *is* reactive and better than size
 	);
     html_form_input(const html_form_input & ref) = default;
-    html_form_input(html_form_input && ref) noexcept = default;
+    html_form_input(html_form_input && ref) noexcept = delete;
     html_form_input & operator = (const html_form_input & ref) = default;
-    html_form_input & operator = (html_form_input && ref) noexcept = default;
+    html_form_input & operator = (html_form_input && ref) noexcept = delete;
     ~html_form_input() = default;
 
     void set_range(const libdar::infinint & min, const libdar::infinint & max);

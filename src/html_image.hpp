@@ -45,9 +45,9 @@ class html_image : public body_builder, public static_body_builder
 public:
     html_image(const std::string & url, const std::string & alt);
     html_image(const html_image & ref) = default;
-    html_image(html_image && ref) noexcept = default;
+    html_image(html_image && ref) noexcept = delete;
     html_image & operator = (const html_image & ref) = default;
-    html_image & operator = (html_image && ref) noexcept = default;
+    html_image & operator = (html_image && ref) noexcept = delete;
     ~html_image() = default;
 
     void set_dimensions(const std::string x, const std::string y);

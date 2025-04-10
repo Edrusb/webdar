@@ -54,9 +54,9 @@ class archive_compare : public libthreadar::thread_signal
 {
 public:
     archive_compare(): param(nullptr) {};
-    archive_compare(const archive_compare & ref) = default;
+    archive_compare(const archive_compare & ref) = delete;
     archive_compare(archive_compare && ref) noexcept = default;
-    archive_compare & operator = (const archive_compare & ref) = default;
+    archive_compare & operator = (const archive_compare & ref) = delete;
     archive_compare & operator = (archive_compare && ref) noexcept = default;
     ~archive_compare() { cancel(); join(); };
 

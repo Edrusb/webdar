@@ -62,10 +62,10 @@ public:
     static const std::string changed;
 
     html_form_overwrite_combining_criterium(const std::string & initial_mode = and_op);
-    html_form_overwrite_combining_criterium(const html_form_overwrite_combining_criterium & ref) = default;
-    html_form_overwrite_combining_criterium(html_form_overwrite_combining_criterium && ref) noexcept = default;
-    html_form_overwrite_combining_criterium & operator = (const html_form_overwrite_combining_criterium & ref) = default;
-    html_form_overwrite_combining_criterium & operator = (html_form_overwrite_combining_criterium && ref) noexcept = default;
+    html_form_overwrite_combining_criterium(const html_form_overwrite_combining_criterium & ref) = delete;
+    html_form_overwrite_combining_criterium(html_form_overwrite_combining_criterium && ref) noexcept = delete;
+    html_form_overwrite_combining_criterium & operator = (const html_form_overwrite_combining_criterium & ref) = delete;
+    html_form_overwrite_combining_criterium & operator = (html_form_overwrite_combining_criterium && ref) noexcept = delete;
     ~html_form_overwrite_combining_criterium() = default;
 
 	/// set and/or combining mode

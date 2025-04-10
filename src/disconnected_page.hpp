@@ -47,10 +47,10 @@ public:
     static const std::string changed;
 
     disconnected_page();
-    disconnected_page(const disconnected_page & ref) = default;
-    disconnected_page(disconnected_page && ref) noexcept = default;
-    disconnected_page & operator = (const disconnected_page & ref) = default;
-    disconnected_page & operator = (disconnected_page && ref) noexcept = default;
+    disconnected_page(const disconnected_page & ref) = delete;
+    disconnected_page(disconnected_page && ref) noexcept = delete;
+    disconnected_page & operator = (const disconnected_page & ref) = delete;
+    disconnected_page & operator = (disconnected_page && ref) noexcept = delete;
     ~disconnected_page() = default;
 
 	/// wether to redirect to the uri with trimmed path

@@ -555,7 +555,7 @@ void bibliotheque::add_dependency_for(coordinates user, const using_set & referr
 	    throw exception_range(libdar::tools_printf("config %s/%s relies on non-existant %s/%s configuration",
 						       category_to_string(user.cat).c_str(),
 						       user.confname.c_str(),
-						       category_to_string(usit->cat),
+						       category_to_string(usit->cat).c_str(),
 						       usit->confname.c_str()));
 
 	it->second.dependency.insert(user);

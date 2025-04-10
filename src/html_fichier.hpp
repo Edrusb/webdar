@@ -46,9 +46,9 @@ class html_fichier: public body_builder
 public:
     html_fichier() = default;
     html_fichier(const html_fichier & ref) = default;
-    html_fichier(html_fichier && ref) noexcept = default;
+    html_fichier(html_fichier && ref) noexcept = delete;
     html_fichier & operator = (const html_fichier & ref) = default;
-    html_fichier & operator = (html_fichier && ref) noexcept = default;
+    html_fichier & operator = (html_fichier && ref) noexcept = delete;
     ~html_fichier() = default;
 
 	/// define the content to return upon request

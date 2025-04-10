@@ -100,10 +100,10 @@ public:
 	/// By oposition, it should be left to false, when used directly in non-configuration components.
     guichet(bool subcomponent = false);
 
-    guichet(const guichet & ref) = default;
-    guichet(guichet && ref) noexcept = default;
-    guichet & operator = (const guichet & ref) = default;
-    guichet & operator = (guichet && ref) noexcept = default;
+    guichet(const guichet & ref) = delete;
+    guichet(guichet && ref) noexcept = delete;
+    guichet & operator = (const guichet & ref) = delete;
+    guichet & operator = (guichet && ref) noexcept = delete;
     virtual ~guichet();
 
 

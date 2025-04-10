@@ -102,9 +102,9 @@ public:
 	/// what the filter does: "{subject} matches the regular expression {regex}"
     html_form_mask_expression(const std::string & subject);
     html_form_mask_expression(const html_form_mask_expression & ref);
-    html_form_mask_expression(html_form_mask_expression && ref) noexcept = default;
-    html_form_mask_expression & operator = (const html_form_mask_expression & ref) = default;
-    html_form_mask_expression & operator = (html_form_mask_expression && ref) noexcept = default;
+    html_form_mask_expression(html_form_mask_expression && ref) noexcept = delete;
+    html_form_mask_expression & operator = (const html_form_mask_expression & ref) = delete;
+    html_form_mask_expression & operator = (html_form_mask_expression && ref) noexcept = delete;
     ~html_form_mask_expression() = default;
 
 	/// reset object to default

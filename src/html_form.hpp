@@ -54,9 +54,9 @@ public:
 
     html_form(const std::string & validate_msg = "send");
     html_form(const html_form & ref) = default;
-    html_form(html_form && ref) noexcept = default;
+    html_form(html_form && ref) noexcept = delete;
     html_form & operator = (const html_form & ref) = default;
-    html_form & operator = (html_form && ref) noexcept = default;
+    html_form & operator = (html_form && ref) noexcept = delete;
     ~html_form() = default;
 
 	/// encoding type for HTTP code generation ; "multipart/form-data" for example
