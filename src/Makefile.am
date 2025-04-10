@@ -63,7 +63,7 @@ static_object.sto: static_object_batch static_object_builder ../resources/favico
 	./static_object_batch > static_object.sto
 
 no_compress_glob_expression_list.cpp: ../data/darrc
-	sed -rn -e 's/\s*#.*//' -e 's/\s*-Z\s+(".*")/no_compress_glob_expressions.push_back(\1);/p' $< > $@
+	sed -rnE -e 's/[ \t]*#.*//' -e 's/[ \t]*-Z[ \t]+(".*")/no_compress_glob_expressions.push_back(\1);/p' $< > $@
 
 dist_noinst_DATA = static_object_batch ../resources/favicon.jpg ../resources/webdar_logo.jpg ../resources/webdar_title_logo.jpg ../data/darrc
 

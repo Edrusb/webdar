@@ -37,6 +37,10 @@ extern "C"
 #include <netinet/ip.h>
 #endif
 
+#if HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#endif
+
 #if HAVE_ARPA_INET_H
 #include <arpa/inet.h>
 #endif
@@ -180,7 +184,7 @@ void listener::init(const shared_ptr<central_report> & log,
 	    rep->report(debug, "listener object: IPv4 socket datastructure setup done");
 	}
 
-	if(bind(sockfd, ptr, ptr_len) < 0)
+	if(::bind(sockfd, ptr, ptr_len) < 0)
 	    throw exception_system("Error while binding socket to network", errno);
 	rep->report(debug, "listener object: Socket binding done");
 

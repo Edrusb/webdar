@@ -122,7 +122,7 @@ AC_PROG_EGREP
 
 AC_HEADER_SYS_WAIT
 
-AC_CHECK_HEADERS([stdio.h stdlib.h syslog.h pthread.h errno.h limits.h sys/types.h sys/stat.h sys/socket.h time.h ctype.h openssl/err.h openssl/ssl.h string.h fnmatch.h netinet/ip.h arpa/inet.h strings.h unistd.h fcntl.h signal.h sys/capability.h linux/capability.h dar/libdar./hpp libthreadar/libthreadar.hpp nlohmann/json.hpp])
+AC_CHECK_HEADERS([stdio.h stdlib.h syslog.h pthread.h errno.h limits.h sys/types.h sys/stat.h sys/socket.h time.h ctype.h openssl/err.h openssl/ssl.h string.h fnmatch.h netinet/ip.h netinet/in.h arpa/inet.h strings.h unistd.h fcntl.h signal.h sys/capability.h linux/capability.h dar/libdar.hpp libthreadar/libthreadar.hpp nlohmann/json.hpp])
 
 # mandatory headers
 AC_CHECK_HEADER([openssl/ssl.h],
