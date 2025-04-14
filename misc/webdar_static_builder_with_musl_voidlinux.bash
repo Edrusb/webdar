@@ -129,10 +129,10 @@ requirements()
 
 
 	# optional but interesting to get a smaller dar_static binary
-	xbps-install -y upx || echo "" && echo "WARNING!" && echo "Failed to install upx, will do without" && echo && sleep 3
+	xbps-install -y upx || (echo "" && echo "WARNING!" && echo "Failed to install upx, will do without" && echo && sleep 3)
 
 	# openssl needs perl
-	xbps-install -y perl || echo "" && echo "WARNING!" && echo "Failed to install perl" && exit 1
+	xbps-install -y perl || (echo "" && echo "WARNING!" && echo "Failed to install perl" && exit 1)
 
     fi
 }
