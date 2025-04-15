@@ -181,6 +181,10 @@ void html_version::new_css_library_available()
     }
 
     webdar_css_style::update_library(*csslib);
+
+	// letting parent class drop its own class definition
+	// to the css_library
+    html_popup::new_css_library_available();
 }
 
 void html_version::fill_libthreadar(html_table & table)
