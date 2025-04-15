@@ -459,6 +459,21 @@ PKG_CHECK_MODULES(LIBTHREADAR,
 	          ]
 		  )
 
+### specific handling of musl standard library
+
+AC_MSG_CHECKING([for standard library])
+
+which_test=`which test`
+is_musl=`ldd "$which_test" | grep musl | wc -l`
+
+if test $is_musl -ne 0 ; then
+    # to ask musl to provide larger stacks for non threads (here 8Mio)
+    LDFLAGS="$LDFLAGS -DPT_GNU_STACK=-Wl,-z,stack-size=0x800000"
+    AC_MSG_RESULT([musl library detected, increasing thread stack size to 8 Mio])
+else
+    AC_MSG_RESULT([not musl, keeping default thread stack size])
+fi
+
 # Checks for libraries.
 # AC_CHECK_LIB(ssl, [SSL_new], [], [AC_MSG_ERROR([Cannot link with libssl library]) ], [ ${OPENSSL_LIBS} ${LIBTHREADAR_LIBS} ${LIBDAR_LIBS} ])
 AC_CHECK_LIB(dar${build_mode_suffix}, [for_autoconf], [], [AC_MSG_ERROR([cannot link with libdar library]) ], [ ${OPENSSL_LIBS} ${LIBTHREADAR_LIBS} ${LIBDAR_LIBS} ])
