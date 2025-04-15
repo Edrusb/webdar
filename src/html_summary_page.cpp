@@ -178,7 +178,7 @@ void html_summary_page::set_source(const archive_init_list *ref)
     format_table.adopt_static_html(sum.get_user_comment());
     format_table.adopt_static_html("Symmetrical encryption");
     format_table.adopt_static_html(sum.get_cipher());
-    format_table.adopt_static_html("Asymmetricla encryption");
+    format_table.adopt_static_html("Asymmetrical encryption");
     format_table.adopt_static_html(sum.get_asym());
     format_table.adopt_static_html("Signed");
     format_table.adopt_static_html(sum.get_signed() ? "yes": "no");
