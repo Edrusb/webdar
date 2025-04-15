@@ -67,7 +67,7 @@ html_archive_extract::html_archive_extract():
     extract_params.set_active_section(sect_extract_params);
 
     extract_fs_root.set_select_mode(html_form_input_file::select_dir);
-    extract_fs_root.set_can_create_dir(false);
+    extract_fs_root.set_can_create_dir(true);
     extract_fs_root.set_change_event_name(extract_root_changed);
 
     opt_extract->set_fs_root(extract_fs_root.get_value());
