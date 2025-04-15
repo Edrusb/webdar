@@ -99,6 +99,9 @@ public:
 	/// convert json used string to category
     static category string_to_category(const std::string & s);
 
+	/// provide user displayable category description
+    static std::string category_description(category cat);
+
 
 	/// complete configuration designation
     struct coordinates

@@ -250,16 +250,20 @@ void bibliotheque::delete_config(category categ, const string & name)
 
     if(! it->second.dependency.empty())
     {
-	string errmsg = libdar::tools_printf("Configuration %s/%s cannot be deleted because it is used by:",
-					     category_to_string(categ).c_str(),
+	string errmsg = libdar::tools_printf("%s configuration named \"%s\" cannot be deleted because it is used by:",
+					     category_description(categ).c_str(),
 					     name.c_str());
 
 	for(set<coordinates>::iterator list = it->second.dependency.begin();
 	    list != it->second.dependency.end();
 	    ++list)
-	    errmsg += libdar::tools_printf(" %s/%s",
-					   category_to_string(list->cat).c_str(),
+	{
+	    if(list != it->second.dependency.begin())
+		errmsg += ", ";
+	    errmsg += libdar::tools_printf(" %s named \"%s\"",
+					   category_description(list->cat).c_str(),
 					   list->confname.c_str());
+	}
 
 	throw exception_range(errmsg);
     }
@@ -704,3 +708,51 @@ bibliotheque::category bibliotheque::string_to_category(const string & s)
 	throw exception_range(libdar::tools_printf("Unknown category: %s", s.c_str()));
 }
 
+string bibliotheque::category_description(category cat)
+{
+    switch(cat)
+    {
+    case filefilter:
+	return "file filter";
+    case pathfilter:
+	return "path filter";
+    case command:
+	return "shell command";
+    case repo:
+	return "repository";
+    case compress:
+	return "compression";
+    case confsave:
+	return "create options";
+    case conftest:
+	return "test options";
+    case confdiff:
+	return "compare options";
+    case conflist:
+	return "list options";
+    case confrest:
+	return "restore options";
+    case confmerge:
+	return "merge options";
+    case confrepair:
+	return "repair options";
+    case confcommon:
+	return "common options";
+    case slicing:
+	return "slice options";
+    case ciphering:
+	return "cipher options";
+    case delta_sig:
+	return "delta signatures options";
+    case over_policy:
+	return "overwriting policy";
+    case confread:
+	return "read options";
+    case confisolate:
+	return "isolate options";
+    case EOE:
+	throw WEBDAR_BUG;
+    default:
+	throw WEBDAR_BUG;
+    }
+}
