@@ -102,10 +102,18 @@ void html_yes_no_box::on_event(const string & event_name)
     if(ignore_events)
 	return;
 
-    if(rd.get_selected_num() == 1)
-	act(answer_yes);
-    else
-	act(answer_no);
+    try
+    {
+	if(rd.get_selected_num() == 1)
+	    act(answer_yes);
+	else
+	    act(answer_no);
+    }
+    catch(...)
+    {
+	set_visible(false);
+	throw;
+    }
     set_visible(false);
 }
 
