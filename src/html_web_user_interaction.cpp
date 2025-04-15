@@ -300,7 +300,16 @@ void html_web_user_interaction::on_event(const string & event_name)
 	    {
 		if(h_pause.get_selected_num() != 0)
 		{
-		    lib_data->set_pause_answer(h_pause.get_selected_num() == 2);
+		    try
+		    {
+			lib_data->set_pause_answer(h_pause.get_selected_num() == 2);
+		    }
+		    catch(...)
+		    {
+			h_inter.set_visible(false);
+			my_body_part_has_changed();
+			throw;
+		    }
 		    h_inter.set_visible(false);
 		    my_body_part_has_changed();
 		}
@@ -317,13 +326,22 @@ void html_web_user_interaction::on_event(const string & event_name)
 	    {
 		string tmpm;
 		bool tmpe;
-		if(lib_data->pending_get_string(tmpm, tmpe))
-		    lib_data->set_get_string_answer(h_get_string.get_value());
-		else if(lib_data->pending_get_secu_string(tmpm, tmpe))
-		    lib_data->set_get_secu_string_answer(libdar::secu_string(h_get_string.get_value().c_str(), h_get_string.get_value().size()));
-		else
-		    throw WEBDAR_BUG;
 
+		try
+		{
+		    if(lib_data->pending_get_string(tmpm, tmpe))
+			lib_data->set_get_string_answer(h_get_string.get_value());
+		    else if(lib_data->pending_get_secu_string(tmpm, tmpe))
+			lib_data->set_get_secu_string_answer(libdar::secu_string(h_get_string.get_value().c_str(), h_get_string.get_value().size()));
+		    else
+			throw WEBDAR_BUG;
+		}
+		catch(...)
+		{
+		    h_gtstr_fs.set_visible(false);
+		    my_body_part_has_changed();
+		    throw;
+		}
 		h_gtstr_fs.set_visible(false);
 		my_body_part_has_changed();
 	    }
