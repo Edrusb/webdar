@@ -389,22 +389,22 @@ html_bibliotheque::html_bibliotheque(shared_ptr<bibliotheque> & ptr,
     	// global component setups
 
     tabs.add_tab("Global Settings", tab_main);
-    tabs.add_tab("Repositories", tab_repo);
-    tabs.add_tab("Delta signatures", tab_delta_sig);
-    tabs.add_tab("Filename Masks", tab_filemask);
-    tabs.add_tab("Path Masks", tab_pathmask);
-    tabs.add_tab("Compression", tab_compression);
-    tabs.add_tab("Slicing", tab_slicing);
-    tabs.add_tab("Ciphering", tab_ciphering);
-    tabs.add_tab("Overwriting Policy", tab_over_policy);
-    tabs.add_tab("Creation Options", tab_options_create);
-    tabs.add_tab("Reading Options", tab_options_read);
-    tabs.add_tab("Testing Options", tab_options_test);
-    tabs.add_tab("Comparison Options", tab_options_compare);
-    tabs.add_tab("Isolation Options", tab_options_isolate);
-    tabs.add_tab("Merging Options", tab_options_merge);
-    tabs.add_tab("Repairing Options", tab_options_repair);
-    tabs.add_tab("Restoration Options", tab_options_extract);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::repo, true), tab_repo);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::delta_sig, true), tab_delta_sig);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::filefilter, true), tab_filemask);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::pathfilter, true), tab_pathmask);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::compress, true), tab_compression);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::slicing, true), tab_slicing);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::ciphering, true), tab_ciphering);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::over_policy, true), tab_over_policy);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::confsave, true), tab_options_create);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::confread, true), tab_options_read);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::conftest, true), tab_options_test);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::confdiff, true), tab_options_compare);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::confisolate, true), tab_options_isolate);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::confmerge, true), tab_options_merge);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::confrepair, true), tab_options_repair);
+    tabs.add_tab(bibliotheque::category_description(bibliotheque::confrest, true), tab_options_extract);
 
 	//  global adoption tree
 

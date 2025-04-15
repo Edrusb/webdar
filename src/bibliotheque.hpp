@@ -100,7 +100,7 @@ public:
     static category string_to_category(const std::string & s);
 
 	/// provide user displayable category description
-    static std::string category_description(category cat);
+    static std::string category_description(category cat, bool capitalized);
 
 
 	/// complete configuration designation

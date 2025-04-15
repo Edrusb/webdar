@@ -35,6 +35,7 @@ extern "C"
 #include <dar/tools.hpp>
 
     // webdar headers
+#include "webdar_tools.hpp"
 
     //
 #include "bibliotheque.hpp"
@@ -251,7 +252,7 @@ void bibliotheque::delete_config(category categ, const string & name)
     if(! it->second.dependency.empty())
     {
 	string errmsg = libdar::tools_printf("%s configuration named \"%s\" cannot be deleted because it is used by:",
-					     category_description(categ).c_str(),
+					     category_description(categ, false).c_str(),
 					     name.c_str());
 
 	for(set<coordinates>::iterator list = it->second.dependency.begin();
@@ -261,7 +262,7 @@ void bibliotheque::delete_config(category categ, const string & name)
 	    if(list != it->second.dependency.begin())
 		errmsg += ", ";
 	    errmsg += libdar::tools_printf(" %s named \"%s\"",
-					   category_description(list->cat).c_str(),
+					   category_description(list->cat, false).c_str(),
 					   list->confname.c_str());
 	}
 
@@ -708,51 +709,77 @@ bibliotheque::category bibliotheque::string_to_category(const string & s)
 	throw exception_range(libdar::tools_printf("Unknown category: %s", s.c_str()));
 }
 
-string bibliotheque::category_description(category cat)
+string bibliotheque::category_description(category cat, bool capitalized)
 {
+    string ret;
+
     switch(cat)
     {
     case filefilter:
-	return "file filter";
+	ret = "file filters";
+	break;
     case pathfilter:
-	return "path filter";
+	ret = "path filters";
+	break;
     case command:
-	return "shell command";
+	ret = "shell commands";
+	break;
     case repo:
-	return "repository";
+	ret = "repository options";
+	break;
     case compress:
-	return "compression";
+	ret = "compression options";
+	break;
     case confsave:
-	return "create options";
+	ret = "create options";
+	break;
     case conftest:
-	return "test options";
+	ret = "test options";
+	break;
     case confdiff:
-	return "compare options";
+	ret = "compare options";
+	break;
     case conflist:
-	return "list options";
+	ret = "list options";
+	break;
     case confrest:
-	return "restore options";
+	ret = "restore options";
+	break;
     case confmerge:
-	return "merge options";
+	ret = "merge options";
+	break;
     case confrepair:
-	return "repair options";
+	ret = "repair options";
+	break;
     case confcommon:
-	return "common options";
+	ret = "common options";
+	break;
     case slicing:
-	return "slice options";
+	ret = "slice options";
+	break;
     case ciphering:
-	return "cipher options";
+	ret = "cipher options";
+	break;
     case delta_sig:
-	return "delta signatures options";
+	ret = "delta signatures";
+	break;
     case over_policy:
-	return "overwriting policy";
+	ret = "overwriting policies";
+	break;
     case confread:
-	return "read options";
+	ret = "read options";
+	break;
     case confisolate:
-	return "isolate options";
+	ret = "isolate options";
+	break;
     case EOE:
 	throw WEBDAR_BUG;
     default:
 	throw WEBDAR_BUG;
     }
+
+    if(capitalized)
+	return webdar_tools_capitalize_first_letter_of_words(ret);
+    else
+	return ret;
 }

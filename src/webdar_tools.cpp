@@ -414,3 +414,23 @@ bool webdar_tools_exists_and_is_dir(const string & path, bool follow_symlink)
 
     return ret == 0 && (info.st_mode & S_IFDIR) != 0;
 }
+
+string webdar_tools_capitalize_first_letter_of_words(const string & source)
+{
+    string ret;
+    vector<string> splitted;
+
+    webdar_tools_split_by(' ', source, splitted);
+    for(vector<string>::iterator it = splitted.begin();
+	it != splitted.end();
+	++it)
+    {
+	if(it->size() > 0)
+	    *(it->begin()) = toupper(*(it->begin()));
+	if(!ret.empty())
+	    ret += " ";
+	ret += *it;
+    }
+
+    return ret;
+}

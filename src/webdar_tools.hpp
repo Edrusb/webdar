@@ -144,4 +144,6 @@ extern std::string webdar_tools_html_display(const std::string & arg);
 extern bool webdar_tools_exists_and_is_file(const std::string & path, bool follow_symlink);
 extern bool webdar_tools_exists_and_is_dir(const std::string & path, bool follow_symlink);
 
+extern std::string webdar_tools_capitalize_first_letter_of_words(const std::string & source);
+
 #endif
