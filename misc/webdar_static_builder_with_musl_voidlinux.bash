@@ -155,7 +155,7 @@ openssl()
 nlhomann()
 {
     mkdir -p "$LOCAL_PREFIX/include/nlohmann" || exit 1
-    wget https://raw.githubusercontent.com/nlohmann/json/refs/heads/release/3.12.0/single_include/nlohmann/json.hpp || exit 1
+    wget https://raw.githubusercontent.com/nlohmann/json/refs/tags/v3.12.0/single_include/nlohmann/json.hpp || exit 1
     mv json.hpp "$LOCAL_PREFIX/include/nlohmann" || exit 1
 }
 
