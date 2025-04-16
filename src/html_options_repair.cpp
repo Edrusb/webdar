@@ -137,7 +137,7 @@ html_options_repair::html_options_repair():
     static const char* sect_slice = "slicing";
     static const char* sect_crypt = "crypto";
 
-    deroule.add_section(sect_entrep, "Repaired Catalog Repository");
+    deroule.add_section(sect_entrep, "Repaired Backup Repository");
     deroule.add_section(sect_process, "How to process the operation");
     deroule.add_section(sect_display, "What to show during the operation");
     deroule.add_section(sect_target, "Target properties");
