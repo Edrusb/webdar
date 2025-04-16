@@ -573,36 +573,32 @@ void html_web_user_interaction::update_controlled_thread_status()
 
     try
     {
-	if(managed_thread != nullptr)
+	if(! managed_thread->is_running())
 	{
-	    if(! managed_thread->is_running())
+	    bool real_exception = true;
+	    try
 	    {
-		bool real_exception = true;
-		try
-		{
-		    managed_thread->join(); // may throw exception!
-		    real_exception = false;
-		    throw(real_exception);
-		}
-		catch(...)
-		{
+		managed_thread->join(); // may throw exception!
+		real_exception = false;
+		throw(real_exception);
+	    }
+	    catch(...)
+	    {
 
-			// Pay attention! this code here beelow is always executed
-			// even when join() does not throw exception above!!!
-			//
+		    // Pay attention! this code here beelow is always executed
+		    // even when join() does not throw exception above!!!
+		    //
 
-		    all_threads_pending.broadcast(); // awaking all thread waiting this thread to end
-		    managed_thread = nullptr;
-		    if(real_exception)
-			was_interrupted = true;
-		    set_mode(finished);
-		    check_clean_status();
-		    if(real_exception)
-			throw;    // caught exception is one thrown by join(), we propagate it
-		}
+		all_threads_pending.broadcast(); // awaking all thread waiting this thread to end
+		managed_thread = nullptr;
+		if(real_exception)
+		    was_interrupted = true;
+		set_mode(finished);
+		check_clean_status();
+		if(real_exception)
+		    throw;    // caught exception is one thrown by join(), we propagate it
 	    }
 	}
-	    // else nothing to update, this has already been updated in a previous call here
     }
     catch(exception_base & e)
     {
