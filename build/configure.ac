@@ -467,9 +467,10 @@ which_test=`which test`
 is_musl=`ldd "$which_test" | grep musl | wc -l`
 
 if test $is_musl -ne 0 ; then
-    # to ask musl to provide larger stacks for non threads (here 16Mio)
-    LDFLAGS="$LDFLAGS -DPT_GNU_STACK=-Wl,-z,stack-size=0x1000000"
-    AC_MSG_RESULT([musl library detected, increasing thread stack size to 8 Mio])
+    # to ask musl to provide larger stacks for non threads
+    __webdar_stack_size="0x1000000"
+    LDFLAGS="$LDFLAGS -DPT_GNU_STACK=-Wl,-z,stack-size=__webdar_stack_size"
+    AC_MSG_RESULT([musl library detected, increasing thread stack size to $__webdar_stack_size bytes])
 else
     AC_MSG_RESULT([not musl, keeping default thread stack size])
 fi
