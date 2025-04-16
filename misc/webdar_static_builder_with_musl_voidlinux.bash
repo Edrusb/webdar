@@ -174,6 +174,6 @@ webdar_static()
 
 check
 requirements || (echo "Failed setting up requirements" && exit 1)
-openssl || (echo "Failed building libssl" && exit 1)
+# openssl || (echo "Failed building libssl" && exit 1)
 nlhomann || (echo "Failed installing json lib by Neils Lhomann" && exit 1)
 webdar_static || (echo "Failed building webdar_static" && exit 1)
