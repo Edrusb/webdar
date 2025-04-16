@@ -90,8 +90,11 @@ void web_user_interaction::clear()
     try
     {
 	pause_pending = false;
+	pause_answered = false;
 	get_string_pending = false;
+	get_string_answered = false;
 	get_secu_string_pending = false;
+	get_secu_string_answered = false;
 	warnings.clear();
 	control.broadcast(); // will only be effective when unlocking control!
     }
@@ -135,7 +138,7 @@ bool web_user_interaction::pending_pause(string & msg) const
     control.lock();
     try
     {
-	ret = pause_pending;
+	ret = pause_pending && ! pause_answered;
 	if(ret)
 	    msg = pause_msg;
     }
@@ -160,7 +163,7 @@ bool web_user_interaction::pending_get_string(string & msg, bool & echo) const
     control.lock();
     try
     {
-	ret = get_string_pending;
+	ret = get_string_pending && ! get_string_answered;
 	if(ret)
 	{
 	    msg = get_string_msg;
@@ -188,7 +191,7 @@ bool web_user_interaction::pending_get_secu_string(string & msg, bool & echo) co
     control.lock();
     try
     {
-	ret = get_secu_string_pending;
+	ret = get_secu_string_pending && ! get_secu_string_answered;
 	if(ret)
 	{
 	    msg = get_secu_string_msg;
@@ -216,7 +219,10 @@ void web_user_interaction::set_pause_answer(bool val)
     {
 	if(!pause_pending)
 	    throw WEBDAR_BUG;
+	if(pause_answered)
+	    throw WEBDAR_BUG;
 	pause_ans = val;
+	pause_answered = true;
 	control.signal();
     }
     catch(...)
@@ -239,7 +245,10 @@ void web_user_interaction::set_get_string_answer(const string & val)
     {
 	if(!get_string_pending)
 	    throw WEBDAR_BUG;
+	if(get_string_answered)
+	    throw WEBDAR_BUG;
 	get_string_ans = val;
+	get_string_answered = true;
 	control.signal();
     }
     catch(...)
@@ -262,7 +271,10 @@ void web_user_interaction::set_get_secu_string_answer(const libdar::secu_string 
     {
 	if(!get_secu_string_pending)
 	    throw WEBDAR_BUG;
+	if(get_secu_string_answered)
+	    throw WEBDAR_BUG;
 	get_secu_string_ans = val;
+	get_secu_string_answered = true;
 	control.signal();
     }
     catch(...)
@@ -322,6 +334,8 @@ bool web_user_interaction::inherited_pause(const string & message)
     {
 	if(pause_pending || get_string_pending || get_secu_string_pending)
 	    throw WEBDAR_BUG; // already waiting for an answer!
+	if(pause_answered)
+	    throw WEBDAR_BUG;
 	pause_msg = message;
 	pause_pending = true;
 
@@ -331,7 +345,10 @@ bool web_user_interaction::inherited_pause(const string & message)
 
 	if(!pause_pending)
 	    throw WEBDAR_BUG; // answer already read!?!
+	if(!pause_answered)
+	    throw WEBDAR_BUG; // no answer provided?!?
 	pause_pending = false;
+	pause_answered = false;
 	ret = pause_ans;
 	pause_msg = "";
     }
@@ -368,7 +385,10 @@ string web_user_interaction::inherited_get_string(const string & message, bool e
 
 	if(!get_string_pending)
 	    throw WEBDAR_BUG; // answer already read!
+	if(!get_string_answered)
+	    throw WEBDAR_BUG; // no answer provided!
 	get_string_pending = false;
+	get_string_answered = false;
 	ret = get_string_ans;
 	get_string_msg = "";
 	get_string_ans = "";
@@ -406,7 +426,10 @@ libdar::secu_string web_user_interaction::inherited_get_secu_string(const string
 
 	if(!get_secu_string_pending)
 	    throw WEBDAR_BUG; // answer already read!
+	if(!get_secu_string_answered)
+	    throw WEBDAR_BUG; // no answer provided!
 	get_secu_string_pending = false;
+	get_secu_string_answered = false;
 	ret = get_secu_string_ans;
 	get_string_msg = "";
 	get_string_ans = "";

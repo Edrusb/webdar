@@ -106,18 +106,22 @@ private:
     mutable libthreadar::condition control; ///< control access to any value this object has
 
 	// pause() fields
-    bool pause_pending;    ///< true if a pause() is pending for a response
+    bool pause_pending;    ///< true if a pause() is pending for a response (libdar thread waiting on "control")
+    bool pause_answered;   ///< true if a answer has been provided but not yet consumed by libdar thread
     std::string pause_msg; ///< the request to answser to
     bool pause_ans;        ///< the answer to the request
 
+
 	// get_string() fields
     bool get_string_pending;    ///< true if a get_string() is pending for a response
+    bool get_string_answered;   ///< true if a answer has been provided but not yet consumed by libdar thread
     std::string get_string_msg; ///< the libdar message for get_string()
     bool get_string_echo;       ///< whether answer has to be echoed
     std::string get_string_ans; ///< the user provided answer
 
 	// get_secu_string() fields
     bool get_secu_string_pending;    ///< true if a get_secu_string() is pending for a response
+    bool get_secu_string_answered;   ///< true if an answer has been provided but not yet consumed by libdar thread
     std::string get_secu_string_msg; ///< the libdar message for get_secu_string()
     bool get_secu_string_echo;       ///< whether the answer has to be echoed
     libdar::secu_string get_secu_string_ans; ///< the user provided secu_string
