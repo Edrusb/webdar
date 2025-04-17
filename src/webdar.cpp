@@ -103,6 +103,7 @@ extern "C"
 
 #define DEFAULT_TCP_PORT 8008
 #define DEFAULT_POOL_SIZE 50
+#define SECURED_MEM_BYTE_SIZE 524288
 
     /// \mainpage
     /// The following describes the overall architecture of the webdar software
@@ -732,7 +733,7 @@ static void libdar_init()
 {
     libdar::U_I maj, med, min;
 
-    libdar::get_version(maj, med, min);
+    libdar::get_version(maj, med, min, (libdar::U_I)(SECURED_MEM_BYTE_SIZE), true);
     if(maj != libdar::LIBDAR_COMPILE_TIME_MAJOR ||
        med < libdar::LIBDAR_COMPILE_TIME_MEDIUM)
         throw libdar::Erange("initialization",
