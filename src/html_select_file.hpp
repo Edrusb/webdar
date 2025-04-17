@@ -230,6 +230,7 @@ private:
 
 	// status field about html components
     bool is_loading_mode;             ///< whether the content placeholder shows
+    bool new_warning;                 ///< whether the warning field should not be cleared
     libdar::inode_type fieldset_isdir;///< whether fieldset points to a directory or not
 
 	// settings

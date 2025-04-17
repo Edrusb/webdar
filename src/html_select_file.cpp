@@ -78,13 +78,12 @@ html_select_file::html_select_file(const string & message):
     btn_hide_createdir("New Folder", op_hide_createdir),
     createdir_form("Create Folder"),
     createdir_input("Folder Name", html_form_input::text, "", "", webdar_css_style::width_100vw),
-    fieldset_isdir(libdar::inode_type::isdir)
+    fieldset_isdir(libdar::inode_type::isdir),
+    new_warning(false)
 {
     entr.reset();       // entr points to nothing
     mem_ui.reset();     // mem_ui points to nothing
     webui.set_warning_list_size(5);
-
-    warning.ignore_body_changed_from_my_children(true);
 
 	// events for callers objects
     register_name(entry_selected);  // we'll propagate the even from btn_validate
@@ -188,6 +187,7 @@ void html_select_file::on_event(const string & event_name)
     {
 	if(fieldset_isdir == libdar::inode_type::isdir && cur_select_mode != sel_dir)
 	{
+	    warning.clear();
 	    warning.add_text(3, string("This is a directory, please select a non-directory file"));
 		// not necessary to call my_body_part_has_changed() as we just changed "warning" one of our own children
 	}
@@ -325,6 +325,9 @@ string html_select_file::inherited_get_body_part(const chemin & path,
     html_page* page = nullptr;
     closest_ancestor_of_type(page);
 
+    if(! new_warning)
+	warning.clear();
+
     bool lock_acquired = content_mutex.try_lock();
 
     try
@@ -362,10 +365,7 @@ string html_select_file::inherited_get_body_part(const chemin & path,
     else
 	throw WEBDAR_BUG; // cannot set refresh mode
 
-    warning.ignore_body_changed_from_my_children(true);
-    if(!should_refresh && ! has_my_body_part_changed())
-	warning.clear();
-    warning.ignore_body_changed_from_my_children(false);
+    new_warning = should_refresh || has_my_body_part_changed();
 
     return ret;
 }
