@@ -183,7 +183,7 @@ string html_form_radio::inherited_get_body_part(const chemin & path,
 	ret += "/>\n";
 	ret += "<label " + get_css_classes(i == emphase ? webdar_css_style::text_bold : "") + " for=\"" +
 	    webdar_tools_html_display(choices[i].id) + "\">" +
-	    webdar_tools_html_display(choices[i].label) + "</label>";
+	    choices[i].label + "</label>";
 	if(i+1 < choices.size() || !get_no_CR())
 	    ret += "<br />\n";
 	else
@@ -218,7 +218,7 @@ void html_form_radio::update_field_from_request(const request & req)
 	if(it != bd.end())
 	{
 	    unsigned int u = 0;
-	    while(u < choices.size() && webdar_tools_html_display(choices[u].id) != it->second)
+	    while(u < choices.size() && webdar_tools_html_display(choices[u].id) != webdar_tools_html_display(it->second))
 		++u;
 	    if(u < choices.size())
 	    {
