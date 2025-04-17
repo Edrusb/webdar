@@ -369,6 +369,7 @@ string webdar_tools_html_display(const string & arg)
 {
     string ret;
     string::const_iterator it = arg.begin();
+    bool first_antislash = true;
 
     while(it != arg.end())
     {
@@ -376,12 +377,44 @@ string webdar_tools_html_display(const string & arg)
 	{
 	case '<':
 	    ret += "&lt;";
+	    first_antislash = true;
 	    break;
 	case '>':
 	    ret += "&gt";
+	    first_antislash = true;
+	    break;
+	case '"':
+	    ret += "&quot;";
+	    first_antislash = true;
+	    break;
+	case '\'':
+	    ret += "&apos;";
+	    first_antislash = true;
+	    break;
+	case '&':
+	    ret += "&amp;";
+	    first_antislash = true;
+	    break;
+	case '\\':
+		// a double quote (") may be returned as &quot; or as \"
+		// depending on the browser. Upon antislash notation we
+		// ignore the antislash and let the double quote be substiued
+		// bu &quot; to have consistent notiation to compare with
+		// what has been sent to the browser. Same thing with other
+		// &* characters above.
+	    if(first_antislash)
+		first_antislash = false;
+		// ignoring the first one, even if this
+		// is the last char of the string
+	    else
+	    {
+		ret += *it;
+		first_antislash = true;
+	    }
 	    break;
 	default:
 	    ret += *it;
+	    first_antislash = true;
 	}
 	++it;
     }

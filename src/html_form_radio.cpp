@@ -173,13 +173,17 @@ string html_form_radio::inherited_get_body_part(const chemin & path,
 
     for(unsigned int i = 0; i < choices.size(); ++i)
     {
-	ret += "<input " + get_css_classes() + " type=\"radio\" name=\"" + radio_id + "\" id=\"" + choices[i].id + "\" value=\"" + choices[i].id + "\" ";
+	ret += "<input " + get_css_classes() + " type=\"radio\" name=\"" + radio_id + "\" id=\"" +
+	    webdar_tools_html_display(choices[i].id) + "\" value=\"" +
+	    webdar_tools_html_display(choices[i].id) + "\" ";
 	if(i == selected)
 	    ret += "checked ";
 	if(!enabled)
 	    ret += "disabled ";
 	ret += "/>\n";
-	ret += "<label " + get_css_classes(i == emphase ? webdar_css_style::text_bold : "") + " for=\"" + choices[i].id + "\">" + choices[i].label + "</label>";
+	ret += "<label " + get_css_classes(i == emphase ? webdar_css_style::text_bold : "") + " for=\"" +
+	    webdar_tools_html_display(choices[i].id) + "\">" +
+	    webdar_tools_html_display(choices[i].label) + "</label>";
 	if(i+1 < choices.size() || !get_no_CR())
 	    ret += "<br />\n";
 	else
@@ -214,7 +218,7 @@ void html_form_radio::update_field_from_request(const request & req)
 	if(it != bd.end())
 	{
 	    unsigned int u = 0;
-	    while(u < choices.size() && choices[u].id != it->second)
+	    while(u < choices.size() && webdar_tools_html_display(choices[u].id) != it->second)
 		++u;
 	    if(u < choices.size())
 	    {

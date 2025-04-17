@@ -187,7 +187,7 @@ map<string,string> request::get_body_form() const
     for(vector<string>::iterator it = split.begin(); it != split.end(); ++it)
     {
 	webdar_tools_split_in_two('=', *it, tmp, aux);
-	ret[tmp] = aux;
+	ret[tmp] = webdar_tools_html_display(aux);
     }
 
     return ret;
