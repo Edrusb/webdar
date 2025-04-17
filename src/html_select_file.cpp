@@ -78,7 +78,8 @@ html_select_file::html_select_file(const string & message):
     btn_hide_createdir("New Folder", op_hide_createdir),
     createdir_form("Create Folder"),
     createdir_input("Folder Name", html_form_input::text, "", "", webdar_css_style::width_100vw),
-    fieldset_isdir(libdar::inode_type::isdir),
+    fieldset_target_type(libdar::inode_type::isdir),
+    fieldset_type(libdar::inode_type::isdir),
     new_warning(false)
 {
     entr.reset();       // entr points to nothing
@@ -185,18 +186,43 @@ void html_select_file::on_event(const string & event_name)
 {
     if(event_name == entry_selected)
     {
-	if(fieldset_isdir == libdar::inode_type::isdir && cur_select_mode != sel_dir)
+	switch(cur_select_mode)
 	{
-	    warning.clear();
-	    warning.add_text(3, string("This is a directory, please select a non-directory file"));
-		// not necessary to call my_body_part_has_changed() as we just changed "warning" one of our own children
+	case sel_file:
+	    if(fieldset_target_type == libdar::inode_type::isdir)
+	    {
+		warning.clear();
+		warning.add_text(3, string("This is a directory, please select a non-directory file"));
+		    // not necessary to call my_body_part_has_changed() as we just changed "warning" one of our own children
+		return;
+	    }
+	    break;
+	case sel_dir:
+	    if(fieldset_target_type != libdar::inode_type::isdir)
+	    {
+		warning.clear();
+		warning.add_text(3, string("This is a directory, please select a non-directory file"));
+		    // not necessary to call my_body_part_has_changed() as we just changed "warning" one of our own children
+		return;
+	    }
+	    break;
+	case sel_symlinks:
+	    if(fieldset_type != libdar::inode_type::symlink
+	       && fieldset_type != libdar::inode_type::unknown)
+	    {
+		warning.clear();
+		warning.add_text(3, string("This is not a symlink, please select a symbolic link inode"));
+		    // not necessary to call my_body_part_has_changed() as we just changed "warning" one of our own children
+		return;
+	    }
+	    break;
+	default:
+	    throw WEBDAR_BUG;
 	}
-	else
-	{
-	    status = st_completed;
-	    act(entry_selected); // propagate the event to object that subscribed to us
-	    my_closing();
-	}
+
+	status = st_completed;
+	act(entry_selected); // propagate the event to object that subscribed to us
+	my_closing();
     }
     else if(event_name == op_cancelled)
     {
@@ -207,7 +233,8 @@ void html_select_file::on_event(const string & event_name)
     else if(event_name == op_chdir_parent)
     {
 	fieldset.change_label(get_parent_path(fieldset.get_label()));
-	fieldset_isdir = libdar::inode_type::isdir;
+	fieldset_target_type = libdar::inode_type::isdir;
+	fieldset_type = libdar::inode_type::unknown;
 	run_thread(run_fill_only);
     }
     else if(event_name == op_createdir)
@@ -285,7 +312,7 @@ void html_select_file::on_event(const string & event_name)
 		throw WEBDAR_BUG;
 
 
-	    if(fieldset_isdir != libdar::inode_type::isdir)
+	    if(fieldset_target_type != libdar::inode_type::isdir)
 	    {
 		    // if the current select item is not a directory we have not
 		    // changed directory into it, the current path is the dirname
@@ -296,7 +323,8 @@ void html_select_file::on_event(const string & event_name)
 
 		// we concatenate (as a path subdir) the current path with the filename the user has clicked on:
 
-	    fieldset_isdir = it->second.target_type;
+	    fieldset_target_type = it->second.target_type;
+	    fieldset_type = it->second.type;
 
 	    curdir += chemin((it->second.btn)->get_label());
 	    fieldset.change_label(curdir.display());
@@ -305,7 +333,7 @@ void html_select_file::on_event(const string & event_name)
 		// the object which generated the event we
 		// act on... leading to a SEGFAULT as at return
 		// of on_event() the object will no more exist.
-	    if(fieldset_isdir == libdar::inode_type::isdir)
+	    if(fieldset_target_type == libdar::inode_type::isdir)
 		run_thread(run_fill_only);
 	}
 	else
@@ -427,7 +455,7 @@ void html_select_file::inherited_run()
 		create_dir();
 		break;
 	    case run_init_fill:
-		if(!init_fieldset_isdir())
+		if(!init_fieldset_target_type())
 		    break;
 		else
 		    cancellation_checkpoint();
@@ -457,7 +485,7 @@ void html_select_file::inherited_run()
 }
 
 
-bool html_select_file::init_fieldset_isdir()
+bool html_select_file::init_fieldset_target_type()
 {
     bool ret = false;
 
@@ -474,7 +502,8 @@ bool html_select_file::init_fieldset_isdir()
     {
 	entr->set_location(fieldset.get_label());
 	entr->read_dir_reset_dirinfo();
-	fieldset_isdir = libdar::inode_type::isdir;
+	fieldset_target_type = libdar::inode_type::isdir;
+	fieldset_type = libdar::inode_type::unknown;
 	ret = true;
     }
     catch(libdar::Egeneric & e)
@@ -492,7 +521,8 @@ bool html_select_file::init_fieldset_isdir()
 		fieldset.change_label(get_parent_path(fieldset.get_label()));
 		entr->set_location(fieldset.get_label());
 		entr->read_dir_reset_dirinfo();
-		fieldset_isdir = libdar::inode_type::isdir;
+		fieldset_target_type = libdar::inode_type::isdir;
+		fieldset_type = libdar::inode_type::unknown;
 		update_entrepot_url();
 		ret = true;
 	    }
@@ -504,7 +534,8 @@ bool html_select_file::init_fieldset_isdir()
 		    // reporting the first exception
 		warning.clear();
 		warning.add_text(3, e.get_message());
-		fieldset_isdir = libdar::inode_type::isdir;
+		fieldset_target_type = libdar::inode_type::isdir;
+		fieldset_type = libdar::inode_type::unknown;
 	    }
 	    catch(libdar::Erange & f)
 	    {
@@ -513,7 +544,8 @@ bool html_select_file::init_fieldset_isdir()
 		    // exception
 		warning.clear();
 		warning.add_text(3, f.get_message());
-		fieldset_isdir = libdar::inode_type::unknown;
+		fieldset_target_type = libdar::inode_type::unknown;
+		fieldset_type = libdar::inode_type::unknown;
 	    }
 	}
 	else
@@ -557,7 +589,7 @@ void html_select_file::fill_content()
     if(!entr)
 	throw WEBDAR_BUG;
 
-    if(fieldset_isdir == libdar::inode_type::isdir)
+    if(fieldset_target_type == libdar::inode_type::isdir)
     {
 	entr->set_location(fieldset.get_label());
     }

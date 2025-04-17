@@ -222,7 +222,7 @@ private:
     {
 	run_nothing,   ///< nothing is expected to be run in inherited_run (error condition)
 	run_create_dir,///< create_dir should be run
-	run_init_fill, ///< init_fieldset_isdir() + fill_content() should be run sequentially
+	run_init_fill, ///< init_fieldset_target_type() + fill_content() should be run sequentially
 	run_fill_only  ///< fill_content() should be run
     };
 
@@ -231,11 +231,12 @@ private:
 	// status field about html components
     bool is_loading_mode;             ///< whether the content placeholder shows
     bool new_warning;                 ///< whether the warning field should not be cleared
-    libdar::inode_type fieldset_isdir;///< whether fieldset points to a directory or not
+    libdar::inode_type fieldset_target_type;///< whether fieldset points to a directory or not
+    libdar::inode_type fieldset_type; ///< inode type of the inode itself (the symlink not the pointed to symlink for example)
 
 	// settings
     std::string x_message;            ///< message passed at constructor time
-    select_mode cur_select_mode;      ///< whether user is expected to select a directory
+    select_mode cur_select_mode;      ///< whether user is expected to select a directory, symlink or file
     std::string filter;               ///< only display files matching this filter (glob expression)
     bool should_refresh;              ///< expected status of the page refresh
     std::shared_ptr<libdar::entrepot> entr;  ///< the entrepot we should fetch info from
@@ -270,9 +271,9 @@ private:
 
 	// internal routines
 
-	/// initialize fieldset_isdir field based on the content of fieldset, exception thrown if file/dir does not exist
+	/// initialize fieldset_target_type field based on the content of fieldset, exception thrown if file/dir does not exist
 	/// \return true if initialization could be performed
-    bool init_fieldset_isdir();
+    bool init_fieldset_target_type();
 
 	/// fills content and listed from entry located in fieldset.get_label() directory of the entr libdar::entrepot
     void fill_content();
