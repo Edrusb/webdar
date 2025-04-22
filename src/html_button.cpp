@@ -48,9 +48,7 @@ html_button::html_button(const string & x_label, const string & x_event_name):
     event_name(x_event_name)
 {
     change_label(x_label);
-    outside.adopt(&text);
-    inside.adopt(&outside); // yes, historically the url was inside the box... :)
-    adopt(&inside);
+    reset_adoption_tree(true); // enabled by default
     path_has_changed(); // to set link value of "inside" field
 
     register_name(event_name);
@@ -103,4 +101,37 @@ void html_button::css_classes_have_changed()
     outside.clear_css_classes();
     outside.add_css_class(assigned_css);
     outside.add_css_class(assigned_inside);
+}
+
+void html_button::reset_adoption_tree(bool enabled)
+{
+    orphan_all_children();
+
+    if(! text.is_adopted())
+	outside.adopt(&text);
+
+    if(enabled)
+    {
+	if(! outside.is_adopted())
+	    inside.adopt(&outside);  // yes, historically the url was inside the box... :)
+	    // as we have orphaned all our children
+	    // if outside is still adopted this
+	    // means its parent is already 'inside'
+	    // else we must set inside as its parent
+
+	adopt(&inside);
+	    // now we can adopt inside
+    }
+    else // button is disabled
+    {
+	if(outside.is_adopted())
+	    inside.foresake(&outside);
+	    // as we have orphaned all our children
+	    // if outside is still adopted its parent
+	    // is 'inside', we must this orphan 'outside'
+	    // from 'inside' for we can adopt it directly
+	    // and avoid using 'inside' in the adoption tree
+
+	adopt(&outside);
+    }
 }

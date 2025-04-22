@@ -85,6 +85,9 @@ public:
 	/// whether to download or display the URL target
     void set_download(bool mode) { inside.set_download(mode); };
 
+	/// if disabled, the button has no hyperlink to click on
+    void set_enabled(bool val) { reset_adoption_tree(val); };
+
 	/// change the filename to create on client/browser side if download is set to true
 	/// \note providing a empty string get to the default behavior (no filename specified in URL)
     void set_filename(const std::string & name) { inside.set_filename(name); };
@@ -106,12 +109,15 @@ protected:
 
 
 private:
-    std::string label; /// what label text has been set with, (html_text does not provide it back)
+    std::string label; ///< what label text has been set with, (html_text does not provide it back)
 
     html_div outside;
     html_text text;
     html_url inside;
     std::string event_name;
+
+	/// reset the adoption tree depending on the enabled mode
+    void reset_adoption_tree(bool enabled);
 
     static const std::string action;
 };
