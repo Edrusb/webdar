@@ -103,7 +103,7 @@ html_bibliotheque::html_bibliotheque(shared_ptr<bibliotheque> & ptr,
 
     intro.add_text(3, "Configurations");
     intro.add_text(0, "This main tab gives the ability to save to file, load from file,");
-    intro.add_text(0, "download and upload the whole configurations defined in all the following tabs.");
+    intro.add_text(0, "download and upload through HTTP(s) the whole configurations defined in all the following tabs.");
     intro.add_paragraph();
     intro.add_text(0, "Note: If saving to file or loading from file should usually be fine in term of security (this is saved locally, on the host where webdar is running),");
     intro.add_text(0, "this is not true while downloading or uploading over a non-secured session (not secured for http sessions, but OK for https session):");
