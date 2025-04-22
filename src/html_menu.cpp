@@ -73,7 +73,10 @@ void html_menu::add_entry(const string & label, const string & tag)
     if(label != "")
 	webdar_css_style::normal_button(*(item.back().ibtn));
     else
+    {
 	webdar_css_style::void_button(*(item.back().ibtn));
+	item.back().ibtn->set_enabled(false);
+    }
 
     item.back().ibtn->add_css_class(webdar_css_style::spacing_vertical);
 
