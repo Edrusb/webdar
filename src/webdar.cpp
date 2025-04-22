@@ -220,7 +220,9 @@ int main(int argc, char *argv[], char** env)
 
     last_trigger = time(nullptr) - 1;
     global_envir.feed(env);
-    umask(0177); // so far the only place we create file is while writing configuration to file (config may contain passwords)
+    umask(0077);
+	// for libdar to create directories we must not reduce the 0700 permission
+	// set to mkdir.
 
     try
     {
