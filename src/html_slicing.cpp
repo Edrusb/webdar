@@ -91,8 +91,8 @@ html_slicing::html_slicing():
     slice_group_ownership.add_css_class(webdar_css_style::width_100vw_8em);
     slice_min_digits.add_css_class(webdar_css_style::width_100vw_8em);
 
-	// visibility
-    on_event(html_form_input::changed);
+	// visibility & setup final touch
+    clear_json();
 }
 
 
