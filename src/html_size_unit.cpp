@@ -166,10 +166,20 @@ void html_size_unit::on_event(const string & event_name)
 
     if(event_name == mode_changed)
     {
-	set_fields();
-	    // no need to call my_body_part_has_changed()
-	    // because changes done in on_event concern
-	    // body_builder objects we have adopted
+	manual_change = true;
+	try
+	{
+	    set_fields();
+		// no need to call my_body_part_has_changed()
+		// because changes done in on_event concern
+		// body_builder objects we have adopted
+	}
+	catch(...)
+	{
+	    manual_change = false;
+	    throw;
+	}
+	manual_change = false;
 	act(changed);
     }
     else if(event_name == html_form_select::changed)
@@ -180,6 +190,11 @@ void html_size_unit::on_event(const string & event_name)
 
 void html_size_unit::set_fields()
 {
+    unsigned int cur_selected = 0;
+
+    if(unit.num_choices() > 0)
+	cur_selected = unit.get_selected_num();
+
     switch(SI_mode.get_selected_num())
     {
     case 0:
@@ -209,4 +224,7 @@ void html_size_unit::set_fields()
     default:
 	throw WEBDAR_BUG;
     }
+
+    if(cur_selected < unit.num_choices())
+	unit.set_selected_num(cur_selected);
 }
