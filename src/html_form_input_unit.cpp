@@ -29,7 +29,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include <dar/tools.hpp>
 
     // webdar headers
 #include "webdar_tools.hpp"
@@ -145,6 +145,7 @@ void html_form_input_unit::on_event(const string & event_name)
     if(event_name == html_form_input::changed)
     {
 	val = libdar::infinint(field.get_value_as_int()) * unit_box.get_value();
+	check_min_max_compliance();
 	my_act();
     }
     else if(event_name == html_size_unit::changed)
@@ -154,6 +155,7 @@ void html_form_input_unit::on_event(const string & event_name)
 	try
 	{
 	    val = libdar::infinint(field.get_value_as_int()) * unit_box.get_value();
+	    check_min_max_compliance();
 	    if(val < min)
 	    {
 		val = min;
@@ -294,6 +296,36 @@ void html_form_input_unit::set_value_to_largest_unit()
 	// checking whether the resulting val stays the same as it ought to be
     if(val != reduced_val)
 	throw WEBDAR_BUG;
+}
+
+void html_form_input_unit::check_min_max_compliance()
+{
+    bool keep_red = false;
+
+    if(val < min)
+    {
+	if(field.box_get_css_class().empty())
+	{
+	    field.box_set_css_class(webdar_css_style::red_border);
+	    throw exception_range(libdar::tools_printf("Value (%i bytes) below minimum (%i bytes)", &val, &min));
+	}
+	else
+	    keep_red = true;
+    }
+
+    if(max > 0 && val > max)
+    {
+	if(field.box_get_css_class().empty())
+	{
+	    field.box_set_css_class(webdar_css_style::red_border);
+	    throw exception_range(libdar::tools_printf("Value (%i bytes) above minimum (%i bytes)", &val, &max));
+	}
+	else
+	    keep_red = true;
+    }
+
+    if(! field.box_get_css_class().empty() && ! keep_red)
+       field.box_set_css_class("");
 }
 
 libdar::infinint html_form_input_unit::reduce_to_unit(const libdar::infinint & val, const libdar::infinint & unit)

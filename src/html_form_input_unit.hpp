@@ -144,6 +144,7 @@ private:
     void reduce_val_and_unit();
     void set_field_val();
     void set_value_to_largest_unit();
+    void check_min_max_compliance();
 
 
 	/// returns the closest value to val expressed in number of "unit"
