@@ -138,12 +138,12 @@ void html_size_unit::set_unit_and_ratio_indexes(unsigned int base_index,
 
 	if(power_index <= get_max_power_for_base_unit(base_index))
 	{
-	if(power_index != unit.get_selected_num())
-	{
-	    unit.set_selected_num(power_index);
-	    has_changed = true;
-	}
-	    // else nothing changes here, thus nothing to do
+	    if(power_index != unit.get_selected_num())
+	    {
+		unit.set_selected_num(power_index);
+		has_changed = true;
+	    }
+		// else nothing changes here, thus nothing to do
 	}
 	else
 	    throw WEBDAR_BUG;
