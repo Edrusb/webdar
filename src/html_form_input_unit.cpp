@@ -255,7 +255,7 @@ void html_form_input_unit::set_value_to_largest_unit()
 	    // to avoid recomputing power of base_unit at reach round in the
 	    // while loop that follows:
 
-	while(!stop && val > factor && power <= max_power)
+	while(!stop && val >= factor && power <= max_power)
 	{
 	    if((val % factor).is_zero()) // val is an integer number of factor
 	    {
