@@ -88,7 +88,12 @@ public:
     void set_enabled(bool val);
 
 	/// apply css to the box (text box if checkbox, but not to the label)
-    void box_set_css_class(const std::string & val) { box_css = val; };
+
+	/// \note to remove the previously applied CSS class, give an empty string as argument
+    void box_set_css_class(const std::string & val) { box_css = val; my_body_part_has_changed(); };
+
+	/// get the current css class applied to the box only
+    const std::string & box_get_css_class() const { return box_css; };
 
 	/// change the name of the event generated when this control changes
 
