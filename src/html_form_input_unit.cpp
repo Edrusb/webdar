@@ -227,7 +227,7 @@ void html_form_input_unit::set_value_to_largest_unit()
     unsigned int best_power_index = unit_box.get_current_power_for_base_unit();
     libdar::infinint reduced_val = val;
 
-    unsigned int base_index = unit_box.get_max_base_unit_index();
+    signed int base_index = unit_box.get_max_base_unit_index();
     do
     {
 	unsigned int max_power = unit_box.get_max_power_for_base_unit(base_index);
@@ -266,7 +266,7 @@ void html_form_input_unit::set_value_to_largest_unit()
 
 	--base_index;
     }
-    while(base_index > 0);
+    while(base_index >= 0);
 
 	// we dont change the value of the field, just its representation
 	// thus we must not trigger any change event, though this does hopefully
