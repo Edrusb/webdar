@@ -107,8 +107,6 @@ void html_form_input_unit::set_range(const libdar::infinint & x_min,
 	set_value_as_infinint(max);
 	set_field_val();
     }
-
-    set_field_min_max();
 }
 
 void html_form_input_unit::set_min_only(const libdar::infinint & x_min)
@@ -120,7 +118,6 @@ void html_form_input_unit::set_min_only(const libdar::infinint & x_min)
 	set_value_as_infinint(min);
 	set_field_val();
     }
-    set_field_min_max();
 }
 
 void html_form_input_unit::set_max_only(const libdar::infinint & x_max)
@@ -132,7 +129,6 @@ void html_form_input_unit::set_max_only(const libdar::infinint & x_max)
 	set_value_as_infinint(max);
 	set_field_val();
     }
-    set_field_min_max();
 }
 
 void html_form_input_unit::set_value_as_infinint(const libdar::infinint & x_val)
@@ -157,7 +153,6 @@ void html_form_input_unit::on_event(const string & event_name)
 	no_act = true;
 	try
 	{
-	    set_field_min_max();
 	    val = libdar::infinint(field.get_value_as_int()) * unit_box.get_value();
 	    if(val < min)
 	    {
@@ -217,19 +212,6 @@ void html_form_input_unit::set_change_event_name(const string & name)
     rename_name(modif_change, name);
     modif_change = name;
 
-}
-
-void html_form_input_unit::set_field_min_max()
-{
-    libdar::infinint unit_val = unit_box.get_value();
-
-    if(max.is_zero()) // only min is set
-	field.set_min_only(reduce_to_unit_above(min, unit_val));
-    else
-	field.set_range(reduce_to_unit_above(min, unit_val),
-			reduce_to_unit_above(max, unit_val));
-	// we use a set_range and not a set_max_only()
-	// because we must forbid negative values, always.
 }
 
 void html_form_input_unit::set_field_val()

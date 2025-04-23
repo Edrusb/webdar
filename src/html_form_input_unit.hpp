@@ -142,7 +142,6 @@ private:
 
     void my_act() { if(!no_act) act(modif_change.empty() ? changed: modif_change); };
     void reduce_val_and_unit();
-    void set_field_min_max();
     void set_field_val();
     void set_value_to_largest_unit();
 
