@@ -90,7 +90,7 @@ public:
 	/// apply css to the box (text box if checkbox, but not to the label)
 
 	/// \note to remove the previously applied CSS class, give an empty string as argument
-    void box_set_css_class(const std::string & val) { box_css = val; my_body_part_has_changed(); };
+    void box_set_css_class(const std::string & val) { if(box_css != val) my_body_part_has_changed(); box_css = val; };
 
 	/// get the current css class applied to the box only
     const std::string & box_get_css_class() const { return box_css; };
