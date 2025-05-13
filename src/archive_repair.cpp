@@ -72,12 +72,16 @@ void archive_repair::inherited_run()
 	    // resetting counters and logs
 	ui->get_statistics().clear_counters();
 	ui->get_statistics().clear_labels();
-	ui->get_statistics().set_treated_label("item(s) treated");
-	ui->get_statistics().set_hard_links_label("hard link(s) treated");
-	ui->get_statistics().set_byte_amount_label("byte(s) wasted due to changing files at the time they were read");
-	ui->get_statistics().set_errored_label("items(s) with error (file system error)");
-	ui->get_statistics().set_deleted_label("item(s) recorded as deleted");
-	ui->get_statistics().set_ea_treated_label("item(s) with Extended Attributes");
+
+	    // webdar do not provide (yet) counter for the repairing operation
+	    // commenting out the following statements
+	    //
+	    //	ui->get_statistics().set_treated_label("item(s) treated");
+	    //	ui->get_statistics().set_hard_links_label("hard link(s) treated");
+	    //	ui->get_statistics().set_byte_amount_label("byte(s) wasted due to changing files at the time they were read");
+	    //	ui->get_statistics().set_errored_label("items(s) with error (file system error)");
+	    //	ui->get_statistics().set_deleted_label("item(s) recorded as deleted");
+	    //	ui->get_statistics().set_ea_treated_label("item(s) with Extended Attributes");
 
 	    // let's now repair the archive
 
