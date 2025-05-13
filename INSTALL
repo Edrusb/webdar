@@ -1,17 +1,19 @@
 REQUIREMENTS
 
 you need:
-- C++ compiler
+- C++ compiler (supporting at least C++14)
 - make
 - common system libraries and included files
 - standard C and standard C++ libraries
 - opensssl [1] version 3.0.15 or greater
 - libthreadar [2] vesion 1.5.2 or more recent
 - libdar [3] vers 7.0.0 (dar release 2.8.0) or more recent
+- Niels Lohmann Json library [4]
 
 [1] https://www.openssl.org/
 [2] https://libthreadar.sourceforge.net/
 [3] http://dar.linux.free.fr/
+[4] https://github.com/nlohmann/json
 
 
 INSTALLATION
@@ -49,7 +51,7 @@ be the same as the one used at installation step:
 
 or for example:
 
-   make DESTDIR=/tmp --prefix=/usr uninstall
+   make DESTDIR=/tmp uninstall
 
 
 What's next? Read the man page:
