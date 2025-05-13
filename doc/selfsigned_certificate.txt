@@ -1,17 +1,20 @@
 
+To use webdar on SSL you need a private key certified by an authority the
+browser trusts. This is as straight formward as it is for any classical web
+server: create a key and CSR for it, push the CSR to the PKI and get back a
+certificate from the PKI for this key to serve the FQDN under which webdar will
+be accessible. You can then pass the private key file and its certificate files
+to webdar thanks to its -K and -C options.
 
-to use webdar on SSL you need a private key certified by an authority the
-browser trusts. This is not straight formward as it implies DNS and authentication
-request against a certificate authority, as for a public web server.
-
-Hopefully, you can create a self signed certificate, for which of course your
-browser will report a security issue, but at lease looking you could use SSL and
+Hopefully, you can also create a self signed certificate, for which of course your
+browser will report a security issue, but at least, you could use SSL and
 avoid your password so easy to catch on the wire. Run the following:
 
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout mycert.pem -out mycert.pem
+
 webdar -l <IP>:<port> -v -C mycert.pem -K mycert.pem
 
-webdar show the fingerprint of the certificate, even if it is not officially signed,
+Webdar show the fingerprint of the certificate, even if it is not officially signed,
 you can have some level of validation that you are connected to the webdar you except
 without man in the middle attack, comparing the fingerprint issued on CLI by webdar and
 the one reported by your browser.
