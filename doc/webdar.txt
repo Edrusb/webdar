@@ -11,14 +11,12 @@ AIM:
         - provide a web-base interface to libdar
         - it should be usable with most popular browser
         - let libdar store slices to remote storage through FTP as an
-	  alternative to local filesystem, needing implementing specific
-	  libdar::entrepot and libdar::fichier classes in webdar not
-	  in libdar! Libdar must not be network aware for job separation
+	  alternative to local filesystem
         - propose a basic authentication mecanism (for now) like
           dynamically generated password displayed on stdout for use
           throught the web session.
 	- for the initial release, only few Unixes systems will be
-	  supported but at least Linux and MacOS X.
+	  supported but at least Linux, FreeBSD and MacOS X.
 
 
 Form and Constraints:
@@ -72,4 +70,3 @@ POSSIBLE EVOLUTIONS:
        - support for concurrent sessions (may not be available in version 1.0)
        - support webdar configuration/restoration using the http interface
        - implement dar_manager API
-       - interact with cron/crontab to schedule/manage backup process
