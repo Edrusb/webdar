@@ -8,17 +8,19 @@ Backup and restore data as a lazy "cloud" user
 Webdar has been designed taking first into account the restoration step.
 For that reason:
  - it uses no complex graphical user interface but rather a Web interface,
-   which can be used remotely from the host where webdar is running
-   or from a live CD/DVD/USB key on which webdar is running for example.
+   which can be used remotely as well as from the host where webdar is running.
+ - It is available as a single binary file with a statically linked
+   version, suitable to take place beside backups or on a live CD/DVD,
  - it does not require any database to setup,
  - can be available as a single binary file (statically linked binary)
  - relies on a proven robust, portable, full featured backup/restoration
    software: libdar
+ - can receive libdar configuration and user definitions through the HTTP
+   session (uploading configuration to webdar)
  - is simple to use, compatible with any browser respecting the HTTP
    standard,
- - does not make use of web scripting that are an important source of
-   security breaches today,
+ - does not make use of web scripting to reduce the surface of attack,
  - is expected to be self-explanatory and intuitive (OK, this is subjective!)
- - Webdar is not a commercial tool and will never become, it is licensed under
-   GPLv3: this is a pure good and robust free software.
+ - Webdar is not a commercial tool and will never become one I hope, it
+   is licensed under GPLv3: this is a pure good and robust free software.
 
