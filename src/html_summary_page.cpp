@@ -174,10 +174,25 @@ void html_summary_page::set_source(const archive_init_list *ref)
     format_table.adopt_static_html(sum.get_edition());
     format_table.adopt_static_html("Compression Algorithm");
     format_table.adopt_static_html(sum.get_compression_algo());
+    if(sum.get_compression_algo() != libdar::compression2string(libdar::compression::none))
+    {
+	format_table.adopt_static_html("Compresson block size");
+	if(sum.get_compression_block_size().is_zero())
+	    format_table.adopt_static_html("stream compression");
+	else
+	    format_table.adopt_static_html(libdar::deci(sum.get_compression_block_size()).human());
+    }
     format_table.adopt_static_html("User comment");
     format_table.adopt_static_html(sum.get_user_comment());
     format_table.adopt_static_html("Symmetrical encryption");
     format_table.adopt_static_html(sum.get_cipher());
+    if(sum.get_cipher() != libdar::crypto_algo_2_string(libdar::crypto_algo::none))
+    {
+	format_table.adopt_static_html("KDF hash algo");
+	format_table.adopt_static_html(sum.get_kdf_hash());
+	format_table.adopt_static_html("KDF iteration count");
+	format_table.adopt_static_html(libdar::deci(sum.get_iteration_count()).human());
+    }
     format_table.adopt_static_html("Asymmetrical encryption");
     format_table.adopt_static_html(sum.get_asym());
     format_table.adopt_static_html("Signed");
@@ -240,6 +255,22 @@ void html_summary_page::set_source(const archive_init_list *ref)
     overall_table.adopt_static_html(libdar::deci(sum.get_storage_size()).human() + " bytes");
     overall_table.adopt_static_html("Data size");
     overall_table.adopt_static_html(libdar::deci(sum.get_data_size()).human() + " bytes");
+
+    if(sum.get_data_size() < sum.get_storage_size())
+    {
+	libdar::infinint delta = sum.get_storage_size() - sum.get_data_size();
+	overall_table.adopt_static_html("Compression overhead");
+	overall_table.adopt_static_html(libdar::deci(delta).human() + " bytes");
+    }
+    else
+    {
+	libdar::infinint delta = sum.get_data_size() - sum.get_storage_size();
+	if(!sum.get_storage_size().is_zero())
+	{
+	    overall_table.adopt_static_html("Compression ratio");
+	    overall_table.adopt_static_html(libdar::deci((delta*100)/sum.get_data_size()).human() + " %");
+	}
+    }
 
     content_title.clear();
     content_title.add_text(2, "Contents distribution");
