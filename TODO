@@ -2,7 +2,7 @@ Here is the task to do to get ready for release 1.0.0
 ========================================================
 + review all classes, virtual/override, move constructor & Co
 
-- have compliance with HTTP/1.1, this work is mainly at the server class layer
++ have compliance with HTTP/1.1, this work is mainly at the server class layer
   where a answer has to be added field and updated version depending on the
   corresponding request. See RFC in the RFC subdirectory
 + add stop condition for a listener and thus webdar process (GUI choice, CTRL-C)
@@ -14,7 +14,7 @@ Here is the task to do to get ready for release 1.0.0
   classes. A static catalog of CSS class defines and exposes the list of classes
   only the requested classes get included in the HTML header. => not sure to be
   a good idea
->>>> review all static std::string -> static constexpr char name[] = "initialisateur";
++ review all static std::string -> static constexpr char name[] = "initialisateur";
 
 + provide html interface for class libdar::entrepot in order to let the user
   select a directory on the local filesystem or a existing file on the local
@@ -22,53 +22,53 @@ Here is the task to do to get ready for release 1.0.0
   saisie as an alternative to fill them clicking on a button-like element beside
   these fields. Maybe abstracting the html_tree class could avoid code
   duplication for that task.
-- add a way to navigate in directory repo tree when defining/reading an backup
++ add a way to navigate in directory repo tree when defining/reading an backup
 + add a way to navigate in the local dir for looking for the root filesystem
 - add a semaphore to control the number of running libdar task (listing task
   not being concerned by this).
 + add html interface for building filters
-- have a base of filters with prepolated default an no-compress
-- add filter features to the many place it is used in libdar (file filtering,
++ have a base of filters with prepolated default an no-compress
++ add filter features to the many place it is used in libdar (file filtering,
   compression filtering, etc.) take the name from the base of filters
-- add html interface for the overwriting policy (similar to the filter html
++ add html interface for the overwriting policy (similar to the filter html
   interface in the way of doing)
-- add a base of overwriting policies with prepopulated defaults ones
++ add a base of overwriting policies with prepopulated defaults ones
 - add help area on the right to provide information on the action and role of
-  the libdar options available on the displayed page
-- provide a base of options sets (for the different operations, prepopulated
+  the libdar options available on the displayed page (-> rather use a tooltips)
++ provide a base of options sets (for the different operations, prepopulated
   with the defaults sets)
-- implement the entrepot_ftp class descendant from libdar::entrepot. As well as
++ implement the entrepot_ftp class descendant from libdar::entrepot. As well as
   the fichier_ftp descendant from libdar::fichier
-- add html interface to configure the entrepot_ftp object
-- define a library of entrepot, libdar::entrepot_local always being available
++ add html interface to configure the entrepot_ftp object
++ define a library of entrepot, libdar::entrepot_local always being available
   beside user defined entrepot_ftp objects
-- provide option selectable field beside each slice path to one of the
+x provide option selectable field beside each slice path to one of the
   available entrepot of the library entrepot
 - add licencing exhibition from command-line (in addition as the already done
   static object displayed using web interface)
-- add libdar information display on the about pages
-- define a webdar logo and favicon small image, using povray
-- define building tools to add these two pictures as static object
-- make use of automake autoconf for portability and for
++ add libdar information display on the about pages
++ define a webdar logo and favicon small image, using povray
++ define building tools to add these two pictures as static object
++ make use of automake autoconf for portability and for
   configuration/compilation/installation processes
-- add the ability to store and load filters, overwriting policies, options sets,
+x add the ability to store and load filters, overwriting policies, options sets,
   in a DCF file ($HOME/.webdar by default) as many user target with name
-  of the form webdar-<type>-<user provided label>
-- add the ability to export a command as CLI for dar using with DCF as name and
+  of the form webdar-<type>-<user provided label> --> better: relying on json
+x add the ability to export a command as CLI for dar using with DCF as name and
   cron label to provide user management of dar command lines.
-- option to test that cron works (sending an email or what makes sense)
-- make use of doxygen to build webdar code documentation
-- implement save/backup of webdar configuration through web interface
+x option to test that cron works (sending an email or what makes sense)
++ make use of doxygen to build webdar code documentation
++ implement save/backup of webdar configuration through web interface
 
 to be tested/reviewed before release 1.0.0
 ===========================================
 - build an archive with more than 2M entry in a given directory, check the
   archive listing and time performance (should be long,...)
-- review class menu implementation to make use of html_button instead of its
++ review class menu implementation to make use of html_button instead of its
   self made construction => why???
-- check that all libdar parameters are now configurable through webdar
-- review html_form_input to use libdar::secu_string when password are used
-- check the way webdar behaves upon signal reception when a libdar session is
++ check that all libdar parameters are now configurable through webdar
++ review html_form_input to use libdar::secu_string when password are used
++ check the way webdar behaves upon signal reception when a libdar session is
   running or not
 - review -v option to provide the exact type of priority to log or not to log
 - review the use of sterror (not thread safe), either use errno (thread safe!)
