@@ -40,6 +40,13 @@ extern "C"
 
 using namespace std;
 
+archive_compare::archive_compare(): param(nullptr)
+{
+#ifdef LIBTHREADAR_STACK_FEATURE
+    set_stack_size(DEFAULT_STACK_SIZE);
+#endif
+}
+
 void archive_compare::inherited_run()
 {
     try

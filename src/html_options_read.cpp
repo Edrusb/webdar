@@ -76,6 +76,10 @@ html_options_read::html_options_read():
     update_from_load_json(false),
     ignore_events(false)
 {
+#ifdef LIBTHREADAR_STACK_FEATURE
+    set_stack_size(DEFAULT_STACK_SIZE);
+#endif
+
     entrep.reset(new (nothrow) html_entrepot_landing());
     if(!entrep)
 	throw exception_memory();

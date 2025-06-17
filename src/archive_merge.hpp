@@ -46,7 +46,7 @@ extern "C"
 class archive_merge : public libthreadar::thread_signal
 {
 public:
-    archive_merge(): param(nullptr) {};
+    archive_merge();
     archive_merge(const archive_merge & ref) = delete;
     archive_merge(archive_merge && ref) noexcept = default;
     archive_merge & operator = (const archive_merge & ref) = delete;

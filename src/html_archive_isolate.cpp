@@ -54,6 +54,10 @@ html_archive_isolate::html_archive_isolate():
     static const char* sect_archive = "isolation";
     static const char* sect_options = "options";
 
+#ifdef LIBTHREADAR_STACK_FEATURE
+    set_stack_size(DEFAULT_STACK_SIZE);
+#endif
+
     options.reset(new (nothrow) html_options_isolate());
     if(! options)
 	throw exception_memory();

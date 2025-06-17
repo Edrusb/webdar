@@ -341,6 +341,40 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[extern "C"
                   ])
 
 
+AC_MSG_CHECKING([Stack setup methods for libthreadar::thread class])
+AC_LINK_IFELSE([AC_LANG_PROGRAM(
+				[[
+				extern "C"
+				{
+				}
+
+				#if HAVE_LIBTHREADAR_LIBTHREADAR_HPP
+				#include <libthreadar/libthreadar.hpp>
+				#endif
+				]],
+				[
+				    class my_thread: public libthreadar::thread
+				    {
+				        protected:
+					    virtual void inherited_run() override { sleep(10); };
+			            };
+
+				    my_thread t1;
+
+				    t1.set_stack_size(1024*1024);
+				    t1.run();
+				    t1.join();
+				])
+	      ],
+	      [
+		AC_DEFINE(LIBTHREADAR_STACK_FEATURE, 1, [libthreadar thread class can set the stack size])
+		AC_DEFINE(DEFAULT_STACK_SIZE, 8*1024*1024, [macro to set the stack size of class inheriting from libthreadar::thread])
+		AC_MSG_RESULT(yes)
+	      ],
+	      [
+	        AC_MSG_RESULT(no)
+              ])
+
 
 
 AC_ARG_ENABLE( [mode],

@@ -54,7 +54,7 @@ extern "C"
 class archive_init_list : public libthreadar::thread_signal
 {
 public:
-    archive_init_list(): param(nullptr) {};
+    archive_init_list();
     archive_init_list(const archive_init_list & ref) = delete;
     archive_init_list(archive_init_list && ref) noexcept = delete;
     archive_init_list & operator = (const archive_init_list & ref) = delete;

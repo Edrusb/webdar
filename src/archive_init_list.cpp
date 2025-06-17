@@ -40,6 +40,13 @@ extern "C"
 
 using namespace std;
 
+archive_init_list::archive_init_list(): param(nullptr)
+{
+#ifdef LIBTHREADAR_STACK_FEATURE
+    set_stack_size(DEFAULT_STACK_SIZE);
+#endif
+}
+
 const vector<libdar::list_entry> archive_init_list::get_children_in_table(const string & dir) const
 {
     if(!ptr)

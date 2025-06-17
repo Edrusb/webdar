@@ -54,7 +54,7 @@ extern "C"
 class archive_create : public libthreadar::thread_signal
 {
 public:
-    archive_create(): param(nullptr) {};
+    archive_create();
     archive_create(const archive_create & ref) = delete;
     archive_create(archive_create && ref) noexcept = default;
     archive_create & operator = (const archive_create & ref) = delete;

@@ -38,6 +38,13 @@ extern "C"
 
 using namespace std;
 
+archive_isolate::archive_isolate(): param(nullptr)
+{
+#ifdef LIBTHREADAR_STACK_FEATURE
+    set_stack_size(DEFAULT_STACK_SIZE);
+#endif
+}
+
 void archive_isolate::inherited_run()
 {
     try

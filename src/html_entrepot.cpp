@@ -68,6 +68,10 @@ html_entrepot::html_entrepot():
     entrep_type_has_changed(false),
     entrep_need_update(false)
 {
+#ifdef LIBTHREADAR_STACK_FEATURE
+    set_stack_size(DEFAULT_STACK_SIZE);
+#endif
+
 	// component configuration
     repo_type.add_choice(type_local, "local file system");        // index 0
     repo_type.add_choice(type_ftp, "FTP protocol (unciphered)");  // index 1

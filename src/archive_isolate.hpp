@@ -45,7 +45,7 @@ extern "C"
 class archive_isolate : public libthreadar::thread_signal
 {
 public:
-    archive_isolate(): param(nullptr) {};
+    archive_isolate();
     archive_isolate(const archive_isolate & ref) = delete;
     archive_isolate(archive_isolate && ref) noexcept = default;
     archive_isolate & operator = (const archive_isolate & ref) = delete;

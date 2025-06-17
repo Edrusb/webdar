@@ -82,6 +82,10 @@ html_select_file::html_select_file(const string & message):
     fieldset_type(libdar::inode_type::isdir),
     new_warning(false)
 {
+#ifdef LIBTHREADAR_STACK_FEATURE
+    set_stack_size(DEFAULT_STACK_SIZE);
+#endif
+
     entr.reset();       // entr points to nothing
     mem_ui.reset();     // mem_ui points to nothing
     webui.set_warning_list_size(5);

@@ -53,6 +53,9 @@ html_entrepot_landing::html_entrepot_landing():
 	ignore_events(false),
 	entrepot_changed(true)
 {
+#ifdef LIBTHREADAR_STACK_FEATURE
+    set_stack_size(DEFAULT_STACK_SIZE);
+#endif
 
 	// component configuration
     if(repoxfer.get_html_user_interaction())

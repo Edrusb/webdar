@@ -61,6 +61,10 @@ html_archive_repair::html_archive_repair():
     static const char* sect_repair = "repair";
     static const char* sect_options = "options";
 
+#ifdef LIBTHREADAR_STACK_FEATURE
+    set_stack_size(DEFAULT_STACK_SIZE);
+#endif
+
     opt_repair.reset(new (nothrow) html_options_repair());
     if(! opt_repair)
 	throw exception_memory();

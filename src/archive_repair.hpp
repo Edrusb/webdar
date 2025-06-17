@@ -54,7 +54,7 @@ extern "C"
 class archive_repair : public libthreadar::thread_signal
 {
 public:
-    archive_repair(): param(nullptr) {};
+    archive_repair();
     archive_repair(const archive_repair & ref) = delete;
     archive_repair(archive_repair && ref) noexcept = default;
     archive_repair & operator = (const archive_repair & ref) = delete;

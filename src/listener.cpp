@@ -89,6 +89,10 @@ listener::listener(const shared_ptr<central_report> & log,
 		   shared_ptr<server_pool> & pool,
 		   unsigned int port)
 {
+#ifdef LIBTHREADAR_STACK_FEATURE
+    set_stack_size(DEFAULT_STACK_SIZE);
+#endif
+
     try
     {
 	init(log, auth, ciphering, pool, "::1", port);

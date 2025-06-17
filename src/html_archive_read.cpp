@@ -63,6 +63,10 @@ html_archive_read::html_archive_read(const string & archive_description):
     static const char* sect_archive = "archive";
     static const char* sect_options = "options";
 
+#ifdef LIBTHREADAR_STACK_FEATURE
+    set_stack_size(DEFAULT_STACK_SIZE);
+#endif
+
     deroule.add_section(sect_archive, "Read Parameters");
     deroule.add_section(sect_options, "Read Options");
     deroule.set_active_section(0);

@@ -64,6 +64,10 @@ server::server(const shared_ptr<central_report> & log,
     locked_session(nullptr),
     ignore_auth(default_basic_auth? no_ignore: ignore_auth_steady)
 {
+#ifdef LIBTHREADAR_STACK_FEATURE
+    set_stack_size(DEFAULT_STACK_SIZE);
+#endif
+
     if(!log)
 	throw WEBDAR_BUG;
     rep = log;

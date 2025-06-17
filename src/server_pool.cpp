@@ -54,6 +54,10 @@ server_pool::server_pool(const unsigned int pool_size,
     log(creport),
     verrou(1)
 {
+#ifdef LIBTHREADAR_STACK_FEATURE
+    set_stack_size(DEFAULT_STACK_SIZE);
+#endif
+
     if(!log)
 	throw WEBDAR_BUG;
     if(max_server < 1)
