@@ -22,7 +22,7 @@
 ########################################################################
 
 SUBDIRS =
-dist_noinst_DATA = Doxyfile portable_cp architecture.txt selfsigned_certificate.txt webdar.txt webdar_logo.jpg
+dist_noinst_DATA = Doxyfile portable_cp architecture.txt selfsigned_certificate.txt webdar.txt
 dist_pkgdata_DATA =
 
 if USE_DOXYGEN
