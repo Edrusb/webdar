@@ -108,7 +108,7 @@ requirements()
     if [ "$ROOT_PERM" = "yes" ] ; then
 
 	#updating xbps db
-	xbps-install -SU -y
+	xbps-install -SUy || (xbps-install -uy xbps && xbps-install -SUy) || return 1
 
 	# tools used to build the different packages involved here
 	xbps-install -y gcc make wget pkg-config cmake xz || exit 1
