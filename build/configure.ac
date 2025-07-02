@@ -341,42 +341,6 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[extern "C"
                   ])
 
 
-AC_MSG_CHECKING([Stack setup methods for libthreadar::thread class])
-AC_LINK_IFELSE([AC_LANG_PROGRAM(
-				[[
-				extern "C"
-				{
-				}
-
-				#if HAVE_LIBTHREADAR_LIBTHREADAR_HPP
-				#include <libthreadar/libthreadar.hpp>
-				#endif
-				]],
-				[
-				    class my_thread: public libthreadar::thread
-				    {
-				        protected:
-					    virtual void inherited_run() override { sleep(10); };
-			            };
-
-				    my_thread t1;
-
-				    t1.set_stack_size(1024*1024);
-				    t1.run();
-				    t1.join();
-				])
-	      ],
-	      [
-		AC_DEFINE(LIBTHREADAR_STACK_FEATURE, 1, [libthreadar thread class can set the stack size])
-		AC_DEFINE(DEFAULT_STACK_SIZE, 8*1024*1024, [macro to set the stack size of class inheriting from libthreadar::thread])
-		AC_MSG_RESULT(yes)
-	      ],
-	      [
-	        AC_MSG_RESULT(no)
-              ])
-
-
-
 AC_ARG_ENABLE( [mode],
                 AS_HELP_STRING(--enable-mode=arg, [where arg is either 32, 64 (the default) or "infinint". Makes libdar internally use 32 bits or limitless integers in place of 64 bits integers]),
 		[
@@ -487,11 +451,48 @@ PKG_CHECK_MODULES(LIBDAR,
 
 PKG_CHECK_MODULES(LIBTHREADAR,
 		  libthreadar,
-		  [],
+		  [
+		    AC_CHECK_LIB(threadar, [libthreadar_for_autoconf], [], [])
+		  ],
 		  [
 		    AC_MSG_ERROR([libthreadar was not found or pkg-config is not installed (see also PKG_CONFIG_PATH env variable, if libthreadar is installed in a non-standard place)])
 	          ]
 		  )
+
+AC_MSG_CHECKING([Stack setup methods for libthreadar::thread class])
+AC_LINK_IFELSE([AC_LANG_PROGRAM(
+				[[
+				extern "C"
+				{
+				}
+				#if HAVE_LIBTHREADAR_LIBTHREADAR_HPP
+				#include <libthreadar/libthreadar.hpp>
+				#endif
+				]],
+				[
+				    class my_thread: public libthreadar::thread
+				    {
+				        protected:
+					    virtual void inherited_run() override { sleep(10); };
+			            };
+
+				    my_thread t1;
+
+				    t1.set_stack_size(1024*1024);
+				    t1.run();
+				    t1.join();
+				])
+	      ],
+	      [
+		AC_DEFINE(LIBTHREADAR_STACK_FEATURE, 1, [libthreadar thread class can set the stack size])
+		AC_DEFINE(DEFAULT_STACK_SIZE, 8*1024*1024, [macro to set the stack size of class inheriting from libthreadar::thread])
+		AC_MSG_RESULT(yes)
+	      ],
+	      [
+	        AC_MSG_RESULT(no)
+              ])
+
+
 
 ### specific handling of musl standard library
 
