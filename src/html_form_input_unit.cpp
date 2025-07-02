@@ -224,7 +224,7 @@ void html_form_input_unit::set_field_val()
 void html_form_input_unit::set_value_to_largest_unit()
 {
     unsigned int best_base_index = unit_box.get_current_base_index();
-    unsigned int best_power_index = unit_box.get_current_power_for_base_unit();
+    unsigned int best_power_index = 0;
     libdar::infinint reduced_val = val;
 
     signed int base_index = unit_box.get_max_base_unit_index();
@@ -234,8 +234,8 @@ void html_form_input_unit::set_value_to_largest_unit()
 	libdar::infinint base_unit = unit_box.get_base_unit_value(base_index);
 
 	bool stop = false;
-	unsigned int power = 1;
-	libdar::infinint factor = base_unit;
+	unsigned int power = 0;
+	libdar::infinint factor = 1;
 	    // to avoid recomputing power of base_unit at reach round in the
 	    // while loop that follows:
 
