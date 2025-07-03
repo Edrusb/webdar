@@ -208,6 +208,8 @@ void html_size_unit::set_fields()
 	unit.add_choice("Eo", "Eo");
 	unit.add_choice("Zo", "Zo");
 	unit.add_choice("Yo", "Yo");
+	unit.add_choice("Ro", "Ro");
+	unit.add_choice("Qo", "Qo");
 	break;
     case 1:
 	unit.clear();
@@ -220,6 +222,8 @@ void html_size_unit::set_fields()
 	unit.add_choice("Eio", "Eio");
 	unit.add_choice("Zio", "Zio");
 	unit.add_choice("Yio", "Yio");
+	unit.add_choice("Rio", "Rio");
+	unit.add_choice("Qio", "Qio");
 	break;
     default:
 	throw WEBDAR_BUG;
