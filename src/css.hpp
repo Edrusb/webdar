@@ -323,6 +323,11 @@ public:
 	/// clears the grid area name property
     void css_grid_area_name() { grid_area.clear(); };
 
+	//---
+
+	/// css content property for ::after ::before pseudo-elements
+    void css_content(const std::string & name);
+
 
 	/// returns the css raw string
     std::string css_get_raw_string() const;
@@ -417,6 +422,9 @@ private:
     css_property grid_template;
     css_property grid_template_lines;
     css_property grid_area;
+
+	// content
+    css_property content;
 
 	// custom css
     std::map<std::string, css_property> custom_css;

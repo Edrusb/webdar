@@ -89,7 +89,8 @@ void css::update_from(const css & ref)
     visibility.update_from(ref.visibility);
     grid_template.update_from(ref.grid_template);
     grid_template_lines.update_from(ref.grid_template_lines);
-    grid_area.update_from(grid_area);
+    grid_area.update_from(ref.grid_area);
+    content.update_from(ref.content);
 
     map<string, css_property>::const_iterator it = ref.custom_css.begin();
     map<string, css_property>::iterator mit;
@@ -162,6 +163,7 @@ void css::clear()
     grid_template.clear();
     grid_template_lines.clear();
     grid_area.clear();
+    content.clear();
 
     map<string, css_property>::iterator it = custom_css.begin();
     while(it != custom_css.end())
@@ -741,6 +743,13 @@ void css::css_grid_area_name(const string & name)
     grid_area.set_value(tmp);
 }
 
+
+void css::css_content(const string & name)
+{
+    string tmp = " content: \"" + name + "\";";
+    content.set_value(tmp);
+}
+
 string css::css_get_raw_string() const
 {
     string ret = "";
@@ -811,6 +820,7 @@ string css::css_get_raw_string() const
     if(!tmp.empty())
 	ret += tmp + ";"; // needed adding ';' after all grid template lines
     ret += grid_area.get_value();
+    ret += content.get_value();
 
     map<string, css_property>::const_iterator it = custom_css.begin();
 
