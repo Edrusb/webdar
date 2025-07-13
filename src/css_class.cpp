@@ -91,17 +91,52 @@ void css_class::clear_selector(selector_type sel)
 }
 
 
+void css_class::set_pseudo_element(pseudo_element_type pe, const css & ref)
+{
+    map<pseudo_element_type, css>::iterator it = pseudo_elements.find(pe);
+
+    if(it == pseudo_elements.end())
+	pseudo_elements[pe] = ref;
+    else
+	throw WEBDAR_BUG;
+}
+
+bool css_class::get_pseudo_element(pseudo_element_type pe, css & val) const
+{
+    map<pseudo_element_type, css>::const_iterator it = pseudo_elements.find(pe);
+
+    if(class_name.empty())
+	throw WEBDAR_BUG; // name is missing
+
+    if(it != pseudo_elements.end())
+    {
+	val = it->second;
+	return true;
+    }
+    else
+	return false;
+}
+
+void css_class::clear_pseudo_element(pseudo_element_type pe)
+{
+    map<pseudo_element_type, css>::iterator it = pseudo_elements.find(pe);
+
+    if(it != pseudo_elements.end())
+	pseudo_elements.erase(pe);
+	// else we ignore, the selector is not present
+}
 
 string css_class::get_definition() const
 {
     string ret;
     map<selector_type, css>::const_iterator it = selectors.begin();
+    map<pseudo_element_type, css>::const_iterator peit = pseudo_elements.begin();
     string raw_val = class_value.css_get_raw_string();
 
     if(class_name.empty())
 	throw WEBDAR_BUG; // name is missing
 
-    if(raw_val.empty() && selectors.empty())
+    if(raw_val.empty() && selectors.empty() && pseudo_elements.empty())
 	return "";
 
     if(! raw_val.empty())
@@ -115,6 +150,16 @@ string css_class::get_definition() const
 
 	ret += "*." + class_name + ":" + get_selector_name(it->first) + " { " + raw_val + " }\n";
 	++it;
+    }
+
+    while(peit != pseudo_elements.end())
+    {
+	raw_val = peit->second.css_get_raw_string();
+	if(raw_val.empty())
+	    throw WEBDAR_BUG; // same as above for selectors / pseudo classes
+
+	ret += "*." + class_name + "::" + get_pseudo_element_name(peit->first) + " { " + raw_val + " }\n";
+	++peit;
     }
 
     return ret;
@@ -157,6 +202,27 @@ string css_class::get_selector_name(selector_type sel)
 	return "valid";
     case visited:
 	return "visited";
+    default:
+	throw WEBDAR_BUG;
+    }
+}
+
+string css_class::get_pseudo_element_name(pseudo_element_type pe)
+{
+    switch(pe)
+    {
+    case first_line:
+	return "first-line";
+    case first_letter:
+	return "first-letter";
+    case before:
+	return "before";
+    case after:
+	return "after";
+    case marker:
+	return "marker";
+    case selection:
+	return "selection";
     default:
 	throw WEBDAR_BUG;
     }

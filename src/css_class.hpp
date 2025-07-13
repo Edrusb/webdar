@@ -72,6 +72,16 @@ public:
 	visited
     };
 
+    enum pseudo_element_type
+    {
+	first_line,
+	first_letter,
+	before,
+	after,
+	marker,
+	selection
+    };
+
     css_class(const std::string & name = "");
     css_class(const std::string & name, const css & ref);
     css_class(const css_class & ref) = default;
@@ -95,10 +105,10 @@ public:
 	/// clear css_class value and all selector values
     void clear_value() { class_value.clear(); };
 
-	/// defines the value for a given css_selector on that class
+	/// defines the value for a given css_selector on that class (or pseudo-class in CSS parlance)
     void set_selector(selector_type sel, const css & ref);
 
-	/// obtain the value of the provided selector type
+	/// obtain the value of the provided selector type (or pseudo-class in CSS parlance)
 
 	/// \param[in] sel the selector to look at
 	/// \param[out] val the css value associated to this selector if present
@@ -107,6 +117,19 @@ public:
 
 	/// remove definition for the given selector type
     void clear_selector(selector_type sel);
+
+	/// defines the value of a given pseudo-element
+    void set_pseudo_element(pseudo_element_type pe, const css & val);
+
+	/// obtains the value of the provided pseudo-element
+
+	/// \param[in] pe the pseudo-element to look at
+	/// \param[out] val the css value associated to this pseudo-element if present
+	/// \return true if such pseudo-element has been defined and val has been set, false else.
+    bool get_pseudo_element(pseudo_element_type pe, css & val) const;
+
+	/// remove definition for the given pseudo-element
+    void clear_pseudo_element(pseudo_element_type pe);
 
 	/// clear all css definition, including those provided with selector, only the css name is kept
     void clear() { class_value.clear(); selectors.clear(); };
@@ -118,8 +141,10 @@ private:
     std::string class_name;
     css class_value;
     std::map<selector_type, css> selectors;
+    std::map<pseudo_element_type, css> pseudo_elements;
 
     static std::string get_selector_name(selector_type sel);
+    static std::string get_pseudo_element_name(pseudo_element_type pe);
 };
 
 #endif
