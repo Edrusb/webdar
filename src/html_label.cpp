@@ -61,6 +61,11 @@ html_label::html_label(const std::string & x_label, const std::string & x_toolti
 string html_label::inherited_get_body_part(const chemin & path,
 						const request & req)
 {
+    return get_body_part();
+}
+
+string html_label::get_body_part() const
+{
     string ret;
     string extra, cssdef;
     string forstring;

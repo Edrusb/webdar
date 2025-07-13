@@ -42,7 +42,7 @@ extern "C"
 
     /// it is not expect to adopt any child, but to be adopted
 
-class html_label : public body_builder
+class html_label : public body_builder, public static_body_builder
 {
 public:
 	/// \param[in] x_label the text to show as label
@@ -71,6 +71,9 @@ public:
 
 	/// define the 'for' field to link this label to other CSS structure
     void set_for_field(const std::string & val) { for_field = val; };
+
+	/// inherited from static_body_builder
+    virtual std::string get_body_part() const override;
 
 protected:
 	/// inherited from body_builder
