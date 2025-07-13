@@ -103,21 +103,6 @@ public:
 	/// \note this call can be used any number of time, all actors will be kept
     void set_change_event_name(const std::string & name);
 
-	/// to be used when the component is adopted by another having a grid-template css property set
-
-	/// \note set to an empty string to clear/disable this property
-    void set_grid_area_name_for_label(const std::string & area_name) { field.set_grid_area_name_for_label(area_name) ; };
-
-	/// to be used when the component is adopted by another having a grid-template css property set
-
-	/// \note set to an empty string to clear/disable this property
-    void set_grid_area_name_for_input(const std::string & area_name) { field.set_grid_area_name_for_input(area_name); };
-
-	/// to be used when the component is adopted by another having a grid-template css property set
-
-	/// \note set to an empty string to clear/disable this property
-    void set_grid_area_name_for_unit(const std::string & area_name) { unit_box.set_grid_area_name(area_name); };
-
 	/// get the event name used when the component changes
     std::string get_event_name() const { return modif_change.empty()? changed: modif_change; };
 

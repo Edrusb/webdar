@@ -223,7 +223,6 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 {
     string ret = "";
     string x_id = get_path().namify();
-    string grid = label_area.empty() && input_area.empty() ? "" : " style=\"display: grid;\"";
 
 	// first we extract informations from the returned form in
 	// the body of the request
@@ -274,7 +273,7 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 	// unless those are used elsewehre in the future, we decide not to rely
 	// on html_div and implement manually a div here, as it is simpler to do
 
-    ret += "<div " + get_css_classes() + grid + ">\n";
+    ret += "<div " + get_css_classes() + ">\n";
 
     if(x_type != "checkbox")
     {
@@ -427,14 +426,6 @@ string html_form_input::generate_label(const string & csscl, const string & id)
 {
     string area;
 
-    if(! label_area.empty())
-    {
-        css tmp;
-
-        tmp.css_grid_area_name(label_area);
-        area = " style=\"" + tmp.css_get_raw_string() + "\"";
-    }
-
     if(! x_label.empty())
         return "<label class=\"" + csscl + "\" for=\"" + id + "\"" + area + ">" + x_label + "</label>\n";
     else
@@ -457,15 +448,6 @@ string html_form_input::generate_input(const string & csscl, const string & id)
 	    css_classes = csscl;
 	else
 	    css_classes = csscl + " " + box_css;
-
-    if(! input_area.empty())
-    {
-	css tmp;
-
-	tmp.css_grid_area_name(input_area);
-	area = " style=\"" + tmp.css_get_raw_string() + "\"";
-    }
-
 
     ret = "<input class=\"" + css_classes + "\"" + area + " type=\"" + x_type + "\" name=\"" + id + "\" id=\"" + id + "\" ";
 

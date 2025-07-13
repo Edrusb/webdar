@@ -296,36 +296,6 @@ public:
 	/// webdar - browser communication (Responsive CSS)
     void css_visibility(bool val);
 
-	/// grid feature
-
-	/// parent html object defines a grid-template-areas
-
-	/// \note this does not modify the existing css grid added lines
-    void css_grid_template(const std::string & gap);
-
-	/// remove the grid template parameters and lines (not the grid area ones)
-    void css_grid_template() { grid_template.clear(); grid_template_lines.clear(); };
-
-	/// a grid-template-areas defines lines containing space separated area names
-
-	/// \param[in] line is expected to be a space separated list of area names
-	/// \note all line should have the same number of areas names (making colums accross lines)
-	/// \note if a name area spaws more than one column it has to be repeated
-    void css_grid_template_add_line(const std::string & line);
-
-	/// clear all lines of a css_grid_template
-    void css_grid_template_clear_lines() { grid_template_lines.clear(); };
-
-	/// components adopted by a body_builder having defined a grid_template are assigned area names
-
-	/// \note only one area name can be assigned to a given component
-    void css_grid_area_name(const std::string & name);
-
-	/// clears the grid area name property
-    void css_grid_area_name() { grid_area.clear(); };
-
-	//---
-
 	/// css content property for ::after ::before pseudo-elements
     void css_content(const std::string & name);
 
@@ -418,11 +388,6 @@ private:
 
 	// CSS visibility
     css_property visibility;
-
-	// CSS grid
-    css_property grid_template;
-    css_property grid_template_lines;
-    css_property grid_area;
 
 	// content
     css_property content;

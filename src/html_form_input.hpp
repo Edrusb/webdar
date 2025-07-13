@@ -105,16 +105,6 @@ public:
 	/// \note this call can be used any number of time, all actors will be kept
     void set_change_event_name(const std::string & name);
 
-	/// to be used when the component is adopted by another having a grid-template css property set
-
-	/// \note set to an empty string to clear/disable this property
-    void set_grid_area_name_for_label(const std::string & area_name) { label_area = area_name; };
-
-	/// to be used when the component is adopted by another having a grid-template css property set
-
-	/// \note set to an empty string to clear/disable this property
-    void set_grid_area_name_for_input(const std::string & area_name) { input_area = area_name; };
-
 	/// get the event name used when the component changes
     std::string get_event_name() const { return modif_change.empty()? changed: modif_change; };
 
@@ -146,9 +136,6 @@ private:
     std::string x_max;   ///< maximum value of the field (for type = number)
     bool value_set;      ///< record that a manual set_value has been done and POST request received from body_part should not overwrite the change
     std::string box_css; ///< css class applied to the box if non an empty string
-    std::string label_area; ///< area name for the label when adopted by an object with a css grid template
-    std::string input_area; ///< area name for the input when adopted by an object with a css grid template
-
     std::string modif_change; ///< name of the event "changed" to use, if set to an empty string default behavior is used
 
     void my_act() { act(modif_change.empty() ? changed: modif_change); };

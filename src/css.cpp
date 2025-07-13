@@ -87,9 +87,6 @@ void css::update_from(const css & ref)
     border_style.update_from(ref.border_style);
     corner_radius.update_from(ref.corner_radius);
     visibility.update_from(ref.visibility);
-    grid_template.update_from(ref.grid_template);
-    grid_template_lines.update_from(ref.grid_template_lines);
-    grid_area.update_from(ref.grid_area);
     content.update_from(ref.content);
 
     map<string, css_property>::const_iterator it = ref.custom_css.begin();
@@ -160,9 +157,6 @@ void css::clear()
     border_style.clear();
     corner_radius.clear();
     visibility.clear();
-    grid_template.clear();
-    grid_template_lines.clear();
-    grid_area.clear();
     content.clear();
 
     map<string, css_property>::iterator it = custom_css.begin();
@@ -730,27 +724,6 @@ void css::css_visibility(bool val)
     visibility.set_value(string(" visibility: ") + text_val + ";");
 }
 
-void css::css_grid_template(const string & gap)
-{
-    string tmp = " display:grid; gap: " + gap + "; grid-template-areas:";
-    grid_template.set_value(tmp);
-}
-
-void css::css_grid_template_add_line(const string & line)
-{
-    string tmp = grid_template_lines.get_value();
-
-    tmp += " '" + line + "'";  // no ending ";" as more line may be added
-    grid_template_lines.set_value(tmp);
-}
-
-void css::css_grid_area_name(const string & name)
-{
-    string tmp = " grid-area: " + name + ";";
-    grid_area.set_value(tmp);
-}
-
-
 void css::css_content(const string & name)
 {
     string tmp = " content: \"" + name + "\";";
@@ -760,7 +733,6 @@ void css::css_content(const string & name)
 string css::css_get_raw_string() const
 {
     string ret = "";
-    string tmp;
 
     ret += color.get_value();
     ret += bg_col.get_value();
@@ -816,11 +788,6 @@ string css::css_get_raw_string() const
     ret += border_style.get_value();
     ret += corner_radius.get_value();
     ret += visibility.get_value();
-    ret += grid_template.get_value();
-    tmp = grid_template_lines.get_value();
-    if(!tmp.empty())
-	ret += tmp + ";"; // needed adding ';' after all grid template lines
-    ret += grid_area.get_value();
     ret += content.get_value();
 
     map<string, css_property>::const_iterator it = custom_css.begin();
