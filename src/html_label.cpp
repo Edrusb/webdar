@@ -152,6 +152,7 @@ void html_label::new_css_library_available()
 	tmp.css_border_style(css::bd_right, css::bd_solid);
 	tmp.css_border_color(css::bd_bottom, COLOR_MENU_BORDER_OFF);
 	tmp.css_border_color(css::bd_right, COLOR_MENU_BORDER_OFF);
+	tmp.css_font_style_italic();
 	tiptext.set_value(tmp);
 
 	    /////

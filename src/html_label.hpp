@@ -57,6 +57,12 @@ public:
     html_label & operator = (html_label && ref) noexcept = delete;
     ~html_label() = default;
 
+	/// change the label value from the value provided at construction time
+    void set_label(const std::string & val) { label = val; };
+
+	/// get the current value of the label
+    const std::string & get_label() const { return label; };
+
 	/// add a tooltip to the label (helper popup)
     void set_tooltips(const std::string & helper) { tooltip = helper; };
 
