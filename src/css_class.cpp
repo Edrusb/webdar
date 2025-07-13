@@ -132,10 +132,10 @@ string css_class::get_definition() const
 
     while(peit != pseudo_elements.end())
     {
-	if(it->second.subcomp.empty())
+	if(peit->second.subcomp.empty())
 	    sub = "";
 	else
-	    sub = " " + it->second.subcomp;
+	    sub = " " + peit->second.subcomp;
 
 	raw_val = peit->second.css_def.css_get_raw_string();
 	if(raw_val.empty())
