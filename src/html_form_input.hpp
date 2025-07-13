@@ -118,6 +118,8 @@ public:
 	/// inherited from jsoner
     virtual void clear_json() override;
 
+    void set_tooltip(const std::string & msg) { hlabel.set_tooltip(msg); };
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,

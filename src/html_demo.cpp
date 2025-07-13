@@ -159,6 +159,11 @@ html_demo::html_demo():
 	// visibility & coherence
     on_event(html_form_input::changed);
     on_event(html_form_radio::changed);
+
+	// tooltips
+
+    left_input.set_tooltip("enter text here");
+    right_input.set_tooltip("this is the information known by webdar at this point in time");
 }
 
 
