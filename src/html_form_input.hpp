@@ -39,6 +39,7 @@ extern "C"
 #include "events.hpp"
 #include "jsoner.hpp"
 #include "html_text.hpp"
+#include "html_label.hpp"
 
     /// class html_form_input implements HTML input feature
 
@@ -128,7 +129,6 @@ protected:
 
 private:
     bool enabled;        ///< whether the control is enabled or disabled
-    std::string x_label; ///< field text shown to the user
     std::string x_type;  ///< type of HTML input field
     std::string x_init;  ///< current value / initial value of the field
     std::string x_size;  ///< width of the field in number of characterds
@@ -140,10 +140,10 @@ private:
 
     void my_act() { act(modif_change.empty() ? changed: modif_change); };
     void check_min_max_change(const std::string & next_min, const std::string & next_max);
-    std::string generate_label(const std::string & csscl, const std::string & id);
     std::string generate_input(const std::string & csscl, const std::string & id);
 
     html_text new_line;
+    html_label hlabel;
 
     static std::string string_for_type(input_type type);
 

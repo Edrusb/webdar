@@ -58,14 +58,14 @@ html_form_input::html_form_input(const string & label,
 				 const string & size,
 				 const string & css_class):
     enabled(true),
-    x_label(label),
     x_type(string_for_type(type)),
     x_init(initial_value),
     x_size(size),
     x_min(""),
     x_max(""),
     value_set(false),
-    modif_change("")
+    modif_change(""),
+    hlabel(label)
 {
     new_line.add_text(0,"");
 
@@ -77,6 +77,7 @@ html_form_input::html_form_input(const string & label,
     add_css_class(css_vertical_space);
 
     new_line.add_css_class(webdar_css_style::float_flush);
+    hlabel.add_css_class(css_label);
 }
 
 void html_form_input::set_range(const libdar::infinint & min,
@@ -106,9 +107,9 @@ void html_form_input::set_max_only(const libdar::infinint & max)
 
 void html_form_input::change_label(const string & label)
 {
-    if(label != x_label)
+    if(label != hlabel.get_label())
     {
-	x_label = label;
+	hlabel.set_label(label);
 	my_body_part_has_changed();
 	value_set = true;
     }
@@ -266,23 +267,18 @@ string html_form_input::inherited_get_body_part(const chemin & path,
 	// we can now return the up to date value of
 	// the field
 
-	// here we could rely on the html_div component, but this would require
-	// to setup two classes:
-	// - one for the <label> tag
-	// - one for the <input> tag
-	// unless those are used elsewehre in the future, we decide not to rely
-	// on html_div and implement manually a div here, as it is simpler to do
+    hlabel.set_for_field(x_id);
 
     ret += "<div " + get_css_classes() + ">\n";
 
     if(x_type != "checkbox")
     {
-	ret += generate_label(css_label, x_id);
+	ret += hlabel.get_body_part();
 	ret += generate_input(css_input, x_id);
     }
     else
     {
-	ret += generate_label(css_checktitle, x_id);
+	ret += hlabel.get_body_part();
 	ret += generate_input(css_check, x_id);
     }
 
@@ -419,17 +415,6 @@ string html_form_input::string_for_type(input_type type)
     }
 
     return ret;
-}
-
-
-string html_form_input::generate_label(const string & csscl, const string & id)
-{
-    string area;
-
-    if(! x_label.empty())
-        return "<label class=\"" + csscl + "\" for=\"" + id + "\"" + area + ">" + x_label + "</label>\n";
-    else
-        return "";
 }
 
 string html_form_input::generate_input(const string & csscl, const string & id)
