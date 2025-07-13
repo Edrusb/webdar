@@ -166,6 +166,14 @@ void html_form_radio::set_enabled(bool val)
     }
 }
 
+void html_form_radio::set_tooltip(unsigned int index, const std::string & msg)
+{
+    if(index >= num_choices())
+	throw exception_range("invalid index in html_form_radio::set_tooltip");
+
+    choices[index].label.set_tooltip(msg);
+}
+
 string html_form_radio::inherited_get_body_part(const chemin & path,
 						const request & req)
 {

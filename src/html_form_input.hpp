@@ -118,6 +118,7 @@ public:
 	/// inherited from jsoner
     virtual void clear_json() override;
 
+	/// set tooltip for the html label of the input form
     void set_tooltip(const std::string & msg) { hlabel.set_tooltip(msg); };
 
 protected:

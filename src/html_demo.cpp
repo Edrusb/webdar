@@ -94,6 +94,9 @@ html_demo::html_demo():
     left_radio.add_choice("1", choice2);
     left_radio.add_choice("2", choice3);
     left_radio.set_selected_num(2);
+    left_radio.set_tooltip(0, "the box above is hidden from the user, but its value is kept recorded");
+    left_radio.set_tooltip(1, "the box above is visibile but cannot be modified by the user");
+    left_radio.set_tooltip(2, "the box is editable and visible (which most of the time is the default setting)");
 
     right_radio.add_choice("0", choice1);
     right_radio.add_choice("1", choice2);

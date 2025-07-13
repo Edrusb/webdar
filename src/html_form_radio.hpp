@@ -113,6 +113,10 @@ public:
 	/// set whether the HTML control is enable or disabled
     void set_enabled(bool val);
 
+	/// set tooltip for item at the given index (index starts at zero)
+	/// \note index must stay less than the value returned by num_choices()
+    void set_tooltip(unsigned int index, const std::string & msg);
+
 protected:
 
 	/// inherited from body_builder
