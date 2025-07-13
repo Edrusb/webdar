@@ -60,6 +60,8 @@ html_demo::html_demo():
 		""),
     right_fs("Information known by Webdar"),
     counter("Counter", html_form_input::number, "0", "10", ""),
+    label("Text without additional information"),
+    labelplus("Text with addition information", "This is how would show additional information that would help understanding this text"),
     close("Close", event_close)
 {
 
@@ -79,6 +81,10 @@ html_demo::html_demo():
     description.add_nl();
     description.add_text(0, "On the right, you will see when and what information Webdar will receive.");
     description.add_nl();
+    description.add_text(0, "Note also that positionning your pointer on some text for more than one second will show helper information as illustrated just below:");
+    description.add_nl();
+
+    labelsep.add_nl();
 
     static const char* choice1 = "hidden";
     static const char* choice2 = "disabled";
@@ -98,6 +104,9 @@ html_demo::html_demo():
 
     adopt(&desc_div);
     desc_div.adopt(&description);
+    desc_div.adopt(&label);
+    desc_div.adopt(&labelsep);
+    desc_div.adopt(&labelplus);
     adopt(&table);
 
     table.adopt(&form);

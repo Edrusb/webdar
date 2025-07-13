@@ -45,6 +45,7 @@ extern "C"
 #include "html_double_button.hpp"
 #include "html_div.hpp"
 #include "html_popup.hpp"
+#include "html_label.hpp"
 
     /// class html_demo show how webdar interacts with the browser
 
@@ -111,6 +112,9 @@ private:
     html_form_radio right_radio;
     html_form_fieldset right_fs;
     html_form_input counter;
+    html_label label;
+    html_text labelsep;
+    html_label labelplus;
     html_button close;
 };
 
