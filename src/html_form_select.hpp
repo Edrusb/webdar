@@ -47,6 +47,7 @@ extern "C"
 
     // webdar headers
 #include "html_form_radio.hpp"
+#include "html_label.hpp"
 
 class html_form_select : public html_form_radio, public actor
 {
@@ -66,7 +67,7 @@ public:
     html_form_select & operator = (html_form_select && ref) noexcept = delete;
     ~html_form_select() = default;
 
-    void change_label(const std::string & label) { x_label = label; my_body_part_has_changed(); };
+    void change_label(const std::string & label) { x_label.set_label(label); my_body_part_has_changed(); };
 
 	// inherit from html_form_radio the following methods to feed contents
 	// . add_choice
@@ -90,7 +91,7 @@ public:
 	/// provides recorded item label
 
 	/// \note index should be equal or greater than zero and strictly less than size()
-    const std::string & get_label(unsigned int index) const { return get_choices()[index].label; };
+    const std::string & get_label(unsigned int index) const { return get_choices()[index].label.get_label(); };
 
 	/// set whether the HTML control is enable or disabled
     void set_enabled(bool val);
@@ -103,7 +104,7 @@ protected:
 
 private:
     bool enabled;        ///< whether the control is enabled or disabled
-    std::string x_label;
+    html_label x_label;
     std::string event_name;
 
 };

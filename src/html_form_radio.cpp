@@ -53,9 +53,11 @@ html_form_radio::html_form_radio():
 
 void html_form_radio::add_choice(const string & id, const string & label)
 {
-    record x;
-    x.id = id;
-    x.label = label;
+    record x(id, label);
+    css_class_group css_set = get_css_class_group();
+
+    x.label.set_for_field(webdar_tools_html_display(id));
+    x.label.add_css_class(css_set);
     choices.push_back(x);
     my_body_part_has_changed();
 }
@@ -128,8 +130,14 @@ const string & html_form_radio::get_selected_id() const
 
 void html_form_radio::set_emphase(unsigned int num)
 {
+    if(emphase > 0 && emphase < choices.size())
+	choices[emphase].label.set_emphase(false);
+
     if(num < choices.size())
+    {
 	emphase = num;
+	choices[emphase].label.set_emphase(true);
+    }
     else
 	throw WEBDAR_BUG;
     my_body_part_has_changed();
@@ -174,16 +182,14 @@ string html_form_radio::inherited_get_body_part(const chemin & path,
     for(unsigned int i = 0; i < choices.size(); ++i)
     {
 	ret += "<input " + get_css_classes() + " type=\"radio\" name=\"" + radio_id + "\" id=\"" +
-	    webdar_tools_html_display(choices[i].id) + "\" value=\"" +
-	    webdar_tools_html_display(choices[i].id) + "\" ";
+	    choices[i].label.get_for_field() + "\" value=\"" +
+	    choices[i].label.get_for_field() + "\" ";
 	if(i == selected)
 	    ret += "checked ";
 	if(!enabled)
 	    ret += "disabled ";
 	ret += "/>\n";
-	ret += "<label " + get_css_classes(i == emphase ? webdar_css_style::text_bold : "") + " for=\"" +
-	    webdar_tools_html_display(choices[i].id) + "\">" +
-	    choices[i].label + "</label>";
+	ret += choices[i].label.get_body_part();
 	if(i+1 < choices.size() || !get_no_CR())
 	    ret += "<br />\n";
 	else
@@ -196,6 +202,17 @@ string html_form_radio::inherited_get_body_part(const chemin & path,
     unlock_update_field_from_request();
 
     return ret;
+}
+
+void html_form_radio::css_classes_have_changed()
+{
+    css_class_group css_set = get_css_class_group();
+
+    for(unsigned int i = 0; i < choices.size(); ++i)
+    {
+	choices[i].label.clear_css_classes();
+	choices[i].label.add_css_class(css_set);
+    }
 }
 
 void html_form_radio::new_css_library_available()

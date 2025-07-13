@@ -37,6 +37,7 @@ extern "C"
     // webdar headers
 #include "body_builder.hpp"
 #include "events.hpp"
+#include "html_label.hpp"
 
     /// class html_form_radio implements HTML "input" of type "radio"
 
@@ -118,6 +119,10 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
+	/// inherited from body_builder
+    virtual void css_classes_have_changed() override;
+
+
 	/// inherited from html_div/body_builder
     virtual void new_css_library_available() override;
 
@@ -126,7 +131,10 @@ protected:
     struct record
     {
 	std::string id;
-	std::string label;
+	html_label label;
+
+	record(const std::string x_id,
+	       const std::string & x_label): id(x_id), label(x_label) {};
     };
 
     const std::vector<record> & get_choices() const { return choices; };

@@ -43,9 +43,9 @@ using namespace std;
 const string html_form_select::changed = "html_form_select_changed";
 
 html_form_select::html_form_select(const string & label, const string & x_event_name):
-    enabled(true)
+    enabled(true),
+    x_label(label)
 {
-    x_label = label;
     if(x_event_name.empty())
 	event_name = changed;
     else
@@ -88,18 +88,23 @@ string html_form_select::inherited_get_body_part(const chemin & path, const requ
 
 	// for any request provide an updated HTML content in response
 
-    if(! x_label.empty())
-	ret += "<label for=\"" + webdar_tools_html_display(select_id) + "\">" + x_label + "</label>\n";
+    if(! x_label.get_label().empty())
+    {
+	x_label.set_for_field(webdar_tools_html_display(select_id));
+	ret += x_label.get_body_part();
+    }
+
     ret += "<select name=\"" + webdar_tools_html_display(select_id) + "\" id=\"" + webdar_tools_html_display(select_id) + "\"";
     if(!enabled)
 	ret += " disabled";
     ret += + ">\n";
+
     while(it != get_choices().end())
     {
 	ret += "<option value=\"" + webdar_tools_html_display(it->id) + "\"";
 	if(it->id == get_selected_id())
 	    ret += " selected";
-	ret += ">" + it->label + "</option>\n";
+	ret += ">" + it->label.get_label() + "</option>\n";
 	++it;
     }
     ret += "</select>\n";

@@ -72,6 +72,9 @@ public:
 	/// define the 'for' field to link this label to other CSS structure
     void set_for_field(const std::string & val) { for_field = val; };
 
+	/// read the current 'for' field value
+    const std::string & get_for_field() const { return for_field; };
+
 	/// inherited from static_body_builder
     virtual std::string get_body_part() const override;
 
