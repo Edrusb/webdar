@@ -143,6 +143,7 @@ void html_label::new_css_library_available()
 	tmp.clear();
 	tmp.css_visibility(false);
 	tmp.css_width("100%", false);
+	tmp.css_min_width("20vw");
 	tmp.css_background_color(COLOR_DAR_GREYBLUE);
 	tmp.css_color(COLOR_TEXT);
 	tmp.css_text_h_align(css::al_center);
