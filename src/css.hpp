@@ -270,6 +270,7 @@ public:
 		    bd_none };
 
     void css_border_width(border which, bd_width val);
+    void css_border_width(border which, const std::string & val);
     void css_border_width() { border_width.clear(); };
     void css_border_color(border which, const std::string & col);
     void css_border_color() { border_color.clear(); };

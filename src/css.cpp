@@ -591,22 +591,29 @@ void css::css_text_decoration(decoration val)
 
 void css::css_border_width(border which, bd_width val)
 {
-    string arg = string(" border") + border_to_string(which) + "width: ";
+    string arg;
 
     switch(val)
     {
     case bd_thin:
-	arg += "thin;";
+	arg = "thin;";
 	break;
     case bd_medium:
-	arg += "medium;";
+	arg = "medium;";
 	break;
     case bd_thick:
-	arg += "thick;";
+	arg = "thick;";
 	break;
     default:
 	throw WEBDAR_BUG;
     }
+
+    css_border_width(which, arg);
+}
+
+void css::css_border_width(border which, const string & val)
+{
+    string arg = string(" border") + border_to_string(which) + "width: " + val + ";";
 
     switch(which)
     {
@@ -783,17 +790,11 @@ string css::css_get_raw_string() const
     if(!position_right.is_unset() && position_type.is_unset())
 	const_cast<css *>(this)->css_position_type(pos_absolute);
 
-    if(!position_top.is_unset()
-       || !position_left.is_unset()
-       || !position_bottom.is_unset()
-       || !position_right.is_unset())
-    {
-	ret += position_type.get_value();
-	ret += position_top.get_value();
-	ret += position_left.get_value();
-	ret += position_bottom.get_value();
-	ret += position_right.get_value();
-    }
+    ret += position_type.get_value();
+    ret += position_top.get_value();
+    ret += position_left.get_value();
+    ret += position_bottom.get_value();
+    ret += position_right.get_value();
 
     ret += z_index.get_value();
     ret += overflow.get_value();
