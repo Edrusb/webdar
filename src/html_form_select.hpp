@@ -96,6 +96,9 @@ public:
 	/// set whether the HTML control is enable or disabled
     void set_enabled(bool val);
 
+	/// set tooltip for the html label of the input form
+    void set_tooltip(const std::string & msg) { x_label.set_tooltip(msg); };
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
