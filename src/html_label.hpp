@@ -64,7 +64,7 @@ public:
     const std::string & get_label() const { return label; };
 
 	/// add a tooltip to the label (helper popup)
-    void set_tooltips(const std::string & helper) { tooltip = helper; };
+    void set_tooltip(const std::string & helper) { tooltip = helper; };
 
 	/// set the label in bold or equivalent method to emphase it compare to the others
     void set_emphase(bool em) { emphase = em; };
