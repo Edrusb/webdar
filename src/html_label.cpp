@@ -62,21 +62,34 @@ string html_label::inherited_get_body_part(const chemin & path,
 						const request & req)
 {
     string ret;
-    string extra = emphase ? webdar_css_style::text_bold : "";
-    string cssdef = get_css_classes(extra);
-    string forstring = for_field.empty() ? "" : " for=\"" + for_field + "\"";
+    string extra, cssdef;
+    string forstring;
+    string arg = cssdef + forstring;
 
-    ret = "<label " + cssdef + forstring + ">\n";
     if(!tooltip.empty())
-	ret += string("<span class=") + css_tooltip + ">\n";
-    ret += label;
+	extra += css_tooltip;
+    extra = tooltip.empty() ? "" : css_tooltip;
+    if(emphase)
+    {
+	if(extra.empty())
+	    extra = webdar_css_style::text_bold;
+	else
+	    extra += string(" ") + webdar_css_style::text_bold;
+    }
+    cssdef = get_css_classes(extra);
+    forstring = for_field.empty() ? "" : " for=\"" + for_field + "\"";
+    arg = cssdef + forstring;
+    if(!arg.empty())
+	arg = string(" ") + arg;
+
+    ret = "<label" + arg + ">" + label;
     if(!tooltip.empty())
     {
-	ret += string("<span class=") + css_tooltiptext + ">";
+	ret += string("<span class=\"") + css_tooltiptext + "\">";
 	ret += tooltip;
-	ret += "</span>\n</span>\n";
+	ret += "</span>";
     }
-    ret += "</label>";
+    ret += "</label>\n";
 
     return ret;
 }
@@ -96,45 +109,68 @@ void html_label::new_css_library_available()
 	if(csslib->class_exists(css_tooltiptext))
 	    throw WEBDAR_BUG;
 
+	    /////
+	    // the dashes under the text having tooltip enabled
+	    //
+
+
 	tmp.css_position_type(css::pos_relative);
 	tmp.css_display("inline-block");
 	tmp.css_border_width(css::bd_bottom, css::bd_thin);
 	tmp.css_border_style(css::bd_bottom, css::bd_dotted);
-	tmp.css_border_color(css::bd_bottom, COLOR_DAR_GREYBLUE);
+	tmp.css_border_color(css::bd_bottom, "blue");
 	tip.set_value(tmp);
 
-	tmp.clear();
-	tmp.css_visibility("visible");
-	tmp.css_opacity("1");
-	tip.set_selector(css_class::hover, tmp, "." + string(css_tooltiptext));
+	    /////
+	    // making the tooltip show upon hover on the dashed bar
+	    //
 
 	tmp.clear();
-	tmp.css_visibility("hidden");
-	tmp.css_width("120px", false);
-	tmp.css_background_color("cyan");
-	tmp.css_color(WHITE);
+	tmp.css_visibility(true);
+	tip.set_selector(css_class::hover, tmp, "." + string(css_tooltiptext));
+
+	csslib->add(tip);
+
+	    /////
+	    // the box containing the helper message
+	    //
+
+	tmp.clear();
+	tmp.css_visibility(false);
+	tmp.css_width("100%", false);
+	tmp.css_background_color(COLOR_DAR_GREYBLUE);
+	tmp.css_color(COLOR_TEXT);
 	tmp.css_text_h_align(css::al_center);
 	tmp.css_corner_radius("6px");
 	tmp.css_position_type(css::pos_absolute);
 	tmp.css_z_index(2);
 	tmp.css_position_bottom("125%");
-	tmp.css_position_left("50%");
+	tmp.css_position_right("-10%");
 	tmp.css_margin_left("-60px");
-	tmp.css_opacity("0");
 	    // css_transition manque
+	tmp.css_border_style(css::bd_bottom, css::bd_solid);
+	tmp.css_border_style(css::bd_right, css::bd_solid);
+	tmp.css_border_color(css::bd_bottom, COLOR_MENU_BORDER_OFF);
+	tmp.css_border_color(css::bd_right, COLOR_MENU_BORDER_OFF);
 	tiptext.set_value(tmp);
+
+	    /////
+	    // the arrow below the tooltip (this is the top border of an empty box)
+	    //
 
 	tmp.clear();
 	tmp.css_content("");
-	tmp.css_color("Blue");
 	tmp.css_position_type(css::pos_absolute);
-	tmp.css_position_top("100%");
-	tmp.css_position_left("50%");
-	tmp.css_border_width(css::bd_top, css::bd_thick);
-	tmp.css_border_color(css::bd_top, COLOR_DAR_GREYBLUE);
+	tmp.css_position_bottom("-16px");
+	tmp.css_position_left("30%");
+	tmp.css_border_width(css::bd_top, "10px");
+	tmp.css_border_style(css::bd_all, css::bd_solid);
+	tmp.css_border_color(css::bd_top, COLOR_MENU_BORDER_OFF);
 	tmp.css_border_color(css::bd_right, "transparent");
 	tmp.css_border_color(css::bd_bottom, "transparent");
 	tmp.css_border_color(css::bd_left, "transparent");
 	tiptext.set_pseudo_element(css_class::after, tmp);
+
+	csslib->add(tiptext);
     }
 }
