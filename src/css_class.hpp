@@ -106,27 +106,33 @@ public:
     void clear_value() { class_value.clear(); };
 
 	/// defines the value for a given css_selector on that class (or pseudo-class in CSS parlance)
-    void set_selector(selector_type sel, const css & ref);
 
-	/// obtain the value of the provided selector type (or pseudo-class in CSS parlance)
-
-	/// \param[in] sel the selector to look at
-	/// \param[out] val the css value associated to this selector if present
-	/// \return true if such selector has been defined and val has been set, false else.
-    bool get_selector(selector_type sel, css & val) const;
+	/// \param[in] sel the selector to be defined
+	/// \param[in] ref the css definition to give to that selector (= pseudo-class)
+	/// \param[in] descendant not an empty string, the definition applies to the specified
+	/// descendant components (html type, like "p" for paragraph, "div" or other) or subcomponent with the
+	/// provided class name.
+	/// \note a descendant component is any component specified inside the current component, for example
+	/// in the following html string "<div> demo <p> something </p> something else</div>" "<p>"
+	/// is a descendant of <div>. If one wants a specific css definition for
+	/// <p> inside <div>, the descendant string here should be "p" and the current css_class object
+	/// be used (or rather referred by its name) by an html_div component. if the descendant is to be
+	/// a class name rather than an HTML component name, it should be preceeded by a dot like ".myclassname".
+	/// combining HTML component name with class is possible: "p.myclassname" and restricts the
+	/// css definition to only "<p>" descendant having the "class=myclassname" attributes.
+    void set_selector(selector_type sel,
+		      const css & ref,
+		      const std::string & descendant = "");
 
 	/// remove definition for the given selector type
     void clear_selector(selector_type sel);
 
 	/// defines the value of a given pseudo-element
-    void set_pseudo_element(pseudo_element_type pe, const css & val);
 
-	/// obtains the value of the provided pseudo-element
-
-	/// \param[in] pe the pseudo-element to look at
-	/// \param[out] val the css value associated to this pseudo-element if present
-	/// \return true if such pseudo-element has been defined and val has been set, false else.
-    bool get_pseudo_element(pseudo_element_type pe, css & val) const;
+	/// \note same behavior of set_selector() above, but for pseudo-elements instead of pseudo-classes
+    void set_pseudo_element(pseudo_element_type pe,
+			    const css & val,
+			    const std::string & descendant = "");
 
 	/// remove definition for the given pseudo-element
     void clear_pseudo_element(pseudo_element_type pe);
@@ -138,10 +144,28 @@ public:
     std::string get_definition() const;
 
 private:
+    struct couple
+    {
+	css css_def;
+	std::string subcomp;
+
+	couple() {};
+	couple(const css & def, const std::string & sub):
+	    css_def(def),
+	    subcomp(sub)
+	{};
+	couple(const couple & ref) = default;
+	couple(couple && ref) = default;
+	couple & operator = (const couple & ref) = default;
+	couple & operator = (couple && ref) = default;
+	~couple() = default;
+    };
+
     std::string class_name;
+    std::string descendant;
     css class_value;
-    std::map<selector_type, css> selectors;
-    std::map<pseudo_element_type, css> pseudo_elements;
+    std::map<selector_type, couple> selectors;
+    std::map<pseudo_element_type, couple> pseudo_elements;
 
     static std::string get_selector_name(selector_type sel);
     static std::string get_pseudo_element_name(pseudo_element_type pe);

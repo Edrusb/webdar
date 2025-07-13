@@ -55,35 +55,21 @@ css_class::css_class(const string & name, const css & ref)
 }
 
 
-void css_class::set_selector(selector_type sel, const css & ref)
+void css_class::set_selector(selector_type sel,
+			     const css & ref,
+			     const string & descendant)
 {
-    map<selector_type, css>::iterator it = selectors.find(sel);
+    map<selector_type, couple>::iterator it = selectors.find(sel);
 
     if(it == selectors.end())
-	selectors[sel] = ref;
+	selectors[sel] = couple(ref, descendant);
     else
 	throw WEBDAR_BUG;
 }
 
-bool css_class::get_selector(selector_type sel, css & val) const
-{
-    map<selector_type, css>::const_iterator it = selectors.find(sel);
-
-    if(class_name.empty())
-	throw WEBDAR_BUG; // name is missing
-
-    if(it != selectors.end())
-    {
-	val = it->second;
-	return true;
-    }
-    else
-	return false;
-}
-
 void css_class::clear_selector(selector_type sel)
 {
-    map<selector_type, css>::iterator it = selectors.find(sel);
+    map<selector_type, couple>::iterator it = selectors.find(sel);
 
     if(it != selectors.end())
 	selectors.erase(sel);
@@ -91,35 +77,21 @@ void css_class::clear_selector(selector_type sel)
 }
 
 
-void css_class::set_pseudo_element(pseudo_element_type pe, const css & ref)
+void css_class::set_pseudo_element(pseudo_element_type pe,
+				   const css & ref,
+				   const std::string & descendant)
 {
-    map<pseudo_element_type, css>::iterator it = pseudo_elements.find(pe);
+    map<pseudo_element_type, couple>::iterator it = pseudo_elements.find(pe);
 
     if(it == pseudo_elements.end())
-	pseudo_elements[pe] = ref;
+	pseudo_elements[pe] = couple(ref, descendant);
     else
 	throw WEBDAR_BUG;
 }
 
-bool css_class::get_pseudo_element(pseudo_element_type pe, css & val) const
-{
-    map<pseudo_element_type, css>::const_iterator it = pseudo_elements.find(pe);
-
-    if(class_name.empty())
-	throw WEBDAR_BUG; // name is missing
-
-    if(it != pseudo_elements.end())
-    {
-	val = it->second;
-	return true;
-    }
-    else
-	return false;
-}
-
 void css_class::clear_pseudo_element(pseudo_element_type pe)
 {
-    map<pseudo_element_type, css>::iterator it = pseudo_elements.find(pe);
+    map<pseudo_element_type, couple>::iterator it = pseudo_elements.find(pe);
 
     if(it != pseudo_elements.end())
 	pseudo_elements.erase(pe);
@@ -129,9 +101,10 @@ void css_class::clear_pseudo_element(pseudo_element_type pe)
 string css_class::get_definition() const
 {
     string ret;
-    map<selector_type, css>::const_iterator it = selectors.begin();
-    map<pseudo_element_type, css>::const_iterator peit = pseudo_elements.begin();
+    map<selector_type, couple>::const_iterator it = selectors.begin();
+    map<pseudo_element_type, couple>::const_iterator peit = pseudo_elements.begin();
     string raw_val = class_value.css_get_raw_string();
+    string sub;
 
     if(class_name.empty())
 	throw WEBDAR_BUG; // name is missing
@@ -144,21 +117,31 @@ string css_class::get_definition() const
 
     while(it != selectors.end())
     {
-	raw_val = it->second.css_get_raw_string();
+	if(it->second.subcomp.empty())
+	    sub = "";
+	else
+	    sub = " " + it->second.subcomp;
+
+	raw_val = it->second.css_def.css_get_raw_string();
 	if(raw_val.empty())
 	    throw WEBDAR_BUG; // why adding a css if it has no properties at all!
 
-	ret += "*." + class_name + ":" + get_selector_name(it->first) + " { " + raw_val + " }\n";
+	ret += "*." + class_name + ":" + get_selector_name(it->first) + sub + " { " + raw_val + " }\n";
 	++it;
     }
 
     while(peit != pseudo_elements.end())
     {
-	raw_val = peit->second.css_get_raw_string();
+	if(it->second.subcomp.empty())
+	    sub = "";
+	else
+	    sub = " " + it->second.subcomp;
+
+	raw_val = peit->second.css_def.css_get_raw_string();
 	if(raw_val.empty())
 	    throw WEBDAR_BUG; // same as above for selectors / pseudo classes
 
-	ret += "*." + class_name + "::" + get_pseudo_element_name(peit->first) + " { " + raw_val + " }\n";
+	ret += "*." + class_name + "::" + get_pseudo_element_name(peit->first) + sub + " { " + raw_val + " }\n";
 	++peit;
     }
 
