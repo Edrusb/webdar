@@ -264,6 +264,11 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     warning_message.add_css_class(css_warn);
     need_saving.add_css_class(css_warn);
     config_form.add_css_class(css_margin_above);
+
+	// tooltips
+
+    config_name.set_tooltip("Name to use to save the configuration displayed above. You can also change it to save a copy under another name (\"save as\" feature). However you cannot save under the name of an existing configuration. To edit an existing configuration select it on the right, click the load button, perform changes in the configuration and get back to this save button without changing the name of the configuration");
+    listing_fs.set_tooltip("Select an existing configuration, then load it. You can then either edit it on the left or delete it from the configuration using the \"delete\" button below");
 }
 
 template <class T> void arriere_boutique<T>::on_event(const std::string & event_name)
