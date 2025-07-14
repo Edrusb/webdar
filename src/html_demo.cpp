@@ -60,8 +60,8 @@ html_demo::html_demo():
 		""),
     right_fs("Information known by Webdar"),
     counter("Counter", html_form_input::number, "0", "10", ""),
-    label("Text without additional information"),
-    labelplus("Text with addition information", "This is how would show additional information that would help understanding this text"),
+    label("- this text is provided without additional information"),
+    labelplus("- while this text is provided with helper information", "This is how would show additional information for user help and feature clarification"),
     close("Close", event_close)
 {
 
@@ -80,7 +80,7 @@ html_demo::html_demo():
     description.add_text(0, "On the left, you can enter text, select components and click on the different buttons.");
     description.add_nl();
     description.add_text(0, "On the right, you will see when and what information Webdar will receive.");
-    description.add_nl();
+    description.add_paragraph();
     description.add_text(0, "Note also that positionning your pointer on some text for more than one second will show helper information as illustrated just below:");
     description.add_nl();
 
