@@ -61,9 +61,13 @@ guichet::guichet(bool subcomponent):
     adopted_frame = nullptr;
 
     saveas_text.clear();
-    saveas_text.add_text(0, "The configuration exposed above can be saved (or not) for reuse later, and will be editable from the \"Configuration\" menu on the left");
+    saveas_text.add_text(0, "The configuration exposed above can be saved (or not) for reuse later, and will be editable from the \"Configure\" menu on the left");
     saveas_text.add_nl();
     saveas_text.add_nl();
+
+	// tooltips
+    select.set_tooltip("Select an existing configuration from the \"Configure\" menu or use the \"manual config\" choice to set it up in-place, you will be able to save it also as a new configuration");
+    saveas_name.set_tooltip("The current configuration is anonymous, from here you use it as is, modify it or save as a new configuration. To edit an existing configuration and save changes under that same name, go to the \"Configure\" menu");
 }
 
 guichet::~guichet()
