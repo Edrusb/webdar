@@ -32,7 +32,7 @@ extern "C"
 }
 
     // C++ system header files
-
+#include "html_tooltip.hpp"
 
     // webdar headers
 #include "body_builder.hpp"
@@ -41,7 +41,7 @@ extern "C"
 
     /// used within html_form_fieldset, mainly
 
-class html_legend : public body_builder
+class html_legend : public html_tooltip
 {
 public:
     html_legend(const std::string & label) { x_label = label; };

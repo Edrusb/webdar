@@ -55,7 +55,11 @@ string html_legend::inherited_get_body_part(const chemin & path,
     string ret = "";
 
     if(! x_label.empty())
-	ret += "<legend " + get_css_classes() + ">" + webdar_tools_html_display(x_label) + "</legend>\n";
+    {
+	ret += "<legend " + get_css_classes() + ">" + webdar_tools_html_display(x_label);
+	ret += html_tooltip::get_body_part();
+	ret += "</legend>\n";
+    }
     ret += get_body_part_from_all_children(path, req);
 
     return ret;

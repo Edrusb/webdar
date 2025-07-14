@@ -72,6 +72,9 @@ public:
 	/// inherited from body_builder
     virtual void bind_to_anchor(const std::string & val) override { update_anchor(val); };
 
+	/// surfacing the tooltip feature of html_legend
+    void set_tooltip(const std::string & val) { legend.set_tooltip(val); };
+
 
 protected:
 	/// inherited from body_builder
