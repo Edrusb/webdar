@@ -312,7 +312,7 @@ public:
 
 	/// \note CSS is more precise and is able to define specific transition timing for different properties
     void css_transition(const std::string & duration,
-			const std::string & delay,
+			const std::string & delay = "0s",
 			transition_function funct = ease);
 
 	/// clear transition property
