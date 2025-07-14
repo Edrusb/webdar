@@ -158,6 +158,8 @@ public:
 	/// inherited from jsoner
     virtual void clear_json() override { input.clear_json(); };
 
+	/// tooltip for the component
+    void set_tooltip(const std::string & val) { input.set_tooltip(val); };
 
 protected:
 
