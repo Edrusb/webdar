@@ -59,17 +59,20 @@ void css_class::set_selector(selector_type sel,
 			     const css & ref,
 			     const string & descendant)
 {
-    map<selector_type, couple>::iterator it = selectors.find(sel);
+    sujet<selector_type> cible(sel, descendant);
+    map<sujet<selector_type>, css>::iterator it = selectors.find(cible);
 
     if(it == selectors.end())
-	selectors[sel] = couple(ref, descendant);
+	selectors[cible] = ref;
     else
 	throw WEBDAR_BUG;
 }
 
-void css_class::clear_selector(selector_type sel)
+void css_class::clear_selector(selector_type sel,
+			       const string & descendant)
 {
-    map<selector_type, couple>::iterator it = selectors.find(sel);
+    sujet<selector_type> cible(sel, descendant);
+    map<sujet<selector_type>, css>::iterator it = selectors.find(cible);
 
     if(it != selectors.end())
 	selectors.erase(sel);
@@ -79,19 +82,22 @@ void css_class::clear_selector(selector_type sel)
 
 void css_class::set_pseudo_element(pseudo_element_type pe,
 				   const css & ref,
-				   const std::string & descendant)
+				   const string & descendant)
 {
-    map<pseudo_element_type, couple>::iterator it = pseudo_elements.find(pe);
+    sujet<pseudo_element_type> cible(pe, descendant);
+    map<sujet<pseudo_element_type>, css>::iterator it = pseudo_elements.find(cible);
 
     if(it == pseudo_elements.end())
-	pseudo_elements[pe] = couple(ref, descendant);
+	pseudo_elements[cible] = ref;
     else
 	throw WEBDAR_BUG;
 }
 
-void css_class::clear_pseudo_element(pseudo_element_type pe)
+void css_class::clear_pseudo_element(pseudo_element_type pe,
+				     const string & descendant)
 {
-    map<pseudo_element_type, couple>::iterator it = pseudo_elements.find(pe);
+    sujet<pseudo_element_type> cible(pe, descendant);
+    map<sujet<pseudo_element_type>, css>::iterator it = pseudo_elements.find(cible);
 
     if(it != pseudo_elements.end())
 	pseudo_elements.erase(pe);
@@ -101,8 +107,8 @@ void css_class::clear_pseudo_element(pseudo_element_type pe)
 string css_class::get_definition() const
 {
     string ret;
-    map<selector_type, couple>::const_iterator it = selectors.begin();
-    map<pseudo_element_type, couple>::const_iterator peit = pseudo_elements.begin();
+    map<sujet<selector_type>, css>::const_iterator it = selectors.begin();
+    map<sujet<pseudo_element_type>, css>::const_iterator peit = pseudo_elements.begin();
     string raw_val = class_value.css_get_raw_string();
     string sub;
 
@@ -117,37 +123,36 @@ string css_class::get_definition() const
 
     while(it != selectors.end())
     {
-	if(it->second.subcomp.empty())
+	if(it->first.subcomp.empty())
 	    sub = "";
 	else
-	    sub = " " + it->second.subcomp;
+	    sub = " " + it->first.subcomp;
 
-	raw_val = it->second.css_def.css_get_raw_string();
+	raw_val = it->second.css_get_raw_string();
 	if(raw_val.empty())
 	    throw WEBDAR_BUG; // why adding a css if it has no properties at all!
 
-	ret += "*." + class_name + ":" + get_selector_name(it->first) + sub + " { " + raw_val + " }\n";
+	ret += "*." + class_name + ":" + get_selector_name(it->first.type) + sub + " { " + raw_val + " }\n";
 	++it;
     }
 
     while(peit != pseudo_elements.end())
     {
-	if(peit->second.subcomp.empty())
+	if(peit->first.subcomp.empty())
 	    sub = "";
 	else
-	    sub = " " + peit->second.subcomp;
+	    sub = " " + peit->first.subcomp;
 
-	raw_val = peit->second.css_def.css_get_raw_string();
+	raw_val = peit->second.css_get_raw_string();
 	if(raw_val.empty())
 	    throw WEBDAR_BUG; // same as above for selectors / pseudo classes
 
-	ret += "*." + class_name + "::" + get_pseudo_element_name(peit->first) + sub + " { " + raw_val + " }\n";
+	ret += "*." + class_name + "::" + get_pseudo_element_name(peit->first.type) + sub + " { " + raw_val + " }\n";
 	++peit;
     }
 
     return ret;
 }
-
 
 string css_class::get_selector_name(selector_type sel)
 {

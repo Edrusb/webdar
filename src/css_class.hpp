@@ -125,7 +125,8 @@ public:
 		      const std::string & descendant = "");
 
 	/// remove definition for the given selector type
-    void clear_selector(selector_type sel);
+    void clear_selector(selector_type sel,
+			const std::string & descendant = "");
 
 	/// defines the value of a given pseudo-element
 
@@ -135,7 +136,8 @@ public:
 			    const std::string & descendant = "");
 
 	/// remove definition for the given pseudo-element
-    void clear_pseudo_element(pseudo_element_type pe);
+    void clear_pseudo_element(pseudo_element_type pe,
+			      const std::string & descendant = "");
 
 	/// clear all css definition, including those provided with selector, only the css name is kept
     void clear() { class_value.clear(); selectors.clear(); };
@@ -144,31 +146,42 @@ public:
     std::string get_definition() const;
 
 private:
-    struct couple
+    template<class T> struct sujet
     {
-	css css_def;
+	T type;
 	std::string subcomp;
 
-	couple() {};
-	couple(const css & def, const std::string & sub):
-	    css_def(def),
-	    subcomp(sub)
-	{};
-	couple(const couple & ref) = default;
-	couple(couple && ref) = default;
-	couple & operator = (const couple & ref) = default;
-	couple & operator = (couple && ref) = default;
-	~couple() = default;
+	sujet(T t): type(t) { subcomp.clear(); };
+	sujet(T t, const std::string & sub): type(t), subcomp(sub) {};
+	sujet(const sujet & ref) = default;
+	sujet(sujet && ref) = default;
+	sujet & operator = (const sujet & ref) = default;
+	sujet & operator = (sujet && ref) = default;
+	~sujet() = default;
+
+	    // to be used a index of std::map
+	bool operator < (const sujet & ref) const;
     };
 
     std::string class_name;
     std::string descendant;
     css class_value;
-    std::map<selector_type, couple> selectors;
-    std::map<pseudo_element_type, couple> pseudo_elements;
+    std::map<sujet<selector_type>, css> selectors;
+    std::map<sujet<pseudo_element_type>, css> pseudo_elements;
 
     static std::string get_selector_name(selector_type sel);
     static std::string get_pseudo_element_name(pseudo_element_type pe);
 };
+
+template<class T> bool css_class::sujet<T>::operator < (const sujet & ref) const
+{
+    if(type < ref.type)
+	return true;
+    else if(type == ref.type)
+	return subcomp < ref.subcomp;
+    else
+	return false;
+}
+
 
 #endif
