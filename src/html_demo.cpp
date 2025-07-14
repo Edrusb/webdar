@@ -51,15 +51,14 @@ html_demo::html_demo():
 	       ""),
     left_fs("Information at Browser level"),
     form("Update"),
-    btn_incr("Increment", event_incr),
-    btn_clear("Clear", event_clear),
+    btn_calc("Calculate", event_calc),
     right_input("Entered text",
 		html_form_input::text,
 		"",
 		"",
 		""),
     right_fs("Information known by Webdar"),
-    counter("Counter", html_form_input::number, "0", "10", ""),
+    counter("Provided string size", html_form_input::number, "0", "10", ""),
     label("- this text is provided without additional information"),
     labelplus("- while this text is provided with helper information", "This is how would show additional information for user help and feature clarification"),
     close("Close", event_close)
@@ -94,9 +93,6 @@ html_demo::html_demo():
     left_radio.add_choice("1", choice2);
     left_radio.add_choice("2", choice3);
     left_radio.set_selected_num(2);
-    left_radio.set_tooltip(0, "the box above is hidden from the user, but its value is kept recorded");
-    left_radio.set_tooltip(1, "the box above is visibile but cannot be modified by the user");
-    left_radio.set_tooltip(2, "the box is editable and visible (which most of the time is the default setting)");
 
     right_radio.add_choice("0", choice1);
     right_radio.add_choice("1", choice2);
@@ -122,8 +118,7 @@ html_demo::html_demo():
     right_fs.adopt(&right_radio);
 
     table.adopt(&btn_div);
-    btn_div.adopt(&btn_incr);
-    btn_div.adopt(&btn_clear);
+    btn_div.adopt(&btn_calc);
 
     table.adopt(&counter);
     adopt(&close);
@@ -132,8 +127,7 @@ html_demo::html_demo():
 
     left_input.record_actor_on_event(this, html_form_input::changed);
     left_radio.record_actor_on_event(this, html_form_radio::changed);
-    btn_incr.record_actor_on_event(this, event_incr);
-    btn_clear.record_actor_on_event(this, event_clear);
+    btn_calc.record_actor_on_event(this, event_calc);
     close.record_actor_on_event(this, event_close);
 
 	// visibility and enablement
@@ -151,11 +145,9 @@ html_demo::html_demo():
     table.css_border_collapsed(true);
     table.add_css_class(css_table);
 
-    webdar_css_style::normal_button(btn_incr);
-    webdar_css_style::normal_button(btn_clear);
+    webdar_css_style::normal_button(btn_calc);
     webdar_css_style::normal_button(close);
-    btn_incr.add_css_class(webdar_css_style::float_left);
-    btn_clear.add_css_class(webdar_css_style::float_right);
+    btn_calc.add_css_class(webdar_css_style::float_right);
     close.add_css_class(css_btn_close);
 
 
@@ -165,8 +157,12 @@ html_demo::html_demo():
 
 	// tooltips
 
+    left_radio.set_tooltip(0, "the box above is hidden from the user, but its value is kept recorded");
+    left_radio.set_tooltip(1, "the box above is visibile but cannot be modified by the user");
+    left_radio.set_tooltip(2, "the box is editable and visible (which most of the time is the default setting)");
     left_input.set_tooltip("enter text here");
     right_input.set_tooltip("this is the information known by webdar at this point in time");
+    counter.set_tooltip("This shows the provided string size as computed at the time the \"Calculate\" button has last been pressed");
 }
 
 
@@ -194,10 +190,10 @@ void html_demo::on_event(const string & event_name)
 	    throw WEBDAR_BUG;
 	}
     }
-    else if(event_name == event_incr)
-	counter.set_value(webdar_tools_convert_to_string(webdar_tools_convert_to_int(counter.get_value()) + 1));
-    else if(event_name == event_clear)
-	counter.set_value("0");
+    else if(event_name == event_calc)
+    {
+	counter.set_value(webdar_tools_convert_to_string(right_input.get_value().size()));
+    }
     else if(event_name == event_close)
 	set_visible(false);
     else

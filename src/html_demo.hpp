@@ -89,8 +89,7 @@ protected:
 
 
 private:
-    static constexpr const char* event_incr = "increment";
-    static constexpr const char* event_clear = "clear";
+    static constexpr const char* event_calc = "go_compute";
     static constexpr const char* event_close = "close";
 
     static constexpr const char* css_cells = "html_demo_cells";
@@ -105,8 +104,7 @@ private:
     html_form_radio left_radio;
     html_form_fieldset left_fs;
     html_form form;
-    html_double_button btn_incr;
-    html_double_button btn_clear;
+    html_double_button btn_calc;
     html_div btn_div;
     html_form_input right_input;
     html_form_radio right_radio;
