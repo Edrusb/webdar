@@ -508,6 +508,12 @@ html_bibliotheque::html_bibliotheque(shared_ptr<bibliotheque> & ptr,
 						     e.get_message().c_str()));
 	nok_message.set_visible(true);
     }
+
+	// tooltips
+
+    filename.set_tooltip("Filename where the configuration has been read from and where it will be saved to. The configuration saved includes all tabs of the present page and only them, nothing is saved from the \"Create\" menu for example");
+    autosave.set_tooltip("If this box is unchecked, any configuration change is just kept in memory, until you click on the \"save\" button at which time the configuration is saved to the file which name is provided above. A global warning shows at the top of the page when memory content is not saved to file. If checked, this operation is performed automatically upon change.");
+    upload_file.set_tooltip("First select the webdar configuration file your browser will upload to webdar, then click the \"upload\" button");
 }
 
 void html_bibliotheque::on_event(const string & event_name)
