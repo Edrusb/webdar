@@ -283,6 +283,7 @@ namespace webdar_css_style
 		tmp.css_padding("0.5em");
 		tmp.css_border_style(css::bd_all, css::bd_outset);
 		tmp.css_border_width(css::bd_all, css::bd_thin);
+		tmp.css_transition("0.7s", "0s");
 
 		    // normal box
 
