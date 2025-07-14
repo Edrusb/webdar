@@ -142,8 +142,7 @@ void html_label::new_css_library_available()
 
 	tmp.clear();
 	tmp.css_visibility(false);
-	tmp.css_width("100%", false);
-	tmp.css_min_width("20vw");
+	tmp.css_font_size("smaller");
 	tmp.css_background_color(COLOR_DAR_GREYBLUE);
 	tmp.css_color(COLOR_TEXT);
 	tmp.css_text_h_align(css::al_center);
@@ -151,7 +150,9 @@ void html_label::new_css_library_available()
 	tmp.css_position_type(css::pos_absolute);
 	tmp.css_z_index(2);
 	tmp.css_position_bottom("125%");
-	tmp.css_position_right("-10%");
+	tmp.css_position_right("0%");
+	tmp.css_position_left("40%");
+	tmp.css_min_width("10em");
 	tmp.css_margin_left("-60px");
 	    // css_transition manque
 	tmp.css_border_style(css::bd_bottom, css::bd_solid);
