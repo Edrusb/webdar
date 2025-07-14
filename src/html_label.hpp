@@ -35,14 +35,14 @@ extern "C"
 
 
     // webdar headers
-#include "body_builder.hpp"
+#include "html_tooltip.hpp"
 #include "html_text.hpp"
 
     /// class html_label implements label and tooltips (helper string showing when mouse hovering)
 
     /// it is not expect to adopt any child, but to be adopted
 
-class html_label : public body_builder, public static_body_builder
+class html_label : public html_tooltip
 {
 public:
 	/// \param[in] x_label the text to show as label
@@ -63,9 +63,6 @@ public:
 	/// get the current value of the label
     const std::string & get_label() const { return label; };
 
-	/// add a tooltip to the label (helper popup)
-    void set_tooltip(const std::string & helper) { tooltip = helper; };
-
 	/// set the label in bold or equivalent method to emphase it compare to the others
     void set_emphase(bool em) { emphase = em; };
 
@@ -83,9 +80,6 @@ protected:
     virtual std::string inherited_get_body_part(const chemin & path,
 						const request & req) override;
 
- 	/// inherited from body_builder
-    virtual void new_css_library_available() override;
-
 	/// inherited from body builder
 
 	/// \note we forbid any adoption throwing an exception from this call
@@ -94,12 +88,8 @@ protected:
 
 private:
     std::string label;
-    std::string tooltip;
     std::string for_field;
     bool emphase;
-
-    static constexpr const char* css_tooltip = "tooltip";
-    static constexpr const char* css_tooltiptext = "tooltiptext";
 };
 
 #endif
