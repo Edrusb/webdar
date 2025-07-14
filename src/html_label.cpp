@@ -118,12 +118,11 @@ void html_label::new_css_library_available()
 	    // the dashes under the text having tooltip enabled
 	    //
 
-
 	tmp.css_position_type(css::pos_relative);
 	tmp.css_display("inline-block");
-	tmp.css_border_width(css::bd_bottom, css::bd_thin);
-	tmp.css_border_style(css::bd_bottom, css::bd_dotted);
-	tmp.css_border_color(css::bd_bottom, "blue");
+	tmp.css_text_shadow("0.05em", "0.05em", "0.2em", COLOR_TEXT);
+	tmp.css_font_style_italic();
+	tmp.css_transition("0.5s");
 	tip.set_selector(css_class::hover, tmp);
 
 	    /////
@@ -148,7 +147,7 @@ void html_label::new_css_library_available()
 	tmp.css_background_color(COLOR_DAR_GREYBLUE);
 	tmp.css_color(COLOR_TEXT);
 	tmp.css_text_h_align(css::al_center);
-	tmp.css_corner_radius("6px");
+	tmp.css_corner_radius("0.5em", "0", "0.5em", "0");
 	tmp.css_position_type(css::pos_absolute);
 	tmp.css_z_index(2);
 	tmp.css_position_bottom("125%");
@@ -162,7 +161,7 @@ void html_label::new_css_library_available()
 	tmp.css_border_color(css::bd_bottom, COLOR_MENU_BORDER_OFF);
 	tmp.css_border_color(css::bd_right, COLOR_MENU_BORDER_OFF);
 	tmp.css_font_style_italic();
-	tmp.css_transition("1s", "0.7s");
+	tmp.css_transition("0.7s", "1s");
 	tiptext.set_value(tmp);
 
 	    /////
