@@ -299,6 +299,25 @@ public:
 	/// css content property for ::after ::before pseudo-elements
     void css_content(const std::string & name);
 
+	/// css transition, this concerns all properties that changed within CSS style (hover, focus, and so on)
+
+   enum transition_function
+   {
+       ease,
+       linear,
+       ease_in,
+       ease_out,
+       ease_in_out
+   };
+
+	/// \note CSS is more precise and is able to define specific transition timing for different properties
+    void css_transition(const std::string & duration,
+			const std::string & delay,
+			transition_function funct = ease);
+
+	/// clear transition property
+    void css_transition() { transition.clear(); };
+
 
 	/// returns the css raw string
     std::string css_get_raw_string() const;
@@ -391,6 +410,9 @@ private:
 
 	// content
     css_property content;
+
+	// transition
+    css_property transition;
 
 	// custom css
     std::map<std::string, css_property> custom_css;

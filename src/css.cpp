@@ -88,6 +88,7 @@ void css::update_from(const css & ref)
     corner_radius.update_from(ref.corner_radius);
     visibility.update_from(ref.visibility);
     content.update_from(ref.content);
+    transition.update_from(ref.transition);
 
     map<string, css_property>::const_iterator it = ref.custom_css.begin();
     map<string, css_property>::iterator mit;
@@ -158,6 +159,7 @@ void css::clear()
     corner_radius.clear();
     visibility.clear();
     content.clear();
+    transition.clear();
 
     map<string, css_property>::iterator it = custom_css.begin();
     while(it != custom_css.end())
@@ -730,6 +732,37 @@ void css::css_content(const string & name)
     content.set_value(tmp);
 }
 
+void css::css_transition(const string & duration,
+			 const string & delay,
+			 transition_function funct)
+{
+    string tmp;
+
+    switch(funct)
+    {
+    case ease:
+	tmp = "ease";
+	break;
+    case linear:
+	tmp = "linear";
+	break;
+    case ease_in:
+	tmp = "ease-in";
+	break;
+    case ease_out:
+	tmp = "ease-out";
+	break;
+    case ease_in_out:
+	tmp = "ease-in-out";
+	break;
+    default:
+	throw WEBDAR_BUG;
+    }
+
+    tmp = "transition: all " + duration + " " + tmp + " " + delay + " ;";
+    transition.set_value(tmp);
+}
+
 string css::css_get_raw_string() const
 {
     string ret = "";
@@ -789,6 +822,7 @@ string css::css_get_raw_string() const
     ret += corner_radius.get_value();
     ret += visibility.get_value();
     ret += content.get_value();
+    ret += transition.get_value();
 
     map<string, css_property>::const_iterator it = custom_css.begin();
 
