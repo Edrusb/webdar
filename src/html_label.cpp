@@ -124,7 +124,7 @@ void html_label::new_css_library_available()
 	tmp.css_border_width(css::bd_bottom, css::bd_thin);
 	tmp.css_border_style(css::bd_bottom, css::bd_dotted);
 	tmp.css_border_color(css::bd_bottom, "blue");
-	tip.set_value(tmp);
+	tip.set_selector(css_class::hover, tmp);
 
 	    /////
 	    // making the tooltip show upon hover on the dashed bar
@@ -132,6 +132,7 @@ void html_label::new_css_library_available()
 
 	tmp.clear();
 	tmp.css_visibility(true);
+	tmp.css_opacity("1");
 	tip.set_selector(css_class::hover, tmp, "." + string(css_tooltiptext));
 
 	csslib->add(tip);
@@ -142,6 +143,7 @@ void html_label::new_css_library_available()
 
 	tmp.clear();
 	tmp.css_visibility(false);
+	tmp.css_opacity("0");
 	tmp.css_font_size("smaller");
 	tmp.css_background_color(COLOR_DAR_GREYBLUE);
 	tmp.css_color(COLOR_TEXT);
@@ -160,6 +162,7 @@ void html_label::new_css_library_available()
 	tmp.css_border_color(css::bd_bottom, COLOR_MENU_BORDER_OFF);
 	tmp.css_border_color(css::bd_right, COLOR_MENU_BORDER_OFF);
 	tmp.css_font_style_italic();
+	tmp.css_transition("1s", "0.7s");
 	tiptext.set_value(tmp);
 
 	    /////
