@@ -109,9 +109,9 @@ html_bibliotheque::html_bibliotheque(shared_ptr<bibliotheque> & ptr,
     intro.add_text(0, "this is not true while downloading or uploading over a non-secured session (not secured for http sessions, but OK for https session):");
     intro.add_text(0, "All configuration information, including login and passwords used to cipher archive and backups or to connect to remote repositories, if you have enterred such type of information");
     intro.add_text(0, "in the followin tabs, would be transmitted in clear and accessible to anyone");
-    intro.add_text(0, "having access to the underneath network used between WebDar and your browser.");
+    intro.add_text(0, "having access to the underneath network used between Webdar and your browser.");
     intro.add_paragraph();
-    intro.add_text(0, "This security warning also applies when using untrusted SSL certificates for WebDar (risk of man-in-the-middle attack).");
+    intro.add_text(0, "This security warning also applies when using untrusted SSL certificates for Webdar (risk of man-in-the-middle attack).");
 
     saved_status.add_text(0, "All configurations saved to file");
     unsaved_status.add_text(0, "Not all configurations saved to file!");
