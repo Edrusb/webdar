@@ -109,6 +109,9 @@ public:
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
+	/// surfacing the tooltip feature of the input form
+    void set_tooltip(const std::string & val) { field.set_tooltip(val); };
+
 protected:
 
 	/// inherited from body_builder
