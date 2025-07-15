@@ -126,7 +126,7 @@ void html_tooltip::new_css_library_available()
 	tmp.css_position_bottom("125%");
 	tmp.css_position_right("0%");
 	tmp.css_position_left("40%");
-	tmp.css_min_width("10em");
+	tmp.css_min_width("15em");
 	tmp.css_margin_left("-60px");
 	    // css_transition manque
 	tmp.css_border_style(css::bd_bottom, css::bd_solid);
