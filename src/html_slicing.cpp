@@ -48,7 +48,7 @@ html_slicing::html_slicing():
     slicing("Sliced archive", html_form_input::check, "", "", ""), // unchecked
     slice_size("Slice size", 1, "10"),
     different_first_slice("Specific size for first slice", html_form_input::check, "", "", ""), // unchecked
-    first_slice_size("Slice size", 1, "10"),
+    first_slice_size("First slice size", 1, "10"),
     slice_permission("Slice permission (octal)", html_form_input::text, "", "", ""),
     slice_user_ownership("Slice user ownership", html_form_input::text, "", "", ""),
     slice_group_ownership("slice group ownership", html_form_input::text, "", "", ""),
