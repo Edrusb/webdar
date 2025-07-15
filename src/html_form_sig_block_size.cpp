@@ -61,7 +61,7 @@ html_form_sig_block_size::html_form_sig_block_size():
     multiply.set_min_only(1);
     divisor.set_min_only(1);
     min_size.set_min_only(libdar::infinint(RS_DEFAULT_BLOCK_LEN));
-    max_size.set_min_only(libdar::infinint(RS_DEFAULT_BLOCK_LEN));
+    max_size.set_min_only(0);
 
 	// adoption tree
     adopt(&delta_sig_min_size);
