@@ -246,7 +246,7 @@ void html_slicing::clear_json()
     slice_size.set_value_as_infinint(1024*1024*1024);
     different_first_slice.set_value_as_bool(false);
     first_slice_size.set_value_as_infinint(1024*1024*1024);
-    slice_permission.set_value("");
+    slice_permission.set_value("0600");
     slice_user_ownership.set_value("");
     slice_group_ownership.set_value("");
     slice_min_digits.set_value_as_int(3);
