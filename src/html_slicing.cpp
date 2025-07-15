@@ -93,6 +93,16 @@ html_slicing::html_slicing():
 
 	// visibility & setup final touch
     clear_json();
+
+	// tooltips
+    slicing.set_tooltip("A backup or archive can be stored is several file a fixed size (caled sliced). Slices cannot be used alone but may not be all needed depending on the requested operation, this also overcome some filesize limitation of some filesystems");
+    slice_size.set_tooltip("Maximum size a slice can have, the last slice will be smaller most of the time");
+    different_first_slice.set_tooltip("Choose a different slice size (bigger or smaller) for the first slice");
+    first_slice_size.set_tooltip("Specific size of the first slice, It may be smaller if the whole backup or archive could be hold in one slice");
+    slice_permission.set_tooltip("By default the slice permission is readable and writable by all and restricted by the umask (which usually restricts the write access to the slice owner), you can use 0600 for slices to only be accessible to the slice owner");
+    slice_user_ownership.set_tooltip("User ownership to set for slices, this assumes webdar has the right to set file ownership, if not or if undefined here, the user ownership will be the user of the webdar process");
+    slice_group_ownership.set_tooltip("Group ownership to set for slices, this assumes webdar has the right to set file ownership, if not or if undefined here, the group ownership will be the group of the webdar process");
+    slice_min_digits.set_tooltip("From a given <basename>, webdar creates slices adding a number (the slice number) followed by the \"dar\" extension, like \"<basename>.1.dar\". If you have many slices, you may like to have small slice number prefixed with zeros. Indicating 4 as min-digits will lead slices of that form \"<basename>.0001.dar\"");
 }
 
 

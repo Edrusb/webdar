@@ -265,6 +265,11 @@ void html_form_mask_expression::init()
 	// css stuff
     fs.add_label_css_class(webdar_css_style::text_bold);
 
+	// tooltips
+    mask_type.set_tooltip("Glob expression is expression you commonly have under a shell with special characters like * ? and []");
+    negate.set_tooltip("When a file matches the mask consider it does not and vice versa");
+    mask_expression.set_tooltip("Expression, eventually with wildcards (pay attention to the mask type above) that a file must satisfy to be considered in the operation");
+
     clear();
 }
 

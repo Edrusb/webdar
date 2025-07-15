@@ -90,6 +90,19 @@ html_form_sig_block_size::html_form_sig_block_size():
     summary_f.add_css_class(webdar_css_style::text_bold);
     multiply.add_css_class(webdar_css_style::width_100vw_8em);
     divisor.add_css_class(webdar_css_style::width_100vw_8em);
+
+	// tooltips
+    delta_sig_min_size.set_tooltip("Better not calculating delta signature but resaving as a whole small files upon change, this saves both CPU cycles and storage requirments");
+    fs_function.set_tooltip("Delta signature is what is used to compare with the previous status of a file. It is calculated per block of a file's data. The larger the block is, the less blocks will be, resulting in a smaller delta signature for a given file size, but the more data will have to be resaved upon binary change inside that file, as the block size is bigger");
+    function.set_tooltip(0, "Block size is independent from the file sizes, consider adjusting the multiplicative and/or divisor factors below");
+    function.set_tooltip(1, "Block size increase proportionnaly to the size of the file, consider setting the divisor factor to a value high enough, for example greater than 10, to avoid having too few or even a single block per file");
+    function.set_tooltip(2, "Block size increases very slowly when the file size increases. This bring some advantage compare to the linear function to reduce the delta signature size for big files without much impact on the amount of data to resave upon change");
+    function.set_tooltip(3, "Block size increases quickly when the file size increase.  This proportionnaly reduces the binary delta signature of big files at the cost of more data to be resave upon change as block in the delta signature are bigger for bigger files");
+    function.set_tooltip(4, "This is an indermediate function between the two previous, block size increase quicker than the logarithmic base function but less quick than the square root function");
+    multiply.set_tooltip("Adjust the formula by multiplying it by a fixed factor. Click the \"Update\" button and look at the new formula expression above");
+    divisor.set_tooltip("Adjust the formula by dividing it with a fixed factor. Can be combined with the multiplicative factor too");
+    min_size.set_tooltip("Bypass the result of the formula described above for the delta signature block size not to be smaller than this provided value");
+    max_size.set_tooltip("Bypass the result of the formula described above for the delta signature block size not to be larger than this provided value");
 }
 
 void html_form_sig_block_size::set_value(const libdar::delta_sig_block_size & val)

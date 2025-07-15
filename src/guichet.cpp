@@ -66,7 +66,10 @@ guichet::guichet(bool subcomponent):
     saveas_text.add_nl();
 
 	// tooltips
-    select.set_tooltip("Select an existing configuration from the \"Configure\" menu or use the \"manual config\" choice to set it up in-place, you will be able to save it also as a new configuration");
+    if(subcomponent)
+	select.set_tooltip("Select an existing configuration. Note, this configuration will not be removable until it is not referred from here nor any other similar places");
+    else
+	select.set_tooltip("Select an existing configuration from the \"Configure\" menu or use the \"manual config\" choice to set it up in-place, you will be able to save it also as a new configuration");
     saveas_name.set_tooltip("The current configuration is anonymous, from here you use it as is, modify it or save as a new configuration. To edit an existing configuration and save changes under that same name, go to the \"Configure\" menu");
 }
 

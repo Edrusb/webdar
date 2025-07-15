@@ -512,8 +512,8 @@ html_bibliotheque::html_bibliotheque(shared_ptr<bibliotheque> & ptr,
 	// tooltips
 
     filename.set_tooltip("Filename where the configuration has been read from and where it will be saved to. The configuration saved includes all tabs of the present page and only them, nothing is saved from the \"Create\" menu for example");
-    autosave.set_tooltip("If this box is unchecked, any configuration change is just kept in memory, until you click on the \"save\" button at which time the configuration is saved to the file which name is provided above. A global warning shows at the top of the page when memory content is not saved to file. If checked, this operation is performed automatically upon change.");
-    upload_file.set_tooltip("First select the webdar configuration file your browser will upload to webdar, then click the \"upload\" button");
+    autosave.set_tooltip("If this box is unchecked, any configuration change is just kept in memory, until you click on the \"save\" button just below, at which time the configuration as seen from all tabs is saved to the file which name is provided above. A status message shows at the top of the page telling whether the current configuration in memory has been saved to file or not. If checked, this operation is performed automatically upon change and the status message on top page does not show.");
+    upload_file.set_tooltip("First select the configuration file your browser will upload to Webdar, then click the \"upload\" button");
 }
 
 void html_bibliotheque::on_event(const string & event_name)

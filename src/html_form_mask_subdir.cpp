@@ -289,6 +289,12 @@ void html_form_mask_subdir::init()
 
 	// css stuff
     fs.add_label_css_class(webdar_css_style::text_bold);
+
+	// tooltips
+    mask_type.set_tooltip("Pay attention, only exluding mask support mask (glob and regex), in included path no character has a special meaning");
+    casesensitivity.set_tooltip("case sensitivity when comparing this mask with file to process");
+    regex.set_tooltip("If unchecked the provided mask is assumed a glob expression, else if checked it is assumed a regular expression");
+    mask_subdir.set_tooltip("subdirectory to match against. Pay attention, absolute path are not allowed in all context, the use of such configuration will not be accepted in that cases");
 }
 
 

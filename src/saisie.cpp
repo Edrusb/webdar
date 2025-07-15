@@ -345,6 +345,9 @@ saisie::saisie():
 
     webdar_css_style::normal_button(show_demo);
     show_demo.add_css_class(webdar_css_style::float_right);
+
+	// tooltips
+    session_name.set_tooltip("You can change the name of the session to better identify it among others. See the \"Other sessions\" menu on the left");
 }
 
 string saisie::inherited_get_body_part(const chemin & path,

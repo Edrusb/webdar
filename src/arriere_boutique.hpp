@@ -267,7 +267,7 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
 
 	// tooltips
 
-    config_name.set_tooltip("Name to use to save the configuration displayed above. You can also change it to save a copy under another name (\"save as\" feature). However you cannot save under the name of an existing configuration. To edit an existing configuration select it on the right, click the load button, perform changes in the configuration and get back to this save button without changing the name of the configuration");
+    config_name.set_tooltip("Name to use to save the configuration displayed above. You can also change it to save a copy under another name (\"save as\" feature). However you cannot save under the name of an existing configuration. To edit an existing configuration select it from the list here on the right, click the \"load selected\" button, perform changes in the configuration and get back to this save button without changing the name of the configuration");
     listing_fs.set_tooltip("Select an existing configuration, then load it. You can then either edit it on the left or delete it from the configuration using the \"delete\" button below");
 }
 
