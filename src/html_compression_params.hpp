@@ -132,7 +132,7 @@ private:
     static constexpr const unsigned int default_compression_block = 240*1024;
     static constexpr const bool default_never_resave_uncompressed = false;
     static constexpr const unsigned int default_compr_threads = 4;
-    static constexpr const bool default_keep_compressed = true;
+    static constexpr const bool default_keep_compressed = false;
 
     static constexpr const unsigned int format_version = 1;
     static constexpr const char* myclass_id = "html_compression_params";
