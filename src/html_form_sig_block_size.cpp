@@ -232,7 +232,7 @@ void html_form_sig_block_size::clear_json()
     ignore_events = true;
     try
     {
-	delta_sig_min_size.set_value_as_infinint(0);
+	delta_sig_min_size.set_value_as_infinint(4*RS_DEFAULT_BLOCK_LEN);
 	function.set_selected_id("root2");
 	min_size.set_value_as_infinint(libdar::infinint(RS_DEFAULT_BLOCK_LEN));
 	max_size.set_value_as_infinint(libdar::infinint(64*RS_DEFAULT_BLOCK_LEN));
