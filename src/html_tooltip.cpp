@@ -65,7 +65,7 @@ string html_tooltip::get_body_part() const
     if(!tooltip.empty())
     {
 	ret += string("<span class=\"") + css_tooltiptext + "\">";
-	ret += tooltip;
+	ret += webdar_tools_html_display(tooltip);
 	ret += "</span>";
     }
 
