@@ -120,7 +120,21 @@ html_ciphering::html_ciphering():
     crypto_threads.add_css_class(webdar_css_style::width_100vw_8em);
     iteration_count.add_css_class(webdar_css_style::width_100vw_8em);
 
-	// nothing //
+	// tooltips
+
+    crypto_type.set_tooltip("Symmetric encryption means here the use of a password to cipher and decipher the backup, while asymmetrical encryption means the use of public/private GPG key pair, one key to cipher and eventually sign, the other to decipher the backup");
+    crypto_algo.set_tooltip("Ciphering algoritm, most of the time you will want to use AES");
+    crypto_pass1.set_tooltip("The password or passphrase to use to cipher the backup (and to remember in order to decipher it)");
+    crypto_pass2.set_tooltip("Retype the same password or passphrase as entered above");
+    crypto_size.set_tooltip("Keep this parameter to its default value (10 kio), else you will have to remember its value and set it back at the same value in order to decipher the backup");
+    crypto_threads.set_tooltip("Number of threads to use to cipher or decipher the data");
+    crypto_fs_kdf_hash.set_tooltip("Humans choose password/phrase in a very restrictive name space. The Key Derivation Function, takes this pass and a salt (an arbitrarily chosen sequence stored in clear in the archive header) as input of a time consuming transformation process to obtain a more randomized encryption key. With the salt, different archives use different encryption keys even if the human provided password is the same, while the CPU intensive transformation makes dictionnary attack more costly");
+    crypto_kdf_hash.set_tooltip(0, "md5 is not a strong hash algorithm and it outputs in a small namespace. Avoid using it for KDF, it is here to support old archive formats");
+    crypto_kdf_hash.set_tooltip(1, "sha1 is also here to support old archive format, don't use it anymore");
+    crypto_kdf_hash.set_tooltip(2, "sha512 can be used with a high number of iteration for the time to get the ciphering key from salt and pass to take a few seconds on an average computer");
+    crypto_kdf_hash.set_tooltip(3, "whirlpool has a very large output namespace, though use it with enough iteration for the KDF process to take also several seeconds on an average computer");
+    crypto_kdf_hash.set_tooltip(4, "argon2 is known as the reference for KDF function, this is the default and best choice according to literature since 2015 and at least up to year 2023");
+    iteration_count.set_tooltip("The hash result of the salt and pass is hashed several times in loop, for the process of getting a randomized string outside the human usual namespace to cost CPU resource and time and drive an dictionnary attack slow and/or costly in time and or CPU");
 }
 
 void html_ciphering::set_crypto_size_range(const libdar::infinint & min,
