@@ -96,6 +96,9 @@ public:
     virtual void bind_to_anchor(const std::string & val) override { one.bind_to_anchor(val); two.bind_to_anchor(val); };
 
 
+	/// surfacing set_tooltip from inner html_button fields
+    void set_tooltip(const std::string & val) { one.set_tooltip(val); two.set_tooltip(val); };
+
 protected:
 
 	/// inherited from body_builder

@@ -52,12 +52,12 @@ string html_div::inherited_get_body_part(const chemin & path,
 	if(sub.empty())
 	    ret = "";
 	else
-	    ret = "<div>\n" + sub + "</div>\n";
+	    ret = "<div>\n" + sub + get_tooltip_body_part() + "</div>\n";
     else // cssdef not empty
 	if(sub.empty())
 	    ret = "<div " + cssdef + "></div>\n";
 	else
-	    ret = "<div " + cssdef + ">\n" + sub + "</div>\n";
+	    ret = "<div " + cssdef + ">\n" + sub + get_tooltip_body_part() + "</div>\n";
 
     return ret;
 }

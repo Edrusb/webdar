@@ -36,7 +36,7 @@ extern "C"
 #include <list>
 
     // webdar headers
-#include "body_builder.hpp"
+#include "html_tooltip.hpp"
 
     /// class html_level is a pure virtual class
 
@@ -45,7 +45,7 @@ extern "C"
     /// get_body_part() pure virtual method of its body_builder ancestor class
     /// this is left to its inherited classes
 
-class html_level : public body_builder
+class html_level : public html_tooltip
 {
 public:
     html_level();
