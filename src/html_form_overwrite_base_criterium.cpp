@@ -98,6 +98,10 @@ html_form_overwrite_base_criterium::html_form_overwrite_base_criterium():
 
 	// css
 
+	// tooltips
+    negate.set_tooltip("Take the opposite result of the selected criterium, for example if the selected criterium is \"in place is an inode\" negating it will result in \"in place is *not* an inode\"");
+    invert.set_tooltip("Invert the roles of the \"in-place\" entry and the \"to be added\" one, for example if the selected criterium is \"in-place is an inode\" inverting will result in \"*to be added* is an inode\"");
+    base.set_tooltip("Define what action to do when the same entry is found in the \"in-place\" archive and in the \"to be added\" one");
 }
 
 unique_ptr<libdar::criterium> html_form_overwrite_base_criterium::get_overwriting_criterium() const

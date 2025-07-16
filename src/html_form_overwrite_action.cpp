@@ -72,7 +72,11 @@ html_form_overwrite_action::html_form_overwrite_action(const string & label):
     constant_action.record_actor_on_event(this, html_form_overwrite_constant_action::changed);
     chain_action.record_actor_on_event(this, html_form_overwrite_chain_action::changed);
     register_name(changed);
+
 	// css
+
+	// tooltip
+    action_type.set_tooltip("Select the type of action and click the update button");
 }
 
 html_form_overwrite_conditional_action & html_form_overwrite_action::get_action_when_type_condition()

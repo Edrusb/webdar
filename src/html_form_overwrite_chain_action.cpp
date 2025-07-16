@@ -60,6 +60,10 @@ html_form_overwrite_chain_action::html_form_overwrite_chain_action(const string 
     register_name(changed);
 
 	// css
+
+	// tooltips
+    if(!label.empty())
+	fs.set_tooltip("In a chain of action, evaluations are performed one after the other; if a decision is set for Data or for EA it is not changed by subsequent action, the use of the \"keep undefined\" decision will be of most use inside the first cells of a chain of action");
 }
 
 html_form_overwrite_action & html_form_overwrite_chain_action::get_last_added()
