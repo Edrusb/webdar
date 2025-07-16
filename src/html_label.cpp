@@ -80,7 +80,7 @@ string html_label::get_body_part() const
     arg = cssdef + forstring;
 
     ret = "<label" + arg + ">" + label;
-    ret += html_tooltip::get_body_part();
+    ret += get_tooltip_body_part();
     ret += "</label>\n";
 
     return ret;

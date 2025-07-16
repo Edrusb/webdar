@@ -58,19 +58,6 @@ void html_tooltip::set_tooltip(const std::string & helper)
     }
 }
 
-string html_tooltip::get_body_part() const
-{
-    string ret;
-
-    if(!tooltip.empty())
-    {
-	ret += string("<span class=\"") + css_tooltiptext + "\">";
-	ret += webdar_tools_html_display(tooltip);
-	ret += "</span>";
-    }
-
-    return ret;
-}
 
 void html_tooltip::new_css_library_available()
 {
@@ -156,4 +143,18 @@ void html_tooltip::new_css_library_available()
 
 	csslib->add(tiptext);
     }
+}
+
+string html_tooltip::get_tooltip_body_part() const
+{
+    string ret;
+
+    if(!tooltip.empty())
+    {
+	ret += string("<span class=\"") + css_tooltiptext + "\">";
+	ret += webdar_tools_html_display(tooltip);
+	ret += "</span>";
+    }
+
+    return ret;
 }

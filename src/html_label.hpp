@@ -35,6 +35,7 @@ extern "C"
 
 
     // webdar headers
+#include "static_body_builder.hpp"
 #include "html_tooltip.hpp"
 #include "html_text.hpp"
 
@@ -42,7 +43,7 @@ extern "C"
 
     /// it is not expect to adopt any child, but to be adopted
 
-class html_label : public html_tooltip
+class html_label : public html_tooltip, public static_body_builder
 {
 public:
 	/// \param[in] x_label the text to show as label

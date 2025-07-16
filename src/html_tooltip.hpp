@@ -36,7 +36,6 @@ extern "C"
 
     // webdar headers
 #include "body_builder.hpp"
-#include "html_text.hpp"
 
     /// class html_tooltip is a partial body_builder implementation for inherited class to implement tooltips
 
@@ -48,7 +47,7 @@ extern "C"
     /// also note that the new_css_class_library_available() should be called from the inherited class
     /// for the css_ibrary to get fed by the tooltip related CSS definitions
 
-class html_tooltip : public body_builder, public static_body_builder
+class html_tooltip : public body_builder
 {
 public:
 	/// \param[in] x_tooltip the helper text that should popup upon mouse hover
@@ -65,11 +64,6 @@ public:
 	/// set the helper to the tooltip (helper popup)
     void set_tooltip(const std::string & helper);
 
-	/// inherited from static_body_builder
-
-	/// \note body_builder::get_body_part(*) is left undefined and thus stays a pure virtual method
-    virtual std::string get_body_part() const override;
-
 protected:
 
  	/// inherited from body_builder
@@ -79,6 +73,10 @@ protected:
 
 	/// \note we forbid any adoption throwing an exception from this call
     virtual void has_adopted(body_builder *obj) { throw WEBDAR_BUG; };
+
+
+	/// \note body_builder::get_body_part(*) is left undefined and thus stays a pure virtual method
+    std::string get_tooltip_body_part() const;
 
 
 private:
