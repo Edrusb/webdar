@@ -35,7 +35,7 @@ extern "C"
 
 
     // webdar headers
-#include "body_builder.hpp"
+#include "html_tooltip.hpp"
 #include "static_body_builder.hpp"
 
     /// class html_text manage text and header in html document
@@ -47,7 +47,7 @@ extern "C"
     /// or newline (<br />)
     /// header markup (<h*>) receive the css_class assigned to this object
 
-class html_text : public body_builder,
+class html_text : public html_tooltip,
 		  public static_body_builder
 {
 public:

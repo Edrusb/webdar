@@ -62,7 +62,7 @@ string html_text::get_body_part() const
 	return txt;
     else
 	if(!txt.empty())
-	    return "<div " + css_val + ">" + txt + "</div>\n";
+	    return "<div " + css_val + ">" + txt + get_tooltip_body_part() + "</div>\n";
 	else
 	    return "";
 }
