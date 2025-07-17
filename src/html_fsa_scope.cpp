@@ -46,7 +46,7 @@ html_fsa_scope::html_fsa_scope():
     form("Update"),
     fs("File system Specific Attributes to consider"),
     hfs_family("HFS+ (MacOS) family attributes", html_form_input::check, "1", "", ""),
-    ext_family("Ext* (Linux) family attributes", html_form_input::check, "1", "", "")
+    ext_family("Ext2/3/4 (Linux) family attributes", html_form_input::check, "1", "", "")
 {
 
 	// components setup
@@ -65,6 +65,9 @@ html_fsa_scope::html_fsa_scope():
     register_name(changed);
 
 	// css
+
+	// tooltips
+    fs.set_tooltip("Some attributes are specific to some filesystems, like the immutable flag for Linux ext2/3/4 or the birth or creation date on MacOS HFS+ filesystem. Webdar can save and restore them, and when supported by the filesystem. However if you restore accross different filesystem types, you may get a lot of warnings. You have the option to ignore them at restoration time or, here, to directly avoid backing them up");
 
 
 }
