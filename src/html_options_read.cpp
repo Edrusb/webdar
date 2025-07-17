@@ -51,7 +51,7 @@ html_options_read::html_options_read():
     form_src("Update Options"),
     fs_src(""),
     fs_ref(""),
-    src_crypto_algo("Cipher (for recent archives/backups, this is auto-detected, do not select any cipher)"),
+    src_crypto_algo("Cipher (for old archives/backups only), this is now auto-detected, select no cipher)"),
     src_crypto_pass("Passphrase (will be asked later if not provided here)", html_form_input::password, "", "", webdar_css_style::width_100vw),
     src_crypto_size("Cipher block size", 0, "80%"),
     src_ignore_sig_failure("Ignore signature failure", html_form_input::check, "", "", ""),
@@ -62,7 +62,7 @@ html_options_read::html_options_read():
     info_details("Detailed information", html_form_input::check, "1", "", ""),
     lax("Laxist check mode", html_form_input::check, "", "", ""),
     sequential_read("Sequential read", html_form_input::check, "", "", ""),
-    force_first_slice("Start reading the first instead of the last (available when external catalog is used)", html_form_input::check, "", "", ""),
+    force_first_slice("Fetch the archive format reading the first instead of the last slice", html_form_input::check, "", "", ""),
     ref_use_external_catalogue("Use external catalog to open the archive", html_form_input::check, "", "", ""),
     form_ref("Update Options"),
     ref_path("External catalog path", "/", "", "", "Select the external catalog..."),
@@ -203,6 +203,21 @@ html_options_read::html_options_read():
     ref_crypto_pass.add_css_class(webdar_css_style::width_100vw_8em);
     ref_execute.add_css_class(webdar_css_style::width_100vw_8em);
     ref_slice_min_digits.add_css_class(webdar_css_style::width_100vw_8em);
+
+	// tooltip
+
+    src_crypto_algo.set_tooltip("Unless reading a very old archive, use \"none\" here even if the backup is ciphered, algorithm is auto-detected");
+    src_crypto_pass.set_tooltip("If not specified here, password/passphrase will be asked later. Pay attention that setting password here will lead it to be saved unencrypted in webdar configuration file");
+    src_crypto_size.set_tooltip("keep the default 10 kio unless you have changed it at backup time. There is no auto-detection for this parameters and a wrong value will not let webdar be able to decipher the backup");
+    src_ignore_sig_failure.set_tooltip("If the backup has been encrypted *and* signed with a GPG key pair, the signature will be checked at reading time. If it does not validate, webdar will abort unless this control is disabled");
+    src_execute.set_tooltip("Run a shell command before reading each slice");
+    src_slice_min_digits.set_tooltip("Webdar will detected this value if choosing an backup to read using the file selection window (which opens clicking on the \"+\" button). Though, if you manually fill the fields of the archive path and base name, you will have to set this value manually also for webdar be able to read the backup");
+    info_details.set_tooltip("Display information about the archive layer openned, but nothing about the treated files as this configuration concerns only the archive/backup openning step. See option specific parameters (archive testing, restoration...) for more options in that domain");
+    lax.set_tooltip("In case of archive corruption, activating the lax mode is the last resort solution to try reading something out of the backup. This mode suppresses a lot of checks and need is very chatty as it offers a lot of options to the user to bypass or modify the parameters read from the archive format.");
+    sequential_read.set_tooltip("Setting sequential read mode leads to a slower process than the normal (direct access) mode. But it is the only mode available when reading an archive directly from tapes, for example. It is also the only way to read a truncated backup, something that occurs when you have consumed all the free space of disk during a backup process, and do not have at least one slices in addition to the current one webdar is writing to, to move away in order free some spaace and let Webdar continue the backup process");
+    force_first_slice.set_tooltip("When an external catalog is used (see the section below), Webdar fetches the backup content from the external catalog, but still needs to read the archive format version from the backup itslef. This information is located at two places: the beginning of the first slice and the end of the last slice. In sequential read mode, there is no choice, because the archive is read sequentially and this information is needed very early. In direct access mode (sequential mode unchecked) this information is fetched by default at the end of the last slice. But some users having huge backups or archives (several terabytes) configure their backup with a very small first slice (one kilobyte for example) while other slices can hold several gigabytes. Reading the first slice avoids fetching the last slice which may be huge and take time just for that, so they prefer loading the small first one which is fast and then only load the big slices where the data to restore is located");
+    multi_thread_compress.set_tooltip("If compression has not be configured per block, only one thread will be created and used to decompress each file's data");
+    ref_use_external_catalogue.set_tooltip("By default the table of content is found inside the backup. However you may isolate it as an external backup, which only contains the table of content (the catalog) and no data. This can be used as backup of the internal catalog in case of corruption or to optimize some operations when manipulating very big backups or archives, see the \"Isolate\" menu on the right");
 }
 
 void html_options_read::set_biblio(const shared_ptr<bibliotheque> & ptr)
@@ -448,7 +463,13 @@ void html_options_read::on_event(const string & event_name)
 	    ref_crypto_pass.set_visible(true);
 	    ref_crypto_size.set_visible(true);
 	    deroule.section_set_visible(sect_ref_entrep, true);
-	    force_first_slice.set_enabled(true);
+	    if(sequential_read.get_value_as_bool())
+	    {
+		force_first_slice.set_value_as_bool(true);
+		force_first_slice.set_enabled(false);
+	    }
+	    else
+		force_first_slice.set_enabled(true);
 	}
 	else
 	{
@@ -459,7 +480,7 @@ void html_options_read::on_event(const string & event_name)
 	    ref_crypto_pass.set_visible(false);
 	    ref_crypto_size.set_visible(false);
 	    deroule.section_set_visible(sect_ref_entrep, false);
-	    force_first_slice.set_value_as_bool(false);
+	    force_first_slice.set_value_as_bool(sequential_read.get_value_as_bool());
 	    force_first_slice.set_enabled(false);
 	    ignore_events = true;
 	    try
