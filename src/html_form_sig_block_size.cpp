@@ -54,10 +54,10 @@ html_form_sig_block_size::html_form_sig_block_size():
 
 	// components setup
     function.add_choice("fixed","Fixed value of 1");
-    function.add_choice("linear", "File size (linear)");
-    function.add_choice("log2", "Natural logarithm of the file size");
-    function.add_choice("root2", "Square root of the file size");
+    function.add_choice("log2", "Binary logarithm of the file size");
     function.add_choice("root3", "Cube root of the file size");
+    function.add_choice("root2", "Square root of the file size");
+    function.add_choice("linear", "File size (linear)");
     multiply.set_min_only(1);
     divisor.set_min_only(1);
     min_size.set_min_only(libdar::infinint(RS_DEFAULT_BLOCK_LEN));
@@ -94,11 +94,11 @@ html_form_sig_block_size::html_form_sig_block_size():
 	// tooltips
     delta_sig_min_size.set_tooltip("Better not calculating delta signature but resaving as a whole small files upon change, this saves both CPU cycles and storage requirments");
     fs_function.set_tooltip("Delta signature is what is used to compare with the previous status of a file. It is calculated per block of a file's data. The larger the block is, the less blocks will be, resulting in a smaller delta signature for a given file size, but the more data will have to be resaved upon binary change inside that file, as the block size is bigger");
-    function.set_tooltip(0, "Block size is independent from the file sizes, consider adjusting the multiplicative and/or divisor factors below");
-    function.set_tooltip(1, "Block size increase proportionnaly to the size of the file, consider setting the divisor factor to a value high enough, for example greater than 10, to avoid having too few or even a single block per file");
-    function.set_tooltip(2, "Block size increases very slowly when the file size increases. This bring some advantage compare to the linear function to reduce the delta signature size for big files without much impact on the amount of data to resave upon change");
-    function.set_tooltip(3, "Block size increases quickly when the file size increase.  This proportionnaly reduces the binary delta signature of big files at the cost of more data to be resave upon change as block in the delta signature are bigger for bigger files");
-    function.set_tooltip(4, "This is an indermediate function between the two previous, block size increase quicker than the logarithmic base function but less quick than the square root function");
+    function.set_tooltip(0, "Block size is independent from the file sizes, consider adjusting the multiplicative and/or divisor factors below. Delta signature will grow proportionnaly to the file size");
+    function.set_tooltip(1, "Block size increases very slowly when the file size increases. This bring some advantage compare to the linear function to reduce the delta signature size for big files without much impact on the amount of data to resave upon change");
+    function.set_tooltip(2, "Block size increases quicker than logarithmic based function, when the file size increases");
+    function.set_tooltip(3, "Block size increases even quicker when the file size increases, but less faster than the linear function");
+    function.set_tooltip(4, "Block size increase proportionnaly to the size of the file, consider setting the divisor factor to a value high enough, for example greater than 10, to avoid having too few or even a single block per file. Binary delta signature should almost have the same size whetever is the file size");
     multiply.set_tooltip("Adjust the formula by multiplying it by a fixed factor. Click the \"Update\" button and look at the new formula expression above");
     divisor.set_tooltip("Adjust the formula by dividing it with a fixed factor. Can be combined with the multiplicative factor too");
     min_size.set_tooltip("Bypass the result of the formula described above for the delta signature block size not to be smaller than this provided value");
@@ -112,16 +112,16 @@ void html_form_sig_block_size::set_value(const libdar::delta_sig_block_size & va
     case libdar::delta_sig_block_size::fixed:
 	function.set_selected_num(0);
 	break;
-    case libdar::delta_sig_block_size::linear:
+    case libdar::delta_sig_block_size::log2:
 	function.set_selected_num(1);
 	break;
-    case libdar::delta_sig_block_size::log2:
+    case libdar::delta_sig_block_size::root3:
 	function.set_selected_num(2);
 	break;
     case libdar::delta_sig_block_size::root2:
 	function.set_selected_num(3);
 	break;
-    case libdar::delta_sig_block_size::root3:
+    case libdar::delta_sig_block_size::linear:
 	function.set_selected_num(4);
 	break;
     default:
@@ -144,16 +144,16 @@ libdar::delta_sig_block_size html_form_sig_block_size::get_value() const
 	ret.fs_function = libdar::delta_sig_block_size::fixed;
 	break;
     case 1:
-	ret.fs_function = libdar::delta_sig_block_size::linear;
+	ret.fs_function = libdar::delta_sig_block_size::log2;
 	break;
     case 2:
-	ret.fs_function = libdar::delta_sig_block_size::log2;
+	ret.fs_function = libdar::delta_sig_block_size::root3;
 	break;
     case 3:
 	ret.fs_function = libdar::delta_sig_block_size::root2;
 	break;
     case 4:
-	ret.fs_function = libdar::delta_sig_block_size::root3;
+	ret.fs_function = libdar::delta_sig_block_size::linear;
 	break;
     default:
 	throw WEBDAR_BUG;
@@ -233,7 +233,7 @@ void html_form_sig_block_size::clear_json()
     try
     {
 	delta_sig_min_size.set_value_as_infinint(4*RS_DEFAULT_BLOCK_LEN);
-	function.set_selected_id("root2");
+	function.set_selected_id("root3");
 	min_size.set_value_as_infinint(libdar::infinint(RS_DEFAULT_BLOCK_LEN));
 	max_size.set_value_as_infinint(libdar::infinint(64*RS_DEFAULT_BLOCK_LEN));
     }
@@ -350,17 +350,17 @@ void html_form_sig_block_size::make_summary()
 	{
 	case 0: // fixed
 	    throw WEBDAR_BUG; // treated appart just above
-	case 1: // linear
-	    func = "filesize";
-	    break;
-	case 2: // log2
+	case 1: // log2
 	    func = "log<sub>2</sub>(filesize)";
+	    break;
+	case 2: // root3
+	    func = "<sup>3</sup>&radic;<span style=\"text-decoration:overline;\">filesize</span>";
 	    break;
 	case 3: // root2
 	    func = "&radic;<span style=\"text-decoration:overline;\">filesize</span>";
 	    break;
-	case 4: // root3
-	    func = "<sup>3</sup>&radic;<span style=\"text-decoration:overline;\">filesize</span>";
+	case 4: // linear
+	    func = "filesize";
 	    break;
 	default:
 	    throw WEBDAR_BUG;
