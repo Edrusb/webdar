@@ -33,7 +33,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
-
+#include "tooltip_messages.hpp"
 
     //
 #include "html_archive_isolate.hpp"
@@ -96,6 +96,10 @@ html_archive_isolate::html_archive_isolate():
 	// css
 
     webdar_css_style::normal_button(deroule, true);
+
+	// tooltips
+    sauv_path.set_tooltip(TOOLTIP_HAI_SAUV_PATH);
+    basename.set_tooltip(TOOLTIP_HAI_BASENAME);
 }
 
 void html_archive_isolate::set_biblio(const shared_ptr<bibliotheque> & ptr)
