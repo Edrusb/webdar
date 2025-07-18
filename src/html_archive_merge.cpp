@@ -33,6 +33,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
+#include "tooltip_messages.hpp"
 
 
     //
@@ -90,6 +91,10 @@ html_archive_merge::html_archive_merge():
 
 	// CSS
     webdar_css_style::normal_button(deroule, true);
+
+	// tooltip
+    sauv_path.set_tooltip(TOOLTIP_HAM_SAUV_PATH);
+    basename.set_tooltip(TOOLTIP_HAM_BASENAME);
 }
 
 const string & html_archive_merge::get_archive_basename() const
