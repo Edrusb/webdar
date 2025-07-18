@@ -34,6 +34,7 @@ extern "C"
     // webdar headers
 #include "webdar_css_style.hpp"
 #include "environment.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_archive_compare.hpp"
@@ -97,6 +98,10 @@ html_archive_compare::html_archive_compare():
 
     webdar_css_style::normal_button(diff_params, true);
     in_place_msg.add_css_class(webdar_css_style::text_grey);
+
+	// tooltips
+
+    diff_fs_root.set_tooltip(TOOLTIP_HACM_FS_ROOT);
 }
 
 void html_archive_compare::set_biblio(const shared_ptr<bibliotheque> & ptr)

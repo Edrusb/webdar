@@ -355,5 +355,9 @@ extern "C"
 #define TOOLTIP_HAR_ARCH_PATH "Path+basename of the backup to read. If you have several slices \"mybasename.1.dar\", \"mybasename.2.dar\" located in directory \"/tmp\" you should set this field to \"/tmp/mybasename\". Note that the \"+\" button at the end of this line will handle all these aspects including the min-digits option, you will only have to select on one of the slice of the backup you want to read"
 
 
+    // html_archive_compare class
+
+#define TOOLTIP_HACM_FS_ROOT "Path of the filesystem where is located the content to compare the backup with"
+
 
 #endif
