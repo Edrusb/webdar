@@ -38,6 +38,7 @@ extern "C"
 #include "tokens.hpp"
 #include "html_form_mask_expression.hpp"
 #include "webdar_tools.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_options_create.hpp"
@@ -391,42 +392,42 @@ html_options_create::html_options_create():
     empty.add_css_class(webdar_css_style::width_100vw_8em);
 
 	// tooltips
-    archtype.set_tooltip(0, "Save all files and directories under the different file and path based filters, perimeters, etc. as defined in the following sections");
-    archtype.set_tooltip(1, "Only saves files that have changed since the backup given as reference has been made. This backup of reference may be a full backup or another incrementa/differential backup as the one about to create here, with that option set. Of course here too all file and path based filters, perimters, etc. also apply on top");
-    archtype.set_tooltip(2, "Same as previously, with the addition to not save the modified files in totality, but leverage delta signatures to only record the portions of the files that changed. Note: at restoration time you will need to restore the files from the previous backup then restore this backup on top to apply a binary patch on files saved that way");
-    archtype.set_tooltip(3, "Make a reference of the current filesystem status without saving any file. A snapshot can be used as a reference for a differential backup or just be used to check whether existing files at the time of the snapshot have changed since the snapshot was made");
-    archtype.set_tooltip(4, "Only change files modified after a given date. This creates a differential backup without requiring a backup of reference");
-    what_to_check.set_tooltip("How to consider a file has changed since the backup of reference was made");
-    hourshift.set_tooltip("On some systems (mainly under Windows) the daylight saving time is performed by modifing file dates, not just the way the clock is displayed on the system. This leads to save files that have not changed when passing to or from summer time. If set to 1 or more, a file will not be considered to have changed if only its date changed and by an exact number of hours");
-    binary_delta_note.set_tooltip("To add delta signature to a backup, see below the \"Delta Signatures\" section");
-    furtive_read_mode.set_tooltip("Reading a file modifies the last acces time, or if after reading it, the last access time (atime) is set back to the value it has before the file was read, the system changes the last change time (ctime) which cannot be modified from an application, like webdar. Linux system provides a privileged mode to access a file without modifying neither atime nor ctime. Webdar must be root or have the proper capability set to activate this mode. If activation failed, webdar will default to the mode you chose (modifying atime is the most common setting)");
-    zeroing_neg_date.set_tooltip("Some filesystems support negative dates, which means dates before year 1970. Webdar cannot handle such negative dates, but can consider these as zero, which corresponds to the end of the last second of year 1969");
-    fs_mod_data_detect.set_tooltip("In the context of differential/incremental backup, normally the data of a file is considered to have changed if the mtime (last modification time) has changed. In libdar older versions, a file was completely resaved if any date, permission or ownship of a file had changed. Since libdar 2.6.0 those metadata change (permission, ownership, atime, ctime...) can be saved without having to resave the whole file content, this reduces a lot of the backup size and shorten the backup process");
-    allow_over.set_tooltip("If unchecked, this prevents webdar to overwrite slices of a previous backup having the same name, else unless disabled below, a warning and confirmation request is issued before overwriting");
-    warn_over.set_tooltip("Warn and ask for confirmation before overwriting slices of an existing backup using the same name as the one we are about to create");
-    pause.set_tooltip("Pause webdar after each 'N' slice, a confirmation is then asked to continue the backup process for the next N slices before pausing again. The objective of that feature was to treat the generated slices like transfering them through the network or at earlier time to burn it or them to a CD or DVD disc");
-    retry_on_change_times.set_tooltip("Right before saving a file, webdar record its last modification date, if right after the backup of that file this date has changed, dar retries to save it again and so forth if the date changed again, but for a limited amount of times. Passed that, the file is flagged as \"dirty\" meaning the file content may be inconsistent regarding what a user application may expect to find in it. At restoration time you will have different options on how to treat dirty files");
-    retry_on_change_overhead.set_tooltip("Resaving a changed file does not consume additional data in normal condition. This is not the case when saving to a pipe where it is not possible to overwrite the new version of the file in the generated backup. This parameter let define a maximum amount of bytes that are wasted that way during the overall backup process, after which no data retry is performed and files are directly flagged as dirty if they changed while they were read for backup");
-    sequential_marks.set_tooltip("You should not disable sequential marks unless you know what you are doing. These marks (sometime also called tape marks) provides a redundant method to read a backup, in particular in case of filesystem saturation during a backup process; they may also help recorver a backup that has been corrupted on disk or tape");
-    sparse_file_min_size.set_tooltip("Long sequences of zeroed bytes in a file may be stored as a \"hole\" on the filesystem, leading to no or very little disk space consumtion, while such file can span several terabytes, for example. Dar can detect those holes and record them as a short data structures in the backup. Even without compression, this saved a lot of space in the resulting backup and let dar recreate the so called holes at restoration time avoiding creating a huge file when it can leverage the underlying filesystem ability to handle sparse files. It does not make sense to set a value below 15 bytes, but you can disable this feature setting it to zero, this will increase the backup speed at the cost of the inability to store an restore sparse files");
-    user_comment.set_tooltip("This field is available for the user to add any information but pay attention, this information is stored in clear in the backup header even if the backup is ciphered");
-    hash_algo.set_tooltip("With this option a hash of the generated slices is computed in memory during the slice creation and written to a separated file beside the slice to let you check that no data alteration came on disk. Use the -c option of md5sum, sha1sum, sh1512sum or rhash -W command to easily check those hashes. For example: \"rhash -W -c slice.1.dar.whirlpool\"");
-    execute.set_tooltip("Execute a shell command after each slice completion");
-    empty.set_tooltip("Perform the backup operation but send the generated backup bytes into black hole, leading no backup to be created at all, though you can get messages from the filesystem reading process and webdar filter mechanisms");
-    info_details.set_tooltip("Show information about the archive layer creation, slicing generation, but nothing about the treated files and directories");
-    display_treated.set_tooltip("Display information about files an directories while they are saved");
-    display_treated_only_dir.set_tooltip("Restrict the information about the treated directories only, a line is displayed when the backup process enters each directory");
-    display_skipped.set_tooltip("Display files that have been excluded from the backup. If a directory is excluded from the backup, all its content is excluded and nothing is reported further about that directory and its content");
-    display_dir_summary.set_tooltip("Display a summary line about the amount of saved data and its compression ratio at the end of each treated directory");
-    security_check.set_tooltip("When a file has only changed by its ctime since the backup of reference was made, with that option webdar triggers a security warning. This may be expected when for example changing a file permission and setting it back to the previous value, it may also be a sign of concealment when one tries to hide changes made to a file. If such warnings occur too often, use an anti-virus or rootkit scanner and disable this feature in webdar");
-    dont_ignore_unknown_inode_type.set_tooltip("When dar finds an inode type it does not know, a warning is issued. You can disable this warning by checking this option, no warning will show about those unknown inode type and the backup process will complete without considering them at all");
-    empty_dir.set_tooltip("When a directory is excluded from a backup, as expected it does not show in the backup and is thus not restored. When this concerns a mount point for virtual filesystems (like /proc, /sys, /dev and mounted tmpfs often found for /tmp and /run), this option let webdar store any excluded directory as an empty directory, including those mount points you'd be advise not to backup.  Then, at restoration time, webdar will automatically recreate the mount points for those virtual filesystems you have excluded from your backup");
-    cache_directory_tagging.set_tooltip("Many applications use temporary data on disk for caching purposes and flag those directories following the cache directory tagging standard. Webdar understands that and can avoid saving directories tagged that way, when this option is checked");
-    nodump.set_tooltip("Some filesystem let users and applications set a 'nodump' flag on files, meaning they should not be backed up. Dar can exclude those files from a backup, if this option is checked");
-    exclu_by_ea_fs.set_tooltip("In complement to the nodump and cache directory tagging way to exclude files, webdar proposes the use of a well-defined Extended Attribute to flag files and directories to be exclude from the backup");
-    default_ea.set_tooltip("Use the default Extended Attribute (if this option is set, its value shows below in the disabled box)");
-    exclude_by_ea_name.set_tooltip("Specify here the EA name of your choice and flag files accordingly with that EA for webdar not to save them");
-    same_fs_fs.set_tooltip("The whole filesystem where the below specified directories reside will be either include or excluded from the backup. if only included filesystem are specified, none of the other filesystem will be looked at for backup, though the filesystem where is located the path defined as \"filesystem root\" for a backup, is never excluded. If only excluded directories are specified, any other filesystem will be considered for backup (applying other filtering mecanismes you have set). If there is a mix of included and excluded filesystems only included filesystem that have not also been specified to be excluded will be considered for the backup operation");
+    archtype.set_tooltip(0, TOOLTIP_HOC_ARCHTYPE0);
+    archtype.set_tooltip(1, TOOLTIP_HOC_ARCHTYPE1);
+    archtype.set_tooltip(2, TOOLTIP_HOC_ARCHTYPE2);
+    archtype.set_tooltip(3, TOOLTIP_HOC_ARCHTYPE3);
+    archtype.set_tooltip(4, TOOLTIP_HOC_ARCHTYPE4);
+    what_to_check.set_tooltip(TOOLTIP_HOC_WTC);
+    hourshift.set_tooltip(TOOLTIP_HOC_HOURSHIFT);
+    binary_delta_note.set_tooltip(TOOLTIP_HOC_BIN_DELTA);
+    furtive_read_mode.set_tooltip(TOOLTIP_HOC_FURTIVE_READ);
+    zeroing_neg_date.set_tooltip(TOOLTIP_HOC_ZEROING_DATE);
+    fs_mod_data_detect.set_tooltip(TOOLTIP_HOC_MOD_DATA_DETECT);
+    allow_over.set_tooltip(TOOLTIP_HOC_ALLOW_OVER);
+    warn_over.set_tooltip(TOOLTIP_HOC_WARN_OVER);
+    pause.set_tooltip(TOOLTIP_HOC_PAUSE);
+    retry_on_change_times.set_tooltip(TOOLTIP_HOC_RETRY_TIMES);
+    retry_on_change_overhead.set_tooltip(TOOLTIP_HOC_RETRY_OVER);
+    sequential_marks.set_tooltip(TOOLTIP_HOC_SEQ_READ);
+    sparse_file_min_size.set_tooltip(TOOLTIP_HOC_SPARSE_MIN);
+    user_comment.set_tooltip(TOOLTIP_HOC_USER_COMMENT);
+    hash_algo.set_tooltip(TOOLTIP_HOC_HASH_ALGO);
+    execute.set_tooltip(TOOLTIP_HOC_EXECUTE);
+    empty.set_tooltip(TOOLTIP_HOC_EMPTY);
+    info_details.set_tooltip(TOOLTIP_HOC_INFO_DETAILS);
+    display_treated.set_tooltip(TOOLTIP_HOC_DISPLAY_TREATED);
+    display_treated_only_dir.set_tooltip(TOOLTIP_HOC_DISPLAY_ONLY_DIR);
+    display_skipped.set_tooltip(TOOLTIP_HOC_DISPLAY_SKIPPED);
+    display_dir_summary.set_tooltip(TOOLTIP_HOC_DISPLAY_DIR_SUMMARY);
+    security_check.set_tooltip(TOOLTIP_HOC_SECU_CHECK);
+    dont_ignore_unknown_inode_type.set_tooltip(TOOLTIP_HOC_IGNORE_UNKNOWN);
+    empty_dir.set_tooltip(TOOLTIP_HOC_EMPTY_DIR);
+    cache_directory_tagging.set_tooltip(TOOLTIP_HOC_CACHE_TAG);
+    nodump.set_tooltip(TOOLTIP_HOC_NODUMP);
+    exclu_by_ea_fs.set_tooltip(TOOLTIP_HOC_EXCLUDE_BY_EA);
+    default_ea.set_tooltip(TOOLTIP_HOC_DEFAULT_EA);
+    exclude_by_ea_name.set_tooltip(TOOLTIP_HOC_EXCLUDE_BY_EA_NAME);
+    same_fs_fs.set_tooltip(TOOLTIP_HOC_SAME_FS);
 
 }
 

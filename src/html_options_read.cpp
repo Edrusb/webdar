@@ -34,7 +34,7 @@ extern "C"
     // webdar headers
 #include "webdar_tools.hpp"
 #include "webdar_css_style.hpp"
-
+#include "tooltip_messages.hpp"
 
     //
 #include "html_options_read.hpp"
@@ -206,18 +206,18 @@ html_options_read::html_options_read():
 
 	// tooltip
 
-    src_crypto_algo.set_tooltip("Unless reading a very old archive, use \"none\" here even if the backup is ciphered, algorithm is auto-detected");
-    src_crypto_pass.set_tooltip("If not specified here, password/passphrase will be asked later. Pay attention that setting password here will lead it to be saved unencrypted in webdar configuration file");
-    src_crypto_size.set_tooltip("keep the default 10 kio unless you have changed it at backup time. There is no auto-detection for this parameters and a wrong value will not let webdar be able to decipher the backup");
-    src_ignore_sig_failure.set_tooltip("If the backup has been encrypted *and* signed with a GPG key pair, the signature will be checked at reading time. If it does not validate, webdar will abort unless this control is disabled");
-    src_execute.set_tooltip("Run a shell command before reading each slice");
-    src_slice_min_digits.set_tooltip("Webdar will detected this value if choosing an backup to read using the file selection window (which opens clicking on the \"+\" button). Though, if you manually fill the fields of the archive path and base name, you will have to set this value manually also for webdar be able to read the backup");
-    info_details.set_tooltip("Display information about the archive layer openned, but nothing about the treated files as this configuration concerns only the archive/backup openning step. See option specific parameters (archive testing, restoration...) for more options in that domain");
-    lax.set_tooltip("In case of archive corruption, activating the lax mode is the last resort solution to try reading something out of the backup. This mode suppresses a lot of checks and need is very chatty as it offers a lot of options to the user to bypass or modify the parameters read from the archive format.");
-    sequential_read.set_tooltip("Setting sequential read mode leads to a slower process than the normal (direct access) mode. But it is the only mode available when reading an archive directly from tapes, for example. It is also the only way to read a truncated backup, something that occurs when you have consumed all the free space of disk during a backup process, and do not have at least one slices in addition to the current one webdar is writing to, to move away in order free some spaace and let Webdar continue the backup process");
-    force_first_slice.set_tooltip("When an external catalog is used (see the section below), Webdar fetches the backup content from the external catalog, but still needs to read the archive format version from the backup itslef. This information is located at two places: the beginning of the first slice and the end of the last slice. In sequential read mode, there is no choice, because the archive is read sequentially and this information is needed very early. In direct access mode (sequential mode unchecked) this information is fetched by default at the end of the last slice. But some users having huge backups or archives (several terabytes) configure their backup with a very small first slice (one kilobyte for example) while other slices can hold several gigabytes. Reading the first slice avoids fetching the last slice which may be huge and take time just for that, so they prefer loading the small first one which is fast and then only load the big slices where the data to restore is located");
-    multi_thread_compress.set_tooltip("If compression has not be configured per block, only one thread will be created and used to decompress each file's data");
-    ref_use_external_catalogue.set_tooltip("By default the table of content is found inside the backup. However you may isolate it as an external backup, which only contains the table of content (the catalog) and no data. This can be used as backup of the internal catalog in case of corruption or to optimize some operations when manipulating very big backups or archives, see the \"Isolate\" menu on the right");
+    src_crypto_algo.set_tooltip(TOOLTIP_HOR_ALGO);
+    src_crypto_pass.set_tooltip(TOOLTIP_HOR_PASS);
+    src_crypto_size.set_tooltip(TOOLTIP_HOR_SIZE);
+    src_ignore_sig_failure.set_tooltip(TOOLTIP_HOR_SIG_FAILURE);
+    src_execute.set_tooltip(TOOLTIP_HOR_EXECUTE);
+    src_slice_min_digits.set_tooltip(TOOLTIP_HOR_MIN_DIGITS);
+    info_details.set_tooltip(TOOLTIP_HOR_INFO_DETAILS);
+    lax.set_tooltip(TOOLTIP_HOR_LAX);
+    sequential_read.set_tooltip(TOOLTIP_HOR_SEQ_READ);
+    force_first_slice.set_tooltip(TOOLTIP_HOR_FORCE_FIRST_SLICE);
+    multi_thread_compress.set_tooltip(TOOLTIP_HOR_THREADS_COMPR);
+    ref_use_external_catalogue.set_tooltip(TOOLTIP_HOR_EXTERNAL_CAT);
 }
 
 void html_options_read::set_biblio(const shared_ptr<bibliotheque> & ptr)

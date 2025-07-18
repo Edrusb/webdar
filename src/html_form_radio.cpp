@@ -34,7 +34,6 @@ extern "C"
     // webdar headers
 #include "webdar_css_style.hpp"
 
-
     //
 #include "html_form_radio.hpp"
 

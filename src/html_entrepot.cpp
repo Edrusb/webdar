@@ -38,6 +38,7 @@ extern "C"
 #include "css.hpp"
 #include "tokens.hpp"
 #include "webdar_css_style.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_entrepot.hpp"
@@ -123,18 +124,18 @@ html_entrepot::html_entrepot():
     update_visible();
 
 	// tooltips
-    repo_type.set_tooltip("type \"local\" is where webdar is running, other type should point to an existing and reachable server from the node where webdar is running");
-    host.set_tooltip("hostname or IP address");
-    port.set_tooltip("TCP port the service listens on");
-    login.set_tooltip("login name to connect to the remote server");
-    pass.set_tooltip("password to use to authenticate the login user on that remote server");
-    auth_type.set_tooltip("To authenticate using a keyfile, provided a key pair, which public key has been added to the \"~/.ssh/authorized_keys\" for that login account on that remote server. See ssh documentation for more info");
-    pub_keyfile.set_tooltip("This file should contain the public key part of the key pair");
-    prv_keyfile.set_tooltip("This file should contain the private key counterpart of the public key file");
-    knownhosts_check.set_tooltip("To avoid connecting to a pirate server, ssh record the server key fingerprint during the first connection and store them in a file named known_hosts. Upon a new connection to to a know server, if the server fingerprint has changed ssh refuse to connect and let you send your credentials and transfer data to a potential wrong server. You can disable this check assuming you know what you are doing!");
-    known_hosts_file.set_tooltip("It is possible change from the default location of the known_hosts file, the common location is provided here by default");
-    wait_time.set_tooltip("Webdar does not stop upon a network issue, like a lack of connectivity or disconnection from the remote server, it waits this amount of seconds and retry until it succeeds or is interrupted by the webdar user. Choosing too short delay may overload the remote server and defeat the delay feature that is here to let the server address overload and proceed later when more resources are available");
-    verbose.set_tooltip("For troubleshooting purpose, verbose information can be displayed on command-line interface where webdar has been launched from");
+    repo_type.set_tooltip(TOOLTIP_HE_REPO_TYPE);
+    host.set_tooltip(TOOLTIP_HE_HOST);
+    port.set_tooltip(TOOLTIP_HE_PORT);
+    login.set_tooltip(TOOLTIP_HE_LOGIN);
+    pass.set_tooltip(TOOLTIP_HE_PASS);
+    auth_type.set_tooltip(TOOLTIP_HE_AUTH);
+    pub_keyfile.set_tooltip(TOOLTIP_HE_PUB);
+    prv_keyfile.set_tooltip(TOOLTIP_HE_PRV);
+    knownhosts_check.set_tooltip(TOOLTIP_HE_KNOWN_CHECK);
+    known_hosts_file.set_tooltip(TOOLTIP_HE_KNOWN_FILE);
+    wait_time.set_tooltip(TOOLTIP_HE_WAIT);
+    verbose.set_tooltip(TOOLTIP_HE_VERBOSE);
 }
 
 

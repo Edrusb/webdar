@@ -33,6 +33,7 @@ extern "C"
 
     // webdar headers
 #include "html_form_overwrite_conditional_action.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_form_overwrite_action.hpp"
@@ -76,7 +77,7 @@ html_form_overwrite_action::html_form_overwrite_action(const string & label):
 	// css
 
 	// tooltip
-    action_type.set_tooltip("Select the type of action and click the update button");
+    action_type.set_tooltip(TOOLTIP_HFOA_TYPE);
 }
 
 html_form_overwrite_conditional_action & html_form_overwrite_action::get_action_when_type_condition()

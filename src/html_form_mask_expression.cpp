@@ -33,7 +33,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
-
+#include "tooltip_messages.hpp"
 
 
     //
@@ -266,9 +266,9 @@ void html_form_mask_expression::init()
     fs.add_label_css_class(webdar_css_style::text_bold);
 
 	// tooltips
-    mask_type.set_tooltip("Glob expression is expression you commonly have under a shell with special characters like * ? and []");
-    negate.set_tooltip("When a file matches the mask consider it does not and vice versa");
-    mask_expression.set_tooltip("Expression, eventually with wildcards (pay attention to the mask type above) that a file must satisfy to be considered in the operation");
+    mask_type.set_tooltip(TOOLTIP_HFME_TYPE);
+    negate.set_tooltip(TOOLTIP_HFME_NEGATE);
+    mask_expression.set_tooltip(TOOLTIP_HFME_EXPRESSION);
 
     clear();
 }

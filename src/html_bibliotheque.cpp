@@ -40,6 +40,7 @@ extern "C"
 #include "html_form_overwrite_combining_criterium.hpp"
 #include "html_form_overwrite_base_criterium.hpp"
 #include "html_form_overwrite_constant_action.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_bibliotheque.hpp"
@@ -511,9 +512,9 @@ html_bibliotheque::html_bibliotheque(shared_ptr<bibliotheque> & ptr,
 
 	// tooltips
 
-    filename.set_tooltip("Filename where the configuration has been read from and where it will be saved to. The configuration saved includes all tabs of the present page and only them, nothing is saved from the \"Create\" menu for example");
-    autosave.set_tooltip("If this box is unchecked, any configuration change is just kept in memory, until you click on the \"save\" button just below, at which time the configuration as seen from all tabs is saved to the file which name is provided above. A status message shows at the top of the page telling whether the current configuration in memory has been saved to file or not. If checked, this operation is performed automatically upon change and the status message on top page does not show.");
-    upload_file.set_tooltip("First select the configuration file your browser will upload to Webdar, then click the \"upload\" button");
+    filename.set_tooltip(TOOLTIP_HB_FILENAME);
+    autosave.set_tooltip(TOOLTIP_HB_AUTOSAVE);
+    upload_file.set_tooltip(TOOLTIP_HB_UPLOAD);
 }
 
 void html_bibliotheque::on_event(const string & event_name)

@@ -32,7 +32,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
-
+#include "tooltip_messages.hpp"
 
     //
 #include "html_entrepot_landing.hpp"
@@ -96,8 +96,8 @@ html_entrepot_landing::html_entrepot_landing():
 
 	// tooltips
 
-    use_landing_path.set_tooltip("If checked, when this repository is selected for an operation, the repository path is replaced by the landing path value provided here");
-    landing_path.set_tooltip("A landing path is a path on the remote server where you want webdar to change to, at connection time. It is expected to be the place where, by default, you store your backups on that server. It will be used by default when no path has yet been set for an operation");
+    use_landing_path.set_tooltip(TOOLTIP_HEL_USE);
+    landing_path.set_tooltip(TOOLTIP_HEL_PATH);
 }
 
 shared_ptr<libdar::entrepot> & html_entrepot_landing::get_entrepot(shared_ptr<html_web_user_interaction> & webui) const

@@ -33,7 +33,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
-
+#include "tooltip_messages.hpp"
 
     //
 #include "html_compression_params.hpp"
@@ -107,13 +107,13 @@ html_compression_params::html_compression_params(bool show_resave,
     keep_compressed.add_css_class(webdar_css_style::width_100vw_8em);
 
 	// tooltips
-    compression.set_tooltip("The algorithms differ in execution time to compress and to decompress, as well as the average compression ratio obtained depending on the nature of the data to compress, choose the algorithm that best fits your use case,");
-    compression_level.set_tooltip("The higher this number is, the more CPU and time will be spend to reach the best compression ratio and lower the storage footprint");
-    min_compr_size.set_tooltip("Files under that size will never be compressed");
-    compression_block.set_tooltip("If set to zero, use stream compression which gives the best compression result but cannot use several threads. Else, split the data to compress in given block size and compress those block independently, something that can be spread between different threads, though it increases the memory and CPU footprint, at most by the number of threads set: small files may not mobilize all threads if the number of blocks they contain is less than the number of available threads");
-    never_resave_uncompressed.set_tooltip("When compressed data of a file uses more space than uncompressed, by default it is stored uncompressed, which means re-reading it again and overwriting the comprressed data written to the backup. If checked, keep data compressed in any case");
-    compr_threads.set_tooltip("The number of threads for data compression. Only one thread is possible when not using block compression");
-    keep_compressed.set_tooltip("For merging operation only, do not try to decompress and recompress files that are retained in the resulting archive. If checked, the current configuration will be refused for other operations, like backup or isolation");
+    compression.set_tooltip(TOOLTIP_HCP_COMPR);
+    compression_level.set_tooltip(TOOLTIP_HCP_COMPR_LEVEL);
+    min_compr_size.set_tooltip(TOOLTIP_HCP_MIN_COMPR);
+    compression_block.set_tooltip(TOOLTIP_HCP_COMPR_BLOCK);
+    never_resave_uncompressed.set_tooltip(TOOLTIP_HCP_NEVER_RESAVE);
+    compr_threads.set_tooltip(TOOLTIP_HCP_THREADS);
+    keep_compressed.set_tooltip(TOOLTIP_HCP_KEEP_COMPR);
 }
 
 void html_compression_params::load_json(const json & source)

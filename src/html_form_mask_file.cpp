@@ -34,7 +34,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
-
+#include "tooltip_messages.hpp"
 
     //
 #include "html_form_mask_file.hpp"
@@ -82,9 +82,9 @@ html_form_mask_file::html_form_mask_file(const shared_ptr<const libdar::path> & 
     fs.add_label_css_class(webdar_css_style::text_bold);
 
 	// tooltip
-    filename.set_tooltip("filename containing a list of path+filename to include or exclude from the operation");
-    exclude_checkbox.set_tooltip("If checked, entries listed in the provided are excluded from the operation, else there are included into the operation");
-    casesensit.set_tooltip("Consider case sensitivity or not for the file listing content in the provided filename");
+    filename.set_tooltip(TOOLTIP_HFMF_FILENAME);
+    exclude_checkbox.set_tooltip(TOOLTIP_HFMF_EXCLUDE);
+    casesensit.set_tooltip(TOOLTIP_HFMF_CASESENSIT);
 
     clear();
 }

@@ -53,6 +53,7 @@ extern "C"
 #include "html_div.hpp"
 #include "tokens.hpp"
 #include "html_yes_no_box.hpp"
+#include "tooltip_messages.hpp"
 
     /// class arriere_boutique provides mean to add/load a given component type to/from a bibliotheque object
 
@@ -267,8 +268,8 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
 
 	// tooltips
 
-    config_name.set_tooltip("Name to use to save the configuration displayed above. You can also change it to save a copy under another name (\"save as\" feature). However you cannot save under the name of an existing configuration. To edit an existing configuration select it from the list here on the right, click the \"load selected\" button, perform changes in the configuration and get back to this save button without changing the name of the configuration");
-    listing_fs.set_tooltip("Select an existing configuration, then load it. You can then either edit it on the left or delete it from the configuration using the \"delete\" button below");
+    config_name.set_tooltip(TOOLTIP_AB_CONFIG_NAME);
+    listing_fs.set_tooltip(TOOLTIP_AB_SELECT);
 }
 
 template <class T> void arriere_boutique<T>::on_event(const std::string & event_name)

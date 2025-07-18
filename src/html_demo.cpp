@@ -35,6 +35,7 @@ extern "C"
 #include "webdar_tools.hpp"
 #include "webdar_css_style.hpp"
 #include "tokens.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_demo.hpp"
@@ -157,12 +158,12 @@ html_demo::html_demo():
 
 	// tooltips
 
-    left_radio.set_tooltip(0, "the box above is hidden from the user, but its value is kept recorded");
-    left_radio.set_tooltip(1, "the box above is visibile but cannot be modified by the user");
-    left_radio.set_tooltip(2, "the box is editable and visible (which most of the time is the default setting)");
-    left_input.set_tooltip("enter text here");
-    right_input.set_tooltip("this is the information known by webdar at this point in time");
-    counter.set_tooltip("This shows the provided string size as computed at the time the \"Calculate\" button has last been pressed");
+    left_radio.set_tooltip(0, TOOLTIP_D_LEFT0);
+    left_radio.set_tooltip(1, TOOLTIP_D_LEFT1);
+    left_radio.set_tooltip(2, TOOLTIP_D_LEFT2);
+    left_input.set_tooltip(TOOLTIP_D_LI);
+    right_input.set_tooltip(TOOLTIP_D_RI);
+    counter.set_tooltip(TOOLTIP_D_COUNTER);
 }
 
 

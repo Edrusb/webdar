@@ -32,7 +32,7 @@ extern "C"
 #include <dar/tools.hpp>
 
     // webdar headers
-
+#include "tooltip_messages.hpp"
 
 
     //
@@ -81,8 +81,8 @@ html_form_overwrite_constant_action::html_form_overwrite_constant_action():
 	// css
 
 	// tooltips
-    data_action.set_tooltip("Defines the overwriting policy for the data, file's data, pointed to file of a symlink, major and minor of a char or block device, it also concerns permissions, ownership and dates of any inode type");
-    ea_action.set_tooltip("Defines the overwriting policy for the Extended Attributes (EA) and File Specific Attributes (FSA) of any inode type");
+    data_action.set_tooltip(TOOLTIP_HFOCA_DATA);
+    ea_action.set_tooltip(TOOLTIP_HFOCA_EA);
 }
 
 unique_ptr<libdar::crit_action> html_form_overwrite_constant_action::get_overwriting_action() const

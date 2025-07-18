@@ -32,7 +32,7 @@ extern "C"
 #include <dar/tools.hpp>
 
     // webdar headers
-
+#include "tooltip_messages.hpp"
 
 
     //
@@ -67,7 +67,7 @@ html_fsa_scope::html_fsa_scope():
 	// css
 
 	// tooltips
-    fs.set_tooltip("Some attributes are specific to some filesystems, like the immutable flag for Linux ext2/3/4 or the birth or creation date on MacOS HFS+ filesystem. Webdar can save and restore them, and when supported by the filesystem. However if you restore accross different filesystem types, you may get a lot of warnings. You have the option to ignore them at restoration time or, here, to directly avoid backing them up");
+    fs.set_tooltip(TOOLTIP_HFS_FS);
 
 
 }
