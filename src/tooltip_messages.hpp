@@ -344,11 +344,15 @@ extern "C"
 #define TOOLTIP_HOE_DISPLAY_ONLY_DIR TOOLTIP_COMMON_DISPLAY_ONLY_DIR
 #define TOOLTIP_HOE_DISPLAY_SKIPPED TOOLTIP_COMMON_DISPLAY_SKIPPED
 
-    // html_archive_create
+    // html_archive_create class
 
 #define TOOLTIP_HAC_FS_ROOT "Nothing outside this directory will be considered for backup, all saved file will be stored in the backup with a path relative to this root directory"
 #define TOOLTIP_HAC_SAUV_PATH "Location where will be written the backup, see also the creation options to define the repository (host) where this path is located"
 #define TOOLTIP_HAC_BASENAME "A backup is composed of one or more slices (See slicing section in the creation options below). These files will be named after this basename following by a slice number and a \"dar\" extension, for example: \"mybasename.1.dar\""
+
+    // html_archive_read class
+
+#define TOOLTIP_HAR_ARCH_PATH "Path+basename of the backup to read. If you have several slices \"mybasename.1.dar\", \"mybasename.2.dar\" located in directory \"/tmp\" you should set this field to \"/tmp/mybasename\". Note that the \"+\" button at the end of this line will handle all these aspects including the min-digits option, you will only have to select on one of the slice of the backup you want to read"
 
 
 

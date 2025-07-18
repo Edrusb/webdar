@@ -35,6 +35,7 @@ extern "C"
 #include "chemin.hpp"
 #include "webdar_css_style.hpp"
 #include "environment.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_archive_read.hpp"
@@ -94,6 +95,9 @@ html_archive_read::html_archive_read(const string & archive_description):
 
 	// css
     webdar_css_style::normal_button(deroule, true);
+
+	// tooltips
+    arch_path.set_tooltip(TOOLTIP_HAR_ARCH_PATH);
 
 }
 
