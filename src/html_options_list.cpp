@@ -33,6 +33,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_options_list.hpp"
@@ -64,6 +65,10 @@ html_options_list::html_options_list():
 
 	// css
     webdar_css_style::normal_button(deroule, true);
+
+	// tooltips
+    action.set_tooltip(0, TOOLTIP_HOL_ACTION0);
+    action.set_tooltip(0, TOOLTIP_HOL_ACTION1);
 }
 
 string html_options_list::inherited_get_body_part(const chemin & path,
