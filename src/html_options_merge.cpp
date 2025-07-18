@@ -35,6 +35,7 @@ extern "C"
     // webdar headers
 #include "webdar_css_style.hpp"
 #include "html_form_mask_expression.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_options_merge.hpp"
@@ -293,6 +294,25 @@ html_options_merge::html_options_merge():
     user_comment.add_css_class(webdar_css_style::width_100vw_8em);
     execute.add_css_class(webdar_css_style::width_100vw_8em);
     empty.add_css_class(webdar_css_style::width_100vw_8em);
+
+	// tooltips
+    allow_over.set_tooltip(TOOLTIP_HOM_ALLOW_OVER);
+    warn_over.set_tooltip(TOOLTIP_HOM_WARN_OVER);
+    pause.set_tooltip(TOOLTIP_HOM_PAUSE);
+    sequential_marks.set_tooltip(TOOLTIP_HOM_SEQ_MARKS);
+    sparse_file_min_size.set_tooltip(TOOLTIP_HOM_SPARSE_MIN_SIZE);
+    user_comment.set_tooltip(TOOLTIP_HOM_USER_COMMENT);
+    hash_algo.set_tooltip(TOOLTIP_HOM_HASH_ALGO);
+    execute.set_tooltip(TOOLTIP_HOM_EXECUTE);
+    empty.set_tooltip(TOOLTIP_HOM_EMPTY);
+    info_details.set_tooltip(TOOLTIP_HOM_INFO_DETAILS);
+    display_treated.set_tooltip(TOOLTIP_HOM_DISPLAY_TREATED);
+    display_treated_only_dir.set_tooltip(TOOLTIP_HOM_DISPLAY_ONLY_DIR);
+    display_skipped.set_tooltip(TOOLTIP_HOM_DISPLAY_SKIPPED);
+    has_aux.set_tooltip(TOOLTIP_HOM_HAS_AUX);
+    decremental.set_tooltip(TOOLTIP_HOM_DECREMENTAL);
+    delta_sig.set_tooltip(TOOLTIP_HOM_DELTA_SIG);
+    empty_dir.set_tooltip(TOOLTIP_HOM_EMPTY_DIR);
 }
 
 void html_options_merge::set_biblio(const shared_ptr<bibliotheque> & ptr)

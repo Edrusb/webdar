@@ -54,6 +54,8 @@ extern "C"
 #define TOOLTIP_COMMON_EXECUTE "Execute a shell command after each slice completion"
 #define TOOLTIP_COMMON_EMPTY_DIR "When a directory is excluded from a backup, as expected it does not show in the backup and is thus not restored. When this concerns a mount point for virtual filesystems (like /proc, /sys, /dev and mounted tmpfs often found for /tmp and /run), this option let webdar store any excluded directory as an empty directory, including those mount points you'd be advise not to backup.  Then, at restoration time, webdar will automatically recreate the mount points for those virtual filesystems you have excluded from your backup"
 #define TOOLTIP_COMMON_SEQ_MARKS "You should not disable sequential marks unless you know what you are doing. These marks (sometime also called tape marks) provides a redundant method to read a backup, in particular in case of filesystem saturation during a backup process; they may also help recorver a backup that has been corrupted on disk or tape"
+#define TOOLTIP_COMMON_SPARSE_MIN "Long sequences of zeroed bytes in a file may be stored as a \"hole\" on the filesystem, leading to no or very little disk space consumtion, while such file can span several terabytes, for example. Dar can detect those holes and record them as a short data structures in the backup. Even without compression, this saved a lot of space in the resulting backup and let dar recreate the so called holes at restoration time avoiding creating a huge file when it can leverage the underlying filesystem ability to handle sparse files. It does not make sense to set a value below 15 bytes, but you can disable this feature setting it to zero, this will increase the backup speed at the cost of the inability to store an restore sparse files"
+
     // arriere_boutique template class
 
 #define TOOLTIP_AB_CONFIG_NAME "Name to use to save the configuration displayed above. You can also change it to save a copy under another name (\"save as\" feature). However you cannot save under the name of an existing configuration. To edit an existing configuration select it from the list here on the right, click the \"load selected\" button, perform changes in the configuration and get back to this save button without changing the name of the configuration"
@@ -201,7 +203,7 @@ extern "C"
 #define TOOLTIP_HOC_RETRY_TIMES "Right before saving a file, webdar record its last modification date, if right after the backup of that file this date has changed, dar retries to save it again and so forth if the date changed again, but for a limited amount of times. Passed that, the file is flagged as \"dirty\" meaning the file content may be inconsistent regarding what a user application may expect to find in it. At restoration time you will have different options on how to treat dirty files"
 #define TOOLTIP_HOC_RETRY_OVER "Resaving a changed file does not consume additional data in normal condition. This is not the case when saving to a pipe where it is not possible to overwrite the new version of the file in the generated backup. This parameter let define a maximum amount of bytes that are wasted that way during the overall backup process, after which no data retry is performed and files are directly flagged as dirty if they changed while they were read for backup"
 #define TOOLTIP_HOC_SEQ_MARKS TOOLTIP_COMMON_SEQ_MARKS
-#define TOOLTIP_HOC_SPARSE_MIN "Long sequences of zeroed bytes in a file may be stored as a \"hole\" on the filesystem, leading to no or very little disk space consumtion, while such file can span several terabytes, for example. Dar can detect those holes and record them as a short data structures in the backup. Even without compression, this saved a lot of space in the resulting backup and let dar recreate the so called holes at restoration time avoiding creating a huge file when it can leverage the underlying filesystem ability to handle sparse files. It does not make sense to set a value below 15 bytes, but you can disable this feature setting it to zero, this will increase the backup speed at the cost of the inability to store an restore sparse files"
+#define TOOLTIP_HOC_SPARSE_MIN TOOLTIP_COMMON_SPARSE_MIN
 #define TOOLTIP_HOC_USER_COMMENT TOOLTIP_COMMON_USER_COMMENT
 #define TOOLTIP_HOC_HASH_ALGO TOOLTIP_COMMON_HASH_ALGO
 #define TOOLTIP_HOC_EXECUTE TOOLTIP_COMMON_EXECUTE
@@ -287,5 +289,24 @@ extern "C"
 #define TOOLTIP_HOI_REPAIR_MODE "Check this box if the backup to fetch the catalogue from has been truncated due to disk space saturation, Webdar will rebuild the catalog (table of content) from the inline sequential marks and to create this isolated catalog. This is an faster alternative to repairing the archive, which avoid recoping the whole data, but you will have to use this catalog as external catalog when reading the truncated backup"
 #define TOOLTIP_HOI_INFO_DETAILS TOOLTIP_COMMON_INFO_DETAILS
 
+    // html_options_merge
+
+#define TOOLTIP_HOM_ALLOW_OVER TOOLTIP_COMMON_ALLOW_OVER
+#define TOOLTIP_HOM_WARN_OVER TOOLTIP_COMMON_WARN_OVER
+#define TOOLTIP_HOM_PAUSE TOOLTIP_COMMON_PAUSE
+#define TOOLTIP_HOM_SEQ_MARKS TOOLTIP_COMMON_SEQ_MARKS
+#define TOOLTIP_HOM_SPARSE_MIN_SIZE TOOLTIP_COMMON_SPARSE_MIN
+#define TOOLTIP_HOM_USER_COMMENT TOOLTIP_COMMON_USER_COMMENT
+#define TOOLTIP_HOM_HASH_ALGO TOOLTIP_COMMON_HASH_ALGO
+#define TOOLTIP_HOM_EXECUTE TOOLTIP_COMMON_EXECUTE
+#define TOOLTIP_HOM_EMPTY TOOLTIP_COMMON_EMPTY
+#define TOOLTIP_HOM_INFO_DETAILS TOOLTIP_COMMON_INFO_DETAILS
+#define TOOLTIP_HOM_DISPLAY_TREATED TOOLTIP_COMMON_DISPLAY_TREATED
+#define TOOLTIP_HOM_DISPLAY_ONLY_DIR TOOLTIP_COMMON_DISPLAY_ONLY_DIR
+#define TOOLTIP_HOM_DISPLAY_SKIPPED TOOLTIP_COMMON_DISPLAY_SKIPPED
+#define TOOLTIP_HOM_HAS_AUX "Merging operation takes a first mandatory backup in input (the backup of reference) and in option, a second backup, the auxiliary backup. If you wan not only filter out or change compression, encryption and slicing of a single backup, but merge the content of two backups, check this box"
+#define TOOLTIP_HOM_DECREMENTAL "Decremental backup is a particular case of merging, where the backup of reference is an old full backup and the auxiliary backup is a recent backup, it result in creating a reverse differential backup, which, if restored after having restored the most recent backup provided here, will get to the state of the older full backup provided here too. This way you can replace old full backups by decremental ones (which should be msaller) and only keep the latest full backup"
+#define TOOLTIP_HOM_DELTA_SIG "1/ No delta signature from a source backup will be transferred to the resulting backup of the merging operation.\n\n 2 - Any existing delta signature of a source backup (reference as well as the auxiliary and optional backup) will transferred beside the data of each file to the resulting backup\n\n 3 - This let you define which delta signatures you want to transfer and if possible compute (when the data is fully present for a file)"
+#define TOOLTIP_HOM_EMPTY_DIR TOOLTIP_COMMON_EMPTY_DIR
 
 #endif
