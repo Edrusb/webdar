@@ -36,6 +36,7 @@ extern "C"
 #include "webdar_css_style.hpp"
 #include "webdar_tools.hpp"
 #include "tokens.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_options_isolate.hpp"
@@ -198,6 +199,20 @@ html_options_isolate::html_options_isolate():
 
 	// css
     webdar_css_style::grey_button(deroule, true);
+
+	// tooltips
+    delta_sig.set_tooltip(TOOLTIP_HOI_DELTA_SIG);
+    delta_transfer_mode.set_tooltip(TOOLTIP_HOI_DELTA_TRANSFER);
+    allow_over.set_tooltip(TOOLTIP_HOI_ALLOW_OVER);
+    warn_over.set_tooltip(TOOLTIP_HOI_WARN_OVER);
+    pause.set_tooltip(TOOLTIP_HOI_PAUSE);
+    sequential_marks.set_tooltip(TOOLTIP_HOI_SEQ_MARKS);
+    user_comment.set_tooltip(TOOLTIP_HOI_USER_COMMENT);
+    hash_algo.set_tooltip(TOOLTIP_HOI_HASH_ALGO);
+    execute.set_tooltip(TOOLTIP_HOI_EXECUTE);
+    empty.set_tooltip(TOOLTIP_HOI_EMPTY);
+    repair_mode.set_tooltip(TOOLTIP_HOI_REPAIR_MODE);
+    info_details.set_tooltip(TOOLTIP_HOI_INFO_DETAILS);
 }
 
 void html_options_isolate::set_biblio(const shared_ptr<bibliotheque> & ptr)

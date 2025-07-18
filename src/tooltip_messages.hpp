@@ -33,7 +33,10 @@ extern "C"
 
     // C++ system header files
 
+    // webdar headers
+
     // common messages
+
 #define TOOLTIP_COMMON_INFO_DETAILS "Show information about the archive layer creation, slicing generation, but nothing about the treated files and directories"
 #define TOOLTIP_COMMON_DISPLAY_SKIPPED "Display files that have been excluded from the operation. If a directory is excluded from the backup, all its content is excluded and nothing is reported further about that directory and its content"
 #define TOOLTIP_COMMON_DISPLAY_TREATED "Display information about files an directories while they are treated"
@@ -42,7 +45,13 @@ extern "C"
 #define TOOLTIP_COMMON_ZEROING_DATE "Some filesystems support negative dates, which means dates before year 1970. Webdar cannot handle such negative dates, but can consider these as zero, which corresponds to the end of the last second of year 1969"
 #define TOOLTIP_COMMON_HOURSHIFT "On some systems (mainly under Windows) the daylight saving time is performed by modifing file dates, not just the way the clock is displayed on the system. This leads to save files that have not changed when passing to or from summer time. If set to 1 or more, a file will not be considered to have changed if only its date changed and by an exact number of hours"
 #define TOOLTIP_COMMON_WTC "How to consider a file has changed"
-    // webdar headers
+#define TOOLTIP_COMMON_EMPTY "Perform the operation but send the generated backup bytes into black hole, leading no backup to be created at all, though you can get messages from the filesystem reading process and webdar filter mechanisms"
+#define TOOLTIP_COMMON_ALLOW_OVER "If unchecked, this prevents webdar to overwrite slices of a previous backup having the same name, else unless disabled below, a warning and confirmation request is issued before overwriting"
+#define TOOLTIP_COMMON_WARN_OVER "Warn and ask for confirmation before overwriting slices of an existing backup using the same name as the one we are about to create"
+#define TOOLTIP_COMMON_PAUSE "Pause webdar after each 'N' slice, a confirmation is then asked to continue the operation for the next N slices before pausing again. The objective of that feature was to treat the generated slices like transfering them through the network or at earlier time to burn it or them to a CD or DVD disc"
+#define TOOLTIP_COMMON_USER_COMMENT "This field is available for the user to add any information but pay attention, this information is stored in clear in the backup header even if the backup is ciphered"
+#define TOOLTIP_COMMON_HASH_ALGO "With this option a hash of the generated slices is computed in memory during the slice creation and written to a separated file beside the slice to let you check that no data alteration came on disk. Use the -c option of md5sum, sha1sum, sh1512sum or rhash -W command to easily check those hashes. For example: \"rhash -W -c slice.1.dar.whirlpool\""
+#define TOOLTIP_COMMON_EXECUTE "Execute a shell command after each slice completion"
 
     // arriere_boutique template class
 
@@ -185,17 +194,17 @@ extern "C"
 #define TOOLTIP_HOC_FURTIVE_READ TOOLTIP_COMMON_FURTIVE_READ
 #define TOOLTIP_HOC_ZEROING_DATE TOOLTIP_COMMON_ZEROING_DATE
 #define TOOLTIP_HOC_MOD_DATA_DETECT "In the context of differential/incremental backup, normally the data of a file is considered to have changed if the mtime (last modification time) has changed. In libdar older versions, a file was completely resaved if any date, permission or ownship of a file had changed. Since libdar 2.6.0 those metadata change (permission, ownership, atime, ctime...) can be saved without having to resave the whole file content, this reduces a lot of the backup size and shorten the backup process"
-#define TOOLTIP_HOC_ALLOW_OVER "If unchecked, this prevents webdar to overwrite slices of a previous backup having the same name, else unless disabled below, a warning and confirmation request is issued before overwriting"
-#define TOOLTIP_HOC_WARN_OVER "Warn and ask for confirmation before overwriting slices of an existing backup using the same name as the one we are about to create"
-#define TOOLTIP_HOC_PAUSE "Pause webdar after each 'N' slice, a confirmation is then asked to continue the backup process for the next N slices before pausing again. The objective of that feature was to treat the generated slices like transfering them through the network or at earlier time to burn it or them to a CD or DVD disc"
+#define TOOLTIP_HOC_ALLOW_OVER TOOLTIP_COMMON_ALLOW_OVER
+#define TOOLTIP_HOC_WARN_OVER TOOLTIP_COMMON_WARN_OVER
+#define TOOLTIP_HOC_PAUSE TOOLTIP_COMMON_PAUSE
 #define TOOLTIP_HOC_RETRY_TIMES "Right before saving a file, webdar record its last modification date, if right after the backup of that file this date has changed, dar retries to save it again and so forth if the date changed again, but for a limited amount of times. Passed that, the file is flagged as \"dirty\" meaning the file content may be inconsistent regarding what a user application may expect to find in it. At restoration time you will have different options on how to treat dirty files"
 #define TOOLTIP_HOC_RETRY_OVER "Resaving a changed file does not consume additional data in normal condition. This is not the case when saving to a pipe where it is not possible to overwrite the new version of the file in the generated backup. This parameter let define a maximum amount of bytes that are wasted that way during the overall backup process, after which no data retry is performed and files are directly flagged as dirty if they changed while they were read for backup"
 #define TOOLTIP_HOC_SEQ_READ "You should not disable sequential marks unless you know what you are doing. These marks (sometime also called tape marks) provides a redundant method to read a backup, in particular in case of filesystem saturation during a backup process; they may also help recorver a backup that has been corrupted on disk or tape"
 #define TOOLTIP_HOC_SPARSE_MIN "Long sequences of zeroed bytes in a file may be stored as a \"hole\" on the filesystem, leading to no or very little disk space consumtion, while such file can span several terabytes, for example. Dar can detect those holes and record them as a short data structures in the backup. Even without compression, this saved a lot of space in the resulting backup and let dar recreate the so called holes at restoration time avoiding creating a huge file when it can leverage the underlying filesystem ability to handle sparse files. It does not make sense to set a value below 15 bytes, but you can disable this feature setting it to zero, this will increase the backup speed at the cost of the inability to store an restore sparse files"
-#define TOOLTIP_HOC_USER_COMMENT "This field is available for the user to add any information but pay attention, this information is stored in clear in the backup header even if the backup is ciphered"
-#define TOOLTIP_HOC_HASH_ALGO "With this option a hash of the generated slices is computed in memory during the slice creation and written to a separated file beside the slice to let you check that no data alteration came on disk. Use the -c option of md5sum, sha1sum, sh1512sum or rhash -W command to easily check those hashes. For example: \"rhash -W -c slice.1.dar.whirlpool\""
-#define TOOLTIP_HOC_EXECUTE "Execute a shell command after each slice completion"
-#define TOOLTIP_HOC_EMPTY "Perform the backup operation but send the generated backup bytes into black hole, leading no backup to be created at all, though you can get messages from the filesystem reading process and webdar filter mechanisms"
+#define TOOLTIP_HOC_USER_COMMENT TOOLTIP_COMMON_USER_COMMENT
+#define TOOLTIP_HOC_HASH_ALGO TOOLTIP_COMMON_HASH_ALGO
+#define TOOLTIP_HOC_EXECUTE TOOLTIP_COMMON_EXECUTE
+#define TOOLTIP_HOC_EMPTY TOOLTIP_COMMON_EMPTY
 #define TOOLTIP_HOC_INFO_DETAILS TOOLTIP_COMMON_INFO_DETAILS
 #define TOOLTIP_HOC_DISPLAY_TREATED TOOLTIP_COMMON_DISPLAY_TREATED
 #define TOOLTIP_HOC_DISPLAY_ONLY_DIR TOOLTIP_COMMON_DISPLAY_ONLY_DIR
@@ -249,7 +258,6 @@ extern "C"
 #define TOOLTIP_HOT_DISPLAY_ONLY_DIR TOOLTIP_COMMON_DISPLAY_ONLY_DIR
 #define TOOLTIP_HOT_DISPLAY_SKIPPED TOOLTIP_COMMON_DISPLAY_SKIPPED
 
-
     // html_options_compare class
 
 #define TOOLTIP_HOC_FURTIVE TOOLTIP_COMMON_FURTIVE_READ
@@ -263,6 +271,20 @@ extern "C"
 #define TOOLTIP_HOC_DISPLAY_ONLY_DIR TOOLTIP_COMMON_DISPLAY_ONLY_DIR
 #define TOOLTIP_HOC_DISPLAY_SKIPPED TOOLTIP_COMMON_DISPLAY_SKIPPED
 
+    // html_options_isolate class
+
+#define TOOLTIP_HOI_DELTA_SIG "By default delta signature if present are not stored in a isolated catalog. Check this box if you want to make a differential backup with delta signatures using this catalogue as reference"
+#define TOOLTIP_HOI_DELTA_TRANSFER "If the backup of reference lacks delta signatures it is possible in some circumstances to compute them (for file fully saved in the backup), check this box if you want to add some or drop some others delta signature from the backup of reference"
+#define TOOLTIP_HOI_ALLOW_OVER TOOLTIP_COMMON_ALLOW_OVER
+#define TOOLTIP_HOI_WARN_OVER TOOLTIP_COMMON_WARN_OVER
+#define TOOLTIP_HOI_PAUSE TOOLTIP_COMMON_PAUSE
+#define TOOLTIP_HOI_SEQ_MARKS "For an isolated catalog, sequential read marks does not bring much interest, though it does not hurt having them"
+#define TOOLTIP_HOI_USER_COMMENT TOOLTIP_COMMON_USER_COMMENT
+#define TOOLTIP_HOI_HASH_ALGO TOOLTIP_COMMON_HASH_ALGO
+#define TOOLTIP_HOI_EXECUTE TOOLTIP_COMMON_EXECUTE
+#define TOOLTIP_HOI_EMPTY TOOLTIP_COMMON_EMPTY
+#define TOOLTIP_HOI_REPAIR_MODE "Check this box if the backup to fetch the catalogue from has been truncated due to disk space saturation, Webdar will rebuild the catalog (table of content) from the inline sequential marks and to create this isolated catalog. This is an faster alternative to repairing the archive, which avoid recoping the whole data, but you will have to use this catalog as external catalog when reading the truncated backup"
+#define TOOLTIP_HOI_INFO_DETAILS TOOLTIP_COMMON_INFO_DETAILS
 
 
 #endif
