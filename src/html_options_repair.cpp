@@ -36,6 +36,7 @@ extern "C"
 #include "webdar_css_style.hpp"
 #include "tokens.hpp"
 #include "html_form_mask_expression.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_options_repair.hpp"
@@ -215,6 +216,21 @@ html_options_repair::html_options_repair():
 
     display_only_dir.add_css_class(webdar_css_style::indent);
     webdar_css_style::grey_button(deroule, true);
+
+	// tooltips
+
+    allow_over.set_tooltip(TOOLTIP_HORP_ALLOW_OVER);
+    warn_over.set_tooltip(TOOLTIP_HORP_WARN_OVER);
+    pause.set_tooltip(TOOLTIP_HORP_PAUSE);
+    execute.set_tooltip(TOOLTIP_HORP_EXECUTE);
+    dry_run.set_tooltip(TOOLTIP_HORP_EMPTY);
+    multi_thread_compress.set_tooltip(TOOLTIP_HORP_THREADS_COMPR);
+    hash_algo.set_tooltip(TOOLTIP_HORP_HASH_ALGO);
+    info_details.set_tooltip(TOOLTIP_HORP_INFO_DETAILS);
+    display_treated.set_tooltip(TOOLTIP_HORP_DISPLAY_TREATED);
+    display_only_dir.set_tooltip(TOOLTIP_HORP_DISPLAY_ONLY_DIR);
+    display_skipped.set_tooltip(TOOLTIP_HORP_DISPLAY_SKIPPED);
+    user_comment.set_tooltip(TOOLTIP_HORP_USER_COMMENT);
 }
 
 void html_options_repair::set_biblio(const shared_ptr<bibliotheque> & ptr)

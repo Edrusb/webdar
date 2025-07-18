@@ -55,6 +55,7 @@ extern "C"
 #define TOOLTIP_COMMON_EMPTY_DIR "When a directory is excluded from a backup, as expected it does not show in the backup and is thus not restored. When this concerns a mount point for virtual filesystems (like /proc, /sys, /dev and mounted tmpfs often found for /tmp and /run), this option let webdar store any excluded directory as an empty directory, including those mount points you'd be advise not to backup.  Then, at restoration time, webdar will automatically recreate the mount points for those virtual filesystems you have excluded from your backup"
 #define TOOLTIP_COMMON_SEQ_MARKS "You should not disable sequential marks unless you know what you are doing. These marks (sometime also called tape marks) provides a redundant method to read a backup, in particular in case of filesystem saturation during a backup process; they may also help recorver a backup that has been corrupted on disk or tape"
 #define TOOLTIP_COMMON_SPARSE_MIN "Long sequences of zeroed bytes in a file may be stored as a \"hole\" on the filesystem, leading to no or very little disk space consumtion, while such file can span several terabytes, for example. Dar can detect those holes and record them as a short data structures in the backup. Even without compression, this saved a lot of space in the resulting backup and let dar recreate the so called holes at restoration time avoiding creating a huge file when it can leverage the underlying filesystem ability to handle sparse files. It does not make sense to set a value below 15 bytes, but you can disable this feature setting it to zero, this will increase the backup speed at the cost of the inability to store an restore sparse files"
+#define TOOLTIP_COMMON_THREADS_COMPR "The number of threads for data (de)compression. Only one thread will be created and used when not using block compression"
 
     // arriere_boutique template class
 
@@ -96,7 +97,7 @@ extern "C"
 #define TOOLTIP_HCP_MIN_COMPR "Files under that size will never be compressed"
 #define TOOLTIP_HCP_COMPR_BLOCK "If set to zero, use stream compression which gives the best compression result but cannot use several threads. Else, split the data to compress in given block size and compress those block independently, something that can be spread between different threads, though it increases the memory and CPU footprint, at most by the number of threads set: small files may not mobilize all threads if the number of blocks they contain is less than the number of available threads"
 #define TOOLTIP_HCP_NEVER_RESAVE "When compressed data of a file uses more space than uncompressed, by default it is stored uncompressed, which means re-reading it again and overwriting the comprressed data written to the backup. If checked, keep data compressed in any case"
-#define TOOLTIP_HCP_THREADS "The number of threads for data compression. Only one thread will be created and used when not using block compression"
+#define TOOLTIP_HCP_THREADS TOOLTIP_COMMON_THREADS_COMPR
 #define TOOLTIP_HCP_KEEP_COMPR "For merging operation only, do not try to decompress and recompress files that are retained in the resulting archive. If checked, the current configuration will be refused for other operations, like backup or isolation"
 
     // html_demo class
@@ -235,7 +236,7 @@ extern "C"
 #define TOOLTIP_HOR_LAX "In case of archive corruption, activating the lax mode is the last resort solution to try reading something out of the backup. This mode suppresses a lot of checks and need is very chatty as it offers a lot of options to the user to bypass or modify the parameters read from the archive format."
 #define TOOLTIP_HOR_SEQ_READ "Setting sequential read mode leads to a slower process than the normal (direct access) mode. But it is the only mode available when reading an archive directly from tapes, for example. It is also the only way to read a truncated backup, something that occurs when you have consumed all the free space of disk during a backup process, and do not have at least one slices in addition to the current one webdar is writing to, to move away in order free some spaace and let Webdar continue the backup process"
 #define TOOLTIP_HOR_FORCE_FIRST_SLICE "When an external catalog is used (see the section below), Webdar fetches the backup content from the external catalog, but still needs to read the archive format version from the backup itslef. This information is located at two places: the beginning of the first slice and the end of the last slice. In sequential read mode, there is no choice, because the archive is read sequentially and this information is needed very early. In direct access mode (sequential mode unchecked) this information is fetched by default at the end of the last slice. But some users having huge backups or archives (several terabytes) configure their backup with a very small first slice (one kilobyte for example) while other slices can hold several gigabytes. Reading the first slice avoids fetching the last slice which may be huge and take time just for that, so they prefer loading the small first one which is fast and then only load the big slices where the data to restore is located"
-#define TOOLTIP_HOR_THREADS_COMPR "If compression has not be configured per block, only one thread will be created and used to decompress each file's data"
+#define TOOLTIP_HOR_THREADS_COMPR TOOLTIP_COMMON_THREADS_COMPR
 #define TOOLTIP_HOR_EXTERNAL_CAT "By default the table of content is found inside the backup. However you may isolate it as an external backup, which only contains the table of content (the catalog) and no data. This can be used as backup of the internal catalog in case of corruption or to optimize some operations when manipulating very big backups or archives, see the \"Isolate\" menu on the right"
 
     // html_slicing class
@@ -289,7 +290,7 @@ extern "C"
 #define TOOLTIP_HOI_REPAIR_MODE "Check this box if the backup to fetch the catalogue from has been truncated due to disk space saturation, Webdar will rebuild the catalog (table of content) from the inline sequential marks and to create this isolated catalog. This is an faster alternative to repairing the archive, which avoid recoping the whole data, but you will have to use this catalog as external catalog when reading the truncated backup"
 #define TOOLTIP_HOI_INFO_DETAILS TOOLTIP_COMMON_INFO_DETAILS
 
-    // html_options_merge
+    // html_options_merge class
 
 #define TOOLTIP_HOM_ALLOW_OVER TOOLTIP_COMMON_ALLOW_OVER
 #define TOOLTIP_HOM_WARN_OVER TOOLTIP_COMMON_WARN_OVER
@@ -308,5 +309,21 @@ extern "C"
 #define TOOLTIP_HOM_DECREMENTAL "Decremental backup is a particular case of merging, where the backup of reference is an old full backup and the auxiliary backup is a recent backup, it result in creating a reverse differential backup, which, if restored after having restored the most recent backup provided here, will get to the state of the older full backup provided here too. This way you can replace old full backups by decremental ones (which should be msaller) and only keep the latest full backup"
 #define TOOLTIP_HOM_DELTA_SIG "1/ No delta signature from a source backup will be transferred to the resulting backup of the merging operation.\n\n 2 - Any existing delta signature of a source backup (reference as well as the auxiliary and optional backup) will transferred beside the data of each file to the resulting backup\n\n 3 - This let you define which delta signatures you want to transfer and if possible compute (when the data is fully present for a file)"
 #define TOOLTIP_HOM_EMPTY_DIR TOOLTIP_COMMON_EMPTY_DIR
+
+    // html_options_repair class
+
+#define TOOLTIP_HORP_ALLOW_OVER TOOLTIP_COMMON_ALLOW_OVER
+#define TOOLTIP_HORP_WARN_OVER TOOLTIP_COMMON_WARN_OVER
+#define TOOLTIP_HORP_PAUSE TOOLTIP_COMMON_PAUSE
+#define TOOLTIP_HORP_EXECUTE TOOLTIP_COMMON_EXECUTE
+#define TOOLTIP_HORP_EMPTY TOOLTIP_COMMON_EMPTY
+#define TOOLTIP_HORP_THREADS_COMPR TOOLTIP_COMMON_THREADS_COMPR
+#define TOOLTIP_HORP_HASH_ALGO TOOLTIP_COMMON_HASH_ALGO
+#define TOOLTIP_HORP_INFO_DETAILS TOOLTIP_COMMON_INFO_DETAILS
+#define TOOLTIP_HORP_DISPLAY_TREATED TOOLTIP_COMMON_DISPLAY_TREATED
+#define TOOLTIP_HORP_DISPLAY_ONLY_DIR TOOLTIP_COMMON_DISPLAY_ONLY_DIR
+#define TOOLTIP_HORP_DISPLAY_SKIPPED TOOLTIP_COMMON_DISPLAY_SKIPPED
+#define TOOLTIP_HORP_USER_COMMENT TOOLTIP_COMMON_USER_COMMENT
+
 
 #endif
