@@ -33,6 +33,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_options_test.hpp"
@@ -129,6 +130,13 @@ html_options_test::html_options_test():
 
 	// components visibility status
     on_event(html_form_input::changed);
+
+	// tooltips
+    empty.set_tooltip(TOOLTIP_HOT_EMPTY);
+    info_details.set_tooltip(TOOLTIP_HOT_INFO_DETAILS);
+    display_treated.set_tooltip(TOOLTIP_HOT_DISPLAY_TREATED);
+    display_treated_only_dir.set_tooltip(TOOLTIP_HOT_DISPLAY_ONLY_DIR);
+    display_skipped.set_tooltip(TOOLTIP_HOT_DISPLAY_SKIPPED);
 }
 
 void html_options_test::set_biblio(const shared_ptr<bibliotheque> & ptr)

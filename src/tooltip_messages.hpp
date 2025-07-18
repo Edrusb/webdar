@@ -33,6 +33,11 @@ extern "C"
 
     // C++ system header files
 
+    // common messages
+#define TOOLTIP_COMMON_INFO_DETAILS "Show information about the archive layer creation, slicing generation, but nothing about the treated files and directories"
+#define TOOLTIP_COMMON_DISPLAY_SKIPPED "Display files that have been excluded from the operation. If a directory is excluded from the backup, all its content is excluded and nothing is reported further about that directory and its content"
+#define TOOLTIP_COMMON_DISPLAY_TREATED "Display information about files an directories while they are treated"
+#define TOOLTIP_COMMON_DISPLAY_ONLY_DIR "Restrict the information about the treated directories only, a line is displayed when the backup process enters each directory"
 
     // webdar headers
 
@@ -188,10 +193,10 @@ extern "C"
 #define TOOLTIP_HOC_HASH_ALGO "With this option a hash of the generated slices is computed in memory during the slice creation and written to a separated file beside the slice to let you check that no data alteration came on disk. Use the -c option of md5sum, sha1sum, sh1512sum or rhash -W command to easily check those hashes. For example: \"rhash -W -c slice.1.dar.whirlpool\""
 #define TOOLTIP_HOC_EXECUTE "Execute a shell command after each slice completion"
 #define TOOLTIP_HOC_EMPTY "Perform the backup operation but send the generated backup bytes into black hole, leading no backup to be created at all, though you can get messages from the filesystem reading process and webdar filter mechanisms"
-#define TOOLTIP_HOC_INFO_DETAILS "Show information about the archive layer creation, slicing generation, but nothing about the treated files and directories"
-#define TOOLTIP_HOC_DISPLAY_TREATED "Display information about files an directories while they are saved"
-#define TOOLTIP_HOC_DISPLAY_ONLY_DIR "Restrict the information about the treated directories only, a line is displayed when the backup process enters each directory"
-#define TOOLTIP_HOC_DISPLAY_SKIPPED "Display files that have been excluded from the backup. If a directory is excluded from the backup, all its content is excluded and nothing is reported further about that directory and its content"
+#define TOOLTIP_HOC_INFO_DETAILS TOOLTIP_COMMON_INFO_DETAILS
+#define TOOLTIP_HOC_DISPLAY_TREATED TOOLTIP_COMMON_DISPLAY_TREATED
+#define TOOLTIP_HOC_DISPLAY_ONLY_DIR TOOLTIP_COMMON_DISPLAY_ONLY_DIR
+#define TOOLTIP_HOC_DISPLAY_SKIPPED TOOLTIP_COMMON_DISPLAY_SKIPPED
 #define TOOLTIP_HOC_DISPLAY_DIR_SUMMARY "Display a summary line about the amount of saved data and its compression ratio at the end of each treated directory"
 #define TOOLTIP_HOC_SECU_CHECK "When a file has only changed by its ctime since the backup of reference was made, with that option webdar triggers a security warning. This may be expected when for example changing a file permission and setting it back to the previous value, it may also be a sign of concealment when one tries to hide changes made to a file. If such warnings occur too often, use an anti-virus or rootkit scanner and disable this feature in webdar"
 #define TOOLTIP_HOC_IGNORE_UNKNOWN "When dar finds an inode type it does not know, a warning is issued. You can disable this warning by checking this option, no warning will show about those unknown inode type and the backup process will complete without considering them at all"
@@ -211,7 +216,7 @@ extern "C"
 #define TOOLTIP_HOR_SIG_FAILURE "If the backup has been encrypted *and* signed with a GPG key pair, the signature will be checked at reading time. If it does not validate, webdar will abort unless this control is disabled"
 #define TOOLTIP_HOR_EXECUTE "Run a shell command before reading each slice"
 #define TOOLTIP_HOR_MIN_DIGITS "Webdar will detected this value if choosing an backup to read using the file selection window (which opens clicking on the \"+\" button). Though, if you manually fill the fields of the archive path and base name, you will have to set this value manually also for webdar be able to read the backup"
-#define TOOLTIP_HOR_INFO_DETAILS "Display information about the archive layer openned, but nothing about the treated files as this configuration concerns only the archive/backup openning step. See option specific parameters (archive testing, restoration...) for more options in that domain"
+#define TOOLTIP_HOR_INFO_DETAILS TOOLTIP_COMMON_INFO_DETAILS
 #define TOOLTIP_HOR_LAX "In case of archive corruption, activating the lax mode is the last resort solution to try reading something out of the backup. This mode suppresses a lot of checks and need is very chatty as it offers a lot of options to the user to bypass or modify the parameters read from the archive format."
 #define TOOLTIP_HOR_SEQ_READ "Setting sequential read mode leads to a slower process than the normal (direct access) mode. But it is the only mode available when reading an archive directly from tapes, for example. It is also the only way to read a truncated backup, something that occurs when you have consumed all the free space of disk during a backup process, and do not have at least one slices in addition to the current one webdar is writing to, to move away in order free some spaace and let Webdar continue the backup process"
 #define TOOLTIP_HOR_FORCE_FIRST_SLICE "When an external catalog is used (see the section below), Webdar fetches the backup content from the external catalog, but still needs to read the archive format version from the backup itslef. This information is located at two places: the beginning of the first slice and the end of the last slice. In sequential read mode, there is no choice, because the archive is read sequentially and this information is needed very early. In direct access mode (sequential mode unchecked) this information is fetched by default at the end of the last slice. But some users having huge backups or archives (several terabytes) configure their backup with a very small first slice (one kilobyte for example) while other slices can hold several gigabytes. Reading the first slice avoids fetching the last slice which may be huge and take time just for that, so they prefer loading the small first one which is fast and then only load the big slices where the data to restore is located"
@@ -233,6 +238,13 @@ extern "C"
 
 #define TOOLTIP_S_SESSION "You can change the name of the session to better identify it among others. See the \"Other sessions\" menu on the left"
 
+    // html_options_test class
+
+#define TOOLTIP_HOT_EMPTY "If checked, the archive content is read but not file's data is read and checked against its CRC data, leading to a quick process but not performing a full backup testing"
+#define TOOLTIP_HOT_INFO_DETAILS TOOLTIP_COMMON_INFO_DETAILS
+#define TOOLTIP_HOT_DISPLAY_TREATED TOOLTIP_COMMON_DISPLAY_TREATED
+#define TOOLTIP_HOT_DISPLAY_ONLY_DIR TOOLTIP_COMMON_DISPLAY_ONLY_DIR
+#define TOOLTIP_HOT_DISPLAY_SKIPPED TOOLTIP_COMMON_DISPLAY_SKIPPED
 
 
 #endif
