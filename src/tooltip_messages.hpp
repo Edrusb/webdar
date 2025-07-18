@@ -110,6 +110,7 @@ extern "C"
 #define TOOLTIP_D_LI "enter text here"
 #define TOOLTIP_D_RI "this is the information known by webdar at this point in time"
 #define TOOLTIP_D_COUNTER "This shows the provided string size as computed at the time the \"Calculate\" button has last been pressed"
+#define TOOLTIP_D_LABEL "This is how would show additional information for user help and feature detailed description"
 
     // html_entrepot class
 

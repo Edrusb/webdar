@@ -61,7 +61,7 @@ html_demo::html_demo():
     right_fs("Information known by Webdar"),
     counter("Provided string size", html_form_input::number, "0", "10", ""),
     label("- this text is provided without additional information"),
-    labelplus("- while this text is provided with helper information", "This is how would show additional information for user help and feature clarification"),
+    labelplus("- while this text is provided with helper information", TOOLTIP_D_LABEL),
     close("Close", event_close)
 {
 
