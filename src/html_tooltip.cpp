@@ -115,7 +115,6 @@ void html_tooltip::new_css_library_available()
 	tmp.css_position_left("40%");
 	tmp.css_min_width("15em");
 	tmp.css_margin_left("-60px");
-	    // css_transition manque
 	tmp.css_border_style(css::bd_bottom, css::bd_solid);
 	tmp.css_border_style(css::bd_right, css::bd_solid);
 	tmp.css_border_color(css::bd_bottom, COLOR_MENU_BORDER_OFF);
@@ -133,7 +132,9 @@ void html_tooltip::new_css_library_available()
 	tmp.css_position_type(css::pos_absolute);
 	tmp.css_position_bottom("-16px");
 	tmp.css_position_left("30%");
-	tmp.css_border_width(css::bd_top, "10px");
+	tmp.css_border_width(css::bd_top, "12px");
+	tmp.css_border_width(css::bd_left, "8px");
+	tmp.css_border_width(css::bd_right, "8px");
 	tmp.css_border_style(css::bd_all, css::bd_solid);
 	tmp.css_border_color(css::bd_top, COLOR_MENU_BORDER_OFF);
 	tmp.css_border_color(css::bd_right, "transparent");
