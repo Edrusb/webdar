@@ -408,7 +408,7 @@ html_options_create::html_options_create():
     pause.set_tooltip(TOOLTIP_HOC_PAUSE);
     retry_on_change_times.set_tooltip(TOOLTIP_HOC_RETRY_TIMES);
     retry_on_change_overhead.set_tooltip(TOOLTIP_HOC_RETRY_OVER);
-    sequential_marks.set_tooltip(TOOLTIP_HOC_SEQ_READ);
+    sequential_marks.set_tooltip(TOOLTIP_HOC_SEQ_MARKS);
     sparse_file_min_size.set_tooltip(TOOLTIP_HOC_SPARSE_MIN);
     user_comment.set_tooltip(TOOLTIP_HOC_USER_COMMENT);
     hash_algo.set_tooltip(TOOLTIP_HOC_HASH_ALGO);
