@@ -33,7 +33,7 @@ extern "C"
 
     // webdar headers
 #include "webdar_css_style.hpp"
-
+#include "tooltip_messages.hpp"
 
     //
 #include "html_archive_repair.hpp"
@@ -103,6 +103,12 @@ html_archive_repair::html_archive_repair():
 	// css
 
     webdar_css_style::normal_button(deroule, true);
+
+	// tooltips
+
+    repair_dest.set_tooltip(TOOLTIP_HAR_SAUV_PATH);
+    basename.set_tooltip(TOOLTIP_HAR_BASENAME);
+
 }
 
 const string & html_archive_repair::get_archive_basename() const
