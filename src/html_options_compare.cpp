@@ -35,6 +35,7 @@ extern "C"
 #include "webdar_tools.hpp"
 #include "html_form_mask_expression.hpp"
 #include "webdar_css_style.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_options_compare.hpp"
@@ -202,6 +203,19 @@ html_options_compare::html_options_compare():
 	// components visibility setup
 
     on_event(html_form_input::changed);
+
+	// tooltips
+
+    furtive_read_mode.set_tooltip(TOOLTIP_HOC_FURTIVE);
+    zeroing_neg_date.set_tooltip(TOOLTIP_HOC_ZEROING_DATES);
+    hourshift.set_tooltip(TOOLTIP_HOC_HOURSHIFT);
+    in_place.set_tooltip(TOOLTIP_HOC_IN_PLACE);
+    what_to_check.set_tooltip(TOOLTIP_HOC_WTC);
+    compare_symlink_date.set_tooltip(TOOLTIP_HOC_SYMLINK_DATE);
+    info_details.set_tooltip(TOOLTIP_HOC_INFO_DETAILS);
+    display_treated.set_tooltip(TOOLTIP_HOC_DISPLAY_TREATED);
+    display_treated_only_dir.set_tooltip(TOOLTIP_HOC_DISPLAY_ONLY_DIR);
+    display_skipped.set_tooltip(TOOLTIP_HOC_DISPLAY_SKIPPED);
 }
 
 void html_options_compare::set_biblio(const shared_ptr<bibliotheque> & ptr)

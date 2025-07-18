@@ -38,7 +38,10 @@ extern "C"
 #define TOOLTIP_COMMON_DISPLAY_SKIPPED "Display files that have been excluded from the operation. If a directory is excluded from the backup, all its content is excluded and nothing is reported further about that directory and its content"
 #define TOOLTIP_COMMON_DISPLAY_TREATED "Display information about files an directories while they are treated"
 #define TOOLTIP_COMMON_DISPLAY_ONLY_DIR "Restrict the information about the treated directories only, a line is displayed when the backup process enters each directory"
-
+#define TOOLTIP_COMMON_FURTIVE_READ "Reading a file modifies the last acces time, or if after reading it, the last access time (atime) is set back to the value it has before the file was read, the system changes the last change time (ctime) which cannot be modified from an application, like webdar. Linux system provides a privileged mode to access a file without modifying neither atime nor ctime. Webdar must be root or have the proper capability set to activate this mode. If activation failed, webdar will default to the mode you chose (modifying atime is the most common setting)"
+#define TOOLTIP_COMMON_ZEROING_DATE "Some filesystems support negative dates, which means dates before year 1970. Webdar cannot handle such negative dates, but can consider these as zero, which corresponds to the end of the last second of year 1969"
+#define TOOLTIP_COMMON_HOURSHIFT "On some systems (mainly under Windows) the daylight saving time is performed by modifing file dates, not just the way the clock is displayed on the system. This leads to save files that have not changed when passing to or from summer time. If set to 1 or more, a file will not be considered to have changed if only its date changed and by an exact number of hours"
+#define TOOLTIP_COMMON_WTC "How to consider a file has changed"
     // webdar headers
 
     // arriere_boutique template class
@@ -176,11 +179,11 @@ extern "C"
 #define TOOLTIP_HOC_ARCHTYPE2 "Same as previously, with the addition to not save the modified files in totality, but leverage delta signatures to only record the portions of the files that changed. Note: at restoration time you will need to restore the files from the previous backup then restore this backup on top to apply a binary patch on files saved that way"
 #define TOOLTIP_HOC_ARCHTYPE3 "Make a reference of the current filesystem status without saving any file. A snapshot can be used as a reference for a differential backup or just be used to check whether existing files at the time of the snapshot have changed since the snapshot was made"
 #define TOOLTIP_HOC_ARCHTYPE4 "Only change files modified after a given date. This creates a differential backup without requiring a backup of reference"
-#define TOOLTIP_HOC_WTC "How to consider a file has changed since the backup of reference was made"
-#define TOOLTIP_HOC_HOURSHIFT "On some systems (mainly under Windows) the daylight saving time is performed by modifing file dates, not just the way the clock is displayed on the system. This leads to save files that have not changed when passing to or from summer time. If set to 1 or more, a file will not be considered to have changed if only its date changed and by an exact number of hours"
+#define TOOLTIP_HOC_WTC TOOLTIP_COMMON_WTC
+#define TOOLTIP_HOC_HOURSHIFT TOOLTIP_COMMON_HOURSHIFT
 #define TOOLTIP_HOC_BIN_DELTA "To add delta signature to a backup, see below the \"Delta Signatures\" section"
-#define TOOLTIP_HOC_FURTIVE_READ "Reading a file modifies the last acces time, or if after reading it, the last access time (atime) is set back to the value it has before the file was read, the system changes the last change time (ctime) which cannot be modified from an application, like webdar. Linux system provides a privileged mode to access a file without modifying neither atime nor ctime. Webdar must be root or have the proper capability set to activate this mode. If activation failed, webdar will default to the mode you chose (modifying atime is the most common setting)"
-#define TOOLTIP_HOC_ZEROING_DATE "Some filesystems support negative dates, which means dates before year 1970. Webdar cannot handle such negative dates, but can consider these as zero, which corresponds to the end of the last second of year 1969"
+#define TOOLTIP_HOC_FURTIVE_READ TOOLTIP_COMMON_FURTIVE_READ
+#define TOOLTIP_HOC_ZEROING_DATE TOOLTIP_COMMON_ZEROING_DATE
 #define TOOLTIP_HOC_MOD_DATA_DETECT "In the context of differential/incremental backup, normally the data of a file is considered to have changed if the mtime (last modification time) has changed. In libdar older versions, a file was completely resaved if any date, permission or ownship of a file had changed. Since libdar 2.6.0 those metadata change (permission, ownership, atime, ctime...) can be saved without having to resave the whole file content, this reduces a lot of the backup size and shorten the backup process"
 #define TOOLTIP_HOC_ALLOW_OVER "If unchecked, this prevents webdar to overwrite slices of a previous backup having the same name, else unless disabled below, a warning and confirmation request is issued before overwriting"
 #define TOOLTIP_HOC_WARN_OVER "Warn and ask for confirmation before overwriting slices of an existing backup using the same name as the one we are about to create"
@@ -245,6 +248,21 @@ extern "C"
 #define TOOLTIP_HOT_DISPLAY_TREATED TOOLTIP_COMMON_DISPLAY_TREATED
 #define TOOLTIP_HOT_DISPLAY_ONLY_DIR TOOLTIP_COMMON_DISPLAY_ONLY_DIR
 #define TOOLTIP_HOT_DISPLAY_SKIPPED TOOLTIP_COMMON_DISPLAY_SKIPPED
+
+
+    // html_options_compare class
+
+#define TOOLTIP_HOC_FURTIVE TOOLTIP_COMMON_FURTIVE_READ
+#define TOOLTIP_HOC_ZEROING_DATES TOOLTIP_COMMON_ZEROING_DATE
+#define TOOLTIP_HOC_HOURSHIFT TOOLTIP_COMMON_HOURSHIFT
+#define TOOLTIP_HOC_IN_PLACE "At backup time, Webdar records directory used for root of the backup in the archive. Checking this option ignore the specified filesystem root and use this recorded \"in-place\" path from the backup instead of what is specified as root"
+#define TOOLTIP_HOC_WTC TOOLTIP_COMMON_WTC
+#define TOOLTIP_HOC_SYMLINK_DATE "If checked, Webdar will signal a change if the symlink last modification date has changed, even if the object pointed to by the symlink has not changed at all"
+#define TOOLTIP_HOC_INFO_DETAILS TOOLTIP_COMMON_INFO_DETAILS
+#define TOOLTIP_HOC_DISPLAY_TREATED TOOLTIP_COMMON_DISPLAY_TREATED
+#define TOOLTIP_HOC_DISPLAY_ONLY_DIR TOOLTIP_COMMON_DISPLAY_ONLY_DIR
+#define TOOLTIP_HOC_DISPLAY_SKIPPED TOOLTIP_COMMON_DISPLAY_SKIPPED
+
 
 
 #endif
