@@ -67,9 +67,9 @@ guichet::guichet(bool subcomponent):
 
 	// tooltips
     if(subcomponent)
-	select.set_tooltip("Select an existing configuration. Note, this configuration will not be removable until it is not referred from here nor any other similar places");
+	select.set_tooltip("Select an existing configuration. Note, this configuration will not be removable until it is not referred from here nor from any other similar places");
     else
-	select.set_tooltip("Select an existing configuration from the \"Configure\" menu or use the \"manual config\" choice to set it up in-place, you will be able to save it also as a new configuration");
+	select.set_tooltip("Select an existing configuration defined in the \"Configure\" menu or use the \"manual config\" choice to set it up in-place, you will be able to save it also as a new configuration using the \"save/save as\" button right below. Warning you may have nested configuration parts each with its \"save/save as\" button, check the indentation and vertical line on the left to determine what configuration part you want to add to the \"configure\" menu");
     saveas_name.set_tooltip("The current configuration is anonymous, from here you use it as is, modify it or save as a new configuration. To edit an existing configuration and save changes under that same name, go to the \"Configure\" menu");
 }
 
