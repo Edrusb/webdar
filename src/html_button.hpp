@@ -95,9 +95,6 @@ public:
 	/// inherited from body_builder
     virtual void bind_to_anchor(const std::string & val) override { inside.bind_to_anchor(val); };
 
-	/// surfacing set_tooltip from outside field
-    void set_tooltip(const std::string & val) { outside.set_tooltip(val); };
-
 protected:
 
 	/// inherited from body_builder
