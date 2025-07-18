@@ -34,6 +34,7 @@ extern "C"
     // webdar headers
 #include "webdar_css_style.hpp"
 #include "environment.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_archive_create.hpp"
@@ -106,6 +107,12 @@ html_archive_create::html_archive_create():
     	// css stuff
 
     webdar_css_style::normal_button(deroule, true);
+
+	// tooltip
+
+    fs_root.set_tooltip(TOOLTIP_HAC_FS_ROOT);
+    sauv_path.set_tooltip(TOOLTIP_HAC_SAUV_PATH);
+    basename.set_tooltip(TOOLTIP_HAC_BASENAME);
 }
 
 void html_archive_create::set_biblio(const shared_ptr<bibliotheque> & ptr)
