@@ -35,6 +35,7 @@ extern "C"
 #include "webdar_css_style.hpp"
 #include "environment.hpp"
 #include "tokens.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_archive_extract.hpp"
@@ -100,6 +101,9 @@ html_archive_extract::html_archive_extract():
     webdar_css_style::normal_button(extract_params, true);
     in_place_msg.add_css_class(webdar_css_style::text_color_normal);
     in_place_msg.add_css_class(webdar_css_style::text_shadow_dark);
+
+	// tooltips
+    extract_fs_root.set_tooltip(TOOLTIP_HAE_FS_ROOT);
 
 }
 

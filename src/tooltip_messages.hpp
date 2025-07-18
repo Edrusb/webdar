@@ -57,7 +57,8 @@ extern "C"
 #define TOOLTIP_COMMON_SPARSE_MIN "Long sequences of zeroed bytes in a file may be stored as a \"hole\" on the filesystem, leading to no or very little disk space consumtion, while such file can span several terabytes, for example. Dar can detect those holes and record them as a short data structures in the backup. Even without compression, this saved a lot of space in the resulting backup and let dar recreate the so called holes at restoration time avoiding creating a huge file when it can leverage the underlying filesystem ability to handle sparse files. It does not make sense to set a value below 15 bytes, but you can disable this feature setting it to zero, this will increase the backup speed at the cost of the inability to store an restore sparse files"
 #define TOOLTIP_COMMON_THREADS_COMPR "The number of threads for data (de)compression. Only one thread will be created and used when not using block compression"
 #define TOOLTIP_COMMON_IN_PLACE "At backup time, Webdar records directory used for root of the backup in the archive. Checking this option ignore the specified filesystem root and use this recorded \"in-place\" path from the backup instead of what is specified as root"
-
+#define TOOLTIP_COMMON_BASENAME "A backup is composed of one or more slices (See slicing section in the options below). These files will be named after this basename followed by a slice number and a \"dar\" extension, for example: \"mybasename.1.dar\""
+#define TOOLTIP_COMMON_SAUV_PATH "Location where will be written the backup, see also the options below to define the repository (the host) where this path is located"
     // arriere_boutique template class
 
 #define TOOLTIP_AB_CONFIG_NAME "Name to use to save the configuration displayed above. You can also change it to save a copy under another name (\"save as\" feature). However you cannot save under the name of an existing configuration. To edit an existing configuration select it from the list here on the right, click the \"load selected\" button, perform changes in the configuration and get back to this save button without changing the name of the configuration"
@@ -347,8 +348,8 @@ extern "C"
     // html_archive_create class
 
 #define TOOLTIP_HAC_FS_ROOT "Nothing outside this directory will be considered for backup, all saved file will be stored in the backup with a path relative to this root directory"
-#define TOOLTIP_HAC_SAUV_PATH "Location where will be written the backup, see also the creation options to define the repository (host) where this path is located"
-#define TOOLTIP_HAC_BASENAME "A backup is composed of one or more slices (See slicing section in the creation options below). These files will be named after this basename following by a slice number and a \"dar\" extension, for example: \"mybasename.1.dar\""
+#define TOOLTIP_HAC_SAUV_PATH TOOLTIP_COMMON_SAUV_PATH
+#define TOOLTIP_HAC_BASENAME TOOLTIP_COMMON_BASENAME
 
     // html_archive_read class
 
@@ -358,6 +359,30 @@ extern "C"
     // html_archive_compare class
 
 #define TOOLTIP_HACM_FS_ROOT "Path of the filesystem where is located the content to compare the backup with"
+
+    // html_options_list class
+
+#define TOOLTIP_HOL_ACTION0 "This option let you navigate in the directory tree of the backup and see for each directory its content and the metadata attributes of files they contain"
+#define TOOLTIP_HOL_ACTION1 "This option gives a global view of the archive, the different options (compression, slicing, ciphering, user comment...) that have been used at creation time"
+
+    // html_archive_isolate class
+
+#define TOOLTIP_HAI_SAUV_PATH TOOLTIP_COMMON_SAUV_PATH
+#define TOOLTIP_HAI_BASENAME TOOLTIP_COMMON_BASENAME
+
+    // html_archive_merge class
+
+#define TOOLTIP_HAM_SAUV_PATH TOOLTIP_COMMON_SAUV_PATH
+#define TOOLTIP_HAM_BASENAME TOOLTIP_COMMON_BASENAME
+
+    // html_archive_repair class
+
+#define TOOLTIP_HAR_SAUV_PATH TOOLTIP_COMMON_SAUV_PATH
+#define TOOLTIP_HAR_BASENAME TOOLTIP_COMMON_BASENAME
+
+    // html_archive_extract class
+#define TOOLTIP_HAE_FS_ROOT "Path were to restore the backup content"
+
 
 
 #endif
