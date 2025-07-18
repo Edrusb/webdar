@@ -56,6 +56,7 @@ extern "C"
 #define TOOLTIP_COMMON_SEQ_MARKS "You should not disable sequential marks unless you know what you are doing. These marks (sometime also called tape marks) provides a redundant method to read a backup, in particular in case of filesystem saturation during a backup process; they may also help recorver a backup that has been corrupted on disk or tape"
 #define TOOLTIP_COMMON_SPARSE_MIN "Long sequences of zeroed bytes in a file may be stored as a \"hole\" on the filesystem, leading to no or very little disk space consumtion, while such file can span several terabytes, for example. Dar can detect those holes and record them as a short data structures in the backup. Even without compression, this saved a lot of space in the resulting backup and let dar recreate the so called holes at restoration time avoiding creating a huge file when it can leverage the underlying filesystem ability to handle sparse files. It does not make sense to set a value below 15 bytes, but you can disable this feature setting it to zero, this will increase the backup speed at the cost of the inability to store an restore sparse files"
 #define TOOLTIP_COMMON_THREADS_COMPR "The number of threads for data (de)compression. Only one thread will be created and used when not using block compression"
+#define TOOLTIP_COMMON_IN_PLACE "At backup time, Webdar records directory used for root of the backup in the archive. Checking this option ignore the specified filesystem root and use this recorded \"in-place\" path from the backup instead of what is specified as root"
 
     // arriere_boutique template class
 
@@ -267,7 +268,7 @@ extern "C"
 #define TOOLTIP_HOC_FURTIVE TOOLTIP_COMMON_FURTIVE_READ
 #define TOOLTIP_HOC_ZEROING_DATES TOOLTIP_COMMON_ZEROING_DATE
 #define TOOLTIP_HOC_HOURSHIFT TOOLTIP_COMMON_HOURSHIFT
-#define TOOLTIP_HOC_IN_PLACE "At backup time, Webdar records directory used for root of the backup in the archive. Checking this option ignore the specified filesystem root and use this recorded \"in-place\" path from the backup instead of what is specified as root"
+#define TOOLTIP_HOC_IN_PLACE TOOLTIP_COMMON_IN_PLACE
 #define TOOLTIP_HOC_WTC TOOLTIP_COMMON_WTC
 #define TOOLTIP_HOC_SYMLINK_DATE "If checked, Webdar will signal a change if the symlink last modification date has changed, even if the object pointed to by the symlink has not changed at all"
 #define TOOLTIP_HOC_INFO_DETAILS TOOLTIP_COMMON_INFO_DETAILS
@@ -324,6 +325,24 @@ extern "C"
 #define TOOLTIP_HORP_DISPLAY_ONLY_DIR TOOLTIP_COMMON_DISPLAY_ONLY_DIR
 #define TOOLTIP_HORP_DISPLAY_SKIPPED TOOLTIP_COMMON_DISPLAY_SKIPPED
 #define TOOLTIP_HORP_USER_COMMENT TOOLTIP_COMMON_USER_COMMENT
+
+    // html_options_extract class
+
+#define TOOLTIP_HOE_IN_PLACE TOOLTIP_COMMON_IN_PLACE
+#define TOOLTIP_HOE_WARN_OVER TOOLTIP_COMMON_WARN_OVER
+#define TOOLTIP_HOE_WARN_NO_MATCH "A differential backup stores new and modifed files but also record files that have been removed. At restoration time Webdar remove them, however if their inode type (symlink, plain file, directory...) does not match what is expected to be removed, this option triggers a warning for the user to decide what to do if that condition occurs"
+#define TOOLTIP_HOE_FLAT "Do not restore directory tree, all files will be restored in the same directory, which may lead to overwriting files of the same name if they were located in different directories in the backup"
+#define TOOLTIP_HOE_WTC TOOLTIP_COMMON_WTC
+#define TOOLTIP_HOE_EMPTY_DIR TOOLTIP_COMMON_EMPTY_DIR
+#define TOOLTIP_HOE_DIRTY "Dirty files are the one that have been modified at the time they were read for backup. Their content may be inconsistent for the applications using them, this option let you decide how to handle those files"
+#define TOOLTIP_HOE_ONLY_DELETED "A differential backup stores new and modifed files, but also record files that have been removed. With this option, no new or modified file will be restored, only file that should be removed will be deleted from the filesystem"
+#define TOOLTIP_HOE_IGNORE_DELETED "A differential backup stores  new and modified files, but also record file that have been removed, for restoring a differential backup you update modified files, add new files and remove files that disapeared. If you check this option your restoration will be uncompleted and file that should have been removed will stay on the filesystem"
+#define TOOLTIP_HOE_IGNORE_SOCKETS "Do no restore sockets, does not hurt restoring them, but usually applications will recreate them when restarted"
+#define TOOLTIP_HOE_EMPTY TOOLTIP_COMMON_EMPTY
+#define TOOLTIP_HOE_INFO_DETAILS TOOLTIP_COMMON_INFO_DETAILS
+#define TOOLTIP_HOE_DISPLAY_TREATED TOOLTIP_COMMON_DISPLAY_TREATED
+#define TOOLTIP_HOE_DISPLAY_ONLY_DIR TOOLTIP_COMMON_DISPLAY_ONLY_DIR
+#define TOOLTIP_HOE_DISPLAY_SKIPPED TOOLTIP_COMMON_DISPLAY_SKIPPED
 
 
 #endif

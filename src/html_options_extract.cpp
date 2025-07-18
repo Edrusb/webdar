@@ -34,6 +34,7 @@ extern "C"
     // webdar headers
 #include "webdar_css_style.hpp"
 #include "html_form_mask_expression.hpp"
+#include "tooltip_messages.hpp"
 
     //
 #include "html_options_extract.hpp"
@@ -228,6 +229,23 @@ html_options_extract::html_options_extract():
 
 	// components visibility status
     on_event(html_form_input::changed);
+
+	// tooltips
+    in_place.set_tooltip(TOOLTIP_HOE_IN_PLACE);
+    warn_over.set_tooltip(TOOLTIP_HOE_WARN_OVER);
+    warn_remove_no_match.set_tooltip(TOOLTIP_HOE_WARN_NO_MATCH);
+    flat.set_tooltip(TOOLTIP_HOE_FLAT);
+    what_to_check.set_tooltip(TOOLTIP_HOE_WTC);
+    empty_dir.set_tooltip(TOOLTIP_HOE_EMPTY_DIR);
+    dirty_behavior.set_tooltip(TOOLTIP_HOE_DIRTY);
+    only_deleted.set_tooltip(TOOLTIP_HOE_ONLY_DELETED);
+    ignore_deleted.set_tooltip(TOOLTIP_HOE_IGNORE_DELETED);
+    ignore_sockets.set_tooltip(TOOLTIP_HOE_IGNORE_SOCKETS);
+    empty.set_tooltip(TOOLTIP_HOE_EMPTY);
+    info_details.set_tooltip(TOOLTIP_HOE_INFO_DETAILS);
+    display_treated.set_tooltip(TOOLTIP_HOE_DISPLAY_TREATED);
+    display_treated_only_dir.set_tooltip(TOOLTIP_HOE_DISPLAY_ONLY_DIR);
+    display_skipped.set_tooltip(TOOLTIP_HOE_DISPLAY_SKIPPED);
 }
 
 void html_options_extract::set_biblio(const shared_ptr<bibliotheque> & ptr)
