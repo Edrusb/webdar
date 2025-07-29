@@ -342,9 +342,14 @@ void html_entrepot::clear_json()
     try
     {
 	reset_ssh_files();
+
+	repo_type.set_selected_num(0);
+	login.set_value("");
+	pass.set_value("");
+	auth_from_file.set_value_as_bool(false);
+	knownhosts_check.set_value_as_bool(true);
 	wait_time.set_value(default_waittime);
 	verbose.set_value(default_verbose);
-	repo_type.set_selected_num(0);
     }
     catch(...)
     {
