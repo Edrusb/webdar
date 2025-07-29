@@ -296,12 +296,12 @@ void html_version::fill_libdar(html_table & table)
     }
 
     table.adopt_static_html("Delta compression");            table.adopt_static_html(YES_NO(libdar::compile_time::librsync()));
-    table.adopt_static_html("Remote repository");            table.adopt_static_html(YES_NO(libdar::compile_time::remote_repository()));
-    if(libdar::compile_time::remote_repository())
+    table.adopt_static_html("FTP repository");               table.adopt_static_html(YES_NO(libdar::compile_time::ftp_repository()));
+    if(libdar::compile_time::ftp_repository())
     {
-	table.adopt_static_html("libcurl version");
-	table.adopt_static_html(libdar::compile_time::libcurl_version());
+	table.adopt_static_html("libcurl version");          table.adopt_static_html(libdar::compile_time::libcurl_version());
     }
+    table.adopt_static_html("SFTP repository");              table.adopt_static_html(YES_NO(libdar::compile_time::sftp_repository()));
 
     table.adopt_static_html("argon2 hashing");               table.adopt_static_html(YES_NO(libdar::compile_time::libargon2()));
     table.adopt_static_html("Whirlpool hashing");            table.adopt_static_html(YES_NO(libdar::compile_time::whirlpool_hash()));
