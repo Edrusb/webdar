@@ -429,7 +429,7 @@ void html_entrepot::inherited_run()
 	throw WEBDAR_BUG;
     try
     {
-	libdar::mycurl_protocol proto;
+	libdar::remote_entrepot_type proto;
 
 	switch(repo_type.get_selected_num())
 	{
@@ -441,28 +441,28 @@ void html_entrepot::inherited_run()
 	    switch(repo_type.get_selected_num())
 	    {
 	    case 1:
-		proto = libdar::proto_ftp;
+		proto = libdar::remote_entrepot_type::ftp;
 		break;
 	    case 2:
-		proto = libdar::proto_sftp;
+		proto = libdar::remote_entrepot_type::sftp;
 		break;
 	    default:
 		throw WEBDAR_BUG;
 	    }
 
 	    cancellation_checkpoint();
-	    entrep.reset(new (nothrow) libdar::entrepot_libcurl(dialog,
-								proto,
-								login.get_value(),
-								libdar::secu_string(pass.get_value().c_str(), pass.get_value().size()),
-								host.get_value(),
-								port.get_value(),
-								auth_from_file.get_value_as_bool(),
-								pub_keyfile.get_value(),
-								prv_keyfile.get_value(),
-								knownhosts_check.get_value_as_bool() ? "" : known_hosts_file.get_value(),
-								libdar::U_I(webdar_tools_convert_to_int(wait_time.get_value())),
-								verbose.get_value_as_bool()));
+	    entrep = libdar::create_remote_entrepot(dialog,
+						    proto,
+						    login.get_value(),
+						    libdar::secu_string(pass.get_value().c_str(), pass.get_value().size()),
+						    host.get_value(),
+						    port.get_value(),
+						    auth_from_file.get_value_as_bool(),
+						    pub_keyfile.get_value(),
+						    prv_keyfile.get_value(),
+						    knownhosts_check.get_value_as_bool() ? "" : known_hosts_file.get_value(),
+						    libdar::U_I(webdar_tools_convert_to_int(wait_time.get_value())),
+						    verbose.get_value_as_bool());
 	    break;
 	default:
 	    throw WEBDAR_BUG;
