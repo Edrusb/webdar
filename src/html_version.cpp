@@ -299,7 +299,7 @@ void html_version::fill_libdar(html_table & table)
     table.adopt_static_html("FTP repository");               table.adopt_static_html(YES_NO(libdar::compile_time::ftp_repository()));
     if(libdar::compile_time::ftp_repository())
     {
-	table.adopt_static_html("libcurl version");          table.adopt_static_html(libdar::compile_time::libcurl_version());
+	table.adopt_static_html("FTP repo: libcurl version");          table.adopt_static_html(libdar::compile_time::libcurl_version());
     }
     table.adopt_static_html("SFTP repository");              table.adopt_static_html(YES_NO(libdar::compile_time::sftp_repository()));
 
