@@ -242,6 +242,7 @@ string html_form_mask_subdir::inherited_get_body_part(const chemin & path,
 	    libdar::path valpath = libdar::path(val);
 
 	    if(valpath.is_absolute())
+	    if(mask_subdir.box_get_css_class() != webdar_css_style::red_border)
 	    {
 		mask_subdir.box_set_css_class(webdar_css_style::red_border);
 		throw exception_range("absolute path are not allowed for path filtering in that context");
