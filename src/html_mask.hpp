@@ -53,6 +53,13 @@ public:
 	/// obtain the mask for libdar
     virtual std::unique_ptr<libdar::mask> get_mask() const = 0;
 
+	/// whether mask is an absolute mask (when it concerns paths filtering)
+
+	/// \note a mask is not relative even if one of its part not relative,
+	/// it is a relative mask (and can be used anywhere) if nowhere
+	/// in its definition a absolute path is used (all its components are relative)
+    virtual bool is_relative() const = 0;
+
 };
 
 #endif

@@ -40,6 +40,7 @@ extern "C"
     // webdar headers
 #include "body_builder.hpp"
 #include "actor.hpp"
+#include "events.hpp"
 #include "bibliotheque.hpp"
 #include "html_text.hpp"
 #include "html_form.hpp"
@@ -85,9 +86,11 @@ extern "C"
 
 	\endverbatim **/
 
-template <class T> class arriere_boutique: public body_builder, public actor
+template <class T> class arriere_boutique: public body_builder, public actor, public events
 {
 public:
+    static const std::string changed;
+
     arriere_boutique(const std::shared_ptr<bibliotheque> & ptr, ///< bibliotheque object to read/save json config to
 		     bibliotheque::category cat,      ///< category to use in the ptr pointed to bibliotheque
 		     std::unique_ptr<T> & obj,        ///< the child object to load and save from json data
@@ -102,6 +105,9 @@ public:
 
 	/// inherited from class actor
     virtual void on_event(const std::string & event_name) override;
+
+	/// get access to the wrapped object
+    const jsoner* get_wrapped() const { if(!wrapped) throw WEBDAR_BUG; return wrapped.get(); };
 
 
 protected:
@@ -156,6 +162,7 @@ private:
     void silently_update_config_name(const std::string & val);
 };
 
+template <class T> const std::string arriere_boutique<T>::changed = "ab_changed";
 
 template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<bibliotheque> & ptr,
 							 bibliotheque::category cat,
@@ -247,6 +254,8 @@ template <class T> arriere_boutique<T>::arriere_boutique(const std::shared_ptr<b
     adopt(&confirm);
 
 	// events and actors
+    register_name(changed);
+
     wrapped_events->record_actor_on_event(this, change_event_name);
     config_form.record_actor_on_event(this, html_form::changed);
     delete_selected.record_actor_on_event(this, event_delete);
@@ -286,6 +295,7 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 
 	need_saving.set_visible(true);
 	clear_warning();
+	act(changed);
     }
     else if(event_name == html_form::changed)
     {
@@ -403,6 +413,7 @@ template <class T> void arriere_boutique<T>::on_event(const std::string & event_
 	    throw;
 	}
 	ignore_events = false;
+	act(changed);
     }
     else if(event_name == bibliotheque::changed(categ))
     {

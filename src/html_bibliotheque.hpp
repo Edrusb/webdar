@@ -136,6 +136,7 @@ private:
 
     std::unique_ptr<arriere_boutique<html_entrepot_landing> > ab_entrepot;
     std::unique_ptr<arriere_boutique<html_mask_form_filename> > ab_filemask;
+    html_text absolute_path_warning;
     std::unique_ptr<arriere_boutique<html_mask_form_path> > ab_pathmask;
     std::unique_ptr<arriere_boutique<html_compression_params> > ab_compr;
     std::unique_ptr<arriere_boutique<html_slicing> > ab_slicing;

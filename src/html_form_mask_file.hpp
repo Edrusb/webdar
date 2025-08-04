@@ -94,6 +94,15 @@ public:
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override;
 
+	/// inherited from html_mask
+
+	/// \note: always prefix bases, which may be or not absolute, but
+	/// also in the provided file absolute paths may take place and we
+	/// can't know at this stage (file has not been openned) what's
+	/// enclosed in it.
+    virtual bool is_relative() const override { return false; };
+
+
         /// inherited from jsoner
     virtual void load_json(const json & source) override;
 

@@ -159,6 +159,20 @@ unique_ptr<libdar::mask> html_form_mask_subdir::get_mask() const
     return ret;
 }
 
+bool html_form_mask_subdir::is_relative() const
+{
+    string val = mask_subdir.get_value();
+
+    if(! val.empty())
+    {
+	libdar::path valpath = libdar::path(val);
+
+	return valpath.is_relative();
+    }
+    else
+	return true; // empty string is compatible with relative path
+}
+
 void html_form_mask_subdir::load_json(const json & source)
 {
     try
@@ -220,7 +234,8 @@ void html_form_mask_subdir::on_event(const string & event_name)
     else if(event_name == update)
     {
 	fs.change_label(tell_action());
-	check_absolute_path_requirement();
+	(void)check_absolute_path_requirement();
+	    // we ignore the returned value
     }
     else
 	throw WEBDAR_BUG;
@@ -237,18 +252,13 @@ string html_form_mask_subdir::inherited_get_body_part(const chemin & path,
     {
 	string val = mask_subdir.get_value();
 
-	if(! val.empty())
+	if(! is_relative())
 	{
-	    libdar::path valpath = libdar::path(val);
-
-	    if(valpath.is_absolute())
 	    if(mask_subdir.box_get_css_class() != webdar_css_style::red_border)
 	    {
 		mask_subdir.box_set_css_class(webdar_css_style::red_border);
 		throw exception_range("absolute path are not allowed for path filtering in that context");
 	    }
-	    else
-		mask_subdir.box_set_css_class("");
 	}
 	else
 	    mask_subdir.box_set_css_class("");

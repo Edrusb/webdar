@@ -168,6 +168,11 @@ html_bibliotheque::html_bibliotheque(shared_ptr<bibliotheque> & ptr,
     if(!ab_filemask)
 	throw exception_memory();
 
+	// path warning
+
+    absolute_path_warning.clear();
+    absolute_path_warning.add_text(0, "Warning, absolute path based filters, cannot be used in testing or merging operations");
+
 	// path mask tab
 
     tmp_fp.reset(new (nothrow) html_mask_form_path(true));
@@ -422,6 +427,7 @@ html_bibliotheque::html_bibliotheque(shared_ptr<bibliotheque> & ptr,
 
     tabs.adopt_in_section(tab_repo, ab_entrepot.get());
     tabs.adopt_in_section(tab_filemask, ab_filemask.get());
+    tabs.adopt_in_section(tab_pathmask, &absolute_path_warning);
     tabs.adopt_in_section(tab_pathmask, ab_pathmask.get());
     tabs.adopt_in_section(tab_compression, ab_compr.get());
     tabs.adopt_in_section(tab_slicing, ab_slicing.get());
@@ -455,10 +461,12 @@ html_bibliotheque::html_bibliotheque(shared_ptr<bibliotheque> & ptr,
     generate_defaults.record_actor_on_event(this, event_defaults);
     question.record_actor_on_event(this, html_yes_no_box::answer_yes);
     question.record_actor_on_event(this, html_yes_no_box::answer_no);
+    ab_pathmask->record_actor_on_event(this, arriere_boutique<html_mask_form_path>::changed);
 
 	// visibility
     clear_ok_messages();
     set_saved_status();
+    absolute_path_warning.set_visible(false);
 
 	// css
     webdar_css_style::normal_button(load);
@@ -485,6 +493,8 @@ html_bibliotheque::html_bibliotheque(shared_ptr<bibliotheque> & ptr,
     nok_message.add_css_class(webdar_css_style::text_color_red);
     saved_status.add_css_class(webdar_css_style::text_color_green);
     unsaved_status.add_css_class(webdar_css_style::text_color_red);
+
+    absolute_path_warning.add_css_class(webdar_css_style::text_color_green);
 
     statusbar.add_css_class(css_statusbar);
 
@@ -626,6 +636,14 @@ void html_bibliotheque::on_event(const string & event_name)
     else if(event_name == html_yes_no_box::answer_no)
     {
 	q_context = context_undefined;
+    }
+    else if(event_name == arriere_boutique<html_mask_form_path>::changed)
+    {
+	const html_mask_form_path* tmp = dynamic_cast<const html_mask_form_path*>(ab_pathmask->get_wrapped());
+	if(tmp == nullptr)
+	    throw WEBDAR_BUG;
+	else
+	    absolute_path_warning.set_visible(! tmp->is_relative());
     }
     else
 	throw WEBDAR_BUG;

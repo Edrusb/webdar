@@ -103,6 +103,18 @@ unique_ptr<libdar::mask> html_over_guichet::get_mask() const
     return inner_mask->get_mask();
 }
 
+bool html_over_guichet::is_relative() const
+{
+    check_inner();
+
+    const html_mask* inner_mask = dynamic_cast<const html_mask*>(inner.get());
+    if(inner_mask == nullptr)
+	throw WEBDAR_BUG;
+
+    return inner_mask->is_relative();
+}
+
+
 void html_over_guichet::load_json(const json & source)
 {
     wicket.load_json(source);

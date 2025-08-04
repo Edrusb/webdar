@@ -87,6 +87,10 @@ public:
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override { return root.get_mask(); };
 
+	/// inherited from html_mask
+    virtual bool is_relative() const override { return root.is_relative(); };
+
+
 	/// inherited from html_form_dynamic_table
     virtual std::unique_ptr<body_builder> provide_object_of_type(unsigned int num,
 								 const std::string & context,

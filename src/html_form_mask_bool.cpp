@@ -141,6 +141,29 @@ unique_ptr<libdar::mask> html_form_mask_bool::get_mask() const
     return ret;
 }
 
+bool html_form_mask_bool::is_relative() const
+{
+    bool ret = true;
+
+    html_mask* ptr_mask = nullptr;
+    shared_ptr<body_builder> ptr = nullptr;
+    html_form_dynamic_table::iterator it = table.begin();
+
+    while(it != table.end() && ret)
+    {
+	ptr = it.get_object();
+	if(!ptr)
+	    throw WEBDAR_BUG;
+	ptr_mask = dynamic_cast<html_mask*>(ptr.get());
+	if(ptr_mask == nullptr)
+	    throw WEBDAR_BUG;
+	ret &= ptr_mask->is_relative();
+	++it;
+    }
+
+    return ret;
+}
+
 void html_form_mask_bool::on_event(const string & event_name)
 {
     if(event_name == bool_changed_event)

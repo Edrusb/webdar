@@ -111,6 +111,9 @@ public:
 	/// inherited from html_mask
     virtual std::unique_ptr<libdar::mask> get_mask() const override;
 
+	/// inherited from html_mask
+    virtual bool is_relative() const override;
+
 	/// inherited from actor
     virtual void on_event(const std::string & event_name) override;
 
