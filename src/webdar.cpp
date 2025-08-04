@@ -341,6 +341,8 @@ int main(int argc, char *argv[], char** env)
 
 		    while(it != ecoute.end())
 		    {
+			string iface = it->interface == "" ? "127.0.0.1" : it->interface;
+
 			if(! certificate.empty() && ! privateK.empty())
 			{
 			    cipher.reset(new (nothrow) ssl_context(certificate, privateK));
@@ -349,9 +351,12 @@ int main(int argc, char *argv[], char** env)
 			    creport->report(info, "A new SSL context has been created");
 			}
 
+			if(it->interface == "0.0.0.0")
+			    iface = "<hostname or IP>";
+
 			reminder_msg += string("\t\t")
 			    + (cipher ? "https://" : "http://")
-			    + (it->interface == "" ? "127.0.0.1" : it->interface)
+			    + (iface)
 			    + string(":") + to_string(it->port) + string("\n");
 
 			if(it->interface == "")
