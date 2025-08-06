@@ -84,7 +84,7 @@ html_options_create::html_options_create():
     security_check("Security warning", html_form_input::check, "", "", ""),
     dont_ignore_unknown_inode_type("Ignore unknown inode type instead of warning", html_form_input::check, "1", "", ""),
     perimeter_fs(""),
-    empty_dir("Store ignored directories as empty directories", html_form_input::check, "1", "", ""),
+    empty_dir("Store ignored directories as empty directories", html_form_input::check, "", "", ""),
     cache_directory_tagging("Ignore directories that use a cache directory tag", html_form_input::check, "1", "", ""),
     nodump("Avoid saving files having the 'Nodump' flag set", html_form_input::check, "1", "", ""),
     exclu_by_ea_fs("Avoid saving files having a given Extended Attribute"),
@@ -888,7 +888,7 @@ void html_options_create::set_to_webdar_defaults()
     display_skipped.set_value_as_bool(true);
     display_dir_summary.set_value_as_bool(true);
     dont_ignore_unknown_inode_type.set_value_as_bool(true);
-    empty_dir.set_value_as_bool(true);
+    empty_dir.set_value_as_bool(false);
     cache_directory_tagging.set_value_as_bool(true);
     nodump.set_value_as_bool(true);
     exclude_by_ea.set_value_as_bool(true);
