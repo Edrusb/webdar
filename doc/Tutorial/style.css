@@ -1,0 +1,608 @@
+/* general pages style */
+
+*
+{
+    box-sizing border-box;
+}
+
+html
+{
+    font-family: 'Open Sans', serif;
+    text-align: justify;
+}
+
+body
+{
+    margin: 5%;
+    background-color: White;
+    color: rgb(0, 0, 170);
+}
+
+p, dt
+{
+    padding-left: 20px;
+}
+
+/* pagination */
+
+div.top
+{
+    border-radius: 14px 1px 14px 1px;
+    background: rgb(221,221,221);
+    color: rgb(0,0,170);
+    text-align: center;
+    padding: 10px;
+    overflow: auto;
+    display: flex;
+    align-items: center;
+}
+
+div.top img
+{
+    float:left;
+}
+
+@media only screen and (max-width: 800px)
+{
+    div.top img
+    {
+	width: 150px;
+    }
+}
+
+
+div.top h1, div.top div.h1
+{
+    flex-grow: 2;
+}
+
+/* menuitem */
+
+div.menuitem
+{
+    border-radius: 14px 1px 14px 1px;
+    background: lightBlue;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 3px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+div.menuitem code
+{
+    background: inherit;
+}
+
+div.menuitemactive
+{
+    border-radius: 14px 1px 14px 1px;
+    background: LightYellow;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 3px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* non floating menu box */
+
+div.menutop
+{
+    clear: both;
+}
+
+/* floating menu box */
+
+div.page
+{
+    display: flex;
+}
+
+/* page contains menuleft and main */
+
+div.menuleft
+{
+    padding: 1%;
+    text-align: center;
+    margin-right: 20px;
+    background: rgb(221,221,221);
+    flex-basis: 25%;
+    flex-grow: 1;
+}
+
+div.menuleft a
+{
+    font-style: normal;
+    text-decoration: none;
+    font-size: 1.25em;
+    font-weight: bold;
+    color: #000055;
+}
+
+div.menuleft div:hover
+{
+    background: White;
+    text-shadow: 3px 3px 2px Grey;
+}
+
+div.menuleft a:hover
+{
+    text-shadow: 3px 3px 2px Grey;
+}
+
+/*
+main section
+*/
+
+div.mainleft
+{
+    padding-bottom: 5%;
+    max-width: 75%;
+}
+
+div.maintop
+{
+    padding-bottom: 5%;
+    min-width: 100%;
+}
+
+@media only screen and (max-width: 600px)
+{
+    div.top
+    {
+	border-radius: 14px 1px 1px 1px;
+    }
+    div.page
+    {
+	flex-direction: column;
+	align-items: stretch;
+    }
+    div.menuleft
+    {
+	margin-right: 0;
+    }
+    div.mainleft
+    {
+	width: 100%;
+	max-width: 100%;
+    }
+}
+
+/*
+bottom jump to top page
+*/
+
+div.jump
+{
+    padding: 5px;
+    text-align: center;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    background: inherit;
+
+    float: left;
+    clear: both;
+    width: 88%;
+    position: fixed;
+    bottom: 0px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: Grey;
+    box-shadow: 5px 5px grey;
+    opacity: 0.1;
+}
+
+div.jump:hover
+{
+    opacity: 1;
+}
+
+/* displaying code */
+
+code
+{
+    white-space: pre;
+    color: #111111;
+    background-color:#EEEEEE;
+    overflow: auto;
+}
+
+code.block
+{
+    margin-left: 2%;
+    display: block;
+    border: 1px solid #333333;
+    text-align: left;
+}
+
+code:hover
+{
+    background-color:inherit;
+}
+
+/* displaying gauge */
+
+div.cadre
+{
+    border-style: solid;
+    border-color: #AAAAAA;
+    border-width: 1px;
+    border-radius: 14px 1px 14px 1px;
+    background-color: #EEEEEE;
+    padding-top: 2px;
+    padding-right: 5px;
+    padding-bottom:2px;
+    padding-left: 2px;
+    box-sizing: border-box;
+}
+
+div.gauge
+{
+    border-radius: 14px 1px 14px 1px;
+    box-shadow: 5px 5px Grey;
+    color: #CCCCCC;
+    text-shadow: 2px 2px 0px Black;
+    padding-left: 1%;
+    box-sizing: border-box;
+    margin-top: 1px;
+    margin-bottom: 2px;
+    margin-left: 1px;
+    margin-right: 1px;
+    white-space: pre;
+}
+
+.best
+{
+    background-color: DarkGreen;
+}
+
+.normal
+{
+    background-color: Blue;
+}
+
+.ref
+{
+    background-color: #555555;
+}
+
+/* code emphasis */
+
+e
+{
+    background-color: Yellow;
+}
+
+.yellow
+{
+    background-color: Yellow;
+}
+
+.red
+{
+    background-color: Red;
+}
+
+.blue
+{
+    background-color: LightBlue;
+}
+
+.green
+{
+    background-color: Teal;
+}
+
+
+/* hyperlinks appearance */
+
+a
+{
+    font-style: italic
+}
+
+a:link
+{
+    color: #006677;
+}
+
+
+a:visited
+{
+    color: #000055;
+}
+
+a:hover
+{
+    color: Purple;
+    text-shadow: 0px 0px 4px Red;
+}
+
+a:active
+{
+    color: #ff0000;
+}
+
+/* title appearance */
+
+h1,h2,h3,h4,h5,h6,h7,h8
+{
+    text-shadow: 3px 3px 2px Grey;
+    color: DarkBlue;
+}
+
+/* numbering the titles */
+
+body
+{
+    counter-reset: h2c;
+}
+
+h2::before
+{
+    counter-increment: h2c;
+    content: counter(h2c) "\0000a0-\0000a0\0000a0";
+}
+
+h2
+{
+    counter-reset: h3c;
+    text-decoration: underline;
+}
+
+h3::before
+{
+    counter-increment: h3c;
+    content: counter(h2c) "." counter(h3c) "\0000a0-\0000a0\0000a0";
+}
+
+h3
+{
+    counter-reset: h4c;
+}
+
+h4::before
+{
+    counter-increment: h4c;
+    content: counter(h2c) "." counter(h3c) "." counter(h4c) "\0000a0-\0000a0\0000a0";
+}
+
+/* table view */
+
+div.table
+{
+    overflow-x: auto;
+}
+
+table, td
+{
+    border: 1px solid;
+    border-collapse: collapse;
+}
+
+table
+{
+    background-color: #EEEEEE;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th
+{
+    background-color: DarkBlue;
+    text-shadow: 0px 0px 2px LightBlue;
+    color: White;
+}
+
+.left
+{
+    text-align: left;
+}
+
+.right
+{
+    text-align: right;
+}
+
+.center
+{
+    text-align: center;
+}
+
+table.lean
+{
+    border: 0px;
+    background-color: inherit;
+    max-width: 100%;
+}
+
+table.lean td, th, tr
+{
+    border: 0px;
+}
+
+
+ /* description lists */
+
+dt
+{
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+td.desc
+{
+    vertical-align: top;
+    text-align: right;
+    padding-right: 25px;
+}
+
+dt::before
+{
+    content: '- ';
+}
+
+dt.void::before
+{
+    content: '';
+}
+
+dt.void::before
+{
+    content: ' ';
+}
+
+/* synthesis */
+
+.optimum
+{
+    background-color: Green;
+    color: White;
+    text-shadow: 2px 2px 0px Black;
+}
+
+.ideal
+{
+    background-color: Green;
+}
+
+
+.limited
+{
+    background-color: Yellow;
+}
+
+.noway
+{
+    background-color: Red;
+}
+
+
+
+/* tooltip */
+
+.tooltip
+{
+    position: relative;
+/*    display: inline-block;*/
+}
+
+.tooltip .text
+{
+    visibility: hidden;
+    max-width: 120px;
+    background-color: DarkBlue;
+    color: white;
+    text-align:center;
+    border-radius: 5px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    box-shadow: 5px 5px Grey;
+}
+
+.tooltip:hover .text
+{
+    visibility: visible;
+}
+
+/* color codes for Dev Cycle */
+
+table.release
+{
+    border: none;
+    border-collapse: separate;
+    min-width: 60%;
+}
+
+table.release td
+{
+    border: none;
+    border-collapse: separate;
+    text-align: center;
+    vertical-align: middle;
+}
+
+table.release td.tier
+{
+    width: 33%;
+}
+
+.dc
+{
+    width:8.3%;
+    height: 30px;
+}
+
+.dc-dev1
+{
+    background-color: rgb(255,255,255);
+    color: rgb(0,0,0);
+}
+
+.dc-dev2
+{
+    background-color: rgb(255,204,204);
+    color: rgb(0,0,0);
+}
+
+.dc-dev3
+{
+    background-color: rgb(255,102,102);
+    color: rgb(0,0,0);
+}
+
+.dc-dev4
+{
+    background-color: rgb(255,0,0);
+    color: rgb(0,0,0);
+}
+
+.dc-dev5
+{
+    background-color: rgb(204,0,0);
+    color: rgb(0,0,0);
+}
+
+.dc-frozen
+{
+    background-color: rgb(255,204,0);
+    color: rgb(0,0,0);
+}
+
+.dc-pre-release
+{
+    background-color: rgb(255,255,51);
+    color: rgb(0,0,0);
+}
+
+.dc-rel1
+{
+    background-color: rgb(153,255,153);
+    color: rgb(0,0,0);
+}
+
+.dc-rel2
+{
+    background-color: rgb(51,255,51);
+    color: rgb(0,0,0);
+}
+
+.dc-rel3
+{
+    background-color: rgb(51,204,0);
+    color: rgb(0,0,0);
+}
+
+.dc-ending-soon
+{
+    background-color: rgb(51,153,153);
+    color: rgb(0,0,0);
+}
+
+.dc-ended
+{
+    background-color: rgb(151,153,153);
+    color: rgb(0,0,0);
+}
