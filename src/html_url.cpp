@@ -43,7 +43,8 @@ using namespace std;
 html_url::html_url(const string & url):
     x_url(url),
     download(false),
-    filename("")
+    filename(""),
+    blank(false)
 {
 }
 
@@ -70,7 +71,10 @@ string html_url::inherited_get_body_part(const chemin & path,
     if(! x_class.empty())
 	ret += " " + x_class;
 
-    ret += " href=\"" + x_url + anchor + "\"" + dnl + ">";
+    ret += " href=\"" + x_url + anchor + "\"" + dnl;
+    if(blank)
+	ret += " target=\"_blank\"";
+    ret += + ">";
 
     ret += get_body_part_from_all_children(path, req);
 

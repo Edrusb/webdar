@@ -62,6 +62,9 @@ public:
 	/// \note providing a empty string get to the default behavior (no filename specified in URL)
     void set_filename(const std::string & name) { filename = name; };
 
+	/// open a new page (_blank target)
+    void set_target_new_page(bool mode) { blank = mode; };
+
 protected:
 	/// inherited from body_builder
     virtual std::string inherited_get_body_part(const chemin & path,
@@ -73,6 +76,7 @@ private:
     std::string x_url;
     bool download;
     std::string filename;
+    bool blank;
 };
 
 
