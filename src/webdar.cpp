@@ -786,9 +786,19 @@ static void usage(const char* argv0)
     msg += libdar::tools_printf("  -C : certificate from the PKI to authenticate the -K-given private key\n");
     msg += libdar::tools_printf("  -K : private key to use to cipher exchanges with ssl (HTTPS sessions)\n\n");
     msg += libdar::tools_printf("Creating a self signed certificate can be achieved with:\n");
-    msg += libdar::tools_printf("     openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout mycert.pem -out mycert.pem\n");
+    msg += libdar::tools_printf("     openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout mycert.pem -out mycert.pem\n\n");
+    msg += libdar::tools_printf("Get the fingerprints of this self-signed certificate:\n");
+    msg += libdar::tools_printf("     openssl x509 -in mycert.pem -fingerprint -noout\n");
+    msg += libdar::tools_printf("     openssl x509 -in mycert.pem -fingerprint -sha256 -noout\n\n");
     msg += libdar::tools_printf("You can then setup webdar for HTTPS this way:\n");
     msg += libdar::tools_printf("     webdar -l 0.0.0.0 -v -C mycert.pem -K mycert.pem\n\n");
+    msg += libdar::tools_printf("Then compare the SHA1 and/or SHA256 fingerprints of the certificate\n");
+    msg += libdar::tools_printf("received by your browser, the first time when it will complain about a probable risk.\n");
+    msg += libdar::tools_printf("If they match the ones you calculated as shown above, you are good to drive your\n");
+    msg += libdar::tools_printf("browser to accept this certificate once and for all. Any subsequent warning from the\n");
+    msg += libdar::tools_printf("browser while connecting to Webdar using the same certificate on the same node should\n");
+    msg += libdar::tools_printf("be considered an attack. You should consider the network insecured, the Wedar or browser\n");
+    msg += libdar::tools_printf("nodes compromised... unless this is just the certifcate generated above that has expired!\n\n");
 
     cout << msg << endl;
     exit(1);
