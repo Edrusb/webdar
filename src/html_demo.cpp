@@ -62,6 +62,7 @@ html_demo::html_demo():
     counter("Provided string size", html_form_input::number, "0", "10", ""),
     label("- this text is provided without additional information"),
     labelplus("- while this text is provided with helper information", TOOLTIP_D_LABEL),
+    tutorial("https://edrusb.github.io/webdar/"),
     close("Close", event_close)
 {
 
@@ -83,6 +84,10 @@ html_demo::html_demo():
     description.add_paragraph();
     description.add_text(0, "Note also that positionning your pointer on some text for more than one second will show helper information as illustrated just below:");
     description.add_nl();
+
+    tutorial.set_target_new_page(true);
+    tutorial_desc.clear();
+    tutorial_desc.add_text(3, "For more read the full tutorial");
 
     labelsep.add_nl();
 
@@ -107,6 +112,8 @@ html_demo::html_demo():
     desc_div.adopt(&label);
     desc_div.adopt(&labelsep);
     desc_div.adopt(&labelplus);
+    tutorial.adopt(&tutorial_desc);
+    desc_div.adopt(&tutorial);
     adopt(&table);
 
     table.adopt(&form);

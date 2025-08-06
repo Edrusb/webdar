@@ -113,6 +113,8 @@ private:
     html_label label;
     html_text labelsep;
     html_label labelplus;
+    html_url tutorial;
+    html_text tutorial_desc;
     html_button close;
 };
 
