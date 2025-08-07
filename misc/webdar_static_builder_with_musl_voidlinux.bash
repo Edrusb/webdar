@@ -3,25 +3,13 @@
 if [ ! -z "$1" ] && [ "$1" -gt 1 ] ; then
     export MAKE_FLAGS="-j $1"
 else
-    echo "usage: $0 <num CPU cores to use> [root]"
+    echo "usage: $0 <num CPU cores to use>"
     exit 1
 fi
 
-if [ -z "$2" ] ; then
-    export ROOT_PERM=no
-else
-    export ROOT_PERM=yes
-fi
-
-echo "ROOT_PERM = $ROOT_PERM"
-
 # config/compilation/linking related variables
 
-if [ "$ROOT_PERM" = "no" ] ; then
-    export LOCAL_PREFIX="$HOME/usr"
-else
-    export LOCAL_PREFIX="/usr/local"
-fi
+export LOCAL_PREFIX="/usr/local"
 
 export LOCAL_PKG_CONFIG_DIR1="$LOCAL_PREFIX/lib/pkgconfig"
 export LOCAL_PKG_CONFIG_DIR2="$LOCAL_PREFIX/lib64/pkgconfig"
@@ -105,36 +93,33 @@ check()
 requirements()
 {
 
-    if [ "$ROOT_PERM" = "yes" ] ; then
+    #updating xbps db
+    xbps-install -SUy || (xbps-install -uy xbps && xbps-install -SUy) || return 1
 
-	#updating xbps db
-	xbps-install -SUy || (xbps-install -uy xbps && xbps-install -SUy) || return 1
+    # tools used to build the different packages involved here
+    xbps-install -y gcc make wget pkg-config cmake xz || exit 1
 
-	# tools used to build the different packages involved here
-	xbps-install -y gcc make wget pkg-config cmake xz || exit 1
+    #direct dependencies of libdar
+    xbps-install -y bzip2-devel e2fsprogs-devel libargon2-devel libgcc-devel libgcrypt-devel liblz4-devel \
+		 liblzma-devel libstdc++-devel libzstd-devel lz4-devel \
+		 lzo-devel musl-devel zlib-devel || exit 1
 
-	#direct dependencies of libdar
-	xbps-install -y bzip2-devel e2fsprogs-devel libargon2-devel libgcc-devel libgcrypt-devel liblz4-devel \
-		     liblzma-devel libstdc++-devel libzstd-devel lz4-devel \
-		     lzo-devel musl-devel zlib-devel || exit 1
+    # needed to build static flavor of librsync
+    xbps-install -y libb2-devel || exit 1
 
-	# needed to build static flavor of librsync
-	xbps-install -y libb2-devel || exit 1
+    # needed to build static flavor of gnutls
+    xbps-install -y  nettle-devel libtasn1-devel libunistring-devel unbound-devel unbound || exit 1
 
-	# needed to build static flavor of gnutls
-	xbps-install -y  nettle-devel libtasn1-devel libunistring-devel unbound-devel unbound || exit 1
-
-	#needed for static flavor of libcurl
-	xbps-install -y libssp-devel || echo "ignoring error if libssp-devel fails to install due to musl-devel already installed"
+    #needed for static flavor of libcurl
+    xbps-install -y libssp-devel || echo "ignoring error if libssp-devel fails to install due to musl-devel already installed"
 
 
-	# optional but interesting to get a smaller dar_static binary
-	xbps-install -y upx || (echo "" && echo "WARNING!" && echo "Failed to install upx, will do without" && echo && sleep 3)
+    # optional but interesting to get a smaller dar_static binary
+    xbps-install -y upx || (echo "" && echo "WARNING!" && echo "Failed to install upx, will do without" && echo && sleep 3)
 
-	# openssl needs perl
-	xbps-install -y perl || (echo "" && echo "WARNING!" && echo "Failed to install perl" && exit 1)
+    # openssl needs perl
+    xbps-install -y perl || (echo "" && echo "WARNING!" && echo "Failed to install perl" && exit 1)
 
-    fi
 }
 
 openssl()

@@ -109,9 +109,10 @@ extern "C"
     /// The following describes the overall architecture of the webdar software
     ///
     /// If you want more user level documents, checkout the following links:
-    /// - Tutorial        : https://edrusb.github.io/webdar
-    /// Packages download : https://sourceforge.net/projects/webdar
-    /// Github discussion : https://github.com/Edrusb/webdar/discussions
+    /// - Tutorial           : https://edrusb.github.io/webdar
+    /// - Packages download  : https://sourceforge.net/projects/webdar/files
+    /// - Author signing key : http://dar.linux.free.fr/doc/authentification.html
+    /// - Github discussion  : https://github.com/Edrusb/webdar/discussions
     ///
     ///
     /// The webdar main() launches:

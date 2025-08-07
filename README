@@ -1,5 +1,8 @@
 
+
+
 	W E B D A R
+
 
 Backup and restore data with Dar, as a lazy "cloud" user
 
@@ -7,7 +10,7 @@ Backup and restore data with Dar, as a lazy "cloud" user
 
 Several document are lying around this README file:
 
-COPYING is the GPLv3 license under which webdar is released
+COPYING is the GPLv3 license under which webdar is available
 INSTALL will tell you how to compile and install libdar
 doc/WHY_WEBDAR will tell you about webdar design choices
 doc/webdar.txt which describes expected features for webdar
@@ -18,7 +21,7 @@ Tutorial          : https://edrusb.github.io/webdar
 Packages download : https://sourceforge.net/projects/webdar
 Github            : https://github.com/Edrusb/webdar
 Sourceforge       : https://sourceforge.net/projects/webdar
-Internals doc     : https://webdar.sourceforge.io
+Internals doc     : https://webdar.sourceforge.io/
 
 Package Authentication
 ----------------------

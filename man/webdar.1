@@ -1,4 +1,4 @@
-.TH WEBDAR 1 "December 4th, 2025"
+.TH WEBDAR 1 "August 8th, 2025"
 .UC 8
 .SH NAME
 webdar \- web interface to libdar
@@ -11,11 +11,11 @@ webdar -V
 
 .SH DESCRIPTION
 .B webdar
-is a web server providing a way to manipulate dar backups from a remote host over the network thanks to a classical web browser. Over managing dar backups it also provides the ability to interface with a remote FTP server where to store or fetch dar backup slices.
+is a web server providing a way to manipulate dar backups from a remote host over the network thanks to a classical web browser. Over managing dar backups it also provides the ability to interface with remote FTP and SFTP servers where to store or fetch dar backup slices.
 .P
-You can find more help information using a web browser pointing it on the URL showed in webdar stdout. It it does not show, hit CTRL-C no more than once every two seconds for the connection information to be redisplayed.
+You can find more help information pointing a web browser to the URL displayed in webdar stdout. If this information does not show (because of logs), hit CTRL-C no more than once every two seconds for the connection information to be redisplayed.
 .P
-Note that by default for version 1.0.0 webdar is not a daemon, it uses stderr/stdout to report error messages that cannot be displayed on the web user interface. The -b option is not implemented neither for now.
+Note that by default for version 1.0.x, webdar is not a daemon, it uses stderr/stdout to report error messages that cannot be displayed on the web user interface. The -b option is not implemented neither for now.
 
 .SH OPTIONS
 .TP 20
@@ -34,7 +34,7 @@ Without -l option, webdar listens on loopback interface (127.0.0.1) on TCP port 
 set webdar to verbose mode
 .TP 20
 -m <num>
-maximum number of concurrent server threads. Note a "server" component is used for each incoming TCP connection, the number of 'session' (graphical configuration and running state of a workload)
+maximum number of concurrent server threads. Note: a "server" component is used for each incoming TCP connection, the number of 'session' (graphical configuration and running state of a workload)
 is independant from the number of connection and can even be larger than the number of server threads. For example, from a connection, you can manage several sessions, while some session may be running and some other idle without any connection active to webdar at the same time.
 .TP 20
 -b <facility>
@@ -47,9 +47,9 @@ provide path to a file containing a certificate for the private key to use for S
 provide the path to a file holding the private key, to use to encrypt ssl sessions, without -K option and provided private key, connection to webdar in https sessions is not available
 .TP 20
 -w <yes|no>
-with "yes", using normal webauth to authenticate (at least with webdar 1.0.x), which means disconnection is not available unless the browser is restarted.
+with "yes" (the default), using normal webauth to authenticate (at least with webdar 1.0.x), which means disconnection is not available unless the browser is restarted.
 Using "no" still uses basic authentication but new TCP session are forced to reauthenticate and disconnection within a given TCP session
-is kept by ignoring the basic authentication token until user reauthenticate. The drawback is the user reauthentication needed whenever the
+is kept by ignoring the basic authentication token until user reauthenticate. The drawback is the user reauthentication needed, whenever the
 browser decides to teardown and restart an new TCP session to webdar.
 .TP 20
 -h
@@ -103,7 +103,7 @@ Lack of ressource to be able to provide the expected service
 dar(1)
 
 .SH KNOWN BUGS
-see <URL>
+see https://github.com/Edrusb/webdar
 
 .SH AUTHOR
 .nf
