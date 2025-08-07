@@ -60,7 +60,15 @@ connexion::connexion(int fd, const string & peerip, unsigned int peerport):
 
 connexion::~connexion()
 {
-    fermeture();
+    try
+    {
+	fermeture();
+    }
+    catch(...)
+    {
+	    // ignore any exception due to
+	    // destructor context
+    }
 }
 
 unsigned int connexion::read_impl(char *a, unsigned int size, bool blocking)
