@@ -114,8 +114,8 @@ public:
 	/// provided class name.
 	/// \note a descendant component is any component specified inside the current component, for example
 	/// in the following html string "<div> demo <p> something </p> something else</div>" "<p>"
-	/// is a descendant of <div>. If one wants a specific css definition for
-	/// <p> inside <div>, the descendant string here should be "p" and the current css_class object
+	/// is a descendant of "<div>". If one wants a specific css definition for
+	/// "<p>" inside "<div>", the descendant string here should be "p" and the current css_class object
 	/// be used (or rather referred by its name) by an html_div component. if the descendant is to be
 	/// a class name rather than an HTML component name, it should be preceeded by a dot like ".myclassname".
 	/// combining HTML component name with class is possible: "p.myclassname" and restricts the

@@ -296,7 +296,7 @@ public:
 	/// webdar - browser communication (Responsive CSS)
     void css_visibility(bool val);
 
-	/// css content property for ::after ::before pseudo-elements
+	/// css content property for "::after" and "::before" pseudo-elements
     void css_content(const std::string & name);
 
 	/// css transition, this concerns all properties that changed within CSS style (hover, focus, and so on)
