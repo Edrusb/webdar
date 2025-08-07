@@ -89,7 +89,8 @@
       Webdar is running, you must use its <code>-l</code> option to specify the IP
       interface (IPv4 or IPv6 or hostname) Webdar will have to listen on
       for incoming connections, you can also use the wildcard <code>0.0.0.0</code>
-      or its equivalent <code>[::]</code> in IPv6:
+      or its equivalent <code>[::1]</code> in IPv6 (note that IPv6 address should be
+      enclosed in quotes to avoid the shell interpreting them as a glob expression):
     </p>
 
     <code class=block>
