@@ -1,19 +1,37 @@
 REQUIREMENTS
 
-you need:
-- C++ compiler (supporting at least C++14)
+you will need:
+- C++ compiler (supporting at least C++14) [tested with gcc/g++ and clang]
 - make
 - common system libraries and included files
 - standard C and standard C++ libraries
-- opensssl [1] version 3.0.15 or greater
-- libthreadar [2] vesion 1.5.2 or more recent
+- opensssl [1] version >= 3.0.15
+- libthreadar [2] vesion >= 1.6.0 (*)
 - libdar [3] vers 7.0.0 (dar release 2.8.0) or more recent
 - Niels Lohmann Json library [4]
+- A web browser (**)
+
+Webdar is known to compile under Linux (x86 and ARM) and FreeBSD
 
 [1] https://www.openssl.org/
 [2] https://libthreadar.sourceforge.net/
 [3] http://dar.linux.free.fr/
 [4] https://github.com/nlohmann/json
+
+(*) Webdar works with libthreadar >= 1.5.2 but with some
+standard libraries like musl, it needs 1.6.0 or more recent
+to setup stack thread size to larger value than the default
+this library uses.
+
+(**)
+Supported browsers:
+- Firefox has been tested on Linux, Windows and Android
+- Google Chrome is known to work on MS Windows
+- MS Edge is known to work on MS Windows
+Unsupported browsers:
+- lynx is known *not* to work and is unsupported
+- w3m is know *not* to work and is unsupported
+Other browsers supporting HTTP 1.1 should work
 
 
 INSTALLATION
