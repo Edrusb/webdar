@@ -20,3 +20,10 @@ Github            : https://github.com/Edrusb/webdar
 Sourceforge       : https://sourceforge.net/projects/webdar
 Internals doc     : https://webdar.sourceforge.io
 
+Package Authentication
+----------------------
+Webdar author is the same as dar, libdar and libthreadar,
+webdar packages are signed with the following GPG key:
+
+http://dar.linux.free.fr/doc/authentification.html
+
