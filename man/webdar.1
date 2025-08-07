@@ -3,7 +3,7 @@
 .SH NAME
 webdar \- web interface to libdar
 .SH SYNOPSIS
-webdar [-l <network interface>[:port] [,<network interface>[:port] [,...]]] [-v] [-b <facility>] [-w <yes|no>] [-C <certificate file> -K <private key file>]
+webdar [-l <network interface>[:port] [,<network interface>[:port] [,...]]] [-v] [-b <facility>] [-w <yes|no>] [-m <num>] [-C <certificate file> -K <private key file>]
 .P
 webdar -h
 .P
@@ -11,34 +11,34 @@ webdar -V
 
 .SH DESCRIPTION
 .B webdar
-is a web server providing a way to manipulate dar archive from a remote host over the network thanks to a classical web browser. Over managing dar archive it also provides the ability to interface with a remote FTP server where to store or fetch dar archive slices.
+is a web server providing a way to manipulate dar backups from a remote host over the network thanks to a classical web browser. Over managing dar backups it also provides the ability to interface with a remote FTP server where to store or fetch dar backup slices.
 .P
-You can find more help information using a web browser pointing it on the interface and TCP port you specified using -l option of webdar.
+You can find more help information using a web browser pointing it on the URL showed in webdar stdout. It it does not show, hit CTRL-C no more than once every two seconds for the connection information to be redisplayed.
 .P
-Note that by default webdar is not a daemon, it uses stderr/stdout to report error messages that cannot be displayed on the web user interface.
+Note that by default for version 1.0.0 webdar is not a daemon, it uses stderr/stdout to report error messages that cannot be displayed on the web user interface. The -b option is not implemented neither for now.
 
 .SH OPTIONS
 .TP 20
 -l <network interface>[:port] [, ...]
 .RS
-This option defines on which port(s) and interface(s) to listen for incoming requests. Network interface can be a hostname, FQDN, IPv4 or IPv6 address. IPv6 address have to be surrounded by squared brackets (`[' and `]'). Note that you will need to quote the argument when using IPv6 address format for the square brackets not to be interpreted by the shell. If an interface is specified without port, it defaults to TCP port 8008.
+This option defines on which port(s) and interface(s) to listen for incoming requests. Network interface can be a hostname, FQDN, IPv4 or IPv6 address. IPv6 address have to be surrounded by squared brackets (`[' and `]') and enclosed in quotes for the shell not to interfer with them. If an interface is specified without port, it defaults to TCP port 8008.
 .P
 Example : -l "1.2.3.4,[::1]:8082,127.0.0.1:8083"
 .P
-In the previous example, webdar will listen on the interface having the IP address '1.2.3.4' on TCP port 8008, on IPv6 address ::1 TCP port 8082 and IPv4 address 127.0.0.1 on TCP port 8083.
+In the previous example, webdar will listen on the interface having the IP address '1.2.3.4' on the default TCP port 8008, on IPv6 address ::1 (loopback interface) on TCP port 8082 and IPv4 address 127.0.0.1 (also loopback address) but on TCP port 8083.
 .P
 Without -l option, webdar listens on loopback interface (127.0.0.1) on TCP port 8008
 .RE
 .TP 20
 -v
-set webdar to be verbose mode
+set webdar to verbose mode
 .TP 20
 -m <num>
-maximum number of concurrent server threads. Note a server is used for each incoming TCP connection, the number of 'session' (configuration and running state of a workload)
-is independant from the number of session and can even be larger than the number of server threads.
+maximum number of concurrent server threads. Note a "server" component is used for each incoming TCP connection, the number of 'session' (graphical configuration and running state of a workload)
+is independant from the number of connection and can even be larger than the number of server threads. For example, from a connection, you can manage several sessions, while some session may be running and some other idle without any connection active to webdar at the same time.
 .TP 20
 -b <facility>
-set webdar as a daemon, <facility> is the syslog facility used to report the error messages that without this option are reported on stdout/stderr.
+[not yet implemented] set webdar as a daemon, <facility> is the syslog facility used to report the error messages that without this option are reported on stdout/stderr.
 .TP 20
 -C <certificate file>
 provide path to a file containing a certificate for the private key to use for SSL connections. Without -C and -K option, https sessions are not available
@@ -47,7 +47,7 @@ provide path to a file containing a certificate for the private key to use for S
 provide the path to a file holding the private key, to use to encrypt ssl sessions, without -K option and provided private key, connection to webdar in https sessions is not available
 .TP 20
 -w <yes|no>
-with "yes", using normal webauth to authenticate (at least with webdar 1.0), which means disconnection is not available unless the browser is restarted.
+with "yes", using normal webauth to authenticate (at least with webdar 1.0.x), which means disconnection is not available unless the browser is restarted.
 Using "no" still uses basic authentication but new TCP session are forced to reauthenticate and disconnection within a given TCP session
 is kept by ignoring the basic authentication token until user reauthenticate. The drawback is the user reauthentication needed whenever the
 browser decides to teardown and restart an new TCP session to webdar.
@@ -57,18 +57,6 @@ shows a very light help information
 .TP 20
 -V
 shows webdar version
-
-.SH ENVIRONMENT
-
-.TP 10
-DAR_SFTP_KNOWNHOSTS_FILE
-if set, webdar will not use the $HOME/.ssh/known_hosts file to check sftp remote server authenticity but the file given as value for this environment variable. Note that setting this variable to an empty string completely disable host validation, which is not recommended. Webar, the web interface program for disk archive, relies on libdar for archive format management which relies on libcurl for network transfer which in turn relies on libssh2 for all that concerns ssh/sftp protocol. In the known_hosts file, libssh2 does not support recent lines like those with "ecdsa-sha2-nistp256" in second argument before its release 1.9.0 (you will also need curl/libcurl 7.69.1 or more recent), in these old versions you only have support for "ssh-rsa" lines. Check libssh2 and libcurl documentations and literature for more details about that limitation. The workaround, if you have not yet libssh2 1.9.0 or more recent, is to disable known hosts validation or set up a restricted known hosts file without any "ecdsa*" entry and have DAR_SFTP_KNOWNHOSTS_FILE pointing to it.
-.TP 10
-DAR_SFTP_PUBLIC_KEYFILE
-by default webdar will fetch the public key file in $HOME/.ssh/id_rsa.pub file. If you use the former id_dsa.pub or more recent key types you need to set this environment variable to point to the appropriated filename
-.TP 10
-DAR_SFTP_PRIVATE_KEYFILE
-by default webdar will fetch the public key file in $HOME/.ssh/id_rsa file. If you use the former id_dsa.pub or more recent key types you need to set this environment variable to point to the appropriated filename
 
 .SH SIGNALS
 Signals are classified in two types:
