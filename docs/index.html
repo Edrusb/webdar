@@ -18,22 +18,22 @@
       <li>The <b>libdar</b> library to provide the <b>rich backup feature set of <a href="http://dar.linux.free.fr" target="_blank">Disk Archive</a></b>:</li>
       <ul>
 	<li><b>Any backup type</b>: Full, differential, incremental, decremental</li>
-	<li>Able to make a <b>binary delta</b> (and this, recursively) to avoid resaving a modified large file</li>
+	<li>Able to make a <b>binary delta</b> (and this, recursively) to avoid re-saving a modified large file</li>
 	<li>Saving <b>all inode types</b> (plain files, directories, char dev, block dev, symlinks, sockets, door inodes...)</li>
-	<li>taking care of <b>hard links</b> (on files, char dev, block dev... and even hardlinked symlinks(!)</li>
+	<li>taking care of <b>hard links</b> (on files, char dev, block dev... and even hard-linked symlinks(!)</li>
 	<li>handling and restoring <b>sparse files</b></li>
 	<li>Extended Attributes, like <b>MacOS file forks, Linux ACL, SELinux, user attributes...</b></li>
 	<li>A backup can be a single file or many files of given size, called <b>slices</b></li>
 	<li>Large set of compression algorithms available <b>gzip, bzip2, lzo, xz/lzma, zstd, lz4</b></li>
 	<li><b>Selective compression</b> to avoid compressing already compressed files and provide more robustness to backups</li>
-	<li><b>Strong encryption</b>, with Key Derivation Function, salt, and parametrable iteration counter (argon2, SHA512...)</li>
+	<li><b>Strong encryption</b>, with Key Derivation Function, salt, and configurable iteration counter (argon2, SHA512...)</li>
 	<li><b>Hashing</b> per slice computed before the slice is written to disk (md5, sha1, sha512, whirlpool)</li>
 	<li>Truncated <b>backup can be repaired</b></li>
 	<li>The table of content, called <b>catalog can be isolated</b> for backup redundancy but also
 	  to ease incremental and differential backups</li>
-	<li>Very <b>fast restoration</b> of a few files, fetching only the necessary data within possibily petabytes of data</li>
+	<li>Very <b>fast restoration</b> of a few files, fetching only the necessary data within possibly petabytes of data</li>
 	<li>Supports a sequential read mode <b>suitable to tape</b> media</li>
-	<li>Backup <b>merging and subsetting</b> without the need to restore any data</li>
+	<li>Backup <b>merging and sub-setting</b> without the need to restore any data</li>
 	<li><b>Multi-threaded</b> compression and encryption</li>
 	<li>and more features... see <a href="http://dar.linux.free.fr" target="_blank">Dar/libdar home page</a></li>
       </ul>
@@ -46,11 +46,17 @@
     </p>
     <h2>Source code package and statically linked binaries</h2>
     <p>
-      Source package as well as statically linked version (a single executable of ~ 5 MiB)
-      for x86_64 and ARM Linux OS (whatever the distro is) are provided with signature at
-      <a href="https://sourceforge.net/projects/webdar/files/webdar/">Sourceforge</a>
-      <br/>
-      To build <em>Webdar</em> from the source code, thanks to read the <em>INSTALL</em> file enclosed within the source package for building instructions.
+      in addition to the git repository you can clone from <a href="https://github.com/Edrusb/webdar">Github</a>,
+      <em>Webdar</em> is provided as signed source tarball package and as statically linked binaries (a single executable of ~8 MiB)
+      for Linux OS on x86_64 and ARM (whatever the distro is). All these artifacts are provided with their signature at:
+    </p>
+    <p>
+      <center>
+	<a href="https://sourceforge.net/projects/webdar/files/webdar/">Sourceforge</a>
+      </center>
+    </p>
+    <p>
+      To build <em>Webdar</em> from the source code, thanks to read the <em>INSTALL</em> file enclosed within the source package.
     </p>
 
     <h2>Distro packages?</h2>
@@ -95,7 +101,7 @@
     <h1>Stay tuned</h1>
 
     <p>
-      For now all communcations and exchanges are planned to be provided by the <a href="https://github.com/Edrusb/webdar/discussions">Gitub Discussions</a>
+      For now all communications and exchanges are planned to be provided by the <a href="https://github.com/Edrusb/webdar/discussions">Gitub Discussions</a>
     </p>
   </body>
 </html>

@@ -27,7 +27,7 @@
 	<li>Multi-sessions</li>
 	<li>Backup operations</li>
 	<li>Testing operation</li>
-	<li>Comparing a backup with the filesystem</li>
+	<li>Comparing a backup with the file-system</li>
 	<li>Backup listing</li>
       </ul>
       <a href="#h2D"><li>Using Webdar and its Options</li></a>
@@ -81,7 +81,7 @@
       data to backup or to restore. We will see a bit further that
       this is not necessarily the place where the backup will be
       stored. By default and for security reasons, only a browser
-      of the same host can connect to webdar using URL displayed
+      of the same host can connect to Webdar using URL displayed
       in the output (<code>http://127.0.0.1:8008</code>)
     </p>
 
@@ -506,23 +506,23 @@ Everything OK
 
     <p>
       You may have noted that the paths of the files in the backup do
-      not contain the <code>/home/denis</code> part they have on the filesystem.
+      not contain the <code>/home/denis</code> part they have on the file-system.
       This is because at backup time we have restricted the backup to with
       this path as <em>root</em> of the backup (remember the first of the
       three backup parameters we set?).
     </p>
     <p>
       Hopefully it is possible to do else in order to have the full path of
-      files though not saving the whole filesystem! We will see that when
+      files though not saving the whole file-system! We will see that when
       we will play with <em>Path Filters</em> below.
     </p>
 
-    <h3>Comparing a backup with the filesystem</h3>
+    <h3>Comparing a backup with the file-system</h3>
 
     <p>
       This is one step further the backup testing: not only here we read
-      the backup content, but we compare it with the filesystem. Of course
-      if your filesystem has changed since the backup was done, you will see
+      the backup content, but we compare it with the file-system. Of course
+      if your file-system has changed since the backup was done, you will see
       differences reported.
     </p>
 
@@ -531,7 +531,7 @@ Everything OK
     <p>
       In terms of use, this operation is very similar with the testing
       operations, there is just an additional parameter to set, which is
-      the path of the filesystem to compare with. I let you play alone with
+      the path of the file-system to compare with. I let you play alone with
       this option, as there is no difficulty here.
     </p>
 
@@ -558,13 +558,13 @@ Everything OK
     <img src="edd9cdbd2346dd.png"/>
 
     <p>
-      Note that the root of the filesystem is always <code>ROOT</code> inside
-      a backup. It is substituted by the parameter you give for filesystem related
+      Note that the root of the file-system is always <code>ROOT</code> inside
+      a backup. It is substituted by the parameter you give for file-system related
       operations, like during the comparison we have just played with.
       Same thing at restoration time, you will be asked to provide a path where
       to restore the data. But you could also use the <b>in-place path</b>
       stored in the backup. This <em>in-place</em> path is
-      the path that was used as filesystem root at backup time,
+      the path that was used as file-system root at backup time,
       (<code>/home/denis</code> in our case), it is stored in the backup.
     </p>
     <p>
@@ -591,7 +591,7 @@ Everything OK
     <p>
       So far we have been using defaults options for all parameters.
       These are selected for the best security and most common usage for
-      the backup of a personnal computer. But they can be changed easily,
+      the backup of a personal computer. But they can be changed easily,
       either <b>on-fly</b> for an single operation or recorded under
       a <b>name</b> for long term and reuse, by mean of the <code>Configure</code>
       menu on the left. This chapter has this objective to explain how to
@@ -1200,7 +1200,7 @@ Everything OK
       <code>Select</code> Button.
     </p>
 
-    <img src="4a5e6a24d09ea1a1.gif/>
+    <img src="4a5e6a24d09ea1a1.gif"/>
 
     <p>
       Doing that way the min-digits has been set to 3, and we see also
