@@ -16,7 +16,7 @@
       <br/>
       Author: Denis Corbin
     </p>
-    <div class=menutop></p>
+    <div class=menutop></div>
     <h2>Table of Content</h2>
 
     <ul>
@@ -53,11 +53,11 @@
     <a id="h2A"><h2>Running and connecting to Webdar</h2></a>
 
     <p>
-      To use Webdar version 1.0.0 you need to run it from a shell, that to say a
+      To use Webdar version 1.0.0 you need to run it from a shell, that's to say a
       terminal (virtual terminal, xterm, Kconsole, ssh session or
       equivalent). It is not necessary to be root (no need of
       <code>sudo</code>,
-      <code>u</code> nor login as root) to run Webdar, if for example you
+      <code>su</code> nor login as root) to run Webdar, if for example you
       want to backup your <em>Home</em> directory, which is what we will
       do in this tutorial. Let's rock:
     </p>
@@ -88,10 +88,44 @@
     <p>
       For the browser to reside on another host than the one where
       Webdar is running, you must use its <code>-l</code> option to specify the IP
-      interface (IPv4 or IPv6 or hostname) Webdar will have to listen on
-      for incoming connections, you can also use the wildcard <code>0.0.0.0</code>
-      or its equivalent <code>[::1]</code> in IPv6 (note that IPv6 address should be
-      enclosed in quotes to avoid the shell interpreting them as a glob expression):
+      interface(s) of the node where Webdar is running (either IPv4 or IPv6 or FQDN).
+      This will lead Webdar to listen on theses network interfaces
+      for incoming connections. You can also use the wildcard <code>0.0.0.0</code>
+      or its equivalent <code>[::1]</code> in IPv6 and Webdar will listen for connection
+      of all network interfaces the node has (note that IPv6 address should be
+      enclosed in quotes to avoid the shell interpreting them as a glob expression)
+    </p>
+
+    <p>
+      Here on my host, according to the output of <code>ifconfig</code> command (or
+      the Linux specific equivalent <code>ip a</code> command) we can see the node
+      has an interface <code>eth0</code> assigned to the IPv4 address
+      <code>192.168.6.6</code>:
+    </p>
+
+    <code class=block>
+ > ifconfig
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 9000
+        inet <e>192.168.6.6</e>  netmask 255.255.255.128  broadcast 192.168.6.127
+        ether XX:XX:XX:XX:XX:XX  txqueuelen 1000  (Ethernet)
+        RX packets 21719187  bytes 103747456345 (96.6 GiB)
+        RX errors 0  dropped 1647533  overruns 0  frame 0
+        TX packets 13757737  bytes 7120233504 (6.6 GiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        loop  txqueuelen 1000  (Boucle locale)
+        RX packets 189129  bytes 200891331 (191.5 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 189129  bytes 200891331 (191.5 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    </code>
+
+    <p>
+      Thus we instruct Webdar to listen on this interface only. Connecting to 127.0.0.1,
+      the loopback address, will now fail, but we could use instead the wildcard address 0.0.0.0
+      or specify more IP addresses separating them by comas to have Webdar listening to more
+      than one interface at a time.
     </p>
 
     <code class=block>
@@ -108,8 +142,9 @@
     </code>
 
     <p>
-      Then connect from a remote host to the provided URL
-      (<code>http://192.168.6.6:8008</code>)
+      Then we give to our browser, possibly running on a remote host having
+      access to this node where Webdar is now runing,
+      the provided URL  (<code>http://192.168.6.6:8008</code>).
     </p>
 
     <a id="h2B"><h2>Web Authentication to Webdar</h2></a>
@@ -153,7 +188,7 @@
       can run in parallel. Note that the <em>admin</em> user is nothing
       related to a Unix account, it is just a placeholder in Webdar for a
       future user based feature. Webdar acts as the user and group it has
-      been run as and has thus access only files this user and group has
+      been run as and has thus access only to files this user and group has
       access to.
     </p>
 
@@ -165,17 +200,17 @@
     <img src="f0026e2e0ca3d19c.png">
 
     <p>
-      This is a randomly chosen string which you can change. You also
+      This is a randomly chosen string which you can change. You then
       need to validate the change with the <code>Change</code> button:
     </p>
 
     <img src="6a050fb80009f58f.png"/>
 
     <p>
-      This will always be that way, Webdar does not make use of scripts
-      by design, the counter part is that you know what information you
+      This will always be that way: Webdar does not make use of scripts
+      <u>by design</u>. The counterpart is that you know what information you
       send to Webdar and when you send it, nothing 'runs' from Webdar on
-      the host where is located your browser (unless this is also the host
+      the host where is located your browser (unless, of course, when this is also the host
       were Webdar is running). I let you click the <code>Mini Tuto</code>
       button on the bottom right and check out what all this means concretely.
     </p>
@@ -266,7 +301,7 @@
       asks you a password or passphrase to remember, to be to able later to
       decipher and read the backup. Ciphering can be disabled or be based
       on public/private key pair, we will have a look at the many options
-      available with Webdar in the next chapter, for for now, let's do it
+      available with Webdar in the next chapter, for now, let's do it
       simple and secured: enter a password.
     </p>
 
@@ -275,13 +310,13 @@
       the <code>update</code> button left below
       (not the <code>Gracefully stop libdar</code> one!). Webdar will
       ask you to confirm the password and then proceed to the
-      backup operation if the two password match.
+      backup operation if the two passwords match.
     </p>
 
     <p>
       Depending on the amount of data and the speed of your disks (and
       here mainly the speed of the USB key), it may takes a few seconds to
-      several minutes...
+      several minutes... for the backup to complete.
     </p>
 
     <p>
@@ -352,8 +387,11 @@ Everything OK
       You can then remove the whirlpool file or keep it beside your
       backup, if you want to test the stability of the medium over time.
       Note that a hash does not let you repair a file, for that I would
-      advise using Parchive2, which is a very good and useful program,
-      especially on sensible medium like DVD and USB keys.
+      advise using
+      <a href="https://parchive.github.io/">Parchive</a> a very useful program,
+      especially for sensible medium like DVD and USB keys. <em>Parchive</em> will
+      let you add parity data beside the backup files to be able to repair
+      them in case of storage corruption, which can take place over time...
     </p>
 
     <p>
@@ -361,7 +399,7 @@ Everything OK
       This operation will checking that all data is readable and well
       formatted in your backup. It does not restore anything nor it modifies
       the backup, but can detect things that could prevent you from relying
-      on your backup when you would need them...
+      on your backup when you would need them the most...
     </p>
 
     <h3>Testing operation</h3>
@@ -374,24 +412,25 @@ Everything OK
 
     <ul>
       <li>
-	Disk write corruption (with the hash check we did previously
-	we should have this already checked)
+	Disk write corruption: with the hash check we did previously
+	we should have this already checked
       </li>
       <li>
-	Disk saturation (how many dar/libdar users asked about what
+	Disk saturation: how many dar/libdar users asked about what
 	to do with their truncated backup due to disk saturation, something
 	they noticed only too late, when they needed to restore data from
 	it... Hopefully you can now isolate/repair such backup to avoid
 	having to remake the backup.
       </li>
       <li>
-	Memory corruption (due to the famous <em>cosmic particle</em>
-	that explains so many unknown reasons, electric spikes...)
+	Memory corruption: due to the famous <em>cosmic particle</em>
+	that explains so many unknown reasons...
       </li>
       <li>
-	Software bug (yes, no software has no bug, even if Webdar and
-	its engine <i>libdar</i> have been heavily tested and for libdar
-	benefits of a long history --- two decades --- and return on experience)
+	Software bug: yes, no software has no bug, even if Webdar and
+	its engine <i>libdar</i> have been heavily tested. Libdar
+	benefits in addition from a long history --- two decades ---
+	and return on experience, but...
       </li>
       <li>
 	Human error, like not running the operation or passing a
