@@ -108,13 +108,6 @@ extern "C"
     /// \mainpage
     /// The following describes the overall architecture of the webdar software
     ///
-    /// If you want more user level documents, checkout the following links:
-    /// - Tutorial           : https://edrusb.github.io/webdar
-    /// - Packages download  : https://sourceforge.net/projects/webdar/files
-    /// - Author signing key : http://dar.linux.free.fr/doc/authentification.html
-    /// - Github discussion  : https://github.com/Edrusb/webdar/discussions
-    ///
-    ///
     /// The webdar main() launches:
     /// - a \ref central_report object that will gather logs from all internal components
     ///   and output them to a specified destination (command-line, syslog, or other alternatives)
