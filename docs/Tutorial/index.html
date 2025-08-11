@@ -12,7 +12,7 @@
     <p>
       Webdar version: 1.0.x
       <br/>
-      Document revision: 2
+      Document revision: 3
       <br/>
       Author: Denis Corbin
     </p>
@@ -1384,21 +1384,21 @@ are identical
     <h3>Browser - Webdar communication</h3>
 
     <p>
-      If the underlying network in unsecured (public Wifi, Internet, corporate network you don't trust ...)
+      If the underlying network in unsecured (public Wifi, Internet, corporate network you don't trust...)
       the HTTP protocol is not enough. Where from the HTTPS (Secured HTTP).
     </p>
 
     <p>
-      HTTPS is broadly used and establish the trust between the browser and the web server (here Webdar)
-      by mean of an intermediate Certificate Authority (CA) both ends trust. This is known as a PKI for
-      Public Key Infrastructure. IT pro know well how to set this up, but for homeland this is overkill.
+      HTTPS is broadly used and establish the trust relationship between the browser and the web server (here Webdar)
+      by mean of an intermediate Certificate Authority (CA) that both ends trust. This is known as a PKI for
+      Public Key Infrastructure. IT professionals know well how to set this up, but for homeland usage, this is overkill.
     </p>
 
     <p>
       You could use self-signed certificate, this provide ciphering of the data but you are not sure to
       connect to the correct Webdar server, or said in other words you could connect indirectly to the
-      server you expect but in the middle some could eavesdrop the communication,
-      the so called <em>man-in-the-middle</em> attack (MITM in the following).
+      server you expect but in the middle some could eavesdrop the communication, and your credentials to the real
+      webdar server, this is the so-called <em>man-in-the-middle</em> attack (MITM in the following).
     <p>
 
     <p>
@@ -1459,7 +1459,7 @@ are identical
       (also known as fingerprint) of the certificate received by the browser with
       the one we have computed above. For that, click the <code>Advanced...</code> white button
       (OK my browser, here Firefox, is French localized, but you should find the same
-      disposition for other languages):
+      disposition for other languages, and equivalent feature for other browsers:
     </p>
 
     <img src="certificate2.jpg"/>
@@ -1482,7 +1482,7 @@ are identical
       If they match as they do here, you are pretty sure your session is secured and you can let you browser
       accepting this certificate. You will not be bothered by your browser until your certificate expires or you change of
       IP/hostname for Webdar, or until someone attempts to intercepts your session with a MITM attack, in which
-      case you should not accept the certificate nor connect to Webdar but investigate the root cause of this
+      case you should not accept the certificate nor connect to Webdar, but investigate the root cause of this
       problem and fix this possible security breach. Probably generating a new self-signed certificate and
       comparing the hash will let you "solve" or workaround this issue (?)
     </p>
@@ -1494,8 +1494,8 @@ are identical
     </p>
 
     <p>
-      SFTP is a subsystem of SSH and you must that relies on public/private key pair from
-      the server authentication and either password or also key pair for user authentication
+      SFTP is a subsystem of SSH and that relies on public/private key pair from
+      the server authentication (by the user) and either password or also key pair for user authentication
       by the server.
     </p>
 
@@ -1515,10 +1515,13 @@ are identical
     </code>
 
     <p>
-      As a server usually have several keys of different type, you may have sever fingerprints. If
+      As a server usually have several keys of different type, you may have several fingerprints. If
       one of them matches fingerprint showed when you first connect to that server, you are good to
-      accept it and connect to that server. Else there is a security issue and you put at risk you
-      data.
+      accept it and connect to that server, you will not be bothered any further unless something changes
+      on server side (IP address, or key pair for example), if this occurs, so you are good to redo the
+      server authentication with the updated fingerprints, If you cannot authenticate the server,
+      there is obviously a security issue and you put at risk you data if you authenticate yourself, by
+      proving your login/password, because you don't know who you are passing this information on to
     </p>
 </body>
 </html>
