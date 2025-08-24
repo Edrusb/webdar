@@ -16,12 +16,16 @@
       <br/>
       Author: Denis Corbin
     </p>
-    <div class=menutop></div>
+    <h1></h1>
     <h2>Table of Content</h2>
 
     <ul>
       <a href="#h2A"><li>Running and connecting to Webdar</li></a>
       <a href="#h2B"><li>Web Authentication to Webdar</li></a>
+      <ul>
+	<li>Webdar and browser on the same machine</li>
+	<li>Webdar and browser on different machines</li>
+      </ul>
       <a href="#h2C"><li>Using Webdar with its default options</li></a>
       <ul>
 	<li>Multi-sessions</li>
@@ -50,7 +54,7 @@
       </ul>
     </ul>
 
-    <a id="h2A"><h2>Running and connecting to Webdar</h2></a>
+    <h2><a id="h2A">Running and connecting to Webdar</a></h2>
 
     <p>
       To use Webdar version 1.0.0 you need to run it from a shell, that's to say a
@@ -77,29 +81,66 @@
 
 
     <p>
-      The host were you run Webdar is the place where is located the
+      The host where you run Webdar is the place where is located the
       data to backup or to restore. We will see a bit further that
       this is not necessarily the place where the backup will be
-      stored. By default and for security reasons, only a browser
-      of the same host can connect to Webdar using URL displayed
-      in the output (<code>http://127.0.0.1:8008</code>)
+      stored.
+    </p>
+    <p>
+      Same thing by default and for security reasons, only a browser
+      of the same host can connect to Webdar using the URL displayed
+      in the output above (<code>http://127.0.0.1:8008</code>). We will
+      see below how to remotely access Webdar.
     </p>
 
     <p>
+      So for now let's give to our browser running on the same host
+      the provided URL (<code>http://127.0.0.1:8008</code>). All the rest
+      of the interaction with Webdar will be through the web browser window.
+    </p>
+
+    <h2><a id="h2B">Web Authentication to Webdar</a></h2>
+
+    <h3>Webdar and browser on the same machine</h3>
+
+    <p>
+      In addition to this URL, the Webdar's command-line output displayed the <b>login</b> and <b>password</b>
+      to provide on the browser to authenticate.
+
+    <dt>Note</dt><dd>
+      If you have added the <code>-v</code> option to webdar command-line,
+      the additional logs generated on the terminal may lead the information about this password
+      to go out of the screen. If so, just hit CTRL-C once (<u>no more than once per 2 seconds</u>)
+      and it will show again!
+    </dd>
+    </p>
+
+    <img src="6bff08378357a44.png"/>
+
+
+    <h3>Webdar and browser on different machines</h3>
+
+    <p>
       For the browser to reside on another host than the one where
-      Webdar is running, you must use its <code>-l</code> option to specify the IP
-      interface(s) of the node where Webdar is running (either IPv4 or IPv6 or FQDN).
+      Webdar is running (for example backing up/restoring an IoT device or
+      embedded computing device),
+      you must use Webdar's <code>-l</code> option to specify the IP address(es)
+      interface(s) to listen on, IP(s) of the node where Webdar is running: you designate
+      those interface either by mean of an IPv4, an IPv6 or FQDN.
       This will lead Webdar to listen on theses network interfaces
-      for incoming connections. You can also use the wildcard <code>0.0.0.0</code>
-      or its equivalent <code>[::1]</code> in IPv6 and Webdar will listen for connection
-      of all network interfaces the node has (note that IPv6 address should be
+      for incoming connections.
+    </p>
+    <p>
+      You can also use the wildcard <code>0.0.0.0</code>
+      or its equivalent <code>[::]</code> in IPv6 and Webdar will listen for connections
+      on all network interfaces the node has (note that IPv6 address should be
       enclosed in quotes to avoid the shell interpreting them as a glob expression)
     </p>
 
     <p>
       Here on my host, according to the output of <code>ifconfig</code> command (or
       the Linux specific equivalent <code>ip a</code> command) we can see the node
-      has an interface <code>eth0</code> assigned to the IPv4 address
+      to have an interface <code>eth0</code> assigned to the IPv4 address
       <code>192.168.6.6</code>:
     </p>
 
@@ -141,30 +182,19 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
 [thead 139698639177408][information]   listener object: waiting for incoming connections on 192.168.6.6 port 8008
     </code>
 
-    <p>
-      Then we give to our browser, possibly running on a remote host having
-      access to this node where Webdar is now runing,
-      the provided URL  (<code>http://192.168.6.6:8008</code>).
-    </p>
 
-    <a id="h2B"><h2>Web Authentication to Webdar</h2></a>
+    <h2><a id="h2C">Using Webdar with its default options</a></h2>
 
     <p>
-      Webdar's command-line output displayed the login and password
-      to provide on the browser to authenticate. If you added <code>-v</code> option to see
-      more logs, you may end up having this dynamically generated password
-      out of the screen, just hit CTRL-C (<u>but no more than once per 2 seconds</u>)
-      and it will show again!
-    </p>
+      On the web interface, we will see different possible actions (backup, restoration, testing...)
+      those have few parameters we will need to setup, there is also have a lot of options we will not
+      dig into in this chapter, their default value is chosen for the most common use case.
 
-    <img src="6bff08378357a44.png"/>
-
-    <a id="h2C"><h2>Using Webdar with its default options</h2></a>
-
-    <p>
-      <i><b>Webdar</b></i> is a web front-end to the <i><b>libdar</b></i>
-      library. You will see libdar mentioned at diverse place, consider
-      this part of Webdar and equivalent to it.
+      <dt>Note</dt><dd>
+	<i><b>Webdar</b></i> is a web front-end to the <i><b>libdar</b></i>
+	library. You will see <em>libdar</em> mentioned at diverse place, consider
+	this part of <em>Webdar</em> and equivalent to it.
+      </dd>
     </p>
 
     <h3>Multi-sessions</h3>
@@ -210,8 +240,8 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
       This will always be that way: Webdar does not make use of scripts
       <u>by design</u>. The counterpart is that you know what information you
       send to Webdar and when you send it, nothing 'runs' from Webdar on
-      the host where is located your browser (unless, of course, when this is also the host
-      were Webdar is running). I let you click the <code>Mini Tuto</code>
+      the host where is located your browser (unless, of course, if
+      both are running on the same host). I let you click the <code>Mini Tuto</code>
       button on the bottom right and check out what all this means concretely.
     </p>
 
@@ -233,7 +263,7 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
       create new ones and delete old ones. This is for now a door ready for
       future features, like a scheduler (task queuing) and maybe inter-user
       visibility.  But let's go back to the session &quot;My first
-      session&quot; we just renamed under that name, by clicking to its
+      session&quot; we just renamed under that name, by clicking on its
       name:
     </p>
 
@@ -407,13 +437,14 @@ Everything OK
     <p>
       This step is necessary to be sure you will be able to restore
       later, as there are many reasons that may lead a backup to be
-      unusable, even if Webdar will report most of the errors conditions:
+      unusable, even if Webdar will report most of the error conditions during
+      the backup process:
     </p>
 
     <ul>
       <li>
 	Disk write corruption: with the hash check we did previously
-	we should have this already checked
+	we should have this already detected
       </li>
       <li>
 	Disk saturation: how many dar/libdar users asked about what
@@ -481,7 +512,7 @@ Everything OK
 	<p>
 	  A backup can be split in several files called
 	  <b>slices</b>. Each is a file which name starts by the <em>basename</em>
-	  and is followed by a number followed bye the <em>dar</em> extension with a dot
+	  and is followed by a number followed by the <em>dar</em> extension with a dot
 	  as separator. Their number starts at 1 increasing virtually without limit:
 	</p>
 	<ul>
@@ -501,7 +532,7 @@ Everything OK
 	  data you need for a restoration is found in that slice. Even
 	  if not all slices are needed for a given restoration, you must not
 	  consider slices individually but keep considering a backup as the
-	  set of slices as the object Webdar is manipulating: You will never
+	  set of slices, which is the object Webdar is manipulating: You will never
 	  provide a slice name to Webdar but a <em>basename</em>.
 	</p>
       </dd>
@@ -510,16 +541,17 @@ Everything OK
 	  As mentioned before, the min-digits is the number of digits the
 	  slice number (here 001) is stored. Hence here we have a min-digits
 	  set to 3. Using the '+' button instead of filling manually the
-	  path+basename, Webdar has set this parameter for us by reading the
+	  path+basename, Webdar has set this parameter for us by reading
 	  the structure of the slice name. If you decided to fill the path
 	  manually you would have to set this parameter correctly in the
 	  <em>Read Options</em>, something we will see at the end of this
+	  tutorial.
 	</p>
       </dd>
     </dl>
 
     <p>
-      Anyway, we can now run the test by clicking on the <code>Test</code> Button located on the right:
+      Anyway, let's put aside these details, we can now run the test by clicking on the <code>Test</code> Button located on the right:
     </p>
 
     <center>
@@ -538,7 +570,7 @@ Everything OK
 
     <p>
       At the end of the process, you see the <code>Close</code> button on
-      the bottom right, but before closing this page we can check before
+      the bottom right, but before closing this page we can check
       that the counters do not report any error. This is the case here, so the
       backup testing is successful.
     </p>
@@ -546,13 +578,13 @@ Everything OK
     <p>
       You may have noted that the paths of the files in the backup do
       not contain the <code>/home/denis</code> part they have on the file-system.
-      This is because at backup time we have restricted the backup to with
-      this path as <em>root</em> of the backup (remember the first of the
+      This is because at backup time we have restricted the backup with a
+      <em>root path</em> having this value (remember the first of the
       three backup parameters we set?).
     </p>
     <p>
       Hopefully it is possible to do else in order to have the full path of
-      files though not saving the whole file-system! We will see that when
+      files, though not saving the whole file-system! We will see that when
       we will play with <em>Path Filters</em> below.
     </p>
 
@@ -561,14 +593,14 @@ Everything OK
     <p>
       This is one step further the backup testing: not only here we read
       the backup content, but we compare it with the file-system. Of course
-      if your file-system has changed since the backup was done, you will see
-      differences reported.
+      if your file-system has changed since the backup was done, differences
+      will be reported on the saved files.
     </p>
 
     <img src="588f9fbbd33e799.png"/>
 
     <p>
-      In terms of use, this operation is very similar with the testing
+      In terms of use, this operation is very similar to the testing
       operations, there is just an additional parameter to set, which is
       the path of the file-system to compare with. I let you play alone with
       this option, as there is no difficulty here.
@@ -590,7 +622,7 @@ Everything OK
       The backup to read should already be set, taken from the <code>Test</code>
       and <code>Compare</code> operations we just performed. The other parameter
       is just set for what we need: <code>display backup contents</code>. We keep
-      the <code>Read Options</code> to their default for now so we just to click
+      the <code>Read Options</code> to their default for now so we just need to click
       on the <code>List</code> button located on the right...
     </p>
 
@@ -604,7 +636,8 @@ Everything OK
       to restore the data. But you could also use the <b>in-place path</b>
       stored in the backup. This <em>in-place</em> path is
       the path that was used as file-system root at backup time,
-      (<code>/home/denis</code> in our case), it is stored in the backup.
+      (<code>/home/denis</code> in our case), it is stored in the backup. We will
+      see how to do that below.
     </p>
     <p>
       Let's close this window and check the value of the <em>in-place</em> path.
@@ -625,7 +658,7 @@ Everything OK
       information.
     </p>
 
-    <a id="h2D"><h2>Using Webdar and its Options</h2></a>
+    <h2><a id="h2D">Using Webdar and its Options</a></h2>
 
     <p>
       So far we have been using defaults options for all parameters.
@@ -675,8 +708,9 @@ Everything OK
       We are thus currently editing a new configuration that
       has no name but is a copy of the named configuration we edited. Such
       <em>on-fly</em> configuration can be used without being saved under a name. It will
-      stay available at this place while Webdar is running, but will be lost
-      if you stop or restart it.
+      stay available in this session (remember the session we renamed "my first session" at the
+      very beginning of the utorial?) and at this place while Webdar is running. But will be lost
+      if you stop or restart it (or just kill this session).
     </p>
 
     <p>
@@ -770,7 +804,7 @@ Everything OK
     <p>
       Now let's get back to our on-fly configuration in the <code>Path based Filtering</code>.
       We will save it under the name <code>my home dir</code> so we will be able to reuse it
-      later and keep it available across Webdar restarts:
+      later and keep it available across Webdar restarts and also sharable between different sessions:
     </p>
 
     <img src="8f842020390963d2.png"/>
@@ -961,7 +995,7 @@ Everything OK
       parameter most of the time.
     </p>
     <p>
-      In this global page, you should have see that the content of all
+      In this global page, you should have seen that the content of all
       tabs of the configure page is saved in the $HOME/.webdarrc file. You
       can save the whole configuration sets to another file, and load
       another file at will and have several sets of such configurations.
@@ -969,21 +1003,24 @@ Everything OK
     <p>
       You can also upload and download the same configuration through
       the web session from your Web browser. But <b>pay attention</b> when
-      not using secured connection (SFTP with validated certificate):
-      Any password you would have saved in an configuration, like a password
+      not using secured connection (HTTPS with validated certificate):
+      Any password you would have saved in a configuration, like a password
       for ciphering or deciphering a backup, but also credentials for
       authentication to remote FTP or SFTP repository, will be contained in
       the configuration, and exposed to attackers that could have access to the
       network or nodes through which this session passes.
     </p>
 
-    <a id="h2E"><h2>Advanced features</h2></a>
+    <h2><a id="h2E">Advanced features</a></h2>
     <p>
       We skipped over the <em>Isolate</em>, <em>Merge</em> and <em>Repair</em>
       operations because the first two are advances topics and you should
       not need them often, while the third --- if you test your backups right
       after backing them up --- should not be needed to you, though the repairing
-      operation is quite simple
+      operation is quite simple. But for more on these advanced features,
+      please refer to the
+      <a href="http://dar.linux.free.fr/doc/" target="_blank">dar documentation</a>.
+      (Dar is the equivalent of Webdar but as pure command-line tool).
     </p>
 
     <p>
@@ -1020,10 +1057,13 @@ Everything OK
 	Obviously, this is now the <code>default</code> configuration that is
 	selected, any change we do and save will replace the named default
 	repository configuration, which is used in all operations (create,
-	test, compare, ...), unless you change it there.
+	test, compare, ...), unless you change them also to point to another
+	repository configuration.
       </li>
       <li>
-	The <b>landing path</b> is set to <code>/tmp</code>
+	The <b>landing path</b> is set to <code>/tmp</code>. The landing path is where
+	Webdar will fetch backups by default, this will be pre-filled in the Web
+	user interface for boxes where a backup basename is expected.
       </li>
       <li>
 	and the checkbox above the <em>landing path</em> field it is checked.
@@ -1104,7 +1144,7 @@ Everything OK
     <img src="5baafff022d0945d.gif"/>
 
     <p>
-      We seen that the red warning has vanished, but also a new item in
+      We have seen that the red warning has vanished, but also a new item in
       the configuration list on the right, and the one which is selected is
       that one, we just created.
     </p>
@@ -1123,11 +1163,11 @@ Everything OK
       of an <em>on-fly</em> configuration derived from the <code>default</code>
       restore operation in which we would have changed the repository from
       <code>default</code> (remember nested configuration?) to our
-      new named <code>dar-check on Jupiter</code>configuration.
+      new named <code>dar-check on Jupiter</code> configuration.
     </p>
 
     <p>
-      Be we will do else for the demo. As our plan is to proceed to
+      But we will explore yet another way of doing for the demo. As our plan is to proceed to
       a restoration, We will modify the named <code>default</code> restoration operation.
       Let's open the Restore Options (the last tab):
     </p>
@@ -1146,7 +1186,7 @@ Everything OK
     </ul>
 
     <p
-      >So we have rather to edit named <code>default</code>
+      >So we have rather to edit the named <code>default</code>
       option of the <code>Read Options</code> tab:
     </p>
 
@@ -1185,11 +1225,24 @@ Everything OK
     <img src="4553a1d5e1d9c01e.gif"/>
 
     <p>
-      Once done have to send the change to Webdar clicking the <code>update</code> button
+      Once done, we have to send the change to Webdar clicking the <code>update</code> button
       and then the <code>Save/Save as</code> for the red warning to vanish:
     </p>
 
     <img src="b5ce952caba96469.gif"/>
+
+    <p>
+      <b>In conclusion of this paragraph</b>, we have not changed the default repository but created a new one named
+      <code>dar-check on jupiter</code> beside it. We have not modified all operations options
+      but only the <code>default</code> <em>Read Options</em> for it uses it. We could also have
+      created an alternate <em>Read Options</em> beside the untouched <code>default</code> one... and
+      so on.
+    </p>
+    <p>
+      Yes, there are plently of ways to setup named options to fit your need. It is not a bad idea nor
+      a bad practice to change the default options. If it was, they would have been provided read-only.
+      And we say how to easily recreate them if needed.
+    </p>
 
     <h3>min-digits option</h3>
 
@@ -1367,7 +1420,7 @@ are identical
  &gt;
     </code>
 
-    <a id="h2F"><h2>Network and Application security</h2></a>
+    <h2><a id="h2F">Network and Application security</a></h2>
 
     <p>
       Webdar can be used completely locally to a given computer, this is even the default:
@@ -1471,7 +1524,7 @@ are identical
     <img src="certificate3.jpg"/>
 
     <p>
-      Then scroll down the the fingerprint part and compare the SHA1 and/or SHA256 fingerprints
+      Then scroll down the fingerprint part and compare the SHA1 and/or SHA256 fingerprints
       of the certificate received by the browser with the one we computed on the node where Webdar
       is running:
     </p>
