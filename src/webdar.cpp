@@ -1,6 +1,6 @@
 /*********************************************************************/
 // webdar - a web server and interface program to libdar
-// Copyright (C) 2013-2025 Denis Corbin
+// Copyright (C) 2013-2026 Denis Corbin
 //
 // This file is part of Webdar
 //
@@ -807,7 +807,7 @@ static void usage(const char* argv0)
 static void show_ver()
 {
     string msg;
-    msg += libdar::tools_printf("\nWebdar version %s, Copyright (C) 2002-2025 Denis Corbin\n", WEBDAR_VERSION);
+    msg += libdar::tools_printf("\nWebdar version %s, Copyright (C) 2002-2026 Denis Corbin\n", WEBDAR_VERSION);
     msg += libdar::tools_printf(gettext(" compiled the %s with %s version %s\n"), __DATE__, CC_NAT, __VERSION__);
 
     cout << msg << endl;

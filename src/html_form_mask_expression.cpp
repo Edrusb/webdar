@@ -1,6 +1,6 @@
 /*********************************************************************/
 // webdar - a web server and interface program to libdar
-// Copyright (C) 2013-2025 Denis Corbin
+// Copyright (C) 2013-2026 Denis Corbin
 //
 // This file is part of Webdar
 //
