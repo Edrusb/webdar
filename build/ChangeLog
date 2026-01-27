@@ -1,0 +1,4 @@
+from version 1.0.0 to version 1.0.1
+- fixing configure script to distribute and install the webdar man page
+- cleanup and updating script to build webdar_static binary
+- fixing typo, English, syntax... in documentation
