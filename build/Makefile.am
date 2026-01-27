@@ -21,7 +21,7 @@
 #  to contact the author: dar.linux@free.fr
 ########################################################################
 
-SUBDIRS = src doc po misc
+SUBDIRS = src doc po misc man
 dist_noinst_DATA = INSTALL README TODO AUTHORS COPYING ChangeLog
 
 CPPCHECKDIR=./cppcheckbuilddir

@@ -541,5 +541,5 @@ AC_CONFIG_COMMANDS([hack-libtool], [
 ])
 
 
-AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile misc/Makefile])
+AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile misc/Makefile man/Makefile])
 AC_OUTPUT
