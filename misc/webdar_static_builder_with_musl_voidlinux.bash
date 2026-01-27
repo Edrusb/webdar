@@ -30,6 +30,12 @@ OPENSSL=3.0.16
 GNUTLS_WGET_OPT="--no-check-certificate"
 REPO=$(pwd)/REPO
 
+nok()
+{
+    echo "$*"
+    exit 1
+}
+
 #
 check()
 {
@@ -46,7 +52,7 @@ check()
 
     # checking for xbps-install
     if [ "$(which xbps-install | wc -l)" -eq 0 ] ; then
-	echo "Missing xbps-instal command"
+	echo "Missing xbps-install command"
 	exit 1
     fi
 
@@ -63,7 +69,7 @@ check()
     fi
 
     if [ ! -e "${REPO}" ] ; then
-	mkdir "${REPO}"
+	mkdir "${REPO}" || nok "Failed creating ${REPO} directory"
     fi
 
     if [ ! -d "${REPO}" ] ; then
@@ -94,32 +100,16 @@ requirements()
 {
 
     #updating xbps db
-    xbps-install -SUy || (xbps-install -uy xbps && xbps-install -SUy) || return 1
+    xbps-install -SUy || (xbps-install -uy xbps && xbps-install -SUy) || nok "failed updating the OS"
 
     # tools used to build the different packages involved here
-    xbps-install -y gcc make wget pkg-config cmake xz || exit 1
-
-    #direct dependencies of libdar
-    xbps-install -y bzip2-devel e2fsprogs-devel libargon2-devel libgcc-devel libgcrypt-devel liblz4-devel \
-		 liblzma-devel libstdc++-devel libzstd-devel lz4-devel \
-		 lzo-devel musl-devel zlib-devel || exit 1
-
-    # needed to build static flavor of librsync
-    xbps-install -y libb2-devel || exit 1
-
-    # needed to build static flavor of gnutls
-    xbps-install -y  nettle-devel libtasn1-devel libunistring-devel unbound-devel unbound || exit 1
-
-    #needed for static flavor of libcurl
-    xbps-install -y libssp-devel || echo "ignoring error if libssp-devel fails to install due to musl-devel already installed"
-
-
-    # optional but interesting to get a smaller dar_static binary
-    xbps-install -y upx || (echo "" && echo "WARNING!" && echo "Failed to install upx, will do without" && echo && sleep 3)
+    xbps-install -y gcc make wget pkg-config cmake xz || nok "failed installing compilers"
 
     # openssl needs perl
     xbps-install -y perl || (echo "" && echo "WARNING!" && echo "Failed to install perl" && exit 1)
 
+    # dar/libdar availability
+    dar -V 1>&2 /dev/null || nok "Libdar not installed"
 }
 
 openssl()
