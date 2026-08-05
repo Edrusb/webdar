@@ -182,31 +182,33 @@ AC_FUNC_UTIME_NULL
 AC_CHECK_FUNCS([lchown mkdir regcomp rmdir strerror_r utime fdopendir readdir_r ctime_r getgrnam_r getpwnam_r localtime_r])
 
 
-AC_MSG_CHECKING([for c++14 support])
+AC_MSG_CHECKING([for c++11 support])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
 				     #include <memory>
 				   ],
                                    [ thread_local static int test = 0;
-				     std::unique_ptr<int> x = std::make_unique<int>(0);
+				     std::unique_ptr<int> x;
+				     int* y = nullptr;
 				   ])
                   ],
                   [ AC_MSG_RESULT(yes) ],
                   [
                      AC_MSG_RESULT([no])
-                     AC_MSG_CHECKING([for c++14 support with -std=c++14 option set])
-                     CXXSTDFLAGS="-std=c++14"
+                     AC_MSG_CHECKING([for c++11 support with -std=c++11 option set])
+                     CXXSTDFLAGS="-std=c++11"
                      CXXFLAGS="$CXXFLAGS $CXXSTDFLAGS"
                      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
 							  #include <memory>
 							],
                                                         [ thread_local static int test = 0;
-							  std::unique_ptr<int> x = std::make_unique<int>(0);
+							  std::unique_ptr<int> x;
+							  int* y = nullptr;
 							])
                                         ],
                                         [ AC_MSG_RESULT(yes) ],
                                         [
                                            AC_MSG_RESULT(no)
-                                           AC_MSG_ERROR([C++ compiler lack support for c++14 standard])
+                                           AC_MSG_ERROR([C++ compiler lack support for c++11 standard])
                                         ]
                      )
                    ])
