@@ -181,6 +181,36 @@ AC_FUNC_UTIME_NULL
 
 AC_CHECK_FUNCS([lchown mkdir regcomp rmdir strerror_r utime fdopendir readdir_r ctime_r getgrnam_r getpwnam_r localtime_r])
 
+
+AC_MSG_CHECKING([for c++14 support])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+				     #include <memory>
+				   ],
+                                   [ thread_local static int test = 0;
+				     std::unique_ptr<int> x = std::make_unique<int>(0);
+				   ])
+                  ],
+                  [ AC_MSG_RESULT(yes) ],
+                  [
+                     AC_MSG_RESULT([no])
+                     AC_MSG_CHECKING([for c++14 support with -std=c++14 option set])
+                     CXXSTDFLAGS="-std=c++14"
+                     CXXFLAGS="$CXXFLAGS $CXXSTDFLAGS"
+                     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+							  #include <memory>
+							],
+                                                        [ thread_local static int test = 0;
+							  std::unique_ptr<int> x = std::make_unique<int>(0);
+							])
+                                        ],
+                                        [ AC_MSG_RESULT(yes) ],
+                                        [
+                                           AC_MSG_RESULT(no)
+                                           AC_MSG_ERROR([C++ compiler lack support for c++14 standard])
+                                        ]
+                     )
+                   ])
+
 AC_MSG_CHECKING([for sed -r/-E option])
 if sed -r -e 's/(c|o)+/\1/g' > /dev/null < /dev/null ; then
     local_sed="gnu"
