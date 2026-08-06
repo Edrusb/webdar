@@ -72,7 +72,7 @@ protected:
 	/// inherited from body builder
 
 	/// \note we forbid any adoption throwing an exception from this call
-    virtual void has_adopted(body_builder *obj) { throw WEBDAR_BUG; };
+    virtual void has_adopted(body_builder *obj) override { throw WEBDAR_BUG; };
 
 
 	/// \note body_builder::get_body_part(*) is left undefined and thus stays a pure virtual method

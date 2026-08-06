@@ -84,7 +84,7 @@ protected:
 	/// inherited from body builder
 
 	/// \note we forbid any adoption throwing an exception from this call
-    virtual void has_adopted(body_builder *obj) { throw WEBDAR_BUG; };
+    virtual void has_adopted(body_builder *obj) override { throw WEBDAR_BUG; };
 
 
 private:
