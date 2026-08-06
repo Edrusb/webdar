@@ -50,7 +50,7 @@ public:
     html_label(const std::string & x_label);
 
 	/// \param[in] x_label the text to show as label
-	/// \param[in] x_tooltips the helper text that should popup upon mouse hover
+	/// \param[in] x_tooltip the helper text that should popup upon mouse hover
     html_label(const std::string & x_label, const std::string & x_tooltip);
     html_label(const html_label & ref) = default;
     html_label(html_label && ref) noexcept = delete;
