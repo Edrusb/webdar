@@ -442,24 +442,63 @@ PKG_CHECK_MODULES(OPENSSL,
 		  openssl,
 		  [],
 		  [])
+CPPFLAGS="$OPENSSL_CFLAGS $CPPFLAGS"
+CXXFLAGS="$OPENSSL_CFLAGS $CXXFLAGS"
+LIBS="$OPENSSL_LIBS $LIBS"
 
-PKG_CHECK_MODULES(LIBDAR,
-                  libdar${build_mode_suffix},
+PKG_CHECK_MODULES(LIBTHREADAR,
+		  libthreadar,
+		  [],
+		  [
+		    AC_MSG_ERROR([libthreadar was not found or pkg-config is not installed (see also PKG_CONFIG_PATH env variable, if libthreadar is installed in a non-standard place)])
+	          ]
+		  )
+CPPFLAGS="$LIBTHREADAR_CFLAGS $CPPFLAGS"
+CXXFLAGS="$LIBTHREADAR_CFLAGS $CXXFLAGS"
+LIBS="$LIBTHREADER_LIBS $LIBS"
+AC_CHECK_LIB(threadar, [libthreadar_for_autoconf], [], [AC_MSG_ERROR([Cannot link with libthreadar library]) ])
+
+
+AS_IF([ test "$build_mode_suffix" = "32" ],
+      [ PKG_CHECK_MODULES(LIBDAR,
+                  libdar32,
 		  [],
 		  [
 		     AC_MSG_ERROR([libdar${build_mod_suffix} was not found or pkg-config is not installed (see also PKG_CONFIG_PATH env variable, if libdar is installed in a non-standard place)])
 		  ]
 		  )
+     ])
 
-PKG_CHECK_MODULES(LIBTHREADAR,
-		  libthreadar,
+AS_IF([ test "$build_mode_suffix" = "64" ],
+      [ PKG_CHECK_MODULES(LIBDAR,
+                  libdar64,
+		  [],
 		  [
-		    AC_CHECK_LIB(threadar, [libthreadar_for_autoconf], [], [])
-		  ],
-		  [
-		    AC_MSG_ERROR([libthreadar was not found or pkg-config is not installed (see also PKG_CONFIG_PATH env variable, if libthreadar is installed in a non-standard place)])
-	          ]
+		     AC_MSG_ERROR([libdar${build_mod_suffix} was not found or pkg-config is not installed (see also PKG_CONFIG_PATH env variable, if libdar is installed in a non-standard place)])
+		  ]
 		  )
+     ])
+
+AS_IF([ test "$build_mode_suffix" = "infinint" ],
+      [ PKG_CHECK_MODULES(LIBDAR,
+                  libdar,
+		  [],
+		  [
+		     AC_MSG_ERROR([libdar (${build_mod_suffix}) was not found or pkg-config is not installed (see also PKG_CONFIG_PATH env variable, if libdar is installed in a non-standard place)])
+		  ]
+		  )
+     ])
+
+CPPFLAGS="$LIBDAR_CFLAGS $CPPFLAGS"
+CXXFLAGS="$LIBDAR_CFLAGS $CXXFLAGS"
+LIBS="$LIBDAR_LIBS $LIBS"
+AS_IF([ test "$build_mode_suffix" = "32" ],
+      [ AC_CHECK_LIB(dar32, [for_autoconf], [], [AC_MSG_ERROR([cannot link with libdar library]) ]/) ],
+      [ AS_IF( [ test "$build_mode_suffix" = "64" ],
+               [ AC_CHECK_LIB(dar64, [for_autoconf], [], [AC_MSG_ERROR([cannot link with libdar library]) ]/) ],
+	       [ AC_CHECK_LIB(dar,   [for_autoconf], [], [AC_MSG_ERROR([cannot link with libdar library]) ]/) ]
+	       )
+      ])
 
 AC_MSG_CHECKING([Stack setup methods for libthreadar::thread class])
 AC_LINK_IFELSE([AC_LANG_PROGRAM(
@@ -514,11 +553,6 @@ if test $is_musl -ne 0 ; then
 else
     AC_MSG_RESULT([not musl, keeping default thread stack size])
 fi
-
-# Checks for libraries.
-# AC_CHECK_LIB(ssl, [SSL_new], [], [AC_MSG_ERROR([Cannot link with libssl library]) ], [ ${OPENSSL_LIBS} ${LIBTHREADAR_LIBS} ${LIBDAR_LIBS} ])
-AC_CHECK_LIB(dar${build_mode_suffix}, [for_autoconf], [], [AC_MSG_ERROR([cannot link with libdar library]) ], [ ${OPENSSL_LIBS} ${LIBTHREADAR_LIBS} ${LIBDAR_LIBS} ])
-AC_CHECK_LIB(threadar, [for_autoconf], [], [AC_MSG_ERROR([Cannot link with libthreadar library]) ], [ ${OPENSSL_LIBS} ${LIBTHREADAR_LIBS} ${LIBDAR_LIBS} ])
 
 AM_CONDITIONAL([BUILD_WEBDAR_STATIC], [ test $build_static = "yes" ])
 AM_CONDITIONAL([BUILD_MODE32], [test "$build_mode" = "32"])
